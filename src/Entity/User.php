@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use AppBundle\Model\User\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
@@ -23,6 +22,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_user__info", "api_user__list"})
      */
     private $id;
 
@@ -123,11 +123,23 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $roles = [];
 
+    /**
+     * @var string
+     * @ORM\Column(name="password_recovery_hash", type="string", length=255, nullable=true)
+     */
+    private $passwordRecoveryHash = '';
+
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         $this->enabled = true;
     }
 
+    /**
+     * @return null|string
+     */
     public function getSalt()
     {
         return null;
@@ -142,11 +154,17 @@ class User implements AdvancedUserInterface, \Serializable
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isAccountNonLocked()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isCredentialsNonExpired()
     {
         return true;
@@ -385,4 +403,19 @@ class User implements AdvancedUserInterface, \Serializable
         return in_array($role, $this->getRoles());
     }
 
+    /**
+     * @return string
+     */
+    public function getPasswordRecoveryHash(): string
+    {
+        return $this->passwordRecoveryHash;
+    }
+
+    /**
+     * @param string $passwordRecoveryHash
+     */
+    public function setPasswordRecoveryHash(string $passwordRecoveryHash): void
+    {
+        $this->passwordRecoveryHash = $passwordRecoveryHash;
+    }
 }

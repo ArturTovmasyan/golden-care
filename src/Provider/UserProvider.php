@@ -22,12 +22,17 @@ class UserProvider implements UserProviderInterface
      */
     function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $em->getRepository('App\Entity\User');
+        $this->repository   = $em->getRepository('App\Entity\User');
     }
 
+    /**
+     * @param string $username
+     * @return mixed|UserInterface
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function loadUserByUsername($username)
     {
-        $user = $this->repository->loadUserByUsername($username);
+        $user = $this->repository->findUserByUsername($username);
         if ($user) {
             return $user;
         }
@@ -36,6 +41,11 @@ class UserProvider implements UserProviderInterface
         );
     }
 
+    /**
+     * @param UserInterface $user
+     * @return mixed|UserInterface
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
@@ -47,6 +57,10 @@ class UserProvider implements UserProviderInterface
         return $this->loadUserByUsername($user->getUsername());
     }
 
+    /**
+     * @param string $class
+     * @return bool
+     */
     public function supportsClass($class)
     {
         return User::class === $class;

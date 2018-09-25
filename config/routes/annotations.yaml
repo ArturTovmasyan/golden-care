@@ -1,14 +1,3 @@
 controllers:
     resource: ../../src/Controller/
     type: annotation
-
-#rest_controller:
-#    resource: ../../src/Api/V1/Controller/Rest/
-#    type: annotation
-#    prefix: /api
-
-#fos_oauth_server_token:
-#    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
-
-#fos_oauth_server_authorize:
-#    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"

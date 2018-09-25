@@ -72,6 +72,6 @@ class CreateUserCommand extends Command
         $this->em->persist($user);
         $this->em->flush();
 
-        \Doctrine\Common\Util\Debug::dump($user);
+        $output->writeln('User successfully created');
     }
 }

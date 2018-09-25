@@ -14,34 +14,18 @@ security:
         oauth_authorize:
             pattern:    ^/oauth/v2/auth
             anonymous: true
-
-        api_login:
-            pattern:   ^/api/v1.0/security/login
-            fos_oauth: true
+            security:  false
             stateless: true
-            anonymous: true
-
-        api_forgot_password:
-            pattern:   ^/api/v1.0/security/forgot-password
-            fos_oauth: false
-            stateless: true
-            anonymous: true
-
-        api_confirm_password:
-            pattern:   ^/api/v1.0/security/confirm-password
-            fos_oauth: false
-            stateless: true
-            anonymous: true
-
-        api_get_user_by_hash:
-            pattern:   ^/api/v1.0/user/hash/*
-            fos_oauth: false
-            stateless: true
-            anonymous: true
 
         api:
             pattern:   ^/api/v1.0/*
             fos_oauth: true
+            stateless: true
+            anonymous: true
+
+        api_security:
+            pattern:   ^/api/v1.0/security
+            fos_oauth: false
             stateless: true
             anonymous: true
 
@@ -53,6 +37,6 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        #- { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
