@@ -131,7 +131,7 @@ class SecurityController extends BaseController
      * This function is used to change password
      *
      * @Method("PUT")
-     * @Route("/api/v1.0/security/change-password", name="security_change_password")
+     * @Route("/change-password", name="security_change_password")
      * @param $request
      * @return array | JsonResponse
      * @throws
@@ -238,7 +238,7 @@ class SecurityController extends BaseController
      *
      *
      * @Method("POST")
-     * @Route("/security/forgot-password", name="security_forgot_password")
+     * @Route("/forgot-password", name="security_forgot_password")
      * @param $request
      * @return array | JsonResponse
      * @throws
@@ -302,7 +302,7 @@ class SecurityController extends BaseController
      * This function is used to reset password
      *
      * @Method("PUT")
-     * @Route("/api/v1.0/security/reset-password", name="security_reset_password")
+     * @Route("/reset-password", name="security_reset_password")
      *
      * @param Request $request
      * @param UserService $userService
@@ -374,7 +374,7 @@ class SecurityController extends BaseController
      *
      *
      * @Method("PUT")
-     * @Route("/api/v1.0/security/confirm-password", name="security_confirm_password")
+     * @Route("/confirm-password", name="security_confirm_password")
      * @param $request
      * @return array | JsonResponse
      * @throws
