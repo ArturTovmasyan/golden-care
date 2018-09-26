@@ -4,6 +4,7 @@ namespace App\Api\V1\Controller\Rest;
 use App\Api\V1\Controller\Rest\Exception\DuplicateUserException;
 use App\Api\V1\Controller\Rest\Exception\IncorrectPasswordException;
 use App\Api\V1\Controller\Rest\Exception\InvalidDataException;
+use App\Api\V1\Service\UserService;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -140,73 +141,93 @@ class SecurityController extends BaseController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        $userId          = $request->get('id');
-        $password        = $request->get('password');
-        $newPassword     = $request->get('newPassword');
-        $confirmPassword = $request->get('confirmPassword');
+        try {
+            $userId          = $request->get('id');
+            $password        = $request->get('password');
+            $newPassword     = $request->get('newPassword');
+            $confirmPassword = $request->get('confirmPassword');
 
-        /** @var User $user */
-        $user = $em->getRepository(User::class)->find($userId);
+            /** @var User $user */
+            $user = $em->getRepository(User::class)->find($userId);
 
-        if ($user) {
+            if (is_null($user)) {
+                $allErrors['userNotFound'] = "User by id $userId not found";
 
-            $allErrors = [];
+                throw new InvalidDataException(
+                    $allErrors['userNotFound'],
+                    Response::HTTP_BAD_REQUEST,
+                    $allErrors
+                );
+            }
 
             /** @var EncoderFactory $encoderService */
             $encoderService = $this->get('security.encoder_factory');
-            $encoder = $encoderService->getEncoder($user);
+            $encoder        = $encoderService->getEncoder($user);
 
-            //check password is valid
-            if ($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
-                //check if new and confirm password is equal
-                if ($newPassword === $confirmPassword) {
-                    // check with old password
-                    if ($newPassword !== $password) {
-                        //encode and save new password
-                        $user->setPlainPassword($newPassword);
-
-                        if (!$user->isAdmin()) {
-                            $user->setVerified(true);
-                        }
-
-                        $em->getConnection()->beginTransaction();
-
-                        try {
-                            $em->persist($user);
-                            $em->flush();
-
-                            $em->getConnection()->commit();
-
-                            $status = Response::HTTP_CREATED;
-                            $response = ['status' => $status, 'message' => 'Success'];
-
-                        } catch (\Exception $e) {
-                            $em->getConnection()->rollBack();
-
-                            $status = Response::HTTP_BAD_REQUEST;
-                            $response = ['status' => $e->getCode(), 'message' => $e->getMessage()];
-                        }
-                    } else {
-                        $allErrors['newPassword'] = 'New password must be different from last password';
-                        $status = Response::HTTP_BAD_REQUEST;
-                        $response = ['status' => Response::HTTP_BAD_REQUEST, 'message' => $allErrors['newPassword'], 'data' => ['errors' => $allErrors]];
-                    }
-                } else {
-                    $allErrors['newPassword'] = 'New password is not confirmed';
-                    $status = Response::HTTP_BAD_REQUEST;
-                    $response = ['status' => Response::HTTP_BAD_REQUEST, 'message' => $allErrors['newPassword'], 'data' => ['errors' => $allErrors]];
-                }
-
-            } else {
+            if (!$encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
                 $allErrors['password'] = 'Invalid current password';
-                $status = Response::HTTP_BAD_REQUEST;
-                $response = ['status' => Response::HTTP_BAD_REQUEST, 'message' => $allErrors['password'], 'data' => ['errors' => $allErrors]];
+
+                throw new InvalidDataException(
+                    $allErrors['password'],
+                    Response::HTTP_BAD_REQUEST,
+                    $allErrors
+                );
             }
 
-        } else {
-            $allErrors['userNotFound'] = "User by id $userId not found";
-            $status = Response::HTTP_NOT_FOUND;
-            $response = ['status' => Response::HTTP_NOT_FOUND, 'message' => $allErrors['userNotFound'], 'data' => ['errors' => $allErrors]];
+            if ($newPassword !== $confirmPassword) {
+                $allErrors['newPassword'] = 'New password is not confirmed';
+
+                throw new InvalidDataException(
+                    $allErrors['newPassword'],
+                    Response::HTTP_BAD_REQUEST,
+                    $allErrors
+                );
+            }
+
+            if ($newPassword == $password) {
+                $allErrors['newPassword'] = 'New password must be different from last password';
+
+                throw new InvalidDataException(
+                    $allErrors['newPassword'],
+                    Response::HTTP_BAD_REQUEST,
+                    $allErrors
+                );
+            }
+
+            try {
+                $em->getConnection()->beginTransaction();
+
+                $encoded = $this->encoder->encodePassword($user, $newPassword);
+                $user->setPassword($encoded);
+
+                $em->persist($user);
+                $em->flush();
+
+                $em->getConnection()->commit();
+
+                $status   = Response::HTTP_CREATED;
+                $response = [
+                    'status'  => $status,
+                    'message' => 'Success'
+                ];
+            } catch (\Exception $e) {
+                $em->getConnection()->rollBack();
+
+                throw new InvalidDataException(
+                    'System Error',
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+        } catch (\Throwable $e) {
+            $status   = $e->getCode();
+            $response = [
+                'status'  => $status,
+                'message' => $e->getMessage()
+            ];
+
+            if ($e instanceof InvalidDataException && !empty($e->getErrors())) {
+                $response['errors'] = $e->getErrors();
+            }
         }
 
         return new JsonResponse($response, $status);
@@ -227,34 +248,50 @@ class SecurityController extends BaseController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        // get user credentials
-        $email = $request->get('email');
+        try {
+            // get user credentials
+            $email = $request->get('email');
 
-        /** @var User $user */
-        $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+            /** @var User $user */
+            $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
 
-        if ($user) {
-            $user->setPasswordRecoveryHash($email);
+            if (is_null($user)) {
+                throw new InvalidDataException("User by id $email not found", Response::HTTP_BAD_REQUEST);
+            }
 
             try {
                 $em->getConnection()->beginTransaction();
+
+                $user->setPasswordRecoveryHash($email);
                 $em->persist($user);
                 $em->flush();
 
                 $em->getConnection()->commit();
 
                 $status = Response::HTTP_CREATED;
-                $response = ['status' => $status, 'message' => 'Password recovery link sent, please check email.'];
+                $response = [
+                    'status'  => $status,
+                    'message' => 'Password recovery link sent, please check email.'
+                ];
             } catch (\Exception $e) {
                 $em->getConnection()->rollBack();
 
-                $status = Response::HTTP_BAD_REQUEST;
-                $response = ['status' => $e->getCode(), 'message' => $e->getMessage()];
+                throw new InvalidDataException(
+                    'System Error',
+                    Response::HTTP_BAD_REQUEST
+                );
             }
 
-        } else {
-            $status   = Response::HTTP_NOT_FOUND;
-            $response = ['status' => Response::HTTP_NOT_FOUND, 'message' => "User by id $email not found"];
+        } catch (\Throwable $e) {
+            $status   = $e->getCode();
+            $response = [
+                'status'  => $status,
+                'message' => $e->getMessage()
+            ];
+
+            if ($e instanceof InvalidDataException && !empty($e->getErrors())) {
+                $response['errors'] = $e->getErrors();
+            }
         }
 
         return new JsonResponse($response, $status);
@@ -262,36 +299,71 @@ class SecurityController extends BaseController
 
 
     /**
-     * This function is used to change password
-     *
+     * This function is used to reset password
      *
      * @Method("PUT")
      * @Route("/api/v1.0/security/reset-password", name="security_reset_password")
-     * @param $request
-     * @return array | JsonResponse
-     * @throws
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse
      */
-    public function resetPasswordAction(Request $request)
+    public function resetPasswordAction(Request $request, UserService $userService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        //get user credentials
-        $userId = $request->get('id');
+        try {
+            $userId = $request->get('id');
 
-        /** @var User $user */
-        $user = $em->getRepository(User::class)->find($userId);
+            /** @var User $user */
+            $user = $em->getRepository(User::class)->find($userId);
 
-        if ($user) {
+            if (is_null($user)) {
+                throw new InvalidDataException("User by id $userId not found", Response::HTTP_BAD_REQUEST);
+            }
+
+            try {
+                $em->getConnection()->beginTransaction();
+
+                $password = $userService->generatePassword(8);
+                $encoded  = $this->encoder->encodePassword($user, $password);
+                $user->setPassword($encoded);
+                $em->persist($user);
+                $em->flush();
+
+                $em->getConnection()->commit();
+
+                /** @todo send email to user **/
+
+                $status = Response::HTTP_CREATED;
+                $response = [
+                    'status'  => $status,
+                    'message' => 'Password recovery link sent, please check email.'
+                ];
+            } catch (\Exception $e) {
+                $em->getConnection()->rollBack();
+
+                throw new InvalidDataException(
+                    'System Error',
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
 
-            $status = Response::HTTP_OK;
-            $response = ['status' => Response::HTTP_NOT_FOUND, 'message' => "Success"];
-        } else {
-            $status = Response::HTTP_NOT_FOUND;
-            $response = ['status' => Response::HTTP_NOT_FOUND, 'message' => "User by id $userId not found"];
+        } catch (\Throwable $e) {
+            $status   = $e->getCode();
+            $response = [
+                'status'  => $status,
+                'message' => $e->getMessage()
+            ];
+
+            if ($e instanceof InvalidDataException && !empty($e->getErrors())) {
+                $response['errors'] = $e->getErrors();
+            }
         }
 
         return new JsonResponse($response, $status);
@@ -329,11 +401,10 @@ class SecurityController extends BaseController
                 throw new \Exception('New password is not confirmed.', Response::HTTP_BAD_REQUEST);
             }
 
-            // encode and save new password
-            $user->setPasswordRecoveryHash(null);
-
             try {
                 $em->getConnection()->beginTransaction();
+
+                $user->setPasswordRecoveryHash(null);
                 $em->persist($user);
                 $em->flush();
 
