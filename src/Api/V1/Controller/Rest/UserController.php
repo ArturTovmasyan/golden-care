@@ -6,15 +6,17 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class UserController
  * @package App\Api\V1\Controller\Rest
- *
- * @Route("/api/v1.0/user")
+ * @Route("/api/v1.0/space/{spaceId}/user")
+ * @Permission({"ROLE_USER"})
  */
 class UserController extends BaseController
 {

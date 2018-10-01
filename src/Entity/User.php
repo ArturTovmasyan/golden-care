@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use App\Model\Persistence\Entity\HumanTrait;
+use App\Model\Persistence\Entity\TimeAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * @ORM\Table(name="user")
@@ -15,8 +17,10 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_user__add", "api_user__edit"})
  * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_user__add", "api_user__edit"})
  */
-class User implements AdvancedUserInterface, \Serializable
+class User implements UserInterface
 {
+    use TimeAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")
@@ -111,89 +115,43 @@ class User implements AdvancedUserInterface, \Serializable
     protected $passwordRequestedAt;
 
     /**
-     * @var array $roles
-     * @ORM\Column(name="roles", type="json_array", length=500, nullable=false)
-     * @Groups({"api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"}),
-     * @Assert\All({
-     *     @Assert\NotBlank(groups={"api_user__add", "api_user__edit"}),
-     *     @Assert\NotNull(groups={"api_user__add", "api_user__edit"}),
-     *     @Assert\Choice(callback={"App\Model\UserRole", "getRoles"}, groups={"api_user__add", "api_user__edit"})
-     * })
-     */
-    private $roles = [];
-
-    /**
      * @var string
      * @ORM\Column(name="password_recovery_hash", type="string", length=255, nullable=true)
      */
     private $passwordRecoveryHash = '';
 
     /**
-     * User constructor.
+     * @todo remove after investigate jms listener
+     * @deprecated
+     * @var array
      */
-    public function __construct()
-    {
-        $this->enabled = true;
-    }
+    private $roles = [];
 
     /**
-     * @return null|string
+     * @see \Serializable::serialize()
      */
-    public function getSalt()
-    {
-        return null;
-    }
-
-    public function eraseCredentials()
-    {
-    }
-
-    public function isAccountNonExpired()
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAccountNonLocked()
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCredentialsNonExpired()
-    {
-        return true;
-    }
-
-    /** @see \Serializable::serialize() */
     public function serialize()
     {
         return serialize(array(
             $this->id,
             $this->username,
             $this->password,
-// see section on salt below
-// $this->salt,
             $this->enabled,
         ));
     }
 
-    /** @see \Serializable::unserialize() */
+    /**
+     * @see \Serializable::unserialize()
+     * @param string $serialized
+     */
     public function unserialize($serialized)
     {
         list (
             $this->id,
             $this->username,
             $this->password,
-// see section on salt below
-// $this->salt,
             $this->enabled,
-            ) = unserialize($serialized, ['allowed_classes' => false]);
+        ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     /**
@@ -211,7 +169,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setId(int $id)
     {
         $this->id = $id;
-        return $this;
     }
 
     /**
@@ -229,7 +186,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
-        return $this;
     }
 
     /**
@@ -242,12 +198,10 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @param string $last_name
-     * @return User
      */
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
-        return $this;
     }
 
     /**
@@ -260,12 +214,10 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @param string $username
-     * @return User
      */
     public function setUsername($username)
     {
         $this->username = $username;
-        return $this;
     }
 
     /**
@@ -283,7 +235,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPassword($password)
     {
         $this->password = $password;
-        return $this;
     }
 
     /**
@@ -301,7 +252,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setEmail($email)
     {
         $this->email = $email;
-        return $this;
     }
 
     /**
@@ -319,7 +269,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPhone($phone)
     {
         $this->phone = $phone;
-        return $this;
     }
 
     /**
@@ -337,7 +286,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
-        return $this;
     }
 
     /**
@@ -357,53 +305,6 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @return Bool Whether the user is active or not
-     */
-    public function isActiveNow()
-    {
-        // Delay during wich the user will be considered as still active
-        $delay = new \DateTime('2 minutes ago');
-
-        return ( $this->getLastActivityAt() > $delay );
-    }
-
-    /**
-     * @param string $role
-     * @return User
-     */
-    public function addRole($role)
-    {
-        $roles = $this->getRoles();
-        if (!$this->hasRole($role)) {
-            $roles[] = $role;
-        }
-        $this->setRoles($roles);
-        return $this;
-    }
-
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param array $roles
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-    }
-
-    /**
-     * @param string $role
-     * @return bool
-     */
-    public function hasRole($role)
-    {
-        return in_array($role, $this->getRoles());
-    }
-
-    /**
      * @return string
      */
     public function getPasswordRecoveryHash(): string
@@ -417,5 +318,69 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPasswordRecoveryHash(string $passwordRecoveryHash): void
     {
         $this->passwordRecoveryHash = $passwordRecoveryHash;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    /**
+     * @param null|string $confirmationToken
+     */
+    public function setConfirmationToken(?string $confirmationToken): void
+    {
+        $this->confirmationToken = $confirmationToken;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getPasswordRequestedAt(): ?\DateTime
+    {
+        return $this->passwordRequestedAt;
+    }
+
+    /**
+     * @param \DateTime|null $passwordRequestedAt
+     */
+    public function setPasswordRequestedAt(?\DateTime $passwordRequestedAt): void
+    {
+        $this->passwordRequestedAt = $passwordRequestedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveNow()
+    {
+        // Delay during wich the user will be considered as still active
+        $delay = new \DateTime('2 minutes ago');
+
+        return ($this->getLastActivityAt() > $delay);
+    }
+
+    /**
+     * @return null
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getRoles()
+    {
+        // TODO: Implement getRoles() method.
     }
 }
