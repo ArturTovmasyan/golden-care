@@ -17,15 +17,16 @@ security:
             security:  false
             stateless: true
 
-        api:
-            pattern:   ^/api/v1.0/*
-            fos_oauth: true
-            stateless: true
-            anonymous: true
-
         api_security:
             pattern:   ^/api/v1.0/security
             fos_oauth: false
+            security:  false
+            stateless: true
+            anonymous: true
+
+        api:
+            pattern:   ^/api/v1.0/*
+            fos_oauth: true
             stateless: true
             anonymous: true
 

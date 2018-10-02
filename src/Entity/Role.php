@@ -40,6 +40,18 @@ class Role
     protected $permissions;
 
     /**
+     * @var bool
+     * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
+     */
+    protected $default;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
+     */
+    protected $spaceDefault;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -101,5 +113,37 @@ class Role
     public function setPermissions($permissions): void
     {
         $this->permissions = $permissions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param bool $default
+     */
+    public function setDefault(bool $default): void
+    {
+        $this->default = $default;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpaceDefault(): bool
+    {
+        return $this->spaceDefault;
+    }
+
+    /**
+     * @param bool $spaceDefault
+     */
+    public function setSpaceDefault(bool $spaceDefault): void
+    {
+        $this->spaceDefault = $spaceDefault;
     }
 }

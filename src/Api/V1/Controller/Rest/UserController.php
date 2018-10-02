@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class UserController
  * @package App\Api\V1\Controller\Rest
  * @Route("/api/v1.0/space/{spaceId}/user")
- * @Permission({"ROLE_USER"})
+ * @Permission({"PERMISSION_USER"})
  */
 class UserController extends BaseController
 {

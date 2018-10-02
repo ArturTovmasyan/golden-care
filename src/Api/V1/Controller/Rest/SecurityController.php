@@ -5,6 +5,9 @@ use App\Api\V1\Controller\Rest\Exception\DuplicateUserException;
 use App\Api\V1\Controller\Rest\Exception\IncorrectPasswordException;
 use App\Api\V1\Controller\Rest\Exception\InvalidDataException;
 use App\Api\V1\Service\UserService;
+use App\Entity\Role;
+use App\Entity\Space;
+use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -34,7 +37,7 @@ class SecurityController extends BaseController
      * @return array | JsonResponse
      * @throws
      */
-    public function signupAction(Request $request, UserPasswordEncoderInterface $encoder)
+    public function signupAction(Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -47,7 +50,8 @@ class SecurityController extends BaseController
             $rePassword = $request->get('rePassword');
 
             /** @var User $user */
-            $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+            $user                = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+            $defaultRoleForSpace = $em->getRepository(Role::class)->getSpaceDefaultRole();
 
             if ($user) {
                 throw new DuplicateUserException(
@@ -63,14 +67,13 @@ class SecurityController extends BaseController
                 );
             }
 
-            /** @var User $user */
+            // create user
             $user = new User();
             $user->setFirstName($firstName);
             $user->setLastName($lastName);
             $user->setUsername(strtolower($firstName) . time());
             $user->setEmail($email);
             $user->setLastActivityAt(new \DateTime());
-            $user->setRoles([]);
             $user->setEnabled(false);
 
             $encoded = $this->encoder->encodePassword($user, $password);
@@ -96,6 +99,20 @@ class SecurityController extends BaseController
             try {
                 $em->getConnection()->beginTransaction();
                 $em->persist($user);
+
+                // create space
+                $space = new Space();
+                $em->persist($space);
+
+                // create space user roles
+                if ($defaultRoleForSpace) {
+                    $spaceUserRole = new SpaceUserRole();
+                    $spaceUserRole->setUser($user);
+                    $spaceUserRole->setRole($defaultRoleForSpace);
+                    $spaceUserRole->setSpace($space);
+                    $em->persist($spaceUserRole);
+                }
+
                 $em->flush();
                 $em->getConnection()->commit();
             } catch (\Exception $e) {
