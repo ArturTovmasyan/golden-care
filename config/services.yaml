@@ -28,9 +28,13 @@ services:
         resource: '../src/Api/V1/Controller/Rest'
         tags: ['controller.api_service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    fos_oauth_server.controller.token:
+        class: App\Api\V1\Controller\Rest\TokenController
+        arguments: ['@fos_oauth_server.server', '@doctrine.orm.entity_manager']
+        public: true
+        autowire: true
 
+    # listener for activity
     App\EventListener\ActivityListener:
         tags:
         - { name: 'kernel.event_listener', event: 'kernel.controller', method: onCoreController }

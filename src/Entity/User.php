@@ -22,6 +22,11 @@ class User implements UserInterface
     use TimeAwareTrait;
 
     /**
+     * Mistakes limit before block
+     */
+    const PASSWORD_MISTAKES_LIMIT = 3;
+
+    /**
      * @var int
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -121,6 +126,18 @@ class User implements UserInterface
     private $passwordRecoveryHash = '';
 
     /**
+     * @var int
+     * @ORM\Column(name="password_mistakes", type="integer", options={"default" = 0})
+     */
+    private $passwordMistakes;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="password_blocked_at", type="datetime", nullable=true)
+     */
+    private $passwordBlockedAt;
+
+    /**
      * @todo remove after investigate jms listener
      * @deprecated
      * @var array
@@ -202,6 +219,14 @@ class User implements UserInterface
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     /**
@@ -318,6 +343,46 @@ class User implements UserInterface
     public function setPasswordRecoveryHash(string $passwordRecoveryHash): void
     {
         $this->passwordRecoveryHash = $passwordRecoveryHash;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPasswordMistakes(): int
+    {
+        return $this->passwordMistakes;
+    }
+
+    /**
+     * @param int $passwordMistakes
+     */
+    public function setPasswordMistakes(int $passwordMistakes): void
+    {
+        $this->passwordMistakes = $passwordMistakes;
+    }
+
+    /**
+     *
+     */
+    public function incrementPasswordMistakes(): void
+    {
+        $this->passwordMistakes += 1;
+    }
+
+    /**
+     * @return null|\DateTime
+     */
+    public function getPasswordBlockedAt()
+    {
+        return $this->passwordBlockedAt;
+    }
+
+    /**
+     * @param null|\DateTime $passwordBlockedAt
+     */
+    public function setPasswordBlockedAt(\DateTime $passwordBlockedAt = null): void
+    {
+        $this->passwordBlockedAt = $passwordBlockedAt;
     }
 
     /**

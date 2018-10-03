@@ -9,6 +9,8 @@ use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUserRole;
 use App\Entity\User;
+use App\Entity\UserLog;
+use App\Model\Log;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
@@ -112,6 +114,15 @@ class SecurityController extends BaseController
                     $spaceUserRole->setSpace($space);
                     $em->persist($spaceUserRole);
                 }
+
+                // create log
+                $log = new UserLog();
+                $log->setCreatedAt(new \DateTime());
+                $log->setUser($user);
+                $log->setType(UserLog::LOG_TYPE_AUTHENTICATION);
+                $log->setLevel(Log::LOG_LEVEL_LOW);
+                $log->setMessage(sprintf("User %s (%s) registered in ", $user->getFullName(), $user->getUsername()));
+                $em->persist($log);
 
                 $em->flush();
                 $em->getConnection()->commit();
