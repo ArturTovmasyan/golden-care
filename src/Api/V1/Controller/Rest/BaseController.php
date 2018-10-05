@@ -2,10 +2,13 @@
 
 namespace App\Api\V1\Controller\Rest;
 
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -44,42 +47,66 @@ class BaseController extends Controller
     }
 
     /**
-     * @param null $message
+     * @param string $message
+     * @param int $httpStatus
+     * @param array $data
      * @param array $groups
+     * @param array $headers
      * @return JsonResponse
      */
-    protected function respondSuccess($message = null, $groups = [])
+    protected function respondSuccess($message = '', $httpStatus = Response::HTTP_OK, $data = [], $groups = [], $headers = [])
     {
-        if ($message) {
-            $data = $this->serializer->serialize($message, 'json', ['groups' => []]);
+        /** @var Serializer $serializer */
+        $serializer = $this->get('jms_serializer');
 
-            return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        $responseData = [];
+
+        if (!empty($message)) {
+            $responseData['message'] = $message;
         }
 
-        return new JsonResponse();
+        if (!empty($data)) {
+            $responseData['data'] = $data;
+
+            if (empty($groups)) {
+                $responseData = $serializer->serialize($responseData, 'json');
+            } else {
+                $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setGroups($groups));
+            }
+
+            return new JsonResponse($responseData, $httpStatus, $headers, true);
+        }
+
+        return new JsonResponse($responseData, $httpStatus, $headers, false);
     }
 
     /**
      * @param $message
+     * @param int $httpStatus
+     * @param array $data
+     * @param array $headers
      * @return JsonResponse
      */
-    protected function respondError($message)
+    protected function respondError($message, $httpStatus = Response::HTTP_BAD_REQUEST, $data = [], $headers = [])
     {
-        return new JsonResponse(
-            [
-                'error' => $message
-            ],
-            JsonResponse::HTTP_BAD_REQUEST, [], false
-        );
+        $responseData = [
+            'error' => $message
+        ];
+
+        if (!empty($data)) {
+            $responseData['details'] = $data;
+        }
+
+        return new JsonResponse($responseData, $httpStatus ?? Response::HTTP_UNAUTHORIZED, $headers, false);
     }
 
     /**
      * @param Request $request
      */
-    protected function normalizeJson(Request $request)
+    protected function normalizeJson(Request &$request)
     {
-        if ($request->getContentType() === 'application/json' ||
-            $request->getContentType() === 'json' && !empty($request->getContent())
+        if (($request->getContentType() === 'application/json' || $request->getContentType() === 'json') &&
+            !empty($request->getContent())
         ) {
             $content = $request->getContent();
             $request->request->add(json_decode($content, true));

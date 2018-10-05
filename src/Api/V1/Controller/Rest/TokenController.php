@@ -3,6 +3,7 @@
 namespace App\Api\V1\Controller\Rest;
 
 use App\Api\V1\Controller\Rest\Exception\UserBlockedException;
+use App\Api\V1\Service\UserService;
 use App\Entity\User;
 use App\Entity\UserLog;
 use App\Model\Log;
@@ -28,7 +29,7 @@ class TokenController extends BaseController
     public function __construct(OAuth2 $server, EntityManager $entityManager)
     {
         parent::__construct($server);
-        $this->em = $entityManager;
+        $this->em          = $entityManager;
     }
 
     /**
