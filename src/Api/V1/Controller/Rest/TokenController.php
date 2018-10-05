@@ -20,8 +20,6 @@ class TokenController extends BaseController
      */
     private $em;
 
-    private $container;
-
     /**
      * TokenController constructor.
      * @param OAuth2 $server
@@ -91,6 +89,15 @@ class TokenController extends BaseController
                 }
 
                 $this->em->persist($user);
+            } else {
+                $content = json_decode($response->getContent(), 1);
+                $message = '';
+
+                if (!empty($content['error_description'])) {
+                    $message = $content['error_description'];
+                }
+
+                throw new \Exception($message);
             }
 
             $this->em->flush();

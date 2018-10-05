@@ -127,7 +127,7 @@ class User implements UserInterface
 
     /**
      * @var int
-     * @ORM\Column(name="password_mistakes", type="integer", options={"default" = 0})
+     * @ORM\Column(name="password_mistakes", type="integer", nullable=true, options={"default" = 0})
      */
     private $passwordMistakes;
 
@@ -136,6 +136,16 @@ class User implements UserInterface
      * @ORM\Column(name="password_blocked_at", type="datetime", nullable=true)
      */
     private $passwordBlockedAt;
+
+    /**
+     * @var string $plainPassword
+     * @Assert\Regex(
+     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
+     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
+     *     groups={"add_user", "signup"}
+     * )
+     */
+    private $plainPassword;
 
     /**
      * @todo remove after investigate jms listener
@@ -338,11 +348,11 @@ class User implements UserInterface
     }
 
     /**
-     * @param string $passwordRecoveryHash
+     *
      */
-    public function setPasswordRecoveryHash(string $passwordRecoveryHash): void
+    public function setPasswordRecoveryHash(): void
     {
-        $this->passwordRecoveryHash = $passwordRecoveryHash;
+        $this->passwordRecoveryHash = $this->passwordRecoveryHash = hash('sha256', $this->email . time());
     }
 
     /**
@@ -415,6 +425,22 @@ class User implements UserInterface
     public function setPasswordRequestedAt(?\DateTime $passwordRequestedAt): void
     {
         $this->passwordRequestedAt = $passwordRequestedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
     }
 
     /**

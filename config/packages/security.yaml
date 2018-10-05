@@ -17,6 +17,12 @@ security:
             security:  false
             stateless: true
 
+        api_security_change_password:
+            pattern:   ^/api/v1.0/security/change-password
+            fos_oauth: true
+            stateless: true
+            anonymous: true
+
         api_security:
             pattern:   ^/api/v1.0/security
             fos_oauth: false

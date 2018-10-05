@@ -11,8 +11,10 @@ use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use App\Entity\UserLog;
 use App\Model\Log;
+use App\Util\Mailer;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -170,29 +172,14 @@ class SecurityController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         try {
-            $userId          = $request->get('id');
             $password        = $request->get('password');
             $newPassword     = $request->get('newPassword');
             $confirmPassword = $request->get('confirmPassword');
 
             /** @var User $user */
-            $user = $em->getRepository(User::class)->find($userId);
+            $user = $this->get('security.token_storage')->getToken()->getUser();
 
-            if (is_null($user)) {
-                $allErrors['userNotFound'] = "User by id $userId not found";
-
-                throw new InvalidDataException(
-                    $allErrors['userNotFound'],
-                    Response::HTTP_BAD_REQUEST,
-                    $allErrors
-                );
-            }
-
-            /** @var EncoderFactory $encoderService */
-            $encoderService = $this->get('security.encoder_factory');
-            $encoder        = $encoderService->getEncoder($user);
-
-            if (!$encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
+            if (!$this->encoder->isPasswordValid($user, $password)) {
                 $allErrors['password'] = 'Invalid current password';
 
                 throw new InvalidDataException(
@@ -281,7 +268,7 @@ class SecurityController extends BaseController
             $email = $request->get('email');
 
             /** @var User $user */
-            $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+            $user = $em->getRepository(User::class)->findOneByEmail($email);
 
             if (is_null($user)) {
                 throw new InvalidDataException("User by id $email not found", Response::HTTP_BAD_REQUEST);
@@ -290,9 +277,12 @@ class SecurityController extends BaseController
             try {
                 $em->getConnection()->beginTransaction();
 
-                $user->setPasswordRecoveryHash($email);
+                $user->setPasswordRecoveryHash();
                 $em->persist($user);
                 $em->flush();
+
+                $mailer = new Mailer($this->container);
+                $mailer->sendPasswordRecoveryLink($user, $request->getSchemeAndHttpHost());
 
                 $em->getConnection()->commit();
 
@@ -309,79 +299,6 @@ class SecurityController extends BaseController
                     Response::HTTP_BAD_REQUEST
                 );
             }
-
-        } catch (\Throwable $e) {
-            $status   = $e->getCode();
-            $response = [
-                'status'  => $status,
-                'message' => $e->getMessage()
-            ];
-
-            if ($e instanceof InvalidDataException && !empty($e->getErrors())) {
-                $response['errors'] = $e->getErrors();
-            }
-        }
-
-        return new JsonResponse($response, $status);
-    }
-
-
-    /**
-     * This function is used to reset password
-     *
-     * @Method("PUT")
-     * @Route("/reset-password", name="security_reset_password")
-     *
-     * @param Request $request
-     * @param UserService $userService
-     * @return JsonResponse
-     */
-    public function resetPasswordAction(Request $request, UserService $userService)
-    {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        try {
-            $userId = $request->get('id');
-
-            /** @var User $user */
-            $user = $em->getRepository(User::class)->find($userId);
-
-            if (is_null($user)) {
-                throw new InvalidDataException("User by id $userId not found", Response::HTTP_BAD_REQUEST);
-            }
-
-            try {
-                $em->getConnection()->beginTransaction();
-
-                $password = $userService->generatePassword(8);
-                $encoded  = $this->encoder->encodePassword($user, $password);
-                $user->setPassword($encoded);
-                $em->persist($user);
-                $em->flush();
-
-                $em->getConnection()->commit();
-
-                /** @todo send email to user **/
-
-                $status = Response::HTTP_CREATED;
-                $response = [
-                    'status'  => $status,
-                    'message' => 'Password recovery link sent, please check email.'
-                ];
-            } catch (\Exception $e) {
-                $em->getConnection()->rollBack();
-
-                throw new InvalidDataException(
-                    'System Error',
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
         } catch (\Throwable $e) {
             $status   = $e->getCode();
             $response = [
@@ -432,7 +349,7 @@ class SecurityController extends BaseController
             try {
                 $em->getConnection()->beginTransaction();
 
-                $user->setPasswordRecoveryHash(null);
+                $user->setPasswordRecoveryHash();
                 $em->persist($user);
                 $em->flush();
 
