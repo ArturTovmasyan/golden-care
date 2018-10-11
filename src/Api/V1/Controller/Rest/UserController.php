@@ -24,7 +24,7 @@ class UserController extends BaseController
      * @Method("GET")
      * @Route("/space/{spaceId}/user", name="user_list")
      */
-    public function getAction()
+    public function listAction()
     {
         $users = $this->em->getRepository(User::class)->findAll();
 
@@ -33,6 +33,25 @@ class UserController extends BaseController
             Response::HTTP_OK,
             ['users' => $users],
             ['api_user__list']
+        );
+    }
+
+    /**
+     * @Method("GET")
+     * @Route("/user/{id}", name="user_info", requirements={"id"="\d+"})
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getAction($id)
+    {
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        return $this->respondSuccess(
+            '',
+            Response::HTTP_OK,
+            ['user' => $user],
+            ['api_user__info']
         );
     }
 
