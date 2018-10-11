@@ -2,11 +2,9 @@
 namespace App\Api\V1\Service;
 
 
-use App\Api\V1\Controller\Rest\Exception\IncorrectPasswordException;
 use App\Api\V1\Service\Exception\DuplicateUserException;
 use App\Api\V1\Service\Exception\IncorrectRepeatPasswordException;
 use App\Api\V1\Service\Exception\SystemErrorException;
-use App\Api\V1\Service\Exception\UserBlockedException;
 use App\Api\V1\Service\Exception\UserNotFoundException;
 use App\Api\V1\Service\Exception\ValidationException;
 use App\Entity\Role;
@@ -73,7 +71,7 @@ class UserService
      * @param int $length
      * @return bool|string
      */
-    public function generatePassword($length = 8)
+    private function generatePassword($length = 8)
     {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
 
@@ -160,7 +158,7 @@ class UserService
             $user->setPassword($encoded);
 
             // validate user
-            $validationErrors = $this->validator->validate($user, null, ["signup"]);
+            $validationErrors = $this->validator->validate($user, null, ["api_user__signup"]);
             $errors           = [];
 
             if ($validationErrors->count() > 0) {

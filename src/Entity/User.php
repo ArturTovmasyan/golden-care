@@ -39,7 +39,7 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
      */
     private $first_name;
 
@@ -47,7 +47,7 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
      */
     private $last_name;
 
@@ -55,7 +55,7 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
      */
     private $username;
 
@@ -66,7 +66,7 @@ class User implements UserInterface
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_user__add", "api_user__edit"}
+     *     groups={"api_user__add", "api_user__edit", "api_user__signup"}
      * )
      */
     private $password;
@@ -75,8 +75,8 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
-     * @Assert\Email(groups={"api_user__add", "api_user__edit"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
+     * @Assert\Email(groups={"api_user__add", "api_user__edit", "api_user__signup"})
      */
     private $email;
 
@@ -96,7 +96,6 @@ class User implements UserInterface
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotNull(groups={"api_user__add", "api_user__edit"})
      */
     private $enabled;
 
@@ -104,6 +103,7 @@ class User implements UserInterface
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
      * @Groups({"api_user__info", "api_user__list"})
+     * @Assert\NotBlank(groups={"api_user__signup"})
      */
     protected $lastActivityAt;
 
