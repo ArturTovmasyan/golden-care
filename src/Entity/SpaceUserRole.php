@@ -41,6 +41,17 @@ class SpaceUserRole
     private $role;
 
     /**
+     * @var string|null
+     * @ORM\Column(name="confirmation_token", type="string", nullable=true)
+     */
+    protected $confirmationToken;
+
+    /**
+     * @ORM\Column(name="status", type="integer", nullable=true, options={"default" = 0})
+     */
+    private $status;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -102,5 +113,61 @@ class SpaceUserRole
     public function setRole(\App\Entity\Role $role): void
     {
         $this->role = $role;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function cleanConfirmationToken()
+    {
+        $this->confirmationToken = '';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccepted()
+    {
+        return $this->status == \App\Model\SpaceUserRole::STATUS_ACCEPTED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInvited()
+    {
+        return $this->status == \App\Model\SpaceUserRole::STATUS_INVITED;
+    }
+
+    /**
+     * Generate confirmation token for complete invitation or forgot password
+     */
+    public function generateConfirmationToken()
+    {
+        $this->confirmationToken = hash('sha256', $this->getUser()->getEmail() . rand(1, 5000) . time());
     }
 }

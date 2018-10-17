@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SecurityController extends BaseController
 {
     /**
-     * This function is used to login user
+     * This function is used to signup user
      *
      * @Method("POST")
      * @Route("/signup", name="security_signup")

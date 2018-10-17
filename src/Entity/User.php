@@ -37,36 +37,36 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @ORM\Column(name="first_name", type="string", length=255)
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
      */
     private $first_name;
 
     /**
      * @var string
-     * @ORM\Column(name="last_name", type="string", length=255)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
      */
     private $last_name;
 
     /**
      * @var string
-     * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete", "api_user__complete"})
      */
     private $username;
 
     /**
      * @var string
-     * @ORM\Column(name="password", type="string", length=255)
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
+     * @ORM\Column(name="password", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__complete"})
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_user__add", "api_user__edit", "api_user__signup"}
+     *     groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"}
      * )
      */
     private $password;
@@ -75,8 +75,8 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup"})
-     * @Assert\Email(groups={"api_user__add", "api_user__edit", "api_user__signup"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
+     * @Assert\Email(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
      */
     private $email;
 
@@ -100,18 +100,19 @@ class User implements UserInterface
     private $enabled;
 
     /**
+     * @var bool
+     * @ORM\Column(name="completed", type="boolean")
+     * @Groups({"api_user__info", "api_user__list"})
+     */
+    private $completed;
+
+    /**
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
      * @Groups({"api_user__info", "api_user__list"})
-     * @Assert\NotBlank(groups={"api_user__signup"})
+     * @Assert\NotBlank(groups={"api_user__signup", "api_user__invite", "api_user__complete"})
      */
     protected $lastActivityAt;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="confirmation_token", type="datetime", nullable=true)
-     */
-    protected $confirmationToken;
 
     /**
      * @var \DateTime|null
@@ -324,6 +325,22 @@ class User implements UserInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isCompleted()
+    {
+        return $this->completed;
+    }
+
+    /**
+     * @param bool $completed
+     */
+    public function setCompleted($completed)
+    {
+        $this->completed = $completed;
+    }
+
+    /**
      * @return \Datetime
      */
     public function getLastActivityAt(): \Datetime
@@ -393,22 +410,6 @@ class User implements UserInterface
     public function setPasswordBlockedAt(\DateTime $passwordBlockedAt = null): void
     {
         $this->passwordBlockedAt = $passwordBlockedAt;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getConfirmationToken(): ?string
-    {
-        return $this->confirmationToken;
-    }
-
-    /**
-     * @param null|string $confirmationToken
-     */
-    public function setConfirmationToken(?string $confirmationToken): void
-    {
-        $this->confirmationToken = $confirmationToken;
     }
 
     /**

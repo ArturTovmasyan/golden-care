@@ -4,7 +4,12 @@ namespace App\Api\V1\Service;
 
 use App\Api\V1\Service\Exception\DuplicateUserException;
 use App\Api\V1\Service\Exception\IncorrectRepeatPasswordException;
+use App\Api\V1\Service\Exception\InvalidConfirmationTokenException;
+use App\Api\V1\Service\Exception\RoleNotFoundException;
+use App\Api\V1\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Service\Exception\SpaceUserRoleNotFoundException;
 use App\Api\V1\Service\Exception\SystemErrorException;
+use App\Api\V1\Service\Exception\UserAlreadyJoinedException;
 use App\Api\V1\Service\Exception\UserNotFoundException;
 use App\Api\V1\Service\Exception\ValidationException;
 use App\Entity\Role;
@@ -18,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -49,22 +55,30 @@ class UserService
     protected $validator;
 
     /**
+     * @var Security
+     */
+    protected $security;
+
+    /**
      * UserService constructor.
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
      * @param Mailer $mailer
      * @param ValidatorInterface $validator
+     * @param Security $security
      */
     public function __construct(
         EntityManagerInterface $em,
         UserPasswordEncoderInterface $encoder,
         Mailer $mailer,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        Security $security
     ) {
         $this->em        = $em;
         $this->encoder   = $encoder;
         $this->mailer    = $mailer;
         $this->validator = $validator;
+        $this->security  = $security;
     }
 
     /**
@@ -151,7 +165,8 @@ class UserService
             $user->setUsername(strtolower($params['firstName']) . time());
             $user->setEmail($params['email']);
             $user->setLastActivityAt(new \DateTime());
-            $user->setEnabled(false);
+            $user->setEnabled(true);
+            $user->setCompleted(true);
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
@@ -313,6 +328,307 @@ class UserService
             $this->em->flush();
 
             $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * @param $spaceId
+     * @param $email
+     * @param $roleId
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function invite($spaceId, $email, $roleId)
+    {
+        /**
+         * @var User $user|null
+         * @var Space $space|null
+         * @var Role $role|null
+         */
+        $user  = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+        $space = $this->em->getRepository(Space::class)->find($spaceId);
+        $role  = $this->em->getRepository(Role::class)->find($roleId);
+
+        if (is_null($space)) {
+            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        if (is_null($role)) {
+            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            // create user if not exist
+            if (is_null($user)) {
+                $user = new User();
+                $user->setEmail($email);
+                $user->setLastActivityAt(new \DateTime());
+                $user->setEnabled(false);
+                $user->setCompleted(false);
+
+                // validate user
+                $validationErrors = $this->validator->validate($user, null, ["api_user__invite"]);
+                $errors           = [];
+
+                if ($validationErrors->count() > 0) {
+                    foreach ($validationErrors as $error) {
+                        $errors[$error->getPropertyPath()] = $error->getMessage();
+                    }
+
+                    throw new ValidationException($errors);
+                }
+
+                $this->em->persist($user);
+            }
+
+            /** @var SpaceUserRole $spaceUserRole|null **/
+            $spaceUserRole = $this->em
+                ->getRepository(SpaceUserRole::class)
+                ->findOneBy(
+                    [
+                        'space' => $space,
+                        'user'  => $user,
+                        'role'  => $role,
+                    ]
+                );
+
+            if (!is_null($spaceUserRole) && $spaceUserRole->isAccepted()) {
+                throw new UserAlreadyJoinedException();
+            }
+
+            // create space-user-role relation if not exist
+            if (is_null($spaceUserRole)) {
+                $spaceUserRole = new SpaceUserRole();
+                $spaceUserRole->setUser($user);
+                $spaceUserRole->setRole($role);
+                $spaceUserRole->setSpace($space);
+                $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_INVITED);
+
+                if (!$user->isCompleted()) {
+                    $spaceUserRole->generateConfirmationToken();
+                }
+
+                $this->em->persist($spaceUserRole);
+            }
+
+            // send email to customer
+            if (!$spaceUserRole->isAccepted()) {
+                $joinUrl = false;
+
+                if (!$user->isCompleted()) {
+                    /** @todo change to real url from frontend **/
+                    $joinUrl = 'http://localhost:4200';
+                }
+
+                $this->mailer->inviteUser($user, $joinUrl);
+            }
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser($user);
+            $log->setSpace($space);
+            $log->setType(UserLog::LOG_TYPE_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf("User %s (%s) invited to join space ", $user->getFullName(), $user->getUsername()));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * @param $spaceId
+     * @param $roleId
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function acceptInvitation($spaceId, $roleId)
+    {
+        /**
+         * @var User $user
+         * @var Space $space|null
+         * @var Role $role|null
+         */
+        $user  = $this->security->getToken()->getUser();
+        $space = $this->em->getRepository(Space::class)->find($spaceId);
+        $role  = $this->em->getRepository(Role::class)->find($roleId);
+
+        if (is_null($space)) {
+            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$user->isCompleted()) {
+            throw new UserNotFoundException('User haven\'t completed account');
+        }
+
+        if (is_null($role)) {
+            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var SpaceUserRole $spaceUserRole|null **/
+            $spaceUserRole = $this->em
+                ->getRepository(SpaceUserRole::class)
+                ->findOneBy(
+                    [
+                        'space' => $space,
+                        'user'  => $user,
+                        'role'  => $role,
+                    ]
+                );
+
+            if (is_null($spaceUserRole)) {
+                throw new SpaceUserRoleNotFoundException();
+            }
+
+            if ($spaceUserRole->isAccepted()) {
+                throw new UserAlreadyJoinedException();
+            }
+
+            if (!empty($spaceUserRole->getConfirmationToken())) {
+                throw new UserNotFoundException('User haven\'t completed account, please check email for confirmation account.');
+            }
+
+            $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
+            $this->em->persist($spaceUserRole);
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser($user);
+            $log->setSpace($space);
+            $log->setType(UserLog::LOG_TYPE_ACCEPT_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf("User %s (%s) accept invitation for space", $user->getFullName(), $user->getUsername()));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException|\RuntimeException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * @param $spaceId
+     * @param $roleId
+     * @param $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function completeInvitation($spaceId, $roleId, $params)
+    {
+        /**
+         * @var User $user
+         * @var Space $space|null
+         * @var Role $role|null
+         */
+        $user  = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
+        $space = $this->em->getRepository(Space::class)->find($spaceId);
+        $role  = $this->em->getRepository(Role::class)->find($roleId);
+
+        if (is_null($user)) {
+            throw new UserNotFoundException(sprintf('User with email %s not found', $params['email']), Response::HTTP_BAD_REQUEST);
+        }
+
+        if (is_null($space)) {
+            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        if (is_null($role)) {
+            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var SpaceUserRole $spaceUserRole|null **/
+            $spaceUserRole = $this->em
+                ->getRepository(SpaceUserRole::class)
+                ->findOneBy(
+                    [
+                        'space' => $space,
+                        'user'  => $user,
+                        'role'  => $role,
+                    ]
+                );
+
+            if (is_null($spaceUserRole)) {
+                throw new SpaceUserRoleNotFoundException();
+            }
+
+            if ($spaceUserRole->isAccepted()) {
+                throw new UserAlreadyJoinedException();
+            }
+
+            if (empty($params['token']) || $params['token'] != $spaceUserRole->getConfirmationToken()) {
+                throw new InvalidConfirmationTokenException();
+            }
+
+            // update spaceUserRole
+            $spaceUserRole->cleanConfirmationToken();
+            $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
+            $this->em->persist($spaceUserRole);
+
+            // update user if not completed
+            if (!$user->isCompleted()) {
+                $user->setFirstName($params['firstName']);
+                $user->setLastName($params['lastName']);
+                $user->setUsername(strtolower($params['firstName']) . time());
+                $user->setLastActivityAt(new \DateTime());
+                $user->setEnabled(true);
+                $user->setCompleted(true);
+
+                // encode password
+                $encoded = $this->encoder->encodePassword($user, $params['password']);
+                $user->setPassword($encoded);
+
+                // validate user
+                $validationErrors = $this->validator->validate($user, null, ["api_user__complete"]);
+                $errors           = [];
+
+                if ($validationErrors->count() > 0) {
+                    foreach ($validationErrors as $error) {
+                        $errors[$error->getPropertyPath()] = $error->getMessage();
+                    }
+
+                    throw new ValidationException($errors);
+                }
+
+                $this->em->persist($user);
+            }
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser($user);
+            $log->setSpace($space);
+            $log->setType(UserLog::LOG_TYPE_ACCEPT_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf("User %s (%s) accept invitation for space", $user->getFullName(), $user->getUsername()));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException|\RuntimeException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 

@@ -30,6 +30,13 @@ security:
             stateless: true
             anonymous: true
 
+        api_user_complete_invitation:
+            pattern:   ^/api/v1.0/space/([0-9]+)/complete/([0-9]+)
+            fos_oauth: false
+            security:  false
+            stateless: true
+            anonymous: true
+
         api:
             pattern:   ^/api/v1.0/*
             fos_oauth: true

@@ -23,6 +23,8 @@ class UserLog
     const LOG_TYPE_BLOCK_USER_PASSWORD = 3;
     const LOG_TYPE_UPDATE_PROFILE      = 4;
     const LOG_TYPE_RESET_PASSWORD      = 5;
+    const LOG_TYPE_INVITATION          = 6;
+    const LOG_TYPE_ACCEPT_INVITATION   = 7;
 
     /**
      * @var int
@@ -37,6 +39,12 @@ class UserLog
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
+     * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     */
+    private $space;
 
     /**
      * @var int
@@ -74,6 +82,22 @@ class UserLog
     public function setUser($user): void
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSpace()
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param mixed $space
+     */
+    public function setSpace($space): void
+    {
+        $this->space = $space;
     }
 
     /**

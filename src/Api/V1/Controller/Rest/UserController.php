@@ -22,9 +22,12 @@ class UserController extends BaseController
 {
     /**
      * @Method("GET")
-     * @Route("/space/{spaceId}/user", name="user_list")
+     * @Route("/space/{spaceId}/user", name="user_list", requirements={"spaceId"="\d+"})
+     *
+     * @param $spaceId
+     * @return JsonResponse
      */
-    public function listAction()
+    public function listAction($spaceId)
     {
         $users = $this->em->getRepository(User::class)->findAll();
 
@@ -53,6 +56,107 @@ class UserController extends BaseController
             ['user' => $user],
             ['api_user__info']
         );
+    }
+
+    /**
+     * This function is used to reset password
+     *
+     * @Method("POST")
+     * @Route("/space/{spaceId}/user/invite", name="user_invite", requirements={"spaceId"="\d+"})
+     *
+     * @param $spaceId
+     * @param UserService $userService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function inviteAction($spaceId, UserService $userService, Request $request)
+    {
+        try {
+            $this->normalizeJson($request);
+
+            $userService->invite(
+                $spaceId,
+                $request->get('email'),
+                $request->get('roleId')
+            );
+
+            $response = $this->respondSuccess(
+                'Invitation sent to email address, please check email.',
+                Response::HTTP_CREATED
+            );
+        } catch (\Throwable $e) {
+            $response = $this->respondError($e->getMessage(), $e->getCode());
+        }
+
+        return $response;
+    }
+
+    /**
+     * This function is used to reset password
+     *
+     * @Method("POST")
+     * @Route("/space/{spaceId}/accept/{roleId}", name="user_accept", requirements={"spaceId"="\d+", "roleId"="\d+"})
+     *
+     * @param $spaceId
+     * @param $roleId
+     * @param UserService $userService
+     * @return JsonResponse
+     */
+    public function acceptInvitationAction($spaceId, $roleId, UserService $userService)
+    {
+        try {
+            $userService->acceptInvitation($spaceId, $roleId);
+
+            $response = $this->respondSuccess(
+                'Invitation successfully accepted',
+                Response::HTTP_CREATED
+            );
+        } catch (\Throwable $e) {
+            $response = $this->respondError($e->getMessage(), $e->getCode());
+        }
+
+        return $response;
+    }
+
+    /**
+     * This function is used to reset password
+     *
+     * @Method("POST")
+     * @Route("/space/{spaceId}/complete/{roleId}", name="user_complete", requirements={"spaceId"="\d+", "roleId"="\d+"})
+     *
+     * @param $spaceId
+     * @param $roleId
+     * @param UserService $userService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function completeInvitationAction($spaceId, $roleId, UserService $userService, Request $request)
+    {
+        try {
+            $this->normalizeJson($request);
+
+            $userService->completeInvitation(
+                $spaceId,
+                $roleId,
+                [
+                    'firstName'  => $request->get('firstName'),
+                    'lastName'   => $request->get('lastName'),
+                    'password'   => $request->get('password'),
+                    'rePassword' => $request->get('rePassword'),
+                    'token'      => $request->get('token'),
+                    'email'      => $request->get('email'),
+                ]
+            );
+
+            $response = $this->respondSuccess(
+                'Invitation successfully accepted',
+                Response::HTTP_CREATED
+            );
+        } catch (\Throwable $e) {
+            $response = $this->respondError($e->getMessage(), $e->getCode());
+        }
+
+        return $response;
     }
 
     /**
