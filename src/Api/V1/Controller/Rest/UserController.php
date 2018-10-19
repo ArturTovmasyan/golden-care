@@ -1,14 +1,13 @@
 <?php
 namespace App\Api\V1\Controller\Rest;
 
+use App\Api\V1\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Service\UserService;
 use App\Entity\User;
-use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -16,32 +15,45 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class UserController
  * @package App\Api\V1\Controller\Rest
  * @Route("/api/v1.0")
- * @Permission({"PERMISSION_USER"})
  */
 class UserController extends BaseController
 {
     /**
      * @Method("GET")
      * @Route("/space/{spaceId}/user", name="user_list", requirements={"spaceId"="\d+"})
+     * @Permission({"PERMISSION_USER"})
      *
-     * @param $spaceId
+     * @param Request $request
      * @return JsonResponse
      */
-    public function listAction($spaceId)
+    public function listAction(Request $request)
     {
-        $users = $this->em->getRepository(User::class)->findAll();
+        try {
+            $space = $request->get('space');
 
-        return $this->respondSuccess(
-            '',
-            Response::HTTP_OK,
-            ['users' => $users],
-            ['api_user__list']
-        );
+            if (is_null($space)) {
+                throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+            }
+
+            $users = $this->em->getRepository(User::class)->findUsersBySpace($space);
+
+            $response = $this->respondSuccess(
+                '',
+                Response::HTTP_OK,
+                ['users' => $users],
+                ['api_space__user_list']
+            );
+        } catch (\Throwable $e) {
+            $response = $this->respondError($e->getMessage(), $e->getCode());
+        }
+
+        return $response;
     }
 
     /**
      * @Method("GET")
      * @Route("/user/{id}", name="user_info", requirements={"id"="\d+"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param $id
      * @return JsonResponse
@@ -63,6 +75,7 @@ class UserController extends BaseController
      *
      * @Method("POST")
      * @Route("/space/{spaceId}/user/invite", name="user_invite", requirements={"spaceId"="\d+"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param $spaceId
      * @param UserService $userService
@@ -92,20 +105,20 @@ class UserController extends BaseController
     }
 
     /**
-     * This function is used to reset password
+     * This function is used to accept space invitation
      *
      * @Method("POST")
-     * @Route("/space/{spaceId}/accept/{roleId}", name="user_accept", requirements={"spaceId"="\d+", "roleId"="\d+"})
+     * @Route("/space/{spaceId}/accept", name="user_accept", requirements={"spaceId"="\d+"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param $spaceId
-     * @param $roleId
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function acceptInvitationAction($spaceId, $roleId, UserService $userService)
+    public function acceptInvitationAction($spaceId, UserService $userService)
     {
         try {
-            $userService->acceptInvitation($spaceId, $roleId);
+            $userService->acceptInvitation($spaceId);
 
             $response = $this->respondSuccess(
                 'Invitation successfully accepted',
@@ -119,25 +132,50 @@ class UserController extends BaseController
     }
 
     /**
+     * This function is used to reset space invitation
+     *
+     * @Method("POST")
+     * @Route("/space/{spaceId}/reject", name="user_reject", requirements={"spaceId"="\d+"})
+     * @Permission({"PERMISSION_USER"})
+     *
+     * @param $spaceId
+     * @param UserService $userService
+     * @return JsonResponse
+     */
+    public function rejectInvitationAction($spaceId, UserService $userService)
+    {
+        try {
+            $userService->rejectInvitation($spaceId);
+
+            $response = $this->respondSuccess(
+                'Invitation successfully rejected',
+                Response::HTTP_CREATED
+            );
+        } catch (\Throwable $e) {
+            $response = $this->respondError($e->getMessage(), $e->getCode());
+        }
+
+        return $response;
+    }
+
+    /**
      * This function is used to reset password
      *
      * @Method("POST")
-     * @Route("/space/{spaceId}/complete/{roleId}", name="user_complete", requirements={"spaceId"="\d+", "roleId"="\d+"})
+     * @Route("/space/{spaceId}/complete", name="user_complete", requirements={"spaceId"="\d+"})
      *
      * @param $spaceId
-     * @param $roleId
      * @param UserService $userService
      * @param Request $request
      * @return JsonResponse
      */
-    public function completeInvitationAction($spaceId, $roleId, UserService $userService, Request $request)
+    public function completeInvitationAction($spaceId, UserService $userService, Request $request)
     {
         try {
             $this->normalizeJson($request);
 
             $userService->completeInvitation(
                 $spaceId,
-                $roleId,
                 [
                     'firstName'  => $request->get('firstName'),
                     'lastName'   => $request->get('lastName'),
@@ -164,6 +202,7 @@ class UserController extends BaseController
      *
      * @Method("PUT")
      * @Route("/user/reset-password/{id}", name="user_reset_password", requirements={"id"="\d+"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param $id
      * @param UserService $userService

@@ -9,10 +9,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="space_user_role")
- * @ORM\Entity(repositoryClass="App\Repository\SpaceUserRoleRepository")
+ * @ORM\Table(name="space_user")
+ * @ORM\Entity(repositoryClass="App\Repository\SpaceUserRepository")
  */
-class SpaceUserRole
+class SpaceUser
 {
     /**
      * @var int
@@ -35,10 +35,15 @@ class SpaceUserRole
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Role", cascade={"persist"})
-     * @ORM\JoinColumn(name="role_id", referencedColumnName="id", nullable=false)
+     * @var string|null
+     * @ORM\Column(name="confirmation_token", type="string", nullable=true)
      */
-    private $role;
+    protected $confirmationToken;
+
+    /**
+     * @ORM\Column(name="status", type="integer", nullable=true, options={"default" = 0})
+     */
+    private $status;
 
     /**
      * @return int
@@ -89,18 +94,58 @@ class SpaceUserRole
     }
 
     /**
-     * @return \App\Entity\Role
+     * @return null|string
      */
-    public function getRole()
+    public function getConfirmationToken()
     {
-        return $this->role;
+        return $this->confirmationToken;
     }
 
     /**
-     * @param mixed $role
+     * @return null|string
      */
-    public function setRole(\App\Entity\Role $role): void
+    public function cleanConfirmationToken()
     {
-        $this->role = $role;
+        $this->confirmationToken = '';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccepted()
+    {
+        return $this->status == \App\Model\SpaceUserRole::STATUS_ACCEPTED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInvited()
+    {
+        return $this->status == \App\Model\SpaceUserRole::STATUS_INVITED;
+    }
+
+    /**
+     * Generate confirmation token for complete invitation or forgot password
+     */
+    public function generateConfirmationToken()
+    {
+        $this->confirmationToken = hash('sha256', $this->getUser()->getEmail() . rand(1, 5000) . time());
     }
 }

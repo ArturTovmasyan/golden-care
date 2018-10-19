@@ -7,13 +7,14 @@ use App\Api\V1\Service\Exception\IncorrectRepeatPasswordException;
 use App\Api\V1\Service\Exception\InvalidConfirmationTokenException;
 use App\Api\V1\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Service\Exception\SpaceNotFoundException;
-use App\Api\V1\Service\Exception\SpaceUserRoleNotFoundException;
+use App\Api\V1\Service\Exception\SpaceUserNotFoundException;
 use App\Api\V1\Service\Exception\SystemErrorException;
 use App\Api\V1\Service\Exception\UserAlreadyJoinedException;
 use App\Api\V1\Service\Exception\UserNotFoundException;
 use App\Api\V1\Service\Exception\ValidationException;
 use App\Entity\Role;
 use App\Entity\Space;
+use App\Entity\SpaceUser;
 use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use App\Entity\UserLog;
@@ -188,7 +189,14 @@ class UserService
 
             // create space
             $space = new Space();
+            $space->setOwner($user);
             $this->em->persist($space);
+
+            // connect user to space
+            $spaceUser = new SpaceUser();
+            $spaceUser->setSpace($space);
+            $spaceUser->setUser($user);
+            $spaceUser->setStatus(\App\Model\SpaceUser::STATUS_ACCEPTED);
 
             // create space user roles
             if ($defaultRoleForSpace) {
@@ -386,38 +394,48 @@ class UserService
                 $this->em->persist($user);
             }
 
-            /** @var SpaceUserRole $spaceUserRole|null **/
-            $spaceUserRole = $this->em
-                ->getRepository(SpaceUserRole::class)
+            /** @var SpaceUser $spaceUser|null **/
+            $spaceUser = $this->em
+                ->getRepository(SpaceUser::class)
                 ->findOneBy(
                     [
                         'space' => $space,
                         'user'  => $user,
-                        'role'  => $role,
                     ]
                 );
 
-            if (!is_null($spaceUserRole) && $spaceUserRole->isAccepted()) {
+            if (!is_null($spaceUser) && $spaceUser->isAccepted()) {
                 throw new UserAlreadyJoinedException();
             }
 
-            // create space-user-role relation if not exist
-            if (is_null($spaceUserRole)) {
-                $spaceUserRole = new SpaceUserRole();
-                $spaceUserRole->setUser($user);
-                $spaceUserRole->setRole($role);
-                $spaceUserRole->setSpace($space);
-                $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_INVITED);
+            // create space user relation if not exist
+            if (is_null($spaceUser)) {
+                $spaceUser = new SpaceUser();
+                $spaceUser->setUser($user);
+                $spaceUser->setSpace($space);
+                $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_INVITED);
 
                 if (!$user->isCompleted()) {
-                    $spaceUserRole->generateConfirmationToken();
+                    $spaceUser->generateConfirmationToken();
                 }
 
-                $this->em->persist($spaceUserRole);
+                $this->em->persist($spaceUser);
+
+                // create space user default roles
+                /** @var Role $defaultRoleForSpace **/
+                $defaultRoleForSpace = $this->em->getRepository(Role::class)->getSpaceDefaultRole();
+
+                if ($defaultRoleForSpace) {
+                    $spaceUserRole = new SpaceUserRole();
+                    $spaceUserRole->setUser($user);
+                    $spaceUserRole->setRole($defaultRoleForSpace);
+                    $spaceUserRole->setSpace($space);
+                    $this->em->persist($spaceUserRole);
+                }
             }
 
             // send email to customer
-            if (!$spaceUserRole->isAccepted()) {
+            if (!$spaceUser->isAccepted()) {
                 $joinUrl = false;
 
                 if (!$user->isCompleted()) {
@@ -451,10 +469,9 @@ class UserService
 
     /**
      * @param $spaceId
-     * @param $roleId
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function acceptInvitation($spaceId, $roleId)
+    public function acceptInvitation($spaceId)
     {
         /**
          * @var User $user
@@ -463,7 +480,6 @@ class UserService
          */
         $user  = $this->security->getToken()->getUser();
         $space = $this->em->getRepository(Space::class)->find($spaceId);
-        $role  = $this->em->getRepository(Role::class)->find($roleId);
 
         if (is_null($space)) {
             throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
@@ -473,38 +489,33 @@ class UserService
             throw new UserNotFoundException('User haven\'t completed account');
         }
 
-        if (is_null($role)) {
-            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
-        }
-
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var SpaceUserRole $spaceUserRole|null **/
-            $spaceUserRole = $this->em
-                ->getRepository(SpaceUserRole::class)
+            /** @var SpaceUser $spaceUser|null **/
+            $spaceUser = $this->em
+                ->getRepository(SpaceUser::class)
                 ->findOneBy(
                     [
                         'space' => $space,
                         'user'  => $user,
-                        'role'  => $role,
                     ]
                 );
 
-            if (is_null($spaceUserRole)) {
-                throw new SpaceUserRoleNotFoundException();
+            if (is_null($spaceUser)) {
+                throw new SpaceUserNotFoundException();
             }
 
-            if ($spaceUserRole->isAccepted()) {
+            if ($spaceUser->isAccepted()) {
                 throw new UserAlreadyJoinedException();
             }
 
-            if (!empty($spaceUserRole->getConfirmationToken())) {
+            if (!empty($spaceUser->getConfirmationToken())) {
                 throw new UserNotFoundException('User haven\'t completed account, please check email for confirmation account.');
             }
 
-            $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
-            $this->em->persist($spaceUserRole);
+            $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
+            $this->em->persist($spaceUser);
 
             // create log
             $log = new UserLog();
@@ -529,20 +540,97 @@ class UserService
 
     /**
      * @param $spaceId
-     * @param $roleId
-     * @param $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function completeInvitation($spaceId, $roleId, $params)
+    public function rejectInvitation($spaceId)
     {
         /**
          * @var User $user
          * @var Space $space|null
          * @var Role $role|null
          */
+        $user  = $this->security->getToken()->getUser();
+        $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+        if (is_null($space)) {
+            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$user->isCompleted()) {
+            throw new UserNotFoundException('User haven\'t completed account');
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var SpaceUser $spaceUser|null **/
+            $spaceUser = $this->em
+                ->getRepository(SpaceUser::class)
+                ->findOneBy(
+                    [
+                        'space' => $space,
+                        'user'  => $user,
+                    ]
+                );
+
+            if (is_null($spaceUser)) {
+                throw new SpaceUserNotFoundException();
+            }
+
+            if ($spaceUser->isAccepted()) {
+                throw new UserAlreadyJoinedException();
+            }
+
+            $this->em->remove($spaceUser);
+
+            // remove all roles
+            $spaceUserRoles = $this->em
+                ->getRepository(SpaceUserRole::class)
+                ->findBy(
+                    [
+                        'space' => $space,
+                        'user'  => $user,
+                    ]
+                );
+
+            foreach ($spaceUserRoles as $spaceUserRole) {
+                $this->em->remove($spaceUserRole);
+            }
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser($user);
+            $log->setSpace($space);
+            $log->setType(UserLog::LOG_TYPE_REJECT_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf("User %s (%s) reject invitation for space", $user->getFullName(), $user->getUsername()));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException|\RuntimeException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * @param $spaceId
+     * @param $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function completeInvitation($spaceId, $params)
+    {
+        /**
+         * @var User $user
+         * @var Space $space|null
+         */
         $user  = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
         $space = $this->em->getRepository(Space::class)->find($spaceId);
-        $role  = $this->em->getRepository(Role::class)->find($roleId);
 
         if (is_null($user)) {
             throw new UserNotFoundException(sprintf('User with email %s not found', $params['email']), Response::HTTP_BAD_REQUEST);
@@ -552,40 +640,35 @@ class UserService
             throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
         }
 
-        if (is_null($role)) {
-            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
-        }
-
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var SpaceUserRole $spaceUserRole|null **/
-            $spaceUserRole = $this->em
-                ->getRepository(SpaceUserRole::class)
+            /** @var SpaceUser $spaceUser|null **/
+            $spaceUser = $this->em
+                ->getRepository(SpaceUser::class)
                 ->findOneBy(
                     [
                         'space' => $space,
                         'user'  => $user,
-                        'role'  => $role,
                     ]
                 );
 
-            if (is_null($spaceUserRole)) {
-                throw new SpaceUserRoleNotFoundException();
+            if (is_null($spaceUser)) {
+                throw new SpaceUserNotFoundException();
             }
 
-            if ($spaceUserRole->isAccepted()) {
+            if ($spaceUser->isAccepted()) {
                 throw new UserAlreadyJoinedException();
             }
 
-            if (empty($params['token']) || $params['token'] != $spaceUserRole->getConfirmationToken()) {
+            if (empty($params['token']) || $params['token'] != $spaceUser->getConfirmationToken()) {
                 throw new InvalidConfirmationTokenException();
             }
 
-            // update spaceUserRole
-            $spaceUserRole->cleanConfirmationToken();
-            $spaceUserRole->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
-            $this->em->persist($spaceUserRole);
+            // update spaceUser
+            $spaceUser->cleanConfirmationToken();
+            $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
+            $this->em->persist($spaceUser);
 
             // update user if not completed
             if (!$user->isCompleted()) {

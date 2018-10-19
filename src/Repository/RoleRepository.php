@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Space;
+use App\Entity\SpaceUserRole;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class RoleRepository
@@ -30,5 +32,25 @@ class RoleRepository extends EntityRepository
         }
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param $space
+     * @return mixed
+     */
+    public function findRolesBySpace(Space $space)
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin(
+                SpaceUserRole::class,
+                'sur',
+                Join::WITH,
+                'sur.role = r'
+            )
+            ->where('sur.space = :space')
+            ->setParameter('space', $space)
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -2,7 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Space;
+use App\Entity\SpaceUser;
+use App\Entity\SpaceUserRole;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * Class UserRepository
@@ -23,5 +29,26 @@ class UserRepository extends EntityRepository
             ->setParameter('email', $username)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param $space
+     * @return mixed
+     */
+    public function findUsersBySpace(Space $space)
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin(
+                SpaceUser::class,
+                'su',
+                Join::WITH,
+                'su.user = u'
+            )
+            ->where('su.space = :space AND su.status = :status')
+            ->setParameter('space', $space)
+            ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
+            ->groupBy('u.id')
+            ->getQuery()
+            ->getResult();
     }
 }

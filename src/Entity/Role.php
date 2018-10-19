@@ -17,14 +17,14 @@ class Role
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_user__list"})
+     * @Groups({"api_space__role_list"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"api_user__list"})
+     * @Groups({"api_space__role_list"})
      */
     private $name;
 
@@ -42,6 +42,7 @@ class Role
     /**
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
+     * @Groups({"api_space__role_list"})
      */
     protected $default;
 
@@ -50,6 +51,11 @@ class Role
      * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
      */
     protected $spaceDefault;
+
+    /**
+     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="role")
+     */
+    protected $spaceUserRoles;
 
     /**
      * @return int

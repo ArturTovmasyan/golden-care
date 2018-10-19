@@ -5,7 +5,7 @@ namespace App\Api\V1\Service\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class SpaceUserRoleNotFoundException extends \RuntimeException
+class DuplicateSpaceUserRoleException extends \RuntimeException
 {
     /**
      * SpaceUserRoleNotFoundException constructor.
@@ -14,7 +14,7 @@ class SpaceUserRoleNotFoundException extends \RuntimeException
      * @param Throwable|null $previous
      */
     public function __construct(
-        string $message = 'Invalid user role for space',
+        string $message = 'User already have role in space',
         int $code = Response::HTTP_BAD_REQUEST,
         Throwable $previous = null
     ) {

@@ -31,14 +31,14 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
      */
     private $first_name;
@@ -46,7 +46,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
      */
     private $last_name;
@@ -54,7 +54,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete", "api_user__complete"})
      */
     private $username;
@@ -74,7 +74,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
      * @Assert\Email(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
      */
@@ -83,7 +83,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
      * @Assert\Regex(
      *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
@@ -95,21 +95,21 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      */
     private $enabled;
 
     /**
      * @var bool
      * @ORM\Column(name="completed", type="boolean")
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      */
     private $completed;
 
     /**
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
-     * @Groups({"api_user__info", "api_user__list"})
+     * @Groups({"api_user__info", "api_space__user_list"})
      * @Assert\NotBlank(groups={"api_user__signup", "api_user__invite", "api_user__complete"})
      */
     protected $lastActivityAt;
@@ -154,6 +154,11 @@ class User implements UserInterface
      * @var array
      */
     private $roles = [];
+
+    /**
+     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="user")
+     */
+    private $spaceUserRoles;
 
     /**
      * @see \Serializable::serialize()

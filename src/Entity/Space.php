@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\Persistence\Entity\TimeAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +15,8 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Space
 {
+    use TimeAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")

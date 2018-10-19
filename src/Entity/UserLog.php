@@ -25,6 +25,7 @@ class UserLog
     const LOG_TYPE_RESET_PASSWORD      = 5;
     const LOG_TYPE_INVITATION          = 6;
     const LOG_TYPE_ACCEPT_INVITATION   = 7;
+    const LOG_TYPE_REJECT_INVITATION   = 8;
 
     /**
      * @var int
