@@ -9,7 +9,7 @@ class DuplicateUserException extends \RuntimeException
     /**
      * @var string
      */
-    public $message = 'User with this email address already exist';
+    public $message = 'User with this email address or username already exist';
 
     /**
      * @var int

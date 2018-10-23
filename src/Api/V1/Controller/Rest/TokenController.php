@@ -90,10 +90,10 @@ class TokenController extends BaseController
      *         "refresh_token": "OTQ0NjDhmMzNiNzUwdsdsmExNWY0MDcxYmJiNmM1ZWYdsxYTBhNmZiZGYzMmRhODdkNDRhNWE3OWU1MzNhOA"
      *     }
      * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 404 Not Found
+     *     HTTP/1.1 400 Bad Request
      *     {
-     *          "status": 401,
-     *          "message": "Invalid username and password combination"
+     *          "error": "invalid_grant",
+     *          "error_description": "Invalid username and password combination"
      *     }
      *
      * @param Request $request

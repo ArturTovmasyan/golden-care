@@ -57,12 +57,6 @@ class SecurityController extends BaseController
      *         "re_password": "PASSWORD"
      *     }
      *
-     * @apiSuccess {String} access_token   The access token of client
-     * @apiSuccess {Int}    expires_in     Expired date for access token
-     * @apiSuccess {String} token_type     The token type
-     * @apiSuccess {String} scope          The available scopes
-     * @apiSuccess {String} refresh_token  The refresh token of client
-     *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
      *     {}
@@ -77,8 +71,7 @@ class SecurityController extends BaseController
      *          ]
      *     }
      *
-     * @Method("POST")
-     * @Route("/signup", name="security_signup")
+     * @Route("/signup", name="security_signup", methods={"POST"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -90,14 +83,15 @@ class SecurityController extends BaseController
             $this->normalizeJson($request);
             $userService->signup(
                 [
-                    'firstName'  => $request->get('first_name'),
-                    'lastName'   => $request->get('last_name'),
-                    'email'      => $request->get('email'),
-                    'password'   => $request->get('password'),
-                    'rePassword' => $request->get('re_password')
+                    'first_name'  => $request->get('first_name'),
+                    'last_name'   => $request->get('last_name'),
+                    'email'       => $request->get('email'),
+                    'password'    => $request->get('password'),
+                    're_password' => $request->get('re_password')
                 ]
             );
             $response = $this->respondSuccess(
+                '',
                 Response::HTTP_CREATED
             );
         } catch (ValidationException $e) {
@@ -136,11 +130,10 @@ class SecurityController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "message": "New password must be different from last password"
+     *          "error": "New password must be different from last password"
      *     }
      *
-     * @Method("PUT")
-     * @Route("/change-password", name="security_change_password")
+     * @Route("/change-password", name="security_change_password", methods={"PUT"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -196,11 +189,10 @@ class SecurityController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "message": "User by email test@example.com not found"
+     *          "error": "User by email test@example.com not found"
      *     }
      *
-     * @Method("POST")
-     * @Route("/forgot-password", name="security_forgot_password")
+     * @Route("/forgot-password", name="security_forgot_password", methods={"POST"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -251,16 +243,15 @@ class SecurityController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
      *     {
-     *          "message": "New password is not confirmed."
+     *          "message": "New password is confirmed."
      *     }
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "message": "User by hash ddasdsadft%453543543 not found"
+     *          "error": "User by hash ddasdsadft%453543543 not found"
      *     }
      *
-     * @Method("PUT")
-     * @Route("/confirm-password", name="security_confirm_password")
+     * @Route("/confirm-password", name="security_confirm_password", methods={"PUT"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -278,7 +269,7 @@ class SecurityController extends BaseController
                 ]
             );
             $response = $this->respondSuccess(
-                'New password is not confirmed.',
+                'New password is confirmed.',
                 Response::HTTP_CREATED
             );
         } catch (ValidationException $e) {

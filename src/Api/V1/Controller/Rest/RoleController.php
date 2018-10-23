@@ -66,8 +66,7 @@ class RoleController extends BaseController
                 }
      *     }
      *
-     * @Method("GET")
-     * @Route("/space/{spaceId}/role", name="space_role_list", requirements={"spaceId"="\d+"})
+     * @Route("/space/{spaceId}/role", name="space_role_list", requirements={"spaceId"="\d+"}, methods={"GET"})
      *
      * @param Request $request
      * @return JsonResponse
@@ -120,8 +119,7 @@ class RoleController extends BaseController
      *          "error": "Invalid user access for space"
      *     }
      *
-     * @Method("POST")
-     * @Route("/space/{spaceId}/role/{roleId}/user/{userId}", name="space_add_role_to_user", requirements={"spaceId"="\d+", "roleId"="\d+", "userId"="\d+"})
+     * @Route("/space/{spaceId}/role/{roleId}/user/{userId}", name="space_add_role_to_user", requirements={"spaceId"="\d+", "roleId"="\d+", "userId"="\d+"}, methods={"POST"})
      *
      * @param $roleId
      * @param $userId
@@ -156,6 +154,7 @@ class RoleController extends BaseController
             $roleService->addRole($space, $role, $user);
 
             $response = $this->respondSuccess(
+                '',
                 Response::HTTP_CREATED
             );
         } catch (\Throwable $e) {
@@ -189,8 +188,7 @@ class RoleController extends BaseController
      *          "error": "Invalid user access for space"
      *     }
      *
-     * @Method("DELETE")
-     * @Route("/space/{spaceId}/role/{roleId}/user/{userId}", name="space_delete_role_from_user", requirements={"spaceId"="\d+", "roleId"="\d+", "userId"="\d+"})
+     * @Route("/space/{spaceId}/role/{roleId}/user/{userId}", name="space_delete_role_from_user", requirements={"spaceId"="\d+", "roleId"="\d+", "userId"="\d+"}, methods={"DELETE"})
      *
      * @param $roleId
      * @param $userId
@@ -225,6 +223,7 @@ class RoleController extends BaseController
             $roleService->removeRole($space, $role, $user);
 
             $response = $this->respondSuccess(
+                '',
                 Response::HTTP_NO_CONTENT
             );
         } catch (\Throwable $e) {

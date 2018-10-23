@@ -55,18 +55,18 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
      * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete", "api_user__complete"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__signup", "api_user__complete", "api_user__complete"})
      */
     private $username;
 
     /**
      * @var string
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__complete"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__complete"})
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"}
+     *     groups={"api_user__add", "api_user__signup", "api_user__complete"}
      * )
      */
     private $password;
@@ -75,8 +75,8 @@ class User implements UserInterface
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
-     * @Assert\Email(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__invite"})
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__signup", "api_user__invite"})
+     * @Assert\Email(groups={"api_user__add", "api_user__signup", "api_user__invite"})
      */
     private $email;
 
@@ -95,6 +95,7 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
+     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
      * @Groups({"api_user__info", "api_space__user_list"})
      */
     private $enabled;

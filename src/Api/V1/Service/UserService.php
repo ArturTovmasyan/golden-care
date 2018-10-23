@@ -186,7 +186,6 @@ class UserService
 
             // create space
             $space = new Space();
-            $space->setOwner($user);
             $this->em->persist($space);
 
             // connect user to space
@@ -212,6 +211,120 @@ class UserService
             $log->setLevel(Log::LOG_LEVEL_LOW);
             $log->setMessage(sprintf("User %s (%s) registered in ", $user->getFullName(), $user->getUsername()));
             $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * Add User
+     *
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function addUser(array $params)
+    {
+        /** @var User $user */
+        $user = $this->em->getRepository(User::class)->findUserByUsernameOrEmail($params['username'], $params['email']);
+
+        if ($user) {
+            throw new DuplicateUserException();
+        }
+
+        if ($params['password'] !== $params['re_password']) {
+            throw new IncorrectRepeatPasswordException();
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            // create user
+            $user = new User();
+            $user->setFirstName($params['first_name']);
+            $user->setLastName($params['last_name']);
+            $user->setUsername($params['username']);
+            $user->setEmail($params['email']);
+            $user->setLastActivityAt(new \DateTime());
+            $user->setPhone($params['phone']);
+            $user->setEnabled((bool) $params['enabled']);
+            $user->setCompleted(true);
+
+            // encode password
+            $encoded = $this->encoder->encodePassword($user, $params['password']);
+            $user->setPassword($encoded);
+
+            // validate user
+            $validationErrors = $this->validator->validate($user, null, ["api_user__add"]);
+            $errors           = [];
+
+            if ($validationErrors->count() > 0) {
+                foreach ($validationErrors as $error) {
+                    $errors[$error->getPropertyPath()] = $error->getMessage();
+                }
+
+                throw new ValidationException($errors);
+            }
+
+            $this->em->persist($user);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
+        }
+    }
+
+    /**
+     * Edit User
+     *
+     * @param $id
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function editUser($id, array $params)
+    {
+        /** @var User $user */
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (is_null($user)) {
+            throw new UserNotFoundException();
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            // edit user
+            $user->setFirstName($params['first_name']);
+            $user->setLastName($params['last_name']);
+            $user->setLastActivityAt(new \DateTime());
+            $user->setPhone($params['phone']);
+            $user->setEnabled((bool) $params['enabled']);
+            $user->setCompleted(true);
+
+            // validate user
+            $validationErrors = $this->validator->validate($user, null, ["api_user__edit"]);
+            $errors           = [];
+
+            if ($validationErrors->count() > 0) {
+                foreach ($validationErrors as $error) {
+                    $errors[$error->getPropertyPath()] = $error->getMessage();
+                }
+
+                throw new ValidationException($errors);
+            }
+
+            $this->em->persist($user);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -279,10 +392,7 @@ class UserService
         $user = $this->em->getRepository(User::class)->findOneByEmail($email);
 
         if (is_null($user)) {
-            throw new UserNotFoundException(
-                sprintf("User by email %s not found", $email),
-                Response::HTTP_BAD_REQUEST
-            );
+            return;
         }
 
         try {
