@@ -205,6 +205,7 @@ class UserController extends BaseController
      *     }
      *
      * @Route("/user", name="user_add", methods={"PUT"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -279,6 +280,7 @@ class UserController extends BaseController
      *     }
      *
      * @Route("/user/{id}", name="user_edit", requirements={"id"="\d+"}, methods={"POST"})
+     * @Permission({"PERMISSION_USER"})
      *
      * @param $id
      * @param Request $request

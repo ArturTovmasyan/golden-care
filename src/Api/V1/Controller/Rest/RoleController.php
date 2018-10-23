@@ -56,14 +56,14 @@ class RoleController extends BaseController
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-                    "roles": [
-                        {
-                            "id": 1,
-                            "name": "Administrator",
-                            "default": false
-                        }
-                    ]
-                }
+     *              "roles": [
+     *                  {
+     *                      "id": 1,
+     *                      "name": "Administrator",
+     *                      "default": false
+     *                  }
+     *              ]
+     *          }
      *     }
      *
      * @Route("/space/{spaceId}/role", name="space_role_list", requirements={"spaceId"="\d+"}, methods={"GET"})

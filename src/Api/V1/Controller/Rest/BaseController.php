@@ -97,7 +97,7 @@ class BaseController extends Controller
             $responseData['details'] = $data;
         }
 
-        return new JsonResponse($responseData, $httpStatus ?: Response::HTTP_UNAUTHORIZED, $headers, false);
+        return new JsonResponse($responseData, $httpStatus ?: Response::HTTP_INTERNAL_SERVER_ERROR, $headers, false);
     }
 
     /**
