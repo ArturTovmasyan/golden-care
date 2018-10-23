@@ -14,6 +14,23 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\OAuthServerBundle\Controller\TokenController as BaseController;
 
+/**
+ * @IgnoreAnnotation("api")
+ * @IgnoreAnnotation("apiVersion")
+ * @IgnoreAnnotation("apiName")
+ * @IgnoreAnnotation("apiGroup")
+ * @IgnoreAnnotation("apiDescription")
+ * @IgnoreAnnotation("apiHeader")
+ * @IgnoreAnnotation("apiSuccess")
+ * @IgnoreAnnotation("apiSuccessExample")
+ * @IgnoreAnnotation("apiParam")
+ * @IgnoreAnnotation("apiParamExample")
+ * @IgnoreAnnotation("apiErrorExample")
+ * @IgnoreAnnotation("apiPermission")
+ *
+ * Class TokenController
+ * @package App\Api\V1\Controller\Rest
+ */
 class TokenController extends BaseController
 {
     /**
@@ -33,6 +50,52 @@ class TokenController extends BaseController
     }
 
     /**
+     * @api {post} /oauth/v2/token Authorization
+     * @apiVersion 1.0.0
+     * @apiName Authorization
+     * @apiGroup User
+     * @apiPermission none
+     * @apiDescription This function is used to authorize user
+     *
+     * @apiHeader {String} Content-Type  application/json
+     *
+     * @apiParam {String} username      The unique username of the user
+     * @apiParam {String} password      The password of the user
+     * @apiParam {Int}    client_id     The client identifier of the user
+     * @apiParam {String} client_secret The client secret of the user
+     * @apiParam {String} grant_type    The grand_type for authorization
+     *
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *         "username": "test",
+     *         "password": "CLIENT_PASSWORD",
+     *         "client_id": "CLIENT_ID",
+     *         "client_secret": "CLIENT_SECRET",
+     *         "grant_type": "password"
+     *     }
+     *
+     * @apiSuccess {String} access_token   The access token of client
+     * @apiSuccess {Int}    expires_in     Expired date for access token
+     * @apiSuccess {String} token_type     The token type
+     * @apiSuccess {String} scope          The available scopes
+     * @apiSuccess {String} refresh_token  The refresh token of client
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *         "access_token": "YmE5YjY4MWZhNWU2MzZkM2Q2MDRhYzYVjZDZiOTMzOGFkN2ZdsmZDc4NzEzODJmZTgxNjM4NDM4MWQxZDUwOQ",
+     *         "expires_in": 604800,
+     *         "token_type": "bearer",
+     *         "scope": "user",
+     *         "refresh_token": "OTQ0NjDhmMzNiNzUwdsdsmExNWY0MDcxYmJiNmM1ZWYdsxYTBhNmZiZGYzMmRhODdkNDRhNWE3OWU1MzNhOA"
+     *     }
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *          "status": 401,
+     *          "message": "Invalid username and password combination"
+     *     }
+     *
      * @param Request $request
      * @return Response
      */

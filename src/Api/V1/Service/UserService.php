@@ -106,10 +106,7 @@ class UserService
         $user = $this->em->getRepository(User::class)->find($id);
 
         if (is_null($user)) {
-            throw new UserNotFoundException(
-                sprintf("User by id %d not found", $id),
-                Response::HTTP_BAD_REQUEST
-            );
+            return;
         }
 
         try {
@@ -149,7 +146,7 @@ class UserService
             throw new DuplicateUserException();
         }
 
-        if ($params['password'] !== $params['rePassword']) {
+        if ($params['password'] !== $params['re_password']) {
             throw new IncorrectRepeatPasswordException();
         }
 
@@ -161,9 +158,9 @@ class UserService
 
             // create user
             $user = new User();
-            $user->setFirstName($params['firstName']);
-            $user->setLastName($params['lastName']);
-            $user->setUsername(strtolower($params['firstName']) . time());
+            $user->setFirstName($params['first_name']);
+            $user->setLastName($params['last_name']);
+            $user->setUsername(strtolower($params['last_name']) . time());
             $user->setEmail($params['email']);
             $user->setLastActivityAt(new \DateTime());
             $user->setEnabled(true);
@@ -242,13 +239,13 @@ class UserService
             ]);
         }
 
-        if ($params['newPassword'] !== $params['confirmPassword']) {
+        if ($params['new_password'] !== $params['re_new_password']) {
             throw new ValidationException([
                 'password' => 'New password is not confirmed'
             ]);
         }
 
-        if ($params['newPassword'] == $params['password']) {
+        if ($params['new_password'] == $params['password']) {
             throw new ValidationException([
                 'password' => 'New password must be different from last password'
             ]);
@@ -257,7 +254,7 @@ class UserService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $encoded = $this->encoder->encodePassword($user, $params['newPassword']);
+            $encoded = $this->encoder->encodePassword($user, $params['new_password']);
             $user->setPassword($encoded);
 
             $this->em->persist($user);
@@ -322,7 +319,7 @@ class UserService
             );
         }
 
-        if ($params['newPassword'] !== $params['confirmPassword']) {
+        if ($params['new_password'] !== $params['re_password']) {
             throw new ValidationException([
                 'password' => 'New password is not confirmed.'
             ]);
@@ -672,9 +669,9 @@ class UserService
 
             // update user if not completed
             if (!$user->isCompleted()) {
-                $user->setFirstName($params['firstName']);
-                $user->setLastName($params['lastName']);
-                $user->setUsername(strtolower($params['firstName']) . time());
+                $user->setFirstName($params['first_name']);
+                $user->setLastName($params['last_name']);
+                $user->setUsername(strtolower($params['first_name']) . time());
                 $user->setLastActivityAt(new \DateTime());
                 $user->setEnabled(true);
                 $user->setCompleted(true);

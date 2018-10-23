@@ -5,6 +5,7 @@ namespace App\EventListener;
 use App\Annotation\Permission;
 use App\Entity\Space;
 use App\Entity\User;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
