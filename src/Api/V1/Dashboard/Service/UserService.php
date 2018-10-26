@@ -1,17 +1,19 @@
 <?php
-namespace App\Api\V1\Service;
+namespace App\Api\V1\Dashboard\Service;
 
-
-use App\Api\V1\Service\Exception\DuplicateUserException;
+use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\DifferentPasswordException;
+use App\Api\V1\Common\Service\Exception\InvalidPasswordException;
+use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Exception\SystemErrorException;
+use App\Api\V1\Common\Service\Exception\UserAlreadyJoinedException;
+use App\Api\V1\Common\Service\Exception\SpaceUserNotFoundException;
+use App\Api\V1\Common\Service\Exception\UserHaventConfirmationTokenException;
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
+use App\Api\V1\Common\Service\Exception\DuplicateUserException;
 use App\Api\V1\Service\Exception\IncorrectRepeatPasswordException;
 use App\Api\V1\Service\Exception\InvalidConfirmationTokenException;
-use App\Api\V1\Service\Exception\RoleNotFoundException;
-use App\Api\V1\Service\Exception\SpaceNotFoundException;
-use App\Api\V1\Service\Exception\SpaceUserNotFoundException;
-use App\Api\V1\Service\Exception\SystemErrorException;
-use App\Api\V1\Service\Exception\UserAlreadyJoinedException;
-use App\Api\V1\Service\Exception\UserNotFoundException;
-use App\Api\V1\Service\Exception\ValidationException;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUser;
@@ -19,118 +21,13 @@ use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use App\Entity\UserLog;
 use App\Model\Log;
-use App\Util\Mailer;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class UserService
  * @package App\Api\V1\Service
  */
-class UserService
+class UserService extends BaseService
 {
-    use ControllerTrait;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    protected $encoder;
-
-    /**
-     * @var Mailer
-     */
-    protected $mailer;
-
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
-
-    /**
-     * @var Security
-     */
-    protected $security;
-
-    /**
-     * UserService constructor.
-     * @param EntityManagerInterface $em
-     * @param UserPasswordEncoderInterface $encoder
-     * @param Mailer $mailer
-     * @param ValidatorInterface $validator
-     * @param Security $security
-     */
-    public function __construct(
-        EntityManagerInterface $em,
-        UserPasswordEncoderInterface $encoder,
-        Mailer $mailer,
-        ValidatorInterface $validator,
-        Security $security
-    ) {
-        $this->em        = $em;
-        $this->encoder   = $encoder;
-        $this->mailer    = $mailer;
-        $this->validator = $validator;
-        $this->security  = $security;
-    }
-
-    /**
-     * @param int $length
-     * @return bool|string
-     */
-    private function generatePassword($length = 8)
-    {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
-
-        return substr(str_shuffle( $chars ), 0, $length);
-    }
-
-    /**
-     * Reset User password
-     *
-     * @param $id
-     * @return void
-     * @throws UserNotFoundException|\Doctrine\DBAL\ConnectionException
-     */
-    public function resetPassword($id)
-    {
-        /** @var User $user **/
-        $user = $this->em->getRepository(User::class)->find($id);
-
-        if (is_null($user)) {
-            return;
-        }
-
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            $password = $this->generatePassword(8);
-            $encoded  = $this->encoder->encodePassword($user, $password);
-
-            $user->setPlainPassword($password);
-            $user->setPassword($encoded);
-            $this->em->persist($user);
-            $this->em->flush();
-
-            // send email for new credentials
-            $this->mailer->notifyCredentials($user);
-
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw new SystemErrorException();
-        }
-    }
-
     /**
      * Register User
      *
@@ -139,22 +36,18 @@ class UserService
      */
     public function signup(array $params)
     {
-        /** @var User $user */
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
-
-        if ($user) {
-            throw new DuplicateUserException();
-        }
-
-        if ($params['password'] !== $params['re_password']) {
-            throw new IncorrectRepeatPasswordException();
-        }
-
-        /** @var Role $defaultRoleForSpace **/
-        $defaultRoleForSpace = $this->em->getRepository(Role::class)->getSpaceDefaultRole();
-
         try {
             $this->em->getConnection()->beginTransaction();
+
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
+
+            if ($user) {
+                throw new DuplicateUserException();
+            }
+
+            /** @var Role $defaultRoleForSpace **/
+            $defaultRoleForSpace = $this->em->getRepository(Role::class)->getSpaceDefaultRole();
 
             // create user
             $user = new User();
@@ -171,17 +64,7 @@ class UserService
             $user->setPassword($encoded);
 
             // validate user
-            $validationErrors = $this->validator->validate($user, null, ["api_user__signup"]);
-            $errors           = [];
-
-            if ($validationErrors->count() > 0) {
-                foreach ($validationErrors as $error) {
-                    $errors[$error->getPropertyPath()] = $error->getMessage();
-                }
-
-                throw new ValidationException($errors);
-            }
-
+            $this->validate($user, null, ["api_dashboard_account_signup"]);
             $this->em->persist($user);
 
             // create space
@@ -214,126 +97,10 @@ class UserService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ValidationException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
-        }
-    }
-
-    /**
-     * Add User
-     *
-     * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
-     */
-    public function addUser(array $params)
-    {
-        /** @var User $user */
-        $user = $this->em->getRepository(User::class)->findUserByUsernameOrEmail($params['username'], $params['email']);
-
-        if ($user) {
-            throw new DuplicateUserException();
-        }
-
-        if ($params['password'] !== $params['re_password']) {
-            throw new IncorrectRepeatPasswordException();
-        }
-
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            // create user
-            $user = new User();
-            $user->setFirstName($params['first_name']);
-            $user->setLastName($params['last_name']);
-            $user->setUsername($params['username']);
-            $user->setEmail($params['email']);
-            $user->setLastActivityAt(new \DateTime());
-            $user->setPhone($params['phone']);
-            $user->setEnabled((bool) $params['enabled']);
-            $user->setCompleted(true);
-
-            // encode password
-            $encoded = $this->encoder->encodePassword($user, $params['password']);
-            $user->setPassword($encoded);
-
-            // validate user
-            $validationErrors = $this->validator->validate($user, null, ["api_user__add"]);
-            $errors           = [];
-
-            if ($validationErrors->count() > 0) {
-                foreach ($validationErrors as $error) {
-                    $errors[$error->getPropertyPath()] = $error->getMessage();
-                }
-
-                throw new ValidationException($errors);
-            }
-
-            $this->em->persist($user);
-
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (ValidationException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw new SystemErrorException();
-        }
-    }
-
-    /**
-     * Edit User
-     *
-     * @param $id
-     * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
-     */
-    public function editUser($id, array $params)
-    {
-        /** @var User $user */
-        $user = $this->em->getRepository(User::class)->find($id);
-
-        if (is_null($user)) {
-            throw new UserNotFoundException();
-        }
-
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            // edit user
-            $user->setFirstName($params['first_name']);
-            $user->setLastName($params['last_name']);
-            $user->setLastActivityAt(new \DateTime());
-            $user->setPhone($params['phone']);
-            $user->setEnabled((bool) $params['enabled']);
-            $user->setCompleted(true);
-
-            // validate user
-            $validationErrors = $this->validator->validate($user, null, ["api_user__edit"]);
-            $errors           = [];
-
-            if ($validationErrors->count() > 0) {
-                foreach ($validationErrors as $error) {
-                    $errors[$error->getPropertyPath()] = $error->getMessage();
-                }
-
-                throw new ValidationException($errors);
-            }
-
-            $this->em->persist($user);
-
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (ValidationException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw new SystemErrorException();
         }
     }
 
@@ -347,21 +114,11 @@ class UserService
     public function changePassword(User $user, array $params)
     {
         if (!$this->encoder->isPasswordValid($user, $params['password'])) {
-            throw new ValidationException([
-                'password' => 'Invalid current password'
-            ]);
-        }
-
-        if ($params['new_password'] !== $params['re_new_password']) {
-            throw new ValidationException([
-                'password' => 'New password is not confirmed'
-            ]);
+            throw new InvalidPasswordException();
         }
 
         if ($params['new_password'] == $params['password']) {
-            throw new ValidationException([
-                'password' => 'New password must be different from last password'
-            ]);
+            throw new DifferentPasswordException();
         }
 
         try {
@@ -377,7 +134,7 @@ class UserService
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 
@@ -409,7 +166,7 @@ class UserService
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 
@@ -423,21 +180,16 @@ class UserService
         $user = $this->em->getRepository(User::class)->findOneBy(['passwordRecoveryHash' => $params['hash']]);
 
         if (is_null($user)) {
-            throw new UserNotFoundException(
-                sprintf("User by hash %s not found", $params['hash']),
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        if ($params['new_password'] !== $params['re_password']) {
-            throw new ValidationException([
-                'password' => 'New password is not confirmed.'
-            ]);
+            throw new UserNotFoundException();
         }
 
         try {
             $this->em->getConnection()->beginTransaction();
 
+            // encode password
+            $encoded = $this->encoder->encodePassword($user, $params['password']);
+
+            $user->setPassword($encoded);
             $user->setPasswordRecoveryHash();
             $this->em->persist($user);
             $this->em->flush();
@@ -468,11 +220,11 @@ class UserService
         $role  = $this->em->getRepository(Role::class)->find($roleId);
 
         if (is_null($space)) {
-            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+            throw new SpaceNotFoundException();
         }
 
         if (is_null($role)) {
-            throw new RoleNotFoundException(Response::HTTP_BAD_REQUEST);
+            throw new RoleNotFoundException();
         }
 
         try {
@@ -487,16 +239,7 @@ class UserService
                 $user->setCompleted(false);
 
                 // validate user
-                $validationErrors = $this->validator->validate($user, null, ["api_user__invite"]);
-                $errors           = [];
-
-                if ($validationErrors->count() > 0) {
-                    foreach ($validationErrors as $error) {
-                        $errors[$error->getPropertyPath()] = $error->getMessage();
-                    }
-
-                    throw new ValidationException($errors);
-                }
+                $this->validate($user, null, ["api_admin_user_invite"]);
 
                 $this->em->persist($user);
             }
@@ -565,12 +308,10 @@ class UserService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ValidationException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 
@@ -589,11 +330,11 @@ class UserService
         $space = $this->em->getRepository(Space::class)->find($spaceId);
 
         if (is_null($space)) {
-            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+            throw new SpaceNotFoundException();
         }
 
         if (!$user->isCompleted()) {
-            throw new UserNotFoundException('User haven\'t completed account');
+            throw new UserNotFoundException();
         }
 
         try {
@@ -618,7 +359,7 @@ class UserService
             }
 
             if (!empty($spaceUser->getConfirmationToken())) {
-                throw new UserNotFoundException('User haven\'t completed account, please check email for confirmation account.');
+                throw new UserHaventConfirmationTokenException();
             }
 
             $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
@@ -636,12 +377,10 @@ class UserService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ValidationException|\RuntimeException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 
@@ -660,11 +399,11 @@ class UserService
         $space = $this->em->getRepository(Space::class)->find($spaceId);
 
         if (is_null($space)) {
-            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+            throw new SpaceNotFoundException();
         }
 
         if (!$user->isCompleted()) {
-            throw new UserNotFoundException('User haven\'t completed account');
+            throw new UserNotFoundException();
         }
 
         try {
@@ -716,12 +455,10 @@ class UserService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ValidationException|\RuntimeException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 
@@ -740,11 +477,11 @@ class UserService
         $space = $this->em->getRepository(Space::class)->find($spaceId);
 
         if (is_null($user)) {
-            throw new UserNotFoundException(sprintf('User with email %s not found', $params['email']), Response::HTTP_BAD_REQUEST);
+            throw new UserNotFoundException();
         }
 
         if (is_null($space)) {
-            throw new SpaceNotFoundException(Response::HTTP_BAD_REQUEST);
+            throw new SpaceNotFoundException();
         }
 
         try {
@@ -791,16 +528,7 @@ class UserService
                 $user->setPassword($encoded);
 
                 // validate user
-                $validationErrors = $this->validator->validate($user, null, ["api_user__complete"]);
-                $errors           = [];
-
-                if ($validationErrors->count() > 0) {
-                    foreach ($validationErrors as $error) {
-                        $errors[$error->getPropertyPath()] = $error->getMessage();
-                    }
-
-                    throw new ValidationException($errors);
-                }
+                $this->validate($user, null, ["api_dashboard_space_user_complete"]);
 
                 $this->em->persist($user);
             }
@@ -817,12 +545,10 @@ class UserService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ValidationException|\RuntimeException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
-            throw new SystemErrorException();
+            throw $e;
         }
     }
 }

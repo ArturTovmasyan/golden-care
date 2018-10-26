@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Model\Persistence\Entity\HumanTrait;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
@@ -14,8 +13,8 @@ use JMS\Serializer\Annotation\Groups;
 /**
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_user__add", "api_user__edit"})
- * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_user__add", "api_user__edit"})
+ * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_admin_user_add"})
+ * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})
  */
 class User implements UserInterface
 {
@@ -31,42 +30,42 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_user__info", "api_space__user_list"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $first_name;
 
     /**
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit", "api_user__signup", "api_user__complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $last_name;
 
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__signup", "api_user__complete", "api_user__complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup"})
      */
     private $username;
 
     /**
      * @var string
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__complete"})
+     * @Assert\NotBlank(groups={"api_admin_user_add"})
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_user__add", "api_user__signup", "api_user__complete"}
+     *     groups={"api_admin_user_add", "api_dashboard_account_signup"}
      * )
      */
     private $password;
@@ -74,20 +73,20 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__signup", "api_user__invite"})
-     * @Assert\Email(groups={"api_user__add", "api_user__signup", "api_user__invite"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
+     * @Assert\Email(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
     private $email;
 
     /**
      * @var string
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
      * @Assert\Regex(
      *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
-     *     groups={"api_user__add", "api_user__edit"}
+     *     groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"}
      * )
      */
     private $phone;
@@ -95,23 +94,23 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
-     * @Assert\NotBlank(groups={"api_user__add", "api_user__edit"})
-     * @Groups({"api_user__info", "api_space__user_list"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
      */
     private $enabled;
 
     /**
      * @var bool
      * @ORM\Column(name="completed", type="boolean")
-     * @Groups({"api_user__info", "api_space__user_list"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
      */
     private $completed;
 
     /**
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
-     * @Groups({"api_user__info", "api_space__user_list"})
-     * @Assert\NotBlank(groups={"api_user__signup", "api_user__invite", "api_user__complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
     protected $lastActivityAt;
 

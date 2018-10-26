@@ -1,5 +1,15 @@
-app_annotations:
-    resource: '../src/Api/V1/Controller/Rest/'
+common_annotations:
+    resource: '../src/Api/V1/Common/Controller/'
+    type:     annotation
+    defaults: {_format: json}
+
+admin_annotations:
+    resource: '../src/Api/V1/Admin/Controller/'
+    type:     annotation
+    defaults: {_format: json}
+
+dashboard_annotations:
+    resource: '../src/Api/V1/Dashboard/Controller/'
     type:     annotation
     defaults: {_format: json}
 

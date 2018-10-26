@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table(name="role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
+ * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit"})
  */
 class Role
 {
@@ -17,45 +20,58 @@ class Role
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_space__role_list"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
      */
     private $id;
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"api_space__role_list"})
+     * @ORM\Column(name="name", type="string", unique=true, length=255)
+     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
      * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     * @Groups({"api_admin_role_list"})
      */
     private $space;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Permission", mappedBy="role")
+     * @ORM\ManyToMany(targetEntity="Permission", mappedBy="roles", cascade={"persist", "remove"})
      */
     protected $permissions;
 
     /**
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
-     * @Groups({"api_space__role_list"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
      */
     protected $default;
 
     /**
      * @var bool
      * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
      */
     protected $spaceDefault;
 
     /**
-     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="role")
+     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="role", cascade={"persist", "remove"})
      */
     protected $spaceUserRoles;
+
+    /**
+     * Permission constructor.
+     */
+    public function __construct()
+    {
+        $this->permissions = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -114,11 +130,33 @@ class Role
     }
 
     /**
-     * @param mixed $permissions
+     * @param Permission[] $permissions
      */
     public function setPermissions($permissions): void
     {
         $this->permissions = $permissions;
+
+        foreach ($permissions as $permission) {
+            $permission->addRole($this);
+        }
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function addPermission($permission)
+    {
+        $permission->addRole($this);
+        $this->permissions[] = $permission;
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function removePermission(Permission $permission)
+    {
+        $this->permissions->removeElement($permission);
+        $permission->removeRole($this);
     }
 
     /**
@@ -151,5 +189,13 @@ class Role
     public function setSpaceDefault(bool $spaceDefault): void
     {
         $this->spaceDefault = $spaceDefault;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSpaceUserRoles()
+    {
+        return $this->spaceUserRoles;
     }
 }

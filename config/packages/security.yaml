@@ -17,21 +17,15 @@ security:
             security:  false
             stateless: true
 
-        api_security_change_password:
-            pattern:   ^/api/v1.0/security/change-password
-            fos_oauth: true
-            stateless: true
-            anonymous: true
-
-        api_security:
-            pattern:   ^/api/v1.0/security
+        api_account:
+            pattern:   ^/api/v1.0/dashboard/account
             fos_oauth: false
             security:  false
             stateless: true
             anonymous: true
 
         api_user_complete_invitation:
-            pattern:   ^/api/v1.0/space/([0-9]+)/complete
+            pattern:   ^/api/v1.0/dashboard/space/([0-9]+)/user/complete
             fos_oauth: false
             security:  false
             stateless: true

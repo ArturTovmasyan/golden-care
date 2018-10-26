@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Api\V1\Controller\Rest;
+namespace App\Api\V1\Common\Controller;
 
-use App\Api\V1\Controller\Rest\Exception\UserBlockedException;
-use App\Api\V1\Service\UserService;
+use App\Api\V1\Common\Controller\Exception\UserBlockedException;
 use App\Entity\User;
 use App\Entity\UserLog;
 use App\Model\Log;
@@ -53,7 +52,7 @@ class TokenController extends BaseController
      * @api {post} /oauth/v2/token Authorization
      * @apiVersion 1.0.0
      * @apiName Authorization
-     * @apiGroup User
+     * @apiGroup Common
      * @apiPermission none
      * @apiDescription This function is used to authorize user
      *
@@ -92,8 +91,8 @@ class TokenController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "error": "invalid_grant",
-     *          "error_description": "Invalid username and password combination"
+     *          "code": 401,
+     *          "error": "Invalid username and password combination"
      *     }
      *
      * @param Request $request
@@ -133,27 +132,29 @@ class TokenController extends BaseController
                 $log->setMessage(sprintf("User %s (%s)  logged in.", $user->getFullName(), $user->getUsername()));
                 $log->setLevel(Log::LOG_LEVEL_LOW);
                 $this->em->persist($log);
-            } elseif ($user) {
-                $user->incrementPasswordMistakes();
+            } else {
+                if ($user) {
+                    $user->incrementPasswordMistakes();
 
-                if ($user->getPasswordMistakes() == User::PASSWORD_MISTAKES_LIMIT) {
-                    // block user
-                    $blockedTime = new \DateTime();
-                    $blockedTime->modify('+15 minutes');
-                    $user->setPasswordBlockedAt($blockedTime);
+                    if ($user->getPasswordMistakes() == User::PASSWORD_MISTAKES_LIMIT) {
+                        // block user
+                        $blockedTime = new \DateTime();
+                        $blockedTime->modify('+15 minutes');
+                        $user->setPasswordBlockedAt($blockedTime);
 
-                    // create log
-                    $log = new UserLog();
-                    $log->setCreatedAt(new \DateTime());
-                    $log->setUser($user);
-                    $log->setType(UserLog::LOG_TYPE_BLOCK_USER_PASSWORD);
-                    $log->setLevel(Log::LOG_LEVEL_HIGH);
-                    $log->setMessage(sprintf("User %s (%s) blocked for bad password request.", $user->getFullName(), $user->getUsername()));
-                    $this->em->persist($log);
+                        // create log
+                        $log = new UserLog();
+                        $log->setCreatedAt(new \DateTime());
+                        $log->setUser($user);
+                        $log->setType(UserLog::LOG_TYPE_BLOCK_USER_PASSWORD);
+                        $log->setLevel(Log::LOG_LEVEL_HIGH);
+                        $log->setMessage(sprintf("User %s (%s) blocked for bad password request.", $user->getFullName(), $user->getUsername()));
+                        $this->em->persist($log);
+                    }
+
+                    $this->em->persist($user);
                 }
 
-                $this->em->persist($user);
-            } else {
                 $content = json_decode($response->getContent(), 1);
                 $message = '';
 
@@ -169,8 +170,8 @@ class TokenController extends BaseController
             return $response;
         } catch (\Throwable $e) {
             return new JsonResponse([
-                'status'  => Response::HTTP_UNAUTHORIZED,
-                'message' => $e->getMessage()
+                'code'  => Response::HTTP_UNAUTHORIZED,
+                'error' => $e->getMessage()
             ], Response::HTTP_UNAUTHORIZED);
         }
     }

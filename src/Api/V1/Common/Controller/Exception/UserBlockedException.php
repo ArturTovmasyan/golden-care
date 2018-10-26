@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controller\Rest\Exception;
+namespace App\Api\V1\Common\Controller\Exception;
 
 class UserBlockedException extends \RuntimeException
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Api\V1\Service\Exception;
+namespace App\Api\V1\Common\Service\Exception;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Api\V1\Common\Model\ResponseCode;
 
 class ValidationException extends \RuntimeException
 {
@@ -17,10 +17,8 @@ class ValidationException extends \RuntimeException
      */
     public function __construct(array $errors)
     {
-        $message      = 'Validation error';
         $this->errors = $errors;
-
-        parent::__construct($message, Response::HTTP_BAD_REQUEST);
+        parent::__construct('', ResponseCode::VALIDATION_ERROR_EXCEPTION);
     }
 
     /**

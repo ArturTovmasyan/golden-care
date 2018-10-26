@@ -137,8 +137,8 @@ class ActivityListener
             } catch (\Throwable $e) {
                 $response = new JsonResponse(
                     [
-                        'status'  => Response::HTTP_UNAUTHORIZED,
-                        'message' => 'Permission denied for this resource'
+                        'code'  => Response::HTTP_UNAUTHORIZED,
+                        'error' => 'Permission denied for this resource'
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );

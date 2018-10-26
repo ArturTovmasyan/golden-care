@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -27,18 +28,26 @@ class Permission
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="permission")
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="permissions", cascade={"persist", "remove"})
      * @ORM\JoinTable(
      *      name="role_permission",
      *      joinColumns={
-     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
      */
-    private $roles = [];
+    private $roles;
+
+    /**
+     * Permission constructor.
+     */
+    public function __construct()
+    {
+        $this->roles = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -86,5 +95,21 @@ class Permission
     public function setRoles($roles): void
     {
         $this->roles = $roles;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole($role)
+    {
+        $this->roles->add($role);
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function removeRole(Role $role)
+    {
+        $this->roles->removeElement($role);
     }
 }

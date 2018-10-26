@@ -24,12 +24,20 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\Api\V1\Controller\Rest\:
-        resource: '../src/Api/V1/Controller/Rest'
+    App\Api\V1\Common\Controller\:
+        resource: '../src/Api/V1/Common/Controller'
+        tags: ['controller.api_service_arguments']
+
+    App\Api\V1\Admin\Controller\:
+        resource: '../src/Api/V1/Admin/Controller'
+        tags: ['controller.api_service_arguments']
+
+    App\Api\V1\Dashboard\Controller\:
+        resource: '../src/Api/V1/Dashboard/Controller'
         tags: ['controller.api_service_arguments']
 
     fos_oauth_server.controller.token:
-        class: App\Api\V1\Controller\Rest\TokenController
+        class: App\Api\V1\Common\Controller\TokenController
         arguments: ['@fos_oauth_server.server', '@doctrine.orm.entity_manager']
         public: true
         autowire: true

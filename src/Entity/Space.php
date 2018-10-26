@@ -26,6 +26,11 @@ class Space
     private $id;
 
     /**
+     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
+     */
+    protected $spaceUserRoles;
+
+    /**
      * @return int
      */
     public function getId(): int

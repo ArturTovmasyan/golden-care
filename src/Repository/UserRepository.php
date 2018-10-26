@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Entity\Space;
 use App\Entity\SpaceUser;
 use App\Entity\SpaceUserRole;
@@ -66,5 +67,31 @@ class UserRepository extends EntityRepository
             ->groupBy('u.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space $space
+     * @param $userId
+     * @return mixed
+     */
+    public function findUserBySpace(Space $space, $userId)
+    {
+        try {
+            return $this->createQueryBuilder('u')
+                ->innerJoin(
+                    SpaceUser::class,
+                    'su',
+                    Join::WITH,
+                    'su.user = u'
+                )
+                ->where('su.space = :space AND su.status = :status AND u.id = :user_id')
+                ->setParameter('space', $space)
+                ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
+                ->setParameter('user_id', $userId)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
+            throw new UserNotFoundException();
+        }
     }
 }
