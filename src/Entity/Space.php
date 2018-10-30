@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -31,6 +32,14 @@ class Space
     protected $spaceUserRoles;
 
     /**
+     * Space constructor.
+     */
+    public function __construct()
+    {
+        $this->spaceUserRoles = new ArrayCollection();
+    }
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -44,5 +53,13 @@ class Space
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSpaceUserRoles()
+    {
+        return $this->spaceUserRoles;
     }
 }

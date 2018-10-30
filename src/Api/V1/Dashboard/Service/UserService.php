@@ -105,6 +105,33 @@ class UserService extends BaseService
     }
 
     /**
+     * @param User $user
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function editUser(User $user, array $params): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $user->setFirstName($params['first_name']);
+            $user->setLastName($params['last_name']);
+            $user->setEnabled((bool) $params['enabled']);
+            $user->setPhone($params['phone']);
+
+            $this->validate($user, null, ["api_dashboard_user_edit"]);
+
+            $this->em->persist($user);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * Change User Password
      *
      * @param User $user

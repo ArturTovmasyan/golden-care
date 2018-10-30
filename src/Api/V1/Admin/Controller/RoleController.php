@@ -51,16 +51,14 @@ class RoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "roles": [
-     *                  {
-     *                      "id": 1,
-     *                      "name": "Administrator",
-     *                      "default": false,
-     *                      "space_default": false,
-     *                  }
-     *              ]
-     *          }
+     *          "data": [
+     *              {
+     *                  "id": 1,
+     *                  "name": "Administrator",
+     *                  "default": false,
+     *                  "space_default": false,
+     *              }
+     *          ]
      *     }
      *
      * @Route("", name="api_admin_role_list", methods={"GET"})
@@ -74,7 +72,7 @@ class RoleController extends BaseController
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                ['roles' => $roles],
+                $roles,
                 ['api_admin_role_list']
             );
         } catch (\Throwable $e) {
@@ -96,9 +94,18 @@ class RoleController extends BaseController
      *
      * @apiParam {String}  name          The name of the role
      * @apiParam {Int}     space_id      The unique identifier of the space
-     * @apiParam {Boolean} default       The global status of the role
-     * @apiParam {Boolean} space_default The space status of the role
+     * @apiParam {Int}     default       The global status of the role
+     * @apiParam {Int}     space_default The space status of the role
+     * @apiParam {Array}   permissions[] The parameter ids
      *
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *         "name": "User Management",
+     *         "space_id": 1,
+     *         "default": true,
+     *         "space_default": 0,
+     *         "permissions": [1, 2]
+     *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
      *     {}
@@ -157,7 +164,7 @@ class RoleController extends BaseController
      * @apiParam {Int}     id            The unique identifier of the role
      * @apiParam {String}  name          The name of the role
      * @apiParam {Int}     space_id      The unique identifier of the space
-     * @apiParam {Boolean} default       The global status of the role
+     * @apiParam {Int}     default       The global status of the role
      * @apiParam {Boolean} space_default The space status of the role
      *
      * @apiParamExample {json} Request-Example:

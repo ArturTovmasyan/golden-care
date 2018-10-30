@@ -56,19 +56,17 @@ class UserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "users": [
-     *                  {
-     *                      "id": 1,
-     *                      "first_name": "Joe",
-     *                      "last_name": "Cole",
-     *                      "username": "joe",
-     *                      "email": "joe.cole@gmail.com",
-     *                      "enabled": true,
-     *                      "completed": true,
-     *                      "last_activity_at": "2018-10-22T17:31:48+04:00"
-     *                  }
-     *              ]
+     *          "data": [
+     *              {
+     *                  "id": 1,
+     *                  "first_name": "Joe",
+     *                  "last_name": "Cole",
+     *                  "username": "joe",
+     *                  "email": "joe.cole@gmail.com",
+     *                  "enabled": true,
+     *                  "completed": true,
+     *                  "last_activity_at": "2018-10-22T17:31:48+04:00"
+     *              }
      *          }
      *     }
      *
@@ -83,7 +81,7 @@ class UserController extends BaseController
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                ['users' => $users],
+                $users,
                 ['api_admin_user_list']
             );
         } catch (\Throwable $e) {
@@ -117,17 +115,15 @@ class UserController extends BaseController
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *              "user":{
-     *                  "id": 1,
-     *                  "first_name": "Joe",
-     *                  "last_name": "Cole",
-     *                  "username": "joe",
-     *                  "email": "joe.cole@gmail.com",
-     *                  "enabled": true,
-     *                  "completed": true,
-     *                  "last_activity_at": "2018-10-22T17:31:48+04:00"
-     *              }
-     *          }
+     *              "id": 1,
+     *              "first_name": "Joe",
+     *              "last_name": "Cole",
+     *              "username": "joe",
+     *              "email": "joe.cole@gmail.com",
+     *              "enabled": true,
+     *              "completed": true,
+     *              "last_activity_at": "2018-10-22T17:31:48+04:00"
+     *           }
      *     }
      *
      * @Route("/{id}", name="api_admin_user_get", requirements={"id"="\d+"}, methods={"GET"})
@@ -147,7 +143,7 @@ class UserController extends BaseController
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                ['user' => $user],
+                $user,
                 ['api_admin_user_get']
             );
         } catch (\Throwable $e) {

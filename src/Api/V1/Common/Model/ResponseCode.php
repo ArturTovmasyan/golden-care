@@ -25,6 +25,8 @@ class ResponseCode
     const DUPLICATE_USER_EXCEPTION                 = 618;
     const NEW_PASSWORD_MUST_BE_DIFFERENT_EXCEPTION = 619;
     const INVALID_PASSWORD_EXCEPTION               = 620;
+    const USER_WITHOUT_ROLE_EXCEPTION              = 621;
+    const SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION  = 622;
 
     /**
      * @var array
@@ -45,5 +47,7 @@ class ResponseCode
         self::DUPLICATE_USER_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'User with this email address or username already exist'],
         self::NEW_PASSWORD_MUST_BE_DIFFERENT_EXCEPTION  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'New password must be different from last password'],
         self::INVALID_PASSWORD_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Old password is not valid'],
+        self::USER_WITHOUT_ROLE_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Change users related role before removal'],
+        self::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space haven\'t access to role'],
     ];
 }

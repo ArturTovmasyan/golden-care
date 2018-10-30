@@ -54,7 +54,7 @@ class UserService extends BaseService
         $user->setEnabled((bool) $params['enabled']);
         $user->setPhone($params['phone']);
 
-        $this->validate($user, null, ["api_admin_role_edit"]);
+        $this->validate($user, null, ["api_admin_user_edit"]);
 
         $this->em->persist($user);
         $this->em->flush();

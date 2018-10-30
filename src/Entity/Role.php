@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Table(name="role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit"})
+ * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
  */
 class Role
 {
@@ -28,7 +28,7 @@ class Role
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
      * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
-     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
+     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     private $name;
 
@@ -48,7 +48,7 @@ class Role
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
      * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
-     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
+     * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_dashboard_role_add", "api_admin_role_edit"})
      */
     protected $default;
 
@@ -56,7 +56,7 @@ class Role
      * @var bool
      * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
      * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
-     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
+     * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     protected $spaceDefault;
 
@@ -70,7 +70,8 @@ class Role
      */
     public function __construct()
     {
-        $this->permissions = new ArrayCollection();
+        $this->permissions    = new ArrayCollection();
+        $this->spaceUserRoles = new ArrayCollection();
     }
 
     /**

@@ -43,7 +43,7 @@ services:
         autowire: true
 
     # listener for activity
-    App\EventListener\ActivityListener:
+    App\EventListener\MainListener:
         tags:
         - { name: 'kernel.event_listener', event: 'kernel.controller', method: onCoreController }
 

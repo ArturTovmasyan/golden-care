@@ -24,12 +24,16 @@ class SpaceUserRoleService extends BaseService
     public function changeRole(Space $space, User $user, Role $role)
     {
         try {
+            /**
+             * @var SpaceUserRole $spaceUserRole
+             * @var SpaceUser     $spaceUser
+             */
             $this->em->getConnection()->beginTransaction();
 
             $spaceUser = $this->em->getRepository(SpaceUser::class)->findOneBy(
                 [
                     'space' => $space,
-                    'user' => $user,
+                    'user'  => $user,
                 ]
             );
 
@@ -40,7 +44,7 @@ class SpaceUserRoleService extends BaseService
             $spaceUserRole = $this->em->getRepository(SpaceUserRole::class)->findOneBy(
                 [
                     'space' => $space,
-                    'user' => $user,
+                    'user'  => $user,
                 ]
             );
 
@@ -56,6 +60,7 @@ class SpaceUserRoleService extends BaseService
             $this->em->persist($spaceUserRole);
 
             $this->em->flush();
+            $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 

@@ -1,9 +1,9 @@
 <?php
-namespace App\Api\V1\Admin\Service;
+namespace App\Api\V1\Dashboard\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceHaventAccessToRoleException;
 use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
 use App\Entity\Permission;
 use App\Entity\Role;
@@ -12,39 +12,28 @@ use App\Entity\SpaceUserRole;
 
 /**
  * Class RoleService
- * @package App\Api\V1\Service
+ * @package App\Api\V1\Dashboard\Service
  */
 class RoleService extends BaseService
 {
     /**
+     * @param Space $space
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addRole(array $params): void
+    public function addRole(Space $space, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
-
-            $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
-
-            if ($spaceId) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
-            }
 
             // save role
             $role = new Role();
             $role->setName($params['name'] ?? '');
             $role->setSpace($space);
-            $role->setDefault((bool) $params['default']);
+            $role->setDefault(0);
             $role->setSpaceDefault((bool) $params['space_default']);
 
-            $this->validate($role, null, ["api_admin_role_add"]);
+            $this->validate($role, null, ["api_dashboard_role_add"]);
 
             // add permissions
             $permissionIds = array_unique($params['permissions']);
@@ -66,10 +55,11 @@ class RoleService extends BaseService
 
     /**
      * @param $id
+     * @param Space $space
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editRole($id, array $params): void
+    public function editRole($id, Space $space, array $params): void
     {
         try {
             /**
@@ -84,20 +74,9 @@ class RoleService extends BaseService
                 throw new RoleNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
-
-            if ($spaceId) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
-            }
-
+            // edit role
             $role->setName($params['name'] ?? '');
             $role->setSpace($space);
-            $role->setDefault((bool) $params['default']);
             $role->setSpaceDefault((bool) $params['space_default']);
 
             // remove all role permissions
@@ -114,7 +93,7 @@ class RoleService extends BaseService
                 $role->setPermissions($permissions);
             }
 
-            $this->validate($role, null, ["api_admin_role_edit"]);
+            $this->validate($role, null, ["api_dashboard_role_edit"]);
 
             $this->em->persist($role);
             $this->em->flush();
@@ -126,12 +105,14 @@ class RoleService extends BaseService
         }
     }
 
+
     /**
      * @param $id
+     * @param Space $space
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeRole($id): void
+    public function removeRole($id, Space $space): void
     {
         try {
             /**
@@ -144,6 +125,12 @@ class RoleService extends BaseService
 
             if (is_null($role)) {
                 throw new RoleNotFoundException();
+            }
+
+            $roleSpace = $role->getSpace();
+
+            if (is_null($roleSpace) || $roleSpace->getId() != $space->getId()) {
+                throw new SpaceHaventAccessToRoleException();
             }
 
             // check related users

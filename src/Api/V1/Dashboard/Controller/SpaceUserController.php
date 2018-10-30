@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SpaceUserController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/space/{space_id}/user Get Users
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/user Get Users
      * @apiVersion 1.0.0
      * @apiName Get Users
      * @apiGroup Dashboard Space
@@ -59,19 +59,17 @@ class SpaceUserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "users": [
-     *                  {
-     *                      "id": 1,
-     *                      "first_name": "Joe",
-     *                      "last_name": "Cole",
-     *                      "username": "joe",
-     *                      "email": "joe.cole@gmail.com",
-     *                      "enabled": true,
-     *                      "completed": true,
-     *                      "last_activity_at": "2018-10-22T17:31:48+04:00"
-     *                  }
-     *              ]
+     *          "data": [
+     *              {
+     *                  "id": 1,
+     *                  "first_name": "Joe",
+     *                  "last_name": "Cole",
+     *                  "username": "joe",
+     *                  "email": "joe.cole@gmail.com",
+     *                  "enabled": true,
+     *                  "completed": true,
+     *                  "last_activity_at": "2018-10-22T17:31:48+04:00"
+     *              }
      *          }
      *     }
      * @apiErrorExample {json} Error-Response:
@@ -101,7 +99,7 @@ class SpaceUserController extends BaseController
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                ['users' => $users],
+                $users,
                 ['api_dashboard_space_user_list']
             );
         } catch (\Throwable $e) {
@@ -112,7 +110,7 @@ class SpaceUserController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/space/{space_id}/user/{id} Get User
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/user/{id} Get User
      * @apiVersion 1.0.0
      * @apiName Get User
      * @apiGroup Dashboard Space
@@ -137,16 +135,14 @@ class SpaceUserController extends BaseController
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *              "user": {
-     *                   "id": 1,
-     *                   "first_name": "Joe",
-     *                   "last_name": "Cole",
-     *                   "username": "joe",
-     *                   "email": "joe.cole@gmail.com",
-     *                   "enabled": true,
-     *                   "completed": true,
-     *                   "last_activity_at": "2018-10-22T17:31:48+04:00"
-     *              }
+     *              "id": 1,
+     *              "first_name": "Joe",
+     *              "last_name": "Cole",
+     *              "username": "joe",
+     *              "email": "joe.cole@gmail.com",
+     *              "enabled": true,
+     *              "completed": true,
+     *              "last_activity_at": "2018-10-22T17:31:48+04:00"
      *          }
      *     }
      *

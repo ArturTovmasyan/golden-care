@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,19 +24,19 @@ class SpaceUserRole
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Space", inversedBy="spaceUserRoles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Space", inversedBy="spaceUserRoles", cascade={"persist"})
      * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
      */
     private $space;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="spaceUserRoles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="spaceUserRoles", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Role", inversedBy="spaceUserRoles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Role", inversedBy="spaceUserRoles", cascade={"persist"})
      * @ORM\JoinColumn(name="role_id", referencedColumnName="id", nullable=false)
      */
     private $role;
