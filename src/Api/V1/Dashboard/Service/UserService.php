@@ -12,8 +12,6 @@ use App\Api\V1\Common\Service\Exception\SpaceUserNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserHaventConfirmationTokenException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\Exception\DuplicateUserException;
-use App\Api\V1\Service\Exception\IncorrectRepeatPasswordException;
-use App\Api\V1\Service\Exception\InvalidConfirmationTokenException;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUser;
