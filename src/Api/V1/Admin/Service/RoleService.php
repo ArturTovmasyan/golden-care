@@ -17,6 +17,14 @@ use App\Entity\SpaceUserRole;
 class RoleService extends BaseService
 {
     /**
+     * @return Role[]|array
+     */
+    public function getListing()
+    {
+        return $this->em->getRepository(Role::class)->findAll();
+    }
+
+    /**
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */

@@ -74,7 +74,7 @@ class UserRepository extends EntityRepository
      * @param $userId
      * @return mixed
      */
-    public function findUserBySpace(Space $space, $userId)
+    public function findUserBySpaceAndId(Space $space, $userId)
     {
         try {
             return $this->createQueryBuilder('u')

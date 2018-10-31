@@ -4,7 +4,6 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Admin\Service\RoleService;
-use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -62,17 +61,17 @@ class RoleController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_role_list", methods={"GET"})
+     *
+     * @param RoleService $roleService
      * @return JsonResponse
      */
-    public function listAction()
+    public function listAction(RoleService $roleService)
     {
         try {
-            $roles = $this->em->getRepository(Role::class)->findAll();
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $roles,
+                $roleService->getListing(),
                 ['api_admin_role_list']
             );
         } catch (\Throwable $e) {

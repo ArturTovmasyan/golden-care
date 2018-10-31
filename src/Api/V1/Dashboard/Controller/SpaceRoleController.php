@@ -4,6 +4,7 @@ namespace App\Api\V1\Dashboard\Controller;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Dashboard\Service\RoleService;
+use App\Api\V1\Dashboard\Service\SpaceRoleService;
 use App\Entity\Role;
 use App\Entity\Space;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,18 +70,16 @@ class SpaceRoleController extends BaseController
      * @Route("", name="api_dashboard_space_role_list", requirements={"spaceId"="\d+"}, methods={"GET"})
      *
      * @param Request $request
+     * @param SpaceRoleService $spaceRoleService
      * @return JsonResponse
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, SpaceRoleService $spaceRoleService)
     {
         try {
-            $space = $request->get('space');
-            $roles = $this->em->getRepository(Role::class)->findRolesBySpace($space);
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $roles,
+                $spaceRoleService->getListingBySpace($request->get('space')),
                 ['api_dashboard_space_role_list']
             );
         } catch (\Throwable $e) {

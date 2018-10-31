@@ -76,12 +76,10 @@ class UserController extends BaseController
     public function getAction()
     {
         try {
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $user,
+                $this->get('security.token_storage')->getToken()->getUser(),
                 ['api_dashboard_space_user_get']
             );
         } catch (\Throwable $e) {

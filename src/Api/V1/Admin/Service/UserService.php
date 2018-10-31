@@ -12,6 +12,29 @@ use App\Entity\User;
 class UserService extends BaseService
 {
     /**
+     * @return User[]|array
+     */
+    public function getListing()
+    {
+        return $this->em->getRepository(User::class)->findAll();
+    }
+
+    /**
+     * @param $id
+     * @return null|object|User
+     */
+    public function getById($id)
+    {
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (is_null($user)) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
+    }
+
+    /**
      * @param array $params
      */
     public function addUser(array $params): void

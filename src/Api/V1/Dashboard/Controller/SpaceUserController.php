@@ -2,6 +2,7 @@
 namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Dashboard\Service\SpaceUserService;
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
@@ -83,23 +84,16 @@ class SpaceUserController extends BaseController
      * @Permission({"PERMISSION_USER"})
      *
      * @param Request $request
+     * @param SpaceUserService $spaceUserService
      * @return JsonResponse
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, SpaceUserService $spaceUserService)
     {
         try {
-            $space = $request->get('space');
-
-            if (is_null($space)) {
-                throw new SpaceNotFoundException();
-            }
-
-            $users = $this->em->getRepository(User::class)->findUsersBySpace($space);
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $users,
+                $spaceUserService->getListingBySpace($request->get('space')),
                 ['api_dashboard_space_user_list']
             );
         } catch (\Throwable $e) {
@@ -151,23 +145,16 @@ class SpaceUserController extends BaseController
      *
      * @param $id
      * @param Request $request
+     * @param SpaceUserService $spaceUserService
      * @return JsonResponse
      */
-    public function getAction($id, Request $request)
+    public function getAction($id, Request $request, SpaceUserService $spaceUserService)
     {
         try {
-            $space = $request->get('space');
-
-            if (is_null($space)) {
-                throw new SpaceNotFoundException();
-            }
-
-            $user = $this->em->getRepository(User::class)->findUserBySpace($space, $id);
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                ['user' => $user],
+                $spaceUserService->getBySpaceAndId($request->get('space'), $id),
                 ['api_dashboard_space_user_get']
             );
         } catch (\Throwable $e) {

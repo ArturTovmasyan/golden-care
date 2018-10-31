@@ -71,17 +71,17 @@ class UserController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_user_list", methods={"GET"})
+     *
+     * @param UserService $userService
      * @return JsonResponse
      */
-    public function listAction()
+    public function listAction(UserService $userService)
     {
         try {
-            $users = $this->em->getRepository(User::class)->findAll();
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $users,
+                $userService->getListing(),
                 ['api_admin_user_list']
             );
         } catch (\Throwable $e) {
@@ -129,21 +129,16 @@ class UserController extends BaseController
      * @Route("/{id}", name="api_admin_user_get", requirements={"id"="\d+"}, methods={"GET"})
      *
      * @param $id
+     * @param UserService $userService
      * @return JsonResponse
      */
-    public function getAction($id)
+    public function getAction($id, UserService $userService)
     {
         try {
-            $user = $this->em->getRepository(User::class)->find($id);
-
-            if (is_null($user)) {
-                throw new UserNotFoundException();
-            }
-
             $response = $this->respondSuccess(
                 Response::HTTP_OK,
                 '',
-                $user,
+                $userService->getById($id),
                 ['api_admin_user_get']
             );
         } catch (\Throwable $e) {
