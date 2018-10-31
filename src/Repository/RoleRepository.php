@@ -24,15 +24,15 @@ class RoleRepository extends EntityRepository
             if (is_null($space)) {
                 $query = $this->createQueryBuilder('r')
                     ->where('r.spaceDefault = :spaceDefault')
-                    ->setParameter('spaceDefault', true);
+                    ->setParameter('spaceDefault', 1);
             } else {
                 $query = $this->createQueryBuilder('r')
                     ->where('(r.spaceDefault = :spaceDefault AND r.space = :space) OR (r.spaceDefault = :spaceDefault AND r.space IS NULL)')
-                    ->setParameter('spaceDefault', true)
+                    ->setParameter('spaceDefault', 1)
                     ->setParameter('space', $space);
             }
 
-            return $query->getQuery()->getOneOrNullResult();
+            return $query->getQuery()->getSingleResult();
         } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
             throw new SpaceHaventDefaultRoleException();
         }

@@ -61,18 +61,6 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(groups={"api_admin_user_add"})
-     * @Assert\Regex(
-     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_admin_user_add", "api_dashboard_account_signup"}
-     * )
-     */
-    private $password;
-
-    /**
-     * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
@@ -116,6 +104,47 @@ class User implements UserInterface
     protected $lastActivityAt;
 
     /**
+     * @var string
+     * @Assert\NotBlank(groups={"api_dashboard_user_change_password"})
+     */
+    private $oldPassword;
+
+    /**
+     * @var string
+     * @Assert\NotBlank(groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
+     * @Assert\EqualTo(
+     *     propertyPath="plainPassword",
+     *     groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"},
+     *     message="This value should be equal to password"
+     * )
+     */
+    private $confirmPassword;
+
+    /**
+     * @var string $plainPassword
+     * @Assert\NotBlank(groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
+     * @Assert\NotEqualTo(propertyPath="oldPassword", groups={"api_dashboard_user_change_password"}, message="This value should not be equal to old password")
+     * @Assert\Regex(
+     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
+     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
+     *     groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     * )
+     */
+    private $plainPassword;
+
+    /**
+     * @var string
+     * @ORM\Column(name="password", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_reset_password", "api_dashboard_user_change_password", "api_dashboard_account_signup"})
+     * @Assert\Regex(
+     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
+     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
+     *     groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     * )
+     */
+    private $password;
+
+    /**
      * @var \DateTime|null
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
      */
@@ -138,16 +167,6 @@ class User implements UserInterface
      * @ORM\Column(name="password_blocked_at", type="datetime", nullable=true)
      */
     private $passwordBlockedAt;
-
-    /**
-     * @var string $plainPassword
-     * @Assert\Regex(
-     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"add_user", "signup"}
-     * )
-     */
-    private $plainPassword;
 
     /**
      * @todo remove after investigate jms listener
@@ -280,11 +299,18 @@ class User implements UserInterface
 
     /**
      * @param string $password
-     * @return User
      */
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setConfirmPassword($password)
+    {
+        $this->confirmPassword = $password;
     }
 
     /**
@@ -456,6 +482,22 @@ class User implements UserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldPassword()
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param string $oldPassword
+     */
+    public function setOldPassword($oldPassword)
+    {
+        $this->oldPassword = $oldPassword;
     }
 
     /**

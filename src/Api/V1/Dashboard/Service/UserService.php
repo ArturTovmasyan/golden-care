@@ -60,6 +60,8 @@ class UserService extends BaseService
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
+            $user->setPlainPassword($params['password']);
+            $user->setConfirmPassword($params['re_password']);
             $user->setPassword($encoded);
 
             // validate user
@@ -143,15 +145,17 @@ class UserService extends BaseService
             throw new InvalidPasswordException();
         }
 
-        if ($params['new_password'] == $params['password']) {
-            throw new DifferentPasswordException();
-        }
-
         try {
             $this->em->getConnection()->beginTransaction();
 
             $encoded = $this->encoder->encodePassword($user, $params['new_password']);
+
+            $user->setOldPassword($params['password']);
+            $user->setPlainPassword($params['new_password']);
+            $user->setConfirmPassword($params['re_new_password']);
             $user->setPassword($encoded);
+
+            $this->validate($user, null, ["api_dashboard_user_change_password"]);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -215,9 +219,14 @@ class UserService extends BaseService
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
 
+            $user->setConfirmPassword($params['re_password']);
+            $user->setPlainPassword($params['password']);
             $user->setPassword($encoded);
             $user->setPasswordRecoveryHash();
             $this->em->persist($user);
+
+            $this->validate($user, null, ["api_dashboard_account_forgot_password_confirm_password"]);
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();

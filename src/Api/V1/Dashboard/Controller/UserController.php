@@ -3,7 +3,6 @@ namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -168,8 +167,12 @@ class UserController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "code": 619
-     *          "error": "New password must be different from last password"
+     *          "code": 619,
+     *          "error": "Validation error",
+     *          "details": {
+     *              "confirmPassword": "This value should be equal to password",
+     *              "plainPassword": "This value should not be equal to old password"
+     *          }
      *     }
      *
      * @Route("/change-password", name="api_dashboard_user_change_password", methods={"PUT"})

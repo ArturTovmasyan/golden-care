@@ -56,6 +56,8 @@ class UserService extends BaseService
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
+            $user->setConfirmPassword($params['re_password']);
+            $user->setPlainPassword($params['password']);
             $user->setPassword($encoded);
 
             $this->validate($user, null, ["api_admin_user_add"]);
@@ -128,6 +130,9 @@ class UserService extends BaseService
             $user->setPlainPassword($password);
             $user->setPassword($encoded);
             $this->em->persist($user);
+
+            $this->validate($user, null, ["api_admin_user_reset_password"]);
+
             $this->em->flush();
 
             // send email for new credentials
