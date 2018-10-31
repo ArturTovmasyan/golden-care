@@ -68,10 +68,11 @@ class UserController extends BaseController
      *
      * @Route("", name="api_admin_user_list", methods={"GET"})
      *
+     * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function listAction(UserService $userService)
+    public function listAction(Request $request, UserService $userService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -118,11 +119,12 @@ class UserController extends BaseController
      *
      * @Route("/{id}", name="api_admin_user_get", requirements={"id"="\d+"}, methods={"GET"})
      *
+     * @param Request $request
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function getAction($id, UserService $userService)
+    public function getAction(Request $request, $id, UserService $userService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -284,12 +286,13 @@ class UserController extends BaseController
      *
      * @Route("/{id}/reset-password", requirements={"id"="\d+"}, name="api_admin_user_reset_password", methods={"PUT"})
      *
+     * @param Request $request
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function resetPasswordAction($id, UserService $userService)
+    public function resetPasswordAction(Request $request, $id, UserService $userService)
     {
         $userService->resetPassword($id);
 

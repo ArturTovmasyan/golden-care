@@ -68,9 +68,10 @@ class UserController extends BaseController
      *
      * @Route("/me", name="api_dashboard_user_me", methods={"GET"})
      *
+     * @var Request $request
      * @return JsonResponse
      */
-    public function getAction()
+    public function getAction(Request $request)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

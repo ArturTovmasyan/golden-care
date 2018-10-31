@@ -20,14 +20,14 @@ class Role
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
      * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     private $name;
@@ -35,7 +35,7 @@ class Role
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
      * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
-     * @Groups({"api_admin_role_list"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get"})
      */
     private $space;
 
@@ -47,7 +47,7 @@ class Role
     /**
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_dashboard_role_add", "api_admin_role_edit"})
      */
     protected $default;
@@ -55,7 +55,7 @@ class Role
     /**
      * @var bool
      * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_role_list", "api_dashboard_space_role_list"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     protected $spaceDefault;

@@ -25,6 +25,15 @@ class RoleService extends BaseService
     }
 
     /**
+     * @param $id
+     * @return Role|null|object
+     */
+    public function getById($id)
+    {
+        return $this->em->getRepository(Role::class)->find($id);
+    }
+
+    /**
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */

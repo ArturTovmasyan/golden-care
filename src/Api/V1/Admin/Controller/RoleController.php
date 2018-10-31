@@ -62,16 +62,60 @@ class RoleController extends BaseController
      *
      * @Route("", name="api_admin_role_list", methods={"GET"})
      *
+     * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
      */
-    public function listAction(RoleService $roleService)
+    public function listAction(Request $request, RoleService $roleService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
             $roleService->getListing(),
             ['api_admin_role_list']
+        );
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/role/{id} Get Role
+     * @apiVersion 1.0.0
+     * @apiName Get Role
+     * @apiGroup Admin Role
+     * @apiDescription This function is used to get role
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the role
+     * @apiSuccess {String}  name          The Name of the role
+     * @apiSuccess {Boolean} default       The status of the role
+     * @apiSuccess {Boolean} space_default The space status of the role
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *              "id": 1,
+     *              "name": "Administrator",
+     *              "default": false,
+     *              "space_default": false,
+     *          }
+     *     }
+     *
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_get", methods={"GET"})
+     *
+     * @param Request $request
+     * @param RoleService $roleService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getAction(Request $request, RoleService $roleService, $id)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $roleService->getById($id),
+            ['api_admin_role_get']
         );
     }
 
@@ -222,13 +266,14 @@ class RoleController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_delete", methods={"DELETE"})
      *
+     * @param Request $request
      * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction($id, RoleService $roleService)
+    public function removeAction(Request $request, $id, RoleService $roleService)
     {
         $roleService->removeRole($id);
 

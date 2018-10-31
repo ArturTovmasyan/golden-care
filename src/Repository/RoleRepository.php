@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceHaventDefaultRoleException;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
@@ -50,5 +51,26 @@ class RoleRepository extends EntityRepository
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space $space
+     * @param $id
+     * @return mixed
+     */
+    public function findRolesBySpaceAndId(Space $space, $id)
+    {
+        try {
+            return $this->createQueryBuilder('r')
+                ->where('(r.space = :space AND r.id=:id) OR (r.default = :default AND r.space IS NULL AND r.id=:id)')
+                ->setParameter('space', $space)
+                ->setParameter('default', true)
+                ->setParameter('id', $id)
+                ->groupBy('r.id')
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
+            throw new RoleNotFoundException();
+        }
     }
 }

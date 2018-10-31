@@ -232,12 +232,13 @@ class SpaceUserController extends BaseController
      * @Route("/accept", name="api_dashboard_space_user_accept", requirements={"spaceId"="\d+"}, methods={"POST"})
      * @Permission({"PERMISSION_USER"})
      *
+     * @param Request $request
      * @param $spaceId
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function acceptInvitationAction($spaceId, UserService $userService)
+    public function acceptInvitationAction(Request $request, $spaceId, UserService $userService)
     {
         $userService->acceptInvitation($spaceId);
 
@@ -277,7 +278,7 @@ class SpaceUserController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function rejectInvitationAction($spaceId, UserService $userService)
+    public function rejectInvitationAction(Request $request, $spaceId, UserService $userService)
     {
         $userService->rejectInvitation($spaceId);
 

@@ -84,6 +84,53 @@ class SpaceRoleController extends BaseController
     }
 
     /**
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/role/{role_id} Get Role
+     * @apiVersion 1.0.0
+     * @apiName Get Role
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_ROLE
+     * @apiDescription This function is used to get role by space and id
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int} space_id      The unique identifier of the space
+     * @apiParam {Int} role_id       The unique identifier of the role
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the role
+     * @apiSuccess {String}  name          The Name of the role
+     * @apiSuccess {Boolean} default       The status of the role
+     * @apiSuccess {Boolean} space_default The main role of space for invitation
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *               "id": 1,
+     *               "name": "Administrator",
+     *               "default": false,
+     *               "space_default": true
+     *          }
+     *     }
+     *
+     * @Route("/{roleId}", name="api_dashboard_space_role_get", requirements={"spaceId"="\d+", "roleId"="\d+"}, methods={"GET"})
+     *
+     * @param Request $request
+     * @param $roleId
+     * @param SpaceRoleService $spaceRoleService
+     * @return JsonResponse
+     */
+    public function getAction(Request $request, $roleId, SpaceRoleService $spaceRoleService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $spaceRoleService->getBySpaceAndId($request->get('space'), $roleId),
+            ['api_dashboard_space_role_get']
+        );
+    }
+
+    /**
      * @api {post} /api/v1.0/dashboard/space/{space_id}/role Add Role
      * @apiVersion 1.0.0
      * @apiName Add Role
@@ -226,6 +273,7 @@ class SpaceRoleController extends BaseController
      *
      * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_role_delete", methods={"DELETE"})
      *
+     * @param Request $request
      * @param $id
      * @param Space $space
      * @param RoleService $roleService
@@ -233,7 +281,7 @@ class SpaceRoleController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction($id, Space $space, RoleService $roleService)
+    public function removeAction(Request $request, $id, Space $space, RoleService $roleService)
     {
         $roleService->removeRole($id, $space);
 

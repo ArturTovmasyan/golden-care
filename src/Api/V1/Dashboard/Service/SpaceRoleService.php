@@ -19,4 +19,14 @@ class SpaceRoleService extends BaseService
     {
         return $this->em->getRepository(Role::class)->findRolesBySpace($space);
     }
+
+    /**
+     * @param Space $space
+     * @param $id
+     * @return mixed
+     */
+    public function getBySpaceAndId(Space $space, $id)
+    {
+        return $this->em->getRepository(Role::class)->findRolesBySpaceAndId($space, $id);
+    }
 }
