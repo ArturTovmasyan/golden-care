@@ -134,7 +134,6 @@ class UserController extends BaseController
     public function editAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->editUser(
                 $this->get('security.token_storage')->getToken()->getUser(),
                 [
@@ -197,8 +196,6 @@ class UserController extends BaseController
     public function changePasswordAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
-
             $userService->changePassword(
                 $this->get('security.token_storage')->getToken()->getUser(),
                 [

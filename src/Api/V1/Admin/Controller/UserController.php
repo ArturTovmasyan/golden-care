@@ -200,7 +200,6 @@ class UserController extends BaseController
     public function addAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->addUser(
                 [
                     'first_name'  => $request->get('first_name'),
@@ -264,15 +263,14 @@ class UserController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_edit", methods={"POST"})
      *
-     * @param $id
      * @param Request $request
+     * @param $id
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function editAction($id, Request $request, UserService $userService)
+    public function editAction(Request $request, $id, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->editUser(
                 $id,
                 [

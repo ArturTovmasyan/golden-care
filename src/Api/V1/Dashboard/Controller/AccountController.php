@@ -77,7 +77,6 @@ class AccountController extends BaseController
     public function signupAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->signup(
                 [
                     'first_name'  => $request->get('first_name'),
@@ -129,7 +128,6 @@ class AccountController extends BaseController
     public function forgotPasswordAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->forgotPassword(
                 $request->get('email'),
                 $request->getSchemeAndHttpHost()
@@ -184,7 +182,6 @@ class AccountController extends BaseController
     public function confirmPasswordAction(Request $request, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
             $userService->confirmPassword(
                 [
                     'hash'        => $request->get('hash'),

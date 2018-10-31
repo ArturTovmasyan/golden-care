@@ -46,6 +46,7 @@ services:
     App\EventListener\MainListener:
         tags:
         - { name: 'kernel.event_listener', event: 'kernel.controller', method: onCoreController }
+        - { name: 'kernel.event_listener', event: 'kernel.response', method: onKernelResponse }
 
     FOS\OAuthServerBundle\Model\AccessTokenManagerInterface:
         alias: fos_oauth_server.access_token_manager.default

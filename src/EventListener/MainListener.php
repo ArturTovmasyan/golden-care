@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Security;
 
@@ -45,6 +46,20 @@ class MainListener
     }
 
     /**
+     * @param FilterResponseEvent $event
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        /*try {
+            $response = $event->getResponse();
+
+            return $response;
+        } catch (\Throwable $e) {
+            var_dump($e->getMessage());exit;
+        }*/
+    }
+
+    /**
      * @param FilterControllerEvent $event
      * @throws \ReflectionException
      */
@@ -54,6 +69,15 @@ class MainListener
         // Ignore any sub-request
         if ($event->getRequestType() !== HttpKernel::MASTER_REQUEST) {
             return;
+        }
+
+        // normalize json
+        if ($event->getRequest()->getMethod() != 'GET' &&
+            ($event->getRequest()->getContentType() === 'application/json' || $event->getRequest()->getContentType() === 'json') &&
+            !empty($event->getRequest()->getContent())
+        ) {
+            $content = $event->getRequest()->getContent();
+            $event->getRequest()->request->add(json_decode($content, true));
         }
 
         // Check token authentication availability
@@ -137,10 +161,10 @@ class MainListener
             } catch (\Throwable $e) {
                 $response = new JsonResponse(
                     [
-                        'code'  => Response::HTTP_UNAUTHORIZED,
+                        'code'  => Response::HTTP_FORBIDDEN,
                         'error' => 'Permission denied for this resource'
                     ],
-                    Response::HTTP_UNAUTHORIZED
+                    Response::HTTP_FORBIDDEN
                 );
 
                 $event->setController(function() use ($response) {

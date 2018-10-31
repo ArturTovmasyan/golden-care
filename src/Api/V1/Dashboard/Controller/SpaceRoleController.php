@@ -132,12 +132,8 @@ class SpaceRoleController extends BaseController
     public function addAction(Request $request, RoleService $roleService)
     {
         try {
-            $this->normalizeJson($request);
-
-            $space = $request->get('space');
-
             $roleService->addRole(
-                $space,
+                $request->get('space'),
                 [
                     'name'          => $request->get('name'),
                     'space_default' => $request->get('space_default'),
@@ -194,16 +190,15 @@ class SpaceRoleController extends BaseController
      *
      * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_role_edit", methods={"POST"})
      *
+     * @param Request $request
      * @param $id
      * @param Space $space
-     * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
      */
-    public function editAction($id, Space $space, Request $request, RoleService $roleService)
+    public function editAction(Request $request, $id, Space $space, RoleService $roleService)
     {
         try {
-            $this->normalizeJson($request);
             $roleService->editRole(
                 $id,
                 $space,

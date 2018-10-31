@@ -127,7 +127,6 @@ class RoleController extends BaseController
     public function addAction(Request $request, RoleService $roleService)
     {
         try {
-            $this->normalizeJson($request);
             $roleService->addRole(
                 [
                     'name'          => $request->get('name'),
@@ -188,15 +187,14 @@ class RoleController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_edit", methods={"POST"})
      *
-     * @param $id
      * @param Request $request
+     * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
      */
-    public function editAction($id, Request $request, RoleService $roleService)
+    public function editAction(Request $request, $id, RoleService $roleService)
     {
         try {
-            $this->normalizeJson($request);
             $roleService->editRole(
                 $id,
                 [

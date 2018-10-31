@@ -143,12 +143,12 @@ class SpaceUserController extends BaseController
      * @Route("/{id}", name="api_dashboard_space_user_get", requirements={"spaceId"="\d+", "id"="\d+"}, methods={"GET"})
      * @Permission({"PERMISSION_USER"})
      *
-     * @param $id
      * @param Request $request
+     * @param $id
      * @param SpaceUserService $spaceUserService
      * @return JsonResponse
      */
-    public function getAction($id, Request $request, SpaceUserService $spaceUserService)
+    public function getAction(Request $request, $id, SpaceUserService $spaceUserService)
     {
         try {
             $response = $this->respondSuccess(
@@ -201,16 +201,14 @@ class SpaceUserController extends BaseController
      * @Route("/invite", name="api_dashboard_space_user_invite", requirements={"spaceId"="\d+"}, methods={"POST"})
      * @Permission({"PERMISSION_USER"})
      *
+     * @param Request $request
      * @param $spaceId
      * @param UserService $userService
-     * @param Request $request
      * @return JsonResponse
      */
-    public function inviteAction($spaceId, UserService $userService, Request $request)
+    public function inviteAction(Request $request, $spaceId, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
-
             $userService->invite(
                 $spaceId,
                 $request->get('email'),
@@ -358,16 +356,14 @@ class SpaceUserController extends BaseController
      *
      * @Route("/complete", name="api_dashboard_space_user_complete", requirements={"spaceId"="\d+"}, methods={"POST"})
      *
+     * @param Request $request
      * @param $spaceId
      * @param UserService $userService
-     * @param Request $request
      * @return JsonResponse
      */
-    public function completeInvitationAction($spaceId, UserService $userService, Request $request)
+    public function completeInvitationAction(Request $request, $spaceId, UserService $userService)
     {
         try {
-            $this->normalizeJson($request);
-
             $userService->completeInvitation(
                 $spaceId,
                 [

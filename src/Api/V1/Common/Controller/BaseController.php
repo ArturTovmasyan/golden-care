@@ -107,17 +107,4 @@ class BaseController extends Controller
 
         return new JsonResponse($responseData, $headerCode, $headers, false);
     }
-
-    /**
-     * @param Request $request
-     */
-    protected function normalizeJson(Request &$request)
-    {
-        if (($request->getContentType() === 'application/json' || $request->getContentType() === 'json') &&
-            !empty($request->getContent())
-        ) {
-            $content = $request->getContent();
-            $request->request->add(json_decode($content, true));
-        }
-    }
 }

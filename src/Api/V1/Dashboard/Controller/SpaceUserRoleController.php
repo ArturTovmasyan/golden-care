@@ -67,13 +67,13 @@ class SpaceUserRoleController extends BaseController
      *
      * @Route("", name="api_dashboard_space_user_role_change", requirements={"spaceId"="\d+", "userId"="\d+", "roleId"="\d+"}, methods={"PUT"})
      *
+     * @param Request $request
      * @param $roleId
      * @param $userId
-     * @param Request $request
      * @param SpaceUserRoleService $spaceUserRoleService
      * @return JsonResponse
      */
-    public function changeAction($roleId, $userId, Request $request, SpaceUserRoleService $spaceUserRoleService)
+    public function changeAction(Request $request, $roleId, $userId, SpaceUserRoleService $spaceUserRoleService)
     {
         try {
             /**
