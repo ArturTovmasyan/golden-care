@@ -27,6 +27,7 @@ class ResponseCode
     const INVALID_PASSWORD_EXCEPTION               = 620;
     const USER_WITHOUT_ROLE_EXCEPTION              = 621;
     const SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION  = 622;
+    const INVALID_CONFIRMATION_TOKEN_EXCEPTION     = 623;
 
     /**
      * @var array
@@ -49,5 +50,6 @@ class ResponseCode
         self::INVALID_PASSWORD_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Old password is not valid'],
         self::USER_WITHOUT_ROLE_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Change users related role before removal'],
         self::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space haven\'t access to role'],
+        self::INVALID_CONFIRMATION_TOKEN_EXCEPTION      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid confirmation token'],
     ];
 }
