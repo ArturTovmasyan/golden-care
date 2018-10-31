@@ -82,29 +82,4 @@ class BaseController extends Controller
 
         return new JsonResponse($responseData, $httpStatus, $headers, true);
     }
-
-    /**
-     * @param $message
-     * @param int $code
-     * @param array $data
-     * @param array $headers
-     * @return JsonResponse
-     */
-    protected function respondError($message, $code = Response::HTTP_BAD_REQUEST, $data = [], $headers = [])
-    {
-        $responseCode    = $code ?: Response::HTTP_BAD_REQUEST;
-        $responseMessage = ResponseCode::$titles[$responseCode]['message']  ?? $message;
-        $headerCode      = ResponseCode::$titles[$responseCode]['httpCode'] ?? $responseCode;
-
-        $responseData = [
-            'code'  => $responseCode,
-            'error' => $responseMessage
-        ];
-
-        if (!empty($data)) {
-            $responseData['details'] = $data;
-        }
-
-        return new JsonResponse($responseData, $headerCode, $headers, false);
-    }
 }

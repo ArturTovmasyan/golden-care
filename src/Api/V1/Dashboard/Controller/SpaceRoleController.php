@@ -75,18 +75,12 @@ class SpaceRoleController extends BaseController
      */
     public function listAction(Request $request, SpaceRoleService $spaceRoleService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $spaceRoleService->getListingBySpace($request->get('space')),
-                ['api_dashboard_space_role_list']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $spaceRoleService->getListingBySpace($request->get('space')),
+            ['api_dashboard_space_role_list']
+        );
     }
 
     /**
@@ -128,29 +122,22 @@ class SpaceRoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function addAction(Request $request, RoleService $roleService)
     {
-        try {
-            $roleService->addRole(
-                $request->get('space'),
-                [
-                    'name'          => $request->get('name'),
-                    'space_default' => $request->get('space_default'),
-                    'permissions'   => $request->get('permissions')
-                ]
-            );
+        $roleService->addRole(
+            $request->get('space'),
+            [
+                'name'          => $request->get('name'),
+                'space_default' => $request->get('space_default'),
+                'permissions'   => $request->get('permissions')
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -195,30 +182,23 @@ class SpaceRoleController extends BaseController
      * @param Space $space
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function editAction(Request $request, $id, Space $space, RoleService $roleService)
     {
-        try {
-            $roleService->editRole(
-                $id,
-                $space,
-                [
-                    'name'          => $request->get('name'),
-                    'space_default' => $request->get('space_default'),
-                    'permissions'   => $request->get('permissions')
-                ]
-            );
+        $roleService->editRole(
+            $id,
+            $space,
+            [
+                'name'          => $request->get('name'),
+                'space_default' => $request->get('space_default'),
+                'permissions'   => $request->get('permissions')
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -250,19 +230,15 @@ class SpaceRoleController extends BaseController
      * @param Space $space
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
     public function removeAction($id, Space $space, RoleService $roleService)
     {
-        try {
-            $roleService->removeRole($id, $space);
+        $roleService->removeRole($id, $space);
 
-            $response = $this->respondSuccess(
-                Response::HTTP_NO_CONTENT
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
     }
 }

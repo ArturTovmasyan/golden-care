@@ -3,15 +3,16 @@
 namespace App\EventListener;
 
 use App\Annotation\Permission;
+use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Entity\Space;
 use App\Entity\User;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Security;
 
@@ -46,17 +47,51 @@ class MainListener
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * @param GetResponseForExceptionEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        /*try {
-            $response = $event->getResponse();
+        $exception = $event->getException();
 
-            return $response;
-        } catch (\Throwable $e) {
-            var_dump($e->getMessage());exit;
-        }*/
+        if ($exception instanceof ValidationException) {
+            $response = $this->respondError(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception->getErrors()
+            );
+        } else {
+            $response = $this->respondError(
+                $exception->getMessage(),
+                $exception->getCode()
+            );
+        }
+
+        $event->setResponse($response);
+    }
+
+    /**
+     * @param $message
+     * @param int $code
+     * @param array $data
+     * @param array $headers
+     * @return JsonResponse
+     */
+    private function respondError($message, $code = Response::HTTP_BAD_REQUEST, $data = [], $headers = [])
+    {
+        $responseCode    = $code ?: Response::HTTP_BAD_REQUEST;
+        $responseMessage = ResponseCode::$titles[$responseCode]['message']  ?? $message;
+        $headerCode      = ResponseCode::$titles[$responseCode]['httpCode'] ?? $responseCode;
+
+        $responseData = [
+            'code'  => $responseCode,
+            'error' => $responseMessage
+        ];
+
+        if (!empty($data)) {
+            $responseData['details'] = $data;
+        }
+
+        return new JsonResponse($responseData, $headerCode, $headers, false);
     }
 
     /**

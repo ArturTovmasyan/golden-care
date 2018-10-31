@@ -1,11 +1,8 @@
 <?php
 namespace App\Api\V1\Dashboard\Controller;
 
-use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
-use App\Api\V1\Common\Model\ResponseCode;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,18 +72,12 @@ class UserController extends BaseController
      */
     public function getAction()
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $this->get('security.token_storage')->getToken()->getUser(),
-                ['api_dashboard_space_user_get']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $this->get('security.token_storage')->getToken()->getUser(),
+            ['api_dashboard_space_user_get']
+        );
     }
 
     /**
@@ -130,30 +121,23 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function editAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->editUser(
-                $this->get('security.token_storage')->getToken()->getUser(),
-                [
-                    'first_name'  => $request->get('first_name'),
-                    'last_name'   => $request->get('last_name'),
-                    'phone'       => $request->get('phone'),
-                    'enabled'     => $request->get('enabled'),
-                ]
-            );
+        $userService->editUser(
+            $this->get('security.token_storage')->getToken()->getUser(),
+            [
+                'first_name'  => $request->get('first_name'),
+                'last_name'   => $request->get('last_name'),
+                'phone'       => $request->get('phone'),
+                'enabled'     => $request->get('enabled'),
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -192,25 +176,21 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function changePasswordAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->changePassword(
-                $this->get('security.token_storage')->getToken()->getUser(),
-                [
-                    'password'        => $request->get('password'),
-                    'new_password'    => $request->get('new_password'),
-                    're_new_password' => $request->get('re_new_password')
-                ]
-            );
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
+        $userService->changePassword(
+            $this->get('security.token_storage')->getToken()->getUser(),
+            [
+                'password'        => $request->get('password'),
+                'new_password'    => $request->get('new_password'),
+                're_new_password' => $request->get('re_new_password')
+            ]
+        );
 
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 }

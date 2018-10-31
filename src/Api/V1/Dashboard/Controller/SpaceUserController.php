@@ -5,12 +5,9 @@ use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Dashboard\Service\SpaceUserService;
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -89,18 +86,12 @@ class SpaceUserController extends BaseController
      */
     public function listAction(Request $request, SpaceUserService $spaceUserService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $spaceUserService->getListingBySpace($request->get('space')),
-                ['api_dashboard_space_user_list']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $spaceUserService->getListingBySpace($request->get('space')),
+            ['api_dashboard_space_user_list']
+        );
     }
 
     /**
@@ -150,18 +141,12 @@ class SpaceUserController extends BaseController
      */
     public function getAction(Request $request, $id, SpaceUserService $spaceUserService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $spaceUserService->getBySpaceAndId($request->get('space'), $id),
-                ['api_dashboard_space_user_get']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $spaceUserService->getBySpaceAndId($request->get('space'), $id),
+            ['api_dashboard_space_user_get']
+        );
     }
 
     /**
@@ -205,24 +190,19 @@ class SpaceUserController extends BaseController
      * @param $spaceId
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function inviteAction(Request $request, $spaceId, UserService $userService)
     {
-        try {
-            $userService->invite(
-                $spaceId,
-                $request->get('email'),
-                $request->get('role_id')
-            );
+        $userService->invite(
+            $spaceId,
+            $request->get('email'),
+            $request->get('role_id')
+        );
 
-            $response = $this->respondSuccess(
-                ResponseCode::INVITATION_LINK_SENT_TO_EMAIL
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            ResponseCode::INVITATION_LINK_SENT_TO_EMAIL
+        );
     }
 
     /**
@@ -255,20 +235,15 @@ class SpaceUserController extends BaseController
      * @param $spaceId
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function acceptInvitationAction($spaceId, UserService $userService)
     {
-        try {
-            $userService->acceptInvitation($spaceId);
+        $userService->acceptInvitation($spaceId);
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -300,20 +275,15 @@ class SpaceUserController extends BaseController
      * @param $spaceId
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function rejectInvitationAction($spaceId, UserService $userService)
     {
-        try {
-            $userService->rejectInvitation($spaceId);
+        $userService->rejectInvitation($spaceId);
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -360,29 +330,24 @@ class SpaceUserController extends BaseController
      * @param $spaceId
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function completeInvitationAction(Request $request, $spaceId, UserService $userService)
     {
-        try {
-            $userService->completeInvitation(
-                $spaceId,
-                [
-                    'first_name'  => $request->get('first_ame'),
-                    'last_name'   => $request->get('last_name'),
-                    'password'    => $request->get('password'),
-                    're_password' => $request->get('re_password'),
-                    'token'       => $request->get('token'),
-                    'email'       => $request->get('email'),
-                ]
-            );
+        $userService->completeInvitation(
+            $spaceId,
+            [
+                'first_name'  => $request->get('first_ame'),
+                'last_name'   => $request->get('last_name'),
+                'password'    => $request->get('password'),
+                're_password' => $request->get('re_password'),
+                'token'       => $request->get('token'),
+                'email'       => $request->get('email'),
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 }

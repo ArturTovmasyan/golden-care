@@ -67,18 +67,12 @@ class RoleController extends BaseController
      */
     public function listAction(RoleService $roleService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $roleService->getListing(),
-                ['api_admin_role_list']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $roleService->getListing(),
+            ['api_admin_role_list']
+        );
     }
 
     /**
@@ -123,30 +117,23 @@ class RoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function addAction(Request $request, RoleService $roleService)
     {
-        try {
-            $roleService->addRole(
-                [
-                    'name'          => $request->get('name'),
-                    'space_id'      => $request->get('space_id'),
-                    'default'       => $request->get('default'),
-                    'space_default' => $request->get('space_default'),
-                    'permissions'   => $request->get('permissions')
-                ]
-            );
+        $roleService->addRole(
+            [
+                'name'          => $request->get('name'),
+                'space_id'      => $request->get('space_id'),
+                'default'       => $request->get('default'),
+                'space_default' => $request->get('space_default'),
+                'permissions'   => $request->get('permissions')
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -191,31 +178,24 @@ class RoleController extends BaseController
      * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function editAction(Request $request, $id, RoleService $roleService)
     {
-        try {
-            $roleService->editRole(
-                $id,
-                [
-                    'name'          => $request->get('name'),
-                    'space_id'      => $request->get('space_id'),
-                    'default'       => $request->get('default'),
-                    'space_default' => $request->get('space_default'),
-                    'permissions'   => $request->get('permissions')
-                ]
-            );
+        $roleService->editRole(
+            $id,
+            [
+                'name'          => $request->get('name'),
+                'space_id'      => $request->get('space_id'),
+                'default'       => $request->get('default'),
+                'space_default' => $request->get('space_default'),
+                'permissions'   => $request->get('permissions')
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -245,19 +225,15 @@ class RoleController extends BaseController
      * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
     public function removeAction($id, RoleService $roleService)
     {
-        try {
-            $roleService->removeRole($id);
+        $roleService->removeRole($id);
 
-            $response = $this->respondSuccess(
-                Response::HTTP_NO_CONTENT
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
     }
 }

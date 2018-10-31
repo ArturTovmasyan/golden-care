@@ -1,20 +1,11 @@
 <?php
 namespace App\Api\V1\Dashboard\Controller;
 
-use App\Api\V1\Common\Model\ResponseCode;
-use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
-use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Dashboard\Service\SpaceUserRoleService;
-use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
-use App\Entity\Role;
-use App\Entity\Space;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -72,40 +63,14 @@ class SpaceUserRoleController extends BaseController
      * @param $userId
      * @param SpaceUserRoleService $spaceUserRoleService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function changeAction(Request $request, $roleId, $userId, SpaceUserRoleService $spaceUserRoleService)
     {
-        try {
-            /**
-             * @var Space $space
-             * @var Role $role
-             * @var User $user
-             */
-            $space = $request->get('space');
-            $role  = $this->em->getRepository(Role::class)->find($roleId);
-            $user  = $this->em->getRepository(User::class)->find($userId);
+        $spaceUserRoleService->changeRole($request->get('space'), $userId, $roleId);
 
-            if (is_null($space)) {
-                throw new SpaceNotFoundException();
-            }
-
-            if (is_null($role)) {
-                throw new RoleNotFoundException();
-            }
-
-            if (is_null($user)) {
-                throw new UserNotFoundException();
-            }
-
-            $spaceUserRoleService->changeRole($space, $user, $role);
-
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 }

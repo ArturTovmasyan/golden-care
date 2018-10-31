@@ -4,13 +4,9 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Model\ResponseCode;
-use App\Api\V1\Common\Service\Exception\UserNotFoundException;
-use App\Api\V1\Common\Service\Exception\ValidationException;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -77,18 +73,12 @@ class UserController extends BaseController
      */
     public function listAction(UserService $userService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $userService->getListing(),
-                ['api_admin_user_list']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $userService->getListing(),
+            ['api_admin_user_list']
+        );
     }
 
     /**
@@ -134,18 +124,12 @@ class UserController extends BaseController
      */
     public function getAction($id, UserService $userService)
     {
-        try {
-            $response = $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $userService->getById($id),
-                ['api_admin_user_get']
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $userService->getById($id),
+            ['api_admin_user_get']
+        );
     }
 
     /**
@@ -196,33 +180,26 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function addAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->addUser(
-                [
-                    'first_name'  => $request->get('first_name'),
-                    'last_name'   => $request->get('last_name'),
-                    'username'    => $request->get('username'),
-                    'email'       => $request->get('email'),
-                    'password'    => $request->get('password'),
-                    're_password' => $request->get('re_password'),
-                    'phone'       => $request->get('phone'),
-                    'enabled'     => $request->get('enabled'),
-                ]
-            );
+        $userService->addUser(
+            [
+                'first_name'  => $request->get('first_name'),
+                'last_name'   => $request->get('last_name'),
+                'username'    => $request->get('username'),
+                'email'       => $request->get('email'),
+                'password'    => $request->get('password'),
+                're_password' => $request->get('re_password'),
+                'phone'       => $request->get('phone'),
+                'enabled'     => $request->get('enabled'),
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -267,30 +244,23 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function editAction(Request $request, $id, UserService $userService)
     {
-        try {
-            $userService->editUser(
-                $id,
-                [
-                    'first_name'  => $request->get('first_name'),
-                    'last_name'   => $request->get('last_name'),
-                    'phone'       => $request->get('phone'),
-                    'enabled'     => $request->get('enabled'),
-                ]
-            );
+        $userService->editUser(
+            $id,
+            [
+                'first_name'  => $request->get('first_name'),
+                'last_name'   => $request->get('last_name'),
+                'phone'       => $request->get('phone'),
+                'enabled'     => $request->get('enabled'),
+            ]
+        );
 
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (ValidationException $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode(), $e->getErrors());
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -317,19 +287,14 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Exception
      */
     public function resetPasswordAction($id, UserService $userService)
     {
-        try {
-            $userService->resetPassword($id);
+        $userService->resetPassword($id);
 
-            $response = $this->respondSuccess(
-                ResponseCode::RECOVERY_LINK_SENT_TO_EMAIL
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            ResponseCode::RECOVERY_LINK_SENT_TO_EMAIL
+        );
     }
 }

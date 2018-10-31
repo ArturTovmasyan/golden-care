@@ -2,7 +2,9 @@
 namespace App\Api\V1\Dashboard\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceUserNotFoundException;
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUser;
@@ -17,18 +19,31 @@ class SpaceUserRoleService extends BaseService
 {
     /**
      * @param Space $space
-     * @param User $user
-     * @param Role $role
+     * @param $userId
+     * @param $roleId
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function changeRole(Space $space, User $user, Role $role)
+    public function changeRole(Space $space, $userId, $roleId)
     {
         try {
             /**
              * @var SpaceUserRole $spaceUserRole
              * @var SpaceUser     $spaceUser
+             * @var User          $user
+             * @var Role          $role
              */
             $this->em->getConnection()->beginTransaction();
+
+            $role  = $this->em->getRepository(Role::class)->find($roleId);
+            $user  = $this->em->getRepository(User::class)->find($userId);
+
+            if (is_null($role)) {
+                throw new RoleNotFoundException();
+            }
+
+            if (is_null($user)) {
+                throw new UserNotFoundException();
+            }
 
             $spaceUser = $this->em->getRepository(SpaceUser::class)->findOneBy(
                 [

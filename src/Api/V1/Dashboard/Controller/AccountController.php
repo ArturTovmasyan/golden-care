@@ -3,12 +3,10 @@ namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Model\ResponseCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -73,27 +71,23 @@ class AccountController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function signupAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->signup(
-                [
-                    'first_name'  => $request->get('first_name'),
-                    'last_name'   => $request->get('last_name'),
-                    'email'       => $request->get('email'),
-                    'password'    => $request->get('password'),
-                    're_password' => $request->get('re_password')
-                ]
-            );
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
+        $userService->signup(
+            [
+                'first_name'  => $request->get('first_name'),
+                'last_name'   => $request->get('last_name'),
+                'email'       => $request->get('email'),
+                'password'    => $request->get('password'),
+                're_password' => $request->get('re_password')
+            ]
+        );
 
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -124,23 +118,18 @@ class AccountController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function forgotPasswordAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->forgotPassword(
-                $request->get('email'),
-                $request->getSchemeAndHttpHost()
-            );
+        $userService->forgotPassword(
+            $request->get('email'),
+            $request->getSchemeAndHttpHost()
+        );
 
-            $response = $this->respondSuccess(
-                ResponseCode::RECOVERY_LINK_SENT_TO_EMAIL
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
-
-        return $response;
+        return $this->respondSuccess(
+            ResponseCode::RECOVERY_LINK_SENT_TO_EMAIL
+        );
     }
 
     /**
@@ -178,24 +167,20 @@ class AccountController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function confirmPasswordAction(Request $request, UserService $userService)
     {
-        try {
-            $userService->confirmPassword(
-                [
-                    'hash'        => $request->get('hash'),
-                    'password'    => $request->get('password'),
-                    're_password' => $request->get('re_password')
-                ]
-            );
-            $response = $this->respondSuccess(
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $e) {
-            $response = $this->respondError($e->getMessage(), $e->getCode());
-        }
+        $userService->confirmPassword(
+            [
+                'hash'        => $request->get('hash'),
+                'password'    => $request->get('password'),
+                're_password' => $request->get('re_password')
+            ]
+        );
 
-        return $response;
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 }
