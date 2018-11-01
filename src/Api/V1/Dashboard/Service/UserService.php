@@ -141,10 +141,6 @@ class UserService extends BaseService
      */
     public function changePassword(User $user, array $params)
     {
-        if (!$this->encoder->isPasswordValid($user, $params['password'])) {
-            throw new InvalidPasswordException();
-        }
-
         try {
             $this->em->getConnection()->beginTransaction();
 

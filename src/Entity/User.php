@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
+use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
@@ -106,6 +108,7 @@ class User implements UserInterface
     /**
      * @var string
      * @Assert\NotBlank(groups={"api_dashboard_user_change_password"})
+     * @SecurityAssert\UserPassword(groups={"api_dashboard_user_change_password"})
      */
     private $oldPassword;
 
