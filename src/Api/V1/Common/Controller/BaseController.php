@@ -103,16 +103,19 @@ class BaseController extends Controller
     {
         /**
          * @var Grid $annotation
+         * @var Serializer $serializer
          */
+        $serializer = $this->get('jms_serializer');
         $reflectionProperty = new \ReflectionClass($entityName);
         $annotation         = $this->reader->getClassAnnotation($reflectionProperty, Grid::class);
 
         return new JsonResponse(
-            json_encode(
+            $serializer->serialize(
                 [
                     'options' => $annotation->getGroup($groupName),
                     'total'   => $totalCount
-                ]
+                ],
+                'json'
             ),
             Response::HTTP_OK,
             [],
