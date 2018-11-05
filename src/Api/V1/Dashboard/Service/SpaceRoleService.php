@@ -22,6 +22,15 @@ class SpaceRoleService extends BaseService
 
     /**
      * @param Space $space
+     * @return int
+     */
+    public function getTotalListingBySpace(Space $space)
+    {
+        return $this->em->getRepository(Role::class)->findTotalRolesBySpace($space);
+    }
+
+    /**
+     * @param Space $space
      * @param $id
      * @return mixed
      */

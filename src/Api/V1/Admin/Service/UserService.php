@@ -20,6 +20,14 @@ class UserService extends BaseService
     }
 
     /**
+     * @return int
+     */
+    public function getListingCount()
+    {
+        return $this->em->getRepository(User::class)->getTotalCount();
+    }
+
+    /**
      * @param $id
      * @return null|object|User
      */

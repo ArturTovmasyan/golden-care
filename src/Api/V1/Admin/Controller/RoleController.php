@@ -2,8 +2,8 @@
 namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Admin\Service\RoleService;
+use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -74,6 +74,45 @@ class RoleController extends BaseController
             $roleService->getListing(),
             ['api_admin_role_list']
         );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/role Get Roles Options
+     * @apiVersion 1.0.0
+     * @apiName Get Roles Options
+     * @apiGroup Admin Role
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options       The options of thr role listing
+     * @apiSuccess {String}  total         The total count of role listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "options": [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ],
+     *          "total": 5
+     *     }
+     *
+     * @Route("", name="api_admin_role_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @param RoleService $roleService
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request, RoleService $roleService)
+    {
+        return $this->getOptionsByGroupName(Role::class, 'api_admin_role_list', $roleService->getListingCount());
     }
 
     /**

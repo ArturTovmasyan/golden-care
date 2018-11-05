@@ -18,6 +18,17 @@ use Doctrine\ORM\Query\ResultSetMapping;
 class UserRepository extends EntityRepository
 {
     /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getTotalCount()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * @param $username
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -67,6 +78,28 @@ class UserRepository extends EntityRepository
             ->groupBy('u.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space $space
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findTotalUsersBySpace(Space $space)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->innerJoin(
+                SpaceUser::class,
+                'su',
+                Join::WITH,
+                'su.user = u'
+            )
+            ->where('su.space = :space AND su.status = :status')
+            ->setParameter('space', $space)
+            ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

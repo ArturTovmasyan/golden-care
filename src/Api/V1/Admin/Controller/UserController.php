@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -80,6 +81,45 @@ class UserController extends BaseController
             $userService->getListing(),
             ['api_admin_user_list']
         );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/user Get Users Options
+     * @apiVersion 1.0.0
+     * @apiName Get Users Options
+     * @apiGroup Admin User
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options       The options of thr user listing
+     * @apiSuccess {String}  total         The total count of user listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "options": [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ],
+     *          "total": 5
+     *     }
+     *
+     * @Route("", name="api_admin_role_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request, UserService $userService)
+    {
+        return $this->getOptionsByGroupName(User::class, 'api_admin_user_list', $userService->getListingCount());
     }
 
     /**

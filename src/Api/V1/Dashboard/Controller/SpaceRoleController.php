@@ -84,6 +84,50 @@ class SpaceRoleController extends BaseController
     }
 
     /**
+     * @api {options} /api/v1.0/dashboard/space/{space_id}/role Get Roles Options
+     * @apiVersion 1.0.0
+     * @apiName Get Roles Options
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_ROLE
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options       The options of thr role listing
+     * @apiSuccess {String}  total         The total count of role listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "options": [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ],
+     *          "total": 5
+     *     }
+     *
+     * @Route("", name="api_dashboard_space_role_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @param SpaceRoleService $spaceRoleService
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request, SpaceRoleService $spaceRoleService)
+    {
+        return $this->getOptionsByGroupName(
+            Role::class,
+            'api_dashboard_space_role_list',
+            $spaceRoleService->getTotalListingBySpace($request->get('space'))
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/dashboard/space/{space_id}/role/{role_id} Get Role
      * @apiVersion 1.0.0
      * @apiName Get Role

@@ -23,6 +23,15 @@ class SpaceUserService extends BaseService
 
     /**
      * @param Space $space
+     * @return int
+     */
+    public function getTotalListingBySpace(Space $space)
+    {
+        return $this->em->getRepository(User::class)->findTotalUsersBySpace($space);
+    }
+
+    /**
+     * @param Space $space
      * @return User|null
      */
     public function getBySpaceAndId(Space $space, $id)

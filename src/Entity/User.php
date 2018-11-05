@@ -12,12 +12,37 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
+use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_admin_user_add"})
  * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})
+ * @Grid(
+ *     api_admin_user_list={
+ *          {"id", "integer", true, true},
+ *          {"first_name", "string", true, true},
+ *          {"last_name", "string", true, true},
+ *          {"username", "string", true, true},
+ *          {"email", "string", true, true},
+ *          {"phone", "string", true, true},
+ *          {"enabled", "integer", true, true},
+ *          {"completed", "integer", true, true},
+ *          {"last_activity_at", "datetime", true, true}
+ *     },
+ *     api_dashboard_space_user_list={
+ *          {"id", "integer", true, true},
+ *          {"first_name", "string", true, true},
+ *          {"last_name", "string", true, true},
+ *          {"username", "string", true, true},
+ *          {"email", "string", true, true},
+ *          {"phone", "string", true, true},
+ *          {"enabled", "integer", true, true},
+ *          {"completed", "integer", true, true},
+ *          {"last_activity_at", "datetime", true, true}
+ *     }
+ * )
  */
 class User implements UserInterface
 {

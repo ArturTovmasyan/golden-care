@@ -7,11 +7,26 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
+ * @Grid(
+ *     api_admin_role_list={
+ *          {"id", "integer", true, true},
+ *          {"name", "string", true, true},
+ *          {"default", "integer", true, true},
+ *          {"space_default", "integer", true, true}
+ *     },
+ *     api_dashboard_space_role_list={
+ *          {"id", "integer", true, true},
+ *          {"name", "string", true, true},
+ *          {"default", "integer", true, true},
+ *          {"space_default", "integer", true, true}
+ *     }
+ * )
  */
 class Role
 {

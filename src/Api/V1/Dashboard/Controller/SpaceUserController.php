@@ -5,6 +5,7 @@ use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Dashboard\Service\SpaceUserService;
 use App\Api\V1\Dashboard\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -91,6 +92,51 @@ class SpaceUserController extends BaseController
             '',
             $spaceUserService->getListingBySpace($request->get('space')),
             ['api_dashboard_space_user_list']
+        );
+    }
+
+    /**
+     * @api {options} /api/v1.0/dashboard/space/{space_id}/role Get Users Options
+     * @apiVersion 1.0.0
+     * @apiName Get Users Options
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_USER
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options       The options of thr user listing
+     * @apiSuccess {String}  total         The total count of user listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "options": [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ],
+     *          "total": 5
+     *     }
+     *
+     * @Route("", name="api_dashboard_space_user_options", requirements={"spaceId"="\d+"}, methods={"OPTIONS"})
+     * @Permission({"PERMISSION_USER"})
+     *
+     * @param Request $request
+     * @param SpaceUserService $spaceUserService
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request, SpaceUserService $spaceUserService)
+    {
+        return $this->getOptionsByGroupName(
+            User::class,
+            'api_dashboard_space_user_list',
+            $spaceUserService->getTotalListingBySpace($request->get('space'))
         );
     }
 
