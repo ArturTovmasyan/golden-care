@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/common/user")
+ * @Route("/api/v1.0/profile")
  *
  * Class ProfileController
  * @package App\Api\V1\Common\Controller
@@ -30,10 +30,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/common/user/me My Profile
+     * @api {get} /api/v1.0/profile/me My Profile
      * @apiVersion 1.0.0
      * @apiName My Profile
-     * @apiGroup Common
+     * @apiGroup Profile
      * @apiPermission none
      * @apiDescription This function is used to get user profile
      *
@@ -63,7 +63,7 @@ class ProfileController extends BaseController
      *          }
      *     }
      *
-     * @Route("/me", name="api_common_user_me", methods={"GET"})
+     * @Route("/me", name="api_profile_me", methods={"GET"})
      *
      * @var Request $request
      * @return JsonResponse
@@ -74,15 +74,15 @@ class ProfileController extends BaseController
             Response::HTTP_OK,
             '',
             $this->get('security.token_storage')->getToken()->getUser(),
-            ['api_common_user_me']
+            ['api_profile_me']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/common/user/edit Edit Profile
+     * @api {post} /api/v1.0/profile/edit Edit Profile
      * @apiVersion 1.0.0
      * @apiName Edit Profile
-     * @apiGroup Common
+     * @apiGroup Profile
      * @apiPermission none
      * @apiDescription This function is used to edit user profile
      *
@@ -112,7 +112,7 @@ class ProfileController extends BaseController
      *          }
      *     }
      *
-     * @Route("/edit", name="api_common_user_edit", methods={"POST"})
+     * @Route("/edit", name="api_profile_edit", methods={"POST"})
      *
      * @param Request $request
      * @param UserService $userService
@@ -136,10 +136,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/common/user/change-password Change Password
+     * @api {put} /api/v1.0/profile/change-password Change Password
      * @apiVersion 1.0.0
      * @apiName Change Password
-     * @apiGroup Common
+     * @apiGroup Profile
      * @apiPermission none
      * @apiDescription This function is used to change password
      *
@@ -170,7 +170,7 @@ class ProfileController extends BaseController
      *          }
      *     }
      *
-     * @Route("/change-password", name="api_common_user_change_password", methods={"PUT"})
+     * @Route("/change-password", name="api_profile_change_password", methods={"PUT"})
      *
      * @param Request $request
      * @param UserService $userService
