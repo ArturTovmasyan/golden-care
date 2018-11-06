@@ -13,7 +13,7 @@ class Grid
     private $groups = [];
 
     public const FIELD_OPTIONS = [
-        0 => 'label',
+        0 => 'id',
         1 => 'type',
         2 => 'sortable',
         3 => 'filterable',

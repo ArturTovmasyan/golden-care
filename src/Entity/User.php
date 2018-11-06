@@ -58,30 +58,30 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_common_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $first_name;
 
     /**
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_common_user_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $last_name;
 
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup"})
      */
     private $username;
@@ -89,7 +89,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      * @Assert\Email(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
@@ -98,11 +98,11 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_user_edit", "api_dashboard_space_user_complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_common_user_edit", "api_dashboard_space_user_complete"})
      * @Assert\Regex(
      *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
-     *     groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_user_edit", "api_dashboard_space_user_complete"}
+     *     groups={"api_admin_user_add", "api_admin_user_edit", "api_common_user_edit", "api_dashboard_space_user_complete"}
      * )
      */
     private $phone;
@@ -110,39 +110,39 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_user_edit", "api_dashboard_space_user_complete"})
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      */
     private $enabled;
 
     /**
      * @var bool
      * @ORM\Column(name="completed", type="boolean")
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      */
     private $completed;
 
     /**
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_dashboard_user_me"})
+     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_common_user_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
     protected $lastActivityAt;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_dashboard_user_change_password"})
-     * @SecurityAssert\UserPassword(groups={"api_dashboard_user_change_password"})
+     * @Assert\NotBlank(groups={"api_common_user_change_password"})
+     * @SecurityAssert\UserPassword(groups={"api_common_user_change_password"})
      */
     private $oldPassword;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
+     * @Assert\NotBlank(groups={"api_common_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
      * @Assert\EqualTo(
      *     propertyPath="plainPassword",
-     *     groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"},
+     *     groups={"api_common_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"},
      *     message="This value should be equal to password"
      * )
      */
@@ -150,12 +150,12 @@ class User implements UserInterface
 
     /**
      * @var string $plainPassword
-     * @Assert\NotBlank(groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
-     * @Assert\NotEqualTo(propertyPath="oldPassword", groups={"api_dashboard_user_change_password"}, message="This value should not be equal to old password")
+     * @Assert\NotBlank(groups={"api_common_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
+     * @Assert\NotEqualTo(propertyPath="oldPassword", groups={"api_common_user_change_password"}, message="This value should not be equal to old password")
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
-     *     groups={"api_dashboard_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     *     groups={"api_common_user_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
      * )
      */
     private $plainPassword;
@@ -163,7 +163,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_reset_password", "api_dashboard_user_change_password", "api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_reset_password", "api_common_user_change_password", "api_dashboard_account_signup"})
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
