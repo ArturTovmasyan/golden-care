@@ -132,6 +132,8 @@ class TokenController extends BaseController
                 $log->setMessage(sprintf("User %s (%s)  logged in.", $user->getFullName(), $user->getUsername()));
                 $log->setLevel(Log::LOG_LEVEL_LOW);
                 $this->em->persist($log);
+
+                $this->em->flush();
             } else {
                 if ($user) {
                     $user->incrementPasswordMistakes();
@@ -153,6 +155,8 @@ class TokenController extends BaseController
                     }
 
                     $this->em->persist($user);
+
+                    $this->em->flush();
                 }
 
                 $content = json_decode($response->getContent(), 1);
@@ -164,8 +168,6 @@ class TokenController extends BaseController
 
                 throw new \Exception($message);
             }
-
-            $this->em->flush();
 
             return $response;
         } catch (\Throwable $e) {
