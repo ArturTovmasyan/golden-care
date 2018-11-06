@@ -2,7 +2,7 @@
 
 namespace App\Api\V1\Common\Controller;
 
-use App\Api\V1\Common\Service\UserService;
+use App\Api\V1\Common\Service\ProfileService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -115,13 +115,13 @@ class ProfileController extends BaseController
      * @Route("/edit", name="api_profile_edit", methods={"POST"})
      *
      * @param Request $request
-     * @param UserService $userService
+     * @param ProfileService $profileService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, UserService $userService)
+    public function editAction(Request $request, ProfileService $profileService)
     {
-        $userService->editUser(
+        $profileService->edit(
             $this->get('security.token_storage')->getToken()->getUser(),
             [
                 'first_name'  => $request->get('first_name'),
@@ -173,13 +173,13 @@ class ProfileController extends BaseController
      * @Route("/change-password", name="api_profile_change_password", methods={"PUT"})
      *
      * @param Request $request
-     * @param UserService $userService
+     * @param ProfileService $profileService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function changePasswordAction(Request $request, UserService $userService)
+    public function changePasswordAction(Request $request, ProfileService $profileService)
     {
-        $userService->changePassword(
+        $profileService->changePassword(
             $this->get('security.token_storage')->getToken()->getUser(),
             [
                 'password'        => $request->get('password'),
