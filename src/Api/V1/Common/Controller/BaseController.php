@@ -78,7 +78,7 @@ class BaseController extends Controller
         }
 
         if (!empty($data)) {
-            $responseData['data'] = $data;
+            $responseData = $data;
         }
 
         if (empty($groups)) {
