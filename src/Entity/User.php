@@ -132,8 +132,8 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_profile_change_password"})
-     * @SecurityAssert\UserPassword(groups={"api_profile_change_password"})
+     * @Assert\NotBlank(groups={"api_profile_edit", "api_profile_change_password"})
+     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
      */
     private $oldPassword;
 

@@ -19,6 +19,7 @@ class ProfileService extends BaseService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $user->setOldPassword($params['password']);
             $user->setFirstName($params['first_name']);
             $user->setLastName($params['last_name']);
             $user->setPhone($params['phone']);

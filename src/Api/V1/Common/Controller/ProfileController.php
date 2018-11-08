@@ -124,8 +124,10 @@ class ProfileController extends BaseController
         $profileService->edit(
             $this->get('security.token_storage')->getToken()->getUser(),
             [
+                'password'    => $request->get('password'),
                 'first_name'  => $request->get('first_name'),
                 'last_name'   => $request->get('last_name'),
+                'email'       => $request->get('email'),
                 'phone'       => $request->get('phone')
             ]
         );
