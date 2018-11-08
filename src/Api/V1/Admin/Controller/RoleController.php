@@ -100,27 +100,25 @@ class RoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "options": [
+     *          [
      *              {
      *                  "id": "name",
      *                  "type": "integer",
      *                  "sortable": true,
      *                  "filterable": true,
      *              }
-     *          ],
-     *          "total": 5
+     *          ]
      *     }
      *
      * @Route("", name="api_admin_role_options", methods={"OPTIONS"})
      *
      * @param Request $request
-     * @param RoleService $roleService
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request, RoleService $roleService)
+    public function optionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Role::class, 'api_admin_role_list', $roleService->getListingCount());
+        return $this->getOptionsByGroupName(Role::class, 'api_admin_role_list');
     }
 
     /**

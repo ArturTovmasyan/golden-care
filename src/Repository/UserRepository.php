@@ -8,7 +8,6 @@ use App\Entity\SpaceUser;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -31,17 +30,6 @@ class UserRepository extends EntityRepository
                 ->groupBy('u.id')
                 ->getQuery()
         );
-    }
-
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getTotalCount()
-    {
-        return $this->createQueryBuilder('u')
-            ->select('count(u.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
     /**
@@ -98,28 +86,6 @@ class UserRepository extends EntityRepository
                 ->groupBy('u.id')
                 ->getQuery()
         );
-    }
-
-    /**
-     * @param Space $space
-     * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findTotalUsersBySpace(Space $space)
-    {
-        return $this->createQueryBuilder('u')
-            ->select('count(u.id)')
-            ->innerJoin(
-                SpaceUser::class,
-                'su',
-                Join::WITH,
-                'su.user = u'
-            )
-            ->where('su.space = :space AND su.status = :status')
-            ->setParameter('space', $space)
-            ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
     /**

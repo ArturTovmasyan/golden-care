@@ -5,7 +5,6 @@ use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Entity\User;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -106,27 +105,25 @@ class UserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "options": [
+     *          [
      *              {
      *                  "label": "id",
      *                  "type": "integer",
      *                  "sortable": true,
      *                  "filterable": true,
      *              }
-     *          ],
-     *          "total": 5
+     *          ]
      *     }
      *
      * @Route("", name="api_admin_user_options", methods={"OPTIONS"})
      *
      * @param Request $request
-     * @param UserService $userService
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request, UserService $userService)
+    public function optionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(User::class, 'api_admin_user_list', $userService->getListingCount());
+        return $this->getOptionsByGroupName(User::class, 'api_admin_user_list');
     }
 
     /**

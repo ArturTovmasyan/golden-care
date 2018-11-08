@@ -28,14 +28,6 @@ class RoleService extends BaseService
     }
 
     /**
-     * @return int
-     */
-    public function getListingCount()
-    {
-        return $this->em->getRepository(Role::class)->getTotalCount();
-    }
-
-    /**
      * @param $id
      * @return Role|null|object
      */

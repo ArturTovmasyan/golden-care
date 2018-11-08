@@ -15,17 +15,17 @@ use App\Annotation\Grid as Grid;
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
  * @Grid(
  *     api_admin_role_list={
- *          {"id", "integer", true, true, "r.id"},
+ *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
  *          {"space", "object", false, false, ""},
- *          {"default", "integer", true, true, "r.default"},
- *          {"space_default", "integer", true, true, "r.space_default"}
+ *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
+ *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Role", "defaultValues"}}
  *     },
  *     api_dashboard_space_role_list={
- *          {"id", "integer", true, true, "r.id"},
+ *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
- *          {"default", "integer", true, true, "r.default"},
- *          {"space_default", "integer", true, true, "r.space_default"}
+ *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
+ *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Role", "defaultValues"}}
  *     }
  * )
  */

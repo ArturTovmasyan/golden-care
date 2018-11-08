@@ -119,31 +119,28 @@ class SpaceUserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "options": [
+     *          [
      *              {
      *                  "label": "id",
      *                  "type": "integer",
      *                  "sortable": true,
      *                  "filterable": true,
      *              }
-     *          ],
-     *          "total": 5
+     *          ]
      *     }
      *
      * @Route("", name="api_dashboard_space_user_options", requirements={"spaceId"="\d+"}, methods={"OPTIONS"})
      * @Permission({"PERMISSION_USER"})
      *
      * @param Request $request
-     * @param SpaceUserService $spaceUserService
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request, SpaceUserService $spaceUserService)
+    public function optionAction(Request $request)
     {
         return $this->getOptionsByGroupName(
             User::class,
-            'api_dashboard_space_user_list',
-            $spaceUserService->getTotalListingBySpace($request->get('space'))
+            'api_dashboard_space_user_list'
         );
     }
 

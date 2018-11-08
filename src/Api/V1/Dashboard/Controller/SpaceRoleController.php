@@ -2,12 +2,10 @@
 namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Dashboard\Service\RoleService;
 use App\Api\V1\Dashboard\Service\SpaceRoleService;
 use App\Entity\Role;
 use App\Entity\Space;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -107,30 +105,27 @@ class SpaceRoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "options": [
+     *          [
      *              {
      *                  "label": "id",
      *                  "type": "integer",
      *                  "sortable": true,
      *                  "filterable": true,
      *              }
-     *          ],
-     *          "total": 5
+     *          ]
      *     }
      *
      * @Route("", name="api_dashboard_space_role_options", methods={"OPTIONS"})
      *
      * @param Request $request
-     * @param SpaceRoleService $spaceRoleService
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request, SpaceRoleService $spaceRoleService)
+    public function optionAction(Request $request)
     {
         return $this->getOptionsByGroupName(
             Role::class,
-            'api_dashboard_space_role_list',
-            $spaceRoleService->getTotalListingBySpace($request->get('space'))
+            'api_dashboard_space_role_list'
         );
     }
 

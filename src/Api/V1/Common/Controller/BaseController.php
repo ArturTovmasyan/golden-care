@@ -70,15 +70,13 @@ class BaseController extends Controller
         /** @var Serializer $serializer */
         $serializer = $this->get('jms_serializer');
 
-        $total    = $paginator->count();
-        $page     = $request->get('page') ?: 1;
-        $perPage  = $queryBuilder->getMaxResults();
-        $allPages = ceil($total/$perPage);
+        $total   = $paginator->count();
+        $page    = $request->get('page') ?: 1;
+        $perPage = $queryBuilder->getMaxResults();
 
         $data = [
             'page'      => $page,
             'per_page'  => $perPage,
-            'all_pages' => $allPages,
             'total'     => $total,
             'data'      => $paginator->getQuery()->getResult()
         ];
@@ -131,18 +129,14 @@ class BaseController extends Controller
     /**
      * @param string $entityName
      * @param string $groupName
-     * @param int $totalCount
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    protected function getOptionsByGroupName(string $entityName, string $groupName, int $totalCount)
+    protected function getOptionsByGroupName(string $entityName, string $groupName)
     {
         return new JsonResponse(
             $this->get('jms_serializer')->serialize(
-                [
-                    'options' => $this->getGrid($entityName)->getGroupOptions($groupName),
-                    'total'   => $totalCount
-                ],
+                $this->getGrid($entityName)->getGroupOptions($groupName),
                 'json'
             ),
             Response::HTTP_OK,

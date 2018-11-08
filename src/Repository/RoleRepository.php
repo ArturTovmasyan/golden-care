@@ -32,17 +32,6 @@ class RoleRepository extends EntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getTotalCount()
-    {
-        return $this->createQueryBuilder('r')
-            ->select('count(r.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
      * @param Space|null $space
      * @return mixed
      */
@@ -83,23 +72,6 @@ class RoleRepository extends EntityRepository
                 ->groupBy('r.id')
                 ->getQuery()
         );
-    }
-
-    /**
-     * @param Space $space
-     * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findTotalRolesBySpace(Space $space)
-    {
-        return $this->createQueryBuilder('r')
-            ->select('count(r.id)')
-            ->where('r.space = :space OR (r.default = :default AND r.space IS NULL)')
-            ->setParameter('space', $space)
-            ->setParameter('default', true)
-            ->getQuery()
-            ->getSingleScalarResult();
-        ;
     }
 
     /**

@@ -1,7 +1,6 @@
 <?php
 namespace App\Annotation;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
@@ -14,19 +13,18 @@ class Grid
     /**
      * Field options
      */
-    const FIELD_OPTION_ID         = 0;
-    const FIELD_OPTION_TYPE       = 1;
-    const FIELD_OPTION_SORTABLE   = 2;
-    const FIELD_OPTION_FILTERABLE = 3;
-    const FIELD_OPTION_ORIGINAL   = 4;
+    const FIELD_OPTION_ID               = 0;
+    const FIELD_OPTION_TYPE             = 1;
+    const FIELD_OPTION_SORTABLE         = 2;
+    const FIELD_OPTION_FILTERABLE       = 3;
+    const FIELD_OPTION_ORIGINAL         = 4;
+    const FIELD_OPTION_AVAILABLE_VALUES = 5;
 
     /**
      * Field types
      */
     const FIELD_TYPE_TEXT    = 'string';
-    const FIELD_TYPE_BOOLEAN = 'boolean';
-    const FIELD_TYPE_INTEGER = 'integer';
-    const FIELD_TYPE_FLOAT   = 'float';
+    const FIELD_TYPE_NUMBER  = 'number';
     const FIELD_TYPE_DATE    = 'date';
     const FIELD_TYPE_ENUM    = 'enum';
 
@@ -34,11 +32,12 @@ class Grid
      * Field options listing
      */
     public const FIELD_OPTIONS = [
-        self::FIELD_OPTION_ID         => 'id',
-        self::FIELD_OPTION_TYPE       => 'type',
-        self::FIELD_OPTION_SORTABLE   => 'sortable',
-        self::FIELD_OPTION_FILTERABLE => 'filterable',
-        self::FIELD_OPTION_ORIGINAL   => 'field',
+        self::FIELD_OPTION_ID               => 'id',
+        self::FIELD_OPTION_TYPE             => 'type',
+        self::FIELD_OPTION_SORTABLE         => 'sortable',
+        self::FIELD_OPTION_FILTERABLE       => 'filterable',
+        self::FIELD_OPTION_ORIGINAL         => 'field',
+        self::FIELD_OPTION_AVAILABLE_VALUES => 'values',
     ];
 
     /**
@@ -84,11 +83,18 @@ class Grid
             foreach ($groupOptions as $index => $groupOption) {
                 foreach ($groupOption as $key => $fieldOption) {
                     if (isset(self::FIELD_OPTIONS[$key])) {
-                        if (self::FIELD_OPTIONS[$key] != 'field') {
-                            $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $fieldOption;
-                        }
+                        if (self::FIELD_OPTIONS[$key] == 'values') {
+                            $className  = $fieldOption[0];
+                            $methodName = $fieldOption[1];
 
-                        $this->groupsById[$groupName][$groupOption[0]][self::FIELD_OPTIONS[$key]] = $fieldOption;
+                            $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $className::$methodName();
+                        } else {
+                            if (self::FIELD_OPTIONS[$key] != 'field') {
+                                $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $fieldOption;
+                            }
+
+                            $this->groupsById[$groupName][$groupOption[0]][self::FIELD_OPTIONS[$key]] = $fieldOption;
+                        }
                     }
                 }
             }
@@ -158,6 +164,7 @@ class Grid
         if (0 === strpos($text, $prefix)) {
             $text = substr($text, strlen($prefix)) . '';
         }
+
         return $text;
     }
 
@@ -254,18 +261,18 @@ class Grid
                     continue;
                 }
 
-                $key    = $options[$key]['field'];
+                $fieldKey    = $options[$key]['field'];
                 $suffix = 0;
 
                 switch ($options[$key][self::FIELD_OPTIONS[self::FIELD_OPTION_TYPE]]) {
                     case self::FIELD_TYPE_TEXT:
                         switch ($filter['c']) {
                             case '0':
-                                $this->queryBuilder->andHaving("$key = :text_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey = :text_$suffix");
                                 $this->queryBuilder->setParameter("text_$suffix", $filter['v'][0]);
                                 break;
                             case '1':
-                                $this->queryBuilder->andHaving("$key LIKE :text_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey LIKE :text_$suffix");
                                 $this->queryBuilder->setParameter("text_$suffix", "%" . $filter['v'][0] . "%");
                                 break;
                             /*case '2':
@@ -281,31 +288,30 @@ class Grid
                                 break;*/
                         }
                         break;
-                    case self::FIELD_TYPE_INTEGER:
-                    case self::FIELD_TYPE_FLOAT:
+                    case self::FIELD_TYPE_NUMBER:
                         switch ($filter['c']) {
                             case '0': // =
-                                $this->queryBuilder->andHaving("$key = :num_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey = :num_$suffix");
                                 $this->queryBuilder->setParameter("num_$suffix", $filter['v'][0]);
                                 break;
                             case '1': // <
-                                $this->queryBuilder->andHaving("$key < :num_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey < :num_$suffix");
                                 $this->queryBuilder->setParameter("num_$suffix", $filter['v'][0]);
                                 break;
                             case '2': // >
-                                $this->queryBuilder->andHaving("$key > :num_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey > :num_$suffix");
                                 $this->queryBuilder->setParameter("num_$suffix", $filter['v'][0]);
                                 break;
                             case '3': // <=
-                                $this->queryBuilder->andHaving("$key <= :num_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey <= :num_$suffix");
                                 $this->queryBuilder->setParameter("num_$suffix", $filter['v'][0]);
                                 break;
                             case '4': // =>
-                                $this->queryBuilder->andHaving("$key >= :num_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey >= :num_$suffix");
                                 $this->queryBuilder->setParameter("num_$suffix", $filter['v'][0]);
                                 break;
                             case '5': // ><
-                                $this->queryBuilder->andHaving("$key >= :num_from_$suffix AND $key <= :num_to_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey >= :num_from_$suffix AND $fieldKey <= :num_to_$suffix");
                                 $this->queryBuilder->setParameter("num_from_$suffix", $filter['v'][0]);
                                 $this->queryBuilder->setParameter("num_to_$suffix", $filter['v'][1]);
                                 break;
@@ -314,19 +320,19 @@ class Grid
                     case self::FIELD_TYPE_DATE:
                         switch ($filter['c']) {
                             case '0': // =
-                                $this->queryBuilder->andHaving("$key = :date_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey = :date_$suffix");
                                 $this->queryBuilder->setParameter("date_$suffix", $filter['v'][0]);
                                 break;
                             case '1': // <=
-                                $this->queryBuilder->andHaving("$key <= :date_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey <= :date_$suffix");
                                 $this->queryBuilder->setParameter("date_$suffix", new \DateTime($filter['v'][0]));
                                 break;
                             case '2': // =>
-                                $this->queryBuilder->andHaving("$key >= :date_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey >= :date_$suffix");
                                 $this->queryBuilder->setParameter("date_$suffix", new \DateTime($filter['v'][0]));
                                 break;
                             case '3': // ><
-                                $this->queryBuilder->andHaving("$key BETWEEN :date_from_$suffix AND :date_to_$suffix");
+                                $this->queryBuilder->andHaving("$fieldKey BETWEEN :date_from_$suffix AND :date_to_$suffix");
                                 $this->queryBuilder->setParameter("date_from_$suffix", new \DateTime($filter['v'][0]));
                                 $this->queryBuilder->setParameter("date_to_$suffix", new \DateTime($filter['v'][1]));
                                 break;
@@ -336,7 +342,7 @@ class Grid
                         if (count($filter['v']) > 0) {
                             $enumHaving = "";
                             foreach ($filter['v'] as $idx => $item) {
-                                $enumHaving .= " OR $key = :enum_$suffix" . "_$idx";
+                                $enumHaving .= " OR $fieldKey = :enum_$suffix" . "_$idx";
                                 $this->queryBuilder->setParameter("enum_$suffix" . "_$idx", $idx);
                             }
                             $this->queryBuilder->andHaving($this->removePrefix($enumHaving, " OR "));
