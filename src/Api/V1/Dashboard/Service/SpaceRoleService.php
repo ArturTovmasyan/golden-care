@@ -4,6 +4,8 @@ namespace App\Api\V1\Dashboard\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Role;
 use App\Entity\Space;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class SpaceRoleService
@@ -12,12 +14,13 @@ use App\Entity\Space;
 class SpaceRoleService extends BaseService
 {
     /**
+     * @param QueryBuilder $queryBuilder
      * @param Space $space
-     * @return Role[]|array
+     * @return mixed
      */
-    public function getListingBySpace(Space $space)
+    public function getListingBySpace(QueryBuilder $queryBuilder, Space $space)
     {
-        return $this->em->getRepository(Role::class)->findRolesBySpace($space);
+        return $this->em->getRepository(Role::class)->findRolesBySpace($queryBuilder, $space);
     }
 
     /**

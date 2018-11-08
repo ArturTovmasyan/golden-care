@@ -7,8 +7,6 @@ use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -50,12 +48,19 @@ class RoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
      *          "data": [
      *              {
      *                  "id": 1,
      *                  "name": "Administrator",
+     *                  "space": {
+     *                      "id": 1
+     *                  },
      *                  "default": false,
-     *                  "space_default": false,
+     *                  "space_default": false
      *              }
      *          ]
      *     }
@@ -65,13 +70,16 @@ class RoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function listAction(Request $request, RoleService $roleService)
     {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $roleService->getListing(),
+        $queryBuilder = $this->getQueryBuilder($request, Role::class, 'api_admin_role_list');
+
+        return $this->respondPagination(
+            $request,
+            $queryBuilder,
+            $roleService->getListing($queryBuilder),
             ['api_admin_role_list']
         );
     }
@@ -94,7 +102,7 @@ class RoleController extends BaseController
      *     {
      *          "options": [
      *              {
-     *                  "label": "id",
+     *                  "id": "name",
      *                  "type": "integer",
      *                  "sortable": true,
      *                  "filterable": true,

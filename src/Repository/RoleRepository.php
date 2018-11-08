@@ -4,8 +4,11 @@ namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceHaventDefaultRoleException;
+use App\Entity\Role;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class RoleRepository
@@ -13,6 +16,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class RoleRepository extends EntityRepository
 {
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return Paginator
+     */
+    public function searchAllRoles(QueryBuilder $queryBuilder)
+    {
+        return new Paginator(
+            $queryBuilder
+                ->select('r')
+                ->from(Role::class, 'r')
+                ->groupBy('r.id')
+                ->getQuery()
+        );
+    }
+
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -49,18 +67,22 @@ class RoleRepository extends EntityRepository
     }
 
     /**
-     * @param $space
-     * @return mixed
+     * @param QueryBuilder $queryBuilder
+     * @param Space $space
+     * @return Paginator
      */
-    public function findRolesBySpace(Space $space)
+    public function findRolesBySpace(QueryBuilder $queryBuilder, Space $space)
     {
-        return $this->createQueryBuilder('r')
-            ->where('r.space = :space OR (r.default = :default AND r.space IS NULL)')
-            ->setParameter('space', $space)
-            ->setParameter('default', true)
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
+        return new Paginator(
+            $queryBuilder
+                ->select('r')
+                ->from(Role::class, 'r')
+                ->where('r.space = :space OR (r.default = :default AND r.space IS NULL)')
+                ->setParameter('space', $space)
+                ->setParameter('default', true)
+                ->groupBy('r.id')
+                ->getQuery()
+        );
     }
 
     /**

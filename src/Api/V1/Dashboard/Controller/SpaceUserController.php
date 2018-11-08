@@ -58,6 +58,10 @@ class SpaceUserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
      *          "data": [
      *              {
      *                  "id": 1,
@@ -84,13 +88,16 @@ class SpaceUserController extends BaseController
      * @param Request $request
      * @param SpaceUserService $spaceUserService
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function listAction(Request $request, SpaceUserService $spaceUserService)
     {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $spaceUserService->getListingBySpace($request->get('space')),
+        $queryBuilder = $this->getQueryBuilder($request, User::class, 'api_dashboard_space_user_list');
+
+        return $this->respondPagination(
+            $request,
+            $queryBuilder,
+            $spaceUserService->getListingBySpace($queryBuilder, $request->get('space')),
             ['api_dashboard_space_user_list']
         );
     }

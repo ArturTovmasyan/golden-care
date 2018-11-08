@@ -5,11 +5,12 @@ namespace App\Repository;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Entity\Space;
 use App\Entity\SpaceUser;
-use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class UserRepository
@@ -17,6 +18,21 @@ use Doctrine\ORM\Query\ResultSetMapping;
  */
 class UserRepository extends EntityRepository
 {
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return Paginator
+     */
+    public function searchAllUsers(QueryBuilder $queryBuilder)
+    {
+        return new Paginator(
+            $queryBuilder
+                ->select('u')
+                ->from(User::class, 'u')
+                ->groupBy('u.id')
+                ->getQuery()
+        );
+    }
+
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -60,24 +76,28 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * @param $space
+     * @param QueryBuilder $queryBuilder
+     * @param Space $space
      * @return mixed
      */
-    public function findUsersBySpace(Space $space)
+    public function findUsersBySpace(QueryBuilder $queryBuilder, Space $space)
     {
-        return $this->createQueryBuilder('u')
-            ->innerJoin(
-                SpaceUser::class,
-                'su',
-                Join::WITH,
-                'su.user = u'
-            )
-            ->where('su.space = :space AND su.status = :status')
-            ->setParameter('space', $space)
-            ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
-            ->groupBy('u.id')
-            ->getQuery()
-            ->getResult();
+        return new Paginator(
+            $queryBuilder
+                ->select('u')
+                ->from(User::class, 'u')
+                ->innerJoin(
+                    SpaceUser::class,
+                    'su',
+                    Join::WITH,
+                    'su.user = u'
+                )
+                ->where('su.space = :space AND su.status = :status')
+                ->setParameter('space', $space)
+                ->setParameter('status', \App\Model\SpaceUserRole::STATUS_ACCEPTED)
+                ->groupBy('u.id')
+                ->getQuery()
+        );
     }
 
     /**

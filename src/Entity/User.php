@@ -21,26 +21,26 @@ use App\Annotation\Grid as Grid;
  * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})
  * @Grid(
  *     api_admin_user_list={
- *          {"id", "integer", true, true},
- *          {"first_name", "string", true, true},
- *          {"last_name", "string", true, true},
- *          {"username", "string", true, true},
- *          {"email", "string", true, true},
- *          {"phone", "string", true, true},
- *          {"enabled", "integer", true, true},
- *          {"completed", "integer", true, true},
- *          {"last_activity_at", "datetime", true, true}
+ *          {"id", "integer", true, true, "u.id"},
+ *          {"first_name", "string", true, true, "u.first_name"},
+ *          {"last_name", "string", true, true, "u.last_name"},
+ *          {"username", "string", true, true, "u.username"},
+ *          {"email", "string", true, true, "u.email"},
+ *          {"phone", "string", true, true, "u.phone"},
+ *          {"enabled", "integer", true, true, "u.enabled"},
+ *          {"completed", "integer", true, true, "u.completed"},
+ *          {"last_activity_at", "datetime", true, true, "u.last_activity_at"}
  *     },
  *     api_dashboard_space_user_list={
- *          {"id", "integer", true, true},
- *          {"first_name", "string", true, true},
- *          {"last_name", "string", true, true},
- *          {"username", "string", true, true},
- *          {"email", "string", true, true},
- *          {"phone", "string", true, true},
- *          {"enabled", "integer", true, true},
- *          {"completed", "integer", true, true},
- *          {"last_activity_at", "datetime", true, true}
+ *          {"id", "integer", true, true, "u.id"},
+ *          {"first_name", "string", true, true, "u.first_name"},
+ *          {"last_name", "string", true, true, "u.last_name"},
+ *          {"username", "string", true, true, "u.username"},
+ *          {"email", "string", true, true, "u.email"},
+ *          {"phone", "string", true, true, "u.phone"},
+ *          {"enabled", "integer", true, true, "u.enabled"},
+ *          {"completed", "integer", true, true, "u.completed"},
+ *          {"last_activity_at", "datetime", true, true, "u.last_activity_at"}
  *     }
  * )
  */

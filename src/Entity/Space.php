@@ -23,6 +23,7 @@ class Space
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_admin_role_list"})
      */
     private $id;
 

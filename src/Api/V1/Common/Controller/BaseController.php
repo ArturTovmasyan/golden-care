@@ -4,12 +4,15 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Annotation\Grid;
 use App\Api\V1\Common\Model\ResponseCode;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -52,6 +55,41 @@ class BaseController extends Controller
         $this->validator  = $validator;
         $this->encoder    = $encoder;
         $this->reader     = $reader;
+    }
+
+    /**
+     * @param Request $request
+     * @param QueryBuilder $queryBuilder
+     * @param Paginator $paginator
+     * @param array $groups
+     * @param array $headers
+     * @return JsonResponse
+     */
+    protected function respondPagination(Request $request, QueryBuilder $queryBuilder, Paginator $paginator, $groups = [], $headers = [])
+    {
+        /** @var Serializer $serializer */
+        $serializer = $this->get('jms_serializer');
+
+        $total    = $paginator->count();
+        $page     = $request->get('page') ?: 1;
+        $perPage  = $queryBuilder->getMaxResults();
+        $allPages = ceil($total/$perPage);
+
+        $data = [
+            'page'      => $page,
+            'per_page'  => $perPage,
+            'all_pages' => $allPages,
+            'total'     => $total,
+            'data'      => $paginator->getQuery()->getResult()
+        ];
+
+        if (empty($groups)) {
+            $responseData = $serializer->serialize($data, 'json');
+        } else {
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setGroups($groups));
+        }
+
+        return new JsonResponse($responseData, Response::HTTP_OK, $headers, true);
     }
 
     /**
@@ -99,18 +137,10 @@ class BaseController extends Controller
      */
     protected function getOptionsByGroupName(string $entityName, string $groupName, int $totalCount)
     {
-        /**
-         * @var Grid $annotation
-         * @var Serializer $serializer
-         */
-        $serializer = $this->get('jms_serializer');
-        $reflectionProperty = new \ReflectionClass($entityName);
-        $annotation         = $this->reader->getClassAnnotation($reflectionProperty, Grid::class);
-
         return new JsonResponse(
-            $serializer->serialize(
+            $this->get('jms_serializer')->serialize(
                 [
-                    'options' => $annotation->getGroup($groupName),
+                    'options' => $this->getGrid($entityName)->getGroupOptions($groupName),
                     'total'   => $totalCount
                 ],
                 'json'
@@ -119,5 +149,35 @@ class BaseController extends Controller
             [],
             true
         );
+    }
+
+    /**
+     * @param Request $request
+     * @param string $entityName
+     * @param string $groupName
+     * @return QueryBuilder
+     * @throws \ReflectionException
+     */
+    protected function getQueryBuilder(Request $request, string $entityName, string $groupName)
+    {
+        return $this->getGrid($entityName)
+             ->setEntityManager($this->em)
+             ->renderByGroup($request->query->all(), $groupName)
+             ->getQueryBuilder();
+    }
+
+    /**
+     * @param $entityName
+     * @return null|object|Grid
+     * @throws \ReflectionException
+     */
+    private function getGrid($entityName)
+    {
+        /**
+         * @var Grid $annotation
+         */
+        $reflectionClass = new \ReflectionClass($entityName);
+
+        return $this->reader->getClassAnnotation($reflectionClass, Grid::class);
     }
 }

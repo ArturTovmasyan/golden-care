@@ -7,6 +7,7 @@ use App\Api\V1\Dashboard\Service\RoleService;
 use App\Api\V1\Dashboard\Service\SpaceRoleService;
 use App\Entity\Role;
 use App\Entity\Space;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,6 +57,10 @@ class SpaceRoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
      *          "data": [
      *              {
      *                  "id": 1,
@@ -71,13 +76,16 @@ class SpaceRoleController extends BaseController
      * @param Request $request
      * @param SpaceRoleService $spaceRoleService
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function listAction(Request $request, SpaceRoleService $spaceRoleService)
     {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $spaceRoleService->getListingBySpace($request->get('space')),
+        $queryBuilder = $this->getQueryBuilder($request, Role::class, 'api_dashboard_space_role_list');
+
+        return $this->respondPagination(
+            $request,
+            $queryBuilder,
+            $spaceRoleService->getListingBySpace($queryBuilder, $request->get('space')),
             ['api_dashboard_space_role_list']
         );
     }

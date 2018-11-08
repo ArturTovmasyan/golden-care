@@ -5,10 +5,10 @@ use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -53,6 +53,10 @@ class UserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
      *          "data": [
      *              {
      *                  "id": 1,
@@ -72,13 +76,16 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function listAction(Request $request, UserService $userService)
     {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $userService->getListing(),
+        $queryBuilder = $this->getQueryBuilder($request, User::class, 'api_admin_user_list');
+
+        return $this->respondPagination(
+            $request,
+            $queryBuilder,
+            $userService->getListing($queryBuilder),
             ['api_admin_user_list']
         );
     }
@@ -110,7 +117,7 @@ class UserController extends BaseController
      *          "total": 5
      *     }
      *
-     * @Route("", name="api_admin_role_options", methods={"OPTIONS"})
+     * @Route("", name="api_admin_user_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @param UserService $userService

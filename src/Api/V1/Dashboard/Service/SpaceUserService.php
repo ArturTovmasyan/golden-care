@@ -5,6 +5,8 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class SpaceUserService
@@ -13,12 +15,13 @@ use App\Entity\User;
 class SpaceUserService extends BaseService
 {
     /**
+     * @param QueryBuilder $queryBuilder
      * @param Space $space
-     * @return User[]|array
+     * @return Paginator
      */
-    public function getListingBySpace(Space $space)
+    public function getListingBySpace(QueryBuilder $queryBuilder, Space $space)
     {
-        return $this->em->getRepository(User::class)->findUsersBySpace($space);
+        return $this->em->getRepository(User::class)->findUsersBySpace($queryBuilder, $space);
     }
 
     /**

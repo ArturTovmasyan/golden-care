@@ -4,6 +4,8 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class UserService
@@ -12,11 +14,12 @@ use App\Entity\User;
 class UserService extends BaseService
 {
     /**
-     * @return User[]|array
+     * @param QueryBuilder $queryBuilder
+     * @return Paginator
      */
-    public function getListing()
+    public function getListing(QueryBuilder $queryBuilder)
     {
-        return $this->em->getRepository(User::class)->findAll();
+        return $this->em->getRepository(User::class)->searchAllUsers($queryBuilder);
     }
 
     /**

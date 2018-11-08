@@ -9,6 +9,8 @@ use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUserRole;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class RoleService
@@ -17,11 +19,12 @@ use App\Entity\SpaceUserRole;
 class RoleService extends BaseService
 {
     /**
-     * @return Role[]|array
+     * @param QueryBuilder $queryBuilder
+     * @return Paginator
      */
-    public function getListing()
+    public function getListing(QueryBuilder $queryBuilder)
     {
-        return $this->em->getRepository(Role::class)->findAll();
+        return $this->em->getRepository(Role::class)->searchAllRoles($queryBuilder);
     }
 
     /**
