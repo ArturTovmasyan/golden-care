@@ -22,12 +22,14 @@ class ProfileService extends BaseService
             $user->setOldPassword($params['password']);
             $user->setFirstName($params['first_name']);
             $user->setLastName($params['last_name']);
+            $user->setEmail($params['email']);
             $user->setPhone($params['phone']);
 
             $this->validate($user, null, ["api_profile_edit"]);
 
             $this->em->persist($user);
             $this->em->flush();
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
