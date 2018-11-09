@@ -19,9 +19,9 @@ class SpaceUserService extends BaseService
      * @param Space $space
      * @return Paginator
      */
-    public function getListingBySpace(QueryBuilder $queryBuilder, Space $space)
+    public function getListing(QueryBuilder $queryBuilder, ...$params)
     {
-        return $this->em->getRepository(User::class)->findUsersBySpace($queryBuilder, $space);
+        return $this->em->getRepository(User::class)->findUsersBySpace($queryBuilder, $params[0]);
     }
 
     /**

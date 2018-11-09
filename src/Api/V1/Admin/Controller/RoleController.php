@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
  * @IgnoreAnnotation("api")
@@ -69,18 +70,16 @@ class RoleController extends BaseController
      *
      * @param Request $request
      * @param RoleService $roleService
-     * @return JsonResponse
+     * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
     public function listAction(Request $request, RoleService $roleService)
     {
-        $queryBuilder = $this->getQueryBuilder($request, Role::class, 'api_admin_role_list');
-
-        return $this->respondPagination(
+        return $this->respondGrid(
             $request,
-            $queryBuilder,
-            $roleService->getListing($queryBuilder),
-            ['api_admin_role_list']
+            Role::class,
+            'api_admin_role_list',
+            $roleService
         );
     }
 
@@ -154,7 +153,7 @@ class RoleController extends BaseController
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, RoleService $roleService, $id)
+    public function getAction(Request $request, $id, RoleService $roleService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

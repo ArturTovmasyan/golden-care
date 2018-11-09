@@ -2,8 +2,8 @@
 namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Dashboard\Service\RoleService;
 use App\Api\V1\Dashboard\Service\SpaceRoleService;
+use App\Api\V1\Dashboard\Service\RoleService;
 use App\Entity\Role;
 use App\Entity\Space;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
  * @IgnoreAnnotation("api")
@@ -73,18 +74,17 @@ class SpaceRoleController extends BaseController
      *
      * @param Request $request
      * @param SpaceRoleService $spaceRoleService
-     * @return JsonResponse
+     * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
     public function listAction(Request $request, SpaceRoleService $spaceRoleService)
     {
-        $queryBuilder = $this->getQueryBuilder($request, Role::class, 'api_dashboard_space_role_list');
-
-        return $this->respondPagination(
+        return $this->respondGrid(
             $request,
-            $queryBuilder,
-            $spaceRoleService->getListingBySpace($queryBuilder, $request->get('space')),
-            ['api_dashboard_space_role_list']
+            Role::class,
+            'api_dashboard_space_role_list',
+            $spaceRoleService,
+            $request->get('space')
         );
     }
 
@@ -123,10 +123,7 @@ class SpaceRoleController extends BaseController
      */
     public function optionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(
-            Role::class,
-            'api_dashboard_space_role_list'
-        );
+        return $this->getOptionsByGroupName(Role::class, 'api_dashboard_space_role_list');
     }
 
     /**

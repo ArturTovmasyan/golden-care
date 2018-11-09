@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid as Grid;
+use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 
 /**
  * @ORM\Table(name="user")
@@ -68,7 +69,7 @@ class User implements UserInterface
      * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
-    private $first_name;
+    private $firstName;
 
     /**
      * @var string
@@ -76,7 +77,7 @@ class User implements UserInterface
      * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
-    private $last_name;
+    private $lastName;
 
     /**
      * @var string
@@ -134,6 +135,10 @@ class User implements UserInterface
      * @var string
      * @Assert\NotBlank(groups={"api_profile_edit", "api_profile_change_password"})
      * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
+     * @ValidationSerializedName(
+     *     api_profile_change_password="password",
+     *     api_profile_edit="password"
+     * )
      */
     private $oldPassword;
 
@@ -144,6 +149,12 @@ class User implements UserInterface
      *     propertyPath="plainPassword",
      *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"},
      *     message="This value should be equal to password"
+     * )
+     * @ValidationSerializedName(
+     *     api_profile_change_password="re_new_password",
+     *     api_admin_user_add="re_password",
+     *     api_dashboard_account_forgot_password_confirm_password="re_password",
+     *     api_dashboard_account_signup="re_password"
      * )
      */
     private $confirmPassword;
@@ -156,6 +167,12 @@ class User implements UserInterface
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
      *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     * )
+     * @ValidationSerializedName(
+     *     api_profile_change_password="new_password",
+     *     api_admin_user_add="password",
+     *     api_dashboard_account_forgot_password_confirm_password="password",
+     *     api_dashboard_account_signup="password"
      * )
      */
     private $plainPassword;
@@ -265,16 +282,16 @@ class User implements UserInterface
      */
     public function getFirstName()
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
     /**
-     * @param string $first_name
+     * @param string $firstName
      * @return User
      */
-    public function setFirstName($first_name)
+    public function setFirstName($firstName)
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
     }
 
     /**
@@ -282,15 +299,15 @@ class User implements UserInterface
      */
     public function getLastName()
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
     /**
-     * @param string $last_name
+     * @param string $lastName
      */
-    public function setLastName($last_name)
+    public function setLastName($lastName)
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
     }
 
     /**

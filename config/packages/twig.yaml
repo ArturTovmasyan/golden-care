@@ -3,4 +3,5 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     paths:
+        '%kernel.project_dir%/src/Api/V1/Common/Resources/views/grid':  'api_grid'
         '%kernel.project_dir%/src/Api/V1/Common/Resources/views/email': 'api_email'

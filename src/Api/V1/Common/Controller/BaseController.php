@@ -4,10 +4,13 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Annotation\Grid;
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Common\Service\BaseService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,6 +38,9 @@ class BaseController extends Controller
     /** @var Reader */
     protected $reader;
 
+    /** @var Pdf */
+    protected $pdf;
+
     /**
      * BaseController constructor.
      * @param SerializerInterface $serializer
@@ -48,13 +54,62 @@ class BaseController extends Controller
         EntityManagerInterface $em,
         ValidatorInterface $validator,
         UserPasswordEncoderInterface $encoder,
-        Reader $reader
+        Reader $reader,
+        Pdf $pdf
     ) {
         $this->serializer = $serializer;
         $this->em         = $em;
         $this->validator  = $validator;
         $this->encoder    = $encoder;
         $this->reader     = $reader;
+        $this->pdf     = $pdf;
+    }
+
+    /**
+     * @param Request $request
+     * @param string $entityName
+     * @param string $groupName
+     * @param BaseService $service
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    protected function respondGrid(Request $request, string $entityName, string $groupName, BaseService $service, ...$params) {
+        $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
+
+        if($request->get('pdf')) {
+            $fields = $this->getGrid($entityName)->getGroupOptions($groupName);
+
+            // TODO(haykg): this is temporary solution, need review
+            foreach($fields as &$field) {
+                $field['id'] = preg_replace_callback('/(_\w)/', function($matches) {
+                    return ucfirst($matches[1][1]);
+                }, $field['id']);
+            }
+
+            return $this->respondPdf($fields, $service->getListing($queryBuilder, $params));
+        } else {
+            return $this->respondPagination(
+                $request,
+                $service->getListing($queryBuilder, $params),
+                ['api_admin_user_list']
+            );
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param array $fields
+     * @param QueryBuilder $queryBuilder
+     * @return PdfResponse
+     */
+    protected function respondPdf($fields, Paginator $paginator)
+    {
+        $data = $paginator->getQuery()->getArrayResult();
+
+        // TODO(haykg): this is temporary solution, need to be added title and field lables
+        $html = $this->renderView('@api_grid/grid.html.twig', ['title' => 'Title', 'fields' => $fields, 'data' => $data]);
+
+        return new PdfResponse($this->pdf->getOutputFromHtml($html));
     }
 
     /**
@@ -65,14 +120,19 @@ class BaseController extends Controller
      * @param array $headers
      * @return JsonResponse
      */
-    protected function respondPagination(Request $request, QueryBuilder $queryBuilder, Paginator $paginator, $groups = [], $headers = [])
+    protected function respondPagination(Request $request, Paginator $paginator, $groups = [], $headers = [])
     {
         /** @var Serializer $serializer */
         $serializer = $this->get('jms_serializer');
 
         $total   = $paginator->count();
         $page    = $request->get('page') ?: 1;
-        $perPage = $queryBuilder->getMaxResults();
+        $perPage = $request->get('per_page');
+
+        $paginator
+            ->getQuery()
+            ->setFirstResult($perPage * ($page-1))
+            ->setMaxResults($perPage);
 
         $data = [
             'page'      => $page,

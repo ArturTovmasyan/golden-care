@@ -18,9 +18,9 @@ class SpaceRoleService extends BaseService
      * @param Space $space
      * @return mixed
      */
-    public function getListingBySpace(QueryBuilder $queryBuilder, Space $space)
+    public function getListing(QueryBuilder $queryBuilder, ...$params)
     {
-        return $this->em->getRepository(Role::class)->findRolesBySpace($queryBuilder, $space);
+        return $this->em->getRepository(Role::class)->findRolesBySpace($queryBuilder, $params[0]);
     }
 
     /**

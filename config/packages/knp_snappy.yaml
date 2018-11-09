@@ -1,0 +1,17 @@
+knp_snappy:
+    pdf:
+        enabled:    true
+        #binary:     '%kernel.root_dir%/../wkhtmltopdf.exe'
+        binary:     '%env(WKHTMLTOPDF_PATH)%'
+        options:
+            lowquality: false
+            encoding: utf-8
+            dpi: 300
+            page-size: A4
+            footer-font-size:  9
+            footer-center: 'Intermotion Technology Confidential, Page [page]'
+    image:
+        enabled:    true
+        #binary:     '%kernel.root_dir%/../wkhtmltoimage.exe'
+        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
+        options:    []

@@ -8,6 +8,7 @@
         "friendsofsymfony/oauth-server-bundle": "dev-master",
         "gedmo/doctrine-extensions": "^2.4",
         "jms/serializer-bundle": "^2.4",
+        "knplabs/knp-snappy-bundle": "^1.5",
         "nelmio/api-doc-bundle": "2.13.*",
         "nelmio/cors-bundle": "^1.5",
         "sensio/framework-extra-bundle": "^5.2",

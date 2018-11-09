@@ -1,14 +1,15 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Admin\Service\UserService;
 use App\Entity\User;
+use App\Api\V1\Common\Model\ResponseCode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
  * @IgnoreAnnotation("api")
@@ -74,18 +75,16 @@ class UserController extends BaseController
      *
      * @param Request $request
      * @param UserService $userService
-     * @return JsonResponse
+     * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
     public function listAction(Request $request, UserService $userService)
     {
-        $queryBuilder = $this->getQueryBuilder($request, User::class, 'api_admin_user_list');
-
-        return $this->respondPagination(
+        return $this->respondGrid(
             $request,
-            $queryBuilder,
-            $userService->getListing($queryBuilder),
-            ['api_admin_user_list']
+            User::class,
+            'api_admin_user_list',
+            $userService
         );
     }
 
