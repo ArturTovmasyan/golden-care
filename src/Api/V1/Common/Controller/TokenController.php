@@ -4,8 +4,10 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Api\V1\Common\Controller\Exception\UserBlockedException;
 use App\Entity\User;
+use App\Entity\UserAttempt;
 use App\Entity\UserLog;
 use App\Model\Log;
+use App\Repository\UserAttemptRepository;
 use Doctrine\ORM\EntityManager;
 use OAuth2\OAuth2;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -101,29 +103,24 @@ class TokenController extends BaseController
     public function tokenAction(Request $request)
     {
         try {
-            /** @var User $user **/
+            /**
+             * @var User $user
+             * @var UserAttemptRepository $userAttemptRepository
+             */
             $user = $this->em->getRepository(User::class)->findOneByUsername($request->get('username'));
+            $userAttemptRepository = $this->em->getRepository(UserAttempt::class);
 
-            if ($user && $user->getPasswordBlockedAt() instanceof \DateTime) {
-                $now  = new \DateTime();
-                $diff = $user->getPasswordBlockedAt()->diff($now);
+            if ($user) {
+                $attemptsCount = $userAttemptRepository->getAttemptsCount($user, $this->getClientIp());
 
-                if ($diff->invert > 0) {
-                    $interval = $diff->i . ' minutes';
-                    $message  = sprintf('User blocked, please try after %s', $interval);
-
-                    throw new UserBlockedException($message);
+                if ($attemptsCount >= UserAttempt::PASSWORD_ATTEMPT_LIMIT) {
+                    throw new UserBlockedException('User blocked, please try after 30 minutes');
                 }
             }
 
             $response = parent::tokenAction($request);
 
             if ($response->getStatusCode() == Response::HTTP_OK) {
-                // clean mistakes
-                $user->setPasswordMistakes(0);
-                $user->setPasswordBlockedAt(null);
-                $this->em->persist($user);
-
                 // create log
                 $log = new UserLog();
                 $log->setCreatedAt(new \DateTime());
@@ -136,14 +133,14 @@ class TokenController extends BaseController
                 $this->em->flush();
             } else {
                 if ($user) {
-                    $user->incrementPasswordMistakes();
+                    // create attempt
+                    $userAttempt = new UserAttempt();
+                    $userAttempt->setCreatedAt(new \DateTime());
+                    $userAttempt->setUser($user);
+                    $userAttempt->setIp($this->getClientIp());
+                    $this->em->persist($userAttempt);
 
-                    if ($user->getPasswordMistakes() == User::PASSWORD_MISTAKES_LIMIT) {
-                        // block user
-                        $blockedTime = new \DateTime();
-                        $blockedTime->modify('+15 minutes');
-                        $user->setPasswordBlockedAt($blockedTime);
-
+                    if ($attemptsCount == User::PASSWORD_MISTAKES_LIMIT - 1) {
                         // create log
                         $log = new UserLog();
                         $log->setCreatedAt(new \DateTime());
@@ -176,5 +173,29 @@ class TokenController extends BaseController
                 'error' => $e->getMessage()
             ], Response::HTTP_UNAUTHORIZED);
         }
+    }
+
+    /**
+     * @return array|false|string
+     */
+    private function getClientIp()
+    {
+        if (getenv('HTTP_CLIENT_IP')) {
+            $ip = getenv('HTTP_CLIENT_IP');
+        } else if(getenv('HTTP_X_FORWARDED_FOR')) {
+            $ip = getenv('HTTP_X_FORWARDED_FOR');
+        } else if(getenv('HTTP_X_FORWARDED')) {
+            $ip = getenv('HTTP_X_FORWARDED');
+        } else if(getenv('HTTP_FORWARDED_FOR')) {
+            $ip = getenv('HTTP_FORWARDED_FOR');
+        } else if(getenv('HTTP_FORWARDED')) {
+            $ip = getenv('HTTP_FORWARDED');
+        } else if(getenv('REMOTE_ADDR')) {
+            $ip = getenv('REMOTE_ADDR');
+        } else {
+            $ip = 'UNKNOWN';
+        }
+
+        return $ip;
     }
 }

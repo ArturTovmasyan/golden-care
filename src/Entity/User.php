@@ -202,18 +202,6 @@ class User implements UserInterface
     private $passwordRecoveryHash = '';
 
     /**
-     * @var int
-     * @ORM\Column(name="password_mistakes", type="integer", nullable=true, options={"default" = 0})
-     */
-    private $passwordMistakes;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="password_blocked_at", type="datetime", nullable=true)
-     */
-    private $passwordBlockedAt;
-
-    /**
      * @todo remove after investigate jms listener
      * @deprecated
      * @var array
@@ -455,46 +443,6 @@ class User implements UserInterface
     public function setPasswordRecoveryHash(): void
     {
         $this->passwordRecoveryHash = $this->passwordRecoveryHash = hash('sha256', $this->email . time());
-    }
-
-    /**
-     * @return int
-     */
-    public function getPasswordMistakes(): int
-    {
-        return $this->passwordMistakes;
-    }
-
-    /**
-     * @param int $passwordMistakes
-     */
-    public function setPasswordMistakes(int $passwordMistakes): void
-    {
-        $this->passwordMistakes = $passwordMistakes;
-    }
-
-    /**
-     *
-     */
-    public function incrementPasswordMistakes(): void
-    {
-        $this->passwordMistakes += 1;
-    }
-
-    /**
-     * @return null|\DateTime
-     */
-    public function getPasswordBlockedAt()
-    {
-        return $this->passwordBlockedAt;
-    }
-
-    /**
-     * @param null|\DateTime $passwordBlockedAt
-     */
-    public function setPasswordBlockedAt(\DateTime $passwordBlockedAt = null): void
-    {
-        $this->passwordBlockedAt = $passwordBlockedAt;
     }
 
     /**
