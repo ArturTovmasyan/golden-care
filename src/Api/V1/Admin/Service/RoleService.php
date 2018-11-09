@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
+use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\Space;
@@ -16,13 +17,13 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Class RoleService
  * @package App\Api\V1\Service
  */
-class RoleService extends BaseService
+class RoleService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function getListing(QueryBuilder $queryBuilder)
+    public function getListing(QueryBuilder $queryBuilder, ...$params)
     {
         return $this->em->getRepository(Role::class)->searchAllRoles($queryBuilder);
     }

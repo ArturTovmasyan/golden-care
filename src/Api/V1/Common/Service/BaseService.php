@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
-abstract class BaseService
+class BaseService
 {
     use ControllerTrait;
 
@@ -121,6 +121,4 @@ abstract class BaseService
 
         return substr(str_shuffle($chars), 0, $length);
     }
-
-    public abstract function getListing(QueryBuilder $queryBuilder, ...$params);
 }

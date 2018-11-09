@@ -2,6 +2,7 @@
 namespace App\Api\V1\Dashboard\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
@@ -12,7 +13,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Class SpaceUserService
  * @package App\Api\V1\Dashboard\Service
  */
-class SpaceUserService extends BaseService
+class SpaceUserService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder

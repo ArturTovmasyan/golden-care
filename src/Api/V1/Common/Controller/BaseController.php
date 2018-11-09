@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Annotation\Grid;
 use App\Api\V1\Common\Model\ResponseCode;
-use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\IGridService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
@@ -69,11 +69,11 @@ class BaseController extends Controller
      * @param Request $request
      * @param string $entityName
      * @param string $groupName
-     * @param BaseService $service
+     * @param IGridService $service
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    protected function respondGrid(Request $request, string $entityName, string $groupName, BaseService $service, ...$params) {
+    protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params) {
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
 
         if($request->get('pdf')) {

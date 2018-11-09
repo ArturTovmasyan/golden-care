@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
+use App\Api\V1\Common\Service\IGridService;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -11,13 +12,13 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Class UserService
  * @package App\Api\V1\Service
  */
-class UserService extends BaseService
+class UserService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function getListing(QueryBuilder $queryBuilder)
+    public function getListing(QueryBuilder $queryBuilder, ...$params)
     {
         return $this->em->getRepository(User::class)->searchAllUsers($queryBuilder);
     }
