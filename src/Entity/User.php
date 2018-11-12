@@ -16,7 +16,7 @@ use App\Annotation\Grid as Grid;
 use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 
 /**
- * @ORM\Table(name="user")
+ * @ORM\Table(name="tbl_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_admin_user_add"})
  * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})

@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="space_user")
+ * @ORM\Table(name="tbl_space_user")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceUserRepository")
  */
 class SpaceUser
@@ -24,13 +24,13 @@ class SpaceUser
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
      */
     private $space;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
     private $user;
 

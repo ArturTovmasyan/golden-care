@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="permission")
+ * @ORM\Table(name="tbl_permission")
  * @ORM\Entity(repositoryClass="App\Repository\PermissionRepository")
  */
 class Permission
@@ -30,12 +30,12 @@ class Permission
     /**
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="permissions", cascade={"persist", "remove"})
      * @ORM\JoinTable(
-     *      name="role_permission",
+     *      name="tbl_role_permission",
      *      joinColumns={
-     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id", onDelete="CASCADE")
+     *          @ORM\JoinColumn(name="id_permission", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id", onDelete="CASCADE")
+     *          @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
      */

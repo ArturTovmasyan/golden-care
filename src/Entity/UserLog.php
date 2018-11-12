@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="user_log")
+ * @ORM\Table(name="tbl_user_log")
  * @ORM\Entity(repositoryClass="App\Repository\UserLogRepository")
  */
 class UserLog
@@ -37,19 +37,19 @@ class UserLog
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
      */
     private $space;
 
     /**
      * @var int
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(name="type", type="integer", nullable=false)
      */
     private $type;
 

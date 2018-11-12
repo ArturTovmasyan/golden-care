@@ -15,7 +15,7 @@ use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid as Grid;
 
 /**
- * @ORM\Table(name="user_attempt")
+ * @ORM\Table(name="tbl_user_attempt")
  * @ORM\Entity(repositoryClass="App\Repository\UserAttemptRepository")
  */
 class UserAttempt
@@ -37,13 +37,13 @@ class UserAttempt
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(name="ip", type="string", nullable=false)
      */
     private $ip;
 

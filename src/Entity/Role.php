@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Annotation\Grid as Grid;
 
 /**
- * @ORM\Table(name="role")
+ * @ORM\Table(name="tbl_role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
  * @Grid(
@@ -50,7 +50,7 @@ class Role
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
      * @Groups({"api_admin_role_list", "api_admin_role_get"})
      */
     private $space;

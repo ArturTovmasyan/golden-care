@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="space")
+ * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
  */
 class Space

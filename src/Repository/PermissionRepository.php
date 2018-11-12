@@ -27,15 +27,16 @@ class PermissionRepository extends EntityRepository
         $rsm->addFieldResult('p', 'name', 'name');
 
         if (is_null($space)) {
-            $condition = "sur.space_id IS NULL AND sur.user_id = :user_id";
+            $condition = "sur.id_space IS NULL AND sur.id_user = :user_id";
         } else {
-            $condition = "(sur.space_id = :space_id OR sur.space_id IS NULL) AND sur.user_id = :user_id";
+            $condition = "(sur.id_space = :space_id OR sur.id_space IS NULL) AND sur.id_user = :user_id";
         }
 
+        // TODO(harutg): review
         $sql = "SELECT p.id, p.name  
-                FROM permission p   
-                  INNER JOIN role_permission rp ON rp.permission_id = p.id
-                  INNER JOIN space_user_role sur ON sur.role_id = rp.role_id
+                FROM tbl_permission p   
+                  INNER JOIN tbl_role_permission rp ON rp.id_permission = p.id
+                  INNER JOIN tbl_space_user_role sur ON sur.id_role = rp.id_role
                 WHERE " . $condition;
 
         $query = $this->_em->createNativeQuery($sql, $rsm);

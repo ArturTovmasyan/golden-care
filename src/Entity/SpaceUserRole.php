@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="space_user_role")
+ * @ORM\Table(name="tbl_space_user_role")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceUserRoleRepository")
  */
 class SpaceUserRole
@@ -25,19 +25,19 @@ class SpaceUserRole
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="space_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
      */
     private $space;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="role_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_role", referencedColumnName="id", nullable=false)
      */
     private $role;
 
