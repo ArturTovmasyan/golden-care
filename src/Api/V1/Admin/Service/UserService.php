@@ -18,7 +18,7 @@ class UserService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function getListing(QueryBuilder $queryBuilder, ...$params)
+    public function getListing(QueryBuilder $queryBuilder, $params)
     {
         return $this->em->getRepository(User::class)->searchAllUsers($queryBuilder);
     }

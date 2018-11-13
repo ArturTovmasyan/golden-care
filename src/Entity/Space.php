@@ -28,6 +28,13 @@ class Space
     private $id;
 
     /**
+     * @var string
+     * @ORM\Column(name="name", type="string", unique=true, length=255)
+     * @Groups({"api_admin_role_list"})
+     */
+    private $name;
+
+    /**
      * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
      */
     protected $spaceUserRoles;
@@ -54,6 +61,22 @@ class Space
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 
     /**

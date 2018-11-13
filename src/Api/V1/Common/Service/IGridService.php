@@ -6,5 +6,5 @@ use Doctrine\ORM\QueryBuilder;
 
 interface IGridService
 {
-    public function getListing(QueryBuilder $queryBuilder, ...$params);
+    public function getListing(QueryBuilder $queryBuilder, $params);
 }

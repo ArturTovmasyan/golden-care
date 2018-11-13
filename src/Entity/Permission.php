@@ -18,12 +18,14 @@ class Permission
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api_dashboard_space_user_get"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
+     * @Groups({"api_dashboard_space_user_get"})
      */
     private $name;
 

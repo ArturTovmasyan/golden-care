@@ -36,14 +36,14 @@ class Role
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get", "api_dashboard_space_user_get"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
+     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get", "api_dashboard_space_user_get"})
      * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     private $name;
@@ -57,6 +57,7 @@ class Role
 
     /**
      * @ORM\ManyToMany(targetEntity="Permission", mappedBy="roles", cascade={"persist", "remove"})
+     * @Groups({"api_dashboard_space_user_get"})
      */
     protected $permissions;
 

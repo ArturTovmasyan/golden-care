@@ -64,6 +64,7 @@ class CreateUserCommand extends Command
         $user->setLastName('');
         $user->setLastActivityAt(new \DateTime());
         $user->setEnabled(true);
+        $user->setCompleted(true);
 
         $encoded = $this->encoder->encodePassword($user, $input->getArgument('password'));
         $user->setPassword($encoded);
