@@ -61,8 +61,12 @@ class ProfileController extends BaseController
      *               "completed": true,
      *               "last_activity_at": "2018-10-22T17:31:48+04:00",
      *               "space_user_roles": [
-     *                  {
-     *                         "role": {
+     *                   {
+     *                      "space": {
+     *                          "id": 1,
+     *                          "name": "First"
+     *                      },
+     *                      "role": {
      *                          "id": 1,
      *                          "name": "Admin Management",
      *                          "permissions": [

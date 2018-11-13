@@ -6,10 +6,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="tbl_permission")
  * @ORM\Entity(repositoryClass="App\Repository\PermissionRepository")
+ * @Grid(
+ *     api_dashboard_permission_list={
+ *          {"id", "number", true, true, "p.id"},
+ *          {"name", "string", true, true, "p.name"}
+ *     },
+ *     api_admin_permission_list={
+ *          {"id", "number", true, true, "p.id"},
+ *          {"name", "string", true, true, "p.name"}
+ *     }
+ * )
  */
 class Permission
 {
@@ -18,14 +29,14 @@ class Permission
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({"api_dashboard_space_user_get", "api_profile_me", "api_dashboard_permission_list", "api_admin_permission_list"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({"api_dashboard_space_user_get", "api_profile_me", "api_dashboard_permission_list", "api_admin_permission_list"})
      */
     private $name;
 

@@ -26,6 +26,7 @@ class SpaceUserRole
     /**
      * @ORM\ManyToOne(targetEntity="Space", inversedBy="spaceUserRoles", cascade={"persist"})
      * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
+     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
      */
     private $space;
 

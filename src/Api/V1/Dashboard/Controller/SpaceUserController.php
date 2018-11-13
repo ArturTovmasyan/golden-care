@@ -174,9 +174,13 @@ class SpaceUserController extends BaseController
      *              "email": "joe.cole@gmail.com",
      *              "enabled": true,
      *              "completed": true,
-     *               "space_user_roles": [
+     *              "space_user_roles": [
      *                  {
-     *                         "role": {
+     *                      "space": {
+     *                          "id": 1,
+     *                          "name": "First"
+     *                      },
+     *                      "role": {
      *                          "id": 1,
      *                          "name": "Admin Management",
      *                          "permissions": [

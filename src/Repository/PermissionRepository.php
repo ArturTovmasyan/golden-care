@@ -3,10 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\Permission;
+use App\Entity\Role;
 use App\Entity\Space;
+use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class PermissionRepository
@@ -32,7 +37,6 @@ class PermissionRepository extends EntityRepository
             $condition = "(sur.id_space = :space_id OR sur.id_space IS NULL) AND sur.id_user = :user_id";
         }
 
-        // TODO(harutg): review
         $sql = "SELECT p.id, p.name  
                 FROM tbl_permission p   
                   INNER JOIN tbl_role_permission rp ON rp.id_permission = p.id
@@ -47,5 +51,37 @@ class PermissionRepository extends EntityRepository
         }
 
         return $query->getResult();
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return Paginator
+     */
+    public function searchAllPermissions(QueryBuilder $queryBuilder)
+    {
+        return new Paginator(
+            $queryBuilder
+                ->select('p')
+                ->from(Permission::class, 'p')
+                ->groupBy('p.id')
+                ->getQuery()
+        );
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param Space $space
+     * @return Paginator
+     */
+    public function getAllForDashboard(QueryBuilder $queryBuilder, Space $space)
+    {
+        /** @TODO (harutg) Must be added roles usability **/
+        return new Paginator(
+            $queryBuilder
+                ->select('p')
+                ->from(Permission::class, 'p')
+                ->groupBy('p.id')
+                ->getQuery()
+        );
     }
 }

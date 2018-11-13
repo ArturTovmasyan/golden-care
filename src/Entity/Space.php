@@ -23,14 +23,14 @@ class Space
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me"})
      */
     private $name;
 
