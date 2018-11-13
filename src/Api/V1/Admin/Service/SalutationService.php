@@ -2,16 +2,9 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
-use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Permission;
-use App\Entity\Role;
 use App\Entity\Salutation;
-use App\Entity\Space;
-use App\Entity\SpaceUserRole;
 use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
