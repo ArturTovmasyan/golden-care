@@ -86,7 +86,7 @@ class BaseService
                 $propertyPath = $error->getPropertyPath();
 
                 if (!empty($groups)) {
-                    $reflectionProperty = new \ReflectionProperty(User::class, $error->getPropertyPath());
+                    $reflectionProperty = new \ReflectionProperty(get_class($entity), $error->getPropertyPath());
                     if ($reflectionProperty != null) {
                         /** @var ValidationSerializedName $propertyAnnotation */
                         $propertyAnnotation = $this->reader->getPropertyAnnotation($reflectionProperty,
