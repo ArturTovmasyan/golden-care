@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
 /**
  * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
+ * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_dashboard_space_edit"})
  */
 class Space
 {
@@ -23,19 +24,20 @@ class Space
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me", "api_dashboard_space_get"})
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({"api_admin_role_list", "api_dashboard_space_user_get", "api_profile_me", "api_dashboard_space_get"})
+     * @Assert\NotBlank(groups={"api_dashboard_space_edit"})
      */
     private $name;
 
     /**
-     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
      */
     protected $spaceUserRoles;
 
