@@ -78,7 +78,7 @@
                 <td>
                     {% if item[field.id] is defined %}
                         {% if field.type == 'date' %}
-                            {{ item[field.id]|date("Y-m-d h:i:s") }}
+                            {{ item[field.id]|date("Y-m-d H:i:s") }}
                         {% else %}
                             {% if field.values is defined %} {# TODO: review #}
                                 {% for key in field.values|keys %}
