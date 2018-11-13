@@ -127,46 +127,4 @@ class SpaceController extends BaseController
             Response::HTTP_CREATED
         );
     }
-
-    /**
-     * @api {delete} /api/v1.0/dashboard/space/{space_id}/role/{id} Delete Role
-     * @apiVersion 1.0.0
-     * @apiName Delete Role
-     * @apiGroup Dashboard Space
-     * @apiPermission PERMISSION_ROLE
-     * @apiDescription This function is used to remove role
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 611,
-     *          "error": "Role not found"
-     *     }
-     *
-     * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_role_delete", methods={"DELETE"})
-     *
-     * @param Request $request
-     * @param $id
-     * @param Space $space
-     * @param RoleService $roleService
-     * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
-     */
-    public function removeAction(Request $request, $id, Space $space, RoleService $roleService)
-    {
-        $roleService->removeRole($id, $space);
-
-        return $this->respondSuccess(
-            Response::HTTP_NO_CONTENT
-        );
-    }
 }
