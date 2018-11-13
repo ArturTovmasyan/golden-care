@@ -98,8 +98,7 @@ class UserController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Array}   options       The options of thr user listing
-     * @apiSuccess {String}  total         The total count of user listing
+     * @apiSuccess {Array}   options The options of the user listing
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK

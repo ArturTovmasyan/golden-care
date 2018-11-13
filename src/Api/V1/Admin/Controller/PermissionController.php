@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\PermissionService;
+use App\Entity\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +58,7 @@ class PermissionController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/", name="api_admin_permission_list", methods={"GET"})
+     * @Route("", name="api_admin_permission_list", methods={"GET"})
      *
      * @param Request $request
      * @param PermissionService $permissionService
@@ -72,5 +73,41 @@ class PermissionController extends BaseController
             'api_admin_permission_list',
             $permissionService
         );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/permission Get Permissions Options
+     * @apiVersion 1.0.0
+     * @apiName Get Permissions Options
+     * @apiGroup Admin Role
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options The options of the permissions listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_permission_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(Permission::class, 'api_admin_permission_list');
     }
 }

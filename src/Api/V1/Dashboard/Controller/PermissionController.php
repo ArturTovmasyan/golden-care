@@ -59,7 +59,7 @@ class PermissionController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/", name="api_dashboard_permission_list", requirements={"spaceId"="\d+"}, methods={"GET"})
+     * @Route("", name="api_dashboard_permission_list", requirements={"spaceId"="\d+"}, methods={"GET"})
      *
      * @param Request $request
      * @param PermissionService $permissionService
@@ -75,5 +75,42 @@ class PermissionController extends BaseController
             $permissionService,
             $request->get('space')
         );
+    }
+
+    /**
+     * @api {options} /api/v1.0/dashboard/space/{space_id}/permission Get Permissions Options
+     * @apiVersion 1.0.0
+     * @apiName Get Permissions Options
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_ROLE
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array} options The options of thr role listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_dashboard_permission_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function optionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(\App\Entity\Permission::class, 'api_dashboard_permission_list');
     }
 }

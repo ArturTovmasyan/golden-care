@@ -99,8 +99,7 @@ class SpaceRoleController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Array}   options       The options of thr role listing
-     * @apiSuccess {String}  total         The total count of role listing
+     * @apiSuccess {Array}   options The options of thr role listing
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
