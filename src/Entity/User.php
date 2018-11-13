@@ -210,7 +210,7 @@ class User implements UserInterface
 
     /**
      * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="user", cascade={"persist", "remove"})
-     * @Groups({"api_dashboard_space_user_get"})
+     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
      */
     private $spaceUserRoles;
 
