@@ -28,6 +28,7 @@ class ResponseCode
     const USER_WITHOUT_ROLE_EXCEPTION              = 621;
     const SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION  = 622;
     const INVALID_CONFIRMATION_TOKEN_EXCEPTION     = 623;
+    const SALUTATION_NOT_FOUND_EXCEPTION           = 624;
 
     /**
      * @var array
@@ -51,5 +52,6 @@ class ResponseCode
         self::USER_WITHOUT_ROLE_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Change users related role before removal'],
         self::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space haven\'t access to role'],
         self::INVALID_CONFIRMATION_TOKEN_EXCEPTION      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid confirmation token'],
+        self::SALUTATION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Salutation not found'],
     ];
 }
