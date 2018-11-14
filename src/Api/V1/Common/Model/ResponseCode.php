@@ -30,6 +30,7 @@ class ResponseCode
     const INVALID_CONFIRMATION_TOKEN_EXCEPTION     = 623;
     const SALUTATION_NOT_FOUND_EXCEPTION           = 624;
     const CARE_LEVEL_NOT_FOUND_EXCEPTION           = 625;
+    const CITY_STATE_ZIP_NOT_FOUND_EXCEPTION       = 626;
 
     /**
      * @var array
@@ -55,5 +56,6 @@ class ResponseCode
         self::INVALID_CONFIRMATION_TOKEN_EXCEPTION      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid confirmation token'],
         self::SALUTATION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Salutation not found'],
         self::CARE_LEVEL_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CareLevel not found'],
+        self::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CityStateZip not found'],
     ];
 }
