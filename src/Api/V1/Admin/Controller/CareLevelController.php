@@ -170,7 +170,7 @@ class CareLevelController extends BaseController
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, CareLevelService $careLevelService) : JsonResponse
     {
@@ -223,7 +223,7 @@ class CareLevelController extends BaseController
      * @param $id
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, CareLevelService $careLevelService) : JsonResponse
     {

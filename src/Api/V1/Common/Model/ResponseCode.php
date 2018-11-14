@@ -31,6 +31,7 @@ class ResponseCode
     const SALUTATION_NOT_FOUND_EXCEPTION           = 624;
     const CARE_LEVEL_NOT_FOUND_EXCEPTION           = 625;
     const CITY_STATE_ZIP_NOT_FOUND_EXCEPTION       = 626;
+    const RELATIONSHIP_NOT_FOUND_EXCEPTION         = 627;
 
     /**
      * @var array
@@ -57,5 +58,6 @@ class ResponseCode
         self::SALUTATION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Salutation not found'],
         self::CARE_LEVEL_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CareLevel not found'],
         self::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CityStateZip not found'],
+        self::RELATIONSHIP_NOT_FOUND_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Relationship not found'],
     ];
 }
