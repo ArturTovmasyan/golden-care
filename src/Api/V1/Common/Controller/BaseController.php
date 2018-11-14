@@ -73,9 +73,8 @@ class BaseController extends Controller
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params) {
-        $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
-
+    protected function respondList(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
+    {
         if ($request->get('pdf')) {
             $fields = $this->getGrid($entityName)->getGroupOptions($groupName);
 
@@ -88,13 +87,14 @@ class BaseController extends Controller
 
             return $this->respondPdf(
                 $request,
-                $service->getListing($queryBuilder, $params),
+                $service->list($params),
                 $fields
             );
         } else {
-            return $this->respondPagination(
-                $request,
-                $service->getListing($queryBuilder, $params),
+            return $this->respondSuccess(
+                Response::HTTP_OK,
+                '',
+                $service->list($params),
                 [$groupName]
             );
         }
@@ -102,14 +102,63 @@ class BaseController extends Controller
 
     /**
      * @param Request $request
+     * @param string $entityName
+     * @param string $groupName
+     * @param IGridService $service
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
+    {
+        $fields = $this->getGrid($entityName)->getGroupOptions($groupName);
+
+        /** @var Serializer $serializer */
+        $serializer = $this->get('jms_serializer');
+
+        $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
+        $service->gridSelect($queryBuilder, $params);
+
+        foreach ($fields as $field) {
+            $queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
+        }
+
+        $paginator = new Paginator($queryBuilder);
+        $paginator->setUseOutputWalkers(false);
+
+        $page    = $request->get('page') ?: 1;
+        $perPage = $request->get('per_page');
+
+        $total   = $paginator->count();
+
+        $paginator
+            ->getQuery()
+            ->setFirstResult($perPage * ($page-1))
+            ->setMaxResults($perPage);
+
+        $data = [
+            'page'      => $page,
+            'per_page'  => $perPage,
+            'total'     => $total,
+            'data'      => $paginator->getQuery()->getArrayResult()
+        ];
+
+        if (empty($groups)) {
+            $responseData = $serializer->serialize($data, 'json');
+        } else {
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setGroups([$groupName]));
+        }
+
+        return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @param Request $request
+     * @param $data
      * @param array $fields
-     * @param QueryBuilder $queryBuilder
      * @return PdfResponse
      */
-    protected function respondPdf(Request $request, Paginator $paginator, $fields)
+    protected function respondPdf(Request $request, $data, $fields)
     {
-        $data = $paginator->getQuery()->getArrayResult();
-
         // TODO(haykg): this is temporary solution, need to be added title and field lables
         $html = $this->renderView(
             '@api_grid/grid.html.twig',
@@ -121,44 +170,6 @@ class BaseController extends Controller
         );
 
         return new PdfResponse($this->pdf->getOutputFromHtml($html));
-    }
-
-    /**
-     * @param Request $request
-     * @param QueryBuilder $queryBuilder
-     * @param Paginator $paginator
-     * @param array $groups
-     * @param array $headers
-     * @return JsonResponse
-     */
-    protected function respondPagination(Request $request, Paginator $paginator, $groups = [], $headers = [])
-    {
-        /** @var Serializer $serializer */
-        $serializer = $this->get('jms_serializer');
-
-        $total   = $paginator->count();
-        $page    = $request->get('page') ?: 1;
-        $perPage = $request->get('per_page');
-
-        $paginator
-            ->getQuery()
-            ->setFirstResult($perPage * ($page-1))
-            ->setMaxResults($perPage);
-
-        $data = [
-            'page'      => $page,
-            'per_page'  => $perPage,
-            'total'     => $total,
-            'data'      => $paginator->getQuery()->getResult()
-        ];
-
-        if (empty($groups)) {
-            $responseData = $serializer->serialize($data, 'json');
-        } else {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setGroups($groups));
-        }
-
-        return new JsonResponse($responseData, Response::HTTP_OK, $headers, true);
     }
 
     /**

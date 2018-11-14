@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Salutation;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class SalutationRepository
@@ -15,15 +14,12 @@ class SalutationRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
-    public function searchAll(QueryBuilder $queryBuilder) : Paginator
+    public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('s')
-                ->from(Salutation::class, 's')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(Salutation::class, 's')
+            ->groupBy('s.id');
     }
 }

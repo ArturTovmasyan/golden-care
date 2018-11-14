@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class SpaceController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/space Get Spaces
+     * @api {get} /api/v1.0/admin/space/grid Get Spaces Grid
      * @apiVersion 1.0.0
-     * @apiName Get Spaces
+     * @apiName Get Spaces Grid
      * @apiGroup Admin Space
      * @apiDescription This function is used to listing spaces
      *
@@ -43,7 +43,7 @@ class SpaceController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the space
      * @apiSuccess {String}  name          The Name of the space
-     * @apiSuccess {Boolean} created       The creation date of the space
+     * @apiSuccess {Boolean} created_at    The creation date of the space
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -60,27 +60,27 @@ class SpaceController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_space_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_space_grid", methods={"GET"})
      *
      * @param Request $request
      * @param SpaceService $spaceService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, SpaceService $spaceService)
+    public function gridAction(Request $request, SpaceService $spaceService)
     {
         return $this->respondGrid(
             $request,
             Space::class,
-            'api_admin_space_list',
+            'api_admin_space_grid',
             $spaceService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/space Get Spaces Options
+     * @api {options} /api/v1.0/admin/space Get Spaces Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Spaces Options
+     * @apiName Get Spaces Grid Options
      * @apiGroup Admin Space
      * @apiDescription This function is used to describe options of listing
      *
@@ -102,15 +102,58 @@ class SpaceController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_space_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_space_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Space::class, 'api_admin_space_list');
+        return $this->getOptionsByGroupName(Space::class, 'api_admin_space_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/space Get Spaces
+     * @apiVersion 1.0.0
+     * @apiName Get Spaces
+     * @apiGroup Admin Space
+     * @apiDescription This function is used to listing spaces
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the space
+     * @apiSuccess {String}  name          The Name of the space
+     * @apiSuccess {Boolean} created_at    The creation date of the space
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "name": "ALMS",
+     *                  "created_at": "2018-11-13T08:59:02+04:00"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_space_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param SpaceService $spaceService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, SpaceService $spaceService)
+    {
+        return $this->respondList(
+            $request,
+            Space::class,
+            'api_admin_space_list',
+            $spaceService
+        );
     }
 
     /**

@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity("title", groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
  * @ORM\Table(name="tbl_salutation")
  * @Grid(
- *     api_admin_salutation_list={
+ *     api_admin_salutation_grid={
  *          {"id", "number", true, true, "s.id"},
  *          {"title", "string", true, true, "s.title"}
  *     }
@@ -48,7 +48,7 @@ class Salutation
      *      groups={"api_admin_salutation_add", "api_admin_salutation_edit"}
      * )
      * @ORM\Column(name="title", type="string", unique=true, length=255)
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
      */
     private $title;
 
@@ -96,7 +96,7 @@ class Salutation
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_at")
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
      */
     public function getCreatedAtTime() : string
     {
@@ -106,7 +106,7 @@ class Salutation
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_at")
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
      */
     public function getUpdatedAtTime() : string
     {
@@ -116,7 +116,7 @@ class Salutation
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_by")
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
      */
     public function getCreatedById() : int
     {
@@ -126,7 +126,7 @@ class Salutation
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_by")
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
      */
     public function getUpdatedById() : int
     {

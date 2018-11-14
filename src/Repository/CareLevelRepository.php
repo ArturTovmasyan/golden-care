@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\CareLevel;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class CareLevelRepository
@@ -15,15 +14,12 @@ class CareLevelRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
-    public function searchAll(QueryBuilder $queryBuilder) : Paginator
+    public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('cl')
-                ->from(CareLevel::class, 'cl')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(CareLevel::class, 'cl')
+            ->groupBy('cl.id');
     }
 }

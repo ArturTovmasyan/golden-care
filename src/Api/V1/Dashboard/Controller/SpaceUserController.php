@@ -35,9 +35,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class SpaceUserController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/dashboard/space/{space_id}/user Get Users
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/user Get Users Grid
      * @apiVersion 1.0.0
-     * @apiName Get Users
+     * @apiName Get Users Grid
      * @apiGroup Dashboard Space
      * @apiPermission PERMISSION_USER
      * @apiDescription This function is used to listing users by space
@@ -82,7 +82,7 @@ class SpaceUserController extends BaseController
      *          "error": "Permission denied for this resource"
      *     }
      *
-     * @Route("", name="api_dashboard_space_user_list", requirements={"spaceId"="\d+"}, methods={"GET"})
+     * @Route("", name="api_dashboard_space_user_grid", requirements={"spaceId"="\d+"}, methods={"GET"})
      * @Permission({"PERMISSION_USER"})
      *
      * @param Request $request
@@ -90,21 +90,21 @@ class SpaceUserController extends BaseController
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, SpaceUserService $spaceUserService)
+    public function gridAction(Request $request, SpaceUserService $spaceUserService)
     {
         return $this->respondGrid(
             $request,
             User::class,
-            'api_dashboard_space_user_list',
+            'api_dashboard_space_user_grid',
             $spaceUserService,
             $request->get('space')
         );
     }
 
     /**
-     * @api {options} /api/v1.0/dashboard/space/{space_id}/role Get Users Options
+     * @api {options} /api/v1.0/dashboard/space/{space_id}/role Get Users Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Users Options
+     * @apiName Get Users Grid Options
      * @apiGroup Dashboard Space
      * @apiPermission PERMISSION_USER
      * @apiDescription This function is used to describe options of listing
@@ -135,9 +135,73 @@ class SpaceUserController extends BaseController
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(User::class, 'api_dashboard_space_user_list');
+        return $this->getOptionsByGroupName(User::class, 'api_dashboard_space_user_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/user Get Users
+     * @apiVersion 1.0.0
+     * @apiName Get Users
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_USER
+     * @apiDescription This function is used to listing users by space
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam   {Int}     space_id          The identifier of the space
+     *
+     * @apiSuccess {Int}     id                The identifier of the user
+     * @apiSuccess {String}  first_name        The First Name of the user
+     * @apiSuccess {String}  last_name         The Last Name of the user
+     * @apiSuccess {String}  username          The unique username of the user
+     * @apiSuccess {String}  email             The unique email of the user
+     * @apiSuccess {Boolean} enabled           The enabled status of the user
+     * @apiSuccess {Boolean} completed         The profile completed status of the user
+     * @apiSuccess {String}  last_activity_at  The last activity date of the user
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "first_name": "Joe",
+     *                  "last_name": "Cole",
+     *                  "username": "joe",
+     *                  "email": "joe.cole@gmail.com",
+     *                  "enabled": true,
+     *                  "completed": true,
+     *                  "last_activity_at": "2018-10-22T17:31:48+04:00"
+     *              }
+     *          }
+     *     }
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 401,
+     *          "error": "Permission denied for this resource"
+     *     }
+     *
+     * @Route("", name="api_dashboard_space_user_list", requirements={"spaceId"="\d+"}, methods={"GET"})
+     * @Permission({"PERMISSION_USER"})
+     *
+     * @param Request $request
+     * @param SpaceUserService $spaceUserService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, SpaceUserService $spaceUserService)
+    {
+        return $this->respondList(
+            $request,
+            User::class,
+            'api_dashboard_space_user_list',
+            $spaceUserService,
+            $request->get('space')
+        );
     }
 
     /**

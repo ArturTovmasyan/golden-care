@@ -15,10 +15,15 @@ class MedicationService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return mixed
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Medication::class)->search($queryBuilder);
+        $this->em->getRepository(Medication::class)->search($queryBuilder);
+    }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(Medication::class)->findAll();
     }
 }

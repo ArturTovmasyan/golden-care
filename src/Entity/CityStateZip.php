@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @ORM\Entity(repositoryClass="App\Repository\CityStateZipRepository")
  * @ORM\Table(name="tbl_city_state_zip")
  * @Grid(
- *     api_admin_city_state_zip_list={
+ *     api_admin_city_state_zip_grid={
  *          {"id", "number", true, true, "csz.id"},
  *          {"stateFull", "string", true, true, "csz.stateFull"},
  *          {"state2Ltr", "string", true, true, "csz.state2Ltr"},
@@ -37,7 +37,7 @@ class CityStateZip
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $id;
 
@@ -50,7 +50,7 @@ class CityStateZip
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="state_full", type="string", length=100)
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $stateFull;
 
@@ -63,7 +63,7 @@ class CityStateZip
      *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="state_2_ltr", type="string", length=2)
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $state2Ltr;
 
@@ -76,7 +76,7 @@ class CityStateZip
      *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="zip_main", type="string", length=10)
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $zipMain;
 
@@ -88,7 +88,7 @@ class CityStateZip
      *      maxMessage = "ZIP Sub cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $zipSub;
 
@@ -101,7 +101,7 @@ class CityStateZip
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="city", type="string", length=100)
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     private $city;
 
@@ -192,7 +192,7 @@ class CityStateZip
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_at")
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     public function getCreatedAtTime() : string
     {
@@ -202,7 +202,7 @@ class CityStateZip
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_at")
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     public function getUpdatedAtTime() : string
     {
@@ -212,7 +212,7 @@ class CityStateZip
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_by")
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     public function getCreatedById() : int
     {
@@ -222,7 +222,7 @@ class CityStateZip
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_by")
-     * @Groups({"api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
     public function getUpdatedById() : int
     {

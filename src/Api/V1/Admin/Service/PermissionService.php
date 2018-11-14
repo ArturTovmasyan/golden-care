@@ -15,11 +15,17 @@ class PermissionService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @param mixed $params
-     * @return Paginator
+     * @param $params
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Permission::class)->search($queryBuilder);
+        $this->em->getRepository(Permission::class)->search($queryBuilder);
     }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(Permission::class)->findAll();
+    }
+
 }

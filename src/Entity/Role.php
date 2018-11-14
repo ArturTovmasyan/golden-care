@@ -14,14 +14,14 @@ use App\Annotation\Grid as Grid;
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
  * @Grid(
- *     api_admin_role_list={
+ *     api_admin_role_grid={
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
- *          {"space", "object", false, false, ""},
+ *          {"space", "string", false, false, "s.name"},
  *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
  *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Role", "defaultValues"}}
  *     },
- *     api_dashboard_space_role_list={
+ *     api_dashboard_space_role_grid={
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
  *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
@@ -36,14 +36,32 @@ class Role
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_dashboard_space_role_grid",
+     *     "api_dashboard_space_role_list",
+     *     "api_dashboard_space_role_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_dashboard_space_role_grid",
+     *     "api_dashboard_space_role_list",
+     *     "api_dashboard_space_role_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     private $name;
@@ -51,20 +69,35 @@ class Role
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
      * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
-     * @Groups({"api_admin_role_list", "api_admin_role_get"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get"
+     * })
      */
     private $space;
 
     /**
      * @ORM\ManyToMany(targetEntity="Permission", mappedBy="roles", cascade={"persist", "remove"})
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me",
+     *     "api_admin_role_get"
+     * })
      */
     protected $permissions;
 
     /**
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_dashboard_space_role_grid",
+     *     "api_dashboard_space_role_list",
+     *     "api_dashboard_space_role_get"
+     * })
      * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_dashboard_role_add", "api_admin_role_edit"})
      */
     protected $default;
@@ -72,7 +105,14 @@ class Role
     /**
      * @var bool
      * @ORM\Column(name="is_space_default", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_role_list", "api_admin_role_get", "api_dashboard_space_role_list", "api_dashboard_space_role_get"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_dashboard_space_role_grid",
+     *     "api_dashboard_space_role_list",
+     *     "api_dashboard_space_role_get"
+     * })
      * @Assert\GreaterThanOrEqual(value=0, groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
      */
     protected $spaceDefault;

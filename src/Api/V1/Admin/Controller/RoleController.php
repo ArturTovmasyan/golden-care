@@ -32,11 +32,11 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class RoleController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/role Get Roles
+     * @api {get} /api/v1.0/admin/role/grid Get Roles Grid
      * @apiVersion 1.0.0
-     * @apiName Get Roles
+     * @apiName Get Roles Grid
      * @apiGroup Admin Role
-     * @apiDescription This function is used to listing roles
+     * @apiDescription This function is used to roles grid
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -56,36 +56,34 @@ class RoleController extends BaseController
      *              {
      *                  "id": 1,
      *                  "name": "Administrator",
-     *                  "space": {
-     *                      "id": 1
-     *                  },
+     *                  "space": "Space name",
      *                  "default": false,
      *                  "space_default": false
      *              }
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_role_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_role_grid", methods={"GET"})
      *
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, RoleService $roleService)
+    public function gridAction(Request $request, RoleService $roleService)
     {
         return $this->respondGrid(
             $request,
             Role::class,
-            'api_admin_role_list',
+            'api_admin_role_grid',
             $roleService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/role Get Roles Options
+     * @api {options} /api/v1.0/admin/role/grid Get Roles Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Roles Options
+     * @apiName Get Roles Grid Options
      * @apiGroup Admin Role
      * @apiDescription This function is used to describe options of listing
      *
@@ -107,15 +105,64 @@ class RoleController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_role_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_role_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Role::class, 'api_admin_role_list');
+        return $this->getOptionsByGroupName(Role::class, 'api_admin_role_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/role/grid Get Roles Grid
+     * @apiVersion 1.0.0
+     * @apiName Get Roles Grid
+     * @apiGroup Admin Role
+     * @apiDescription This function is used to roles grid
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the role
+     * @apiSuccess {String}  name          The Name of the role
+     * @apiSuccess {Object}  space         The Space of the role
+     * @apiSuccess {Boolean} default       The status of the role
+     * @apiSuccess {Boolean} space_default The space status of the role
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "name": "Administrator",
+     *                  "space": {
+     *                      "id": 1
+     *                  },
+     *                  "default": false,
+     *                  "space_default": false
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_role_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param RoleService $roleService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, RoleService $roleService)
+    {
+        return $this->respondList(
+            $request,
+            Role::class,
+            'api_admin_role_list',
+            $roleService
+        );
     }
 
     /**

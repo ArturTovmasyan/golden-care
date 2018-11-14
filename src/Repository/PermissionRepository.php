@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class PermissionRepository
@@ -55,33 +54,25 @@ class PermissionRepository extends EntityRepository
 
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('p')
-                ->from(Permission::class, 'p')
-                ->groupBy('p.id')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(Permission::class, 'p')
+            ->groupBy('p.id');
     }
 
     /**
      * @param QueryBuilder $queryBuilder
      * @param Space $space
-     * @return Paginator
+     * @return void
      */
     public function searchForDashboard(QueryBuilder $queryBuilder, Space $space)
     {
-        /** @TODO (harutg) Must be added roles usability **/
-        return new Paginator(
-            $queryBuilder
-                ->select('p')
-                ->from(Permission::class, 'p')
-                ->groupBy('p.id')
-                ->getQuery()
-        );
+        /** @TODO (harutg) Must be added roles usability * */
+        $queryBuilder
+            ->from(Permission::class, 'p')
+            ->groupBy('p.id');
     }
 }

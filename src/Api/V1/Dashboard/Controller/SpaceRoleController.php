@@ -36,6 +36,95 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class SpaceRoleController extends BaseController
 {
     /**
+     * @api {get} /api/v1.0/dashboard/space/{space_id}/role/grid Get Roles Grid
+     * @apiVersion 1.0.0
+     * @apiName Get Roles Grid
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_ROLE
+     * @apiDescription This function is used to listing roles by space
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int} space_id      The unique identifier of the space
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the role
+     * @apiSuccess {String}  name          The Name of the role
+     * @apiSuccess {Boolean} default       The status of the role
+     * @apiSuccess {Boolean} space_default The main role of space for invitation
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "total": 5,
+     *          "data": [
+     *              {
+     *                  "id": 1,
+     *                  "name": "Administrator",
+     *                  "default": false,
+     *                  "space_default": true
+     *              }
+     *          }
+     *     }
+     *
+     * @Route("/grid", name="api_dashboard_space_role_grid", requirements={"spaceId"="\d+"}, methods={"GET"})
+     *
+     * @param Request $request
+     * @param SpaceRoleService $spaceRoleService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function gridAction(Request $request, SpaceRoleService $spaceRoleService)
+    {
+        return $this->respondGrid(
+            $request,
+            Role::class,
+            'api_dashboard_space_role_grid',
+            $spaceRoleService,
+            $request->get('space')
+        );
+    }
+
+    /**
+     * @api {options} /api/v1.0/dashboard/space/{space_id}/role/grid Get Roles Grid Options
+     * @apiVersion 1.0.0
+     * @apiName Get Roles Grid Options
+     * @apiGroup Dashboard Space
+     * @apiPermission PERMISSION_ROLE
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array}   options The options of thr role listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "label": "id",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_dashboard_space_role_grid_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function gridOptionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(Role::class, 'api_dashboard_space_role_grid');
+    }
+
+    /**
      * @api {get} /api/v1.0/dashboard/space/{space_id}/role Get Roles
      * @apiVersion 1.0.0
      * @apiName Get Roles
@@ -78,50 +167,13 @@ class SpaceRoleController extends BaseController
      */
     public function listAction(Request $request, SpaceRoleService $spaceRoleService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
             Role::class,
             'api_dashboard_space_role_list',
             $spaceRoleService,
             $request->get('space')
         );
-    }
-
-    /**
-     * @api {options} /api/v1.0/dashboard/space/{space_id}/role Get Roles Options
-     * @apiVersion 1.0.0
-     * @apiName Get Roles Options
-     * @apiGroup Dashboard Space
-     * @apiPermission PERMISSION_ROLE
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array}   options The options of thr role listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "label": "id",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
-     * @Route("", name="api_dashboard_space_role_options", methods={"OPTIONS"})
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \ReflectionException
-     */
-    public function optionAction(Request $request)
-    {
-        return $this->getOptionsByGroupName(Role::class, 'api_dashboard_space_role_list');
     }
 
     /**

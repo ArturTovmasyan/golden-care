@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class SpaceRepository
@@ -15,16 +14,12 @@ class SpaceRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('s')
-                ->from(Space::class, 's')
-                ->groupBy('s.id')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(Space::class, 's')
+            ->groupBy('s.id');
     }
 }

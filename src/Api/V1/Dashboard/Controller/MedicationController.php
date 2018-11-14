@@ -49,9 +49,7 @@ class MedicationController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "page": 1,
-     *          "total": 2,
-     *          "data": [
+     *          [
      *              {
      *                  "id": 1,
      *                  "name": "Son"
@@ -68,48 +66,11 @@ class MedicationController extends BaseController
      */
     public function listAction(Request $request, MedicationService $medicationService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
             Medication::class,
             'api_dashboard_medication_list',
             $medicationService
         );
-    }
-
-    /**
-     * @api {options} /api/v1.0/dashboard/space/{space_id}/permission Get Medication Options
-     * @apiVersion 1.0.0
-     * @apiName Get Medication Options
-     * @apiGroup Dashboard Medication
-     * @apiPermission none
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of thr medication listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "label": "id",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
-     * @Route("", name="api_dashboard_medication_options", methods={"OPTIONS"})
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \ReflectionException
-     */
-    public function optionAction(Request $request)
-    {
-        return $this->getOptionsByGroupName(Medication::class, 'api_dashboard_medication_list');
     }
 }

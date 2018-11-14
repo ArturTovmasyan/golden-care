@@ -16,11 +16,17 @@ class UserService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @param $params
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(User::class)->search($queryBuilder);
+        $this->em->getRepository(User::class)->search($queryBuilder);
+    }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(User::class)->findAll();
     }
 
     /**

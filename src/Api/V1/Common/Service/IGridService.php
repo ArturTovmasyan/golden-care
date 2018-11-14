@@ -6,5 +6,13 @@ use Doctrine\ORM\QueryBuilder;
 
 interface IGridService
 {
-    public function getListing(QueryBuilder $queryBuilder, $params);
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $params
+     * @return void
+     */
+    public function gridSelect(QueryBuilder $queryBuilder, $params);
+
+    /** @return array */
+    public function list($params);
 }

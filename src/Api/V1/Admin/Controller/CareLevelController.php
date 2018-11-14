@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class CareLevelController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/care/level Get CareLevels
+     * @api {get} /api/v1.0/admin/care/level/grid Get CareLevel Grid
      * @apiVersion 1.0.0
-     * @apiName Get CareLevels
+     * @apiName Get CareLevel Grid
      * @apiGroup Admin CareLevel
      * @apiDescription This function is used to listing careLevels
      *
@@ -44,10 +44,10 @@ class CareLevelController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the careLevel
      * @apiSuccess {String}  title         The title of the careLevel
      * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  createdAt     The created time of the careLevel
-     * @apiSuccess {String}  updatedAt     The updated time of the careLevel
-     * @apiSuccess {Int}     createdBy     The created user id of the careLevel
-     * @apiSuccess {Int}     updatedBy     The updated user id of the careLevel
+     * @apiSuccess {String}  created_at     The created time of the careLevel
+     * @apiSuccess {String}  updated_at     The updated time of the careLevel
+     * @apiSuccess {Int}     created_by     The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -58,10 +58,97 @@ class CareLevelController extends BaseController
      *          "total": 5,
      *          "data": [
      *              {
-     *                  "createdAt": "2018-11-01 17:24:48",
-     *                  "updatedAt": "2018-11-01 17:25:49",
-     *                  "createdBy": 1,
-     *                  "updatedBy": 5,
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
+     *                  "id": 1,
+     *                  "title": "Dr.",
+     *                  "description": "some description"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_care_level_grid", methods={"GET"})
+     *
+     * @param Request $request
+     * @param CareLevelService $careLevelService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function gridAction(Request $request, CareLevelService $careLevelService)
+    {
+        return $this->respondGrid(
+            $request,
+            CareLevel::class,
+            'api_admin_care_level_grid',
+            $careLevelService
+        );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/care/level/grid Get CareLevel Grid Options
+     * @apiVersion 1.0.0
+     * @apiName Get CareLevel Grid Options
+     * @apiGroup Admin CareLevel Grid
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array} options The options of the care level listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": "name",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_care_level_grid_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function gridOptionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(CareLevel::class, 'api_admin_care_level_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/care/level Get CareLevel
+     * @apiVersion 1.0.0
+     * @apiName Get CareLevel
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to listing careLevels
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the careLevel
+     * @apiSuccess {String}  title         The title of the careLevel
+     * @apiSuccess {String}  description   The description of the careLevel
+     * @apiSuccess {String}  created_at     The created time of the careLevel
+     * @apiSuccess {String}  updated_at     The updated time of the careLevel
+     * @apiSuccess {Int}     created_by     The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
      *                  "id": 1,
      *                  "title": "Dr.",
      *                  "description": "some description"
@@ -99,19 +186,19 @@ class CareLevelController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the careLevel
      * @apiSuccess {String}  title         The title of the careLevel
      * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  createdAt     The created time of the careLevel
-     * @apiSuccess {String}  updatedAt     The updated time of the careLevel
-     * @apiSuccess {Int}     createdBy     The created user id of the careLevel
-     * @apiSuccess {Int}     updatedBy     The updated user id of the careLevel
+     * @apiSuccess {String}  created_at     The created time of the careLevel
+     * @apiSuccess {String}  updated_at     The updated time of the careLevel
+     * @apiSuccess {Int}     created_by     The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *                  "createdAt": "2018-11-01 17:24:48",
-     *                  "updatedAt": "2018-11-01 17:25:49",
-     *                  "createdBy": 1,
-     *                  "updatedBy": 5,
+     *                  "create_at": "2018-11-01 17:24:48",
+     *                  "update_at": "2018-11-01 17:25:49",
+     *                  "create_by": 1,
+     *                  "update_by": 5,
      *                  "id": 1,
      *                  "title": "Dr.",
      *                  "description": "some description"
@@ -280,7 +367,7 @@ class CareLevelController extends BaseController
     /**
      * @api {delete} /api/v1.0/admin/care/level Bulk Delete CareLevel
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete CareLevels
+     * @apiName Bulk Delete CareLevel
      * @apiGroup Admin CareLevel
      * @apiDescription This function is used to bulk remove careLevel
      *

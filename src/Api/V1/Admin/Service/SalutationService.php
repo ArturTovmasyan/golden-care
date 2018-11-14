@@ -18,14 +18,16 @@ class SalutationService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return Paginator
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params) : Paginator
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        /** @var SalutationRepository $salutationRepo */
-        $salutationRepo = $this->em->getRepository(Salutation::class);
+        $this->em->getRepository(Salutation::class)->search($queryBuilder);
+    }
 
-        return $salutationRepo->searchAll($queryBuilder);
+    public function list($params)
+    {
+        return $this->em->getRepository(Salutation::class)->findAll();
     }
 
     /**

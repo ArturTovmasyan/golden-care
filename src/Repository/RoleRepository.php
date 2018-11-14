@@ -7,8 +7,8 @@ use App\Api\V1\Common\Service\Exception\SpaceHaventDefaultRoleException;
 use App\Entity\Role;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class RoleRepository
@@ -18,17 +18,34 @@ class RoleRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('r')
-                ->from(Role::class, 'r')
-                ->groupBy('r.id')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(Role::class, 'r')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->groupBy('r.id');
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param Space $space
+     * @return void
+     */
+    public function findBySpace(QueryBuilder $queryBuilder, Space $space)
+    {
+        $queryBuilder
+            ->from(Role::class, 'r')
+            ->where('r.space = :space OR (r.default = :default AND r.space IS NULL)')
+            ->setParameter('space', $space)
+            ->setParameter('default', true)
+            ->groupBy('r.id');
     }
 
     /**
@@ -53,25 +70,6 @@ class RoleRepository extends EntityRepository
         } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
             throw new SpaceHaventDefaultRoleException();
         }
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param Space $space
-     * @return Paginator
-     */
-    public function findBySpace(QueryBuilder $queryBuilder, Space $space)
-    {
-        return new Paginator(
-            $queryBuilder
-                ->select('r')
-                ->from(Role::class, 'r')
-                ->where('r.space = :space OR (r.default = :default AND r.space IS NULL)')
-                ->setParameter('space', $space)
-                ->setParameter('default', true)
-                ->groupBy('r.id')
-                ->getQuery()
-        );
     }
 
     /**

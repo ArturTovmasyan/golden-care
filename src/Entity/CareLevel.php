@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity("title", groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
  * @ORM\Table(name="tbl_care_level")
  * @Grid(
- *     api_admin_care_level_list={
+ *     api_admin_care_level_grid={
  *          {"id", "number", true, true, "cl.id"},
  *          {"title", "string", true, true, "cl.title"},
  *          {"description", "string", true, true, "cl.description"},
@@ -36,7 +36,7 @@ class CareLevel
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     private $id;
 
@@ -49,7 +49,7 @@ class CareLevel
      *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
      * )
      * @ORM\Column(name="title", type="string", unique=true, length=255)
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     private $title;
 
@@ -61,7 +61,7 @@ class CareLevel
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
      * )
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     private $description;
 
@@ -125,7 +125,7 @@ class CareLevel
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_at")
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     public function getCreatedAtTime() : string
     {
@@ -135,7 +135,7 @@ class CareLevel
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_at")
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     public function getUpdatedAtTime() : string
     {
@@ -145,7 +145,7 @@ class CareLevel
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("created_by")
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     public function getCreatedById() : int
     {
@@ -155,7 +155,7 @@ class CareLevel
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("updated_by")
-     * @Groups({"api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     public function getUpdatedById() : int
     {

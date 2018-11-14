@@ -33,9 +33,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class UserController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/user Get Users
+     * @api {get} /api/v1.0/admin/user/grid Get Users Grid
      * @apiVersion 1.0.0
-     * @apiName Get Users
+     * @apiName Get Users Grid
      * @apiGroup Admin User
      * @apiDescription This function is used to listing users
      *
@@ -70,27 +70,27 @@ class UserController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_user_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_user_grid", methods={"GET"})
      *
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, UserService $userService)
+    public function gridAction(Request $request, UserService $userService)
     {
         return $this->respondGrid(
             $request,
             User::class,
-            'api_admin_user_list',
+            'api_admin_user_grid',
             $userService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/user Get Users Options
+     * @api {options} /api/v1.0/admin/user/grid Get Users Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Users Options
+     * @apiName Get Users Grid Options
      * @apiGroup Admin User
      * @apiDescription This function is used to describe options of listing
      *
@@ -112,15 +112,67 @@ class UserController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_user_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_user_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(User::class, 'api_admin_user_list');
+        return $this->getOptionsByGroupName(User::class, 'api_admin_user_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/user Get Users
+     * @apiVersion 1.0.0
+     * @apiName Get Users
+     * @apiGroup Admin User
+     * @apiDescription This function is used to listing users
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id                The identifier of the user
+     * @apiSuccess {String}  first_name        The First Name of the user
+     * @apiSuccess {String}  last_name         The Last Name of the user
+     * @apiSuccess {String}  email             The email of the user
+     * @apiSuccess {Boolean} enabled           The enabled status of the user
+     * @apiSuccess {Boolean} completed         The profile completed status of the user
+     * @apiSuccess {String}  last_activity_at  The last activity date of the user
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "first_name": "Joe",
+     *                  "last_name": "Cole",
+     *                  "username": "joe",
+     *                  "email": "joe.cole@gmail.com",
+     *                  "enabled": true,
+     *                  "completed": true,
+     *                  "last_activity_at": "2018-10-22T17:31:48+04:00"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_user_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, UserService $userService)
+    {
+        return $this->respondList(
+            $request,
+            User::class,
+            'api_admin_user_list',
+            $userService
+        );
     }
 
     /**

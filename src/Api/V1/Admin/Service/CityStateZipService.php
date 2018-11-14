@@ -18,14 +18,16 @@ class CityStateZipService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return Paginator
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params) : Paginator
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        /** @var CityStateZipRepository $cityStateZipRepo */
-        $cityStateZipRepo = $this->em->getRepository(CityStateZip::class);
+        $this->em->getRepository(CityStateZip::class)->search($queryBuilder);
+    }
 
-        return $cityStateZipRepo->searchAll($queryBuilder);
+    public function list($params)
+    {
+        return $this->em->getRepository(CityStateZip::class)->findAll();
     }
 
     /**

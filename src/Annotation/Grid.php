@@ -89,10 +89,7 @@ class Grid
 
                             $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $className::$methodName();
                         } else {
-                            if (self::FIELD_OPTIONS[$key] != 'field') {
-                                $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $fieldOption;
-                            }
-
+                            $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $fieldOption;
                             $this->groupsById[$groupName][$groupOption[0]][self::FIELD_OPTIONS[$key]] = $fieldOption;
                         }
                     }
@@ -218,13 +215,6 @@ class Grid
         // set limitation
         if (isset($params['per_page']) && (int) $params['per_page'] > 1) {
             $this->perPage = (int) $params['per_page'];
-        }
-
-        // set pagination
-        if ($this->page && $this->perPage) {
-            $offset = ($this->page - 1) * $this->perPage;
-            $this->queryBuilder->setFirstResult($offset);
-            $this->queryBuilder->setMaxResults($this->perPage);
         }
 
         // set sorting

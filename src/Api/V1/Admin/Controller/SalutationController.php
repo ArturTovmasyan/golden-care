@@ -32,6 +32,95 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class SalutationController extends BaseController
 {
     /**
+     * @api {get} /api/v1.0/admin/salutation/grid Get Salutations
+     * @apiVersion 1.0.0
+     * @apiName Get Salutations
+     * @apiGroup Admin Salutation
+     * @apiDescription This function is used to listing salutations
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id            The unique identifier of the salutation
+     * @apiSuccess {String}  title         The title of the salutation
+     * @apiSuccess {String}  created_at     The created time of the salutation
+     * @apiSuccess {String}  updated_at     The updated time of the salutation
+     * @apiSuccess {Int}     created_by     The created user id of the salutation
+     * @apiSuccess {Int}     updated_by     The updated user id of the salutation
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
+     *          "data": [
+     *              {
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
+     *                  "id": 1,
+     *                  "title": "Dr."
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_salutation_grid", methods={"GET"})
+     *
+     * @param Request $request
+     * @param SalutationService $salutationService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function gridAction(Request $request, SalutationService $salutationService)
+    {
+        return $this->respondGrid(
+            $request,
+            Salutation::class,
+            'api_admin_salutation_grid',
+            $salutationService
+        );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/salutation/grid Get Saluation Grid Options
+     * @apiVersion 1.0.0
+     * @apiName Get Saluation Grid Options
+     * @apiGroup Admin Space
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array} options The options of the salutation listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": "name",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_salutation_grid_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function gridOptionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(Salutation::class, 'api_admin_salutation_grid');
+    }
+
+    /**
      * @api {get} /api/v1.0/admin/salutation Get Salutations
      * @apiVersion 1.0.0
      * @apiName Get Salutations
@@ -43,10 +132,10 @@ class SalutationController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the salutation
      * @apiSuccess {String}  title         The title of the salutation
-     * @apiSuccess {String}  createdAt     The created time of the salutation
-     * @apiSuccess {String}  updatedAt     The updated time of the salutation
-     * @apiSuccess {Int}     createdBy     The created user id of the salutation
-     * @apiSuccess {Int}     updatedBy     The updated user id of the salutation
+     * @apiSuccess {String}  created_at     The created time of the salutation
+     * @apiSuccess {String}  updated_at     The updated time of the salutation
+     * @apiSuccess {Int}     created_by     The created user id of the salutation
+     * @apiSuccess {Int}     updated_by     The updated user id of the salutation
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -57,10 +146,10 @@ class SalutationController extends BaseController
      *          "total": 5,
      *          "data": [
      *              {
-     *                  "createdAt": "2018-11-01 17:24:48",
-     *                  "updatedAt": "2018-11-01 17:25:49",
-     *                  "createdBy": 1,
-     *                  "updatedBy": 5,
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
      *                  "id": 1,
      *                  "title": "Dr."
      *              }
@@ -76,7 +165,7 @@ class SalutationController extends BaseController
      */
     public function listAction(Request $request, SalutationService $salutationService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
             Salutation::class,
             'api_admin_salutation_list',
@@ -96,19 +185,19 @@ class SalutationController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the salutation
      * @apiSuccess {String}  title         The title of the salutation
-     * @apiSuccess {String}  createdAt     The created time of the salutation
-     * @apiSuccess {String}  updatedAt     The updated time of the salutation
-     * @apiSuccess {Int}     createdBy     The created user id of the salutation
-     * @apiSuccess {Int}     updatedBy     The updated user id of the salutation
+     * @apiSuccess {String}  created_at     The created time of the salutation
+     * @apiSuccess {String}  updated_at     The updated time of the salutation
+     * @apiSuccess {Int}     created_by     The created user id of the salutation
+     * @apiSuccess {Int}     updated_by     The updated user id of the salutation
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *                  "createdAt": "2018-11-01 17:24:48",
-     *                  "updatedAt": "2018-11-01 17:25:49",
-     *                  "createdBy": 1,
-     *                  "updatedBy": 5,
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
      *                  "id": 1,
      *                  "title": "Dr."
      *          }

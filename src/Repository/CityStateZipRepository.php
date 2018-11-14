@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\CityStateZip;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class CityStateZipRepository
@@ -15,15 +14,12 @@ class CityStateZipRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
-    public function searchAll(QueryBuilder $queryBuilder) : Paginator
+    public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('csz')
-                ->from(CityStateZip::class, 'csz')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(CityStateZip::class, 'csz')
+            ->groupBy('csz.id');
     }
 }

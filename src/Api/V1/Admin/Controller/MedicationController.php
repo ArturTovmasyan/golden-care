@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class MedicationController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/medication Get Medications
+     * @api {get} /api/v1.0/admin/medication/grid Get Medications
      * @apiVersion 1.0.0
      * @apiName Get Medications
      * @apiGroup Admin Medications
@@ -58,25 +58,25 @@ class MedicationController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_medication_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_medication_grid", methods={"GET"})
      *
      * @param Request $request
      * @param MedicationService $medicationService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, MedicationService $medicationService)
+    public function gridAction(Request $request, MedicationService $medicationService)
     {
         return $this->respondGrid(
             $request,
             Medication::class,
-            'api_admin_medication_list',
+            'api_admin_medication_grid',
             $medicationService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/medication Get Medications Options
+     * @api {options} /api/v1.0/admin/medication/grid Get Medications Options
      * @apiVersion 1.0.0
      * @apiName Get Medications Options
      * @apiGroup Admin Medications
@@ -100,15 +100,56 @@ class MedicationController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_medication_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_medication_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Medication::class, 'api_admin_medication_list');
+        return $this->getOptionsByGroupName(Medication::class, 'api_admin_medication_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/medication Get Medications
+     * @apiVersion 1.0.0
+     * @apiName Get Medications
+     * @apiGroup Admin Medications
+     * @apiDescription This function is used to listing medications
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id   The unique identifier of the medication
+     * @apiSuccess {String}  name The name of the medication
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "name": "Lidocaine"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_medication_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param MedicationService $medicationService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, MedicationService $medicationService)
+    {
+        return $this->respondList(
+            $request,
+            Medication::class,
+            'api_admin_medication_list',
+            $medicationService
+        );
     }
 
     /**

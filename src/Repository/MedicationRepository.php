@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
 use App\Entity\Medication;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class MedicationRepository
@@ -16,16 +15,12 @@ class MedicationRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return Paginator
+     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
-        return new Paginator(
-            $queryBuilder
-                ->select('m')
-                ->from(Medication::class, 'm')
-                ->groupBy('m.id')
-                ->getQuery()
-        );
+        $queryBuilder
+            ->from(Medication::class, 'm')
+            ->groupBy('m.id');
     }
 }

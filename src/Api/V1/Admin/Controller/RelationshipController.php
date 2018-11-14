@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class RelationshipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/relationship Get Relationships
+     * @api {get} /api/v1.0/admin/relationship/grid Get Relationships
      * @apiVersion 1.0.0
      * @apiName Get Relationships
      * @apiGroup Admin Relationships
@@ -58,25 +58,25 @@ class RelationshipController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_relationship_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_relationship_grid", methods={"GET"})
      *
      * @param Request $request
      * @param RelationshipService $relationshipService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, RelationshipService $relationshipService)
+    public function gridAction(Request $request, RelationshipService $relationshipService)
     {
         return $this->respondGrid(
             $request,
             Relationship::class,
-            'api_admin_relationship_list',
+            'api_admin_relationship_grid',
             $relationshipService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/relationship Get Relationships Options
+     * @api {options} /api/v1.0/admin/relationship/grid Get Relationships Options
      * @apiVersion 1.0.0
      * @apiName Get Relationships Options
      * @apiGroup Admin Relationships
@@ -100,15 +100,56 @@ class RelationshipController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_relationship_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_relationship_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Relationship::class, 'api_admin_relationship_list');
+        return $this->getOptionsByGroupName(Relationship::class, 'api_admin_relationship_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/relationship Get Relationships
+     * @apiVersion 1.0.0
+     * @apiName Get Relationships
+     * @apiGroup Admin Relationships
+     * @apiDescription This function is used to listing relationships
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id   The unique identifier of the relationship
+     * @apiSuccess {String}  name The name of the relationship
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "name": "Son"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_relationship_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param RelationshipService $relationshipService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, RelationshipService $relationshipService)
+    {
+        return $this->respondList(
+            $request,
+            Relationship::class,
+            'api_admin_relationship_list',
+            $relationshipService
+        );
     }
 
     /**

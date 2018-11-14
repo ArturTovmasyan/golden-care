@@ -16,10 +16,10 @@ use App\Annotation\Grid as Grid;
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_dashboard_space_edit"})
  * @Grid(
- *     api_admin_space_list={
+ *     api_admin_space_grid={
  *          {"id", "number", true, true, "s.id"},
  *          {"name", "string", true, true, "s.name"},
- *          {"created_at", "date", true, true, "s.created"}
+ *          {"created_at", "date", true, true, "s.createdAt"}
  *     }
  * )
  */
@@ -32,14 +32,34 @@ class Space
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_role_list", "api_admin_space_list", "api_admin_space_get", "api_dashboard_space_user_get", "api_profile_me", "api_dashboard_space_get"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_admin_space_grid",
+     *     "api_admin_space_list",
+     *     "api_admin_space_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me",
+     *     "api_dashboard_space_get"
+     * })
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Groups({"api_admin_role_list", "api_admin_space_list", "api_admin_space_get", "api_dashboard_space_user_get", "api_profile_me", "api_dashboard_space_get"})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_admin_space_grid",
+     *     "api_admin_space_list",
+     *     "api_admin_space_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me",
+     *     "api_dashboard_space_get"
+     * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */
     private $name;

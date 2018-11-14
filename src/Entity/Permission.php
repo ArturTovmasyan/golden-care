@@ -12,11 +12,11 @@ use App\Annotation\Grid as Grid;
  * @ORM\Table(name="tbl_permission")
  * @ORM\Entity(repositoryClass="App\Repository\PermissionRepository")
  * @Grid(
- *     api_dashboard_permission_list={
+ *     api_dashboard_permission_grid={
  *          {"id", "number", true, true, "p.id"},
  *          {"name", "string", true, true, "p.name"}
  *     },
- *     api_admin_permission_list={
+ *     api_admin_permission_grid={
  *          {"id", "number", true, true, "p.id"},
  *          {"name", "string", true, true, "p.name"}
  *     }
@@ -29,14 +29,30 @@ class Permission
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me", "api_dashboard_permission_list", "api_admin_permission_list"})
+     * @Groups({
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me",
+     *     "api_dashboard_permission_list",
+     *     "api_admin_permission_list",
+     *     "api_dashboard_permission_grid",
+     *     "api_admin_permission_grid",
+     *     "api_admin_role_get"
+     * })
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me", "api_dashboard_permission_list", "api_admin_permission_list"})
+     * @Groups({
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me",
+     *     "api_dashboard_permission_list",
+     *     "api_admin_permission_list",
+     *     "api_dashboard_permission_grid",
+     *     "api_admin_permission_grid",
+     *     "api_admin_role_get"
+     * })
      */
     private $name;
 
@@ -51,6 +67,9 @@ class Permission
      *          @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
+     * @Groups({
+     *     "api_admin_permission_get"
+     * })
      */
     private $roles;
 

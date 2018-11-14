@@ -32,9 +32,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class PermissionController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/permission Get Permissions
+     * @api {get} /api/v1.0/admin/permission/grid Get Permissions Grid
      * @apiVersion 1.0.0
-     * @apiName Get Permissions
+     * @apiName Get Permissions Grid
      * @apiGroup Admin Role
      * @apiPermission none
      * @apiDescription This function is used to get user all permissions
@@ -58,27 +58,27 @@ class PermissionController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_permission_list", methods={"GET"})
+     * @Route("/grid", name="api_admin_permission_grid", methods={"GET"})
      *
      * @param Request $request
      * @param PermissionService $permissionService
      * @return \Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse|JsonResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, PermissionService $permissionService)
+    public function gridAction(Request $request, PermissionService $permissionService)
     {
         return $this->respondGrid(
             $request,
-            \App\Entity\Permission::class,
-            'api_admin_permission_list',
+            Permission::class,
+            'api_admin_permission_grid',
             $permissionService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/permission Get Permissions Options
+     * @api {options} /api/v1.0/admin/permission/grid Get Permissions Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Permissions Options
+     * @apiName Get Permissions Grid Options
      * @apiGroup Admin Role
      * @apiDescription This function is used to describe options of listing
      *
@@ -100,14 +100,56 @@ class PermissionController extends BaseController
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_permission_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_permission_grid_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    public function optionAction(Request $request)
+    public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Permission::class, 'api_admin_permission_list');
+        return $this->getOptionsByGroupName(Permission::class, 'api_admin_permission_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/permission Get Permissions
+     * @apiVersion 1.0.0
+     * @apiName Get Permissions
+     * @apiGroup Admin Role
+     * @apiPermission none
+     * @apiDescription This function is used to get user all permissions
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id    The identifier of the user
+     * @apiSuccess {String}  name  The name of the permission
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": 1,
+     *                  "name": "PERMISSION_ROLE"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("", name="api_admin_permission_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param PermissionService $permissionService
+     * @return \Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse|JsonResponse
+     * @throws \ReflectionException
+     */
+    public function listAction(Request $request, PermissionService $permissionService)
+    {
+        return $this->respondList(
+            $request,
+            Permission::class,
+            'api_admin_permission_list',
+            $permissionService
+        );
     }
 }

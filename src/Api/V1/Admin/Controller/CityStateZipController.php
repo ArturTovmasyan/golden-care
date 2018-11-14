@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class CityStateZipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip Get CityStateZips
+     * @api {get} /api/v1.0/admin/city/state/zip/grid Get CityStateZip Grid
      * @apiVersion 1.0.0
-     * @apiName Get CityStateZips
+     * @apiName Get CityStateZip Grid
      * @apiGroup Admin CityStateZip
      * @apiDescription This function is used to listing cityStateZip
      *
@@ -60,6 +60,99 @@ class CityStateZipController extends BaseController
      *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
+     *              {
+     *                  "created_at": "2018-11-01 17:24:48",
+     *                  "updated_at": "2018-11-01 17:25:49",
+     *                  "created_by": 1,
+     *                  "updated_by": 5,
+     *                  "id": 1,
+     *                  "state_full": "California",
+     *                  "state_2_ltr": "CA",
+     *                  "zip_main": "89439",
+     *                  "zip_sub": "",
+     *                  "city": "Verdi"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_city_state_zip_grid", methods={"GET"})
+     *
+     * @param Request $request
+     * @param CityStateZipService $cityStateZipService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function gridAction(Request $request, CityStateZipService $cityStateZipService)
+    {
+        return $this->respondGrid(
+            $request,
+            CityStateZip::class,
+            'api_admin_city_state_zip_grid',
+            $cityStateZipService
+        );
+    }
+
+    /**
+     * @api {options} /api/v1.0/admin/city/state/zip/grid Get CityStateZip Grid Options
+     * @apiVersion 1.0.0
+     * @apiName Get CityStateZip Grid Options
+     * @apiGroup Admin CityStateZip
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array} options The options of the cityStateZip listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": "name",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_city_state_zip_grid_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function gridOptionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(CityStateZip::class, 'api_admin_city_state_zip_grid');
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/city/state/zip Get CityStateZip
+     * @apiVersion 1.0.0
+     * @apiName Get CityStateZip
+     * @apiGroup Admin CityStateZip
+     * @apiDescription This function is used to listing cityStateZip
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
+     * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
+     * @apiSuccess {String}  state_2_ltr    The state2Ltr of the cityStateZip
+     * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
+     * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
+     * @apiSuccess {String}  city           The city of the cityStateZip
+     * @apiSuccess {String}  created_at     The created time of the cityStateZip
+     * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
+     * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
+     * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
      *              {
      *                  "created_at": "2018-11-01 17:24:48",
      *                  "updated_at": "2018-11-01 17:25:49",
@@ -310,7 +403,7 @@ class CityStateZipController extends BaseController
     /**
      * @api {delete} /api/v1.0/admin/city/state/zip Bulk Delete CityStateZip
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete CityStateZips
+     * @apiName Bulk Delete CityStateZip
      * @apiGroup Admin CityStateZip
      * @apiDescription This function is used to bulk remove cityStateZip
      *

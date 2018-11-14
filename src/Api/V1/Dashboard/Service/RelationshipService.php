@@ -16,10 +16,15 @@ class RelationshipService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return mixed
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Relationship::class)->search($queryBuilder);
+        $this->em->getRepository(Relationship::class)->search($queryBuilder);
+    }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(Relationship::class)->findAll();
     }
 }

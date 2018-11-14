@@ -17,12 +17,17 @@ class SpaceUserService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @param mixed ...$params
-     * @return mixed
+     * @param $params
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(User::class)->findUsersBySpace($queryBuilder, $params[0]);
+        $this->em->getRepository(User::class)->findUsersBySpace($queryBuilder, $params[0]);
+    }
+
+    public function list($params)
+    {
+        return null;
     }
 
     /**

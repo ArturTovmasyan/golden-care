@@ -21,7 +21,7 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_admin_user_add"})
  * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})
  * @Grid(
- *     api_admin_user_list={
+ *     api_admin_user_grid={
  *          {"id", "number", true, true, "u.id"},
  *          {"first_name", "string", true, true, "u.firstName"},
  *          {"last_name", "string", true, true, "u.lastName"},
@@ -32,7 +32,7 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {"completed", "enum", true, true, "u.completed", {"\App\Model\User", "completedValues"}},
  *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
  *     },
- *     api_dashboard_space_user_list={
+ *     api_dashboard_space_user_grid={
  *          {"id", "integer", true, true, "u.id"},
  *          {"first_name", "string", true, true, "u.firstName"},
  *          {"last_name", "string", true, true, "u.lastName"},
@@ -59,14 +59,34 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+<<<<<<< HEAD
      * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+=======
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
+>>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $firstName;
@@ -74,7 +94,15 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
      */
     private $lastName;
@@ -82,7 +110,15 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup"})
      */
     private $username;
@@ -90,7 +126,15 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      * @Assert\Email(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
@@ -99,7 +143,15 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get", "api_profile_me"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get",
+     *     "api_profile_me"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete"})
      * @Assert\Regex(
      *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
@@ -112,21 +164,42 @@ class User implements UserInterface
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get"
+     * })
      */
     private $enabled;
 
     /**
      * @var bool
      * @ORM\Column(name="completed", type="boolean")
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get"
+     * })
      */
     private $completed;
 
     /**
      * @var \Datetime
      * @ORM\Column(name="last_activity_at", type="datetime")
-     * @Groups({"api_admin_user_get", "api_admin_user_list", "api_dashboard_space_user_list", "api_dashboard_space_user_get"})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_dashboard_space_user_grid",
+     *     "api_dashboard_space_user_list",
+     *     "api_admin_user_get",
+     *     "api_dashboard_space_user_get"
+     * })
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
     protected $lastActivityAt;

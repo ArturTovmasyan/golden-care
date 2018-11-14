@@ -16,12 +16,17 @@ class SpaceRoleService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @param Space $space
-     * @return mixed
+     * @param $params
+     * @return void
      */
-    public function getListing(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Role::class)->findBySpace($queryBuilder, $params[0]);
+        $this->em->getRepository(Role::class)->findBySpace($queryBuilder, $params[0]);
+    }
+
+    public function list($params)
+    {
+        return null;
     }
 
     /**
