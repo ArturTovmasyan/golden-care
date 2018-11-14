@@ -209,7 +209,7 @@ class SalutationController extends BaseController
      * @param $id
      * @return JsonResponse
      */
-    public function getAction($id, SalutationService $salutationService) : JsonResponse
+    public function getAction(Request $request, $id, SalutationService $salutationService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -255,7 +255,7 @@ class SalutationController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, SalutationService $salutationService) : JsonResponse
+    public function addAction(Request $request, SalutationService $salutationService)
     {
         $salutationService->add(
             [
@@ -269,7 +269,7 @@ class SalutationController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/salutation/{id} Edit Salutation
+     * @api {put} /api/v1.0/admin/salutation/{id} Edit Salutation
      * @apiVersion 1.0.0
      * @apiName Edit Salutation
      * @apiGroup Admin Salutation
@@ -297,7 +297,7 @@ class SalutationController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
@@ -305,7 +305,7 @@ class SalutationController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, SalutationService $salutationService) : JsonResponse
+    public function editAction(Request $request, $id, SalutationService $salutationService)
     {
         $salutationService->edit(
             $id,
@@ -347,7 +347,7 @@ class SalutationController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction($id, SalutationService $salutationService) : JsonResponse
+    public function deleteAction(Request $request, $id, SalutationService $salutationService)
     {
         $salutationService->remove($id);
 
@@ -389,7 +389,7 @@ class SalutationController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, SalutationService $salutationService) : JsonResponse
+    public function deleteBulkAction(Request $request, SalutationService $salutationService)
     {
         $salutationService->removeBulk(
             [

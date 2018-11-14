@@ -196,7 +196,7 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/space/{id} Edit Space
+     * @api {put} /api/v1.0/admin/space/{id} Edit Space
      * @apiVersion 1.0.0
      * @apiName Edit Space
      * @apiGroup Admin Space
@@ -224,7 +224,7 @@ class SpaceController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id

@@ -239,7 +239,7 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/relationship/{id} Edit Relationship
+     * @api {put} /api/v1.0/admin/relationship/{id} Edit Relationship
      * @apiVersion 1.0.0
      * @apiName Edit Relationship
      * @apiGroup Admin Relationship
@@ -268,7 +268,7 @@ class RelationshipController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id

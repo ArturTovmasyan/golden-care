@@ -101,7 +101,7 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/profile/edit Edit Profile
+     * @api {put} /api/v1.0/profile/edit Edit Profile
      * @apiVersion 1.0.0
      * @apiName Edit Profile
      * @apiGroup Profile
@@ -134,7 +134,7 @@ class ProfileController extends BaseController
      *          }
      *     }
      *
-     * @Route("/edit", name="api_profile_edit", methods={"POST"})
+     * @Route("/edit", name="api_profile_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param ProfileService $profileService

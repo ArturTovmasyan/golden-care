@@ -296,7 +296,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/user/{id} Edit User
+     * @api {put} /api/v1.0/admin/user/{id} Edit User
      * @apiVersion 1.0.0
      * @apiName Edit User
      * @apiGroup Admin User
@@ -331,7 +331,7 @@ class UserController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id

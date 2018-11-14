@@ -229,7 +229,7 @@ class CityStateZipController extends BaseController
      * @param $id
      * @return JsonResponse
      */
-    public function getAction($id, CityStateZipService $cityStateZipService) : JsonResponse
+    public function getAction(Request $request, $id, CityStateZipService $cityStateZipService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -283,7 +283,7 @@ class CityStateZipController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, CityStateZipService $cityStateZipService) : JsonResponse
+    public function addAction(Request $request, CityStateZipService $cityStateZipService)
     {
         $cityStateZipService->add(
             [
@@ -301,7 +301,7 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/city/state/zip/{id} Edit CityStateZip
+     * @api {put} /api/v1.0/admin/city/state/zip/{id} Edit CityStateZip
      * @apiVersion 1.0.0
      * @apiName Edit CityStateZip
      * @apiGroup Admin CityStateZip
@@ -337,7 +337,7 @@ class CityStateZipController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
@@ -345,7 +345,7 @@ class CityStateZipController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, CityStateZipService $cityStateZipService) : JsonResponse
+    public function editAction(Request $request, $id, CityStateZipService $cityStateZipService)
     {
         $cityStateZipService->edit(
             $id,
@@ -391,7 +391,7 @@ class CityStateZipController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction($id, CityStateZipService $cityStateZipService) : JsonResponse
+    public function deleteAction(Request $request, $id, CityStateZipService $cityStateZipService)
     {
         $cityStateZipService->remove($id);
 
@@ -433,7 +433,7 @@ class CityStateZipController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CityStateZipService $cityStateZipService) : JsonResponse
+    public function deleteBulkAction(Request $request, CityStateZipService $cityStateZipService)
     {
         $cityStateZipService->removeBulk(
             [

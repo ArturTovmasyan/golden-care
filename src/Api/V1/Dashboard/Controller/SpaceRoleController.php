@@ -279,7 +279,7 @@ class SpaceRoleController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/dashboard/space/{space_id}/role/{id} Edit Role
+     * @api {put} /api/v1.0/dashboard/space/{space_id}/role/{id} Edit Role
      * @apiVersion 1.0.0
      * @apiName Edit Role
      * @apiGroup Dashboard Space
@@ -313,7 +313,7 @@ class SpaceRoleController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_role_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_role_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id

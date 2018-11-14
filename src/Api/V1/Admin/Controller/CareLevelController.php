@@ -211,7 +211,7 @@ class CareLevelController extends BaseController
      * @param $id
      * @return JsonResponse
      */
-    public function getAction($id, CareLevelService $careLevelService) : JsonResponse
+    public function getAction(Request $request, $id, CareLevelService $careLevelService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -259,7 +259,7 @@ class CareLevelController extends BaseController
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, CareLevelService $careLevelService) : JsonResponse
+    public function addAction(Request $request, CareLevelService $careLevelService)
     {
         $careLevelService->add(
             [
@@ -274,7 +274,7 @@ class CareLevelController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/care/level/{id} Edit CareLevel
+     * @api {put} /api/v1.0/admin/care/level/{id} Edit CareLevel
      * @apiVersion 1.0.0
      * @apiName Edit CareLevel
      * @apiGroup Admin CareLevel
@@ -304,7 +304,7 @@ class CareLevelController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
@@ -312,7 +312,7 @@ class CareLevelController extends BaseController
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, CareLevelService $careLevelService) : JsonResponse
+    public function editAction(Request $request, $id, CareLevelService $careLevelService)
     {
         $careLevelService->edit(
             $id,
@@ -355,7 +355,7 @@ class CareLevelController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction($id, CareLevelService $careLevelService) : JsonResponse
+    public function deleteAction(Request $request, $id, CareLevelService $careLevelService)
     {
         $careLevelService->remove($id);
 
@@ -397,7 +397,7 @@ class CareLevelController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CareLevelService $careLevelService) : JsonResponse
+    public function deleteBulkAction(Request $request, CareLevelService $careLevelService)
     {
         $careLevelService->removeBulk(
             [

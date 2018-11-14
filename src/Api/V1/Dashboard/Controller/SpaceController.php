@@ -75,7 +75,7 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/dashboard/space/{space_id} Edit Space
+     * @api {put} /api/v1.0/dashboard/space/{space_id} Edit Space
      * @apiVersion 1.0.0
      * @apiName Edit Space
      * @apiGroup Dashboard Space
@@ -104,7 +104,7 @@ class SpaceController extends BaseController
      *          }
      *     }
      *
-     * @Route("", requirements={"spaceId"="\d+"}, name="api_dashboard_space_edit", methods={"POST"})
+     * @Route("", requirements={"spaceId"="\d+"}, name="api_dashboard_space_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param Space $space

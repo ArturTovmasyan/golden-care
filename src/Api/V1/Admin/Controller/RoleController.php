@@ -268,7 +268,7 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/role/{id} Edit Role
+     * @api {put} /api/v1.0/admin/role/{id} Edit Role
      * @apiVersion 1.0.0
      * @apiName Edit Role
      * @apiGroup Admin Role
@@ -303,7 +303,7 @@ class RoleController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id

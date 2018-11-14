@@ -239,7 +239,7 @@ class MedicationController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/medication/{id} Edit Medication
+     * @api {put} /api/v1.0/admin/medication/{id} Edit Medication
      * @apiVersion 1.0.0
      * @apiName Edit Medication
      * @apiGroup Admin Medication
@@ -268,7 +268,7 @@ class MedicationController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
