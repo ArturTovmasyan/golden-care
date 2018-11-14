@@ -17,6 +17,7 @@ class SalutationService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
+     * @param $params
      * @return Paginator
      */
     public function getListing(QueryBuilder $queryBuilder, $params) : Paginator
@@ -48,7 +49,7 @@ class SalutationService extends BaseService implements IGridService
             $salutation = new Salutation();
             $salutation->setTitle($params['title'] ?? '');
 
-            $this->validate($salutation, null, ["api_admin_salutation_add"]);
+            $this->validate($salutation, null, ['api_admin_salutation_add']);
 
             $this->em->persist($salutation);
             $this->em->flush();
@@ -80,7 +81,7 @@ class SalutationService extends BaseService implements IGridService
 
             $entity->setTitle($params['title'] ?? '');
 
-            $this->validate($entity, null, ["api_admin_salutation_edit"]);
+            $this->validate($entity, null, ['api_admin_salutation_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();

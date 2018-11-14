@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation as Serializer;
-use App\Annotation\Grid as Grid;
+use App\Annotation\Grid;
 
 /**
  * Class Salutation

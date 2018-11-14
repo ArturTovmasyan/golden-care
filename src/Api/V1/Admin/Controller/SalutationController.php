@@ -116,12 +116,11 @@ class SalutationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_get", methods={"GET"})
      *
-     * @param Request $request
      * @param SalutationService $salutationService
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, SalutationService $salutationService) : JsonResponse
+    public function getAction($id, SalutationService $salutationService) : JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -253,14 +252,13 @@ class SalutationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_delete", methods={"DELETE"})
      *
-     * @param Request $request
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, SalutationService $salutationService) : JsonResponse
+    public function deleteAction($id, SalutationService $salutationService) : JsonResponse
     {
         $salutationService->remove($id);
 
