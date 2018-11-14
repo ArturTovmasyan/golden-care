@@ -266,4 +266,47 @@ class SalutationController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {delete} /api/v1.0/admin/salutation Bulk Delete Salutations
+     * @apiVersion 1.0.0
+     * @apiName Bulk Delete Salutations
+     * @apiGroup Admin Salutation
+     * @apiDescription This function is used to bulk remove salutations
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the salutations
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Salutation not found"
+     *     }
+     *
+     * @Route("", name="api_admin_salutation_delete_bulk", methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param SalutationService $salutationService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, SalutationService $salutationService) : JsonResponse
+    {
+        $salutationService->removeBulk(
+            [
+                'ids' => $request->get('ids'),
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
 }

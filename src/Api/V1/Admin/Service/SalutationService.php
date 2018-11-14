@@ -47,7 +47,7 @@ class SalutationService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $salutation = new Salutation();
-            $salutation->setTitle($params['title'] ?? '');
+            $salutation->setTitle($params['title']);
 
             $this->validate($salutation, null, ['api_admin_salutation_add']);
 
@@ -79,7 +79,7 @@ class SalutationService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
-            $entity->setTitle($params['title'] ?? '');
+            $entity->setTitle($params['title']);
 
             $this->validate($entity, null, ['api_admin_salutation_edit']);
 
@@ -117,6 +117,20 @@ class SalutationService extends BaseService implements IGridService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param array $params
+     */
+    public function removeBulk(array $params)
+    {
+        $ids = $params['ids'];
+
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $this->remove($id);
+            }
         }
     }
 }

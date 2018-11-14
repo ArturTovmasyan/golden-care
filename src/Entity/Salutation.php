@@ -16,7 +16,7 @@ use App\Annotation\Grid;
  * @package App\Entity
  *
  * @ORM\Entity(repositoryClass="App\Repository\SalutationRepository")
- * @UniqueEntity("title", groups={"api_admin_salutation_add", "api_admin_salutation_edit"}, message="This title is already used.")
+ * @UniqueEntity("title", groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
  * @ORM\Table(name="tbl_salutation")
  * @Grid(
  *     api_admin_salutation_list={
@@ -41,7 +41,7 @@ class Salutation
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_salutation_add", "api_admin_salutation_edit"}, message="Title should not be blank.")
+     * @Assert\NotBlank(groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
