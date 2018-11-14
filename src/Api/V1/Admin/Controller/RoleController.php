@@ -51,7 +51,6 @@ class RoleController extends BaseController
      *     {
      *          "page": "1",
      *          "per_page": 10,
-     *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
      *              {
@@ -93,8 +92,7 @@ class RoleController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Array}   options       The options of thr role listing
-     * @apiSuccess {String}  total         The total count of role listing
+     * @apiSuccess {Array} options The options of thr role listing
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -138,12 +136,10 @@ class RoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "id": 1,
-     *              "name": "Administrator",
-     *              "default": false,
-     *              "space_default": false,
-     *          }
+     *          "id": 1,
+     *          "name": "Administrator",
+     *          "default": false,
+     *          "space_default": false
      *     }
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_get", methods={"GET"})
@@ -209,7 +205,7 @@ class RoleController extends BaseController
      */
     public function addAction(Request $request, RoleService $roleService)
     {
-        $roleService->addRole(
+        $roleService->add(
             [
                 'name'          => $request->get('name'),
                 'space_id'      => $request->get('space_id'),
@@ -270,7 +266,7 @@ class RoleController extends BaseController
      */
     public function editAction(Request $request, $id, RoleService $roleService)
     {
-        $roleService->editRole(
+        $roleService->edit(
             $id,
             [
                 'name'          => $request->get('name'),
@@ -319,7 +315,7 @@ class RoleController extends BaseController
      */
     public function deleteAction(Request $request, $id, RoleService $roleService)
     {
-        $roleService->removeRole($id);
+        $roleService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -362,7 +358,7 @@ class RoleController extends BaseController
 
         if (!empty($ids)) {
             foreach ($ids as $id) {
-                $roleService->removeRole($id);
+                $roleService->remove($id);
             }
         }
 

@@ -20,7 +20,7 @@ class UserService extends BaseService implements IGridService
      */
     public function getListing(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(User::class)->searchAllUsers($queryBuilder);
+        return $this->em->getRepository(User::class)->search($queryBuilder);
     }
 
     /**
@@ -42,7 +42,7 @@ class UserService extends BaseService implements IGridService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addUser(array $params): void
+    public function add(array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -81,7 +81,7 @@ class UserService extends BaseService implements IGridService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editUser($id, array $params): void
+    public function edit($id, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();

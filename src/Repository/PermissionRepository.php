@@ -57,7 +57,7 @@ class PermissionRepository extends EntityRepository
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function searchAllPermissions(QueryBuilder $queryBuilder)
+    public function search(QueryBuilder $queryBuilder)
     {
         return new Paginator(
             $queryBuilder
@@ -73,7 +73,7 @@ class PermissionRepository extends EntityRepository
      * @param Space $space
      * @return Paginator
      */
-    public function getAllForDashboard(QueryBuilder $queryBuilder, Space $space)
+    public function searchForDashboard(QueryBuilder $queryBuilder, Space $space)
     {
         /** @TODO (harutg) Must be added roles usability **/
         return new Paginator(

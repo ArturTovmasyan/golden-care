@@ -55,7 +55,6 @@ class UserController extends BaseController
      *     {
      *          "page": "1",
      *          "per_page": 10,
-     *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
      *              {
@@ -147,16 +146,14 @@ class UserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole",
-     *              "username": "joe",
-     *              "email": "joe.cole@gmail.com",
-     *              "enabled": true,
-     *              "completed": true,
-     *              "last_activity_at": "2018-10-22T17:31:48+04:00"
-     *           }
+     *          "id": 1,
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "username": "joe",
+     *          "email": "joe.cole@gmail.com",
+     *          "enabled": true,
+     *          "completed": true,
+     *          "last_activity_at": "2018-10-22T17:31:48+04:00"
      *     }
      *
      * @Route("/{id}", name="api_admin_user_get", requirements={"id"="\d+"}, methods={"GET"})
@@ -228,7 +225,7 @@ class UserController extends BaseController
      */
     public function addAction(Request $request, UserService $userService)
     {
-        $userService->addUser(
+        $userService->add(
             [
                 'first_name'  => $request->get('first_name'),
                 'last_name'   => $request->get('last_name'),
@@ -292,7 +289,7 @@ class UserController extends BaseController
      */
     public function editAction(Request $request, $id, UserService $userService)
     {
-        $userService->editUser(
+        $userService->edit(
             $id,
             [
                 'first_name'  => $request->get('first_name'),

@@ -15,7 +15,7 @@ class SpaceService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editSpace(Space $space, array $params): void
+    public function edit(Space $space, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();

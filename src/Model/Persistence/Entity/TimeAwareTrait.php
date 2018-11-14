@@ -10,6 +10,7 @@ trait TimeAwareTrait
      * @var \Datetime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"api_admin_space_list", "api_admin_space_get"})
      */
     private $createdAt;
 

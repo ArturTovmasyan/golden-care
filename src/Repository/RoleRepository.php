@@ -20,7 +20,7 @@ class RoleRepository extends EntityRepository
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function searchAllRoles(QueryBuilder $queryBuilder)
+    public function search(QueryBuilder $queryBuilder)
     {
         return new Paginator(
             $queryBuilder
@@ -60,7 +60,7 @@ class RoleRepository extends EntityRepository
      * @param Space $space
      * @return Paginator
      */
-    public function findRolesBySpace(QueryBuilder $queryBuilder, Space $space)
+    public function findBySpace(QueryBuilder $queryBuilder, Space $space)
     {
         return new Paginator(
             $queryBuilder
@@ -79,7 +79,7 @@ class RoleRepository extends EntityRepository
      * @param $id
      * @return mixed
      */
-    public function findRolesBySpaceAndId(Space $space, $id)
+    public function findBySpaceAndId(Space $space, $id)
     {
         try {
             return $this->createQueryBuilder('r')

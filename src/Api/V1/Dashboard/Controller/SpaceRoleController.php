@@ -58,7 +58,6 @@ class SpaceRoleController extends BaseController
      *     {
      *          "page": "1",
      *          "per_page": 10,
-     *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
      *              {
@@ -147,12 +146,10 @@ class SpaceRoleController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *               "id": 1,
-     *               "name": "Administrator",
-     *               "default": false,
-     *               "space_default": true
-     *          }
+     *           "id": 1,
+     *           "name": "Administrator",
+     *           "default": false,
+     *           "space_default": true
      *     }
      *
      * @Route("/{roleId}", name="api_dashboard_space_role_get", requirements={"spaceId"="\d+", "roleId"="\d+"}, methods={"GET"})
@@ -215,7 +212,7 @@ class SpaceRoleController extends BaseController
      */
     public function addAction(Request $request, RoleService $roleService)
     {
-        $roleService->addRole(
+        $roleService->add(
             $request->get('space'),
             [
                 'name'          => $request->get('name'),
@@ -275,7 +272,7 @@ class SpaceRoleController extends BaseController
      */
     public function editAction(Request $request, $id, Space $space, RoleService $roleService)
     {
-        $roleService->editRole(
+        $roleService->edit(
             $id,
             $space,
             [
@@ -325,7 +322,7 @@ class SpaceRoleController extends BaseController
      */
     public function removeAction(Request $request, $id, Space $space, RoleService $roleService)
     {
-        $roleService->removeRole($id, $space);
+        $roleService->remove($id, $space);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

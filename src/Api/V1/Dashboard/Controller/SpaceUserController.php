@@ -61,7 +61,6 @@ class SpaceUserController extends BaseController
      *     {
      *          "page": "1",
      *          "per_page": 10,
-     *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
      *              {
@@ -166,37 +165,35 @@ class SpaceUserController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole",
-     *              "username": "joe",
-     *              "email": "joe.cole@gmail.com",
-     *              "enabled": true,
-     *              "completed": true,
-     *              "space_user_roles": [
-     *                  {
-     *                      "space": {
-     *                          "id": 1,
-     *                          "name": "First"
-     *                      },
-     *                      "role": {
-     *                          "id": 1,
-     *                          "name": "Admin Management",
-     *                          "permissions": [
-     *                              {
-     *                                  "id": 1,
-     *                                  "name": "PERMISSION_ROLE"
-     *                              },
-     *                              {
-     *                                  "id": 2,
-     *                                   "name": "PERMISSION_USER"
-     *                              }
-     *                          ]
-     *                      }
+     *          "id": 1,
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "username": "joe",
+     *          "email": "joe.cole@gmail.com",
+     *          "enabled": true,
+     *          "completed": true,
+     *          "space_user_roles": [
+     *              {
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "First"
+     *                  },
+     *                  "role": {
+     *                      "id": 1,
+     *                      "name": "Admin Management",
+     *                      "permissions": [
+     *                          {
+     *                              "id": 1,
+     *                              "name": "PERMISSION_ROLE"
+     *                          },
+     *                          {
+     *                              "id": 2,
+     *                               "name": "PERMISSION_USER"
+     *                          }
+     *                      ]
      *                  }
-     *              ]
-     *          }
+     *              }
+     *          ]
      *     }
      *
      * @Route("/{id}", name="api_dashboard_space_user_get", requirements={"spaceId"="\d+", "id"="\d+"}, methods={"GET"})

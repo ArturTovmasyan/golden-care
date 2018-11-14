@@ -21,7 +21,7 @@ class UserRepository extends EntityRepository
      * @param QueryBuilder $queryBuilder
      * @return Paginator
      */
-    public function searchAllUsers(QueryBuilder $queryBuilder)
+    public function search(QueryBuilder $queryBuilder)
     {
         return new Paginator(
             $queryBuilder

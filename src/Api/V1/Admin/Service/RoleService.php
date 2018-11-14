@@ -25,7 +25,7 @@ class RoleService extends BaseService implements IGridService
      */
     public function getListing(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Role::class)->searchAllRoles($queryBuilder);
+        return $this->em->getRepository(Role::class)->search($queryBuilder);
     }
 
     /**
@@ -41,7 +41,7 @@ class RoleService extends BaseService implements IGridService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addRole(array $params): void
+    public function add(array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -90,7 +90,7 @@ class RoleService extends BaseService implements IGridService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editRole($id, array $params): void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -152,7 +152,7 @@ class RoleService extends BaseService implements IGridService
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeRole($id): void
+    public function remove($id): void
     {
         try {
             /**

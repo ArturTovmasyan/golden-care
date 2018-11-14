@@ -21,7 +21,7 @@ class RoleService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addRole(Space $space, array $params): void
+    public function add(Space $space, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -59,7 +59,7 @@ class RoleService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editRole($id, Space $space, array $params): void
+    public function edit($id, Space $space, array $params): void
     {
         try {
             /**
@@ -112,7 +112,7 @@ class RoleService extends BaseService
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeRole($id, Space $space): void
+    public function remove($id, Space $space): void
     {
         try {
             /**

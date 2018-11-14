@@ -21,7 +21,7 @@ class SpaceRoleService extends BaseService implements IGridService
      */
     public function getListing(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Role::class)->findRolesBySpace($queryBuilder, $params[0]);
+        return $this->em->getRepository(Role::class)->findBySpace($queryBuilder, $params[0]);
     }
 
     /**
@@ -31,6 +31,6 @@ class SpaceRoleService extends BaseService implements IGridService
      */
     public function getBySpaceAndId(Space $space, $id)
     {
-        return $this->em->getRepository(Role::class)->findRolesBySpaceAndId($space, $id);
+        return $this->em->getRepository(Role::class)->findBySpaceAndId($space, $id);
     }
 }

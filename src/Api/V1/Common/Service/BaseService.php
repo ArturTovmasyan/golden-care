@@ -7,8 +7,6 @@ use App\Entity\User;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -16,8 +14,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BaseService
 {
-    use ControllerTrait;
-
     /**
      * @var EntityManagerInterface
      */

@@ -55,10 +55,8 @@ class SpaceController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "data": {
-     *               "id": 1,
-     *               "name": "ALMS"
-     *          }
+     *           "id": 1,
+     *           "name": "ALMS"
      *     }
      *
      * @Route("", name="api_dashboard_space_get", requirements={"spaceId"="\d+"}, methods={"GET"})
@@ -116,7 +114,7 @@ class SpaceController extends BaseController
      */
     public function editAction(Request $request, Space $space, SpaceService $spaceService)
     {
-        $spaceService->editSpace(
+        $spaceService->edit(
             $space,
             [
                 'name' => $request->get('name')

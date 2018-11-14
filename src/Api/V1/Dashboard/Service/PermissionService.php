@@ -20,6 +20,6 @@ class PermissionService extends BaseService implements IGridService
      */
     public function getListing(QueryBuilder $queryBuilder, $params)
     {
-        return $this->em->getRepository(Permission::class)->getAllForDashboard($queryBuilder, $params[0]);
+        return $this->em->getRepository(Permission::class)->searchForDashboard($queryBuilder, $params[0]);
     }
 }
