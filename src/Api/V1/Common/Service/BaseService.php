@@ -83,20 +83,12 @@ class BaseService
 
         if ($validationErrors->count() > 0) {
             foreach ($validationErrors as $error) {
-                $propertyPath = $error->getPropertyPath();
-
-                if (!empty($groups)) {
-                    $reflectionProperty = new \ReflectionProperty(get_class($entity), $error->getPropertyPath());
-                    if ($reflectionProperty != null) {
-                        /** @var ValidationSerializedName $propertyAnnotation */
-                        $propertyAnnotation = $this->reader->getPropertyAnnotation($reflectionProperty,
-                            "App\\Annotation\\ValidationSerializedName");
-
-                        if ($propertyAnnotation != null) {
-                            $propertyPath = $propertyAnnotation->getName($groups[0]);
-                        }
-                    }
-                }
+                $propertyPath = ValidationSerializedName::convert(
+                    $this->reader,
+                    get_class($entity),
+                    $groups[0],
+                    $error->getPropertyPath()
+                );
 
                 $errors[$propertyPath] = $error->getMessage();
             }
