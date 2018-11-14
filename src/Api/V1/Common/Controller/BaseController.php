@@ -123,7 +123,6 @@ class BaseController extends Controller
         }
 
         $paginator = new Paginator($queryBuilder);
-        $paginator->setUseOutputWalkers(false);
 
         $page    = $request->get('page') ?: 1;
         $perPage = $request->get('per_page');
