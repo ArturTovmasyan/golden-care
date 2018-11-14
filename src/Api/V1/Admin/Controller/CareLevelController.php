@@ -1,9 +1,9 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\SalutationService;
+use App\Api\V1\Admin\Service\CareLevelService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\Salutation;
+use App\Entity\CareLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,29 +24,30 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/salutation")
+ * @Route("/api/v1.0/admin/care/level")
  *
- * Class SalutationController
+ * Class CareLevelController
  * @package App\Api\V1\Admin\Controller
  */
-class SalutationController extends BaseController
+class CareLevelController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/salutation Get Salutations
+     * @api {get} /api/v1.0/admin/care/level Get CareLevels
      * @apiVersion 1.0.0
-     * @apiName Get Salutations
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to listing salutations
+     * @apiName Get CareLevels
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to listing careLevels
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the salutation
-     * @apiSuccess {String}  title         The title of the salutation
-     * @apiSuccess {String}  createdAt     The created time of the salutation
-     * @apiSuccess {String}  updatedAt     The updated time of the salutation
-     * @apiSuccess {Int}     createdBy     The created user id of the salutation
-     * @apiSuccess {Int}     updatedBy     The updated user id of the salutation
+     * @apiSuccess {Int}     id            The unique identifier of the careLevel
+     * @apiSuccess {String}  title         The title of the careLevel
+     * @apiSuccess {String}  description   The description of the careLevel
+     * @apiSuccess {String}  createdAt     The created time of the careLevel
+     * @apiSuccess {String}  updatedAt     The updated time of the careLevel
+     * @apiSuccess {Int}     createdBy     The created user id of the careLevel
+     * @apiSuccess {Int}     updatedBy     The updated user id of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -62,44 +63,46 @@ class SalutationController extends BaseController
      *                  "createdBy": 1,
      *                  "updatedBy": 5,
      *                  "id": 1,
-     *                  "title": "Dr."
+     *                  "title": "Dr.",
+     *                  "description": "some description"
      *              }
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_salutation_list", methods={"GET"})
+     * @Route("", name="api_admin_care_level_list", methods={"GET"})
      *
      * @param Request $request
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, SalutationService $salutationService)
+    public function listAction(Request $request, CareLevelService $careLevelService)
     {
         return $this->respondGrid(
             $request,
-            Salutation::class,
-            'api_admin_salutation_list',
-            $salutationService
+            CareLevel::class,
+            'api_admin_care_level_list',
+            $careLevelService
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/salutation/{id} Get Salutation
+     * @api {get} /api/v1.0/admin/care/level/{id} Get CareLevel
      * @apiVersion 1.0.0
-     * @apiName Get Salutation
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to get salutation
+     * @apiName Get CareLevel
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to get careLevel
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the salutation
-     * @apiSuccess {String}  title         The title of the salutation
-     * @apiSuccess {String}  createdAt     The created time of the salutation
-     * @apiSuccess {String}  updatedAt     The updated time of the salutation
-     * @apiSuccess {Int}     createdBy     The created user id of the salutation
-     * @apiSuccess {Int}     updatedBy     The updated user id of the salutation
+     * @apiSuccess {Int}     id            The unique identifier of the careLevel
+     * @apiSuccess {String}  title         The title of the careLevel
+     * @apiSuccess {String}  description   The description of the careLevel
+     * @apiSuccess {String}  createdAt     The created time of the careLevel
+     * @apiSuccess {String}  updatedAt     The updated time of the careLevel
+     * @apiSuccess {Int}     createdBy     The created user id of the careLevel
+     * @apiSuccess {Int}     updatedBy     The updated user id of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -110,41 +113,44 @@ class SalutationController extends BaseController
      *                  "createdBy": 1,
      *                  "updatedBy": 5,
      *                  "id": 1,
-     *                  "title": "Dr."
+     *                  "title": "Dr.",
+     *                  "description": "some description"
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_get", methods={"GET"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_get", methods={"GET"})
      *
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @param $id
      * @return JsonResponse
      */
-    public function getAction($id, SalutationService $salutationService) : JsonResponse
+    public function getAction($id, CareLevelService $careLevelService) : JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $salutationService->getById($id),
-            ['api_admin_salutation_get']
+            $careLevelService->getById($id),
+            ['api_admin_care_level_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/admin/salutation Add Salutation
+     * @api {post} /api/v1.0/admin/care/level Add CareLevel
      * @apiVersion 1.0.0
-     * @apiName Add Salutation
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to add salutation
+     * @apiName Add CareLevel
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to add careLevel
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title     The title of the salutation
+     * @apiParam {String}  title           The title of the careLevel
+     * @apiParam {String}  description     The description of the careLevel
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Dr."
+     *         "title": "Dr.",
+     *         "description": "some description"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -159,18 +165,19 @@ class SalutationController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_salutation_add", methods={"POST"})
+     * @Route("", name="api_admin_care_level_add", methods={"POST"})
      *
      * @param Request $request
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, SalutationService $salutationService) : JsonResponse
+    public function addAction(Request $request, CareLevelService $careLevelService) : JsonResponse
     {
-        $salutationService->add(
+        $careLevelService->add(
             [
-                'title' => $request->get('title')
+                'title' => $request->get('title'),
+                'description' => $request->get('description')
             ]
         );
 
@@ -180,20 +187,22 @@ class SalutationController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/salutation/{id} Edit Salutation
+     * @api {post} /api/v1.0/admin/care/level/{id} Edit CareLevel
      * @apiVersion 1.0.0
-     * @apiName Edit Salutation
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to edit salutation
+     * @apiName Edit CareLevel
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to edit careLevel
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title          The title of the salutation
+     * @apiParam {String}  title          The title of the careLevel
+     * @apiParam {String}  description    The description of the careLevel
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Dr."
+     *         "title": "Dr.",
+     *         "description": "some description"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -208,20 +217,21 @@ class SalutationController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_edit", methods={"POST"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_edit", methods={"POST"})
      *
      * @param Request $request
      * @param $id
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, SalutationService $salutationService) : JsonResponse
+    public function editAction(Request $request, $id, CareLevelService $careLevelService) : JsonResponse
     {
-        $salutationService->edit(
+        $careLevelService->edit(
             $id,
             [
                 'title' => $request->get('title'),
+                'description' => $request->get('description')
             ]
         );
 
@@ -231,11 +241,11 @@ class SalutationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/salutation/{id} Delete Salutation
+     * @api {delete} /api/v1.0/admin/care/level/{id} Delete CareLevel
      * @apiVersion 1.0.0
-     * @apiName Delete Salutation
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to remove salutation
+     * @apiName Delete CareLevel
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to remove careLevel
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -247,20 +257,20 @@ class SalutationController extends BaseController
      *     HTTP/1.1 400 Bad Request
      *     {
      *          "code": 624,
-     *          "error": "Salutation not found"
+     *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_delete", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_delete", methods={"DELETE"})
      *
      * @param $id
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction($id, SalutationService $salutationService) : JsonResponse
+    public function deleteAction($id, CareLevelService $careLevelService) : JsonResponse
     {
-        $salutationService->remove($id);
+        $careLevelService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -268,16 +278,16 @@ class SalutationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/salutation Bulk Delete Salutations
+     * @api {delete} /api/v1.0/admin/care/level Bulk Delete CareLevel
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete Salutations
-     * @apiGroup Admin Salutation
-     * @apiDescription This function is used to bulk remove salutations
+     * @apiName Bulk Delete CareLevels
+     * @apiGroup Admin CareLevel
+     * @apiDescription This function is used to bulk remove careLevel
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int[]} ids The unique identifier of the salutations
+     * @apiParam {Int[]} ids The unique identifier of the careLevels
      *
      * @apiParamExample {json} Request-Example:
      *     ["2", "1", "5"]
@@ -289,20 +299,20 @@ class SalutationController extends BaseController
      *     HTTP/1.1 400 Bad Request
      *     {
      *          "code": 624,
-     *          "error": "Salutation not found"
+     *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("", name="api_admin_salutation_delete_bulk", methods={"DELETE"})
+     * @Route("", name="api_admin_care_level_delete_bulk", methods={"DELETE"})
      *
      * @param Request $request
-     * @param SalutationService $salutationService
+     * @param CareLevelService $careLevelService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, SalutationService $salutationService) : JsonResponse
+    public function deleteBulkAction(Request $request, CareLevelService $careLevelService) : JsonResponse
     {
-        $salutationService->removeBulk(
+        $careLevelService->removeBulk(
             [
                 'ids' => $request->get('ids')
             ]

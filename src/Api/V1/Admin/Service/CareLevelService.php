@@ -2,18 +2,18 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
+use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Salutation;
-use App\Repository\SalutationRepository;
+use App\Entity\CareLevel;
+use App\Repository\CareLevelRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
- * Class SalutationService
+ * Class CareLevelService
  * @package App\Api\V1\Admin\Service
  */
-class SalutationService extends BaseService implements IGridService
+class CareLevelService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -22,19 +22,19 @@ class SalutationService extends BaseService implements IGridService
      */
     public function getListing(QueryBuilder $queryBuilder, $params) : Paginator
     {
-        /** @var SalutationRepository $salutationRepo */
-        $salutationRepo = $this->em->getRepository(Salutation::class);
+        /** @var CareLevelRepository $careLevelRepo */
+        $careLevelRepo = $this->em->getRepository(CareLevel::class);
 
-        return $salutationRepo->searchAll($queryBuilder);
+        return $careLevelRepo->searchAll($queryBuilder);
     }
 
     /**
      * @param $id
-     * @return Salutation|null|object
+     * @return CareLevel|null|object
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Salutation::class)->find($id);
+        return $this->em->getRepository(CareLevel::class)->find($id);
     }
 
     /**
@@ -46,12 +46,13 @@ class SalutationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $salutation = new Salutation();
-            $salutation->setTitle($params['title']);
+            $careLevel = new CareLevel();
+            $careLevel->setTitle($params['title']);
+            $careLevel->setDescription($params['description']);
 
-            $this->validate($salutation, null, ['api_admin_salutation_add']);
+            $this->validate($careLevel, null, ['api_admin_care_level_add']);
 
-            $this->em->persist($salutation);
+            $this->em->persist($careLevel);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -72,16 +73,17 @@ class SalutationService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
-            /** @var Salutation $entity */
-            $entity = $this->em->getRepository(Salutation::class)->find($id);
+            /** @var CareLevel $entity */
+            $entity = $this->em->getRepository(CareLevel::class)->find($id);
 
             if ($entity === null) {
-                throw new SalutationNotFoundException();
+                throw new CareLevelNotFoundException();
             }
 
             $entity->setTitle($params['title']);
+            $entity->setDescription($params['description']);
 
-            $this->validate($entity, null, ['api_admin_salutation_edit']);
+            $this->validate($entity, null, ['api_admin_care_level_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -103,11 +105,11 @@ class SalutationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var Salutation $entity */
-            $entity = $this->em->getRepository(Salutation::class)->find($id);
+            /** @var CareLevel $entity */
+            $entity = $this->em->getRepository(CareLevel::class)->find($id);
 
             if ($entity === null) {
-                throw new SalutationNotFoundException();
+                throw new CareLevelNotFoundException();
             }
 
             $this->em->remove($entity);
