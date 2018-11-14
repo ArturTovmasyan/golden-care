@@ -127,7 +127,7 @@ class SalutationService extends BaseService implements IGridService
     {
         $ids = $params['ids'];
 
-        if (!empty($ids)) {
+        if (\count($ids)) {
             foreach ($ids as $id) {
                 $this->remove($id);
             }

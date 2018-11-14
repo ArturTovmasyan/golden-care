@@ -274,10 +274,15 @@ class SalutationController extends BaseController
      * @apiGroup Admin Salutation
      * @apiDescription This function is used to bulk remove salutations
      *
-     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int[]} ids The unique identifier of the salutations
+     *
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *         "0": "2", "1": "5"
+     *     }
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 204 No Content
@@ -301,7 +306,7 @@ class SalutationController extends BaseController
     {
         $salutationService->removeBulk(
             [
-                'ids' => $request->get('ids'),
+                'ids' => json_decode($request->get('ids'), true),
             ]
         );
 
