@@ -34,6 +34,7 @@ class ResponseCode
     const RELATIONSHIP_NOT_FOUND_EXCEPTION         = 627;
     const MEDICATION_NOT_FOUND_EXCEPTION           = 628;
     const DIET_NOT_FOUND_EXCEPTION                 = 629;
+    const DIAGNOSIS_NOT_FOUND_EXCEPTION            = 630;
 
     /**
      * @var array
@@ -63,5 +64,6 @@ class ResponseCode
         self::RELATIONSHIP_NOT_FOUND_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Relationship not found'],
         self::MEDICATION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medication not found'],
         self::DIET_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diet not found'],
+        self::DIAGNOSIS_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis not found'],
     ];
 }

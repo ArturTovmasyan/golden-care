@@ -1,9 +1,9 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\CareLevelService;
+use App\Api\V1\Admin\Service\DiagnosisService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\CareLevel;
+use App\Entity\Diagnosis;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,30 +24,27 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/care/level")
+ * @Route("/api/v1.0/admin/diagnosis")
  *
- * Class CareLevelController
+ * Class DiagnosisController
  * @package App\Api\V1\Admin\Controller
  */
-class CareLevelController extends BaseController
+class DiagnosisController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/care/level/grid Get CareLevel Grid
+     * @api {get} /api/v1.0/admin/diagnosis/grid Get Diagnoses Grid
      * @apiVersion 1.0.0
-     * @apiName Get CareLevel Grid
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to listing careLevels
+     * @apiName Get Diagnoses Grid
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to listing diagnoses
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the careLevel
-     * @apiSuccess {String}  title         The title of the careLevel
-     * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
+     * @apiSuccess {String}  title         The title of the diagnosis
+     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
+     * @apiSuccess {String}  description   The description time of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -57,46 +54,43 @@ class CareLevelController extends BaseController
      *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
-     *              {
-     *                  "created_at": "2018-11-01 17:24:48",
-     *                  "updated_at": "2018-11-01 17:25:49",
-     *                  "created_by": 1,
-     *                  "updated_by": 5,
+     *
      *                  "id": 1,
-     *                  "title": "Dr.",
+     *                  "title": "High Blood Pressure",
+     *                  "acronym": "HBP",
      *                  "description": "some description"
      *              }
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_care_level_grid", methods={"GET"})
+     * @Route("/grid", name="api_admin_diagnosis_grid", methods={"GET"})
      *
      * @param Request $request
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, CareLevelService $careLevelService)
+    public function gridAction(Request $request, DiagnosisService $diagnosisService)
     {
         return $this->respondGrid(
             $request,
-            CareLevel::class,
-            'api_admin_care_level_grid',
-            $careLevelService
+            Diagnosis::class,
+            'api_admin_diagnosis_grid',
+            $diagnosisService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/care/level/grid Get CareLevel Grid Options
+     * @api {options} /api/v1.0/admin/diagnosis/grid Get Diagnosis Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get CareLevel Grid Options
-     * @apiGroup Admin CareLevel
+     * @apiName Get Diagnosis Grid Options
+     * @apiGroup Admin Diagnoses
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Array} options The options of the care level listing
+     * @apiSuccess {Array} options The options of the diagnosis listing
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -111,7 +105,7 @@ class CareLevelController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_care_level_grid_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_diagnosis_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
@@ -119,124 +113,118 @@ class CareLevelController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(CareLevel::class, 'api_admin_care_level_grid');
+        return $this->getOptionsByGroupName(Diagnosis::class, 'api_admin_diagnosis_grid');
     }
 
     /**
-     * @api {get} /api/v1.0/admin/care/level Get CareLevels
+     * @api {get} /api/v1.0/admin/diagnosis Get Diagnoses
      * @apiVersion 1.0.0
-     * @apiName Get CareLevels
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to listing careLevels
+     * @apiName Get Diagnoses
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to listing diagnoses
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the careLevel
-     * @apiSuccess {String}  title         The title of the careLevel
-     * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
+     * @apiSuccess {String}  title         The title of the diagnosis
+     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
+     * @apiSuccess {String}  description   The description time of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          [
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
+     *          "data": [
      *              {
-     *                  "created_at": "2018-11-01 17:24:48",
-     *                  "updated_at": "2018-11-01 17:25:49",
-     *                  "created_by": 1,
-     *                  "updated_by": 5,
      *                  "id": 1,
-     *                  "title": "Dr.",
+     *                  "title": "High Blood Pressure",
+     *                  "acronym": "HBP",
      *                  "description": "some description"
      *              }
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_care_level_list", methods={"GET"})
+     * @Route("", name="api_admin_diagnosis_list", methods={"GET"})
      *
      * @param Request $request
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, CareLevelService $careLevelService)
+    public function listAction(Request $request, DiagnosisService $diagnosisService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
-            CareLevel::class,
-            'api_admin_care_level_list',
-            $careLevelService
+            Diagnosis::class,
+            'api_admin_diagnosis_list',
+            $diagnosisService
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/care/level/{id} Get CareLevel
+     * @api {get} /api/v1.0/admin/diagnosis/{id} Get Diagnosis
      * @apiVersion 1.0.0
-     * @apiName Get CareLevel
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to get careLevel
+     * @apiName Get Diagnosis
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to get diagnosis
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the careLevel
-     * @apiSuccess {String}  title         The title of the careLevel
-     * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
+     * @apiSuccess {String}  title         The title of the diagnosis
+     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
+     * @apiSuccess {String}  description   The description time of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *                  "create_at": "2018-11-01 17:24:48",
-     *                  "update_at": "2018-11-01 17:25:49",
-     *                  "create_by": 1,
-     *                  "update_by": 5,
      *                  "id": 1,
-     *                  "title": "Dr.",
+     *                  "title": "High Blood Pressure",
+     *                  "acronym": "HBP",
      *                  "description": "some description"
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_get", methods={"GET"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_get", methods={"GET"})
      *
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, CareLevelService $careLevelService)
+    public function getAction(Request $request, $id, DiagnosisService $diagnosisService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $careLevelService->getById($id),
-            ['api_admin_care_level_get']
+            $diagnosisService->getById($id),
+            ['api_admin_diagnosis_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/admin/care/level Add CareLevel
+     * @api {post} /api/v1.0/admin/diagnosis Add Diagnosis
      * @apiVersion 1.0.0
-     * @apiName Add CareLevel
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to add careLevel
+     * @apiName Add Diagnosis
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to add diagnosis
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title             The title of the careLevel
-     * @apiParam {String}  [description]     The description of the careLevel
+     * @apiParam {String}  title           The title of the diagnosis
+     * @apiParam {String}  [acronym]       The acronym of the diagnosis
+     * @apiParam {String}  [description]   The description of the diagnosis
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Dr.",
+     *         "title": "High Blood Pressure",
+     *         "acronym": "HBP",
      *         "description": "some description"
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -252,18 +240,19 @@ class CareLevelController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_care_level_add", methods={"POST"})
+     * @Route("", name="api_admin_diagnosis_add", methods={"POST"})
      *
      * @param Request $request
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, CareLevelService $careLevelService)
+    public function addAction(Request $request, DiagnosisService $diagnosisService)
     {
-        $careLevelService->add(
+        $diagnosisService->add(
             [
                 'title' => $request->get('title'),
+                'acronym' => $request->get('acronym') ?? '',
                 'description' => $request->get('description') ?? ''
             ]
         );
@@ -274,21 +263,23 @@ class CareLevelController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/care/level/{id} Edit CareLevel
+     * @api {put} /api/v1.0/admin/diagnosis/{id} Edit Diagnosis
      * @apiVersion 1.0.0
-     * @apiName Edit CareLevel
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to edit careLevel
+     * @apiName Edit Diagnosis
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to edit diagnosis
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title            The title of the careLevel
-     * @apiParam {String}  [description]    The description of the careLevel
+     * @apiParam {String}  title          The title of the diagnosis
+     * @apiParam {String}  [acronym]      The acronym of the diagnosis
+     * @apiParam {String}  [description]  The description of the diagnosis
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Dr.",
+     *         "title": "High Blood Pressure",
+     *         "acronym": "HBP",
      *         "description": "some description"
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -304,20 +295,21 @@ class CareLevelController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_edit", methods={"PUT"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, CareLevelService $careLevelService)
+    public function editAction(Request $request, $id, DiagnosisService $diagnosisService)
     {
-        $careLevelService->edit(
+        $diagnosisService->edit(
             $id,
             [
                 'title' => $request->get('title'),
+                'acronym' => $request->get('acronym') ?? '',
                 'description' => $request->get('description') ?? ''
             ]
         );
@@ -328,11 +320,11 @@ class CareLevelController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/care/level/{id} Delete CareLevel
+     * @api {delete} /api/v1.0/admin/diagnosis/{id} Delete Diagnosis
      * @apiVersion 1.0.0
-     * @apiName Delete CareLevel
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to remove careLevel
+     * @apiName Delete Diagnosis
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to remove diagnosis
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -344,20 +336,20 @@ class CareLevelController extends BaseController
      *     HTTP/1.1 400 Bad Request
      *     {
      *          "code": 624,
-     *          "error": "CareLevel not found"
+     *          "error": "Diagnosis not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_delete", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_delete", methods={"DELETE"})
      *
      * @param $id
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, CareLevelService $careLevelService)
+    public function deleteAction(Request $request, $id, DiagnosisService $diagnosisService)
     {
-        $careLevelService->remove($id);
+        $diagnosisService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -365,16 +357,16 @@ class CareLevelController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/care/level Bulk Delete CareLevel
+     * @api {delete} /api/v1.0/admin/diagnosis Bulk Delete Diagnosiss
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete CareLevel
-     * @apiGroup Admin CareLevel
-     * @apiDescription This function is used to bulk remove careLevel
+     * @apiName Bulk Delete Diagnosiss
+     * @apiGroup Admin Diagnoses
+     * @apiDescription This function is used to bulk remove diagnosiss
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int[]} ids The unique identifier of the careLevels
+     * @apiParam {Int[]} ids The unique identifier of the diagnosiss
      *
      * @apiParamExample {json} Request-Example:
      *     ["2", "1", "5"]
@@ -386,20 +378,20 @@ class CareLevelController extends BaseController
      *     HTTP/1.1 400 Bad Request
      *     {
      *          "code": 624,
-     *          "error": "CareLevel not found"
+     *          "error": "Diagnosis not found"
      *     }
      *
-     * @Route("", name="api_admin_care_level_delete_bulk", methods={"DELETE"})
+     * @Route("", name="api_admin_diagnosis_delete_bulk", methods={"DELETE"})
      *
      * @param Request $request
-     * @param CareLevelService $careLevelService
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CareLevelService $careLevelService)
+    public function deleteBulkAction(Request $request, DiagnosisService $diagnosisService)
     {
-        $careLevelService->removeBulk(
+        $diagnosisService->removeBulk(
             [
                 'ids' => $request->get('ids')
             ]

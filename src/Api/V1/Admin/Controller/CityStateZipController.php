@@ -252,7 +252,7 @@ class CityStateZipController extends BaseController
      * @apiParam {String}  state_full       The stateFull of the cityStateZip
      * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
-     * @apiParam {String}  zip_sub          The zipSub of the cityStateZip
+     * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
      *
      * @apiParamExample {json} Request-Example:
@@ -290,7 +290,7 @@ class CityStateZipController extends BaseController
                 'state_full' => $request->get('state_full'),
                 'state_abbr' => $request->get('state_abbr'),
                 'zip_main' => $request->get('zip_main'),
-                'zip_sub' => $request->get('zip_sub'),
+                'zip_sub' => $request->get('zip_sub') ?? '',
                 'city' => $request->get('city')
             ]
         );
@@ -313,7 +313,7 @@ class CityStateZipController extends BaseController
      * @apiParam {String}  state_full       The stateFull of the cityStateZip
      * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
-     * @apiParam {String}  zip_sub          The zipSub of the cityStateZip
+     * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
      *
      * @apiParamExample {json} Request-Example:
@@ -353,7 +353,7 @@ class CityStateZipController extends BaseController
                 'state_full' => $request->get('state_full'),
                 'state_abbr' => $request->get('state_abbr'),
                 'zip_main' => $request->get('zip_main'),
-                'zip_sub' => $request->get('zip_sub'),
+                'zip_sub' => $request->get('zip_sub') ?? '',
                 'city' => $request->get('city')
             ]
         );
