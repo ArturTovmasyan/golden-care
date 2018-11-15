@@ -47,10 +47,10 @@ class CityStateZipService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $cityStateZip = new CityStateZip();
-            $cityStateZip->setStateFull($params['stateFull']);
-            $cityStateZip->setState2Ltr($params['state2Ltr']);
-            $cityStateZip->setZipMain($params['zipMain']);
-            $cityStateZip->setZipSub($params['zipSub']);
+            $cityStateZip->setStateFull($params['state_full']);
+            $cityStateZip->setStateAbbr($params['state_abbr']);
+            $cityStateZip->setZipMain($params['zip_main']);
+            $cityStateZip->setZipSub($params['zip_sub']);
             $cityStateZip->setCity($params['city']);
 
             $this->validate($cityStateZip, null, ['api_admin_city_state_zip_add']);
@@ -83,10 +83,10 @@ class CityStateZipService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
-            $entity->setStateFull($params['stateFull']);
-            $entity->setState2Ltr($params['state2Ltr']);
-            $entity->setZipMain($params['zipMain']);
-            $entity->setZipSub($params['zipSub']);
+            $entity->setStateFull($params['state_full']);
+            $entity->setStateAbbr($params['state_abbr']);
+            $entity->setZipMain($params['zip_main']);
+            $entity->setZipSub($params['zip_sub']);
             $entity->setCity($params['city']);
 
             $this->validate($entity, null, ['api_admin_city_state_zip_edit']);

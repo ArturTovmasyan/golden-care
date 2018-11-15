@@ -43,7 +43,7 @@ class CityStateZipController extends BaseController
      *
      * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
      * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_2_ltr    The state2Ltr of the cityStateZip
+     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
      * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
      * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
      * @apiSuccess {String}  city           The city of the cityStateZip
@@ -67,7 +67,7 @@ class CityStateZipController extends BaseController
      *                  "updated_by": 5,
      *                  "id": 1,
      *                  "state_full": "California",
-     *                  "state_2_ltr": "CA",
+     *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
      *                  "city": "Verdi"
@@ -140,7 +140,7 @@ class CityStateZipController extends BaseController
      *
      * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
      * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_2_ltr    The state2Ltr of the cityStateZip
+     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
      * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
      * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
      * @apiSuccess {String}  city           The city of the cityStateZip
@@ -160,7 +160,7 @@ class CityStateZipController extends BaseController
      *                  "updated_by": 5,
      *                  "id": 1,
      *                  "state_full": "California",
-     *                  "state_2_ltr": "CA",
+     *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
      *                  "city": "Verdi"
@@ -197,7 +197,7 @@ class CityStateZipController extends BaseController
      *
      * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
      * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_2_ltr    The state2Ltr of the cityStateZip
+     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
      * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
      * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
      * @apiSuccess {String}  city           The city of the cityStateZip
@@ -216,7 +216,7 @@ class CityStateZipController extends BaseController
      *                  "updated_by": 5,
      *                  "id": 1,
      *                  "state_full": "California",
-     *                  "state_2_ltr": "CA",
+     *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
      *                  "city": "Verdi"
@@ -250,7 +250,7 @@ class CityStateZipController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  state_full       The stateFull of the cityStateZip
-     * @apiParam {String}  state_2_ltr      The state2Ltr of the cityStateZip
+     * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
      * @apiParam {String}  zip_sub          The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
@@ -258,7 +258,7 @@ class CityStateZipController extends BaseController
      * @apiParamExample {json} Request-Example:
      *     {
      *         "state_full": "California",
-     *         "state_2_ltr": "CA",
+     *         "state_abbr": "CA",
      *         "zip_main": "89439",
      *         "zip_sub": "",
      *         "city": "Verdi"
@@ -287,10 +287,10 @@ class CityStateZipController extends BaseController
     {
         $cityStateZipService->add(
             [
-                'stateFull' => $request->get('state_full'),
-                'state2Ltr' => $request->get('state_2_ltr'),
-                'zipMain' => $request->get('zip_main'),
-                'zipSub' => $request->get('zip_sub'),
+                'state_full' => $request->get('state_full'),
+                'state_abbr' => $request->get('state_abbr'),
+                'zip_main' => $request->get('zip_main'),
+                'zip_sub' => $request->get('zip_sub'),
                 'city' => $request->get('city')
             ]
         );
@@ -311,7 +311,7 @@ class CityStateZipController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  state_full       The stateFull of the cityStateZip
-     * @apiParam {String}  state_2_ltr      The state2Ltr of the cityStateZip
+     * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
      * @apiParam {String}  zip_sub          The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
@@ -319,7 +319,7 @@ class CityStateZipController extends BaseController
      * @apiParamExample {json} Request-Example:
      *     {
      *         "state_full": "California",
-     *         "state_2_ltr": "CA",
+     *         "state_abbr": "CA",
      *         "zip_main": "89439",
      *         "zip_sub": "",
      *         "city": "Verdi"
@@ -350,10 +350,10 @@ class CityStateZipController extends BaseController
         $cityStateZipService->edit(
             $id,
             [
-                'stateFull' => $request->get('state_full'),
-                'state2Ltr' => $request->get('state_2_ltr'),
-                'zipMain' => $request->get('zip_main'),
-                'zipSub' => $request->get('zip_sub'),
+                'state_full' => $request->get('state_full'),
+                'state_abbr' => $request->get('state_abbr'),
+                'zip_main' => $request->get('zip_main'),
+                'zip_sub' => $request->get('zip_sub'),
                 'city' => $request->get('city')
             ]
         );

@@ -17,10 +17,10 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_city_state_zip_grid={
  *          {"id", "number", true, true, "csz.id"},
- *          {"stateFull", "string", true, true, "csz.stateFull"},
- *          {"state2Ltr", "string", true, true, "csz.state2Ltr"},
- *          {"zipMain", "string", true, true, "csz.zipMain"},
- *          {"zipSub", "string", true, true, "csz.zipSub"},
+ *          {"state_full", "string", true, true, "csz.stateFull"},
+ *          {"state_abbr", "string", true, true, "csz.state2Ltr"},
+ *          {"zip_main", "string", true, true, "csz.zipMain"},
+ *          {"zip_sub", "string", true, true, "csz.zipSub"},
  *          {"city", "string", true, true, "csz.city"},
  *     }
  * )
@@ -60,10 +60,10 @@ class CityStateZip
      *     message="Invalid State abbreviation.",
      *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
-     * @ORM\Column(name="state_2_ltr", type="string", length=2)
+     * @ORM\Column(name="state_abbr", type="string", length=2)
      * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
      */
-    private $state2Ltr;
+    private $stateAbbr;
 
     /**
      * @var string
@@ -118,19 +118,19 @@ class CityStateZip
         return $this->stateFull;
     }
 
-    public function setStateFull(?string $stateFull)
+    public function setStateFull(?string $stateFull): void
     {
         $this->stateFull = $stateFull;
     }
 
-    public function getState2Ltr(): ?string
+    public function getStateAbbr(): ?string
     {
-        return $this->state2Ltr;
+        return $this->stateAbbr;
     }
 
-    public function setState2Ltr(?string $state2Ltr)
+    public function setStateAbbr(?string $stateAbbr): void
     {
-        $this->state2Ltr = $state2Ltr;
+        $this->stateAbbr = $stateAbbr;
     }
 
     public function getZipMain(): ?string
@@ -138,7 +138,7 @@ class CityStateZip
         return $this->zipMain;
     }
 
-    public function setZipMain(?string $zipMain)
+    public function setZipMain(?string $zipMain): void
     {
         $this->zipMain = $zipMain;
     }
@@ -148,7 +148,7 @@ class CityStateZip
         return $this->zipSub;
     }
 
-    public function setZipSub(?string $zipSub)
+    public function setZipSub(?string $zipSub): void
     {
         $this->zipSub = $zipSub;
     }
@@ -158,7 +158,7 @@ class CityStateZip
         return $this->city;
     }
 
-    public function setCity(?string $city)
+    public function setCity(?string $city): void
     {
         $this->city = $city;
     }
