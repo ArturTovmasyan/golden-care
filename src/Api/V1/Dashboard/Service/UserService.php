@@ -2,9 +2,7 @@
 namespace App\Api\V1\Dashboard\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\DifferentPasswordException;
 use App\Api\V1\Common\Service\Exception\InvalidConfirmationTokenException;
-use App\Api\V1\Common\Service\Exception\InvalidPasswordException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SystemErrorException;

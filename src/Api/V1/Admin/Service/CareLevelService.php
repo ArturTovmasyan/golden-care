@@ -5,9 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CareLevel;
-use App\Repository\CareLevelRepository;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class CareLevelService
@@ -20,7 +18,7 @@ class CareLevelService extends BaseService implements IGridService
      * @param $params
      * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : Paginator
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
         $this->em->getRepository(CareLevel::class)->search($queryBuilder);
     }

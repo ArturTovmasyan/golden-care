@@ -8,7 +8,6 @@ use App\Api\V1\Dashboard\Service\RelationshipService;
 use App\Entity\Relationship;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

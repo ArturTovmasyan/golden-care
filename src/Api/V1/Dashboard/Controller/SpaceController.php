@@ -2,17 +2,13 @@
 namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Dashboard\Service\SpaceRoleService;
-use App\Api\V1\Dashboard\Service\RoleService;
 use App\Api\V1\Dashboard\Service\SpaceService;
-use App\Entity\Role;
 use App\Entity\Space;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
  * @IgnoreAnnotation("api")

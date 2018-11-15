@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class SpaceRoleService

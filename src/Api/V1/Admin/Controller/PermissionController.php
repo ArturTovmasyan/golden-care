@@ -7,7 +7,6 @@ use App\Api\V1\Admin\Service\PermissionService;
 use App\Entity\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

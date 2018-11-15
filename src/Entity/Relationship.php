@@ -36,7 +36,7 @@ class Relationship
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
-     *     "api_dashboard_relationship_grid"
+     *     "api_dashboard_relationship_grid",
      *     "api_dashboard_relationship_list"
      * })
      */
@@ -50,7 +50,7 @@ class Relationship
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
-     *     "api_dashboard_relationship_grid"
+     *     "api_dashboard_relationship_grid",
      *     "api_dashboard_relationship_list"
      * })
      * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})

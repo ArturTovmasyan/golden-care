@@ -3,8 +3,6 @@
 namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class UserAlreadyJoinedException extends \RuntimeException
 {

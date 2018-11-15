@@ -11,7 +11,6 @@ use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUserRole;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class RoleService

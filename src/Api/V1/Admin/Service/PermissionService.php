@@ -5,7 +5,6 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Permission;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Class PermissionService
