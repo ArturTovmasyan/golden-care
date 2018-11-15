@@ -37,6 +37,7 @@ class ResponseCode
     const DIAGNOSIS_NOT_FOUND_EXCEPTION                 = 630;
     const PHYSICIAN_NOT_FOUND_EXCEPTION                 = 631;
     const SPACE_HAVE_NOT_ACCESS_TO_PHYSICIAN_EXCEPTION  = 632;
+    const ALLERGEN_NOT_FOUND_EXCEPTION                  = 633;
 
     /**
      * @var array
@@ -69,5 +70,6 @@ class ResponseCode
         self::DIAGNOSIS_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis not found'],
         self::PHYSICIAN_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Physician not found'],
         self::SPACE_HAVE_NOT_ACCESS_TO_PHYSICIAN_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space haven\'t access to physician'],
+        self::ALLERGEN_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Allergen not found'],
     ];
 }
