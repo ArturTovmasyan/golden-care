@@ -7,12 +7,10 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
  * Class CityStateZip
- * @package App\Entity
  *
  * @ORM\Entity(repositoryClass="App\Repository\CityStateZipRepository")
  * @ORM\Table(name="tbl_city_state_zip")
@@ -105,25 +103,11 @@ class CityStateZip
      */
     private $city;
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->city.' '.$this->state2Ltr.', '.$this->zipMain;
-    }
-
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -134,11 +118,9 @@ class CityStateZip
         return $this->stateFull;
     }
 
-    public function setStateFull(string $stateFull): self
+    public function setStateFull(?string $stateFull)
     {
         $this->stateFull = $stateFull;
-
-        return $this;
     }
 
     public function getState2Ltr(): ?string
@@ -146,11 +128,9 @@ class CityStateZip
         return $this->state2Ltr;
     }
 
-    public function setState2Ltr(string $state2Ltr): self
+    public function setState2Ltr(?string $state2Ltr)
     {
         $this->state2Ltr = $state2Ltr;
-
-        return $this;
     }
 
     public function getZipMain(): ?string
@@ -158,11 +138,9 @@ class CityStateZip
         return $this->zipMain;
     }
 
-    public function setZipMain(string $zipMain): self
+    public function setZipMain(?string $zipMain)
     {
         $this->zipMain = $zipMain;
-
-        return $this;
     }
 
     public function getZipSub(): ?string
@@ -170,11 +148,9 @@ class CityStateZip
         return $this->zipSub;
     }
 
-    public function setZipSub(?string $zipSub): self
+    public function setZipSub(?string $zipSub)
     {
         $this->zipSub = $zipSub;
-
-        return $this;
     }
 
     public function getCity(): ?string
@@ -182,50 +158,8 @@ class CityStateZip
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city)
     {
         $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("created_at")
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
-     */
-    public function getCreatedAtTime() : string
-    {
-        return $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : '';
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("updated_at")
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
-     */
-    public function getUpdatedAtTime() : string
-    {
-        return $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : '';
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("created_by")
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
-     */
-    public function getCreatedById() : int
-    {
-        return $this->createdBy ? $this->createdBy->getId() : '';
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("updated_by")
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
-     */
-    public function getUpdatedById() : int
-    {
-        return $this->updatedBy ? $this->updatedBy->getId() : '';
     }
 }
