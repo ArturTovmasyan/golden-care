@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class CityStateZipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip/grid Get CityStateZip Grid
+     * @api {get} /api/v1.0/admin/city/state/zip/grid Get CityStateZips Grid
      * @apiVersion 1.0.0
-     * @apiName Get CityStateZip Grid
+     * @apiName Get CityStateZips Grid
      * @apiGroup Admin CityStateZip
      * @apiDescription This function is used to listing cityStateZip
      *
@@ -93,9 +93,9 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/city/state/zip/grid Get CityStateZip Grid Options
+     * @api {options} /api/v1.0/admin/city/state/zip/grid Get CityStateZips Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get CityStateZip Grid Options
+     * @apiName Get CityStateZips Grid Options
      * @apiGroup Admin CityStateZip
      * @apiDescription This function is used to describe options of listing
      *
@@ -129,9 +129,9 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip Get CityStateZip
+     * @api {get} /api/v1.0/admin/city/state/zip Get CityStateZips
      * @apiVersion 1.0.0
-     * @apiName Get CityStateZip
+     * @apiName Get CityStateZips
      * @apiGroup Admin CityStateZip
      * @apiDescription This function is used to listing cityStateZip
      *

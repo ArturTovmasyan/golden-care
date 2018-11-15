@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class DietController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/diet/grid Get Diets
+     * @api {get} /api/v1.0/admin/diet/grid Get Diets Grid
      * @apiVersion 1.0.0
-     * @apiName Get Diets
+     * @apiName Get Diets Grid
      * @apiGroup Admin Dietary Restriction
      * @apiDescription This function is used to listing diets
      *

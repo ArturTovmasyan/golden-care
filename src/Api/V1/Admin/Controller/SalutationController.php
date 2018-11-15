@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class SalutationController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/salutation/grid Get Salutations
+     * @api {get} /api/v1.0/admin/salutation/grid Get Salutations Grid
      * @apiVersion 1.0.0
-     * @apiName Get Salutations
+     * @apiName Get Salutations Grid
      * @apiGroup Admin Salutation
      * @apiDescription This function is used to listing salutations
      *

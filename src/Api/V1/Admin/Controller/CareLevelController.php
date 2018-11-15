@@ -123,9 +123,9 @@ class CareLevelController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/care/level Get CareLevel
+     * @api {get} /api/v1.0/admin/care/level Get CareLevels
      * @apiVersion 1.0.0
-     * @apiName Get CareLevel
+     * @apiName Get CareLevels
      * @apiGroup Admin CareLevel
      * @apiDescription This function is used to listing careLevels
      *

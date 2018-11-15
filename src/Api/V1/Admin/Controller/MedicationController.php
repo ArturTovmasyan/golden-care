@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class MedicationController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/medication/grid Get Medications
+     * @api {get} /api/v1.0/admin/medication/grid Get Medications Grid
      * @apiVersion 1.0.0
-     * @apiName Get Medications
+     * @apiName Get Medications Grid
      * @apiGroup Admin Medications
      * @apiDescription This function is used to listing medications
      *
@@ -76,9 +76,9 @@ class MedicationController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/medication/grid Get Medications Options
+     * @api {options} /api/v1.0/admin/medication/grid Get Medications Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Medications Options
+     * @apiName Get Medications Grid Options
      * @apiGroup Admin Medications
      * @apiDescription This function is used to describe options of listing
      *

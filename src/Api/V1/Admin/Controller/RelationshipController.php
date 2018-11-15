@@ -32,9 +32,9 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class RelationshipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/relationship/grid Get Relationships
+     * @api {get} /api/v1.0/admin/relationship/grid Get Relationships Grid
      * @apiVersion 1.0.0
-     * @apiName Get Relationships
+     * @apiName Get Relationships Grid
      * @apiGroup Admin Relationships
      * @apiDescription This function is used to listing relationships
      *
@@ -76,9 +76,9 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/relationship/grid Get Relationships Options
+     * @api {options} /api/v1.0/admin/relationship/grid Get Relationships Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Relationships Options
+     * @apiName Get Relationships Grid Options
      * @apiGroup Admin Relationships
      * @apiDescription This function is used to describe options of listing
      *
