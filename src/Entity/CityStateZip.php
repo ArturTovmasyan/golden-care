@@ -18,7 +18,7 @@ use App\Annotation\Grid;
  *     api_admin_city_state_zip_grid={
  *          {"id", "number", true, true, "csz.id"},
  *          {"state_full", "string", true, true, "csz.stateFull"},
- *          {"state_abbr", "string", true, true, "csz.state2Ltr"},
+ *          {"state_abbr", "string", true, true, "csz.stateAbbr"},
  *          {"zip_main", "string", true, true, "csz.zipMain"},
  *          {"zip_sub", "string", true, true, "csz.zipSub"},
  *          {"city", "string", true, true, "csz.city"},
