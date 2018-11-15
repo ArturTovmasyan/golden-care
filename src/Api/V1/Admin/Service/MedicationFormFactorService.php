@@ -1,0 +1,136 @@
+<?php
+namespace App\Api\V1\Admin\Service;
+
+use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\MedicationFormFactorNotFoundException;
+use App\Api\V1\Common\Service\IGridService;
+use App\Entity\MedicationFormFactor;
+use Doctrine\ORM\QueryBuilder;
+
+/**
+ * Class MedicationFormFactorService
+ * @package App\Api\V1\Admin\Service
+ */
+class MedicationFormFactorService extends BaseService implements IGridService
+{
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $params
+     * @return void
+     */
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    {
+        $this->em->getRepository(MedicationFormFactor::class)->search($queryBuilder);
+    }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(MedicationFormFactor::class)->findAll();
+    }
+
+    /**
+     * @param $id
+     * @return MedicationFormFactor|null|object
+     */
+    public function getById($id)
+    {
+        return $this->em->getRepository(MedicationFormFactor::class)->find($id);
+    }
+
+    /**
+     * @param array $params
+     * @throws \Exception
+     */
+    public function add(array $params) : void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $medicationFormFactor = new MedicationFormFactor();
+            $medicationFormFactor->setTitle($params['title']);
+
+            $this->validate($medicationFormFactor, null, ['api_admin_medication_form_factor_add']);
+
+            $this->em->persist($medicationFormFactor);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Exception
+     */
+    public function edit($id, array $params) : void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var MedicationFormFactor $entity */
+            $entity = $this->em->getRepository(MedicationFormFactor::class)->find($id);
+
+            if ($entity === null) {
+                throw new MedicationFormFactorNotFoundException();
+            }
+
+            $entity->setTitle($params['title']);
+
+            $this->validate($entity, null, ['api_admin_medication_form_factor_edit']);
+
+            $this->em->persist($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function remove($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var MedicationFormFactor $entity */
+            $entity = $this->em->getRepository(MedicationFormFactor::class)->find($id);
+
+            if ($entity === null) {
+                throw new MedicationFormFactorNotFoundException();
+            }
+
+            $this->em->remove($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $params
+     */
+    public function removeBulk(array $params)
+    {
+        $ids = $params['ids'];
+
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $this->remove($id);
+            }
+        }
+    }
+}
