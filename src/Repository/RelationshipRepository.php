@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
 use App\Entity\Relationship;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;

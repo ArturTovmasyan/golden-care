@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -35,7 +36,13 @@ class CityStateZip
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_grid",
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_dashboard_physician_grid",
+     *     "api_dashboard_physician_list"
+     * })
      */
     private $id;
 

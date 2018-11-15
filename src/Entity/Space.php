@@ -58,7 +58,9 @@ class Space
      *     "api_admin_space_get",
      *     "api_dashboard_space_user_get",
      *     "api_profile_me",
-     *     "api_dashboard_space_get"
+     *     "api_dashboard_space_get",
+     *     "api_dashboard_physician_grid",
+     *     "api_dashboard_physician_list"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */
@@ -70,11 +72,17 @@ class Space
     protected $spaceUserRoles;
 
     /**
+     * @ORM\OneToMany(targetEntity="Physician", mappedBy="space", cascade={"persist", "remove"})
+     */
+    protected $spacePhysicians;
+
+    /**
      * Space constructor.
      */
     public function __construct()
     {
         $this->spaceUserRoles = new ArrayCollection();
+        $this->spacePhysicians = new ArrayCollection();
     }
 
     /**
@@ -110,9 +118,17 @@ class Space
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getSpaceUserRoles()
+    {
+        return $this->spaceUserRoles;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSpacePhysicians()
     {
         return $this->spaceUserRoles;
     }
