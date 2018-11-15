@@ -90,7 +90,7 @@ class CareLevelController extends BaseController
      * @api {options} /api/v1.0/admin/care/level/grid Get CareLevel Grid Options
      * @apiVersion 1.0.0
      * @apiName Get CareLevel Grid Options
-     * @apiGroup Admin CareLevel Grid
+     * @apiGroup Admin CareLevel
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json

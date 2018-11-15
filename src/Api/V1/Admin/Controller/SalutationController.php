@@ -85,10 +85,10 @@ class SalutationController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/salutation/grid Get Saluation Grid Options
+     * @api {options} /api/v1.0/admin/salutation/grid Get Salutation Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Saluation Grid Options
-     * @apiGroup Admin Space
+     * @apiName Get Salutation Grid Options
+     * @apiGroup Admin Salutation
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json
@@ -130,8 +130,8 @@ class SalutationController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the salutation
-     * @apiSuccess {String}  title         The title of the salutation
+     * @apiSuccess {Int}     id             The unique identifier of the salutation
+     * @apiSuccess {String}  title          The title of the salutation
      * @apiSuccess {String}  created_at     The created time of the salutation
      * @apiSuccess {String}  updated_at     The updated time of the salutation
      * @apiSuccess {Int}     created_by     The created user id of the salutation
@@ -183,8 +183,8 @@ class SalutationController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the salutation
-     * @apiSuccess {String}  title         The title of the salutation
+     * @apiSuccess {Int}     id             The unique identifier of the salutation
+     * @apiSuccess {String}  title          The title of the salutation
      * @apiSuccess {String}  created_at     The created time of the salutation
      * @apiSuccess {String}  updated_at     The updated time of the salutation
      * @apiSuccess {Int}     created_by     The created user id of the salutation

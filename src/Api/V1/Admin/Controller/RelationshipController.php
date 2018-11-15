@@ -242,7 +242,7 @@ class RelationshipController extends BaseController
      * @api {put} /api/v1.0/admin/relationship/{id} Edit Relationship
      * @apiVersion 1.0.0
      * @apiName Edit Relationship
-     * @apiGroup Admin Relationship
+     * @apiGroup Admin Relationships
      * @apiDescription This function is used to edit relationship
      *
      * @apiHeader {String} Content-Type  application/json

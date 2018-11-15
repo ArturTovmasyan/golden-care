@@ -33,6 +33,7 @@ class ResponseCode
     const CITY_STATE_ZIP_NOT_FOUND_EXCEPTION       = 626;
     const RELATIONSHIP_NOT_FOUND_EXCEPTION         = 627;
     const MEDICATION_NOT_FOUND_EXCEPTION           = 628;
+    const DIET_NOT_FOUND_EXCEPTION                 = 629;
 
     /**
      * @var array
@@ -61,5 +62,6 @@ class ResponseCode
         self::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CityStateZip not found'],
         self::RELATIONSHIP_NOT_FOUND_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Relationship not found'],
         self::MEDICATION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medication not found'],
+        self::DIET_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diet not found'],
     ];
 }

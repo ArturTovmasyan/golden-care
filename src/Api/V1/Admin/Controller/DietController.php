@@ -1,9 +1,9 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\MedicationService;
+use App\Api\V1\Admin\Service\DietService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\Medication;
+use App\Entity\Diet;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,68 +24,71 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/medication")
+ * @Route("/api/v1.0/admin/diet")
  *
- * Class MedicationController
+ * Class DietController
  * @package App\Api\V1\Admin\Controller
  */
-class MedicationController extends BaseController
+class DietController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/medication/grid Get Medications
+     * @api {get} /api/v1.0/admin/diet/grid Get Diets
      * @apiVersion 1.0.0
-     * @apiName Get Medications
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to listing medications
+     * @apiName Get Diets
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to listing diets
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id   The unique identifier of the medication
-     * @apiSuccess {String}  name The name of the medication
+     * @apiSuccess {Int}     id            The unique identifier of the diet
+     * @apiSuccess {String}  title         The title of the diet
+     * @apiSuccess {String}  color         The color time of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "page": "1",
      *          "per_page": 10,
+     *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
-     *              {
+     *
      *                  "id": 1,
-     *                  "name": "Lidocaine"
+     *                  "title": "Diabetic",
+     *                  "color": "#ffff00"
      *              }
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_medication_grid", methods={"GET"})
+     * @Route("/grid", name="api_admin_diet_grid", methods={"GET"})
      *
      * @param Request $request
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, MedicationService $medicationService)
+    public function gridAction(Request $request, DietService $dietService)
     {
         return $this->respondGrid(
             $request,
-            Medication::class,
-            'api_admin_medication_grid',
-            $medicationService
+            Diet::class,
+            'api_admin_diet_grid',
+            $dietService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/medication/grid Get Medications Options
+     * @api {options} /api/v1.0/admin/diet/grid Get Diet Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get Medications Options
-     * @apiGroup Admin Medications
+     * @apiName Get Diet Grid Options
+     * @apiGroup Admin Dietary Restriction
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Array} options The options of the medication listing
+     * @apiSuccess {Array} options The options of the diet listing
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -100,7 +103,7 @@ class MedicationController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_medication_grid_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_diet_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
@@ -108,102 +111,113 @@ class MedicationController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Medication::class, 'api_admin_medication_grid');
+        return $this->getOptionsByGroupName(Diet::class, 'api_admin_diet_grid');
     }
 
     /**
-     * @api {get} /api/v1.0/admin/medication Get Medications
+     * @api {get} /api/v1.0/admin/diet Get Diets
      * @apiVersion 1.0.0
-     * @apiName Get Medications
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to listing medications
+     * @apiName Get Diets
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to listing diets
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id   The unique identifier of the medication
-     * @apiSuccess {String}  name The name of the medication
+     * @apiSuccess {Int}     id            The unique identifier of the diet
+     * @apiSuccess {String}  title         The title of the diet
+     * @apiSuccess {String}  color         The color time of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          [
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "all_pages": 1,
+     *          "total": 5,
+     *          "data": [
      *              {
      *                  "id": 1,
-     *                  "name": "Lidocaine"
+     *                  "title": "Diabetic",
+     *                  "color": "#ffff00"
      *              }
      *          ]
      *     }
      *
-     * @Route("", name="api_admin_medication_list", methods={"GET"})
+     * @Route("", name="api_admin_diet_list", methods={"GET"})
      *
      * @param Request $request
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, MedicationService $medicationService)
+    public function listAction(Request $request, DietService $dietService)
     {
         return $this->respondList(
             $request,
-            Medication::class,
-            'api_admin_medication_list',
-            $medicationService
+            Diet::class,
+            'api_admin_diet_list',
+            $dietService
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/medication/{id} Get Medication
+     * @api {get} /api/v1.0/admin/diet/{id} Get Diet
      * @apiVersion 1.0.0
-     * @apiName Get Medication
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to get medication
+     * @apiName Get Diet
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to get diet
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the medication
-     * @apiSuccess {String}  name          The Name of the medication
+     * @apiSuccess {Int}     id            The unique identifier of the diet
+     * @apiSuccess {String}  title         The title of the diet
+     * @apiSuccess {String}  color         The color time of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "id": 1,
-     *          "name": "Lidocaine"
+     *          "data": {
+     *                  "id": 1,
+     *                  "title": "Diabetic",
+     *                  "color": "#ffff00"
+     *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_get", methods={"GET"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_get", methods={"GET"})
      *
-     * @param Request $request
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, MedicationService $medicationService)
+    public function getAction(Request $request, $id, DietService $dietService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $medicationService->getById($id),
-            ['api_admin_medication_get']
+            $dietService->getById($id),
+            ['api_admin_diet_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/admin/medication Add Medication
+     * @api {post} /api/v1.0/admin/diet Add Diet
      * @apiVersion 1.0.0
-     * @apiName Add Medication
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to add medication
+     * @apiName Add Diet
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to add diet
      *
-     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  name The name of the medication
+     * @apiParam {String}  title     The title of the diet
+     * @apiParam {String}  color     The color of the diet
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "name": "Lidocaine"
+     *         "title": "Dr.",
+     *         "color": "#ffff00"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -214,22 +228,23 @@ class MedicationController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "name": "Sorry, this name is already in use."
+     *              "title": "Sorry, this title is already in use."
      *          }
      *     }
      *
-     * @Route("", name="api_admin_medication_add", methods={"POST"})
+     * @Route("", name="api_admin_diet_add", methods={"POST"})
      *
      * @param Request $request
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, MedicationService $medicationService)
+    public function addAction(Request $request, DietService $dietService)
     {
-        $medicationService->add(
+        $dietService->add(
             [
-                'name' => $request->get('name')
+                'title' => $request->get('title'),
+                'color' => $request->get('color')
             ]
         );
 
@@ -239,21 +254,22 @@ class MedicationController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/medication/{id} Edit Medication
+     * @api {put} /api/v1.0/admin/diet/{id} Edit Diet
      * @apiVersion 1.0.0
-     * @apiName Edit Medication
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to edit medication
+     * @apiName Edit Diet
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to edit diet
      *
-     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int}     id   The unique identifier of the medication
-     * @apiParam {String}  name The name of the medication
+     * @apiParam {String}  title          The title of the diet
+     * @apiParam {String}  color     The color of the diet
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "name": "Son"
+     *         "title": "Dr.",
+     *         "color": "#ffff00"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -264,24 +280,25 @@ class MedicationController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "name": "Sorry, this name is already in use."
+     *              "name": "Sorry, this title is already in use."
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_edit", methods={"PUT"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, MedicationService $medicationService)
+    public function editAction(Request $request, $id, DietService $dietService)
     {
-        $medicationService->edit(
+        $dietService->edit(
             $id,
             [
-                'name' => $request->get('name')
+                'title' => $request->get('title'),
+                'color' => $request->get('color')
             ]
         );
 
@@ -291,16 +308,14 @@ class MedicationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/medication/{id} Delete Medication
+     * @api {delete} /api/v1.0/admin/diet/{id} Delete Diet
      * @apiVersion 1.0.0
-     * @apiName Delete Medication
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to remove medication
+     * @apiName Delete Diet
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to remove diet
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of the medication
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 204 No Content
@@ -308,22 +323,21 @@ class MedicationController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "code": 627,
-     *          "error": "Medication not found"
+     *          "code": 624,
+     *          "error": "Diet not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_delete", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_delete", methods={"DELETE"})
      *
-     * @param Request $request
      * @param $id
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, MedicationService $medicationService)
+    public function deleteAction(Request $request, $id, DietService $dietService)
     {
-        $medicationService->remove($id);
+        $dietService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -331,16 +345,19 @@ class MedicationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/medication Bulk Delete Medications
+     * @api {delete} /api/v1.0/admin/diet Bulk Delete Diets
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete Medications
-     * @apiGroup Admin Medications
-     * @apiDescription This function is used to bulk remove medications
+     * @apiName Bulk Delete Diets
+     * @apiGroup Admin Dietary Restriction
+     * @apiDescription This function is used to bulk remove diets
      *
-     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int[]} ids The unique identifier of the medication TODO: review
+     * @apiParam {Int[]} ids The unique identifier of the diets
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 204 No Content
@@ -348,27 +365,25 @@ class MedicationController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 400 Bad Request
      *     {
-     *          "code": 627,
-     *          "error": "Medication not found"
+     *          "code": 624,
+     *          "error": "Diet not found"
      *     }
      *
-     * @Route("", name="api_admin_medication_delete_bulk", methods={"DELETE"})
+     * @Route("", name="api_admin_diet_delete_bulk", methods={"DELETE"})
      *
      * @param Request $request
-     * @param MedicationService $medicationService
+     * @param DietService $dietService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, MedicationService $medicationService)
+    public function deleteBulkAction(Request $request, DietService $dietService)
     {
-        $ids = $request->get('ids');
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $medicationService->remove($id);
-            }
-        }
+        $dietService->removeBulk(
+            [
+                'ids' => $request->get('ids')
+            ]
+        );
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
