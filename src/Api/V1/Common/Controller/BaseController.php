@@ -121,7 +121,7 @@ class BaseController extends Controller
         foreach ($fields as $field) {
             $queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
         }
-//dump($queryBuilder->getQuery()->getSQL());exit;
+
         $paginator = new Paginator($queryBuilder);
 
         $page    = $request->get('page') ?: 1;

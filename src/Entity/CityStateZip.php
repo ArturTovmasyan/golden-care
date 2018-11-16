@@ -37,11 +37,12 @@ class CityStateZip
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_city_state_zip_grid",
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
-     *     "api_dashboard_physician_grid",
-     *     "api_dashboard_physician_list"
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
      * })
      */
     private $id;
@@ -55,7 +56,12 @@ class CityStateZip
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="state_full", type="string", length=100)
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
+     * })
      */
     private $stateFull;
 
@@ -68,7 +74,14 @@ class CityStateZip
      *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="state_abbr", type="string", length=2)
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
+     * })
      */
     private $stateAbbr;
 
@@ -81,7 +94,14 @@ class CityStateZip
      *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="zip_main", type="string", length=10)
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
+     * })
      */
     private $zipMain;
 
@@ -93,7 +113,14 @@ class CityStateZip
      *      maxMessage = "ZIP Sub cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
+     * })
      */
     private $zipSub;
 
@@ -106,15 +133,28 @@ class CityStateZip
      *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
      * )
      * @ORM\Column(name="city", type="string", length=100)
-     * @Groups({"api_admin_city_state_zip_grid", "api_admin_city_state_zip_list", "api_admin_city_state_zip_get"})
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_dashboard_physician_list",
+     *     "api_dashboard_physician_get"
+     * })
      */
     private $city;
 
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     */
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -140,6 +180,9 @@ class CityStateZip
         $this->stateAbbr = $stateAbbr;
     }
 
+    /**
+     * @return null|string
+     */
     public function getZipMain(): ?string
     {
         return $this->zipMain;

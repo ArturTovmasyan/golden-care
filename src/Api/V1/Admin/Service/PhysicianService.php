@@ -1,10 +1,11 @@
 <?php
-namespace App\Api\V1\Dashboard\Service;
+namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceHaventAccessToPhysicianException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
@@ -24,7 +25,7 @@ class PhysicianService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Physician::class)->searchBySpace($queryBuilder, $params[0]);
+        $this->em->getRepository(Physician::class)->search($queryBuilder);
     }
 
     /**
@@ -37,13 +38,12 @@ class PhysicianService extends BaseService implements IGridService
     }
 
     /**
-     * @param Space $space
      * @param $id
      * @return mixed
      */
-    public function getBySpaceAndId(Space $space, $id)
+    public function getById($id)
     {
-        return $this->em->getRepository(Physician::class)->findBySpaceAndId($space, $id);
+        return $this->em->getRepository(Physician::class)->find($id);
     }
 
     /**
@@ -51,12 +51,17 @@ class PhysicianService extends BaseService implements IGridService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function add(Space $space, array $params): void
+    public function add(array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $csz = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $csz   = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+
+            if (is_null($space)) {
+                throw new SpaceNotFoundException();
+            }
 
             if (is_null($csz)) {
                 throw new CityStateZipNotFoundException();
@@ -76,8 +81,9 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setSpace($space);
             $physician->setCsz($csz);
+            $physician->setSpace($space);
 
-            $this->validate($physician, null, ["api_dashboard_physician_add"]);
+            $this->validate($physician, null, ["api_admin_physician_add"]);
 
             $this->em->persist($physician);
             $this->em->flush();
@@ -91,11 +97,10 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param Space $space
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function edit($id, Space $space, array $params): void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -103,11 +108,16 @@ class PhysicianService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $space     = $this->em->getRepository(Space::class)->find($params['space_id']);
             $physician = $this->em->getRepository(Physician::class)->find($id);
             $csz       = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
 
             if (is_null($physician)) {
                 throw new PhysicianNotFoundException();
+            }
+
+            if (is_null($space)) {
+                throw new SpaceNotFoundException();
             }
 
             if (is_null($csz)) {
@@ -126,8 +136,9 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setEmail($params['email'] ?? '');
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setCsz($csz);
+            $physician->setSpace($space);
 
-            $this->validate($physician, null, ["api_dashboard_physician_edit"]);
+            $this->validate($physician, null, ["api_admin_physician_edit"]);
 
             $this->em->persist($physician);
             $this->em->flush();
@@ -142,11 +153,10 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param Space $space
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function remove($id, Space $space): void
+    public function remove($id): void
     {
         try {
             /**
@@ -158,12 +168,6 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($physician)) {
                 throw new PhysicianNotFoundException();
-            }
-
-            $physicianSpace = $physician->getSpace();
-
-            if (is_null($physicianSpace) || $physicianSpace->getId() != $space->getId()) {
-                throw new SpaceHaventAccessToPhysicianException();
             }
 
             $this->em->remove($physician);

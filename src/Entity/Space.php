@@ -41,7 +41,9 @@ class Space
      *     "api_admin_space_get",
      *     "api_dashboard_space_user_get",
      *     "api_profile_me",
-     *     "api_dashboard_space_get"
+     *     "api_dashboard_space_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $id;
@@ -60,7 +62,9 @@ class Space
      *     "api_profile_me",
      *     "api_dashboard_space_get",
      *     "api_dashboard_physician_grid",
-     *     "api_dashboard_physician_list"
+     *     "api_dashboard_physician_list",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

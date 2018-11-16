@@ -11,6 +11,22 @@ use JMS\Serializer\Annotation\Groups;
  * @ORM\Table(name="tbl_physician")
  * @ORM\Entity(repositoryClass="App\Repository\PhysicianRepository")
  * @Grid(
+ *     api_admin_physician_grid={
+ *          {"id", "number", true, true, "p.id"},
+ *          {"first_name", "string", true, true, "p.firstName"},
+ *          {"middle_name", "string", true, true, "p.middleName"},
+ *          {"last_name", "string", true, true, "p.lastName"},
+ *          {"address_1", "string", true, true, "p.address1"},
+ *          {"address_2", "string", true, true, "p.address2"},
+ *          {"office_phone", "string", true, true, "p.officePhone"},
+ *          {"fax", "string", true, true, "p.fax"},
+ *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
+ *          {"email", "string", true, true, "p.email"},
+ *          {"website_url", "string", true, true, "p.websiteUrl"},
+ *          {"space_id", "number", true, true, "s.id"},
+ *          {"space_name", "string", true, true, "s.name"},
+ *          {"csz_id", "number", true, true, "csz.id"}
+ *     },
  *     api_dashboard_physician_grid={
  *          {"id", "number", true, true, "p.id"},
  *          {"first_name", "string", true, true, "p.firstName"},
@@ -22,7 +38,8 @@ use JMS\Serializer\Annotation\Groups;
  *          {"fax", "string", true, true, "p.fax"},
  *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
  *          {"email", "string", true, true, "p.email"},
- *          {"website_url", "string", true, true, "p.websiteUrl"}
+ *          {"website_url", "string", true, true, "p.websiteUrl"},
+ *          {"csz_id", "number", true, true, "csz.id"}
  *     }
  * )
  */
@@ -34,9 +51,10 @@ class Physician
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $id;
@@ -46,10 +64,13 @@ class Physician
      * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=false)
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit"
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $space;
@@ -60,10 +81,17 @@ class Physician
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
      * })
+     * @Assert\NotBlank(groups={
+     *     "api_dashboard_physician_add",
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
+     * })
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $csz;
@@ -73,12 +101,15 @@ class Physician
      * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit"
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $firstName;
@@ -88,12 +119,15 @@ class Physician
      * @ORM\Column(name="last_name", type="string", length=40, nullable=false)
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit"
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $lastName;
@@ -102,9 +136,10 @@ class Physician
      * @var string
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $middleName;
@@ -113,13 +148,16 @@ class Physician
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit"
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
      * })
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $address1;
@@ -129,9 +167,10 @@ class Physician
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $address2;
@@ -140,13 +179,16 @@ class Physician
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit"
+     *     "api_dashboard_physician_edit",
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
      * })
      * @ORM\Column(name="office_phone", type="string", length=20, nullable=false)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $officePhone;
@@ -155,9 +197,10 @@ class Physician
      * @var string
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $fax;
@@ -166,9 +209,10 @@ class Physician
      * @var string
      * @ORM\Column(name="emergency_phone", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $emergencyPhone;
@@ -177,9 +221,10 @@ class Physician
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $email;
@@ -188,9 +233,10 @@ class Physician
      * @var string
      * @ORM\Column(name="website_url", type="string", length=255, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $websiteUrl;

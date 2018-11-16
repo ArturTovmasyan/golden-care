@@ -281,7 +281,7 @@ class CityStateZipController extends BaseController
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, CityStateZipService $cityStateZipService)
     {
@@ -343,7 +343,7 @@ class CityStateZipController extends BaseController
      * @param $id
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, CityStateZipService $cityStateZipService)
     {

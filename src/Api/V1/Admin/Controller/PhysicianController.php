@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Api\V1\Dashboard\Controller;
+namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
-use App\Annotation\Permission;
-use App\Api\V1\Dashboard\Service\MedicationService;
-use App\Api\V1\Dashboard\Service\PhysicianService;
-use App\Entity\Medication;
+use App\Api\V1\Admin\Service\PhysicianService;
 use App\Entity\Physician;
 use App\Entity\Space;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -29,21 +26,20 @@ use Symfony\Component\Routing\Annotation\Route;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/dashboard/space/{spaceId}/physician")
- * @Permission({"PERMISSION_PHYSICIAN"})
+ * @Route("/api/v1.0/admin/physician")
  *
  * Class PhysicianController
- * @package App\Api\V1\Dashboard\Controller
+ * @package App\Api\V1\Admin\Controller
  */
 class PhysicianController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/dashboard/space/{spaceId}/physician/grid Get Physicians Grid
+     * @api {get} /api/v1.0/admin/physician/grid Get Physicians Grid
      * @apiVersion 1.0.0
      * @apiName Get Physicians Grid
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
-     * @apiDescription This function is used to get user all physicians grid for dashboard
+     * @apiGroup Admin Physicians
+     * @apiPermission none
+     * @apiDescription This function is used to get user all physicians grid for admin
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -59,11 +55,16 @@ class PhysicianController extends BaseController
      * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
      * @apiSuccess {String}  email              The email address of the physician
      * @apiSuccess {String}  website_url        The website url of the physician
+     * @apiSuccess {Object}  space              The space of the physician
+     * @apiSuccess {Object}  csz                The cityStateZip of the physician
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          [
+     *          "page": "1",
+     *          "per_page": "10",
+     *          "total": 2,
+     *          "data": [
      *              {
      *                  "id": 1,
      *                  "first_name": "Arthur",
@@ -75,12 +76,15 @@ class PhysicianController extends BaseController
      *                  "fax": "+37410555565",
      *                  "emergency_phone": "+37455888080",
      *                  "email": "test@example.com",
-     *                  "website_url": "http://example.com"
+     *                  "website_url": "http://example.com",
+     *                  "space_id": 1,
+     *                  "space_name": "Space N1",
+     *                  "csz_id": 1
      *              }
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_dashboard_physician_grid", requirements={"spaceId"="\d+"}, methods={"GET"})
+     * @Route("/grid", name="api_admin_physician_grid", methods={"GET"})
      *
      * @param Request $request
      * @param PhysicianService $physicianService
@@ -92,18 +96,17 @@ class PhysicianController extends BaseController
         return $this->respondGrid(
             $request,
             Physician::class,
-            'api_dashboard_physician_grid',
-            $physicianService,
-            $request->get('space')
+            'api_admin_physician_grid',
+            $physicianService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/dashboard/space/{spaceId}/physician/grid Get Physicians Grid Options
+     * @api {options} /api/v1.0/admin/physician/grid Get Physicians Grid Options
      * @apiVersion 1.0.0
      * @apiName Get Physicians Grid Options
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
+     * @apiGroup Admin Physicians
+     * @apiPermission none
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json
@@ -124,7 +127,7 @@ class PhysicianController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_dashboard_physician_grid_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_physician_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return \Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse|JsonResponse
@@ -132,16 +135,16 @@ class PhysicianController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Physician::class, 'api_dashboard_physician_grid');
+        return $this->getOptionsByGroupName(Physician::class, 'api_admin_physician_grid');
     }
 
     /**
-     * @api {get} /api/v1.0/dashboard/space/{spaceId}/physician Get Physicians
+     * @api {get} /api/v1.0/admin/physician Get Physicians
      * @apiVersion 1.0.0
      * @apiName Get Physicians
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
-     * @apiDescription This function is used to listing physicians by space
+     * @apiGroup Admin Physicians
+     * @apiPermission none
+     * @apiDescription This function is used to listing physicians
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -163,35 +166,33 @@ class PhysicianController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "first_name": "Arthur",
-     *                  "middle_name": "Gagik",
-     *                  "last_name": "Jovhannesyan",
-     *                  "address_1": "Fuchik str 2",
-     *                  "address_2": "Alaverdyan str 25 ap. 2",
-     *                  "office_phone": "+374544554545",
-     *                  "fax": "+37410555565",
-     *                  "emergency_phone": "+37455888080",
-     *                  "email": "test@example.com",
-     *                  "website_url": "http://example.com",
-     *                  "csz": {
-     *                      "id": 1,
-     *                      "state_full": "California",
-     *                      "state_abbr": "CA",
-     *                      "zip_main": "89439",
-     *                      "zip_sub": "",
-     *                      "city": "Verdi"
-     *                  }
-     *              }
-     *          }
+     *         {
+     *             "id": 1,
+     *             "first_name": "Arthur",
+     *             "middle_name": "Gagik",
+     *             "last_name": "Jovhannesyan",
+     *             "address_1": "Fuchik str 2",
+     *             "address_2": "Alaverdyan str 25 ap. 2",
+     *             "office_phone": "+374544554545",
+     *             "fax": "+37410555565",
+     *             "emergency_phone": "+37455888080",
+     *             "email": "test@example.com",
+     *             "website_url": "http://example.com",
+     *             "space": {
+     *                 "id": 1,
+     *                 "name": "Space N1"
+     *             },
+     *             "csz": {
+     *                 "id": 1,
+     *                 "state_abbr": "CA",
+     *                 "zip_main": "89439",
+     *                 "zip_sub": "",
+     *                 "city": "Verdi"
+     *             }
+     *         }
      *     }
      *
-     * @Route("", name="api_dashboard_physician_list", requirements={"spaceId"="\d+"}, methods={"GET"})
+     * @Route("", name="api_admin_physician_list", methods={"GET"})
      *
      * @param Request $request
      * @param PhysicianService $physicianService
@@ -203,24 +204,22 @@ class PhysicianController extends BaseController
         return $this->respondList(
             $request,
             Physician::class,
-            'api_dashboard_physician_list',
-            $physicianService,
-            $request->get('space')
+            'api_admin_physician_list',
+            $physicianService
         );
     }
 
     /**
-     * @api {get} /api/v1.0/dashboard/space/{space_id}/physician/{id} Get Physician
+     * @api {get} /api/v1.0/admin/physician/{id} Get Physician
      * @apiVersion 1.0.0
      * @apiName Get Physician
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
-     * @apiDescription This function is used to get physician by space and id
+     * @apiGroup Admin Physicians
+     * @apiPermission none
+     * @apiDescription This function is used to get physician by id
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int} space_id The unique identifier of the space
      * @apiParam {Int} id       The unique identifier of the physician
      *
      * @apiSuccess {Int}     id                 The identifier of the physician
@@ -238,28 +237,31 @@ class PhysicianController extends BaseController
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *          "id": 1,
-     *          "first_name": "Harut",
-     *          "last_name": "Grigoryan",
-     *          "middle_name": "Gagik",
-     *          "address1": "Fuchik str. 25",
-     *          "address2": "Alaverdyan str. 25 ap 2",
-     *          "office_phone": "+37499105555555",
-     *          "fax": "+37499105555555",
-     *          "emergency_phone": "+37499105555555",
-     *          "email": "test@example.com",
-     *          "website_url": "http://example.com",
-     *          "csz": {
-     *              "id": 1,
-     *              "state_full": "California",
-     *              "state_abbr": "CA",
-     *              "zip_main": "89439",
-     *              "zip_sub": "",
-     *              "city": "Verdi"
-     *          }
+     *             "id": 1,
+     *             "first_name": "Arthur",
+     *             "middle_name": "Gagik",
+     *             "last_name": "Jovhannesyan",
+     *             "address_1": "Fuchik str 2",
+     *             "address_2": "Alaverdyan str 25 ap. 2",
+     *             "office_phone": "+374544554545",
+     *             "fax": "+37410555565",
+     *             "emergency_phone": "+37455888080",
+     *             "email": "test@example.com",
+     *             "website_url": "http://example.com",
+     *             "space": {
+     *                 "id": 1,
+     *                 "name": "Space N1"
+     *             },
+     *             "csz": {
+     *                 "id": 1,
+     *                 "state_abbr": "CA",
+     *                 "zip_main": "89439",
+     *                 "zip_sub": "",
+     *                 "city": "Verdi"
+     *             }
      *     }
      *
-     * @Route("/{id}", name="api_dashboard_physician_get", requirements={"spaceId"="\d+", "id"="\d+"}, methods={"GET"})
+     * @Route("/{id}", name="api_admin_physician_get", requirements={"id"="\d+"}, methods={"GET"})
      *
      * @param Request $request
      * @param $id
@@ -271,18 +273,18 @@ class PhysicianController extends BaseController
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $physicianService->getBySpaceAndId($request->get('space'), $id),
-            ['api_dashboard_physician_get']
+            $physicianService->getById($id),
+            ['api_admin_physician_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/dashboard/space/{space_id}/physician Add Physician
+     * @api {post} /api/v1.0/admin/physician Add Physician
      * @apiVersion 1.0.0
      * @apiName Add Physician
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
-     * @apiDescription This function is used to add physician for space
+     * @apiGroup Admin Physicians
+     * @apiPermission none
+     * @apiDescription This function is used to add physician
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -297,7 +299,8 @@ class PhysicianController extends BaseController
      * @apiParam {String}  [emergency_phone]    The emergency phone number of the physician
      * @apiParam {String}  [email]              The email address of the physician
      * @apiParam {String}  [website_url]        The website url of the physician
-     * @apiParam {String}  csz_id               The unique identifier of the cityStateZip
+     * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
+     * @apiParam {Integer} space_id             The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -311,13 +314,14 @@ class PhysicianController extends BaseController
      *          "emergency_phone": "+37499105555555",
      *          "email": "test@example.com",
      *          "website_url": "http://example.com",
-     *          "csz_id": 1
+     *          "csz_id": 1,
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
      *     {}
      *
-     * @Route("", name="api_dashboard_physician_add", methods={"POST"})
+     * @Route("", name="api_admin_physician_add", methods={"POST"})
      *
      * @param Request $request
      * @param PhysicianService $physicianService
@@ -327,7 +331,6 @@ class PhysicianController extends BaseController
     public function addAction(Request $request, PhysicianService $physicianService)
     {
         $physicianService->add(
-            $request->get('space'),
             [
                 'first_name'        => $request->get('first_name'),
                 'middle_name'       => $request->get('middle_name'),
@@ -339,7 +342,8 @@ class PhysicianController extends BaseController
                 'emergency_phone'   => $request->get('emergency_phone'),
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
-                'csz_id'            => $request->get('csz_id')
+                'csz_id'            => $request->get('csz_id'),
+                'space_id'          => $request->get('space_id')
             ]
         );
 
@@ -349,12 +353,12 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/dashboard/space/{space_id}/physician/{id} Edit Physician
+     * @api {put} /api/v1.0/admin/physician/{id} Edit Physician
      * @apiVersion 1.0.0
      * @apiName Edit Physician
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
-     * @apiDescription This function is used to edit physician for space
+     * @apiGroup Admin Physicians
+     * @apiPermission none
+     * @apiDescription This function is used to edit physician
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -369,7 +373,8 @@ class PhysicianController extends BaseController
      * @apiParam {String}  [emergency_phone]    The emergency phone number of the physician
      * @apiParam {String}  [email]              The email address of the physician
      * @apiParam {String}  [website_url]        The website url of the physician
-     * @apiParam {String}  csz_id               The unique identifier of the cityStateZip
+     * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
+     * @apiParam {Integer} space_id             The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -383,7 +388,8 @@ class PhysicianController extends BaseController
      *          "emergency_phone": "+37499105555555",
      *          "email": "test@example.com",
      *          "website_url": "http://example.com",
-     *          "csz_id": 1
+     *          "csz_id": 1,
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -398,20 +404,18 @@ class PhysicianController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_physician_edit", methods={"PUT"})
+     * @Route("/{id}", name="api_admin_physician_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
-     * @param Space $space
      * @param PhysicianService $physicianService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, Space $space, PhysicianService $physicianService)
+    public function editAction(Request $request, $id, PhysicianService $physicianService)
     {
         $physicianService->edit(
             $id,
-            $space,
             [
                 'first_name'        => $request->get('first_name'),
                 'middle_name'       => $request->get('middle_name'),
@@ -423,7 +427,8 @@ class PhysicianController extends BaseController
                 'emergency_phone'   => $request->get('emergency_phone'),
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
-                'csz_id'            => $request->get('csz_id')
+                'csz_id'            => $request->get('csz_id'),
+                'space_id'          => $request->get('space_id')
             ]
         );
 
@@ -433,11 +438,11 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/dashboard/space/{space_id}/physician/{id} Delete Physician
+     * @api {delete} /api/v1.0/admin/physician/{id} Delete Physician
      * @apiVersion 1.0.0
      * @apiName Delete Physician
-     * @apiGroup Dashboard Physicians
-     * @apiPermission PERMISSION_PHYSICIAN
+     * @apiGroup Admin Physicians
+     * @apiPermission none
      * @apiDescription This function is used to remove physician
      *
      * @apiHeader {String} Content-Type  application/json
@@ -455,19 +460,18 @@ class PhysicianController extends BaseController
      *          "error": "Physician not found"
      *     }
      *
-     * @Route("/{id}", requirements={"spaceId"="\d+", "id"="\d+"}, name="api_dashboard_physician_delete", methods={"DELETE"})
+     * @Route("/{id}", name="api_admin_physician_delete", methods={"DELETE"})
      *
      * @param Request $request
      * @param $id
-     * @param Space $space
      * @param PhysicianService $physicianService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction(Request $request, $id, Space $space, PhysicianService $physicianService)
+    public function removeAction(Request $request, $id, PhysicianService $physicianService)
     {
-        $physicianService->remove($id, $space);
+        $physicianService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
