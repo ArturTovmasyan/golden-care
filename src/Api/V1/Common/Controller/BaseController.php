@@ -141,10 +141,10 @@ class BaseController extends Controller
             'data'      => $paginator->getQuery()->getArrayResult()
         ];
 
-        if (empty($groups)) {
-            $responseData = $serializer->serialize($data, 'json');
+        if (empty($groupName)) {
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true));
         } else {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setGroups([$groupName]));
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups([$groupName]));
         }
 
         return new JsonResponse($responseData, Response::HTTP_OK, [], true);
@@ -199,9 +199,9 @@ class BaseController extends Controller
         }
 
         if (empty($groups)) {
-            $responseData = $serializer->serialize($responseData, 'json');
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true));
         } else {
-            $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setGroups($groups));
+            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups($groups));
         }
 
         return new JsonResponse($responseData, $httpStatus, $headers, true);
