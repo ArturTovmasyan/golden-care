@@ -54,7 +54,7 @@ class DiagnosisController extends BaseController
      *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
-     *
+     *              {
      *                  "id": 1,
      *                  "title": "High Blood Pressure",
      *                  "acronym": "HBP",

@@ -4,13 +4,13 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class MedicationFormFactorNotFoundException extends \RuntimeException
+class FacilityNotFoundException extends \RuntimeException
 {
     /**
      * RoleNotFoundException constructor.
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::MEDICATION_FORM_FACTOR_NOT_FOUND_EXCEPTION);
+        parent::__construct('', ResponseCode::FACILITY_NOT_FOUND_EXCEPTION);
     }
 }

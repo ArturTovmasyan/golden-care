@@ -53,7 +53,7 @@ class MedicalHistoryConditionController extends BaseController
      *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
-     *
+     *              {
      *                  "id": 1,
      *                  "title": "Acetylsalicylic Acid",
      *                  "description": "ASA"

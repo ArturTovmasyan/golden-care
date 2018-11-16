@@ -52,7 +52,7 @@ class MedicationFormFactorController extends BaseController
      *          "all_pages": 1,
      *          "total": 5,
      *          "data": [
-     *
+     *              {
      *                  "id": 1,
      *                  "title": "Factor second"
      *              }

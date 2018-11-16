@@ -39,7 +39,8 @@ class ResponseCode
     const SPACE_HAVE_NOT_ACCESS_TO_PHYSICIAN_EXCEPTION  = 632;
     const ALLERGEN_NOT_FOUND_EXCEPTION                  = 633;
     const MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION = 634;
-    const MEDICATION_FORM_FACTOR                        = 635;
+    const MEDICATION_FORM_FACTOR_NOT_FOUND_EXCEPTION    = 635;
+    const FACILITY_NOT_FOUND_EXCEPTION                  = 636;
 
     /**
      * @var array
@@ -74,6 +75,7 @@ class ResponseCode
         self::SPACE_HAVE_NOT_ACCESS_TO_PHYSICIAN_EXCEPTION  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space haven\'t access to physician'],
         self::ALLERGEN_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Allergen not found'],
         self::MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicalHistoryCondition not found'],
-        self::MEDICATION_FORM_FACTOR                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicationFormFactor not found'],
+        self::MEDICATION_FORM_FACTOR_NOT_FOUND_EXCEPTION    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicationFormFactor not found'],
+        self::FACILITY_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility not found'],
     ];
 }

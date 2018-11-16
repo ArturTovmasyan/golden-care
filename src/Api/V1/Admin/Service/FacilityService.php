@@ -1,0 +1,180 @@
+<?php
+namespace App\Api\V1\Admin\Service;
+
+use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\IGridService;
+use App\Entity\CityStateZip;
+use App\Entity\Facility;
+use Doctrine\ORM\QueryBuilder;
+
+/**
+ * Class FacilityService
+ * @package App\Api\V1\Admin\Service
+ */
+class FacilityService extends BaseService implements IGridService
+{
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $params
+     * @return void
+     */
+    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    {
+        $this->em->getRepository(Facility::class)->search($queryBuilder);
+    }
+
+    public function list($params)
+    {
+        return $this->em->getRepository(Facility::class)->findAll();
+    }
+
+    /**
+     * @param $id
+     * @return Facility|null|object
+     */
+    public function getById($id)
+    {
+        return $this->em->getRepository(Facility::class)->find($id);
+    }
+
+    /**
+     * @param array $params
+     * @throws \Exception
+     */
+    public function add(array $params) : void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $cszId = $params['csz_id'] ?? 0;
+            $csz = null;
+
+            if ($cszId && $cszId > 0) {
+                /** @var CityStateZip $csz */
+                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+
+
+                if ($csz === null) {
+                    throw new CityStateZipNotFoundException();
+                }
+            }
+
+            $facility = new Facility();
+            $facility->setName($params['name']);
+            $facility->setDescription($params['description']);
+            $facility->setShorthand($params['shorthand']);
+            $facility->setPhone($params['phone']);
+            $facility->setFax($params['fax']);
+            $facility->setAddress1($params['address1']);
+            $facility->setLicense($params['license']);
+            $facility->setCsz($csz);
+            $facility->setMaxBedsNumber($params['max_beds_number']);
+
+            $this->validate($facility, null, ['api_admin_facility_add']);
+
+            $this->em->persist($facility);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Exception
+     */
+    public function edit($id, array $params) : void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var Facility $entity */
+            $entity = $this->em->getRepository(Facility::class)->find($id);
+
+            if ($entity === null) {
+                throw new FacilityNotFoundException();
+            }
+
+            $cszId = $params['csz_id'] ?? 0;
+            $csz = null;
+
+            if ($cszId && $cszId > 0) {
+                /** @var CityStateZip $csz */
+                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+
+
+                if ($csz === null) {
+                    throw new CityStateZipNotFoundException();
+                }
+            }
+
+            $entity->setName($params['name']);
+            $entity->setDescription($params['description']);
+            $entity->setShorthand($params['shorthand']);
+            $entity->setPhone($params['phone']);
+            $entity->setFax($params['fax']);
+            $entity->setAddress1($params['address1']);
+            $entity->setLicense($params['license']);
+            $entity->setCsz($csz);
+            $entity->setMaxBedsNumber($params['max_beds_number']);
+
+            $this->validate($entity, null, ['api_admin_facility_edit']);
+
+            $this->em->persist($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function remove($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var Facility $entity */
+            $entity = $this->em->getRepository(Facility::class)->find($id);
+
+            if ($entity === null) {
+                throw new FacilityNotFoundException();
+            }
+
+            $this->em->remove($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $params
+     */
+    public function removeBulk(array $params)
+    {
+        $ids = $params['ids'];
+
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $this->remove($id);
+            }
+        }
+    }
+}
