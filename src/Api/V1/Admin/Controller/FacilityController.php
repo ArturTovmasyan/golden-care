@@ -49,7 +49,7 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  fax             The fax time of the facility
      * @apiSuccess {String}  address1        The address1 time of the facility
      * @apiSuccess {String}  license         The license time of the facility
-     * @apiSuccess {Object}  csz             The City State & Zip of the role
+     * @apiSuccess {Object}  csz             The City State & Zip of the facility
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -69,9 +69,10 @@ class FacilityController extends BaseController
      *                  "fax": "(916) 727-4232",
      *                  "address1": "7952 Old Auburn Road",
      *                  "license": "347001498",
-     *                  "csz": {
-     *                      "id": 1
-     *                  },
+     *                  "csz_id": 1,
+     *                  "csz_city": "Verdi",
+     *                  "csz_state_abbr": "CA",
+     *                  "csz_zip_main": "89439",
      *                  "max_beds_number": 45
      *              }
      *          ]
@@ -148,7 +149,7 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  fax             The fax time of the facility
      * @apiSuccess {String}  address1        The address1 time of the facility
      * @apiSuccess {String}  license         The license time of the facility
-     * @apiSuccess {Object}  csz             The City State & Zip of the role
+     * @apiSuccess {Object}  csz             The City State & Zip of the facility
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -169,7 +170,10 @@ class FacilityController extends BaseController
      *                  "address1": "7952 Old Auburn Road",
      *                  "license": "347001498",
      *                  "csz": {
-     *                      "id": 1
+     *                      "id": 1,
+     *                      "state_abbr": "CA",
+     *                      "zip_main": "89439",
+     *                      "city": "Verdi"
      *                  },
      *                  "max_beds_number": 45
      *              }
@@ -211,7 +215,7 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  fax             The fax time of the facility
      * @apiSuccess {String}  address1        The address1 time of the facility
      * @apiSuccess {String}  license         The license time of the facility
-     * @apiSuccess {Object}  csz             The City State & Zip of the role
+     * @apiSuccess {Object}  csz             The City State & Zip of the facility
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -227,7 +231,10 @@ class FacilityController extends BaseController
      *                  "address1": "7952 Old Auburn Road",
      *                  "license": "347001498",
      *                  "csz": {
-     *                      "id": 1
+     *                      "id": 1,
+     *                      "state_abbr": "CA",
+     *                      "zip_main": "89439",
+     *                      "city": "Verdi"
      *                  },
      *                  "max_beds_number": 45
      *          }
