@@ -297,7 +297,7 @@ class ApartmentController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "title": "Sorry, this name is already in use."
+     *              "name": "Sorry, this name is already in use."
      *          }
      *     }
      *
