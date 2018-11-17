@@ -41,6 +41,8 @@ class ResponseCode
     const MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION = 634;
     const MEDICATION_FORM_FACTOR_NOT_FOUND_EXCEPTION    = 635;
     const FACILITY_NOT_FOUND_EXCEPTION                  = 636;
+    const APARTMENT_NOT_FOUND_EXCEPTION                 = 637;
+    const REGION_NOT_FOUND_EXCEPTION                    = 638;
 
     /**
      * @var array
@@ -77,5 +79,7 @@ class ResponseCode
         self::MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicalHistoryCondition not found'],
         self::MEDICATION_FORM_FACTOR_NOT_FOUND_EXCEPTION    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicationFormFactor not found'],
         self::FACILITY_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility not found'],
+        self::APARTMENT_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Apartment not found'],
+        self::REGION_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region not found'],
     ];
 }

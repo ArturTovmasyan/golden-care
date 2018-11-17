@@ -44,7 +44,9 @@ class CityStateZip
      *     "api_dashboard_physician_list",
      *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
      * })
      */
     private $id;
@@ -84,7 +86,9 @@ class CityStateZip
      *     "api_dashboard_physician_list",
      *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
      * })
      */
     private $stateAbbr;
@@ -106,7 +110,9 @@ class CityStateZip
      *     "api_dashboard_physician_list",
      *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
      * })
      */
     private $zipMain;
@@ -147,7 +153,9 @@ class CityStateZip
      *     "api_dashboard_physician_list",
      *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
      * })
      */
     private $city;
