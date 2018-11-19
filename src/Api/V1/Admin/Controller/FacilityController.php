@@ -70,12 +70,10 @@ class FacilityController extends BaseController
      *                  "fax": "(916) 727-4232",
      *                  "address1": "7952 Old Auburn Road",
      *                  "license": "347001498",
-     *                  "csz_id": 1,
      *                  "csz_city": "Verdi",
      *                  "csz_state_abbr": "CA",
      *                  "csz_zip_main": "89439",
      *                  "max_beds_number": 45,
-     *                  "space_id": "1",
      *                  "space_name": "alms"
      *              }
      *          ]

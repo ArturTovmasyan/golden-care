@@ -24,12 +24,10 @@ use App\Annotation\Grid;
  *          {"fax", "string", true, true, "f.fax"},
  *          {"address1", "string", true, true, "f.address1"},
  *          {"license", "string", true, true, "f.license"},
- *          {"csz_id", "number", true, true, "csz.id"},
  *          {"csz_city", "string", true, true, "csz.city"},
  *          {"csz_state_abbr", "string", true, true, "csz.stateAbbr"},
  *          {"csz_zip_main", "string", true, true, "csz.zipMain"},
  *          {"max_beds_number", "string", true, true, "f.maxBedsNumber"},
- *          {"space_id", "number", true, true, "s.id"},
  *          {"space_name", "string", true, true, "s.name"},
  *     }
  * )

@@ -22,7 +22,6 @@ use App\Annotation\Grid;
  *          {"shorthand", "string", true, true, "r.shorthand"},
  *          {"phone", "string", true, true, "r.phone"},
  *          {"fax", "string", true, true, "r.fax"},
- *          {"space_id", "number", true, true, "s.id"},
  *          {"space_name", "string", true, true, "s.name"},
  *     }
  * )
