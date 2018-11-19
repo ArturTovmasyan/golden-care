@@ -58,7 +58,10 @@ class ValidationSerializedName
      */
     public static function convert(Reader $reader, $entityClass, $group, $originalPropertyPath)
     {
-        $propertyPath = $originalPropertyPath;
+        $propertyPath = preg_replace_callback('/([A-Z])/', function ($matches) {
+            return '_' . lcfirst($matches[1]);
+        }, $originalPropertyPath);
+
         if (!empty($groups)) {
             $property = new ReflectionProperty($entityClass, $originalPropertyPath);
             if ($property != null) {
