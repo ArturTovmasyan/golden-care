@@ -16,8 +16,8 @@ use JMS\Serializer\Annotation\Groups;
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
  *          {"last_name", "string", true, true, "p.lastName"},
- *          {"address_1", "string", true, true, "p.address1"},
- *          {"address_2", "string", true, true, "p.address2"},
+ *          {"address_1", "string", true, true, "p.address_1"},
+ *          {"address_2", "string", true, true, "p.address_2"},
  *          {"office_phone", "string", true, true, "p.officePhone"},
  *          {"fax", "string", true, true, "p.fax"},
  *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
@@ -31,8 +31,8 @@ use JMS\Serializer\Annotation\Groups;
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
  *          {"last_name", "string", true, true, "p.lastName"},
- *          {"address_1", "string", true, true, "p.address1"},
- *          {"address_2", "string", true, true, "p.address2"},
+ *          {"address_1", "string", true, true, "p.address_1"},
+ *          {"address_2", "string", true, true, "p.address_2"},
  *          {"office_phone", "string", true, true, "p.officePhone"},
  *          {"fax", "string", true, true, "p.fax"},
  *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
@@ -159,7 +159,7 @@ class Physician
      *     "api_admin_physician_get"
      * })
      */
-    private $address1;
+    private $address_1;
 
     /**
      * @var string
@@ -172,7 +172,7 @@ class Physician
      *     "api_admin_physician_get"
      * })
      */
-    private $address2;
+    private $address_2;
 
     /**
      * @var string
@@ -317,7 +317,7 @@ class Physician
      */
     public function getAddress1()
     {
-        return $this->address1;
+        return $this->address_1;
     }
 
     /**
@@ -325,7 +325,7 @@ class Physician
      */
     public function getAddress2()
     {
-        return $this->address2;
+        return $this->address_2;
     }
 
     /**
@@ -385,19 +385,19 @@ class Physician
     }
 
     /**
-     * @param string $address1
+     * @param string $address_1
      */
-    public function setAddress1($address1)
+    public function setAddress1($address_1)
     {
-        $this->address1 = $address1;
+        $this->address_1 = $address_1;
     }
 
     /**
-     * @param string $address2
+     * @param string $address_2
      */
-    public function setAddress2($address2)
+    public function setAddress2($address_2)
     {
-        $this->address2 = $address2;
+        $this->address_2 = $address_2;
     }
 
     /**
