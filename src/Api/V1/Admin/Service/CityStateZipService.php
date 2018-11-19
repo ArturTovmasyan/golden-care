@@ -129,16 +129,40 @@ class CityStateZipService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids)
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new CityStateZipNotFoundException();
             }
+
+            $cszs = $this->em->getRepository(CityStateZip::class)->findByIds($ids);
+
+            if (empty($cszs)) {
+                throw new CityStateZipNotFoundException();
+            }
+
+            $this->em->getConnection()->beginTransaction();
+
+            /**
+             * @var CityStateZip $csz
+             */
+            foreach ($cszs as $csz) {
+                $this->em->remove($csz);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (CityStateZipNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

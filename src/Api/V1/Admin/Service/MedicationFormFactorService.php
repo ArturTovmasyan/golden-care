@@ -121,16 +121,40 @@ class MedicationFormFactorService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new MedicationFormFactorNotFoundException();
             }
+
+            $factors = $this->em->getRepository(MedicationFormFactor::class)->findByIds($ids);
+
+            if (empty($factors)) {
+                throw new MedicationFormFactorNotFoundException();
+            }
+
+            /**
+             * @var MedicationFormFactorNotFoundException $factor
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($factors as $factor) {
+                $this->em->remove($factor);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (MedicationFormFactorNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

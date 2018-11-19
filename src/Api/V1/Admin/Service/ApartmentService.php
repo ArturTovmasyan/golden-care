@@ -195,16 +195,40 @@ class ApartmentService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new ApartmentNotFoundException();
             }
+
+            $apartments = $this->em->getRepository(Apartment::class)->findByIds($ids);
+
+            if (empty($apartments)) {
+                throw new ApartmentNotFoundException();
+            }
+
+            /**
+             * @var Apartment $apartment
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($apartments as $apartment) {
+                $this->em->remove($apartment);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (ApartmentNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

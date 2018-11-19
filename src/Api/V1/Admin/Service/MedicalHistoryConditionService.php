@@ -123,16 +123,40 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new MedicalHistoryConditionNotFoundException();
             }
+
+            $conditions = $this->em->getRepository(MedicalHistoryCondition::class)->findByIds($ids);
+
+            if (empty($conditions)) {
+                throw new MedicalHistoryConditionNotFoundException();
+            }
+
+            /**
+             * @var MedicalHistoryCondition $condition
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($conditions as $condition) {
+                $this->em->remove($condition);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (MedicalHistoryConditionNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

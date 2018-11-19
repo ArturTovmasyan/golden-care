@@ -430,16 +430,10 @@ class CityStateZipController extends BaseController
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
     public function deleteBulkAction(Request $request, CityStateZipService $cityStateZipService)
     {
-        $cityStateZipService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $cityStateZipService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

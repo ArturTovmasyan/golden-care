@@ -275,7 +275,7 @@ class RegionController extends BaseController
      * @param Request $request
      * @param RegionService $regionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, RegionService $regionService)
     {
@@ -340,7 +340,7 @@ class RegionController extends BaseController
      * @param $id
      * @param RegionService $regionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, RegionService $regionService)
     {
@@ -433,11 +433,7 @@ class RegionController extends BaseController
      */
     public function deleteBulkAction(Request $request, RegionService $regionService)
     {
-        $regionService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $regionService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

@@ -95,4 +95,18 @@ class PhysicianRepository extends EntityRepository
             throw new PhysicianNotFoundException();
         }
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb->where($qb->expr()->in('p.id', $ids))
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

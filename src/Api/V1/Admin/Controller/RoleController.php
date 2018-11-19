@@ -401,13 +401,7 @@ class RoleController extends BaseController
      */
     public function deleteBulkAction(Request $request, RoleService $roleService)
     {
-        $ids = $request->get('ids');
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $roleService->remove($id);
-            }
-        }
+        $roleService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

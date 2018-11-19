@@ -37,4 +37,18 @@ class ApartmentRepository extends EntityRepository
             )
             ->groupBy('a.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        return $qb->where($qb->expr()->in('a.id', $ids))
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

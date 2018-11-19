@@ -123,16 +123,40 @@ class AllergenService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids)
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new AllergenNotFoundException();
             }
+
+            $allergens = $this->em->getRepository(Allergen::class)->findByIds($ids);
+
+            if (empty($allergens)) {
+                throw new AllergenNotFoundException();
+            }
+
+            /**
+             * @var Allergen $allergen
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($allergens as $allergen) {
+                $this->em->remove($allergen);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch(AllergenNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

@@ -194,4 +194,56 @@ class RoleService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids): void
+    {
+        try {
+            if (empty($ids)) {
+                throw new RoleNotFoundException();
+            }
+
+            $roles = $this->em->getRepository(Role::class)->findByIds($ids);
+
+            if (empty($roles)) {
+                throw new RoleNotFoundException();
+            }
+
+            /**
+             * @var Role $role
+             * @var SpaceUserRole $spaceUserRoles
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($roles as $role) {
+                // check related users
+                $spaceUserRoles = $role->getSpaceUserRoles();
+
+                if ($spaceUserRoles->count()) {
+                    throw new UserWithoutRoleException();
+                }
+
+                // remove role permissions
+                $permissions = $role->getPermissions();
+                foreach ($permissions as $permission) {
+                    $role->removePermission($permission);
+                }
+
+                $this->em->remove($role);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (RoleNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

@@ -22,4 +22,18 @@ class SalutationRepository extends EntityRepository
             ->from(Salutation::class, 's')
             ->groupBy('s.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        return $qb->where($qb->expr()->in('s.id', $ids))
+            ->groupBy('s.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

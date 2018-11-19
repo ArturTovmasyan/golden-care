@@ -399,11 +399,7 @@ class CareLevelController extends BaseController
      */
     public function deleteBulkAction(Request $request, CareLevelService $careLevelService)
     {
-        $careLevelService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $careLevelService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

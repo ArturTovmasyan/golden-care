@@ -362,13 +362,7 @@ class MedicationController extends BaseController
      */
     public function deleteBulkAction(Request $request, MedicationService $medicationService)
     {
-        $ids = $request->get('ids');
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $medicationService->remove($id);
-            }
-        }
+        $medicationService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

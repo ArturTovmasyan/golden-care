@@ -229,7 +229,7 @@ class MedicationFormFactorController extends BaseController
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
     {
@@ -279,7 +279,7 @@ class MedicationFormFactorController extends BaseController
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService)
     {
@@ -367,11 +367,7 @@ class MedicationFormFactorController extends BaseController
      */
     public function deleteBulkAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
     {
-        $medicationFormFactorService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $medicationFormFactorService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

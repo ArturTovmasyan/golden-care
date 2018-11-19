@@ -121,4 +121,42 @@ class RelationshipService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids): void
+    {
+        try {
+            if (empty($ids)) {
+                throw new RelationshipNotFoundException();
+            }
+
+            $relationships = $this->em->getRepository(Relationship::class)->findByIds($ids);
+
+            if (empty($relationships)) {
+                throw new RelationshipNotFoundException();
+            }
+
+            /**
+             * @var Relationship $relationship
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($relationships as $relationship) {
+                $this->em->remove($relationship);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (RelationshipNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

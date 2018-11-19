@@ -237,7 +237,7 @@ class MedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param MedicalHistoryConditionService $medicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, MedicalHistoryConditionService $medicalHistoryConditionService)
     {
@@ -290,7 +290,7 @@ class MedicalHistoryConditionController extends BaseController
      * @param $id
      * @param MedicalHistoryConditionService $medicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, MedicalHistoryConditionService $medicalHistoryConditionService)
     {
@@ -379,11 +379,7 @@ class MedicalHistoryConditionController extends BaseController
      */
     public function deleteBulkAction(Request $request, MedicalHistoryConditionService $medicalHistoryConditionService)
     {
-        $medicalHistoryConditionService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $medicalHistoryConditionService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

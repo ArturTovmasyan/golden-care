@@ -362,13 +362,7 @@ class RelationshipController extends BaseController
      */
     public function deleteBulkAction(Request $request, RelationshipService $relationshipService)
     {
-        $ids = $request->get('ids');
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $relationshipService->remove($id);
-            }
-        }
+        $relationshipService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

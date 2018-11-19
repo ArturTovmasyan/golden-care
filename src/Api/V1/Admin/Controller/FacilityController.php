@@ -317,7 +317,7 @@ class FacilityController extends BaseController
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, FacilityService $facilityService)
     {
@@ -394,7 +394,7 @@ class FacilityController extends BaseController
      * @param $id
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, FacilityService $facilityService)
     {
@@ -491,11 +491,7 @@ class FacilityController extends BaseController
      */
     public function deleteBulkAction(Request $request, FacilityService $facilityService)
     {
-        $facilityService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $facilityService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

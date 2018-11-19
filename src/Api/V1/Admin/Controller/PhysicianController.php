@@ -476,4 +476,43 @@ class PhysicianController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {delete} /api/v1.0/admin/physician Bulk Delete Physicians
+     * @apiVersion 1.0.0
+     * @apiName Bulk Delete Physicians
+     * @apiGroup Admin Physicians
+     * @apiDescription This function is used to bulk remove physicians
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the role
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 611,
+     *          "error": "Role not found"
+     *     }
+     *
+     * @Route("", name="api_admin_physician_delete_bulk", methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param PhysicianService $physicianService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, PhysicianService $physicianService)
+    {
+        $physicianService->removeBulk($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
 }

@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
+use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CareLevel;
 use Doctrine\ORM\QueryBuilder;
@@ -123,16 +124,40 @@ class CareLevelService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids)
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new CareLevelNotFoundException();
             }
+
+            $careLevels = $this->em->getRepository(CareLevel::class)->findByIds($ids);
+
+            if (empty($careLevels)) {
+                throw new CareLevelNotFoundException();
+            }
+
+            $this->em->getConnection()->beginTransaction();
+
+            /**
+             * @var CareLevel $careLevel
+             */
+            foreach ($careLevels as $careLevel) {
+                $this->em->remove($careLevel);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (CareLevelNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

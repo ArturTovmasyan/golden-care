@@ -179,9 +179,9 @@ class AllergenController extends BaseController
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
-     *                  "id": 1,
-     *                  "title": "Lidocaine",
-     *                  "description": "Medication Allergies"
+     *              "id": 1,
+     *              "title": "Lidocaine",
+     *              "description": "Medication Allergies"
      *          }
      *     }
      *
@@ -237,7 +237,7 @@ class AllergenController extends BaseController
      * @param Request $request
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, AllergenService $allergenService)
     {
@@ -290,7 +290,7 @@ class AllergenController extends BaseController
      * @param $id
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, AllergenService $allergenService)
     {
@@ -379,11 +379,7 @@ class AllergenController extends BaseController
      */
     public function deleteBulkAction(Request $request, AllergenService $allergenService)
     {
-        $allergenService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $allergenService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

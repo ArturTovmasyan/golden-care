@@ -22,4 +22,18 @@ class CityStateZipRepository extends EntityRepository
             ->from(CityStateZip::class, 'csz')
             ->groupBy('csz.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('csz');
+
+        return $qb->where($qb->expr()->in('csz.id', $ids))
+            ->groupBy('csz.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

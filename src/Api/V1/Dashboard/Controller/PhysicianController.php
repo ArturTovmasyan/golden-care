@@ -4,9 +4,7 @@ namespace App\Api\V1\Dashboard\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
 use App\Annotation\Permission;
-use App\Api\V1\Dashboard\Service\MedicationService;
 use App\Api\V1\Dashboard\Service\PhysicianService;
-use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Space;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;

@@ -245,7 +245,7 @@ class DiagnosisController extends BaseController
      * @param Request $request
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, DiagnosisService $diagnosisService)
     {
@@ -301,7 +301,7 @@ class DiagnosisController extends BaseController
      * @param $id
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, DiagnosisService $diagnosisService)
     {
@@ -391,11 +391,7 @@ class DiagnosisController extends BaseController
      */
     public function deleteBulkAction(Request $request, DiagnosisService $diagnosisService)
     {
-        $diagnosisService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $diagnosisService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

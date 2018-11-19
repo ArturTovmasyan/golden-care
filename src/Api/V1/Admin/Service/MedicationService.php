@@ -121,4 +121,42 @@ class MedicationService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids): void
+    {
+        try {
+            if (empty($ids)) {
+                throw new MedicationNotFoundException();
+            }
+
+            $medications = $this->em->getRepository(Medication::class)->findByIds($ids);
+
+            if (empty($medications)) {
+                throw new MedicationNotFoundException();
+            }
+
+            /**
+             * @var Medication $medication
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($medications as $medication) {
+                $this->em->remove($medication);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (MedicationNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

@@ -125,16 +125,40 @@ class DiagnosisService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids)
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new DiagnosisNotFoundException();
             }
+
+            $diagnoses = $this->em->getRepository(Diagnosis::class)->findByIds($ids);
+
+            if (empty($diagnoses)) {
+                throw new DiagnosisNotFoundException();
+            }
+
+            /**
+             * @var Diagnosis $diagnosis
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($diagnoses as $diagnosis) {
+                $this->em->remove($diagnosis);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (DiagnosisNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

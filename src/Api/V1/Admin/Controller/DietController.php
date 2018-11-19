@@ -237,7 +237,7 @@ class DietController extends BaseController
      * @param Request $request
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, DietService $dietService)
     {
@@ -290,7 +290,7 @@ class DietController extends BaseController
      * @param $id
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, DietService $dietService)
     {
@@ -379,11 +379,7 @@ class DietController extends BaseController
      */
     public function deleteBulkAction(Request $request, DietService $dietService)
     {
-        $dietService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $dietService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

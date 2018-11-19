@@ -22,4 +22,18 @@ class RelationshipRepository extends EntityRepository
             ->from(Relationship::class, 'r')
             ->groupBy('r.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->where($qb->expr()->in('r.id', $ids))
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

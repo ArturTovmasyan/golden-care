@@ -121,16 +121,40 @@ class SalutationService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new SalutationNotFoundException();
             }
+
+            $salutations = $this->em->getRepository(Salutation::class)->findByIds($ids);
+
+            if (empty($salutations)) {
+                throw new SalutationNotFoundException();
+            }
+
+            /**
+             * @var Salutation $salutation
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($salutations as $salutation) {
+                $this->em->remove($salutation);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (SalutationNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

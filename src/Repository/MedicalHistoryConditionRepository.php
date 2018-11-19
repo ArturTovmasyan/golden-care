@@ -22,4 +22,18 @@ class MedicalHistoryConditionRepository extends EntityRepository
             ->from(MedicalHistoryCondition::class, 'mhc')
             ->groupBy('mhc.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('mhc');
+
+        return $qb->where($qb->expr()->in('mhc.id', $ids))
+            ->groupBy('mhc.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

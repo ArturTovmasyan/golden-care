@@ -22,4 +22,18 @@ class MedicationFormFactorRepository extends EntityRepository
             ->from(MedicationFormFactor::class, 'mff')
             ->groupBy('mff.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('mff');
+
+        return $qb->where($qb->expr()->in('mff.id', $ids))
+            ->groupBy('mff.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

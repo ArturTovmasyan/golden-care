@@ -23,4 +23,18 @@ class MedicationRepository extends EntityRepository
             ->from(Medication::class, 'm')
             ->groupBy('m.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('m');
+
+        return $qb->where($qb->expr()->in('m.id', $ids))
+            ->groupBy('m.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -22,4 +22,18 @@ class DiagnosisRepository extends EntityRepository
             ->from(Diagnosis::class, 'd')
             ->groupBy('d.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('d');
+
+        return $qb->where($qb->expr()->in('d.id', $ids))
+            ->groupBy('d.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

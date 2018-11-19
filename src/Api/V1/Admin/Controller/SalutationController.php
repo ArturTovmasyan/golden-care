@@ -253,7 +253,7 @@ class SalutationController extends BaseController
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, SalutationService $salutationService)
     {
@@ -303,7 +303,7 @@ class SalutationController extends BaseController
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, SalutationService $salutationService)
     {
@@ -391,11 +391,7 @@ class SalutationController extends BaseController
      */
     public function deleteBulkAction(Request $request, SalutationService $salutationService)
     {
-        $salutationService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $salutationService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

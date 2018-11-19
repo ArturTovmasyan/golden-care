@@ -195,16 +195,40 @@ class FacilityService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new FacilityNotFoundException();
             }
+
+            $facilities = $this->em->getRepository(Facility::class)->findByIds($ids);
+
+            if (empty($facilities)) {
+                throw new FacilityNotFoundException();
+            }
+
+            /**
+             * @var Facility $facility
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($facilities as $facility) {
+                $this->em->remove($facility);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (FacilityNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

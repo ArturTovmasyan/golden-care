@@ -37,4 +37,18 @@ class FacilityRepository extends EntityRepository
             )
             ->groupBy('f.id');
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('f');
+
+        return $qb->where($qb->expr()->in('f.id', $ids))
+            ->groupBy('f.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -123,16 +123,40 @@ class DietService extends BaseService implements IGridService
     }
 
     /**
-     * @param array $params
+     * @param array $ids
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
      */
-    public function removeBulk(array $params)
+    public function removeBulk(array $ids): void
     {
-        $ids = $params['ids'];
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->remove($id);
+        try {
+            if (empty($ids)) {
+                throw new DietNotFoundException();
             }
+
+            $diets = $this->em->getRepository(Diet::class)->findByIds($ids);
+
+            if (empty($diets)) {
+                throw new DietNotFoundException();
+            }
+
+            /**
+             * @var Diet $diet
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($diets as $diet) {
+                $this->em->remove($diet);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (DietNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

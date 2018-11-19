@@ -317,7 +317,7 @@ class ApartmentController extends BaseController
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, ApartmentService $apartmentService)
     {
@@ -394,7 +394,7 @@ class ApartmentController extends BaseController
      * @param $id
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, ApartmentService $apartmentService)
     {
@@ -491,11 +491,7 @@ class ApartmentController extends BaseController
      */
     public function deleteBulkAction(Request $request, ApartmentService $apartmentService)
     {
-        $apartmentService->removeBulk(
-            [
-                'ids' => $request->get('ids')
-            ]
-        );
+        $apartmentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
