@@ -23,9 +23,8 @@ use JMS\Serializer\Annotation\Groups;
  *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
  *          {"email", "string", true, true, "p.email"},
  *          {"website_url", "string", true, true, "p.websiteUrl"},
- *          {"space_id", "number", true, true, "s.id"},
- *          {"space_name", "string", true, true, "s.name"},
- *          {"csz_id", "number", true, true, "csz.id"}
+ *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
+ *          {"space", "string", true, true, "s.name"}
  *     },
  *     api_dashboard_physician_grid={
  *          {"id", "number", true, true, "p.id"},
@@ -39,7 +38,7 @@ use JMS\Serializer\Annotation\Groups;
  *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
  *          {"email", "string", true, true, "p.email"},
  *          {"website_url", "string", true, true, "p.websiteUrl"},
- *          {"csz_id", "number", true, true, "csz.id"}
+ *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
  *     }
  * )
  */

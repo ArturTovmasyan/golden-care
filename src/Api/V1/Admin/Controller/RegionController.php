@@ -64,7 +64,7 @@ class RegionController extends BaseController
      *                  "shorthand": "CV",
      *                  "phone": "(916) 444-4444",
      *                  "fax": "(916) 444-5555",
-     *                  "space_name": "alms"
+     *                  "space": "alms"
      *              }
      *          ]
      *     }

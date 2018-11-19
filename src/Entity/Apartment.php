@@ -24,11 +24,9 @@ use App\Annotation\Grid;
  *          {"fax", "string", true, true, "a.fax"},
  *          {"address1", "string", true, true, "a.address1"},
  *          {"license", "string", true, true, "a.license"},
- *          {"csz_city", "string", true, true, "csz.city"},
- *          {"csz_state_abbr", "string", true, true, "csz.stateAbbr"},
- *          {"csz_zip_main", "string", true, true, "csz.zipMain"},
  *          {"max_beds_number", "string", true, true, "a.maxBedsNumber"},
- *          {"space_name", "string", true, true, "s.name"},
+ *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
+ *          {"space", "string", true, true, "s.name"}
  *     }
  * )
  */

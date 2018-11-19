@@ -165,7 +165,7 @@ class CareLevelController extends BaseController
      */
     public function listAction(Request $request, CareLevelService $careLevelService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
             CareLevel::class,
             'api_admin_care_level_list',

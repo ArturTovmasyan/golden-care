@@ -177,7 +177,7 @@ class CityStateZipController extends BaseController
      */
     public function listAction(Request $request, CityStateZipService $cityStateZipService)
     {
-        return $this->respondGrid(
+        return $this->respondList(
             $request,
             CityStateZip::class,
             'api_admin_city_state_zip_list',

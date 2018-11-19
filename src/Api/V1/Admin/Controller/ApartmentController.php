@@ -70,11 +70,9 @@ class ApartmentController extends BaseController
      *                  "fax": "(916) 729-9204",
      *                  "address1": "Auburn Oaks",
      *                  "license": "347005555",
-     *                  "csz_city": "Verdi",
-     *                  "csz_state_abbr": "CA",
-     *                  "csz_zip_main": "89439",
      *                  "max_beds_number": 48,
-     *                  "space_name": "alms"
+     *                  "space": "alms",
+     *                  "csz_str": "Verdi CA, 89439"
      *              }
      *          ]
      *     }

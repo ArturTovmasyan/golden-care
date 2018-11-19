@@ -77,9 +77,8 @@ class PhysicianController extends BaseController
      *                  "emergency_phone": "+37455888080",
      *                  "email": "test@example.com",
      *                  "website_url": "http://example.com",
-     *                  "space_id": 1,
-     *                  "space_name": "Space N1",
-     *                  "csz_id": 1
+     *                  "space": "alms",
+     *                  "csz_str": "Verdi CA, 89439"
      *              }
      *          ]
      *     }
