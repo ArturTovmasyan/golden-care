@@ -182,6 +182,14 @@ class Physician
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
+     * @Assert\Regex(
+     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+     *     groups={
+     *          "api_dashboard_physician_add",
+     *          "api_dashboard_physician_edit",
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     * })
      * @ORM\Column(name="office_phone", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_dashboard_physician_list",
@@ -201,6 +209,14 @@ class Physician
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
+     * @Assert\Regex(
+     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+     *     groups={
+     *          "api_dashboard_physician_add",
+     *          "api_dashboard_physician_edit",
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     * })
      */
     private $fax;
 
@@ -212,6 +228,14 @@ class Physician
      *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
+     * })
+     * @Assert\Regex(
+     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+     *     groups={
+     *          "api_dashboard_physician_add",
+     *          "api_dashboard_physician_edit",
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
      * })
      */
     private $emergencyPhone;
@@ -225,6 +249,14 @@ class Physician
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
+     * @Assert\Email(
+     *     groups={
+     *          "api_dashboard_physician_add",
+     *          "api_dashboard_physician_edit",
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *     }
+     * )
      */
     private $email;
 

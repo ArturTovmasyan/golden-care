@@ -81,24 +81,34 @@ class Region
     /**
      * @var string
      * @Assert\Regex(
-     *     pattern="/^\(\d{3}\) \d{3}-\d{4}$/",
-     *     message="Invalid Phone number. Should be like '(916) 727-4232'",
-     *     groups={"api_admin_region_add", "api_admin_region_edit"}
-     * )
+     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+     *     groups={
+     *          "api_admin_region_add",
+     *          "api_admin_region_edit"
+     * })
      * @ORM\Column(name="phone", type="string", length=20, nullable=true)
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
+     * })
      */
     private $phone;
 
     /**
      * @var string
      * @Assert\Regex(
-     *     pattern="/^\(\d{3}\) \d{3}-\d{4}$/",
-     *     message="Invalid Fax number. Should be like '(916) 727-4232'",
-     *     groups={"api_admin_region_add", "api_admin_region_edit"}
-     * )
+     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+     *     groups={
+     *          "api_admin_region_add",
+     *          "api_admin_region_edit"
+     * })
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
+     * })
      */
     private $fax;
 
