@@ -379,7 +379,7 @@ class RoleController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int[]} ids The unique identifier of the role TODO: review
+     * @apiParam {Array} ids The unique identifier of the role
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 204 No Content

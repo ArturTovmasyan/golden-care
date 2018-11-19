@@ -175,4 +175,43 @@ class PhysicianService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @param Space $space
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids, Space $space): void
+    {
+        try {
+            if (empty($ids)) {
+                throw new PhysicianNotFoundException();
+            }
+
+            $physicians = $this->em->getRepository(Physician::class)->findByIdsAndSpace($ids, $space);
+
+            if (empty($physicians)) {
+                throw new PhysicianNotFoundException();
+            }
+
+            /**
+             * @var Physician $physician
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            foreach ($physicians as $physician) {
+                $this->em->remove($physician);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (PhysicianNotFoundException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

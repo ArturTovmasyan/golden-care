@@ -463,7 +463,49 @@ class PhysicianController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction(Request $request, $id, Space $space, PhysicianService $physicianService)
+    public function deleteAction(Request $request, $id, Space $space, PhysicianService $physicianService)
+    {
+        $physicianService->remove($id, $space);
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {delete} /api/v1.0/dashboard/space/{space_id}/physician Bulk Delete Physician
+     * @apiVersion 1.0.0
+     * @apiName Bulk Delete Physician
+     * @apiGroup Dashboard Physicians
+     * @apiPermission PERMISSION_PHYSICIAN
+     * @apiDescription This function is used to bulk remove physician
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Array} ids The unique identifier of the physician
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 631,
+     *          "error": "Physician not found"
+     *     }
+     *
+     * @Route("", requirements={"spaceId"="\d+"}, name="api_dashboard_physician_delete_bulk", methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param Space $space
+     * @param PhysicianService $physicianService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, $id, Space $space, PhysicianService $physicianService)
     {
         $physicianService->remove($id, $space);
 

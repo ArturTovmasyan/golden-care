@@ -109,4 +109,21 @@ class PhysicianRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @param Space $space
+     * @return mixed
+     */
+    public function findByIdsAndSpace($ids, Space $space)
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb->where($qb->expr()->in('p.id', $ids))
+            ->andWhere('p.space = :space')
+            ->setParameter('space', $space)
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
