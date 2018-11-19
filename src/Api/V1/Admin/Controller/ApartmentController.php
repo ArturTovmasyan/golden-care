@@ -51,6 +51,7 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -73,7 +74,9 @@ class ApartmentController extends BaseController
      *                  "csz_city": "Verdi",
      *                  "csz_state_abbr": "CA",
      *                  "csz_zip_main": "89439",
-     *                  "max_beds_number": 48
+     *                  "max_beds_number": 48,
+     *                  "space_id": "1",
+     *                  "space_name": "alms"
      *              }
      *          ]
      *     }
@@ -151,6 +154,7 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -175,7 +179,11 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
-     *                  "max_beds_number": 48
+     *                  "max_beds_number": 48,
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -217,6 +225,7 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
      * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -236,7 +245,11 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
-     *                  "max_beds_number": 48
+     *                  "max_beds_number": 48,
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -275,6 +288,7 @@ class ApartmentController extends BaseController
      * @apiParam {String}  [license]       The license of the apartment
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     max_beds_number The maxBedsNumber of the apartment
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -286,7 +300,8 @@ class ApartmentController extends BaseController
      *          "address1": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
-     *          "max_beds_number": 48
+     *          "max_beds_number": 48,
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -320,7 +335,8 @@ class ApartmentController extends BaseController
                 'address1' => $request->get('address1'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'max_beds_number' => $request->get('max_beds_number')
+                'max_beds_number' => $request->get('max_beds_number'),
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -348,6 +364,7 @@ class ApartmentController extends BaseController
      * @apiParam {String}  [license]       The license of the apartment
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     max_beds_number The maxBedsNumber of the apartment
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -359,7 +376,8 @@ class ApartmentController extends BaseController
      *          "address1": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
-     *          "max_beds_number": 48
+     *          "max_beds_number": 48,
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -395,7 +413,8 @@ class ApartmentController extends BaseController
                 'address1' => $request->get('address1'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'max_beds_number' => $request->get('max_beds_number')
+                'max_beds_number' => $request->get('max_beds_number'),
+                'space_id' => $request->get('space_id')
             ]
         );
 

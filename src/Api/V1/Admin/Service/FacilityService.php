@@ -4,9 +4,11 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -48,8 +50,21 @@ class FacilityService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
+
+            $space = null;
             $csz = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
 
             if ($cszId && $cszId > 0) {
                 /** @var CityStateZip $csz */
@@ -71,6 +86,7 @@ class FacilityService extends BaseService implements IGridService
             $facility->setLicense($params['license']);
             $facility->setCsz($csz);
             $facility->setMaxBedsNumber($params['max_beds_number']);
+            $facility->setSpace($space);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
 
@@ -102,8 +118,21 @@ class FacilityService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
+
+            $space = null;
             $csz = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
 
             if ($cszId && $cszId > 0) {
                 /** @var CityStateZip $csz */
@@ -124,6 +153,7 @@ class FacilityService extends BaseService implements IGridService
             $entity->setLicense($params['license']);
             $entity->setCsz($csz);
             $entity->setMaxBedsNumber($params['max_beds_number']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_facility_edit']);
 

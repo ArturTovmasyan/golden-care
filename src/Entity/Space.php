@@ -43,7 +43,13 @@ class Space
      *     "api_profile_me",
      *     "api_dashboard_space_get",
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
      * })
      */
     private $id;
@@ -64,7 +70,13 @@ class Space
      *     "api_dashboard_physician_grid",
      *     "api_dashboard_physician_list",
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

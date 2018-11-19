@@ -29,6 +29,8 @@ use App\Annotation\Grid;
  *          {"csz_state_abbr", "string", true, true, "csz.stateAbbr"},
  *          {"csz_zip_main", "string", true, true, "csz.zipMain"},
  *          {"max_beds_number", "string", true, true, "f.maxBedsNumber"},
+ *          {"space_id", "number", true, true, "s.id"},
+ *          {"space_name", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -157,6 +159,17 @@ class Facility
     private $maxBedsNumber;
 
     /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_facility_add", "api_admin_facility_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
+     */
+    private $space;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -276,6 +289,18 @@ class Facility
     public function setCsz(?CityStateZip $csz): self
     {
         $this->csz = $csz;
+
+        return $this;
+    }
+
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
 
         return $this;
     }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -27,6 +28,12 @@ class FacilityRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'csz = f.csz'
+            )
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = f.space'
             )
             ->groupBy('f.id');
     }

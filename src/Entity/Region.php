@@ -21,7 +21,9 @@ use App\Annotation\Grid;
  *          {"description", "string", true, true, "r.description"},
  *          {"shorthand", "string", true, true, "r.shorthand"},
  *          {"phone", "string", true, true, "r.phone"},
- *          {"fax", "string", true, true, "r.fax"}
+ *          {"fax", "string", true, true, "r.fax"},
+ *          {"space_id", "number", true, true, "s.id"},
+ *          {"space_name", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -102,6 +104,17 @@ class Region
     private $fax;
 
     /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     */
+    private $space;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -173,6 +186,18 @@ class Region
     public function setFax(?string $fax): self
     {
         $this->fax = $fax;
+
+        return $this;
+    }
+
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
 
         return $this;
     }

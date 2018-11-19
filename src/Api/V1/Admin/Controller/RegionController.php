@@ -47,6 +47,7 @@ class RegionController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the region
      * @apiSuccess {String}  phone           The phone time of the region
      * @apiSuccess {String}  fax             The fax time of the region
+     * @apiSuccess {Object}  space           The space of the region
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -62,7 +63,9 @@ class RegionController extends BaseController
      *                  "description": "Lodi, et al",
      *                  "shorthand": "CV",
      *                  "phone": "(916) 444-4444",
-     *                  "fax": "(916) 444-5555"
+     *                  "fax": "(916) 444-5555",
+     *                  "space_id": "1",
+     *                  "space_name": "alms"
      *              }
      *          ]
      *     }
@@ -136,6 +139,7 @@ class RegionController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the region
      * @apiSuccess {String}  phone           The phone time of the region
      * @apiSuccess {String}  fax             The fax time of the region
+     * @apiSuccess {Object}  space           The space of the region
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -151,7 +155,11 @@ class RegionController extends BaseController
      *                  "description": "Lodi, et al",
      *                  "shorthand": "CV",
      *                  "phone": "(916) 444-4444",
-     *                  "fax": "(916) 444-4444"
+     *                  "fax": "(916) 444-4444",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -189,6 +197,7 @@ class RegionController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the region
      * @apiSuccess {String}  phone           The phone time of the region
      * @apiSuccess {String}  fax             The fax time of the region
+     * @apiSuccess {Object}  space           The space of the region
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -199,7 +208,11 @@ class RegionController extends BaseController
      *                  "description": "Lodi, et al",
      *                  "shorthand": "CV",
      *                  "phone": "(916) 444-4444",
-     *                  "fax": "(916) 444-5555"
+     *                  "fax": "(916) 444-5555",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -234,6 +247,7 @@ class RegionController extends BaseController
      * @apiParam {String}  shorthand       The shorthand of the region
      * @apiParam {String}  [phone]         The phone of the region
      * @apiParam {String}  [fax]           The fax of the region
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -241,7 +255,8 @@ class RegionController extends BaseController
      *          "description": "Lodi, et al",
      *          "shorthand": "CV",
      *          "phone": "(916) 444-4444",
-     *          "fax": "(916) 444-5555"
+     *          "fax": "(916) 444-5555",
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -271,7 +286,8 @@ class RegionController extends BaseController
                 'description' => $request->get('description') ?? '',
                 'shorthand' => $request->get('shorthand'),
                 'phone' => $request->get('phone') ?? '',
-                'fax' => $request->get('fax') ?? ''
+                'fax' => $request->get('fax') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -295,6 +311,7 @@ class RegionController extends BaseController
      * @apiParam {String}  shorthand       The shorthand of the region
      * @apiParam {String}  [phone]         The phone of the region
      * @apiParam {String}  [fax]           The fax of the region
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -302,7 +319,8 @@ class RegionController extends BaseController
      *          "description": "Lodi, et al",
      *          "shorthand": "CV",
      *          "phone": "(916) 444-4444",
-     *          "fax": "(916) 444-5555"
+     *          "fax": "(916) 444-5555",
+     *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -334,7 +352,8 @@ class RegionController extends BaseController
                 'description' => $request->get('description') ?? '',
                 'shorthand' => $request->get('shorthand'),
                 'phone' => $request->get('phone') ?? '',
-                'fax' => $request->get('fax') ?? ''
+                'fax' => $request->get('fax') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 

@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Region;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,12 +48,27 @@ class RegionService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $region = new Region();
             $region->setName($params['name']);
             $region->setDescription($params['description']);
             $region->setShorthand($params['shorthand']);
             $region->setPhone($params['phone']);
             $region->setFax($params['fax']);
+            $region->setSpace($space);
 
             $this->validate($region, null, ['api_admin_region_add']);
 
@@ -83,11 +100,26 @@ class RegionService extends BaseService implements IGridService
                 throw new RegionNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setName($params['name']);
             $entity->setDescription($params['description']);
             $entity->setShorthand($params['shorthand']);
             $entity->setPhone($params['phone']);
             $entity->setFax($params['fax']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_region_edit']);
 
