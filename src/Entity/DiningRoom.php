@@ -6,7 +6,6 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
@@ -14,7 +13,6 @@ use App\Annotation\Grid;
  * Class DiningRoom
  *
  * @ORM\Entity(repositoryClass="App\Repository\DiningRoomRepository")
- * @UniqueEntity("title", groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"})
  * @ORM\Table(name="tbl_dining_room")
  * @Grid(
  *     api_admin_dining_room_grid={
@@ -46,7 +44,7 @@ class DiningRoom
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"}
      * )
-     * @ORM\Column(name="title", type="string", unique=true, length=50)
+     * @ORM\Column(name="title", type="string", length=50)
      * @Groups({"api_admin_dining_room_grid", "api_admin_dining_room_list", "api_admin_dining_room_get"})
      */
     private $title;
