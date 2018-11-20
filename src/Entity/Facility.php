@@ -40,7 +40,12 @@ class Facility
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_facility_list", "api_admin_facility_get"})
+     * @Groups({
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get",
+     *     "api_admin_dining_room_list",
+     *     "api_admin_dining_room_get"
+     * })
      */
     private $id;
 
@@ -53,7 +58,13 @@ class Facility
      *      groups={"api_admin_facility_add", "api_admin_facility_edit"}
      * )
      * @ORM\Column(name="name", type="string", length=100)
-     * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
+     * @Groups({
+     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get",
+     *     "api_admin_dining_room_list",
+     *     "api_admin_dining_room_get"
+     * })
      */
     private $name;
 
