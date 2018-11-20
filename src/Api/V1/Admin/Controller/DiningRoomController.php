@@ -160,7 +160,8 @@ class DiningRoomController extends BaseController
             $request,
             DiningRoom::class,
             'api_admin_dining_room_list',
-            $diningRoomService
+            $diningRoomService,
+            ['facility_id' => $request->get('facility_id')]
         );
     }
 

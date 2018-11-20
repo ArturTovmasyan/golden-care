@@ -27,6 +27,12 @@ class DiningRoomService extends BaseService implements IGridService
 
     public function list($params)
     {
+        if (\count($params) && array_key_exists('facility_id', $params[0])) {
+            $facilityId = $params[0]['facility_id'];
+
+            return $this->em->getRepository(DiningRoom::class)->findBy(['facility' => $facilityId]);
+        }
+
         return $this->em->getRepository(DiningRoom::class)->findAll();
     }
 
