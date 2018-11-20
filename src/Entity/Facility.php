@@ -22,9 +22,9 @@ use App\Annotation\Grid;
  *          {"shorthand", "string", true, true, "f.shorthand"},
  *          {"phone", "string", true, true, "f.phone"},
  *          {"fax", "string", true, true, "f.fax"},
- *          {"address1", "string", true, true, "f.address1"},
+ *          {"address", "string", true, true, "f.address"},
  *          {"license", "string", true, true, "f.license"},
- *          {"max_beds_number", "string", true, true, "f.maxBedsNumber"},
+ *          {"capacity", "string", true, true, "f.capacity"},
  *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
  *          {"space", "string", true, true, "s.name"}
  *     }
@@ -131,13 +131,13 @@ class Facility
      * @Assert\NotBlank(groups={"api_admin_facility_add", "api_admin_facility_edit"})
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "Address 1 cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Address cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_facility_add", "api_admin_facility_edit"}
      * )
-     * @ORM\Column(name="address1", type="string", length=100)
+     * @ORM\Column(name="address", type="string", length=100)
      * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
      */
-    private $address1;
+    private $address;
 
     /**
      * @var string $license
@@ -170,10 +170,10 @@ class Facility
      *      message="The value should be numeric",
      *      groups={"api_admin_facility_add", "api_admin_facility_edit"}
      * )
-     * @ORM\Column(name="max_beds_number", type="integer")
+     * @ORM\Column(name="capacity", type="integer")
      * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
      */
-    private $maxBedsNumber;
+    private $capacity;
 
     /**
      * @var Space
@@ -262,14 +262,14 @@ class Facility
         return $this;
     }
 
-    public function getAddress1(): ?string
+    public function getAddress(): ?string
     {
-        return $this->address1;
+        return $this->address;
     }
 
-    public function setAddress1(string $address1): self
+    public function setAddress(string $address): self
     {
-        $this->address1 = $address1;
+        $this->address = $address;
 
         return $this;
     }
@@ -286,14 +286,14 @@ class Facility
         return $this;
     }
 
-    public function getMaxBedsNumber(): ?int
+    public function getCapacity(): ?int
     {
-        return $this->maxBedsNumber;
+        return $this->capacity;
     }
 
-    public function setMaxBedsNumber($maxBedsNumber): self
+    public function setCapacity($capacity): self
     {
-        $this->maxBedsNumber = $maxBedsNumber;
+        $this->capacity = $capacity;
 
         return $this;
     }

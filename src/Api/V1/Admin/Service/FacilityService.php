@@ -82,10 +82,10 @@ class FacilityService extends BaseService implements IGridService
             $facility->setShorthand($params['shorthand']);
             $facility->setPhone($params['phone']);
             $facility->setFax($params['fax']);
-            $facility->setAddress1($params['address1']);
+            $facility->setAddress($params['address']);
             $facility->setLicense($params['license']);
             $facility->setCsz($csz);
-            $facility->setMaxBedsNumber($params['max_beds_number']);
+            $facility->setCapacity($params['capacity']);
             $facility->setSpace($space);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
@@ -149,10 +149,10 @@ class FacilityService extends BaseService implements IGridService
             $entity->setShorthand($params['shorthand']);
             $entity->setPhone($params['phone']);
             $entity->setFax($params['fax']);
-            $entity->setAddress1($params['address1']);
+            $entity->setAddress($params['address']);
             $entity->setLicense($params['license']);
             $entity->setCsz($csz);
-            $entity->setMaxBedsNumber($params['max_beds_number']);
+            $entity->setCapacity($params['capacity']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_facility_edit']);

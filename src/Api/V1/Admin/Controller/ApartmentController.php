@@ -47,10 +47,10 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the apartment
      * @apiSuccess {String}  phone           The phone time of the apartment
      * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address1        The address1 time of the apartment
+     * @apiSuccess {String}  address         The address time of the apartment
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Int}     capacity        The capacity time of the apartment
      * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
@@ -68,9 +68,9 @@ class ApartmentController extends BaseController
      *                  "shorthand": "AOIL",
      *                  "phone": "(916) 729-9200",
      *                  "fax": "(916) 729-9204",
-     *                  "address1": "Auburn Oaks",
+     *                  "address": "Auburn Oaks",
      *                  "license": "347005555",
-     *                  "max_beds_number": 48,
+     *                  "capacity": 48,
      *                  "space": "alms",
      *                  "csz_str": "Verdi CA, 89439"
      *              }
@@ -146,10 +146,10 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the apartment
      * @apiSuccess {String}  phone           The phone time of the apartment
      * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address1        The address1 time of the apartment
+     * @apiSuccess {String}  address         The address time of the apartment
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Int}     capacity        The capacity time of the apartment
      * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
@@ -167,7 +167,7 @@ class ApartmentController extends BaseController
      *                  "shorthand": "AOIL",
      *                  "phone": "(916) 729-9200",
      *                  "fax": "(916) 729-9204",
-     *                  "address1": "Auburn Oaks",
+     *                  "address": "Auburn Oaks",
      *                  "license": "347005555",
      *                  "csz": {
      *                      "id": 1,
@@ -175,7 +175,7 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
-     *                  "max_beds_number": 48,
+     *                  "capacity": 48,
      *                  "space": {
      *                      "id": 1,
      *                      "name": "alms"
@@ -217,10 +217,10 @@ class ApartmentController extends BaseController
      * @apiSuccess {String}  shorthand       The shorthand time of the apartment
      * @apiSuccess {String}  phone           The phone time of the apartment
      * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address1        The address1 time of the apartment
+     * @apiSuccess {String}  address         The address time of the apartment
      * @apiSuccess {String}  license         The license time of the apartment
      * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     max_beds_number The maxBedsNumber time of the apartment
+     * @apiSuccess {Int}     capacity        The capacity time of the apartment
      * @apiSuccess {Object}  space           The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
@@ -233,7 +233,7 @@ class ApartmentController extends BaseController
      *                  "shorthand": "AOIL",
      *                  "phone": "(916) 729-9200",
      *                  "fax": "(916) 729-9204",
-     *                  "address1": "Auburn Oaks",
+     *                  "address": "Auburn Oaks",
      *                  "license": "347005555",
      *                  "csz": {
      *                      "id": 1,
@@ -241,7 +241,7 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
-     *                  "max_beds_number": 48,
+     *                  "capacity": 48,
      *                  "space": {
      *                      "id": 1,
      *                      "name": "alms"
@@ -280,10 +280,10 @@ class ApartmentController extends BaseController
      * @apiParam {String}  shorthand       The shorthand of the apartment
      * @apiParam {String}  [phone]         The phone of the apartment
      * @apiParam {String}  [fax]           The fax of the apartment
-     * @apiParam {String}  address1        The address1 of the apartment
+     * @apiParam {String}  address         The address of the apartment
      * @apiParam {String}  [license]       The license of the apartment
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     max_beds_number The maxBedsNumber of the apartment
+     * @apiParam {Int}     capacity        The capacity of the apartment
      * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
@@ -293,10 +293,10 @@ class ApartmentController extends BaseController
      *          "shorthand": "AOIL",
      *          "phone": "(916) 729-9200",
      *          "fax": "(916) 729-9204",
-     *          "address1": "Auburn Oaks",
+     *          "address": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
-     *          "max_beds_number": 48,
+     *          "capacity": 48,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -328,10 +328,10 @@ class ApartmentController extends BaseController
                 'shorthand' => $request->get('shorthand'),
                 'phone' => $request->get('phone') ?? '',
                 'fax' => $request->get('fax') ?? '',
-                'address1' => $request->get('address1'),
+                'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'max_beds_number' => $request->get('max_beds_number'),
+                'capacity' => $request->get('capacity'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -356,10 +356,10 @@ class ApartmentController extends BaseController
      * @apiParam {String}  shorthand       The shorthand of the apartment
      * @apiParam {String}  [phone]         The phone of the apartment
      * @apiParam {String}  [fax]           The fax of the apartment
-     * @apiParam {String}  address1        The address1 of the apartment
+     * @apiParam {String}  address         The address of the apartment
      * @apiParam {String}  [license]       The license of the apartment
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     max_beds_number The maxBedsNumber of the apartment
+     * @apiParam {Int}     capacity        The capacity of the apartment
      * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
@@ -369,10 +369,10 @@ class ApartmentController extends BaseController
      *          "shorthand": "AOIL",
      *          "phone": "(916) 729-9200",
      *          "fax": "(916) 729-9204",
-     *          "address1": "Auburn Oaks",
+     *          "address": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
-     *          "max_beds_number": 48,
+     *          "capacity": 48,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -406,10 +406,10 @@ class ApartmentController extends BaseController
                 'shorthand' => $request->get('shorthand'),
                 'phone' => $request->get('phone') ?? '',
                 'fax' => $request->get('fax') ?? '',
-                'address1' => $request->get('address1'),
+                'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'max_beds_number' => $request->get('max_beds_number'),
+                'capacity' => $request->get('capacity'),
                 'space_id' => $request->get('space_id')
             ]
         );

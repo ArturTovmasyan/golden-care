@@ -82,10 +82,10 @@ class ApartmentService extends BaseService implements IGridService
             $apartment->setShorthand($params['shorthand']);
             $apartment->setPhone($params['phone']);
             $apartment->setFax($params['fax']);
-            $apartment->setAddress1($params['address1']);
+            $apartment->setAddress($params['address']);
             $apartment->setLicense($params['license']);
             $apartment->setCsz($csz);
-            $apartment->setMaxBedsNumber($params['max_beds_number']);
+            $apartment->setCapacity($params['capacity']);
             $apartment->setSpace($space);
 
             $this->validate($apartment, null, ['api_admin_apartment_add']);
@@ -149,10 +149,10 @@ class ApartmentService extends BaseService implements IGridService
             $entity->setShorthand($params['shorthand']);
             $entity->setPhone($params['phone']);
             $entity->setFax($params['fax']);
-            $entity->setAddress1($params['address1']);
+            $entity->setAddress($params['address']);
             $entity->setLicense($params['license']);
             $entity->setCsz($csz);
-            $entity->setMaxBedsNumber($params['max_beds_number']);
+            $entity->setCapacity($params['capacity']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_apartment_edit']);
