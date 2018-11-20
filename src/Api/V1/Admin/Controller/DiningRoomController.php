@@ -24,7 +24,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/dining/room")
+ * @Route("/api/v1.0/admin/facility/dining/room")
  *
  * Class DiningRoomController
  * @package App\Api\V1\Admin\Controller
@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class DiningRoomController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/dining/room/grid Get DiningRooms Grid
+     * @api {get} /api/v1.0/admin/facility/dining/room/grid Get DiningRooms Grid
      * @apiVersion 1.0.0
      * @apiName Get DiningRooms Grid
      * @apiGroup Admin DiningRoom
@@ -79,7 +79,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/dining/room/grid Get DiningRoom Grid Options
+     * @api {options} /api/v1.0/admin/facility/dining/room/grid Get DiningRoom Grid Options
      * @apiVersion 1.0.0
      * @apiName Get DiningRoom Grid Options
      * @apiGroup Admin DiningRoom
@@ -115,7 +115,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/dining/room Get DiningRooms
+     * @api {get} /api/v1.0/admin/facility/dining/room Get DiningRooms
      * @apiVersion 1.0.0
      * @apiName Get DiningRooms
      * @apiGroup Admin DiningRoom
@@ -165,7 +165,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/dining/room/{id} Get DiningRoom
+     * @api {get} /api/v1.0/admin/facility/dining/room/{id} Get DiningRoom
      * @apiVersion 1.0.0
      * @apiName Get DiningRoom
      * @apiGroup Admin DiningRoom
@@ -208,7 +208,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/dining/room Add DiningRoom
+     * @api {post} /api/v1.0/admin/facility/dining/room Add DiningRoom
      * @apiVersion 1.0.0
      * @apiName Add DiningRoom
      * @apiGroup Admin DiningRoom
@@ -260,7 +260,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/dining/room/{id} Edit DiningRoom
+     * @api {put} /api/v1.0/admin/facility/dining/room/{id} Edit DiningRoom
      * @apiVersion 1.0.0
      * @apiName Edit DiningRoom
      * @apiGroup Admin DiningRoom
@@ -314,7 +314,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/dining/room/{id} Delete DiningRoom
+     * @api {delete} /api/v1.0/admin/facility/dining/room/{id} Delete DiningRoom
      * @apiVersion 1.0.0
      * @apiName Delete DiningRoom
      * @apiGroup Admin DiningRoom
@@ -351,7 +351,7 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/dining/room Bulk Delete DiningRooms
+     * @api {delete} /api/v1.0/admin/facility/dining/room Bulk Delete DiningRooms
      * @apiVersion 1.0.0
      * @apiName Bulk Delete DiningRooms
      * @apiGroup Admin DiningRoom
