@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use App\Model\Room;
+use App\Model\RoomType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -86,7 +86,7 @@ class ApartmentRoom
      * @ORM\Column(name="type", type="integer", length=1)
      * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
      */
-    private $type = Room::PRIVATE;
+    private $type = RoomType::PRIVATE;
 
     /**
      * @var int
