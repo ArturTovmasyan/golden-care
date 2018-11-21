@@ -24,7 +24,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/facility/facility/room")
+ * @Route("/api/v1.0/admin/facility/room")
  *
  * Class FacilityRoomController
  * @package App\Api\V1\Admin\Controller
@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class FacilityRoomController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/facility/facility/room/grid Get FacilityRooms Grid
+     * @api {get} /api/v1.0/admin/facility/room/grid Get FacilityRooms Grid
      * @apiVersion 1.0.0
      * @apiName Get FacilityRooms Grid
      * @apiGroup Admin FacilityRoom
@@ -89,7 +89,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/facility/facility/room/grid Get FacilityRoom Grid Options
+     * @api {options} /api/v1.0/admin/facility/room/grid Get FacilityRoom Grid Options
      * @apiVersion 1.0.0
      * @apiName Get FacilityRoom Grid Options
      * @apiGroup Admin FacilityRoom
@@ -125,7 +125,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/facility/room Get FacilityRooms
+     * @api {get} /api/v1.0/admin/facility/room Get FacilityRooms
      * @apiVersion 1.0.0
      * @apiName Get FacilityRooms
      * @apiGroup Admin FacilityRoom
@@ -186,7 +186,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/facility/room/{id} Get FacilityRoom
+     * @api {get} /api/v1.0/admin/facility/room/{id} Get FacilityRoom
      * @apiVersion 1.0.0
      * @apiName Get FacilityRoom
      * @apiGroup Admin FacilityRoom
@@ -239,7 +239,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/facility/facility/room Add FacilityRoom
+     * @api {post} /api/v1.0/admin/facility/room Add FacilityRoom
      * @apiVersion 1.0.0
      * @apiName Add FacilityRoom
      * @apiGroup Admin FacilityRoom
@@ -306,7 +306,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/facility/facility/room/{id} Edit FacilityRoom
+     * @api {put} /api/v1.0/admin/facility/room/{id} Edit FacilityRoom
      * @apiVersion 1.0.0
      * @apiName Edit FacilityRoom
      * @apiGroup Admin FacilityRoom
@@ -375,7 +375,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/facility/room/{id} Delete FacilityRoom
+     * @api {delete} /api/v1.0/admin/facility/room/{id} Delete FacilityRoom
      * @apiVersion 1.0.0
      * @apiName Delete FacilityRoom
      * @apiGroup Admin FacilityRoom
@@ -412,7 +412,7 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/facility/room Bulk Delete FacilityRooms
+     * @api {delete} /api/v1.0/admin/facility/room Bulk Delete FacilityRooms
      * @apiVersion 1.0.0
      * @apiName Bulk Delete FacilityRooms
      * @apiGroup Admin FacilityRoom

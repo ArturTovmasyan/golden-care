@@ -24,7 +24,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/apartment/apartment/room")
+ * @Route("/api/v1.0/admin/apartment/room")
  *
  * Class ApartmentRoomController
  * @package App\Api\V1\Admin\Controller
@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class ApartmentRoomController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/apartment/apartment/room/grid Get ApartmentRooms Grid
+     * @api {get} /api/v1.0/admin/apartment/room/grid Get ApartmentRooms Grid
      * @apiVersion 1.0.0
      * @apiName Get ApartmentRooms Grid
      * @apiGroup Admin ApartmentRoom
@@ -89,7 +89,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/apartment/apartment/room/grid Get ApartmentRoom Grid Options
+     * @api {options} /api/v1.0/admin/apartment/room/grid Get ApartmentRoom Grid Options
      * @apiVersion 1.0.0
      * @apiName Get ApartmentRoom Grid Options
      * @apiGroup Admin ApartmentRoom
@@ -125,7 +125,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/apartment/apartment/room Get ApartmentRooms
+     * @api {get} /api/v1.0/admin/apartment/room Get ApartmentRooms
      * @apiVersion 1.0.0
      * @apiName Get ApartmentRooms
      * @apiGroup Admin ApartmentRoom
@@ -186,7 +186,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/apartment/apartment/room/{id} Get ApartmentRoom
+     * @api {get} /api/v1.0/admin/apartment/room/{id} Get ApartmentRoom
      * @apiVersion 1.0.0
      * @apiName Get ApartmentRoom
      * @apiGroup Admin ApartmentRoom
@@ -239,7 +239,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/apartment/apartment/room Add ApartmentRoom
+     * @api {post} /api/v1.0/admin/apartment/room Add ApartmentRoom
      * @apiVersion 1.0.0
      * @apiName Add ApartmentRoom
      * @apiGroup Admin ApartmentRoom
@@ -306,7 +306,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/apartment/apartment/room/{id} Edit ApartmentRoom
+     * @api {put} /api/v1.0/admin/apartment/room/{id} Edit ApartmentRoom
      * @apiVersion 1.0.0
      * @apiName Edit ApartmentRoom
      * @apiGroup Admin ApartmentRoom
@@ -375,7 +375,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/apartment/apartment/room/{id} Delete ApartmentRoom
+     * @api {delete} /api/v1.0/admin/apartment/room/{id} Delete ApartmentRoom
      * @apiVersion 1.0.0
      * @apiName Delete ApartmentRoom
      * @apiGroup Admin ApartmentRoom
@@ -412,7 +412,7 @@ class ApartmentRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/apartment/apartment/room Bulk Delete ApartmentRooms
+     * @api {delete} /api/v1.0/admin/apartment/room Bulk Delete ApartmentRooms
      * @apiVersion 1.0.0
      * @apiName Bulk Delete ApartmentRooms
      * @apiGroup Admin ApartmentRoom
