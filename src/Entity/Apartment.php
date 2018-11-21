@@ -40,7 +40,12 @@ class Apartment
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
      */
     private $id;
 
@@ -53,7 +58,12 @@ class Apartment
      *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
      * )
      * @ORM\Column(name="name", type="string", length=100)
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
      */
     private $name;
 

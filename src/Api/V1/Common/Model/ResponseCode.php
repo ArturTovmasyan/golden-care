@@ -45,6 +45,8 @@ class ResponseCode
     const REGION_NOT_FOUND_EXCEPTION                    = 638;
     const DINING_ROOM_NOT_FOUND_EXCEPTION               = 639;
     const RESIDENT_NOT_FOUND_EXCEPTION                  = 640;
+    const FACILITY_ROOM_NOT_FOUND_EXCEPTION             = 641;
+    const APARTMENT_ROOM_NOT_FOUND_EXCEPTION            = 642;
 
     /**
      * @var array
@@ -85,5 +87,7 @@ class ResponseCode
         self::REGION_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region not found'],
         self::DINING_ROOM_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'DiningRoom not found'],
         self::RESIDENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident not found'],
+        self::FACILITY_ROOM_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityRoom not found'],
+        self::APARTMENT_ROOM_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentRoom not found'],
     ];
 }

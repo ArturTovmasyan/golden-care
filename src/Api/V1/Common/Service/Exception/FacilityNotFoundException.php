@@ -7,7 +7,7 @@ use App\Api\V1\Common\Model\ResponseCode;
 class FacilityNotFoundException extends \RuntimeException
 {
     /**
-     * RoleNotFoundException constructor.
+     * FacilityNotFoundException constructor.
      */
     public function __construct()
     {
