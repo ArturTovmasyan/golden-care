@@ -47,6 +47,7 @@ class ResponseCode
     const RESIDENT_NOT_FOUND_EXCEPTION                  = 640;
     const FACILITY_ROOM_NOT_FOUND_EXCEPTION             = 641;
     const APARTMENT_ROOM_NOT_FOUND_EXCEPTION            = 642;
+    const RESIDENT_DIET_NOT_FOUND_EXCEPTION             = 643;
 
     /**
      * @var array
@@ -89,5 +90,6 @@ class ResponseCode
         self::RESIDENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident not found'],
         self::FACILITY_ROOM_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityRoom not found'],
         self::APARTMENT_ROOM_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentRoom not found'],
+        self::RESIDENT_DIET_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentDiet not found'],
     ];
 }

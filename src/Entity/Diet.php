@@ -32,7 +32,12 @@ class Diet
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_diet_list", "api_admin_diet_get"})
+     * @Groups({
+     *     "api_admin_diet_list",
+     *     "api_admin_diet_get",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $id;
 
@@ -45,7 +50,13 @@ class Diet
      *      groups={"api_admin_diet_add", "api_admin_diet_edit"}
      * )
      * @ORM\Column(name="title", type="string", length=255)
-     * @Groups({"api_admin_diet_grid", "api_admin_diet_list", "api_admin_diet_get"})
+     * @Groups({
+     *     "api_admin_diet_grid",
+     *     "api_admin_diet_list",
+     *     "api_admin_diet_get",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $title;
 
@@ -58,7 +69,13 @@ class Diet
      *      groups={"api_admin_diet_add", "api_admin_diet_edit"}
      * )
      * @ORM\Column(name="color", type="string", length=20)
-     * @Groups({"api_admin_diet_grid", "api_admin_diet_list", "api_admin_diet_get"})
+     * @Groups({
+     *     "api_admin_diet_grid",
+     *     "api_admin_diet_list",
+     *     "api_admin_diet_get",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $color;
 
