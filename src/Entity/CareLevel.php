@@ -34,7 +34,14 @@ class CareLevel
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({
+     *     "api_admin_care_level_grid",
+     *     "api_admin_care_level_list",
+     *     "api_admin_care_level_get",
+     *     "api_admin_resident_grid",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get"
+     * })
      */
     private $id;
 

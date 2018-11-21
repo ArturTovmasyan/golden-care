@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Physician;
 use App\Model\Persistence\Entity\TimeAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -23,9 +24,6 @@ use App\Annotation\Grid as Grid;
  *          {"physician_id","string", true, true, "r.physician_id"},
  *          {"gender","number", true, true, "r.gender"},
  *          {"birthday","number", true, true, "r.birthday"},
- *     },
- *     api_dashboard_resident_grid={
- *
  *     }
  * )
  */
@@ -62,6 +60,20 @@ class Resident
      * })
      */
     private $space;
+
+    /**
+     * @var int
+     * @ORM\Column(name="type", type="smallint", nullable=false)
+     * @Assert\Choice({1, 2, 3}, groups={
+     *     "api_admin_resident_add"
+     * })
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $type;
 
     /**
      * @var Physician
@@ -175,28 +187,42 @@ class Resident
     /**
      * @todo implement after resident events
      * @var \DateTime
-     * @ORM\Column(name="date_admitted", type="datetime", nullable=true)
-     */
-    private $dateAdmitted;
-
-    /**
-     * @todo implement after resident events
-     * @var \DateTime
      * @ORM\Column(name="date_left", type="datetime", nullable=true)
      */
     private $dateLeft;
 
     /**
-     * @todo implement after resident events
-     * @var int
-     * @ORM\Column(name="state", type="smallint", nullable=false)
+     * @var ResidentFacilityOption
+     * @ORM\OneToOne(targetEntity="ResidentFacilityOption", mappedBy="resident")
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
-    private $state = \App\Model\Resident::ACTIVE;
+    private $residentFacilityOption;
+
+    /**
+     * @var ResidentApartmentOption
+     * @ORM\OneToOne(targetEntity="ResidentApartmentOption", mappedBy="resident")
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $residentApartmentOption;
+
+    /**
+     * @var ResidentRegionOption
+     * @ORM\OneToOne(targetEntity="ResidentRegionOption", mappedBy="resident")
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $residentRegionOption;
 
     /**
      * @return int
@@ -276,6 +302,22 @@ class Resident
     public function setMiddleName($middleName): void
     {
         $this->middleName = $middleName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType(int $type): void
+    {
+        $this->type = $type;
     }
 
     /**
@@ -361,22 +403,6 @@ class Resident
     /**
      * @return \DateTime
      */
-    public function getDateAdmitted(): \DateTime
-    {
-        return $this->dateAdmitted;
-    }
-
-    /**
-     * @param \DateTime $dateAdmitted
-     */
-    public function setDateAdmitted(\DateTime $dateAdmitted): void
-    {
-        $this->dateAdmitted = $dateAdmitted;
-    }
-
-    /**
-     * @return \DateTime
-     */
     public function getDateLeft(): \DateTime
     {
         return $this->dateLeft;
@@ -388,21 +414,5 @@ class Resident
     public function setDateLeft(\DateTime $dateLeft): void
     {
         $this->dateLeft = $dateLeft;
-    }
-
-    /**
-     * @return int
-     */
-    public function getState(): int
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param int $state
-     */
-    public function setState(int $state): void
-    {
-        $this->state = $state;
     }
 }

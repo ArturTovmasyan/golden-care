@@ -250,7 +250,7 @@ class DiningRoomController extends BaseController
     {
         $diningRoomService->add(
             [
-                'title' => $request->get('title'),
+                'title'       => $request->get('title'),
                 'facility_id' => $request->get('facility_id')
             ]
         );

@@ -62,7 +62,7 @@ class Physician
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Space", inversedBy="spacePhysicians", cascade={"persist"})
      * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=false)
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",

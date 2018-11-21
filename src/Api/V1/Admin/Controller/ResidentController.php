@@ -64,7 +64,23 @@ class ResidentController extends BaseController
      *                  "middle_name": "Gagik",
      *                  "birthday": "1987-12-24T15:26:20+04:00",
      *                  "gender": 1,
-     *                  "state": 1
+     *                  "state": 1,
+     *                  "resident_facility_option": {
+     *                      "dining_room": {
+     *                          "id": 1
+     *                      },
+     *                      "date_admitted": "1987-12-24T19:26:18+04:00",
+     *                      "state": 1,
+     *                      "dnr": true,
+     *                      "polst": false,
+     *                      "ambulatory": true,
+     *                      "care_group": 5,
+     *                      "care_level": {
+     *                          "id": 1
+     *                      }
+     *                  },
+     *                  "resident_apartment_option": null,
+     *                  "resident_region_option": null
      *              }
      *          ]
      *     }
@@ -149,7 +165,23 @@ class ResidentController extends BaseController
      *              "middle_name": "Gagik",
      *              "birthday": "1987-12-24T15:26:20+04:00",
      *              "gender": 1,
-     *              "state": 1
+     *              "state": 1,
+     *              "resident_facility_option": {
+     *                  "dining_room": {
+     *                      "id": 1
+     *                  },
+     *                  "date_admitted": "1987-12-24T19:26:18+04:00",
+     *                  "state": 1,
+     *                  "dnr": true,
+     *                  "polst": false,
+     *                  "ambulatory": true,
+     *                  "care_group": 5,
+     *                  "care_level": {
+     *                      "id": 1
+     *                  }
+     *              },
+     *              "resident_apartment_option": null,
+     *              "resident_region_option": null
      *          }
      *     ]
      *
@@ -198,7 +230,23 @@ class ResidentController extends BaseController
      *          "middle_name": "Gagik",
      *          "birthday": "1987-12-24T15:26:20+04:00",
      *          "gender": 1,
-     *          "state": 1
+     *          "state": 1,
+     *          "resident_facility_option": {
+     *              "dining_room": {
+     *                  "id": 1
+     *              },
+     *              "date_admitted": "1987-12-24T19:26:18+04:00",
+     *              "state": 1,
+     *              "dnr": true,
+     *              "polst": false,
+     *              "ambulatory": true,
+     *              "care_group": 5,
+     *              "care_level": {
+     *                  "id": 1
+     *              }
+     *          },
+     *          "resident_apartment_option": null,
+     *          "resident_region_option": null
      *     }
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get", methods={"GET"})
@@ -230,9 +278,61 @@ class ResidentController extends BaseController
      *
      * @apiParam {String}  name The name of the resident
      *
-     * @apiParamExample {json} Request-Example:
+     * @apiParamExample {json} Facility Option Request:
      *     {
-     *         "name": "User Management"
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "type": 1,
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "dining_room_id": 1,
+     *              "dnr": 1,
+     *              "care_level": 1,
+     *              "date_admitted": "12-24-2016",
+     *              "care_group": 5,
+     *              "ambulatory": 1,
+     *              "polst": 1
+     *          ]
+     *     }
+     * @apiParamExample {json} Apartment Option Request:
+     *     {
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "type": 2,
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "date_admitted": "12-24-2016"
+     *          ]
+     *     }
+     * @apiParamExample {json} Region Option Request:
+     *     {
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "type": 3,
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "region_id": 1,
+     *              "dnr": 1,
+     *              "care_level": 1,
+     *              "date_admitted": "12-24-2016",
+     *              "care_group": 5,
+     *              "ambulatory": 1,
+     *              "polst": 1,
+     *              "csz_id": 1,
+     *              "street_address": "Alaverdyan str"
+     *          ]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -261,10 +361,12 @@ class ResidentController extends BaseController
                 'first_name'    => $request->get('first_name'),
                 'last_name'     => $request->get('last_name'),
                 'middle_name'   => $request->get('middle_name'),
+                'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'option'        => $request->get('option'),
             ]
         );
 
@@ -286,9 +388,56 @@ class ResidentController extends BaseController
      * @apiParam {Int}     id   The unique identifier of the resident
      * @apiParam {String}  name The name of the resident
      *
-     * @apiParamExample {json} Request-Example:
+     * @apiParamExample {json} Facility Option Request:
      *     {
-     *         "name": "Son"
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "dining_room_id": 1,
+     *              "dnr": 1,
+     *              "care_level": 1,
+     *              "care_group": 5,
+     *              "ambulatory": 1,
+     *              "polst": 1
+     *          ]
+     *     }
+     * @apiParamExample {json} Apartment Option Request:
+     *     {
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "date_admitted": "12-24-2016"
+     *          ]
+     *     }
+     * @apiParamExample {json} Region Option Request:
+     *     {
+     *          "first_name": "Joe",
+     *          "last_name": "Cole",
+     *          "middle_name": "",
+     *          "space_id": 1,
+     *          "physician_id": 1,
+     *          "gender": 1,
+     *          "birthday": "12-24-1990",
+     *          "option": [
+     *              "region_id": 1,
+     *              "dnr": 1,
+     *              "care_level": 1,
+     *              "care_group": 5,
+     *              "ambulatory": 1,
+     *              "polst": 1,
+     *              "csz_id": 1,
+     *              "street_address": "Alaverdyan str"
+     *          ]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -319,10 +468,12 @@ class ResidentController extends BaseController
                 'first_name'    => $request->get('first_name'),
                 'last_name'     => $request->get('last_name'),
                 'middle_name'   => $request->get('middle_name'),
+                'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'option'        => $request->get('option'),
             ]
         );
 

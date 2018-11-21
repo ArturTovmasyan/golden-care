@@ -100,7 +100,7 @@ class Space
      */
     public function __construct()
     {
-        $this->spaceUserRoles = new ArrayCollection();
+        $this->spaceUserRoles  = new ArrayCollection();
         $this->spacePhysicians = new ArrayCollection();
     }
 

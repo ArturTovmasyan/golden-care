@@ -35,7 +35,10 @@ class DiningRoom
      * @Groups({
      *     "api_admin_dining_room_grid",
      *     "api_admin_dining_room_list",
-     *     "api_admin_dining_room_get"
+     *     "api_admin_dining_room_get",
+     *     "api_admin_resident_grid",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get"
      * })
      */
     private $id;

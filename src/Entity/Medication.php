@@ -44,7 +44,6 @@ class Medication
 
     /**
      * @var string
-     * @Assert\NotBlank()
      * @ORM\Column(name="name", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_medication_grid",
