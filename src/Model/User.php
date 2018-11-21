@@ -4,6 +4,17 @@ namespace  App\Model;
 
 class User
 {
+    public const GENDER_MALE   = 1;
+    public const GENDER_FEMALE = 2;
+
+    /**
+     * @var array
+     */
+    public static $genders = [
+        self::GENDER_MALE   => 'Male',
+        self::GENDER_FEMALE => 'Female',
+    ];
+
     /**
      * @return array
      */

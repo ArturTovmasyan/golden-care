@@ -32,7 +32,11 @@ class DiningRoom
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_dining_room_grid", "api_admin_dining_room_list", "api_admin_dining_room_get"})
+     * @Groups({
+     *     "api_admin_dining_room_grid",
+     *     "api_admin_dining_room_list",
+     *     "api_admin_dining_room_get"
+     * })
      */
     private $id;
 
@@ -60,32 +64,50 @@ class DiningRoom
      */
     private $facility;
 
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
+    /**
+     * @return null|string
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * @param null|string $title
+     */
     public function setTitle(?string $title): void
     {
-        $title = preg_replace('/\s\s+/', ' ', $title);
-        $this->title = $title;
+        $this->title = preg_replace('/\s\s+/', ' ', $title);
     }
 
+    /**
+     * @return Facility|null
+     */
     public function getFacility(): ?Facility
     {
         return $this->facility;
     }
 
+    /**
+     * @param Facility|null $facility
+     * @return DiningRoom
+     */
     public function setFacility(?Facility $facility): self
     {
         $this->facility = $facility;

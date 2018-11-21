@@ -49,7 +49,10 @@ class Space
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
      *     "api_admin_region_list",
-     *     "api_admin_region_get"
+     *     "api_admin_region_get",
+     *     "api_admin_resident_grid",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get"
      * })
      */
     private $id;

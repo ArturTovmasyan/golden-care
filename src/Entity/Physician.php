@@ -53,7 +53,10 @@ class Physician
      *     "api_dashboard_physician_list",
      *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_grid",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get"
      * })
      */
     private $id;
