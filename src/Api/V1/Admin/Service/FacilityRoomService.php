@@ -74,7 +74,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $facilityRoom->setType($params['type']);
             $facilityRoom->setFloor($params['floor']);
             $facilityRoom->setDisabled($params['disabled']);
-            $facilityRoom->setShareable($params['shareable']);
+            $facilityRoom->setShared($params['shared']);
             $facilityRoom->setNotes($params['notes']);
 
             $this->validate($facilityRoom, null, ['api_admin_facility_room_add']);
@@ -126,7 +126,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $entity->setType($params['type']);
             $entity->setFloor($params['floor']);
             $entity->setDisabled($params['disabled']);
-            $entity->setShareable($params['shareable']);
+            $entity->setShared($params['shared']);
             $entity->setNotes($params['notes']);
 
             $this->validate($entity, null, ['api_admin_facility_room_edit']);

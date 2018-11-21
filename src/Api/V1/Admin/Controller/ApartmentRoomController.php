@@ -47,7 +47,7 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the apartmentRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -65,7 +65,7 @@ class ApartmentRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes",
      *              }
      *          ]
@@ -140,7 +140,7 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the apartmentRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -161,7 +161,7 @@ class ApartmentRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes"
      *              }
      *          ]
@@ -201,7 +201,7 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the apartmentRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -217,7 +217,7 @@ class ApartmentRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes"
      *          }
      *     }
@@ -253,7 +253,7 @@ class ApartmentRoomController extends BaseController
      * @apiParam {Int}     type            The type of the apartmentRoom
      * @apiParam {Int}     floor           The floor of the apartmentRoom
      * @apiParam {Int}     disabled        The disabled status of the apartmentRoom
-     * @apiParam {Int}     shareable       The shareable status of the apartmentRoom
+     * @apiParam {Int}     shared          The shared status of the apartmentRoom
      * @apiParam {String}  [notes]         The notes of the apartmentRoom
      *
      * @apiParamExample {json} Request-Example:
@@ -263,7 +263,7 @@ class ApartmentRoomController extends BaseController
      *          "type": 1,
      *          "floor": 1,
      *          "disabled": 0,
-     *          "shareable": 0,
+     *          "shared": 0,
      *          "notes": "some notes",
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -295,7 +295,7 @@ class ApartmentRoomController extends BaseController
                 'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
                 'disabled' => $request->get('disabled'),
-                'shareable' => $request->get('shareable'),
+                'shared' => $request->get('shared'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );
@@ -320,7 +320,7 @@ class ApartmentRoomController extends BaseController
      * @apiParam {Int}     type            The type of the apartmentRoom
      * @apiParam {Int}     floor           The floor of the apartmentRoom
      * @apiParam {Int}     disabled        The disabled status of the apartmentRoom
-     * @apiParam {Int}     shareable       The shareable status of the apartmentRoom
+     * @apiParam {Int}     shared          The shared status of the apartmentRoom
      * @apiParam {String}  [notes]         The notes of the apartmentRoom
      *
      * @apiParamExample {json} Request-Example:
@@ -330,7 +330,7 @@ class ApartmentRoomController extends BaseController
      *          "type": 1,
      *          "floor": 1,
      *          "disabled": 0,
-     *          "shareable": 0,
+     *          "shared": 0,
      *          "notes": "some notes",
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -364,7 +364,7 @@ class ApartmentRoomController extends BaseController
                 'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
                 'disabled' => $request->get('disabled'),
-                'shareable' => $request->get('shareable'),
+                'shared' => $request->get('shared'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );

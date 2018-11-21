@@ -74,7 +74,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             $apartmentRoom->setType($params['type']);
             $apartmentRoom->setFloor($params['floor']);
             $apartmentRoom->setDisabled($params['disabled']);
-            $apartmentRoom->setShareable($params['shareable']);
+            $apartmentRoom->setShared($params['shared']);
             $apartmentRoom->setNotes($params['notes']);
 
             $this->validate($apartmentRoom, null, ['api_admin_apartment_room_add']);
@@ -126,7 +126,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             $entity->setType($params['type']);
             $entity->setFloor($params['floor']);
             $entity->setDisabled($params['disabled']);
-            $entity->setShareable($params['shareable']);
+            $entity->setShared($params['shared']);
             $entity->setNotes($params['notes']);
 
             $this->validate($entity, null, ['api_admin_apartment_room_edit']);

@@ -7,14 +7,14 @@ class Room
     /**
      * Types
      */
-    const PRIVATE   = 1;
+    const PRIVATE = 1;
     const SEMI_PRIVATE = 2;
 
     /**
      * @var array
      */
     private static $typeNames = [
-        self::PRIVATE   => 'Private',
+        self::PRIVATE => 'Private',
         self::SEMI_PRIVATE => 'Semi-Private',
     ];
 

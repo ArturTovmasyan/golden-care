@@ -23,7 +23,7 @@ use App\Annotation\Grid;
  *          {"type", "number", true, true, "fr.type"},
  *          {"floor", "number", true, true, "fr.floor"},
  *          {"disabled", "boolean", true, true, "fr.disabled"},
- *          {"shareable", "boolean", true, true, "fr.shareable"},
+ *          {"shared", "boolean", true, true, "fr.shared"},
  *          {"notes", "string", true, true, "fr.notes"},
  *     }
  * )
@@ -115,10 +115,10 @@ class FacilityRoom
 
     /**
      * @var bool
-     * @ORM\Column(name="shareable", type="boolean", options={"default" = 0})
+     * @ORM\Column(name="shared", type="boolean", options={"default" = 0})
      * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
      */
-    protected $shareable;
+    protected $shared;
 
     /**
      * @var string $notes
@@ -226,17 +226,17 @@ class FacilityRoom
     /**
      * @return bool
      */
-    public function isShareable(): bool
+    public function isShared(): bool
     {
-        return $this->shareable;
+        return $this->shared;
     }
 
     /**
-     * @param bool $shareable
+     * @param bool $shared
      */
-    public function setShareable(bool $shareable): void
+    public function setShared(bool $shared): void
     {
-        $this->shareable = $shareable;
+        $this->shared = $shared;
     }
 
     public function getNotes(): ?string

@@ -47,7 +47,7 @@ class FacilityRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the facilityRoom
      * @apiSuccess {Int}      floor           The floor of the facilityRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the facilityRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the facilityRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the facilityRoom
      * @apiSuccess {String}   notes           The notes of the facilityRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -65,7 +65,7 @@ class FacilityRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes",
      *              }
      *          ]
@@ -140,7 +140,7 @@ class FacilityRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the facilityRoom
      * @apiSuccess {Int}      floor           The floor of the facilityRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the facilityRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the facilityRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the facilityRoom
      * @apiSuccess {String}   notes           The notes of the facilityRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -161,7 +161,7 @@ class FacilityRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes"
      *              }
      *          ]
@@ -201,7 +201,7 @@ class FacilityRoomController extends BaseController
      * @apiSuccess {Int}      type            The type of the facilityRoom
      * @apiSuccess {Int}      floor           The floor of the facilityRoom
      * @apiSuccess {Boolean}  disabled        The disabled status of the facilityRoom
-     * @apiSuccess {Boolean}  shareable       The shareable status of the facilityRoom
+     * @apiSuccess {Boolean}  shared          The shared status of the facilityRoom
      * @apiSuccess {String}   notes           The notes of the facilityRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -217,7 +217,7 @@ class FacilityRoomController extends BaseController
      *                  "type": 1,
      *                  "floor": 1,
      *                  "disabled": false,
-     *                  "shareable": false,
+     *                  "shared": false,
      *                  "notes": "some notes"
      *          }
      *     }
@@ -253,7 +253,7 @@ class FacilityRoomController extends BaseController
      * @apiParam {Int}     type            The type of the facilityRoom
      * @apiParam {Int}     floor           The floor of the facilityRoom
      * @apiParam {Int}     disabled        The disabled status of the facilityRoom
-     * @apiParam {Int}     shareable       The shareable status of the facilityRoom
+     * @apiParam {Int}     shared          The shared status of the facilityRoom
      * @apiParam {String}  [notes]         The notes of the facilityRoom
      *
      * @apiParamExample {json} Request-Example:
@@ -263,7 +263,7 @@ class FacilityRoomController extends BaseController
      *          "type": 1,
      *          "floor": 1,
      *          "disabled": 0,
-     *          "shareable": 0,
+     *          "shared": 0,
      *          "notes": "some notes",
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -295,7 +295,7 @@ class FacilityRoomController extends BaseController
                 'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
                 'disabled' => $request->get('disabled'),
-                'shareable' => $request->get('shareable'),
+                'shared' => $request->get('shared'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );
@@ -320,7 +320,7 @@ class FacilityRoomController extends BaseController
      * @apiParam {Int}     type            The type of the facilityRoom
      * @apiParam {Int}     floor           The floor of the facilityRoom
      * @apiParam {Int}     disabled        The disabled status of the facilityRoom
-     * @apiParam {Int}     shareable       The shareable status of the facilityRoom
+     * @apiParam {Int}     shared          The shared status of the facilityRoom
      * @apiParam {String}  [notes]         The notes of the facilityRoom
      *
      * @apiParamExample {json} Request-Example:
@@ -330,7 +330,7 @@ class FacilityRoomController extends BaseController
      *          "type": 1,
      *          "floor": 1,
      *          "disabled": 0,
-     *          "shareable": 0,
+     *          "shared": 0,
      *          "notes": "some notes",
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -364,7 +364,7 @@ class FacilityRoomController extends BaseController
                 'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
                 'disabled' => $request->get('disabled'),
-                'shareable' => $request->get('shareable'),
+                'shared' => $request->get('shared'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );
