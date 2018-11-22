@@ -13,11 +13,6 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_resident_apartment_option")
  * @ORM\Entity(repositoryClass="App\Repository\ResidentApartmentRepository")
- * @Grid(
- *     api_admin_resident_grid={
- *
- *     }
- * )
  */
 class ResidentApartmentOption
 {
@@ -42,6 +37,24 @@ class ResidentApartmentOption
      * })
      */
     private $resident;
+
+    /**
+     * @var ApartmentRoom
+     * @ORM\ManyToOne(targetEntity="App\Entity\ApartmentRoom")
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_apartment_room", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_add",
+     *     "api_admin_resident_edit"
+     * })
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $apartmentRoom;
 
     /**
      * @return int
@@ -73,5 +86,21 @@ class ResidentApartmentOption
     public function setResident($resident): void
     {
         $this->resident = $resident;
+    }
+
+    /**
+     * @return ApartmentRoom
+     */
+    public function getApartmentRoom(): ApartmentRoom
+    {
+        return $this->apartmentRoom;
+    }
+
+    /**
+     * @param ApartmentRoom $apartmentRoom
+     */
+    public function setApartmentRoom(ApartmentRoom $apartmentRoom): void
+    {
+        $this->apartmentRoom = $apartmentRoom;
     }
 }

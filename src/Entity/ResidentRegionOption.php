@@ -14,11 +14,6 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_resident_region_option")
  * @ORM\Entity(repositoryClass="App\Repository\ResidentRegionRepository")
- * @Grid(
- *     api_admin_resident_grid={
- *
- *     }
- * )
  */
 class ResidentRegionOption
 {

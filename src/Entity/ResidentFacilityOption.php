@@ -14,11 +14,6 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_resident_facility_option")
  * @ORM\Entity(repositoryClass="App\Repository\ResidentFacilityRepository")
- * @Grid(
- *     api_admin_resident_grid={
- *
- *     }
- * )
  */
 class ResidentFacilityOption
 {
@@ -59,6 +54,24 @@ class ResidentFacilityOption
      * })
      */
     private $diningRoom;
+
+    /**
+     * @var FacilityRoom
+     * @ORM\ManyToOne(targetEntity="App\Entity\FacilityRoom")
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_facility_room", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_add",
+     *     "api_admin_resident_edit"
+     * })
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $facilityRoom;
 
     /**
      * @return int
@@ -106,5 +119,21 @@ class ResidentFacilityOption
     public function setDiningRoom(DiningRoom $diningRoom): void
     {
         $this->diningRoom = $diningRoom;
+    }
+
+    /**
+     * @return FacilityRoom
+     */
+    public function getFacilityRoom(): FacilityRoom
+    {
+        return $this->facilityRoom;
+    }
+
+    /**
+     * @param FacilityRoom $facilityRoom
+     */
+    public function setFacilityRoom(FacilityRoom $facilityRoom): void
+    {
+        $this->facilityRoom = $facilityRoom;
     }
 }
