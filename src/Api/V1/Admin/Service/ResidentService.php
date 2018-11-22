@@ -11,6 +11,7 @@ use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ApartmentRoom;
 use App\Entity\CareLevel;
@@ -34,6 +35,19 @@ use Doctrine\ORM\QueryBuilder;
 class ResidentService extends BaseService implements IGridService
 {
     /**
+     * @var ResidentPhotoHelper
+     */
+    private $residentPhotoHelper;
+
+    /**
+     * @param ResidentPhotoHelper $residentPhotoHelper
+     */
+    public function setResidentPhotoHelper(ResidentPhotoHelper $residentPhotoHelper)
+    {
+        $this->residentPhotoHelper = $residentPhotoHelper;
+    }
+
+    /**
      * @param QueryBuilder $queryBuilder
      * @param $params
      * @return void
@@ -54,12 +68,25 @@ class ResidentService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Resident::class)->find($id);
+        /**
+         * @var Resident $resident
+         */
+        $resident = $this->em->getRepository(Resident::class)->find($id);
+
+        if (!is_null($resident)) {
+            $photo = $this->residentPhotoHelper->get($resident->getId());
+
+            if (!empty($photo)) {
+                $resident->setPhoto($photo);
+            }
+        }
+
+        return $resident;
     }
 
     /**
      * @param array $params
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function add(array $params) : void
     {
@@ -105,6 +132,10 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
 
+            if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+            }
+
             switch ($resident->getType()) {
                 case \App\Model\Resident::TYPE_APARTMENT:
                     $option = $this->saveApartmentOption($resident, $params['option']);
@@ -131,7 +162,8 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Exception
+     * @param ResidentPhotoHelper $residentPhotoHelper
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function edit($id, array $params) : void
     {
@@ -181,6 +213,10 @@ class ResidentService extends BaseService implements IGridService
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
             $this->em->persist($resident);
+
+            if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+            }
 
             switch ($resident->getType()) {
                 case \App\Model\Resident::TYPE_APARTMENT:
@@ -376,8 +412,11 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
+            $this->residentPhotoHelper->remove($resident->getId());
+
             $this->em->remove($resident);
             $this->em->flush();
+
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
@@ -408,6 +447,7 @@ class ResidentService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             foreach ($residents as $resident) {
+                $this->residentPhotoHelper->remove($resident->getId());
                 $this->em->remove($resident);
             }
 

@@ -138,9 +138,11 @@ class Resident
 
     /**
      * @var string
-     * @ORM\Column(name="photo", type="string", length=40, nullable=false)
+     * @Groups({
+     *      "api_admin_resident_get"
+     * })
      */
-    private $photo = '';
+    private $photo = "";
 
     /**
      * @var string
@@ -341,7 +343,7 @@ class Resident
     /**
      * @return string
      */
-    public function getPhoto(): string
+    public function getPhoto()
     {
         return $this->photo;
     }

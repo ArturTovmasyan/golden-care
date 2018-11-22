@@ -3,6 +3,8 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Common\Service\FileService;
+use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Entity\Resident;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -228,6 +230,7 @@ class ResidentController extends BaseController
      *          "first_name": "Harut",
      *          "last_name": "Grigoryan",
      *          "middle_name": "Gagik",
+     *          "photo": "",
      *          "birthday": "1987-12-24T15:26:20+04:00",
      *          "gender": 1,
      *          "state": 1,
@@ -252,12 +255,15 @@ class ResidentController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get", methods={"GET"})
      *
      * @param Request $request
-     * @param ResidentService $residentService
      * @param $id
+     * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentService $residentService)
+    public function getAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
     {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
@@ -322,6 +328,7 @@ class ResidentController extends BaseController
      *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
+     *          "photo": "",
      *          "option": [
      *              "region_id": 1,
      *              "dnr": 1,
@@ -351,11 +358,14 @@ class ResidentController extends BaseController
      *
      * @param Request $request
      * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, ResidentService $residentService)
+    public function addAction(Request $request, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
     {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
+
         $residentService->add(
             [
                 'first_name'    => $request->get('first_name'),
@@ -366,6 +376,7 @@ class ResidentController extends BaseController
                 'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'photo'         => $request->get('photo'),
                 'option'        => $request->get('option'),
             ]
         );
@@ -428,6 +439,7 @@ class ResidentController extends BaseController
      *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
+     *          "photo": "",
      *          "option": [
      *              "region_id": 1,
      *              "dnr": 1,
@@ -457,11 +469,14 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, ResidentService $residentService)
+    public function editAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
     {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
+
         $residentService->edit(
             $id,
             [
@@ -473,6 +488,7 @@ class ResidentController extends BaseController
                 'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'photo'         => $request->get('photo'),
                 'option'        => $request->get('option'),
             ]
         );
@@ -509,12 +525,14 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentService $residentService)
+    public function deleteAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
     {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
         $residentService->remove($id);
 
         return $this->respondSuccess(
@@ -548,12 +566,14 @@ class ResidentController extends BaseController
      *
      * @param Request $request
      * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentService $residentService)
+    public function deleteBulkAction(Request $request, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
     {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
         $residentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(

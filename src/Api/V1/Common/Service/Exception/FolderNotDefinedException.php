@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Api\V1\Common\Service\Exception;
+
+use App\Api\V1\Common\Model\ResponseCode;
+
+class FolderNotDefinedException extends \RuntimeException
+{
+    /**
+     * FolderNotDefinedException constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct('', ResponseCode::FOLDER_NOT_DEFINED_EXCEPTION);
+    }
+}

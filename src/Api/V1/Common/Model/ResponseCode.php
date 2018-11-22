@@ -49,6 +49,9 @@ class ResponseCode
     const APARTMENT_ROOM_NOT_FOUND_EXCEPTION            = 642;
     const RESIDENT_DIET_NOT_FOUND_EXCEPTION             = 643;
     const RESIDENT_MEDICATION_NOT_FOUND_EXCEPTION       = 644;
+    const FILE_SYSTEM_EXCEPTION                         = 645;
+    const FOLDER_NOT_DEFINED_EXCEPTION                  = 646;
+    const FILE_EXTENSION_NOT_SUPPORTED                  = 647;
 
     /**
      * @var array
@@ -93,5 +96,8 @@ class ResponseCode
         self::APARTMENT_ROOM_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentRoom not found'],
         self::RESIDENT_DIET_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentDiet not found'],
         self::RESIDENT_MEDICATION_NOT_FOUND_EXCEPTION       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentMedication not found'],
+        self::FILE_SYSTEM_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File system not responded'],
+        self::FOLDER_NOT_DEFINED_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File system folder not defined or not writable'],
+        self::FILE_EXTENSION_NOT_SUPPORTED                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File extension not supported'],
     ];
 }
