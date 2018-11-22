@@ -18,13 +18,13 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_facility_room_grid={
  *          {"id", "number", true, true, "fr.id"},
- *          {"facility", "string", true, true, "f.name"},
  *          {"number", "string", true, true, "fr.number"},
- *          {"type", "number", true, true, "fr.type"},
  *          {"floor", "number", true, true, "fr.floor"},
- *          {"disabled", "boolean", true, true, "fr.disabled"},
- *          {"shared", "boolean", true, true, "fr.shared"},
+ *          {"type", "enum", true, true, "fr.type", {"\App\Model\RoomType", "getTypeDefaultNames"}},
+ *          {"disabled", "enum", true, true, "fr.disabled", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"shared", "enum", true, true, "fr.shared", {"\App\Model\Boolean", "defaultValues"}},
  *          {"notes", "string", true, true, "fr.notes"},
+ *          {"facility", "string", true, true, "f.name"},
  *     }
  * )
  */
@@ -73,15 +73,9 @@ class FacilityRoom
     /**
      * @var int
      * @Assert\NotBlank(groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"})
-     * @Assert\Regex(
-     *      pattern="/(^[1-2]$)/",
-     *      message="The value should be 1 or 2",
-     *      groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
-     * )
-     * @Assert\Length(
-     *      max = 1,
-     *      maxMessage = "Type cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
+     * @Assert\Choice(
+     *     callback={"App\Model\RoomType","getTypeValues"},
+     *     groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
      * )
      * @ORM\Column(name="type", type="integer", length=1)
      * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
@@ -184,9 +178,9 @@ class FacilityRoom
     }
 
     public function getType(): ?int
-{
-    return $this->type;
-}
+    {
+        return $this->type;
+    }
 
     public function setType($type): self
     {

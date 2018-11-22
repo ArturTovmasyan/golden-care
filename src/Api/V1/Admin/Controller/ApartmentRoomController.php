@@ -60,13 +60,13 @@ class ApartmentRoomController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "apartment": "Auburn Oaks",
      *                  "number": "101",
-     *                  "type": 1,
      *                  "floor": 1,
+     *                  "type": 1,
      *                  "disabled": false,
      *                  "shared": false,
      *                  "notes": "some notes",
+     *                  "apartment": "Auburn Oaks"
      *              }
      *          ]
      *     }

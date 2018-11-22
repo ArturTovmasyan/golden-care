@@ -60,13 +60,13 @@ class FacilityRoomController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "facility": "Citrus Heights Terrace",
      *                  "number": "101",
-     *                  "type": 1,
      *                  "floor": 1,
+     *                  "type": 1,
      *                  "disabled": false,
      *                  "shared": false,
      *                  "notes": "some notes",
+     *                  "facility": "Citrus Heights Terrace"
      *              }
      *          ]
      *     }

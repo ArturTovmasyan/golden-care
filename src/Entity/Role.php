@@ -18,14 +18,14 @@ use App\Annotation\Grid as Grid;
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
  *          {"space", "string", false, false, "s.name"},
- *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
- *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Role", "defaultValues"}}
+ *          {"default", "enum", true, true, "r.default", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Boolean", "defaultValues"}}
  *     },
  *     api_dashboard_space_role_grid={
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"},
- *          {"default", "enum", true, true, "r.default", {"\App\Model\Role", "defaultValues"}},
- *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Role", "defaultValues"}}
+ *          {"default", "enum", true, true, "r.default", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Boolean", "defaultValues"}}
  *     }
  * )
  */
