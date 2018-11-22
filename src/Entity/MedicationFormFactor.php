@@ -31,7 +31,12 @@ class MedicationFormFactor
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_medication_form_factor_list", "api_admin_medication_form_factor_get"})
+     * @Groups({
+     *     "api_admin_medication_form_factor_list",
+     *     "api_admin_medication_form_factor_get",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $id;
 
@@ -44,7 +49,13 @@ class MedicationFormFactor
      *      groups={"api_admin_medication_form_factor_add", "api_admin_medication_form_factor_edit"}
      * )
      * @ORM\Column(name="title", type="string", length=200)
-     * @Groups({"api_admin_medication_form_factor_grid", "api_admin_medication_form_factor_list", "api_admin_medication_form_factor_get"})
+     * @Groups({
+     *     "api_admin_medication_form_factor_grid",
+     *     "api_admin_medication_form_factor_list",
+     *     "api_admin_medication_form_factor_get",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $title;
 

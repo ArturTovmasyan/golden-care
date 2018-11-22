@@ -41,7 +41,9 @@ class Resident
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_resident_diet_list",
-     *      "api_admin_resident_diet_get"
+     *      "api_admin_resident_diet_get",
+     *      "api_admin_resident_medication_list",
+     *      "api_admin_resident_medication_get"
      * })
      */
     private $id;

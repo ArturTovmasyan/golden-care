@@ -37,7 +37,9 @@ class Medication
      *     "api_admin_medication_list",
      *     "api_admin_medication_get",
      *     "api_dashboard_medication_grid",
-     *     "api_dashboard_medication_list"
+     *     "api_dashboard_medication_list",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
      * })
      */
     private $id;
@@ -50,7 +52,9 @@ class Medication
      *     "api_admin_medication_list",
      *     "api_admin_medication_get",
      *     "api_dashboard_medication_grid",
-     *     "api_dashboard_medication_list"
+     *     "api_dashboard_medication_list",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
      * })
      * @Assert\NotBlank(groups={"api_admin_medication_add", "api_admin_medication_edit"})
      */
