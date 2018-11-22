@@ -1,0 +1,102 @@
+<?php
+
+namespace App\Entity;
+
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Groups;
+use App\Annotation\Grid;
+
+/**
+ * Class PhysicianSpeciality
+ *
+ * @ORM\Entity(repositoryClass="App\Repository\PhysicianSpecialityRepository")
+ * @ORM\Table(name="tbl_physician_speciality")
+ * @Grid(
+ *     api_admin_physician_speciality_grid={
+ *          {"id", "number", true, true, "ps.id"},
+ *          {"title", "string", true, true, "ps.title"},
+ *          {"space", "string", true, true, "s.name"}
+ *     }
+ * )
+ */
+class PhysicianSpeciality
+{
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({
+     *     "api_admin_physician_speciality_list",
+     *     "api_admin_physician_speciality_get"
+     * })
+     */
+    private $id;
+
+    /**
+     * @var string
+     * @Assert\NotBlank(groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"})
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
+     *      groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"}
+     * )
+     * @ORM\Column(name="title", type="string", length=255)
+     * @Groups({
+     *     "api_admin_physician_speciality_grid",
+     *     "api_admin_physician_speciality_list",
+     *     "api_admin_physician_speciality_get"
+     * })
+     */
+    private $title;
+
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({"api_admin_physician_speciality_grid", "api_admin_physician_speciality_list", "api_admin_physician_speciality_get"})
+     */
+    private $space;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $title = preg_replace('/\s\s+/', ' ', $title);
+        $this->title = $title;
+    }
+
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
+    }
+}
