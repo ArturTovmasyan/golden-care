@@ -56,7 +56,6 @@ class ResidentDietController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "resident": 1,
      *                  "diet_title": "Diabetic",
      *                  "diet_color": "#ffff00",
      *                  "description": "some description",
@@ -77,7 +76,8 @@ class ResidentDietController extends BaseController
             $request,
             ResidentDiet::class,
             'api_admin_resident_diet_grid',
-            $residentDietService
+            $residentDietService,
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 

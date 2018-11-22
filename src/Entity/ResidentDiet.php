@@ -17,7 +17,6 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_resident_diet_grid={
  *          {"id", "number", true, true, "rd.id"},
- *          {"resident", "string", true, true, "r.id"},
  *          {"diet_title", "string", true, true, "d.title"},
  *          {"diet_color", "string", true, true, "d.color"},
  *          {"description", "string", true, true, "rd.description"},

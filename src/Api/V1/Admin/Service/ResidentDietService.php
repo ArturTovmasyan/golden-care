@@ -24,7 +24,13 @@ class ResidentDietService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(ResidentDiet::class)->search($queryBuilder);
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
+
+            $this->em->getRepository(ResidentDiet::class)->findBy(['resident' => $residentId]);
+        } else {
+            $this->em->getRepository(ResidentDiet::class)->search($queryBuilder);
+        }
     }
 
     public function list($params)
