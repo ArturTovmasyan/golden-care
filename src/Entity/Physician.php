@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_physician_grid={
  *          {"id", "number", true, true, "p.id"},
+ *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
  *          {"last_name", "string", true, true, "p.lastName"},
@@ -28,6 +29,7 @@ use JMS\Serializer\Annotation\Groups;
  *     },
  *     api_dashboard_physician_grid={
  *          {"id", "number", true, true, "p.id"},
+ *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
  *          {"last_name", "string", true, true, "p.lastName"},
@@ -78,6 +80,23 @@ class Physician
      * })
      */
     private $space;
+
+    /**
+     * @var Salutation
+     * @ORM\ManyToOne(targetEntity="Salutation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
+     * })
+     * @Groups({
+     *      "api_admin_physician_list",
+     *      "api_admin_physician_get"
+     * })
+     */
+    private $salutation;
 
     /**
      * @var CityStateZip
@@ -299,6 +318,22 @@ class Physician
     public function setSpace($space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return Salutation
+     */
+    public function getSalutation(): Salutation
+    {
+        return $this->salutation;
+    }
+
+    /**
+     * @param Salutation $salutation
+     */
+    public function setSalutation(Salutation $salutation): void
+    {
+        $this->salutation = $salutation;
     }
 
     /**

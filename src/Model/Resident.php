@@ -17,7 +17,7 @@ class Resident
     /**
      * @var array
      */
-    private static $stateNames = [
+    public static $stateNames = [
         self::ACTIVE   => 'Active',
         self::INACTIVE => 'Inactive',
     ];
@@ -29,6 +29,15 @@ class Resident
         self::TYPE_FACILITY  => 'Facility',
         self::TYPE_APARTMENT => 'Apartment',
         self::TYPE_REGION    => 'Region',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $typeValues = [
+        self::TYPE_FACILITY  => 1,
+        self::TYPE_APARTMENT => 2,
+        self::TYPE_REGION    => 3,
     ];
 
     /**
@@ -45,6 +54,14 @@ class Resident
     public static function getTypes()
     {
         return self::$types;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypeValues()
+    {
+        return self::$typeValues;
     }
 }
 

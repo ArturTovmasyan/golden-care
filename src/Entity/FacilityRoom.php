@@ -41,7 +41,8 @@ class FacilityRoom
      * @Groups({
      *     "api_admin_facility_room_grid",
      *     "api_admin_facility_room_list",
-     *     "api_admin_facility_room_get"
+     *     "api_admin_facility_room_get",
+     *     "api_admin_resident_list_by_params"
      * })
      */
     private $id;
@@ -66,7 +67,12 @@ class FacilityRoom
      *      groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
      * )
      * @ORM\Column(name="number", type="string", length=10)
-     * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
+     * @Groups({
+     *     "api_admin_facility_room_grid",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get",
+     *     "api_admin_resident_list_by_params"
+     * })
      */
     private $number;
 

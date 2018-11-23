@@ -7,9 +7,11 @@ use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
+use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
@@ -24,7 +26,9 @@ use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentApartmentOption;
 use App\Entity\ResidentFacilityOption;
+use App\Entity\ResidentPhone;
 use App\Entity\ResidentRegionOption;
+use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
@@ -85,6 +89,18 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
+     * @param $type
+     * @param $state
+     * @return mixed
+     */
+    public function getByTypeAndState($type, $state)
+    {
+        $result = $this->em->getRepository(Resident::class)->getByTypeAndState($type, $state);
+
+        return $result;
+    }
+
+    /**
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
@@ -94,13 +110,15 @@ class ResidentService extends BaseService implements IGridService
             /**
              * @var Space $space
              * @var Physician $physician
+             * @var Salutation $salutation
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId     = $params['space_id'] ?? 0;
-            $physicianId = $params['physician_id'] ?? 0;
-            $space       = null;
-            $physician   = null;
+            $spaceId      = $params['space_id'] ?? 0;
+            $physicianId  = $params['physician_id'] ?? 0;
+            $salutationId = $params['salutation_id'] ?? 0;
+            $space        = null;
+            $physician    = null;
 
             if ($spaceId && $spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -118,12 +136,21 @@ class ResidentService extends BaseService implements IGridService
                 }
             }
 
+            if ($salutationId && $salutationId > 0) {
+                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+
+                if (is_null($salutation)) {
+                    throw new SalutationNotFoundException();
+                }
+            }
+
             $resident = new Resident();
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setType($params['type'] ?? 0);
             $resident->setSpace($space);
+            $resident->setSalutation($salutation);
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
@@ -132,10 +159,12 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
 
+            // save photo
             if (!empty($params['photo'])) {
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
+            // save option
             switch ($resident->getType()) {
                 case \App\Model\Resident::TYPE_APARTMENT:
                     $option = $this->saveApartmentOption($resident, $params['option']);
@@ -150,6 +179,9 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($option, null, ['api_admin_resident_add']);
             $this->em->persist($option);
 
+            // save phone numbers
+            $this->savePhones($resident, $params['phone'] ?? []);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -162,7 +194,6 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @param ResidentPhotoHelper $residentPhotoHelper
      * @throws \Doctrine\DBAL\ConnectionException
      */
     public function edit($id, array $params) : void
@@ -171,6 +202,8 @@ class ResidentService extends BaseService implements IGridService
             /**
              * @var Resident $resident
              * @var Space $space
+             * @var Salutation $salutation
+             * @var Physician $physician
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -180,10 +213,11 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $spaceId     = $params['space_id'] ?? 0;
-            $physicianId = $params['physician_id'] ?? 0;
-            $space       = null;
-            $physician   = null;
+            $spaceId      = $params['space_id'] ?? 0;
+            $physicianId  = $params['physician_id'] ?? 0;
+            $salutationId = $params['salutation_id'] ?? 0;
+            $space        = null;
+            $physician    = null;
 
             if ($spaceId && $spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -194,7 +228,6 @@ class ResidentService extends BaseService implements IGridService
             }
 
             if ($physicianId && $physicianId > 0) {
-                /** @var Physician $physician */
                 $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
                 if (is_null($physician)) {
@@ -202,10 +235,19 @@ class ResidentService extends BaseService implements IGridService
                 }
             }
 
+            if ($salutationId && $salutationId > 0) {
+                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+
+                if (is_null($salutation)) {
+                    throw new SalutationNotFoundException();
+                }
+            }
+
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setSpace($space);
+            $resident->setSalutation($salutation);
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
@@ -214,10 +256,12 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($resident, null, ['api_admin_resident_edit']);
             $this->em->persist($resident);
 
+            // save photo
             if (!empty($params['photo'])) {
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
+            // save option
             switch ($resident->getType()) {
                 case \App\Model\Resident::TYPE_APARTMENT:
                     $option = $this->saveApartmentOption($resident, $params['option']);
@@ -232,12 +276,56 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($option, null, ['api_admin_resident_edit']);
             $this->em->persist($option);
 
+            // save phone numbers
+            $this->savePhones($resident, $params['phone'] ?? []);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param $resident
+     * @param array $phones
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    private function savePhones($resident, array $phones = [])
+    {
+        /**
+         * @var ResidentPhone[] $oldPhones
+         */
+        $oldPhones = $this->em->getRepository(ResidentPhone::class)->findBy(['resident' => $resident]);
+
+        foreach ($oldPhones as $phone) {
+            $this->em->remove($phone);
+        }
+
+        $hasPrimary = false;
+
+        foreach($phones as $phone) {
+            $residentPhone = new ResidentPhone();
+            $residentPhone->setResident($resident);
+            $residentPhone->setCompatibility($phone['compatibility'] ?? 0);
+            $residentPhone->setType($phone['type'] ?? 0);
+            $residentPhone->setNumber($phone['number'] ?? 0);
+            $residentPhone->setPrimary((bool) $phone['is_primary'] ?? false);
+            $residentPhone->setSmsEnabled((bool) $phone['is_sms_enabled'] ?? false);
+
+            if ($residentPhone->isPrimary()) {
+                if ($hasPrimary) {
+                    throw new PhoneSinglePrimaryException();
+                }
+
+                $hasPrimary = true;
+            }
+
+            $this->validate($residentPhone, null, ['api_admin_resident_edit']);
+            $this->em->persist($residentPhone);
         }
     }
 

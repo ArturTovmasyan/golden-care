@@ -4,11 +4,13 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
+use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceHaventAccessToPhysicianException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
+use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
@@ -47,17 +49,22 @@ class PhysicianService extends BaseService implements IGridService
     }
 
     /**
-     * @param Space $space
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
     public function add(array $params): void
     {
         try {
+            /**
+             * @var Physician $physician
+             * @var Salutation $salutation
+             * @var CityStateZip $csz
+             */
             $this->em->getConnection()->beginTransaction();
 
-            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
-            $csz   = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+            $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+            $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
 
             if (is_null($space)) {
                 throw new SpaceNotFoundException();
@@ -65,6 +72,10 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($csz)) {
                 throw new CityStateZipNotFoundException();
+            }
+
+            if (is_null($salutation)) {
+                throw new SalutationNotFoundException();
             }
 
             // save physician
@@ -82,6 +93,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setSpace($space);
             $physician->setCsz($csz);
             $physician->setSpace($space);
+            $physician->setSalutation($salutation);
 
             $this->validate($physician, null, ["api_admin_physician_add"]);
 
@@ -105,12 +117,15 @@ class PhysicianService extends BaseService implements IGridService
         try {
             /**
              * @var Physician $physician
+             * @var Salutation $salutation
+             * @var CityStateZip $csz
              */
             $this->em->getConnection()->beginTransaction();
 
-            $space     = $this->em->getRepository(Space::class)->find($params['space_id']);
-            $physician = $this->em->getRepository(Physician::class)->find($id);
-            $csz       = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+            $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $physician  = $this->em->getRepository(Physician::class)->find($id);
+            $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
+            $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
 
             if (is_null($physician)) {
                 throw new PhysicianNotFoundException();
@@ -122,6 +137,10 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($csz)) {
                 throw new CityStateZipNotFoundException();
+            }
+
+            if (is_null($salutation)) {
+                throw new SalutationNotFoundException();
             }
 
             // edit physician
@@ -137,6 +156,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setCsz($csz);
             $physician->setSpace($space);
+            $physician->setSalutation($salutation);
 
             $this->validate($physician, null, ["api_admin_physician_edit"]);
 

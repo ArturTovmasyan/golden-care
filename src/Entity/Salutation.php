@@ -33,7 +33,14 @@ class Salutation
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({
+     *     "api_admin_salutation_list",
+     *     "api_admin_salutation_get",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
+     * })
      */
     private $id;
 
@@ -46,7 +53,15 @@ class Salutation
      *      groups={"api_admin_salutation_add", "api_admin_salutation_edit"}
      * )
      * @ORM\Column(name="title", type="string", unique=true, length=255)
-     * @Groups({"api_admin_salutation_grid", "api_admin_salutation_list", "api_admin_salutation_get"})
+     * @Groups({
+     *     "api_admin_salutation_grid",
+     *     "api_admin_salutation_list",
+     *     "api_admin_salutation_get",
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
+     * })
      */
     private $title;
 

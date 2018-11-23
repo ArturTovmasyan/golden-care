@@ -45,6 +45,7 @@ class PhysicianController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id                 The identifier of the physician
+     * @apiSuccess {String}  salutation         The salutation title of the physician
      * @apiSuccess {String}  first_name         The First Name of the physician
      * @apiSuccess {String}  middle_name        The Middle Name of the physician
      * @apiSuccess {String}  last_name          The Last Name of the physician
@@ -67,6 +68,7 @@ class PhysicianController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
+     *                  "salutation": "Mr.",
      *                  "first_name": "Arthur",
      *                  "middle_name": "Gagik",
      *                  "last_name": "Jovhannesyan",
@@ -181,6 +183,10 @@ class PhysicianController extends BaseController
      *                 "id": 1,
      *                 "name": "Space N1"
      *             },
+     *              "salutation": {
+     *                 "id": 1,
+     *                 "name": "Mr."
+     *             },
      *             "csz": {
      *                 "id": 1,
      *                 "state_abbr": "CA",
@@ -251,6 +257,10 @@ class PhysicianController extends BaseController
      *                 "id": 1,
      *                 "name": "Space N1"
      *             },
+     *             "salutation": {
+     *                 "id": 1,
+     *                 "name": "Mr."
+     *             },
      *             "csz": {
      *                 "id": 1,
      *                 "state_abbr": "CA",
@@ -300,6 +310,7 @@ class PhysicianController extends BaseController
      * @apiParam {String}  [website_url]        The website url of the physician
      * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
      * @apiParam {Integer} space_id             The unique identifier of the space
+     * @apiParam {Integer} salutaton_id         The unique identifier of the salutation
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -314,6 +325,7 @@ class PhysicianController extends BaseController
      *          "email": "test@example.com",
      *          "website_url": "http://example.com",
      *          "csz_id": 1,
+     *          "salutation_id": 1,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -342,7 +354,8 @@ class PhysicianController extends BaseController
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id')
+                'space_id'          => $request->get('space_id'),
+                'salutation_id'     => $request->get('salutation_id')
             ]
         );
 
@@ -374,6 +387,7 @@ class PhysicianController extends BaseController
      * @apiParam {String}  [website_url]        The website url of the physician
      * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
      * @apiParam {Integer} space_id             The unique identifier of the space
+     * @apiParam {Integer} salutaton_id         The unique identifier of the salutation
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -388,6 +402,7 @@ class PhysicianController extends BaseController
      *          "email": "test@example.com",
      *          "website_url": "http://example.com",
      *          "csz_id": 1,
+     *          "salutation_id": 1,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -427,7 +442,8 @@ class PhysicianController extends BaseController
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id')
+                'space_id'          => $request->get('space_id'),
+                'salutation_id'     => $request->get('salutation_id')
             ]
         );
 

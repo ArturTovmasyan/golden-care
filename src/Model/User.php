@@ -16,6 +16,14 @@ class User
     ];
 
     /**
+     * @var array
+     */
+    public static $genderValues = [
+        self::GENDER_MALE   => "1",
+        self::GENDER_FEMALE => "2",
+    ];
+
+    /**
      * @return array
      */
     public static function completedValues()
@@ -35,6 +43,14 @@ class User
             'false' => 0,
             'true'  => 1,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getGenderValues()
+    {
+        return self::$genderValues;
     }
 }
 

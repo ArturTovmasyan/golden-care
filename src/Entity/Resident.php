@@ -17,11 +17,12 @@ use App\Annotation\Grid as Grid;
  * @Grid(
  *     api_admin_resident_grid={
  *          {"id",         "number", true, true, "r.id"},
- *          {"first_name", "string", true, true, "r.first_name"},
- *          {"last_name",  "string", true, true, "r.last_name"},
- *          {"middle_name","string", true, true, "r.middle_name"},
- *          {"space_id","string", true, true, "r.space_id"},
- *          {"physician_id","string", true, true, "r.physician_id"},
+ *          {"salutation", "string", true, true, "sal.title"},
+ *          {"first_name", "string", true, true, "r.firstName"},
+ *          {"last_name",  "string", true, true, "r.lastName"},
+ *          {"middle_name","string", true, true, "r.middleName"},
+ *          {"space_id","string", true, true, "s.id"},
+ *          {"physician_id","string", true, true, "p.id"},
  *          {"gender","number", true, true, "r.gender"},
  *          {"birthday","number", true, true, "r.birthday"},
  *     }
@@ -43,7 +44,8 @@ class Resident
      *      "api_admin_resident_diet_list",
      *      "api_admin_resident_diet_get",
      *      "api_admin_resident_medication_list",
-     *      "api_admin_resident_medication_get"
+     *      "api_admin_resident_medication_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $id;
@@ -64,15 +66,36 @@ class Resident
     private $space;
 
     /**
-     * @var int
-     * @ORM\Column(name="type", type="smallint", nullable=false)
-     * @Assert\Choice({1, 2, 3}, groups={
-     *     "api_admin_resident_add"
+     * @ORM\ManyToOne(targetEntity="Salutation", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", nullable=false)
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_add",
+     *     "api_admin_resident_edit"
      * })
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
+     * })
+     */
+    private $salutation;
+
+    /**
+     * @var int
+     * @ORM\Column(name="type", type="smallint", nullable=false)
+     * @Assert\Choice(
+     *     callback={"App\Model\Resident","getTypeValues"},
+     *     groups={
+     *          "api_admin_resident_add"
+     *     }
+     * )
+     * @Groups({
+     *      "api_admin_resident_grid",
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $type;
@@ -105,7 +128,8 @@ class Resident
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $firstName;
@@ -120,7 +144,8 @@ class Resident
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $lastName;
@@ -176,10 +201,13 @@ class Resident
     /**
      * @var int
      * @ORM\Column(name="gender", type="smallint", nullable=false)
-     * @Assert\Choice({"1", "2"}, groups={
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
-     * })
+     * @Assert\Choice(
+     *      callback={"App\Model\User","getGenderValues"},
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     *      }
+     * )
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
@@ -201,7 +229,8 @@ class Resident
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $residentFacilityOption;
@@ -212,7 +241,8 @@ class Resident
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_list_by_params"
      * })
      */
     private $residentApartmentOption;
@@ -227,6 +257,15 @@ class Resident
      * })
      */
     private $residentRegionOption;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ResidentPhone", mappedBy="resident")
+     * @Groups({
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $phones;
 
     /**
      * @return int
@@ -250,6 +289,22 @@ class Resident
     public function setSpace($space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return Salutation
+     */
+    public function getSalutation(): Salutation
+    {
+        return $this->salutation;
+    }
+
+    /**
+     * @param Salutation $salutation
+     */
+    public function setSalutation(Salutation $salutation): void
+    {
+        $this->salutation = $salutation;
     }
 
     /**
@@ -418,5 +473,21 @@ class Resident
     public function setDateLeft(\DateTime $dateLeft): void
     {
         $this->dateLeft = $dateLeft;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentPhones()
+    {
+        return $this->residentPhones;
+    }
+
+    /**
+     * @param mixed $residentPhones
+     */
+    public function setResidentPhones($residentPhones): void
+    {
+        $this->residentPhones = $residentPhones;
     }
 }

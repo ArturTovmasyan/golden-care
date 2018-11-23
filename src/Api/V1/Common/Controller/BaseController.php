@@ -199,9 +199,9 @@ class BaseController extends Controller
         }
 
         if (empty($groups)) {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true));
+            $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setSerializeNull(true));
         } else {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups($groups));
+            $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups($groups));
         }
 
         return new JsonResponse($responseData, $httpStatus, $headers, true);
