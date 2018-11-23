@@ -36,7 +36,7 @@ class MedicalHistoryCondition
      *     "api_admin_medical_history_condition_list",
      *     "api_admin_medical_history_condition_get",
      *     "api_admin_resident_medical_history_condition_list",
-     *     "api_admin_resident_resident_medical_history_condition_get"
+     *     "api_admin_resident_medical_history_condition_get"
      * })
      */
     private $id;
@@ -66,7 +66,7 @@ class MedicalHistoryCondition
      *     "api_admin_medical_history_condition_list",
      *     "api_admin_medical_history_condition_get",
      *     "api_admin_resident_medical_history_condition_list",
-     *     "api_admin_resident_resident_medical_history_condition_get"
+     *     "api_admin_resident_medical_history_condition_get"
      * })
      */
     private $title;

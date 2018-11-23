@@ -24,7 +24,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/resident/medication/allergy")
+ * @Route("/api/v1.0/admin/resident/history/allergy/medication")
  *
  * Class ResidentMedicationAllergyController
  * @package App\Api\V1\Admin\Controller
@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class ResidentMedicationAllergyController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/medication/allergy/grid Get ResidentMedicationAllergies Grid
+     * @api {get} /api/v1.0/admin/resident/history/allergy/medication/grid Get ResidentMedicationAllergies Grid
      * @apiVersion 1.0.0
      * @apiName Get ResidentMedicationAllergies Grid
      * @apiGroup Admin Resident Medication Allergies
@@ -81,7 +81,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/medication/allergy/grid Get ResidentMedicationAllergy Grid Options
+     * @api {options} /api/v1.0/admin/resident/history/allergy/medication/grid Get ResidentMedicationAllergy Grid Options
      * @apiVersion 1.0.0
      * @apiName Get ResidentMedicationAllergy Grid Options
      * @apiGroup Admin Resident Medication Allergies
@@ -117,7 +117,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/medication/allergy Get ResidentMedicationAllergies
+     * @api {get} /api/v1.0/admin/resident/history/allergy/medication Get ResidentMedicationAllergies
      * @apiVersion 1.0.0
      * @apiName Get ResidentMedicationAllergies
      * @apiGroup Admin Resident Medication Allergies
@@ -172,7 +172,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/medication/allergy/{id} Get ResidentMedicationAllergy
+     * @api {get} /api/v1.0/admin/resident/history/allergy/medication/{id} Get ResidentMedicationAllergy
      * @apiVersion 1.0.0
      * @apiName Get ResidentMedicationAllergy
      * @apiGroup Admin Resident Medication Allergies
@@ -219,7 +219,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/medication/allergy Add ResidentMedicationAllergy
+     * @api {post} /api/v1.0/admin/resident/history/allergy/medication Add ResidentMedicationAllergy
      * @apiVersion 1.0.0
      * @apiName Add ResidentMedicationAllergy
      * @apiGroup Admin Resident Medication Allergies
@@ -279,7 +279,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/medication/allergy/{id} Edit ResidentMedicationAllergy
+     * @api {put} /api/v1.0/admin/resident/history/allergy/medication/{id} Edit ResidentMedicationAllergy
      * @apiVersion 1.0.0
      * @apiName Edit ResidentMedicationAllergy
      * @apiGroup Admin Resident Medication Allergies
@@ -341,7 +341,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/medication/allergy/{id} Delete ResidentMedicationAllergy
+     * @api {delete} /api/v1.0/admin/resident/history/allergy/medication/{id} Delete ResidentMedicationAllergy
      * @apiVersion 1.0.0
      * @apiName Delete ResidentMedicationAllergy
      * @apiGroup Admin Resident Medication Allergies
@@ -378,7 +378,7 @@ class ResidentMedicationAllergyController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/medication/allergy Bulk Delete ResidentMedicationAllergies
+     * @api {delete} /api/v1.0/admin/resident/history/allergy/medication Bulk Delete ResidentMedicationAllergies
      * @apiVersion 1.0.0
      * @apiName Bulk Delete ResidentMedicationAllergies
      * @apiGroup Admin Resident Medication Allergies

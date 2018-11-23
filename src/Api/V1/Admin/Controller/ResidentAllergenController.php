@@ -24,7 +24,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/resident/allergen")
+ * @Route("/api/v1.0/admin/resident/history/allergy/other")
  *
  * Class ResidentAllergenController
  * @package App\Api\V1\Admin\Controller
@@ -32,7 +32,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class ResidentAllergenController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/allergen/grid Get ResidentAllergens Grid
+     * @api {get} /api/v1.0/admin/resident/history/allergy/other/grid Get ResidentAllergens Grid
      * @apiVersion 1.0.0
      * @apiName Get ResidentAllergens Grid
      * @apiGroup Admin Resident Allergens
@@ -81,7 +81,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/allergen/grid Get ResidentAllergen Grid Options
+     * @api {options} /api/v1.0/admin/resident/history/allergy/other/grid Get ResidentAllergen Grid Options
      * @apiVersion 1.0.0
      * @apiName Get ResidentAllergen Grid Options
      * @apiGroup Admin Resident Allergens
@@ -117,7 +117,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/allergen Get ResidentAllergens
+     * @api {get} /api/v1.0/admin/resident/history/allergy/other Get ResidentAllergens
      * @apiVersion 1.0.0
      * @apiName Get ResidentAllergens
      * @apiGroup Admin Resident Allergens
@@ -172,7 +172,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/allergen/{id} Get ResidentAllergen
+     * @api {get} /api/v1.0/admin/resident/history/allergy/other/{id} Get ResidentAllergen
      * @apiVersion 1.0.0
      * @apiName Get ResidentAllergen
      * @apiGroup Admin Resident Allergens
@@ -219,7 +219,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/allergen Add ResidentAllergen
+     * @api {post} /api/v1.0/admin/resident/history/allergy/other Add ResidentAllergen
      * @apiVersion 1.0.0
      * @apiName Add ResidentAllergen
      * @apiGroup Admin Resident Allergens
@@ -280,7 +280,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/allergen/{id} Edit ResidentAllergen
+     * @api {put} /api/v1.0/admin/resident/history/allergy/other/{id} Edit ResidentAllergen
      * @apiVersion 1.0.0
      * @apiName Edit ResidentAllergen
      * @apiGroup Admin Resident Allergens
@@ -343,7 +343,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/allergen/{id} Delete ResidentAllergen
+     * @api {delete} /api/v1.0/admin/resident/history/allergy/other/{id} Delete ResidentAllergen
      * @apiVersion 1.0.0
      * @apiName Delete ResidentAllergen
      * @apiGroup Admin Resident Allergens
@@ -380,7 +380,7 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/allergen Bulk Delete ResidentAllergens
+     * @api {delete} /api/v1.0/admin/resident/history/allergy/other Bulk Delete ResidentAllergens
      * @apiVersion 1.0.0
      * @apiName Bulk Delete ResidentAllergens
      * @apiGroup Admin Resident Allergens
