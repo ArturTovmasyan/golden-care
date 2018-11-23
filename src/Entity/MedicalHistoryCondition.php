@@ -32,20 +32,42 @@ class MedicalHistoryCondition
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_medical_history_condition_list", "api_admin_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_medical_history_condition_list",
+     *     "api_admin_medical_history_condition_get",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_resident_medical_history_condition_get"
+     * })
      */
     private $id;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_medical_history_condition_add", "api_admin_medical_history_condition_edit"})
+     * @Assert\NotBlank(
+     *      groups={
+     *          "api_admin_medical_history_condition_add",
+     *          "api_admin_medical_history_condition_edit",
+     *          "api_admin_resident_medical_history_condition_add",
+     *          "api_admin_resident_medical_history_condition_edit"
+     *      }     * )
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_medical_history_condition_add", "api_admin_medical_history_condition_edit"}
+     *      groups={
+     *          "api_admin_medical_history_condition_add",
+     *          "api_admin_medical_history_condition_edit",
+     *          "api_admin_resident_medical_history_condition_add",
+     *          "api_admin_resident_medical_history_condition_edit"
+     *      }
      * )
      * @ORM\Column(name="title", type="string", length=200)
-     * @Groups({"api_admin_medical_history_condition_grid", "api_admin_medical_history_condition_list", "api_admin_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_medical_history_condition_grid",
+     *     "api_admin_medical_history_condition_list",
+     *     "api_admin_medical_history_condition_get",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_resident_medical_history_condition_get"
+     * })
      */
     private $title;
 
@@ -55,7 +77,12 @@ class MedicalHistoryCondition
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
+     *      groups={
+     *          "api_admin_medical_history_condition_add",
+     *          "api_admin_medical_history_condition_edit",
+     *          "api_admin_resident_medical_history_condition_add",
+     *          "api_admin_resident_medical_history_condition_edit"
+     *      }
      * )
      * @Groups({"api_admin_medical_history_condition_grid", "api_admin_medical_history_condition_list", "api_admin_medical_history_condition_get"})
      */
