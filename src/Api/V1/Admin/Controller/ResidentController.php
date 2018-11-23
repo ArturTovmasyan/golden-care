@@ -205,29 +205,17 @@ class ResidentController extends BaseController
      *     HTTP/1.1 200 OK
      *     [
      *          {
-     *              "id": 1,
-     *              "first_name": "Harut",
-     *              "last_name": "Grigoryan",
-     *              "middle_name": "Gagik",
-     *              "birthday": "1987-12-24T15:26:20+04:00",
-     *              "gender": 1,
-     *              "state": 1,
-     *              "resident_facility_option": {
-     *                  "dining_room": {
-     *                      "id": 1
-     *                  },
-     *                  "date_admitted": "1987-12-24T19:26:18+04:00",
-     *                  "state": 1,
-     *                  "dnr": true,
-     *                  "polst": false,
-     *                  "ambulatory": true,
-     *                  "care_group": 5,
-     *                  "care_level": {
-     *                      "id": 1
+     *              "id": 8,
+     *              "type": 1,
+     *              "first_name": "Gagik",
+     *              "last_name": "Gabrielyan",
+     *               "resident_facility_option": {
+     *                  "facility_room": {
+     *                      "id": 1,
+     *                      "number": "45"
      *                  }
      *              },
-     *              "resident_apartment_option": null,
-     *              "resident_region_option": null
+     *              "resident_apartment_option": null
      *          }
      *     ]
      *
