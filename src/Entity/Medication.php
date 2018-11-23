@@ -13,7 +13,16 @@ use JMS\Serializer\Annotation\Groups;
  *
  * @ORM\Table(name="tbl_medication")
  * @ORM\Entity(repositoryClass="App\Repository\MedicationRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_medication_add", "api_admin_medication_edit"})
+ * @UniqueEntity(
+ *     fields="name",
+ *     message="Sorry, this name is already in use.",
+ *     groups={
+ *          "api_admin_medication_add",
+ *          "api_admin_medication_edit",
+ *          "api_admin_resident_medication_allergy_add",
+ *          "api_admin_resident_medication_allergy_edit"
+ *      }
+ * )
  * @Grid(
  *     api_admin_medication_grid={
  *          {"id", "number", true, true, "m.id"},
@@ -39,7 +48,9 @@ class Medication
      *     "api_dashboard_medication_grid",
      *     "api_dashboard_medication_list",
      *     "api_admin_resident_medication_list",
-     *     "api_admin_resident_medication_get"
+     *     "api_admin_resident_medication_get",
+     *     "api_admin_resident_medication_allergy_list",
+     *     "api_admin_resident_medication_allergy_get"
      * })
      */
     private $id;
@@ -54,9 +65,16 @@ class Medication
      *     "api_dashboard_medication_grid",
      *     "api_dashboard_medication_list",
      *     "api_admin_resident_medication_list",
-     *     "api_admin_resident_medication_get"
+     *     "api_admin_resident_medication_get",
+     *     "api_admin_resident_medication_allergy_list",
+     *     "api_admin_resident_medication_allergy_get"
      * })
-     * @Assert\NotBlank(groups={"api_admin_medication_add", "api_admin_medication_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_medication_add",
+     *     "api_admin_medication_edit",
+     *     "api_admin_resident_medication_allergy_add",
+     *     "api_admin_resident_medication_allergy_edit"
+     * })
      */
     private $name;
 
