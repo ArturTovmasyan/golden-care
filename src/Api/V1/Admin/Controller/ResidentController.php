@@ -85,7 +85,7 @@ class ResidentController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/responsible/person/grid Get Residents Grid Options
+     * @api {options} /api/v1.0/admin/resident/grid Get Residents Grid Options
      * @apiVersion 1.0.0
      * @apiName Get Residents Grid Options
      * @apiGroup Admin Residents
@@ -206,10 +206,9 @@ class ResidentController extends BaseController
      *     [
      *          {
      *              "id": 8,
-     *              "type": 1,
      *              "first_name": "Gagik",
      *              "last_name": "Gabrielyan",
-     *               "resident_facility_option": {
+     *              "resident_facility_option": {
      *                  "facility_room": {
      *                      "id": 1,
      *                      "number": "45"

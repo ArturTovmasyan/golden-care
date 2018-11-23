@@ -69,7 +69,6 @@ class ResidentFacilityOption
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
-     *      "api_admin_resident_list_by_params"
      * })
      */
     private $facilityRoom;

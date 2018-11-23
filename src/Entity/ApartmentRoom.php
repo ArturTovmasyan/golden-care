@@ -42,7 +42,6 @@ class ApartmentRoom
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
-     *     "api_admin_resident_list_by_params"
      * })
      */
     private $id;
@@ -71,7 +70,6 @@ class ApartmentRoom
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
-     *     "api_admin_resident_list_by_params"
      * })
      */
     private $number;

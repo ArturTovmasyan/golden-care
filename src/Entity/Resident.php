@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Annotation\Grid as Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tbl_resident")
@@ -64,7 +65,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -81,7 +81,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -98,10 +97,8 @@ class Resident
      *     }
      * )
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
-     *      "api_admin_resident_list_by_params"
      * })
      */
     private $type;
@@ -117,7 +114,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -132,7 +128,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_resident_list_by_params"
@@ -148,7 +143,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_resident_list_by_params"
@@ -160,7 +154,6 @@ class Resident
      * @var string
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -197,7 +190,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -215,7 +207,6 @@ class Resident
      *      }
      * )
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -233,10 +224,8 @@ class Resident
      * @var ResidentFacilityOption
      * @ORM\OneToOne(targetEntity="ResidentFacilityOption", mappedBy="resident")
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
-     *      "api_admin_resident_list_by_params"
      * })
      */
     private $residentFacilityOption;
@@ -245,10 +234,8 @@ class Resident
      * @var ResidentApartmentOption
      * @ORM\OneToOne(targetEntity="ResidentApartmentOption", mappedBy="resident")
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
-     *      "api_admin_resident_list_by_params"
      * })
      */
     private $residentApartmentOption;
@@ -257,7 +244,6 @@ class Resident
      * @var ResidentRegionOption
      * @ORM\OneToOne(targetEntity="ResidentRegionOption", mappedBy="resident")
      * @Groups({
-     *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
@@ -272,6 +258,22 @@ class Resident
      * })
      */
     private $phones;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("number")
+     * @Groups({"api_admin_resident_list_by_params"})
+     */
+    public function getOptionNumber()
+    {
+        if (!is_null($this->residentFacilityOption)) {
+            return $this->residentFacilityOption->getFacilityRoom()->getNumber();
+        } elseif (!is_null($this->residentApartmentOption)) {
+            return $this->residentApartmentOption->getApartmentRoom()->getNumber();
+        }
+
+        return null;
+    }
 
     /**
      * @return int

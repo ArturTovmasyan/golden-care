@@ -96,9 +96,7 @@ class ResidentService extends BaseService implements IGridService
      */
     public function getByTypeAndState($type, $id, $state)
     {
-        $result = $this->em->getRepository(Resident::class)->getByTypeAndState($type, $id, $state);
-
-        return $result;
+        return $this->em->getRepository(Resident::class)->getByTypeAndState($type, $id, $state);
     }
 
     /**
@@ -155,7 +153,6 @@ class ResidentService extends BaseService implements IGridService
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
-            $resident->setCreatedAt(new \DateTime());
 
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
@@ -252,7 +249,6 @@ class ResidentService extends BaseService implements IGridService
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
-            $resident->setUpdatedAt(new \DateTime());
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
             $this->em->persist($resident);
