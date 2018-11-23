@@ -52,6 +52,8 @@ class Resident
      *      "api_admin_resident_allergen_get",
      *      "api_admin_resident_medical_history_condition_list",
      *      "api_admin_resident_medical_history_condition_get",
+     *      "api_admin_resident_diagnosis_list",
+     *      "api_admin_resident_diagnosis_get",
      *      "api_admin_resident_list_by_params"
      * })
      */

@@ -61,6 +61,8 @@ class ResponseCode
     const RESIDENT_MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION = 654;
     const MEDICAL_HISTORY_CONDITION_NOT_SINGLE_EXCEPTION         = 655;
     const RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION                 = 656;
+    const RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 = 657;
+    const DIAGNOSIS_NOT_SINGLE_EXCEPTION                         = 658;
 
     /**
      * @var array
@@ -117,5 +119,7 @@ class ResponseCode
         self::RESIDENT_MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentMedicalHistoryCondition not found'],
         self::MEDICAL_HISTORY_CONDITION_NOT_SINGLE_EXCEPTION         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'MedicalHistoryCondition not single'],
         self::RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person not found'],
+        self::RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentDiagnosis not found'],
+        self::DIAGNOSIS_NOT_SINGLE_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis not single'],
     ];
 }

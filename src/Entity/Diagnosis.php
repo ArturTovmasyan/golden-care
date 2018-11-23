@@ -33,7 +33,12 @@ class Diagnosis
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_diagnosis_list", "api_admin_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_diagnosis_list",
+     *     "api_admin_diagnosis_get",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $id;
 
@@ -43,10 +48,21 @@ class Diagnosis
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_diagnosis_add", "api_admin_diagnosis_edit"}
+     *      groups={
+     *          "api_admin_diagnosis_add",
+     *          "api_admin_diagnosis_edit",
+     *          "api_admin_resident_diagnosis_add",
+     *          "api_admin_resident_diagnosis_edit"
+     *      }
      * )
      * @ORM\Column(name="title", type="string", length=200)
-     * @Groups({"api_admin_diagnosis_grid", "api_admin_diagnosis_list", "api_admin_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_diagnosis_grid",
+     *     "api_admin_diagnosis_list",
+     *     "api_admin_diagnosis_get",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $title;
 
@@ -55,7 +71,12 @@ class Diagnosis
      * @Assert\Length(
      *      max = 20,
      *      maxMessage = "Acronym cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_diagnosis_add", "api_admin_diagnosis_edit"}
+     *      groups={
+     *          "api_admin_diagnosis_add",
+     *          "api_admin_diagnosis_edit",
+     *          "api_admin_resident_diagnosis_add",
+     *          "api_admin_resident_diagnosis_edit"
+     *      }
      * )
      * @ORM\Column(name="acronym", type="string", length=20, nullable=true)
      * @Groups({"api_admin_diagnosis_grid", "api_admin_diagnosis_list", "api_admin_diagnosis_get"})
@@ -68,7 +89,12 @@ class Diagnosis
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
+     *      groups={
+     *          "api_admin_diagnosis_add",
+     *          "api_admin_diagnosis_edit",
+     *          "api_admin_resident_diagnosis_add",
+     *          "api_admin_resident_diagnosis_edit"
+     *      }
      * )
      * @Groups({"api_admin_diagnosis_grid", "api_admin_diagnosis_list", "api_admin_diagnosis_get"})
      */
