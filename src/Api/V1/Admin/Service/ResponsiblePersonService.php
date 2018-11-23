@@ -2,17 +2,17 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\MedicationFormFactorNotFoundException;
-use App\Api\V1\Common\Service\Exception\MedicationNotFoundException;
-use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResidentMedicationNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
+use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
+use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Medication;
-use App\Entity\MedicationFormFactor;
-use App\Entity\Physician;
-use App\Entity\Resident;
-use App\Entity\ResidentMedication;
+use App\Entity\CityStateZip;
+use App\Entity\ResponsiblePerson;
+use App\Entity\ResponsiblePersonPhone;
+use App\Entity\Salutation;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -28,114 +28,92 @@ class ResponsiblePersonService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
-
-            $this->em->getRepository(ResidentMedication::class)->findBy(['resident' => $residentId]);
-        } else {
-            $this->em->getRepository(ResidentMedication::class)->search($queryBuilder);
-        }
+        $this->em->getRepository(ResponsiblePerson::class)->search($queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return array|object[]
+     */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
-
-            return $this->em->getRepository(ResidentMedication::class)->findBy(['resident' => $residentId]);
-        }
-
-        return $this->em->getRepository(ResidentMedication::class)->findAll();
+        return $this->em->getRepository(ResponsiblePerson::class)->findAll();
     }
 
     /**
      * @param $id
-     * @return ResidentMedication|null|object
+     * @return ResponsiblePerson|null|object
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentMedication::class)->find($id);
+        return $this->em->getRepository(ResponsiblePerson::class)->find($id);
     }
 
     /**
      * @param array $params
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function add(array $params) : void
     {
         try {
+            /**
+             * @var Space $space
+             * @var CityStateZip $csz
+             * @var Salutation $salutation
+             */
             $this->em->getConnection()->beginTransaction();
 
-            $residentId = $params['resident_id'] ?? 0;
-            $physicianId = $params['physician_id'] ?? 0;
-            $medicationId = $params['medication_id'] ?? 0;
-            $formFactorId = $params['form_factor_id'] ?? 0;
+            $spaceId      = $params['space_id'] ?? 0;
+            $cszId        = $params['csz_id'] ?? 0;
+            $salutationId = $params['salutation_id'] ?? 0;
 
-            $resident = null;
-            $physician = null;
-            $medication = null;
-            $formFactor = null;
+            $space      = null;
+            $csz        = null;
+            $salutation = null;
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            if ($spaceId && $spaceId > 0) {
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
+                if (is_null($space)) {
+                    throw new SpaceNotFoundException();
                 }
             }
 
-            if ($physicianId && $physicianId > 0) {
-                /** @var Physician $physician */
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            if ($cszId && $cszId > 0) {
+                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-
-                if ($physician === null) {
-                    throw new PhysicianNotFoundException();
+                if (is_null($csz)) {
+                    throw new CityStateZipNotFoundException();
                 }
             }
 
-            if ($medicationId && $medicationId > 0) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+            if ($salutationId && $salutationId > 0) {
+                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
+                if (is_null($salutation)) {
+                    throw new SalutationNotFoundException();
                 }
             }
 
-            if ($formFactorId && $formFactorId > 0) {
-                /** @var MedicationFormFactor $formFactor */
-                $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
+            $responsiblePerson = new ResponsiblePerson();
+            $responsiblePerson->setSpace($space);
+            $responsiblePerson->setCsz($csz);
+            $responsiblePerson->setSalutation($salutation);
+            $responsiblePerson->setFirstName($params['first_name'] ?? '');
+            $responsiblePerson->setLastName($params['last_name'] ?? '');
+            $responsiblePerson->setMiddleName($params['middle_name'] ?? '');
+            $responsiblePerson->setAddress1($params['address_1'] ?? '');
+            $responsiblePerson->setAddress2($params['address_2'] ?? '');
+            $responsiblePerson->setEmail($params['email'] ?? '');
+            $responsiblePerson->setFinancially($params['is_financially'] ?? false);
+            $responsiblePerson->setEmergency($params['is_emergency'] ?? false);
 
+            $this->validate($responsiblePerson, null, ['api_admin_responsible_person_add']);
+            $this->em->persist($responsiblePerson);
 
-                if ($formFactor === null) {
-                    throw new MedicationFormFactorNotFoundException();
-                }
-            }
+            // save phone numbers
+            $this->savePhones($responsiblePerson, $params['phone'] ?? []);
 
-            $residentMedication = new ResidentMedication();
-            $residentMedication->setResident($resident);
-            $residentMedication->setPhysician($physician);
-            $residentMedication->setMedication($medication);
-            $residentMedication->setFormFactor($formFactor);
-            $residentMedication->setDosage($params['dosage']);
-            $residentMedication->setDosageUnit($params['dosage_unit']);
-            $residentMedication->setAm($params['am']);
-            $residentMedication->setNn($params['nn']);
-            $residentMedication->setPm($params['pm']);
-            $residentMedication->setHs($params['hs']);
-            $residentMedication->setPrn($params['prn']);
-            $residentMedication->setDiscontinued($params['discontinued']);
-            $residentMedication->setTreatment($params['treatment']);
-            $residentMedication->setNotes($params['notes']);
-            $residentMedication->setPrescriptionNumber($params['prescription_number']);
-
-            $this->validate($residentMedication, null, ['api_admin_resident_medication_add']);
-
-            $this->em->persist($residentMedication);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -153,91 +131,116 @@ class ResponsiblePersonService extends BaseService implements IGridService
     public function edit($id, array $params) : void
     {
         try {
-
+            /**
+             * @var Space $space
+             * @var CityStateZip $csz
+             * @var ResponsiblePerson $responsiblePerson
+             */
             $this->em->getConnection()->beginTransaction();
 
-            /** @var ResidentMedication $entity */
-            $entity = $this->em->getRepository(ResidentMedication::class)->find($id);
+            $spaceId      = $params['space_id'] ?? 0;
+            $cszId        = $params['csz_id'] ?? 0;
+            $salutationId = $params['salutation_id'] ?? 0;
 
-            if ($entity === null) {
-                throw new ResidentMedicationNotFoundException();
+            $space      = null;
+            $csz        = null;
+            $salutation = null;
+
+            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->find($id);
+
+            if (is_null($responsiblePerson)) {
+                throw new ResponsiblePersonNotFoundException();
             }
 
-            $residentId = $params['resident_id'] ?? 0;
-            $physicianId = $params['physician_id'] ?? 0;
-            $medicationId = $params['medication_id'] ?? 0;
-            $formFactorId = $params['form_factor_id'] ?? 0;
+            if ($spaceId && $spaceId > 0) {
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            $resident = null;
-            $physician = null;
-            $medication = null;
-            $formFactor = null;
-
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
+                if (is_null($space)) {
+                    throw new SpaceNotFoundException();
                 }
             }
 
-            if ($physicianId && $physicianId > 0) {
-                /** @var Physician $physician */
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            if ($cszId && $cszId > 0) {
+                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-
-                if ($physician === null) {
-                    throw new PhysicianNotFoundException();
+                if (is_null($csz)) {
+                    throw new CityStateZipNotFoundException();
                 }
             }
 
-            if ($medicationId && $medicationId > 0) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+            if ($salutationId && $salutationId > 0) {
+                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
+                if (is_null($salutation)) {
+                    throw new SalutationNotFoundException();
                 }
             }
 
-            if ($formFactorId && $formFactorId > 0) {
-                /** @var MedicationFormFactor $formFactor */
-                $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
+            $responsiblePerson->setSpace($space);
+            $responsiblePerson->setCsz($csz);
+            $responsiblePerson->setSalutation($salutation);
+            $responsiblePerson->setFirstName($params['first_name'] ?? '');
+            $responsiblePerson->setLastName($params['last_name'] ?? '');
+            $responsiblePerson->setMiddleName($params['middle_name'] ?? '');
+            $responsiblePerson->setAddress1($params['address_1'] ?? '');
+            $responsiblePerson->setAddress2($params['address_2'] ?? '');
+            $responsiblePerson->setEmail($params['email'] ?? '');
+            $responsiblePerson->setFinancially($params['is_financially'] ?? false);
+            $responsiblePerson->setEmergency($params['is_emergency'] ?? false);
 
+            $this->validate($responsiblePerson, null, ['api_admin_resident_medication_edit']);
+            $this->em->persist($responsiblePerson);
 
-                if ($formFactor === null) {
-                    throw new MedicationFormFactorNotFoundException();
-                }
-            }
+            // save phone numbers
+            $this->savePhones($responsiblePerson, $params['phone'] ?? []);
 
-            $entity->setResident($resident);
-            $entity->setPhysician($physician);
-            $entity->setMedication($medication);
-            $entity->setFormFactor($formFactor);
-            $entity->setDosage($params['dosage']);
-            $entity->setDosageUnit($params['dosage_unit']);
-            $entity->setAm($params['am']);
-            $entity->setNn($params['nn']);
-            $entity->setPm($params['pm']);
-            $entity->setHs($params['hs']);
-            $entity->setPrn($params['prn']);
-            $entity->setDiscontinued($params['discontinued']);
-            $entity->setTreatment($params['treatment']);
-            $entity->setNotes($params['notes']);
-            $entity->setPrescriptionNumber($params['prescription_number']);
-
-            $this->validate($entity, null, ['api_admin_resident_medication_edit']);
-
-            $this->em->persist($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param ResponsiblePerson $responsiblePerson
+     * @param array $phones
+     * @throws \ReflectionException
+     */
+    private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = [])
+    {
+        /**
+         * @var ResponsiblePerson $phone
+         */
+        $oldPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->findBy(['responsiblePerson' => $responsiblePerson]);
+
+        foreach ($oldPhones as $phone) {
+            $this->em->remove($phone);
+        }
+
+        $hasPrimary = false;
+
+        foreach($phones as $phone) {
+            $responsiblePersonPhone = new ResponsiblePersonPhone();
+            $responsiblePersonPhone->setResponsiblePerson($responsiblePerson);
+            $responsiblePersonPhone->setCompatibility($phone['compatibility'] ?? 0);
+            $responsiblePersonPhone->setType($phone['type'] ?? 0);
+            $responsiblePersonPhone->setNumber($phone['number'] ?? 0);
+            $responsiblePersonPhone->setPrimary((bool) $phone['is_primary'] ?? false);
+            $responsiblePersonPhone->setSmsEnabled((bool) $phone['is_sms_enabled'] ?? false);
+            $responsiblePersonPhone->setExtension($phone['extension'] ?? '');
+
+            if ($responsiblePersonPhone->isPrimary()) {
+                if ($hasPrimary) {
+                    throw new PhoneSinglePrimaryException();
+                }
+
+                $hasPrimary = true;
+            }
+
+            $this->validate($responsiblePersonPhone, null, ['api_admin_responsible_person_edit']);
+            $this->em->persist($responsiblePersonPhone);
         }
     }
 
@@ -251,11 +254,11 @@ class ResponsiblePersonService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var ResidentMedication $entity */
-            $entity = $this->em->getRepository(ResidentMedication::class)->find($id);
+            /** @var ResponsiblePerson $entity */
+            $entity = $this->em->getRepository(ResponsiblePerson::class)->find($id);
 
             if ($entity === null) {
-                throw new ResidentMedicationNotFoundException();
+                throw new ResponsiblePersonNotFoundException();
             }
 
             $this->em->remove($entity);
@@ -277,27 +280,27 @@ class ResponsiblePersonService extends BaseService implements IGridService
     {
         try {
             if (empty($ids)) {
-                throw new ResidentMedicationNotFoundException();
+                throw new ResponsiblePersonNotFoundException();
             }
 
-            $residentMedications = $this->em->getRepository(ResidentMedication::class)->findByIds($ids);
+            $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->findByIds($ids);
 
-            if (empty($residentMedications)) {
-                throw new ResidentMedicationNotFoundException();
+            if (empty($responsiblePersons)) {
+                throw new ResponsiblePersonNotFoundException();
             }
 
             /**
-             * @var ResidentMedication $residentMedication
+             * @var ResponsiblePerson $responsiblePerson
              */
             $this->em->getConnection()->beginTransaction();
 
-            foreach ($residentMedications as $residentMedication) {
-                $this->em->remove($residentMedication);
+            foreach ($responsiblePersons as $responsiblePerson) {
+                $this->em->remove($responsiblePerson);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentMedicationNotFoundException $e) {
+        } catch (ResponsiblePersonNotFoundException $e) {
             throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();

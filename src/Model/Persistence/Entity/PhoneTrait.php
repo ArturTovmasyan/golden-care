@@ -17,12 +17,16 @@ trait PhoneTrait
      *      callback={"App\Model\Phone","getCompatibleValues"},
      *      groups={
      *          "api_admin_resident_add",
-     *          "api_admin_resident_edit"
+     *          "api_admin_resident_edit",
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
      *      }
      * )
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
      * })
      */
     private $compatibility;
@@ -33,12 +37,16 @@ trait PhoneTrait
      *      callback={"App\Model\Phone","getTypeValues"},
      *      groups={
      *          "api_admin_resident_add",
-     *          "api_admin_resident_edit"
+     *          "api_admin_resident_edit",
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
      *      }
      * )
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
      * })
      */
     private $type;
@@ -47,11 +55,15 @@ trait PhoneTrait
      * @ORM\Column(name="number", type="string", nullable=false, length=50)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
+     *     "api_admin_resident_edit",
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
      * })
      */
     private $number;
@@ -61,11 +73,15 @@ trait PhoneTrait
      * @ORM\Column(name="is_primary", type="boolean", nullable=false)
      * @Assert\NotNull(groups={
      *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
+     *     "api_admin_resident_edit",
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
      * })
      */
     private $primary = false;
@@ -75,11 +91,15 @@ trait PhoneTrait
      * @ORM\Column(name="is_sms_enabled", type="boolean", nullable=false)
      * @Assert\NotNull(groups={
      *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
+     *     "api_admin_resident_edit",
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
      * })
      */
     private $smsEnabled = false;

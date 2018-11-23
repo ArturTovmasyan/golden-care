@@ -85,7 +85,7 @@ class ResidentController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/grid Get Residents Grid Options
+     * @api {options} /api/v1.0/admin/responsible/person/grid Get Residents Grid Options
      * @apiVersion 1.0.0
      * @apiName Get Residents Grid Options
      * @apiGroup Admin Residents
@@ -231,18 +231,21 @@ class ResidentController extends BaseController
      *          }
      *     ]
      *
-     * @Route("/type/{type}/state/{state}", requirements={"type"="\d+", "state"="\d+"}, name="api_admin_resident_list_by_params", methods={"GET"})
+     * @Route("/type/{type}/{id}/state/{state}", requirements={"type"="\d+", "id"="\d+", "state"="\d+"}, name="api_admin_resident_list_by_params", methods={"GET"})
      *
      * @param Request $request
+     * @param $type
+     * @param $id
+     * @param $state
      * @param ResidentService $residentService
      * @return JsonResponse
      */
-    public function listByOptionAction(Request $request, $type, $state, ResidentService $residentService)
+    public function listByOptionAction(Request $request, $type, $id, $state, ResidentService $residentService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentService->getByTypeAndState($type, $state),
+            $residentService->getByTypeAndState($type, $id, $state),
             ['api_admin_resident_list_by_params']
         );
     }
@@ -352,7 +355,7 @@ class ResidentController extends BaseController
      *              "ambulatory": 1,
      *              "polst": 1
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,

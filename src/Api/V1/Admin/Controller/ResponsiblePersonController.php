@@ -52,6 +52,7 @@ class ResponsiblePersonController extends BaseController
      * @apiSuccess {Int}     is_emergency    The emergency status of rp
      * @apiSuccess {String}  space           The space name of the rp
      * @apiSuccess {String}  csz             The cityStateZip short address of the rp
+     * @apiSuccess {String}  salutation      The salutation of the rp
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -62,6 +63,7 @@ class ResponsiblePersonController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
+     *                  "salutation": "Mr",
      *                  "first_name": "Arthur",
      *                  "middle_name": "Gagik",
      *                  "last_name": "Jovhannesyan",
@@ -70,8 +72,8 @@ class ResponsiblePersonController extends BaseController
      *                  "is_financially": 0,
      *                  "is_emergency": 1,
      *                  "email": "test@example.com",
-     *                  "space": "alms",
-     *                  "csz": "Verdi CA, 89439"
+     *                  "csz": "Verdi CA, 89439",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -156,20 +158,33 @@ class ResponsiblePersonController extends BaseController
      *     [
      *          {
      *              "id": 1,
-     *              "first_name": "Arthur",
-     *              "middle_name": "Gagik",
-     *              "last_name": "Jovhannesyan",
-     *              "address_1": "Fuchik str 2",
-     *              "address_2": "Alaverdyan str 25 ap. 2",
-     *              "is_financially": 0,
-     *              "is_emergency": 1,
-     *              "email": "test@example.com",
-     *              "space": {
-     *                  id: 5
-     *              },
+     *              "first_name": "Gagik",
+     *              "last_name": "Gabrielyan",
+     *              "middle_name": "",
+     *              "address1": "",
+     *              "address2": "",
+     *              "email": "",
+     *              "financially": false,
+     *              "emergency": false,
      *              "csz": {
-     *                  id: 1
-     *              }
+     *                  "id": 1
+     *               },
+     *              "space": {
+     *                  "id": 1
+     *              },
+     *              "salutation": {
+     *                  "id": 1
+     *              },
+     *              "phones": [
+     *                  {
+     *                      "compatibility": 1,
+     *                      "type": 1,
+     *                      "number": "+3748880880",
+     *                      "is_primary": 0,
+     *                      "is_sms_enabled": 1,
+     *                      "extension": 1515
+     *                  }
+     *              ]
      *          }
      *     ]
      *
@@ -230,7 +245,17 @@ class ResponsiblePersonController extends BaseController
      *              },
      *              "csz": {
      *                  id: 1
-     *              }
+     *              },
+     *              "phones": [
+     *                  {
+     *                      "compatibility": 1,
+     *                      "type": 1,
+     *                      "number": "+3748880880",
+     *                      "is_primary": 0,
+     *                      "is_sms_enabled": 1,
+     *                      "extension": 1515
+     *                  }
+     *              ]
      *          }
      *     }
      *
@@ -270,6 +295,7 @@ class ResponsiblePersonController extends BaseController
      * @apiParam {String}  email           The email address of the rp
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     space_id        The unique identifier of the space
+     * @apiParam {Int}     salutation_id   The unique identifier of the salutation
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -282,7 +308,8 @@ class ResponsiblePersonController extends BaseController
      *          "is_emergency": 1,
      *          "email": "test@example.com",
      *          "csz_id": 1,
-     *          "space_id": 1
+     *          "space_id": 1,
+     *          "salutation_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -317,7 +344,9 @@ class ResponsiblePersonController extends BaseController
                 'is_financially'    => $request->get('is_financially'),
                 'email'             => $request->get('email'),
                 'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id')
+                'space_id'          => $request->get('space_id'),
+                'salutation_id'     => $request->get('salutation_id'),
+                'phone'             => $request->get('phone')
             ]
         );
 
@@ -346,6 +375,7 @@ class ResponsiblePersonController extends BaseController
      * @apiParam {String}  email           The email address of the rp
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     space_id        The unique identifier of the space
+     * @apiParam {Int}     salutation_id   The unique identifier of the salutation
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -358,7 +388,8 @@ class ResponsiblePersonController extends BaseController
      *          "is_emergency": 1,
      *          "email": "test@example.com",
      *          "csz_id": 1,
-     *          "space_id": 1
+     *          "space_id": 1,
+     *          "salutation_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -395,7 +426,9 @@ class ResponsiblePersonController extends BaseController
                 'is_financially'    => $request->get('is_financially'),
                 'email'             => $request->get('email'),
                 'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id')
+                'space_id'          => $request->get('space_id'),
+                'salutation_id'     => $request->get('salutation_id'),
+                'phone'             => $request->get('phone')
             ]
         );
 

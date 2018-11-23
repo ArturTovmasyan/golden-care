@@ -90,12 +90,13 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param $type
+     * @param $id
      * @param $state
      * @return mixed
      */
-    public function getByTypeAndState($type, $state)
+    public function getByTypeAndState($type, $id, $state)
     {
-        $result = $this->em->getRepository(Resident::class)->getByTypeAndState($type, $state);
+        $result = $this->em->getRepository(Resident::class)->getByTypeAndState($type, $id, $state);
 
         return $result;
     }

@@ -2,13 +2,31 @@
 
 namespace App\Entity;
 
+use App\Model\Persistence\Entity\PhoneTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="tbl_responsible_person")
  * @ORM\Entity(repositoryClass="App\Repository\ResponsiblePersonRepository")
+ * @Grid(
+ *     api_admin_responsible_person_grid={
+ *          {"id",         "number", true, true, "rp.id"},
+ *          {"salutation", "string", true, true, "sal.title"},
+ *          {"first_name", "string", true, true, "rp.firstName"},
+ *          {"middle_name","string", true, true, "rp.middleName"},
+ *          {"last_name",  "string", true, true, "rp.lastName"},
+ *          {"address_1",  "string", true, true, "rp.address1"},
+ *          {"address_2",  "string", true, true, "rp.address2"},
+ *          {"is_financially", "number", true, true, "rp.financially"},
+ *          {"is_emergency", "number", true, true, "rp.emergency"},
+ *          {"email", "string", true, true, "rp.email"},
+ *          {"csz", "string", true, true, "CONCAT(cs.city, ' ', cs.stateAbbr, ', ', cs.zipMain)"},
+ *          {"space","string", true, true, "s.name"}
+ *     }
+ * )
  */
 class ResponsiblePerson
 {
@@ -18,7 +36,6 @@ class ResponsiblePerson
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -33,7 +50,6 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_add"
      * })
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -48,7 +64,6 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_add"
      * })
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -59,7 +74,6 @@ class ResponsiblePerson
      * @var string
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -73,30 +87,27 @@ class ResponsiblePerson
      * })
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
      */
-    private $address_1;
+    private $address1;
 
     /**
      * @var string
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
      */
-    private $address_2;
+    private $address2;
 
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -115,7 +126,6 @@ class ResponsiblePerson
      *
      * })
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -126,7 +136,6 @@ class ResponsiblePerson
      * @var bool
      * @ORM\Column(name="is_emergency", type="boolean", nullable=false)
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -143,7 +152,6 @@ class ResponsiblePerson
      *
      * })
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
@@ -158,12 +166,36 @@ class ResponsiblePerson
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
      * @Groups({
-     *     "api_admin_responsible_person_grid",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get"
      * })
      */
     private $space;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Salutation", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", nullable=false)
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
+     * })
+     * @Groups({
+     *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_get"
+     * })
+     */
+    private $salutation;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ResponsiblePersonPhone", mappedBy="responsiblePerson")
+     * @Groups({
+     *      "api_admin_responsible_person_list",
+     *      "api_admin_responsible_person_get"
+     * })
+     */
+    private $phones;
 
     /**
      * @return int
@@ -234,15 +266,15 @@ class ResponsiblePerson
      */
     public function getAddress1(): string
     {
-        return $this->address_1;
+        return $this->address1;
     }
 
     /**
-     * @param string $address_1
+     * @param string $address1
      */
-    public function setAddress1(string $address_1): void
+    public function setAddress1(string $address1): void
     {
-        $this->address_1 = $address_1;
+        $this->address1 = $address1;
     }
 
     /**
@@ -250,15 +282,15 @@ class ResponsiblePerson
      */
     public function getAddress2(): string
     {
-        return $this->address_2;
+        return $this->address2;
     }
 
     /**
-     * @param string $address_2
+     * @param string $address2
      */
-    public function setAddress2(string $address_2): void
+    public function setAddress2(string $address2): void
     {
-        $this->address_2 = $address_2;
+        $this->address2 = $address2;
     }
 
     /**
@@ -339,5 +371,37 @@ class ResponsiblePerson
     public function setSpace(Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSalutation()
+    {
+        return $this->salutation;
+    }
+
+    /**
+     * @param mixed $salutation
+     */
+    public function setSalutation($salutation): void
+    {
+        $this->salutation = $salutation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhones()
+    {
+        return $this->phones;
+    }
+
+    /**
+     * @param mixed $phones
+     */
+    public function setPhones($phones): void
+    {
+        $this->phones = $phones;
     }
 }

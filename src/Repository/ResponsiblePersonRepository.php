@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\CityStateZip;
 use App\Entity\ResponsiblePerson;
+use App\Entity\Salutation;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +24,24 @@ class ResponsiblePersonRepository extends EntityRepository
     {
         $queryBuilder
             ->from(ResponsiblePerson::class, 'rp')
+            ->leftJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'sal = rp.salutation'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'cs',
+                Join::WITH,
+                'cs = rp.csz'
+            )
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = rp.space'
+            )
             ->groupBy('rp.id');
     }
 

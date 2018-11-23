@@ -21,7 +21,7 @@ use App\Annotation\Grid as Grid;
  *          {"first_name", "string", true, true, "r.firstName"},
  *          {"last_name",  "string", true, true, "r.lastName"},
  *          {"middle_name","string", true, true, "r.middleName"},
- *          {"space_id","string", true, true, "s.id"},
+ *          {"space","string", true, true, "s.name"},
  *          {"physician_id","string", true, true, "p.id"},
  *          {"gender","number", true, true, "r.gender"},
  *          {"birthday","number", true, true, "r.birthday"},

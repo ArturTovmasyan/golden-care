@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Apartment;
+use App\Entity\ApartmentRoom;
+use App\Entity\Facility;
 use App\Entity\FacilityRoom;
 use App\Entity\Physician;
+use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentApartmentOption;
 use App\Entity\ResidentFacilityOption;
@@ -65,29 +69,54 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
+     * @param $id
      * @param $state
      * @return mixed
      */
-    public function getByTypeAndState($type, $state)
+    public function getByTypeAndState($type, $id, $state)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
         switch ($type) {
             case \App\Model\Resident::TYPE_APARTMENT:
-                $queryBuilder->leftJoin(
-                    ResidentApartmentOption::class,
-                    'o',
-                    Join::WITH,
-                    'o.resident = r'
-                );
+                $queryBuilder
+                    ->leftJoin(
+                        ResidentApartmentOption::class,
+                        'o',
+                        Join::WITH,
+                        'o.resident = r'
+                    )
+                    ->leftJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'o.apartmentRoom = ar'
+                    )
+                    ->leftJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    )
+                    ->where('a.id = :id')
+                    ->setParameter('id', $id);
                 break;
             case \App\Model\Resident::TYPE_REGION:
-                $queryBuilder->leftJoin(
-                    ResidentRegionOption::class,
-                    'o',
-                    Join::WITH,
-                    'o.resident = r'
-                );
+                $queryBuilder
+                    ->leftJoin(
+                        ResidentRegionOption::class,
+                        'o',
+                        Join::WITH,
+                        'o.resident = r'
+                    )
+                    ->leftJoin(
+                        Region::class,
+                        'r',
+                        Join::WITH,
+                        'o.region = r'
+                    )
+                    ->where('r.id = :id')
+                    ->setParameter('id', $id);
                 break;
             default:
                 $queryBuilder
@@ -96,10 +125,24 @@ class ResidentRepository extends EntityRepository
                     'o',
                     Join::WITH,
                     'o.resident = r'
-                    );
+                    )
+                    ->leftJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'o.facilityRoom = fr'
+                    )
+                    ->leftJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->where('f.id = :id')
+                    ->setParameter('id', $id);
         }
 
-        $queryBuilder->where('r.type = :type AND o.state = :state')
+        $queryBuilder->andWhere('r.type = :type AND o.state = :state')
             ->setParameter("type", $type)
             ->setParameter('state', $state);
 
