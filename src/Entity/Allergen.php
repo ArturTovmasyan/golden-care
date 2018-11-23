@@ -32,20 +32,43 @@ class Allergen
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_allergen_list", "api_admin_allergen_get"})
+     * @Groups({
+     *     "api_admin_allergen_list",
+     *     "api_admin_allergen_get",
+     *     "api_admin_resident_allergen_list",
+     *     "api_admin_resident_allergen_get",
+     * })
      */
     private $id;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_allergen_add", "api_admin_allergen_edit"})
+     * @Assert\NotBlank(
+     *     groups={
+     *          "api_admin_allergen_add",
+     *          "api_admin_allergen_edit",
+     *          "api_admin_resident_allergen_add",
+     *          "api_admin_resident_allergen_edit"
+     *      }
+     * )
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_allergen_add", "api_admin_allergen_edit"}
+     *      groups={
+     *          "api_admin_allergen_add",
+     *          "api_admin_allergen_edit",
+     *          "api_admin_resident_allergen_add",
+     *          "api_admin_resident_allergen_edit"
+     *      }
      * )
      * @ORM\Column(name="title", type="string", length=200)
-     * @Groups({"api_admin_allergen_grid", "api_admin_allergen_list", "api_admin_allergen_get"})
+     * @Groups({
+     *     "api_admin_allergen_grid",
+     *     "api_admin_allergen_list",
+     *     "api_admin_allergen_get",
+     *     "api_admin_resident_allergen_list",
+     *     "api_admin_resident_allergen_get",
+     * })
      */
     private $title;
 
@@ -55,7 +78,12 @@ class Allergen
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
+     *      groups={
+     *          "api_admin_allergen_add",
+     *          "api_admin_allergen_edit",
+     *          "api_admin_resident_allergen_add",
+     *          "api_admin_resident_allergen_edit"
+     *      }
      * )
      * @Groups({"api_admin_allergen_grid", "api_admin_allergen_list", "api_admin_allergen_get"})
      */

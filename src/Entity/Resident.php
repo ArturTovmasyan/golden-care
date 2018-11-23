@@ -47,6 +47,8 @@ class Resident
      *      "api_admin_resident_medication_get",
      *      "api_admin_resident_medication_allergy_list",
      *      "api_admin_resident_medication_allergy_get",
+     *      "api_admin_resident_allergen_list",
+     *      "api_admin_resident_allergen_get",
      *      "api_admin_resident_list_by_params"
      * })
      */

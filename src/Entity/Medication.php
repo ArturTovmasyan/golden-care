@@ -75,6 +75,16 @@ class Medication
      *     "api_admin_resident_medication_allergy_add",
      *     "api_admin_resident_medication_allergy_edit"
      * })
+     * @Assert\Length(
+     *      max = 20,
+     *      maxMessage = "Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_medication_add",
+     *          "api_admin_medication_edit",
+     *          "api_admin_resident_medication_allergy_add",
+     *          "api_admin_resident_medication_allergy_edit"
+     *      }
+     * )
      */
     private $name;
 

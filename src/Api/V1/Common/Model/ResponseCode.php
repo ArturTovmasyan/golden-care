@@ -56,6 +56,8 @@ class ResponseCode
     const RESIDENT_MEDICATION_ALLERGY_NOT_FOUND_EXCEPTION = 649;
     const PHONE_SINGLE_PRIMARY_EXCEPTION                  = 650;
     const MEDICATION_NOT_SINGLE_EXCEPTION                 = 651;
+    const RESIDENT_ALLERGEN_NOT_FOUND_EXCEPTION           = 652;
+    const ALLERGEN_NOT_SINGLE_EXCEPTION                   = 653;
 
     /**
      * @var array
@@ -107,5 +109,7 @@ class ResponseCode
         self::RESIDENT_MEDICATION_ALLERGY_NOT_FOUND_EXCEPTION      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentMedicationAllergy not found'],
         self::PHONE_SINGLE_PRIMARY_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Duplicate primary phone number'],
         self::MEDICATION_NOT_SINGLE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medication not single'],
+        self::RESIDENT_ALLERGEN_NOT_FOUND_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentAllergen not found'],
+        self::ALLERGEN_NOT_SINGLE_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Allergen not single'],
     ];
 }
