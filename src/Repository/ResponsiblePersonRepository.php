@@ -32,9 +32,9 @@ class ResponsiblePersonRepository extends EntityRepository
             )
             ->leftJoin(
                 CityStateZip::class,
-                'cs',
+                'csz',
                 Join::WITH,
-                'cs = rp.csz'
+                'csz = rp.csz'
             )
             ->leftJoin(
                 Space::class,

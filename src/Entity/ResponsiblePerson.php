@@ -20,10 +20,10 @@ use App\Annotation\Grid as Grid;
  *          {"last_name",  "string", true, true, "rp.lastName"},
  *          {"address_1",  "string", true, true, "rp.address_1"},
  *          {"address_2",  "string", true, true, "rp.address_2"},
- *          {"is_financially", "number", true, true, "rp.financially"},
- *          {"is_emergency", "number", true, true, "rp.emergency"},
+ *          {"financially", "number", true, true, "rp.financially"},
+ *          {"emergency", "number", true, true, "rp.emergency"},
  *          {"email", "string", true, true, "rp.email"},
- *          {"csz", "string", true, true, "CONCAT(cs.city, ' ', cs.stateAbbr, ', ', cs.zipMain)"},
+ *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
  *          {"space","string", true, true, "s.name"}
  *     }
  * )
