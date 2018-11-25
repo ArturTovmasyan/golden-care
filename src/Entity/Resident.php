@@ -225,30 +225,18 @@ class Resident
     /**
      * @var ResidentFacilityOption
      * @ORM\OneToOne(targetEntity="ResidentFacilityOption", mappedBy="resident")
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get",
-     * })
      */
     private $residentFacilityOption;
 
     /**
      * @var ResidentApartmentOption
      * @ORM\OneToOne(targetEntity="ResidentApartmentOption", mappedBy="resident")
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get",
-     * })
      */
     private $residentApartmentOption;
 
     /**
      * @var ResidentRegionOption
      * @ORM\OneToOne(targetEntity="ResidentRegionOption", mappedBy="resident")
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
-     * })
      */
     private $residentRegionOption;
 
@@ -272,6 +260,28 @@ class Resident
             return $this->residentFacilityOption->getFacilityRoom()->getNumber();
         } elseif (!is_null($this->residentApartmentOption)) {
             return $this->residentApartmentOption->getApartmentRoom()->getNumber();
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("options")
+     * @Groups({
+     *      "api_admin_resident_list",
+     *      "api_admin_resident_get"
+     * })
+     */
+    public function getOptions()
+    {
+        switch($this->type) {
+            case \App\Model\Resident::TYPE_FACILITY:
+                return $this->residentFacilityOption;
+            case \App\Model\Resident::TYPE_APARTMENT:
+                return $this->residentApartmentOption;
+            case \App\Model\Resident::TYPE_REGION:
+                return $this->residentRegionOption;
         }
 
         return null;

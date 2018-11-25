@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Annotation\Grid as Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tbl_resident_facility_option")
@@ -70,6 +71,7 @@ class ResidentFacilityOption
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      * })
+     * @Serializer\SerializedName("room")
      */
     private $facilityRoom;
 

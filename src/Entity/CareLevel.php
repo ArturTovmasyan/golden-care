@@ -40,6 +40,7 @@ class CareLevel
      *     "api_admin_care_level_get",
      *     "api_admin_resident_grid",
      *     "api_admin_resident_list",
+     *     "api_admin_resident_get",
      *     "api_admin_resident_get"
      * })
      */
@@ -54,7 +55,12 @@ class CareLevel
      *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
      * )
      * @ORM\Column(name="title", type="string", unique=true, length=255)
-     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({
+     *     "api_admin_care_level_grid",
+     *     "api_admin_care_level_list",
+     *     "api_admin_care_level_get",
+     *     "api_admin_resident_get"
+     * })
      */
     private $title;
 

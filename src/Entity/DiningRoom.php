@@ -52,7 +52,12 @@ class DiningRoom
      *      groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"}
      * )
      * @ORM\Column(name="title", type="string", length=50)
-     * @Groups({"api_admin_dining_room_grid", "api_admin_dining_room_list", "api_admin_dining_room_get"})
+     * @Groups({
+     *     "api_admin_dining_room_grid",
+     *     "api_admin_dining_room_list",
+     *     "api_admin_dining_room_get",
+     *     "api_admin_resident_get"
+     * })
      */
     private $title;
 
