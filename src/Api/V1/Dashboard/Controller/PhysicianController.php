@@ -240,8 +240,8 @@ class PhysicianController extends BaseController
      *          "first_name": "Harut",
      *          "last_name": "Grigoryan",
      *          "middle_name": "Gagik",
-     *          "address1": "Fuchik str. 25",
-     *          "address2": "Alaverdyan str. 25 ap 2",
+     *          "address_1": "Fuchik str. 25",
+     *          "address_2": "Alaverdyan str. 25 ap 2",
      *          "office_phone": "+37499105555555",
      *          "fax": "+37499105555555",
      *          "emergency_phone": "+37499105555555",
@@ -302,8 +302,8 @@ class PhysicianController extends BaseController
      *          "first_name": "Harut",
      *          "last_name": "Grigoryan",
      *          "middle_name": "Gagik",
-     *          "address1": "Fuchik str. 25",
-     *          "address2": "Alaverdyan str. 25 ap 2",
+     *          "address_1": "Fuchik str. 25",
+     *          "address_2": "Alaverdyan str. 25 ap 2",
      *          "office_phone": "+37499105555555",
      *          "fax": "+37499105555555",
      *          "emergency_phone": "+37499105555555",
@@ -374,8 +374,8 @@ class PhysicianController extends BaseController
      *          "first_name": "Harut",
      *          "last_name": "Grigoryan",
      *          "middle_name": "Gagik",
-     *          "address1": "Fuchik str. 25",
-     *          "address2": "Alaverdyan str. 25 ap 2",
+     *          "address_1": "Fuchik str. 25",
+     *          "address_2": "Alaverdyan str. 25 ap 2",
      *          "office_phone": "+37499105555555",
      *          "fax": "+37499105555555",
      *          "emergency_phone": "+37499105555555",
@@ -392,7 +392,7 @@ class PhysicianController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "address1": "This value should not be blank."
+     *              "address_1": "This value should not be blank."
      *          }
      *     }
      *

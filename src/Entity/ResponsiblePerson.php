@@ -18,8 +18,8 @@ use App\Annotation\Grid as Grid;
  *          {"first_name", "string", true, true, "rp.firstName"},
  *          {"middle_name","string", true, true, "rp.middleName"},
  *          {"last_name",  "string", true, true, "rp.lastName"},
- *          {"address_1",  "string", true, true, "rp.address1"},
- *          {"address_2",  "string", true, true, "rp.address2"},
+ *          {"address_1",  "string", true, true, "rp.address_1"},
+ *          {"address_2",  "string", true, true, "rp.address_2"},
  *          {"is_financially", "number", true, true, "rp.financially"},
  *          {"is_emergency", "number", true, true, "rp.emergency"},
  *          {"email", "string", true, true, "rp.email"},
@@ -91,7 +91,7 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_get"
      * })
      */
-    private $address1;
+    private $address_1;
 
     /**
      * @var string
@@ -102,7 +102,7 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_get"
      * })
      */
-    private $address2;
+    private $address_2;
 
     /**
      * @var string
@@ -266,7 +266,7 @@ class ResponsiblePerson
      */
     public function getAddress1(): string
     {
-        return $this->address1;
+        return $this->address_1;
     }
 
     /**
@@ -274,7 +274,7 @@ class ResponsiblePerson
      */
     public function setAddress1(string $address1): void
     {
-        $this->address1 = $address1;
+        $this->address_1 = $address1;
     }
 
     /**
@@ -282,7 +282,7 @@ class ResponsiblePerson
      */
     public function getAddress2(): string
     {
-        return $this->address2;
+        return $this->address_2;
     }
 
     /**
@@ -290,7 +290,7 @@ class ResponsiblePerson
      */
     public function setAddress2(string $address2): void
     {
-        $this->address2 = $address2;
+        $this->address_2 = $address2;
     }
 
     /**
