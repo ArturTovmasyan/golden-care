@@ -29,7 +29,9 @@
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+        "ext-fileinfo": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",

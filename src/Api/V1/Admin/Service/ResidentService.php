@@ -152,7 +152,7 @@ class ResidentService extends BaseService implements IGridService
             $resident->setSalutation($salutation);
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
-            $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
+            $resident->setBirthday(new \DateTime($params['birthday']));
 
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
@@ -248,7 +248,7 @@ class ResidentService extends BaseService implements IGridService
             $resident->setSalutation($salutation);
             $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
-            $resident->setBirthday(\DateTime::createFromFormat('m-d-Y', $params['birthday']));
+            $resident->setBirthday(new \DateTime($params['birthday']));
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
             $this->em->persist($resident);
@@ -345,17 +345,17 @@ class ResidentService extends BaseService implements IGridService
             throw new DiningRoomNotFoundException();
         }
 
-        if (!isset($params['facility_room_id']) || !$params['facility_room_id']) {
+        if (!isset($params['room_id']) || !$params['room_id']) {
             throw new FacilityRoomNotFoundException();
         }
 
-        if (!isset($params['care_level']) || !$params['care_level']) {
+        if (!isset($params['care_level_id']) || !$params['care_level_id']) {
             throw new CareLevelNotFoundException();
         }
 
         $diningRoom   = $this->em->getRepository(DiningRoom::class)->find($params['dining_room_id']);
-        $facilityRoom = $this->em->getRepository(FacilityRoom::class)->find($params['facility_room_id']);
-        $careLevel    = $this->em->getRepository(CareLevel::class)->find($params['care_level']);
+        $facilityRoom = $this->em->getRepository(FacilityRoom::class)->find($params['room_id']);
+        $careLevel    = $this->em->getRepository(CareLevel::class)->find($params['care_level_id']);
 
         if (is_null($diningRoom)) {
             throw new DiningRoomNotFoundException();
@@ -400,11 +400,11 @@ class ResidentService extends BaseService implements IGridService
          */
         $option = $this->em->getRepository(ResidentApartmentOption::class)->findOneBy(['resident' => $resident]);
 
-        if (!isset($params['apartment_room_id']) || !$params['apartment_room_id']) {
+        if (!isset($params['room_id']) || !$params['room_id']) {
             throw new ApartmentRoomNotFoundException();
         }
 
-        $apartmentRoom = $this->em->getRepository(ApartmentRoom::class)->find($params['apartment_room_id']);
+        $apartmentRoom = $this->em->getRepository(ApartmentRoom::class)->find($params['room_id']);
 
         if (is_null($option)) {
             $option = new ResidentApartmentOption();

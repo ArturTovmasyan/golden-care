@@ -19,8 +19,8 @@ class User
      * @var array
      */
     public static $genderValues = [
-        self::GENDER_MALE   => "1",
-        self::GENDER_FEMALE => "2",
+        self::GENDER_MALE,
+        self::GENDER_FEMALE,
     ];
 
     /**

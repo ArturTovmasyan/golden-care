@@ -267,13 +267,13 @@ class Resident
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("options")
+     * @Serializer\SerializedName("option")
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
-    public function getOptions()
+    public function getOption()
     {
         switch($this->type) {
             case \App\Model\Resident::TYPE_FACILITY:

@@ -59,6 +59,16 @@ class MainListener
                 $exception->getCode(),
                 $exception->getErrors()
             );
+        } else if ($exception instanceof \ErrorException) {
+            $response = $this->respondError(
+                sprintf(
+                    "%s:%d %s",
+                    $exception->getFile(),
+                    $exception->getLine(),
+                    $exception->getMessage()
+                ),
+                $exception->getCode()
+            );
         } else {
             $response = $this->respondError(
                 $exception->getMessage(),

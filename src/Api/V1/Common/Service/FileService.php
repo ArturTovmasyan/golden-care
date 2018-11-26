@@ -69,6 +69,12 @@ class FileService
             throw new FileExtensionException();
         }
 
+        if (empty($this->extension)) {
+            // TODO(haykg): review regex
+            $this->extension = preg_replace('/^data:(.*);base64,(.*)$/', '$1', $base64);
+            $this->extension = preg_replace('/^(.*)\/(.*)$/', '$2', $this->extension);
+        }
+
         if (empty($this->extension) || !in_array($this->extension, $this->extensions)) {
             throw new FileExtensionException();
         }
@@ -89,19 +95,20 @@ class FileService
             throw new FileExtensionException();
         }
 
-        if (empty($this->extension) || !in_array($this->extension, $this->extensions)) {
-            throw new FileExtensionException();
+        if (empty($this->extension)) {
+            $this->findExtension($id);
         }
 
         $file = $this->getFilePath($id, $this->fileName, $this->extension);
 
-        if (!is_file($file) || !file_exists($file)) {
+        if (!is_file($file)) {
             return false;
         }
 
-        $imagedata = file_get_contents($file);
+        $data = file_get_contents($file);
+        $mime_type = mime_content_type($file);
 
-        return base64_encode($imagedata);
+        return sprintf("data:%s;base64,%s", $mime_type, base64_encode($data));
     }
 
     /**
@@ -138,13 +145,13 @@ class FileService
             throw new FileExtensionException();
         }
 
-        if (empty($this->extension) || !in_array($this->extension, $this->extensions)) {
-            throw new FileExtensionException();
+        if (empty($this->extension)) {
+            $this->findExtension($id);
         }
 
         $file = $this->getFilePath($id, $this->fileName, $this->extension);
 
-        if (!is_file($file) || !file_exists($file)) {
+        if (!is_file($file)) {
             return false;
         }
 
@@ -196,5 +203,16 @@ class FileService
         );
 
         return $path;
+    }
+
+    private function findExtension($id) {
+        foreach ($this->extensions as $extension) {
+            $file = $this->getFilePath($id, $this->fileName, $extension);
+
+            if (is_file($file)) {
+                $this->extension = $extension;
+                break;
+            }
+        }
     }
 }

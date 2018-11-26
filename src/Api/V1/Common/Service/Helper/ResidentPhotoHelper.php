@@ -21,5 +21,5 @@ class ResidentPhotoHelper extends FileService
     /**
      * @var string
      */
-    public $extension = 'jpeg';
+    public $extension = '';
 }
