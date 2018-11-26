@@ -56,6 +56,7 @@ class Space
      *     "api_admin_physician_speciality_list",
      *     "api_admin_physician_speciality_get",
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */

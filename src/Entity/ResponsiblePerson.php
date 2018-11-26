@@ -37,7 +37,10 @@ class ResponsiblePerson
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_list_by_space",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get",
      * })
      */
     private $id;
@@ -51,7 +54,10 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_list_by_space",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      */
     private $firstName;
@@ -65,7 +71,10 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_list_by_space",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      */
     private $lastName;
@@ -75,6 +84,7 @@ class ResponsiblePerson
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -83,11 +93,13 @@ class ResponsiblePerson
     /**
      * @var string
      * @Assert\NotBlank(groups={
-     *
+     *     "api_admin_responsible_person_edit",
+     *     "api_admin_responsible_person_add"
      * })
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -97,8 +109,13 @@ class ResponsiblePerson
      * @var string
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_responsible_person_edit",
+     *     "api_admin_responsible_person_add"
+     * })
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -109,11 +126,13 @@ class ResponsiblePerson
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      * @Assert\Email(
      *     groups={
-     *
+     *          "api_admin_responsible_person_edit",
+     *          "api_admin_responsible_person_add"
      *     }
      * )
      */
@@ -123,10 +142,12 @@ class ResponsiblePerson
      * @var bool
      * @ORM\Column(name="is_financially", type="boolean", nullable=false)
      * @Assert\NotNull(groups={
-     *
+     *      "api_admin_responsible_person_edit",
+     *      "api_admin_responsible_person_add"
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -137,6 +158,7 @@ class ResponsiblePerson
      * @ORM\Column(name="is_emergency", type="boolean", nullable=false)
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -149,10 +171,12 @@ class ResponsiblePerson
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
      * })
      * @Assert\NotBlank(groups={
-     *
+     *      "api_admin_responsible_person_edit",
+     *      "api_admin_responsible_person_add"
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -160,13 +184,20 @@ class ResponsiblePerson
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_responsible_person_add", "api_responsible_person_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
+     * @Assert\NotNull(
+     *     message = "Please select a Space",
+     *     groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_responsible_person_edit"
+     *     }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -183,6 +214,7 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -192,6 +224,7 @@ class ResponsiblePerson
      * @ORM\OneToMany(targetEntity="ResponsiblePersonPhone", mappedBy="responsiblePerson")
      * @Groups({
      *      "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_list_by_space",
      *      "api_admin_responsible_person_get"
      * })
      */

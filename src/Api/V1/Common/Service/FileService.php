@@ -124,8 +124,10 @@ class FileService
 
         if (empty($data)) {
             $data = $base64;
-        } else {
+        } elseif (count($data) != 2) {
             $data = $data[1];
+        } else {
+            throw new FileExtensionException();
         }
 
         $ifp = fopen($output, 'wb');

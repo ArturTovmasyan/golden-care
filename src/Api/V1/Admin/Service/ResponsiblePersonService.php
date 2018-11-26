@@ -16,7 +16,7 @@ use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ResidentMedicationService
+ * Class ResponsiblePersonService
  * @package App\Api\V1\Admin\Service
  */
 class ResponsiblePersonService extends BaseService implements IGridService
@@ -38,6 +38,15 @@ class ResponsiblePersonService extends BaseService implements IGridService
     public function list($params)
     {
         return $this->em->getRepository(ResponsiblePerson::class)->findAll();
+    }
+
+    /**
+     * @param $spaceId
+     * @return array|object[]
+     */
+    public function getBySpaceId($spaceId)
+    {
+        return $this->em->getRepository(ResponsiblePerson::class)->findBy(['space' => $spaceId]);
     }
 
     /**
@@ -188,7 +197,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setFinancially($params['is_financially'] ?? false);
             $responsiblePerson->setEmergency($params['is_emergency'] ?? false);
 
-            $this->validate($responsiblePerson, null, ['api_admin_resident_medication_edit']);
+            $this->validate($responsiblePerson, null, ['api_admin_responsible_person_edit']);
             $this->em->persist($responsiblePerson);
 
             // save phone numbers

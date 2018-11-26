@@ -37,7 +37,9 @@ class Relationship
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
      *     "api_dashboard_relationship_grid",
-     *     "api_dashboard_relationship_list"
+     *     "api_dashboard_relationship_list",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      */
     private $id;
@@ -51,11 +53,18 @@ class Relationship
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
      *     "api_dashboard_relationship_grid",
-     *     "api_dashboard_relationship_list"
+     *     "api_dashboard_relationship_list",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
      */
     private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ResidentResponsiblePerson", mappedBy="relationship", cascade={"persist", "remove"})
+     */
+    protected $relationshipResidentResponsiblePersons;
 
     /**
      * @return int
@@ -87,5 +96,21 @@ class Relationship
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRelationshipResidentResponsiblePersons()
+    {
+        return $this->relationshipResidentResponsiblePersons;
+    }
+
+    /**
+     * @param mixed $relationshipResidentResponsiblePersons
+     */
+    public function setRelationshipResidentResponsiblePersons($relationshipResidentResponsiblePersons): void
+    {
+        $this->relationshipResidentResponsiblePersons = $relationshipResidentResponsiblePersons;
     }
 }
