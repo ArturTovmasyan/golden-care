@@ -330,7 +330,6 @@ class ResidentController extends BaseController
      *          "type": 1,
      *          "space_id": 1,
      *          "salutation_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "option": [
@@ -347,8 +346,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -359,7 +358,6 @@ class ResidentController extends BaseController
      *          "middle_name": "",
      *          "type": 2,
      *          "space_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "option": [
@@ -370,8 +368,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -382,7 +380,6 @@ class ResidentController extends BaseController
      *          "middle_name": "",
      *          "type": 3,
      *          "space_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "photo": "",
@@ -402,8 +399,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -440,7 +437,6 @@ class ResidentController extends BaseController
                 'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
-                'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
                 'photo'         => $request->get('photo'),
@@ -474,7 +470,6 @@ class ResidentController extends BaseController
      *          "middle_name": "",
      *          "space_id": 1,
      *          "salutation_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "option": [
@@ -490,8 +485,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -501,7 +496,6 @@ class ResidentController extends BaseController
      *          "last_name": "Cole",
      *          "middle_name": "",
      *          "space_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "option": [
@@ -512,8 +506,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -523,7 +517,6 @@ class ResidentController extends BaseController
      *          "last_name": "Cole",
      *          "middle_name": "",
      *          "space_id": 1,
-     *          "physician_id": 1,
      *          "gender": 1,
      *          "birthday": "12-24-1990",
      *          "photo": "",
@@ -542,8 +535,8 @@ class ResidentController extends BaseController
      *                  "compatibility": 1,
      *                  "type": 1,
      *                  "number": "+3748880880",
-     *                  "is_primary": 0,
-     *                  "is_sms_enabled": 1
+     *                  "primary": 0,
+     *                  "sms_enabled": 1
      *              }
      *          ]
      *     }
@@ -582,7 +575,6 @@ class ResidentController extends BaseController
                 'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
-                'physician_id'  => $request->get('physician_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
                 'photo'         => $request->get('photo'),

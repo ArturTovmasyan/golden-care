@@ -48,8 +48,8 @@ class ResponsiblePersonController extends BaseController
      * @apiSuccess {String}  address_1       The main address of the rp
      * @apiSuccess {String}  address_2       The secondary address of the rp
      * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Int}     is_financially  The financially status of rp
-     * @apiSuccess {Int}     is_emergency    The emergency status of rp
+     * @apiSuccess {Int}     financially  The financially status of rp
+     * @apiSuccess {Int}     emergency    The emergency status of rp
      * @apiSuccess {String}  space           The space name of the rp
      * @apiSuccess {String}  csz             The cityStateZip short address of the rp
      * @apiSuccess {String}  salutation      The salutation of the rp
@@ -69,8 +69,8 @@ class ResponsiblePersonController extends BaseController
      *                  "last_name": "Jovhannesyan",
      *                  "address_1": "Fuchik str 2",
      *                  "address_2": "Alaverdyan str 25 ap. 2",
-     *                  "is_financially": 0,
-     *                  "is_emergency": 1,
+     *                  "financially": 0,
+     *                  "emergency": 1,
      *                  "email": "test@example.com",
      *                  "csz": "Verdi CA, 89439",
      *                  "space": "alms"
@@ -148,8 +148,8 @@ class ResponsiblePersonController extends BaseController
      * @apiSuccess {String}  address_1       The main address of the rp
      * @apiSuccess {String}  address_2       The secondary address of the rp
      * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Int}     is_financially  The financially status of rp
-     * @apiSuccess {Int}     is_emergency    The emergency status of rp
+     * @apiSuccess {Int}     financially     The financially status of rp
+     * @apiSuccess {Int}     emergency       The emergency status of rp
      * @apiSuccess {Object}  space           The space of the rp
      * @apiSuccess {Object}  csz             The cityStateZip of the rp
      *
@@ -180,8 +180,8 @@ class ResponsiblePersonController extends BaseController
      *                      "compatibility": 1,
      *                      "type": 1,
      *                      "number": "+3748880880",
-     *                      "is_primary": 0,
-     *                      "is_sms_enabled": 1,
+     *                      "primary": 0,
+     *                      "sms_enabled": 1,
      *                      "extension": 1515
      *                  }
      *              ]
@@ -222,8 +222,8 @@ class ResponsiblePersonController extends BaseController
      * @apiSuccess {String}  address_1       The main address of the rp
      * @apiSuccess {String}  address_2       The secondary address of the rp
      * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Int}     is_financially  The financially status of rp
-     * @apiSuccess {Int}     is_emergency    The emergency status of rp
+     * @apiSuccess {Int}     financially  The financially status of rp
+     * @apiSuccess {Int}     emergency    The emergency status of rp
      * @apiSuccess {Object}  space           The space of the rp
      * @apiSuccess {Object}  csz             The cityStateZip of the rp
      *
@@ -254,8 +254,8 @@ class ResponsiblePersonController extends BaseController
      *                      "compatibility": 1,
      *                      "type": 1,
      *                      "number": "+3748880880",
-     *                      "is_primary": 0,
-     *                      "is_sms_enabled": 1,
+     *                      "primary": 0,
+     *                      "sms_enabled": 1,
      *                      "extension": 1515
      *                  }
      *              ]
@@ -296,8 +296,8 @@ class ResponsiblePersonController extends BaseController
      * @apiSuccess {String}  address_1       The main address of the rp
      * @apiSuccess {String}  address_2       The secondary address of the rp
      * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Int}     is_financially  The financially status of rp
-     * @apiSuccess {Int}     is_emergency    The emergency status of rp
+     * @apiSuccess {Int}     financially  The financially status of rp
+     * @apiSuccess {Int}     _emergency    The emergency status of rp
      * @apiSuccess {Object}  space           The space of the rp
      * @apiSuccess {Object}  csz             The cityStateZip of the rp
      *
@@ -311,8 +311,8 @@ class ResponsiblePersonController extends BaseController
      *              "last_name": "Jovhannesyan",
      *              "address_1": "Fuchik str 2",
      *              "address_2": "Alaverdyan str 25 ap. 2",
-     *              "is_financially": 0,
-     *              "is_emergency": 1,
+     *              "financially": 0,
+     *              "emergency": 1,
      *              "email": "test@example.com",
      *              "space": {
      *                  id: 5
@@ -325,8 +325,8 @@ class ResponsiblePersonController extends BaseController
      *                      "compatibility": 1,
      *                      "type": 1,
      *                      "number": "+3748880880",
-     *                      "is_primary": 0,
-     *                      "is_sms_enabled": 1,
+     *                      "primary": 0,
+     *                      "sms_enabled": 1,
      *                      "extension": 1515
      *                  }
      *              ]
@@ -364,8 +364,8 @@ class ResponsiblePersonController extends BaseController
      * @apiParam {String}  last_name       The Last Name of the rp
      * @apiParam {String}  address_1       The first address of the rp
      * @apiParam {String}  [address_2]     The second address of the rp
-     * @apiParam {String}  is_financially  The financially status of rp
-     * @apiParam {String}  is_emergency    The emergency status of rp
+     * @apiParam {String}  financially  The financially status of rp
+     * @apiParam {String}  emergency    The emergency status of rp
      * @apiParam {String}  email           The email address of the rp
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     space_id        The unique identifier of the space
@@ -378,8 +378,8 @@ class ResponsiblePersonController extends BaseController
      *          "last_name": "Jovhannesyan",
      *          "address_1": "Fuchik str 2",
      *          "address_2": "Alaverdyan str 25 ap. 2",
-     *          "is_financially": 0,
-     *          "is_emergency": 1,
+     *          "financially": 0,
+     *          "emergency": 1,
      *          "email": "test@example.com",
      *          "csz_id": 1,
      *          "space_id": 1,
@@ -414,8 +414,8 @@ class ResponsiblePersonController extends BaseController
                 'last_name'         => $request->get('last_name'),
                 'address_1'         => $request->get('address_1'),
                 'address_2'         => $request->get('address_2'),
-                'is_emergency'      => $request->get('is_emergency'),
-                'is_financially'    => $request->get('is_financially'),
+                'emergency'         => $request->get('emergency'),
+                'financially'       => $request->get('financially'),
                 'email'             => $request->get('email'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
@@ -444,8 +444,8 @@ class ResponsiblePersonController extends BaseController
      * @apiParam {String}  last_name       The Last Name of the rp
      * @apiParam {String}  address_1       The first address of the rp
      * @apiParam {String}  [address_2]     The second address of the rp
-     * @apiParam {String}  is_financially  The financially status of rp
-     * @apiParam {String}  is_emergency    The emergency status of rp
+     * @apiParam {String}  financially  The financially status of rp
+     * @apiParam {String}  emergency    The emergency status of rp
      * @apiParam {String}  email           The email address of the rp
      * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
      * @apiParam {Int}     space_id        The unique identifier of the space
@@ -458,8 +458,8 @@ class ResponsiblePersonController extends BaseController
      *          "last_name": "Jovhannesyan",
      *          "address_1": "Fuchik str 2",
      *          "address_2": "Alaverdyan str 25 ap. 2",
-     *          "is_financially": 0,
-     *          "is_emergency": 1,
+     *          "financially": 0,
+     *          "emergency": 1,
      *          "email": "test@example.com",
      *          "csz_id": 1,
      *          "space_id": 1,
@@ -496,8 +496,8 @@ class ResponsiblePersonController extends BaseController
                 'last_name'         => $request->get('last_name'),
                 'address_1'         => $request->get('address_1'),
                 'address_2'         => $request->get('address_2'),
-                'is_emergency'      => $request->get('is_emergency'),
-                'is_financially'    => $request->get('is_financially'),
+                'emergency'         => $request->get('emergency'),
+                'financially'       => $request->get('financially'),
                 'email'             => $request->get('email'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),

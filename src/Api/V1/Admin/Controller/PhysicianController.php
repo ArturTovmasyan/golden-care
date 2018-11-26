@@ -68,6 +68,7 @@ class PhysicianController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
+     *                  "speciality": "Doctor",
      *                  "salutation": "Mr.",
      *                  "first_name": "Arthur",
      *                  "middle_name": "Gagik",
@@ -98,7 +99,8 @@ class PhysicianController extends BaseController
             $request,
             Physician::class,
             'api_admin_physician_grid',
-            $physicianService
+            $physicianService,
+            ['space_id' => $request->get('space_id')]
         );
     }
 
@@ -183,7 +185,11 @@ class PhysicianController extends BaseController
      *                 "id": 1,
      *                 "name": "Space N1"
      *             },
-     *              "salutation": {
+     *             "speciality": {
+     *                 "id": 1,
+     *                 "name": "Doctor"
+     *             },
+     *             "salutation": {
      *                 "id": 1,
      *                 "name": "Mr."
      *             },
@@ -210,7 +216,8 @@ class PhysicianController extends BaseController
             $request,
             Physician::class,
             'api_admin_physician_list',
-            $physicianService
+            $physicianService,
+            ['space_id' => $request->get('space_id')]
         );
     }
 
@@ -256,6 +263,10 @@ class PhysicianController extends BaseController
      *             "space": {
      *                 "id": 1,
      *                 "name": "Space N1"
+     *             },
+     *             "speciality": {
+     *                 "id": 1,
+     *                 "name": "Doctor"
      *             },
      *             "salutation": {
      *                 "id": 1,
@@ -354,6 +365,7 @@ class PhysicianController extends BaseController
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
+                'speciality_id'     => $request->get('speciality_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id')
             ]
@@ -442,6 +454,7 @@ class PhysicianController extends BaseController
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
+                'speciality_id'     => $request->get('speciality_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id')
             ]

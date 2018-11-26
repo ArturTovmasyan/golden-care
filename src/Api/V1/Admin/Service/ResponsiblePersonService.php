@@ -114,8 +114,8 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setAddress1($params['address_1'] ?? '');
             $responsiblePerson->setAddress2($params['address_2'] ?? '');
             $responsiblePerson->setEmail($params['email'] ?? '');
-            $responsiblePerson->setFinancially($params['is_financially'] ?? false);
-            $responsiblePerson->setEmergency($params['is_emergency'] ?? false);
+            $responsiblePerson->setFinancially($params['financially'] ?? false);
+            $responsiblePerson->setEmergency($params['emergency'] ?? false);
 
             $this->validate($responsiblePerson, null, ['api_admin_responsible_person_add']);
             $this->em->persist($responsiblePerson);
@@ -194,8 +194,8 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setAddress1($params['address_1'] ?? '');
             $responsiblePerson->setAddress2($params['address_2'] ?? '');
             $responsiblePerson->setEmail($params['email'] ?? '');
-            $responsiblePerson->setFinancially($params['is_financially'] ?? false);
-            $responsiblePerson->setEmergency($params['is_emergency'] ?? false);
+            $responsiblePerson->setFinancially($params['financially'] ?? false);
+            $responsiblePerson->setEmergency($params['emergency'] ?? false);
 
             $this->validate($responsiblePerson, null, ['api_admin_responsible_person_edit']);
             $this->em->persist($responsiblePerson);
@@ -236,8 +236,8 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePersonPhone->setCompatibility($phone['compatibility'] ?? 0);
             $responsiblePersonPhone->setType($phone['type'] ?? 0);
             $responsiblePersonPhone->setNumber($phone['number'] ?? 0);
-            $responsiblePersonPhone->setPrimary((bool) $phone['is_primary'] ?? false);
-            $responsiblePersonPhone->setSmsEnabled((bool) $phone['is_sms_enabled'] ?? false);
+            $responsiblePersonPhone->setPrimary((bool) $phone['primary'] ?? false);
+            $responsiblePersonPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
             $responsiblePersonPhone->setExtension($phone['extension'] ?? '');
 
             if ($responsiblePersonPhone->isPrimary()) {

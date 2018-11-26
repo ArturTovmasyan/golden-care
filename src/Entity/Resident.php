@@ -56,7 +56,9 @@ class Resident
      *      "api_admin_resident_diagnosis_get",
      *      "api_admin_resident_list_by_params",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_admin_resident_responsible_person_get"
+     *      "api_admin_resident_responsible_person_get",
+     *      "api_admin_resident_physician_list",
+     *      "api_admin_resident_physician_get"
      * })
      */
     private $id;
@@ -108,23 +110,6 @@ class Resident
     private $type;
 
     /**
-     * @var Physician
-     * @ORM\ManyToOne(targetEntity="App\Entity\Physician")
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_physician", referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
-     * })
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
-     * })
-     */
-    private $physician;
-
-    /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
      * @Assert\NotBlank(groups={
@@ -136,7 +121,9 @@ class Resident
      *      "api_admin_resident_get",
      *      "api_admin_resident_list_by_params",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_admin_resident_responsible_person_get"
+     *      "api_admin_resident_responsible_person_get",
+     *      "api_admin_resident_physician_list",
+     *      "api_admin_resident_physician_get"
      * })
      */
     private $firstName;
@@ -153,7 +140,9 @@ class Resident
      *      "api_admin_resident_get",
      *      "api_admin_resident_list_by_params",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_admin_resident_responsible_person_get"
+     *      "api_admin_resident_responsible_person_get",
+     *      "api_admin_resident_physician_list",
+     *      "api_admin_resident_physician_get"
      * })
      */
     private $lastName;
@@ -403,22 +392,6 @@ class Resident
     public function setType(int $type): void
     {
         $this->type = $type;
-    }
-
-    /**
-     * @return \App\Entity\Physician
-     */
-    public function getPhysician(): \App\Entity\Physician
-    {
-        return $this->physician;
-    }
-
-    /**
-     * @param \App\Entity\Physician $physician
-     */
-    public function setPhysician(\App\Entity\Physician $physician): void
-    {
-        $this->physician = $physician;
     }
 
     /**

@@ -4,12 +4,14 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
+use App\Api\V1\Common\Service\Exception\PhysicianSpecialityNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceHaventAccessToPhysicianException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
+use App\Entity\PhysicianSpeciality;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
@@ -27,7 +29,13 @@ class PhysicianService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Physician::class)->search($queryBuilder);
+        $spaceId = false;
+
+        if (!empty($params) && !empty($params[0]['space_id'])) {
+            $spaceId = $params[0]['space_id'];
+        }
+
+        $this->em->getRepository(Physician::class)->search($queryBuilder, $spaceId);
     }
 
     /**
@@ -36,6 +44,12 @@ class PhysicianService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        if (!empty($params) && !empty($params[0]['space_id'])) {
+            $spaceId = $params[0]['space_id'];
+
+            return $this->em->getRepository(Physician::class)->findBy(['space' => $spaceId]);
+        }
+
         return $this->em->getRepository(Physician::class)->findAll();
     }
 
@@ -59,12 +73,14 @@ class PhysicianService extends BaseService implements IGridService
              * @var Physician $physician
              * @var Salutation $salutation
              * @var CityStateZip $csz
+             * @var PhysicianSpeciality $speciality
              */
             $this->em->getConnection()->beginTransaction();
 
             $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
             $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
+            $speciality = $this->em->getRepository(PhysicianSpeciality::class)->find($params['speciality_id']);
 
             if (is_null($space)) {
                 throw new SpaceNotFoundException();
@@ -76,6 +92,10 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($salutation)) {
                 throw new SalutationNotFoundException();
+            }
+
+            if (is_null($speciality)) {
+                throw new PhysicianSpecialityNotFoundException();
             }
 
             // save physician
@@ -93,6 +113,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setSpace($space);
             $physician->setCsz($csz);
             $physician->setSpace($space);
+            $physician->setSpeciality($speciality);
             $physician->setSalutation($salutation);
 
             $this->validate($physician, null, ["api_admin_physician_add"]);
@@ -119,6 +140,7 @@ class PhysicianService extends BaseService implements IGridService
              * @var Physician $physician
              * @var Salutation $salutation
              * @var CityStateZip $csz
+             * @var PhysicianSpeciality $speciality
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -126,6 +148,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician  = $this->em->getRepository(Physician::class)->find($id);
             $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
+            $speciality = $this->em->getRepository(PhysicianSpeciality::class)->find($params['speciality_id']);
 
             if (is_null($physician)) {
                 throw new PhysicianNotFoundException();
@@ -143,6 +166,10 @@ class PhysicianService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
+            if (is_null($speciality)) {
+                throw new PhysicianSpecialityNotFoundException();
+            }
+
             // edit physician
             $physician->setFirstName($params['first_name'] ?? '');
             $physician->setMiddleName($params['middle_name'] ?? '');
@@ -156,6 +183,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setCsz($csz);
             $physician->setSpace($space);
+            $physician->setSpeciality($speciality);
             $physician->setSalutation($salutation);
 
             $this->validate($physician, null, ["api_admin_physician_edit"]);

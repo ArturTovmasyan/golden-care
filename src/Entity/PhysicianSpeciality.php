@@ -34,7 +34,9 @@ class PhysicianSpeciality
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $id;
@@ -49,9 +51,10 @@ class PhysicianSpeciality
      * )
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
-     *     "api_admin_physician_speciality_grid",
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
      * })
      */
     private $title;

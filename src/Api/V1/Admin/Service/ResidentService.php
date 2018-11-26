@@ -114,7 +114,6 @@ class ResidentService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId      = $params['space_id'] ?? 0;
-            $physicianId  = $params['physician_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
             $space        = null;
             $physician    = null;
@@ -124,14 +123,6 @@ class ResidentService extends BaseService implements IGridService
 
                 if (is_null($space)) {
                     throw new SpaceNotFoundException();
-                }
-            }
-
-            if ($physicianId && $physicianId > 0) {
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
-
-                if (is_null($physician)) {
-                    throw new PhysicianNotFoundException();
                 }
             }
 
@@ -150,7 +141,6 @@ class ResidentService extends BaseService implements IGridService
             $resident->setType($params['type'] ?? 0);
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
-            $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(new \DateTime($params['birthday']));
 
@@ -212,24 +202,14 @@ class ResidentService extends BaseService implements IGridService
             }
 
             $spaceId      = $params['space_id'] ?? 0;
-            $physicianId  = $params['physician_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
             $space        = null;
-            $physician    = null;
 
             if ($spaceId && $spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
 
                 if (is_null($space)) {
                     throw new SpaceNotFoundException();
-                }
-            }
-
-            if ($physicianId && $physicianId > 0) {
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
-
-                if (is_null($physician)) {
-                    throw new PhysicianNotFoundException();
                 }
             }
 
@@ -246,7 +226,6 @@ class ResidentService extends BaseService implements IGridService
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
-            $resident->setPhysician($physician);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(new \DateTime($params['birthday']));
 
@@ -310,8 +289,8 @@ class ResidentService extends BaseService implements IGridService
             $residentPhone->setCompatibility($phone['compatibility'] ?? 0);
             $residentPhone->setType($phone['type'] ?? 0);
             $residentPhone->setNumber($phone['number'] ?? 0);
-            $residentPhone->setPrimary((bool) $phone['is_primary'] ?? false);
-            $residentPhone->setSmsEnabled((bool) $phone['is_sms_enabled'] ?? false);
+            $residentPhone->setPrimary((bool) $phone['primary'] ?? false);
+            $residentPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
 
             if ($residentPhone->isPrimary()) {
                 if ($hasPrimary) {

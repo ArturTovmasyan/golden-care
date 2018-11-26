@@ -64,6 +64,8 @@ class ResponseCode
     const RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 = 657;
     const DIAGNOSIS_NOT_SINGLE_EXCEPTION                         = 658;
     const RESIDENT_RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION        = 659;
+    const RESIDENT_PHYSICIAN_NOT_FOUND_EXCEPTION                 = 660;
+    const RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION              = 661;
 
     /**
      * @var array
@@ -123,5 +125,7 @@ class ResponseCode
         self::RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentDiagnosis not found'],
         self::DIAGNOSIS_NOT_SINGLE_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis not single'],
         self::RESIDENT_RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentResponsiblePerson not found'],
+        self::RESIDENT_PHYSICIAN_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentPhysician not found'],
+        self::RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident already have primary physician'],
     ];
 }

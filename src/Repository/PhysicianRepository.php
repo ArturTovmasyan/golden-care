@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
+use App\Entity\PhysicianSpeciality;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
@@ -19,8 +20,9 @@ class PhysicianRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
+     * @param int|bool $spaceId
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(QueryBuilder $queryBuilder, $spaceId = false)
     {
         $queryBuilder
             ->from(Physician::class, 'p')
@@ -42,7 +44,19 @@ class PhysicianRepository extends EntityRepository
                 Join::WITH,
                 'csz = p.csz'
             )
+            ->leftJoin(
+                PhysicianSpeciality::class,
+                'spec',
+                Join::WITH,
+                'spec = p.speciality'
+            )
             ->groupBy('p.id');
+
+        if ($spaceId) {
+            $queryBuilder
+                ->where('p.space = :spaceId')
+                ->setParameter('spaceId', $spaceId);
+        }
     }
 
     /**
@@ -64,6 +78,12 @@ class PhysicianRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'csz = p.csz'
+            )
+            ->leftJoin(
+                PhysicianSpeciality::class,
+                'spec',
+                Join::WITH,
+                'spec = p.speciality'
             )
             ->where('p.space = :space')
             ->setParameter('space', $space)
