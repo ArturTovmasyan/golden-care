@@ -201,81 +201,8 @@ class ResponsiblePersonController extends BaseController
             $request,
             ResponsiblePerson::class,
             'api_admin_responsible_person_list',
-            $responsiblePersonService
-        );
-    }
-
-    /**
-     * @api {get} /api/v1.0/admin/responsible/person/space/{space_id} Get Responsible Persons by Space
-     * @apiVersion 1.0.0
-     * @apiName Get Responsible Person by Space
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to listing rp's by space
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the rp
-     * @apiSuccess {String}  first_name      The First Name of the rp
-     * @apiSuccess {String}  middle_name     The Middle Name of the rp
-     * @apiSuccess {String}  last_name       The Last Name of the rp
-     * @apiSuccess {String}  address_1       The main address of the rp
-     * @apiSuccess {String}  address_2       The secondary address of the rp
-     * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Int}     financially  The financially status of rp
-     * @apiSuccess {Int}     emergency    The emergency status of rp
-     * @apiSuccess {Object}  space           The space of the rp
-     * @apiSuccess {Object}  csz             The cityStateZip of the rp
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     [
-     *          {
-     *              "id": 1,
-     *              "first_name": "Gagik",
-     *              "last_name": "Gabrielyan",
-     *              "middle_name": "",
-     *              "address_1": "",
-     *              "address_2": "",
-     *              "email": "",
-     *              "financially": false,
-     *              "emergency": false,
-     *              "csz": {
-     *                  "id": 1
-     *               },
-     *              "space": {
-     *                  "id": 1
-     *              },
-     *              "salutation": {
-     *                  "id": 1
-     *              },
-     *              "phones": [
-     *                  {
-     *                      "compatibility": 1,
-     *                      "type": 1,
-     *                      "number": "+3748880880",
-     *                      "primary": 0,
-     *                      "sms_enabled": 1,
-     *                      "extension": 1515
-     *                  }
-     *              ]
-     *          }
-     *     ]
-     *
-     * @Route("/space/{spaceId}", requirements={"spaceId"="\d+"}, name="api_admin_responsible_person_list_by_space", methods={"GET"})
-     *
-     * @param Request $request
-     * @param $spaceId
-     * @param ResponsiblePersonService $responsiblePersonService
-     * @return JsonResponse
-     */
-    public function listBySpaceAction(Request $request, $spaceId, ResponsiblePersonService $responsiblePersonService)
-    {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $responsiblePersonService->getBySpaceId($spaceId),
-            'api_admin_responsible_person_list_by_space'
+            $responsiblePersonService,
+            ['space_id' => $request->get('space_id')]
         );
     }
 

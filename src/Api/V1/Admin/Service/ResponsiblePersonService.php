@@ -37,6 +37,12 @@ class ResponsiblePersonService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        if (!empty($params) && !empty($params[0]['space_id'])) {
+            $spaceId = $params[0]['space_id'];
+
+            return $this->em->getRepository(ResponsiblePerson::class)->findBy(['space' => $spaceId]);
+        }
+
         return $this->em->getRepository(ResponsiblePerson::class)->findAll();
     }
 
