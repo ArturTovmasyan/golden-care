@@ -5,9 +5,9 @@ namespace App\Repository;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
-use App\Entity\PhysicianSpeciality;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Entity\Speciality;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -26,6 +26,12 @@ class PhysicianRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Physician::class, 'p')
+            ->leftJoin(
+                Speciality::class,
+                'sp',
+                Join::WITH,
+                'sp = p.speciality'
+            )
             ->leftJoin(
                 Salutation::class,
                 'sal',
@@ -61,6 +67,12 @@ class PhysicianRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Physician::class, 'p')
+            ->leftJoin(
+                Speciality::class,
+                'sp',
+                Join::WITH,
+                'sp = p.speciality'
+            )
             ->leftJoin(
                 Salutation::class,
                 'sal',

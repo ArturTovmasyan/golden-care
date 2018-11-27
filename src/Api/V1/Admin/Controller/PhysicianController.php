@@ -45,6 +45,7 @@ class PhysicianController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id                 The identifier of the physician
+     * @apiSuccess {String}  speciality         The speciality title of the physician
      * @apiSuccess {String}  salutation         The salutation title of the physician
      * @apiSuccess {String}  first_name         The First Name of the physician
      * @apiSuccess {String}  middle_name        The Middle Name of the physician
@@ -165,6 +166,10 @@ class PhysicianController extends BaseController
      * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
      * @apiSuccess {String}  email              The email address of the physician
      * @apiSuccess {String}  website_url        The website url of the physician
+     * @apiSuccess {Object}  space              The related space of the physician
+     * @apiSuccess {Object}  speciality         The related speciality of the physician
+     * @apiSuccess {Object}  salutation         The related salutation of the physician
+     * @apiSuccess {Object}  csz                The related cityStateZip of the physician
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -192,6 +197,10 @@ class PhysicianController extends BaseController
      *             "salutation": {
      *                 "id": 1,
      *                 "name": "Mr."
+     *             },
+     *             "speciality": {
+     *                 "id": 1,
+     *                 "name": "Doctor"
      *             },
      *             "csz": {
      *                 "id": 1,
@@ -245,6 +254,10 @@ class PhysicianController extends BaseController
      * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
      * @apiSuccess {String}  email              The email address of the physician
      * @apiSuccess {String}  website_url        The website url of the physician
+     * @apiSuccess {Object}  space              The related space of the physician
+     * @apiSuccess {Object}  speciality         The related speciality of the physician
+     * @apiSuccess {Object}  salutation         The related salutation of the physician
+     * @apiSuccess {Object}  csz                The related cityStateZip of the physician
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -366,7 +379,9 @@ class PhysicianController extends BaseController
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id')
+                'salutation_id'     => $request->get('salutation_id'),
+                'speciality_id'     => $request->get('speciality_id'),
+                'speciality'        => $request->get('speciality')
             ]
         );
 
@@ -454,7 +469,9 @@ class PhysicianController extends BaseController
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id')
+                'salutation_id'     => $request->get('salutation_id'),
+                'speciality_id'     => $request->get('speciality_id'),
+                'speciality'        => $request->get('speciality')
             ]
         );
 

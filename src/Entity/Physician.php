@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_physician_grid={
  *          {"id", "number", true, true, "p.id"},
+ *          {"speciality", "string", true, true, "sp.title"},
  *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
@@ -29,6 +30,7 @@ use JMS\Serializer\Annotation\Groups;
  *     },
  *     api_dashboard_physician_grid={
  *          {"id", "number", true, true, "p.id"},
+ *          {"speciality", "string", true, true, "sp.title"},
  *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
@@ -122,6 +124,27 @@ class Physician
      * })
      */
     private $csz;
+
+    /**
+     * @var Speciality
+     * @ORM\ManyToOne(targetEntity="Speciality", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_speciality", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Speciality", groups={
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
+     * })
+     * @Groups({
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get"
+     * })
+     */
+    private $speciality;
 
     /**
      * @var string
@@ -458,6 +481,22 @@ class Physician
     public function getCsz()
     {
         return $this->csz;
+    }
+
+    /**
+     * @return Speciality
+     */
+    public function getSpeciality(): Speciality
+    {
+        return $this->speciality;
+    }
+
+    /**
+     * @param Speciality $speciality
+     */
+    public function setSpeciality(Speciality $speciality): void
+    {
+        $this->speciality = $speciality;
     }
 
     /**
