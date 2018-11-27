@@ -15,11 +15,11 @@ use App\Annotation\Grid;
  * @ORM\Entity(repositoryClass="App\Repository\PhysicianSpecialityRepository")
  * @ORM\Table(name="tbl_physician_speciality")
  * @Grid(
- *     api_admin_physician_speciality_grid={
+ *      api_admin_physician_speciality_grid={
  *          {"id", "number", true, true, "ps.id"},
- *          {"title", "string", true, true, "ps.title"},
- *          {"space", "string", true, true, "s.name"}
- *     }
+ *          {"physician", "string", true, true, "CONCAT(p.firstName, ' ', p.lastName)"},
+ *          {"speciality", "string", true, true, "s.title"}
+ *      }
  * )
  */
 class PhysicianSpeciality
@@ -34,72 +34,91 @@ class PhysicianSpeciality
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_speciality_get"
      * })
      */
     private $id;
 
     /**
-     * @var string
-     * @Assert\NotBlank(groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"})
-     * @Assert\Length(
-     *      max = 255,
-     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"}
-     * )
-     * @ORM\Column(name="title", type="string", length=255)
-     * @Groups({
-     *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
-     * })
-     */
-    private $title;
-
-    /**
-     * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_physician_speciality_add", "api_admin_physician_speciality_edit"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @var Physician
+     * @ORM\ManyToOne(targetEntity="Physician")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Physician", groups={
+     *     "api_admin_physician_speciality_add",
+     *     "api_admin_physician_speciality_edit"
      * })
      * @Groups({"api_admin_physician_speciality_grid", "api_admin_physician_speciality_list", "api_admin_physician_speciality_get"})
      */
-    private $space;
+    private $physician;
 
+    /**
+     * @var Speciality
+     * @ORM\ManyToOne(targetEntity="Speciality", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_speciality", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Speciality", groups={
+     *     "api_admin_physician_speciality_add", 
+     *     "api_admin_physician_speciality_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_physician_speciality_add", 
+     *     "api_admin_physician_speciality_edit"
+     * })
+     * @Groups({
+     *     "api_admin_physician_speciality_list", 
+     *     "api_admin_physician_speciality_get"
+     * })
+     */
+    private $speciality;
+
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    public function getTitle(): ?string
+    /**
+     * @return Physician
+     */
+    public function getPhysician(): Physician
     {
-        return $this->title;
+        return $this->physician;
     }
 
-    public function setTitle(?string $title): void
+    /**
+     * @param Physician $physician
+     */
+    public function setPhysician(Physician $physician): void
     {
-        $title = preg_replace('/\s\s+/', ' ', $title);
-        $this->title = $title;
+        $this->physician = $physician;
     }
 
-    public function getSpace(): ?Space
+    /**
+     * @return Speciality
+     */
+    public function getSpeciality(): Speciality
     {
-        return $this->space;
+        return $this->speciality;
     }
 
-    public function setSpace(?Space $space): self
+    /**
+     * @param Speciality $speciality
+     */
+    public function setSpeciality(Speciality $speciality): void
     {
-        $this->space = $space;
-
-        return $this;
+        $this->speciality = $speciality;
     }
 }

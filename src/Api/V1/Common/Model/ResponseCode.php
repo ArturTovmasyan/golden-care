@@ -52,7 +52,7 @@ class ResponseCode
     const FILE_SYSTEM_EXCEPTION                                  = 645;
     const FOLDER_NOT_DEFINED_EXCEPTION                           = 646;
     const FILE_EXTENSION_NOT_SUPPORTED                           = 647;
-    const PHYSICIAN_SPECIALITY_NOT_FOUND_EXCEPTION               = 648;
+    const SPECIALITY_NOT_FOUND_EXCEPTION                         = 648;
     const RESIDENT_MEDICATION_ALLERGY_NOT_FOUND_EXCEPTION        = 649;
     const PHONE_SINGLE_PRIMARY_EXCEPTION                         = 650;
     const MEDICATION_NOT_SINGLE_EXCEPTION                        = 651;
@@ -66,6 +66,8 @@ class ResponseCode
     const RESIDENT_RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION        = 659;
     const RESIDENT_PHYSICIAN_NOT_FOUND_EXCEPTION                 = 660;
     const RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION              = 661;
+    const RESIDENT_PHYSICIAN_SPECIALITY_EXCEPTION_NOT_FOUND      = 662;
+    const PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       = 663;
 
     /**
      * @var array
@@ -113,7 +115,7 @@ class ResponseCode
         self::FILE_SYSTEM_EXCEPTION                                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File system not responded'],
         self::FOLDER_NOT_DEFINED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File system folder not defined or not writable'],
         self::FILE_EXTENSION_NOT_SUPPORTED                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File extension not supported'],
-        self::PHYSICIAN_SPECIALITY_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'PhysicianSpeciality not found'],
+        self::SPECIALITY_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Speciality not found'],
         self::RESIDENT_MEDICATION_ALLERGY_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentMedicationAllergy not found'],
         self::PHONE_SINGLE_PRIMARY_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Duplicate primary phone number'],
         self::MEDICATION_NOT_SINGLE_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medication not single'],
@@ -127,5 +129,7 @@ class ResponseCode
         self::RESIDENT_RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentResponsiblePerson not found'],
         self::RESIDENT_PHYSICIAN_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentPhysician not found'],
         self::RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident already have primary physician'],
+        self::RESIDENT_PHYSICIAN_SPECIALITY_EXCEPTION_NOT_FOUND      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident physician speciality not found'],
+        self::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Speciality duplicate request'],
     ];
 }

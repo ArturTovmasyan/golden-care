@@ -2,11 +2,14 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\DuplicateSpecialityRequestException;
+use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianSpecialityNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpecialityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Physician;
 use App\Entity\PhysicianSpeciality;
-use App\Entity\Space;
+use App\Entity\Speciality;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -22,11 +25,23 @@ class PhysicianSpecialityService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(PhysicianSpeciality::class)->search($queryBuilder);
+        if (!empty($params) && !empty($params[0]['physician_id'])) {
+            $physicianId = $params[0]['physician_id'];
+
+            $this->em->getRepository(PhysicianSpeciality::class)->findBy(['physician' => $physicianId]);
+        } else {
+            $this->em->getRepository(PhysicianSpeciality::class)->search($queryBuilder);
+        }
     }
 
     public function list($params)
     {
+        if (!empty($params) && !empty($params[0]['physician_id'])) {
+            $physicianId = $params[0]['physician_id'];
+
+            return $this->em->getRepository(PhysicianSpeciality::class)->findBy(['physician' => $physicianId]);
+        }
+
         return $this->em->getRepository(PhysicianSpeciality::class)->findAll();
     }
 
@@ -46,28 +61,53 @@ class PhysicianSpecialityService extends BaseService implements IGridService
     public function add(array $params) : void
     {
         try {
+            /**
+             * @var Physician $physician
+             * @var Speciality $speciality
+             */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
+            $physicianId = $params['physician_id'] ?? 0;
 
-            $space = null;
+            $physician = null;
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            if ($physicianId && $physicianId > 0) {
+                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
+                if (is_null($physician)) {
+                    throw new PhysicianNotFoundException();
+                }
+            }
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
+            $specialityId  = $params['speciality_id'];
+            $newSpeciality = $params['speciality'];
+
+            if ((empty($specialityId) && empty($newSpeciality)) || (!empty($specialityId) && !empty($newSpeciality))) {
+                throw new DuplicateSpecialityRequestException();
+            }
+
+            $speciality = null;
+
+            if (!empty($newSpeciality)) {
+                $speciality = new Speciality();
+                $speciality->setTitle($newSpeciality['title'] ?? '');
+            }
+
+            if (!empty($specialityId)) {
+                $speciality = $this->em->getRepository(Speciality::class)->find($specialityId);
+
+                if (is_null($speciality)) {
+                    throw new SpecialityNotFoundException();
                 }
             }
 
             $physicianSpeciality = new PhysicianSpeciality();
-            $physicianSpeciality->setTitle($params['title']);
-            $physicianSpeciality->setSpace($space);
+            $physicianSpeciality->setPhysician($physician);
+            $physicianSpeciality->setSpeciality($speciality);
 
             $this->validate($physicianSpeciality, null, ['api_admin_physician_speciality_add']);
 
+            $this->em->persist($speciality);
             $this->em->persist($physicianSpeciality);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -86,35 +126,58 @@ class PhysicianSpecialityService extends BaseService implements IGridService
     public function edit($id, array $params) : void
     {
         try {
-
+            /**
+             * @var PhysicianSpeciality $entity
+             * @var Speciality $speciality
+             * @var Physician $physician
+             */
             $this->em->getConnection()->beginTransaction();
 
-            /** @var PhysicianSpeciality $entity */
             $entity = $this->em->getRepository(PhysicianSpeciality::class)->find($id);
 
-            if ($entity === null) {
+            if (is_null($entity)) {
                 throw new PhysicianSpecialityNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
+            $physicianId = $params['physician_id'] ?? 0;
+            $physician   = null;
 
-            $space = null;
+            if ($physicianId && $physicianId > 0) {
+                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
+                if ($physician === null) {
+                    throw new PhysicianNotFoundException();
                 }
             }
 
-            $entity->setTitle($params['title']);
-            $entity->setSpace($space);
+            $specialityId  = $params['speciality_id'];
+            $newSpeciality = $params['speciality'];
+
+            if ((empty($specialityId) && empty($newSpeciality)) || (!empty($specialityId) && !empty($newSpeciality))) {
+                throw new DuplicateSpecialityRequestException();
+            }
+
+            $speciality = null;
+
+            if (!empty($newSpeciality)) {
+                $speciality = new Speciality();
+                $speciality->setTitle($newSpeciality['title'] ?? '');
+            }
+
+            if (!empty($specialityId)) {
+                $speciality = $this->em->getRepository(Speciality::class)->find($specialityId);
+
+                if (is_null($speciality)) {
+                    throw new SpecialityNotFoundException();
+                }
+            }
+
+            $entity->setPhysician($physician);
+            $entity->setSpeciality($speciality);
 
             $this->validate($entity, null, ['api_admin_physician_speciality_edit']);
 
+            $this->em->persist($speciality);
             $this->em->persist($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -164,19 +227,19 @@ class PhysicianSpecialityService extends BaseService implements IGridService
                 throw new PhysicianSpecialityNotFoundException();
             }
 
-            $physicianSpecialities = $this->em->getRepository(PhysicianSpeciality::class)->findByIds($ids);
+            $entities = $this->em->getRepository(PhysicianSpeciality::class)->findByIds($ids);
 
-            if (empty($physicianSpecialities)) {
+            if (empty($entities)) {
                 throw new PhysicianSpecialityNotFoundException();
             }
 
             /**
-             * @var PhysicianSpeciality $physicianSpeciality
+             * @var PhysicianSpeciality $entity
              */
             $this->em->getConnection()->beginTransaction();
 
-            foreach ($physicianSpecialities as $physicianSpeciality) {
-                $this->em->remove($physicianSpeciality);
+            foreach ($entities as $entity) {
+                $this->em->remove($entity);
             }
 
             $this->em->flush();

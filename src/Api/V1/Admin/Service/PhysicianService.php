@@ -80,7 +80,6 @@ class PhysicianService extends BaseService implements IGridService
             $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
             $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
-            $speciality = $this->em->getRepository(PhysicianSpeciality::class)->find($params['speciality_id']);
 
             if (is_null($space)) {
                 throw new SpaceNotFoundException();
@@ -92,10 +91,6 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($salutation)) {
                 throw new SalutationNotFoundException();
-            }
-
-            if (is_null($speciality)) {
-                throw new PhysicianSpecialityNotFoundException();
             }
 
             // save physician
@@ -148,7 +143,6 @@ class PhysicianService extends BaseService implements IGridService
             $physician  = $this->em->getRepository(Physician::class)->find($id);
             $csz        = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->find($params['salutation_id']);
-            $speciality = $this->em->getRepository(PhysicianSpeciality::class)->find($params['speciality_id']);
 
             if (is_null($physician)) {
                 throw new PhysicianNotFoundException();
@@ -164,10 +158,6 @@ class PhysicianService extends BaseService implements IGridService
 
             if (is_null($salutation)) {
                 throw new SalutationNotFoundException();
-            }
-
-            if (is_null($speciality)) {
-                throw new PhysicianSpecialityNotFoundException();
             }
 
             // edit physician

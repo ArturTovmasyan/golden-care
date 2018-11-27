@@ -238,9 +238,9 @@ class ResidentAllergenController extends BaseController
      *          "resident_id": 1,
      *          "allergen_id": 1,
      *          "allergen": {
-     *                          "title": "Lidocaine",
-     *                          "description": "some description"
-     *                        },
+     *               "title": "Lidocaine",
+     *               "description": "some description"
+     *          },
      *          "notes": "some notes"
      *     }
      * @apiSuccessExample {json} Sample Response:

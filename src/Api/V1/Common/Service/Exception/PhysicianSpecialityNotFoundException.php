@@ -11,6 +11,6 @@ class PhysicianSpecialityNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PHYSICIAN_SPECIALITY_NOT_FOUND_EXCEPTION);
+        parent::__construct('', ResponseCode::RESIDENT_PHYSICIAN_SPECIALITY_EXCEPTION_NOT_FOUND);
     }
 }

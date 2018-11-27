@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Physician;
 use App\Entity\PhysicianSpeciality;
-use App\Entity\Space;
+use App\Entity\ResidentAllergen;
+use App\Entity\Speciality;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -23,10 +25,16 @@ class PhysicianSpecialityRepository extends EntityRepository
         $queryBuilder
             ->from(PhysicianSpeciality::class, 'ps')
             ->leftJoin(
-                Space::class,
+                Physician::class,
+                'p',
+                Join::WITH,
+                'p = ps.physician'
+            )
+            ->leftJoin(
+                Speciality::class,
                 's',
                 Join::WITH,
-                's = ps.space'
+                's = ps.speciality'
             )
             ->groupBy('ps.id');
     }

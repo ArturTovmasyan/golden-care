@@ -32,18 +32,18 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class PhysicianSpecialityController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/physician/speciality/grid Get PhysicianSpecialities Grid
+     * @api {get} /api/v1.0/admin/physician/speciality/grid Get PhysicianSpeciality Grid
      * @apiVersion 1.0.0
-     * @apiName Get PhysicianSpecialities Grid
+     * @apiName Get PhysicianSpeciality Grid
      * @apiGroup Admin Physician Specialities
      * @apiDescription This function is used to listing physicianSpecialities
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}      id             The unique identifier of the physicianSpeciality
-     * @apiSuccess {Object}   space          The space of the physicianSpeciality
-     * @apiSuccess {String}   title          The title of the physicianSpeciality
+     * @apiSuccess {Int}      id          The unique identifier of the physicianSpeciality
+     * @apiSuccess {Object}   physician   The resident of the physicianSpeciality
+     * @apiSuccess {Object}   speciality  The allergen of the physicianSpeciality
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -54,9 +54,9 @@ class PhysicianSpecialityController extends BaseController
      *          "total": 5,
      *          "data": [
      *              {
-     *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": "alms"
+     *                   "id": 1,
+     *                   "physician": "Joe Cole",
+     *                   "speciality": "Doctor"
      *              }
      *          ]
      *     }
@@ -74,7 +74,8 @@ class PhysicianSpecialityController extends BaseController
             $request,
             PhysicianSpeciality::class,
             'api_admin_physician_speciality_grid',
-            $physicianSpecialityService
+            $physicianSpecialityService,
+            ['physician_id' => $request->get('physician_id')]
         );
     }
 
@@ -124,28 +125,26 @@ class PhysicianSpecialityController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}      id             The unique identifier of the physicianSpeciality
-     * @apiSuccess {Object}   space          The space of the physicianSpeciality
-     * @apiSuccess {String}   title          The title of the physicianSpeciality
+     * @apiSuccess {Int}      id                   The unique identifier of the physicianSpeciality
+     * @apiSuccess {Object}   physician            The physician of the physicianSpeciality
+     * @apiSuccess {Object}   speciality           The speciality of the physicianSpeciality
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
+     *     [
      *              {
      *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": {
+     *                  "physician": {
      *                      "id": 1,
-     *                      "name": "alms"
+     *                      "first_name": "Joe",
+     *                      "last_name": "Cole"
+     *                  },
+     *                  "speciality": {
+     *                      "id": 1,
+     *                      "title": "Doctor"
      *                  }
      *              }
-     *          ]
-     *     }
+     *     ]
      *
      * @Route("", name="api_admin_physician_speciality_list", methods={"GET"})
      *
@@ -161,7 +160,7 @@ class PhysicianSpecialityController extends BaseController
             PhysicianSpeciality::class,
             'api_admin_physician_speciality_list',
             $physicianSpecialityService,
-            ['space_id' => $request->get('space_id')]
+            ['physician_id' => $request->get('physician_id')]
         );
     }
 
@@ -175,19 +174,23 @@ class PhysicianSpecialityController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}      id             The unique identifier of the physicianSpeciality
-     * @apiSuccess {Object}   space          The space of the physicianSpeciality
-     * @apiSuccess {String}   title          The title of the physicianSpeciality
+     * @apiSuccess {Int}      id                   The unique identifier of the physicianSpeciality
+     * @apiSuccess {Object}   physician            The physician of the physicianSpeciality
+     * @apiSuccess {Object}   speciality           The speciality of the physicianSpeciality
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
      *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": {
+     *                  "physician": {
      *                      "id": 1,
-     *                      "name": "alms"
+     *                      "first_name": "Joe",
+     *                      "last_name": "Cole"
+     *                  },
+     *                  "speciality": {
+     *                      "id": 1,
+     *                      "title": "Doctor"
      *                  }
      *          }
      *     }
@@ -218,13 +221,17 @@ class PhysicianSpecialityController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int}     space_id     The unique identifier of the space
-     * @apiParam {String}  title        The number of the physicianSpeciality
+     * @apiParam {Int}     physician_id          The unique identifier of the resident
+     * @apiParam {Int}     speciality_id         The unique identifier of the speciality in select mode
+     * @apiParam {Object}  speciality            The new speciality in add new mode
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *          "space_id": 1,
-     *          "title": "Speciality1"
+     *          "physician_id": 1,
+     *          "speciality_id": 1,
+     *          "speciality": {
+     *               "title": "Doctor"
+     *          }
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -235,7 +242,7 @@ class PhysicianSpecialityController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "title": "Sorry, this value not be blank."
+     *              "speciality_id": "Sorry, this value not be blank."
      *          }
      *     }
      *
@@ -250,8 +257,9 @@ class PhysicianSpecialityController extends BaseController
     {
         $physicianSpecialityService->add(
             [
-                'space_id' => $request->get('space_id'),
-                'title' => $request->get('title')
+                'physician_id'  => $request->get('physician_id'),
+                'speciality_id' => $request->get('speciality_id'),
+                'speciality'    => $request->get('speciality')
             ]
         );
 
@@ -270,13 +278,17 @@ class PhysicianSpecialityController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int}     space_id     The unique identifier of the space
-     * @apiParam {String}  title        The number of the physicianSpeciality
+     * @apiParam {Int}     physician_id          The unique identifier of the physician
+     * @apiParam {Int}     speciality_id         The unique identifier of the speciality in select mode
+     * @apiParam {Object}  speciality            The new speciality in add new mode
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *          "space_id": 1,
-     *          "title": "Speciality1"
+     *          "physician_id": 1,
+     *          "speciality_id": 1,
+     *          "speciality": {
+     *               "title": "Doctor"
+     *          }
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -287,7 +299,7 @@ class PhysicianSpecialityController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "title": "Sorry, this value not be blank."
+     *              "speciality_id": "Sorry, this value not be blank."
      *          }
      *     }
      *
@@ -304,8 +316,9 @@ class PhysicianSpecialityController extends BaseController
         $physicianSpecialityService->edit(
             $id,
             [
-                'space_id' => $request->get('space_id'),
-                'title' => $request->get('title')
+                'physician_id'  => $request->get('physician_id'),
+                'speciality_id' => $request->get('speciality_id'),
+                'speciality'    => $request->get('speciality')
             ]
         );
 

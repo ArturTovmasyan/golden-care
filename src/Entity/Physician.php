@@ -13,7 +13,6 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_physician_grid={
  *          {"id", "number", true, true, "p.id"},
- *          {"speciality", "string", true, true, "spec.title"},
  *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
@@ -30,7 +29,6 @@ use JMS\Serializer\Annotation\Groups;
  *     },
  *     api_dashboard_physician_grid={
  *          {"id", "number", true, true, "p.id"},
- *          {"speciality", "string", true, true, "spec.title"},
  *          {"salutation", "string", true, true, "sal.title"},
  *          {"first_name", "string", true, true, "p.firstName"},
  *          {"middle_name", "string", true, true, "p.middleName"},
@@ -64,7 +62,9 @@ class Physician
      *     "api_admin_resident_medication_list",
      *     "api_admin_resident_medication_get",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_admin_physician_speciality_list",
+     *     "api_admin_physician_speciality_get"
      * })
      */
     private $id;
@@ -84,28 +84,6 @@ class Physician
      * })
      */
     private $space;
-
-    /**
-     * @var PhysicianSpeciality
-     * @Assert\NotNull(
-     *      message = "Please select a Facility",
-     *      groups={
-     *          "api_dashboard_physician_add",
-     *          "api_dashboard_physician_edit",
-     *          "api_admin_physician_add",
-     *          "api_admin_physician_edit"
-     *      }
-     * )
-     * @ORM\ManyToOne(targetEntity="PhysicianSpeciality")
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_physician_speciality", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     * @Groups({
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
-     * })
-     */
-    private $speciality;
 
     /**
      * @var Salutation
@@ -160,7 +138,9 @@ class Physician
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_admin_physician_speciality_list",
+     *     "api_admin_physician_speciality_get"
      * })
      */
     private $firstName;
@@ -180,7 +160,9 @@ class Physician
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_admin_physician_speciality_list",
+     *     "api_admin_physician_speciality_get"
      * })
      */
     private $lastName;
@@ -348,22 +330,6 @@ class Physician
     public function setSpace($space): void
     {
         $this->space = $space;
-    }
-
-    /**
-     * @return PhysicianSpeciality
-     */
-    public function getSpeciality(): PhysicianSpeciality
-    {
-        return $this->speciality;
-    }
-
-    /**
-     * @param PhysicianSpeciality $speciality
-     */
-    public function setSpeciality(PhysicianSpeciality $speciality): void
-    {
-        $this->speciality = $speciality;
     }
 
     /**

@@ -44,12 +44,6 @@ class PhysicianRepository extends EntityRepository
                 Join::WITH,
                 'csz = p.csz'
             )
-            ->leftJoin(
-                PhysicianSpeciality::class,
-                'spec',
-                Join::WITH,
-                'spec = p.speciality'
-            )
             ->groupBy('p.id');
 
         if ($spaceId) {
@@ -78,12 +72,6 @@ class PhysicianRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'csz = p.csz'
-            )
-            ->leftJoin(
-                PhysicianSpeciality::class,
-                'spec',
-                Join::WITH,
-                'spec = p.speciality'
             )
             ->where('p.space = :space')
             ->setParameter('space', $space)
