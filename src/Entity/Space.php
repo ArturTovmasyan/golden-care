@@ -57,7 +57,9 @@ class Space
      *     "api_admin_physician_speciality_get",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
      * })
      */
     private $id;
@@ -86,7 +88,9 @@ class Space
      *     "api_admin_region_list",
      *     "api_admin_region_get",
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */
