@@ -69,6 +69,7 @@ class ResponseCode
     const RESIDENT_PHYSICIAN_SPECIALITY_EXCEPTION_NOT_FOUND      = 662;
     const PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       = 663;
     const PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     = 664;
+    const ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                = 665;
 
     /**
      * @var array
@@ -133,5 +134,6 @@ class ResponseCode
         self::RESIDENT_PHYSICIAN_SPECIALITY_EXCEPTION_NOT_FOUND      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident physician speciality not found'],
         self::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Speciality duplicate request'],
         self::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'PaymentSource not found'],
+        self::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment category not found'],
     ];
 }
