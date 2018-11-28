@@ -78,6 +78,7 @@ class ResidentMedicalHistoryCondition
 
     /**
      * @var \DateTime
+     * @Assert\NotBlank(groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
      * @Assert\DateTime(groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
      * @ORM\Column(name="date", type="datetime")
      * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
@@ -161,7 +162,7 @@ class ResidentMedicalHistoryCondition
     /**
      * @param \DateTime $date
      */
-    public function setDate(\DateTime $date): void
+    public function setDate($date): void
     {
         $this->date = $date;
     }

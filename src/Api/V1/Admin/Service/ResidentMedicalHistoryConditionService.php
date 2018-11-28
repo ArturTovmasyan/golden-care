@@ -107,8 +107,12 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
             $residentMedicalHistoryCondition->setResident($resident);
             $residentMedicalHistoryCondition->setCondition($medicalHistoryCondition);
 
-            $date = new \DateTime($params['date']);
-            $date->setTime(0, 0, 0);
+            $date = $params['date'];
+
+            if (!empty($date)) {
+                $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+            }
 
             $residentMedicalHistoryCondition->setDate($date);
             $residentMedicalHistoryCondition->setNotes($params['notes']);
