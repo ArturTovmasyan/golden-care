@@ -41,8 +41,7 @@ class Row
      *     }
      * )
      * @Groups({
-     *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_list"
      * })
      */
     private $category;
