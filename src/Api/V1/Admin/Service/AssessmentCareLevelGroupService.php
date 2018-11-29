@@ -2,10 +2,12 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\AssessmentCareLevelGroupNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Allergen;
+use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Row;
 use App\Entity\Space;
@@ -15,7 +17,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class AssessmentCategoryService
  * @package App\Api\V1\Admin\Service
  */
-class AssessmentCategoryService extends BaseService implements IGridService
+class AssessmentCareLevelGroupService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -24,12 +26,12 @@ class AssessmentCategoryService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Category::class)->search($queryBuilder);
+        $this->em->getRepository(CareLevelGroup::class)->search($queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Category::class)->findAll();
+        return $this->em->getRepository(CareLevelGroup::class)->findAll();
     }
 
     /**
@@ -38,7 +40,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Category::class)->find($id);
+        return $this->em->getRepository(CareLevelGroup::class)->find($id);
     }
 
     /**
@@ -66,25 +68,12 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 }
             }
 
-            $category = new Category();
-            $category->setTitle($params['title']);
-            $category->setSpace($space);
-            $category->setMultiItem($params['multi_item'] ? true : false);
+            $careLevelGroup = new CareLevelGroup();
+            $careLevelGroup->setTitle($params['title']);
+            $careLevelGroup->setSpace($space);
 
-            $this->validate($category, null, ['api_admin_assessment_category_add']);
-            $this->em->persist($category);
-
-            if (!empty($params['rows'])) {
-                foreach ($params['rows'] as $row) {
-                    $entity = new Row();
-                    $entity->setTitle($row['title'] ?? '');
-                    $entity->setScore($row['score'] ?? 0);
-                    $entity->setCategory($category);
-
-                    $this->validate($entity, null, ['api_admin_assessment_row_add']);
-                    $this->em->persist($entity);
-                }
-            }
+            $this->validate($careLevelGroup, null, ['api_admin_assessment_care_level_group_add']);
+            $this->em->persist($careLevelGroup);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -104,7 +93,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
     {
         try {
             /**
-             * @var Category $category
+             * @var CareLevelGroup $careLevelGroup
              * @var Row $row
              * @var Space $space
              */
@@ -121,41 +110,17 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 }
             }
 
-            $category = $this->em->getRepository(Category::class)->find($id);
+            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->find($id);
 
-            if (is_null($category)) {
-                throw new AssessmentCategoryNotFoundException();
+            if (is_null($careLevelGroup)) {
+                throw new AssessmentCareLevelGroupNotFoundException();
             }
 
-            $category->setTitle($params['title']);
-            $category->setSpace($space);
-            $category->setMultiItem($params['multi_item'] ? true : false);
+            $careLevelGroup->setTitle($params['title']);
+            $careLevelGroup->setSpace($space);
 
-            $this->validate($category, null, ['api_admin_assessment_category_edit']);
-            $this->em->persist($category);
-
-            // remove old rows
-            $rows = $category->getRows();
-
-            if (!empty($rows)) {
-                foreach ($rows as $row) {
-                    $category->removeRow($row);
-                    $this->em->remove($row);
-                }
-            }
-
-            // create new rows
-            if (!empty($params['rows'])) {
-                foreach ($params['rows'] as $row) {
-                    $entity = new Row();
-                    $entity->setTitle($row['title'] ?? '');
-                    $entity->setScore($row['score'] ?? 0);
-                    $entity->setCategory($category);
-
-                    $this->validate($entity, null, ['api_admin_assessment_row_add']);
-                    $this->em->persist($entity);
-                }
-            }
+            $this->validate($careLevelGroup, null, ['api_admin_assessment_care_level_group_edit']);
+            $this->em->persist($careLevelGroup);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -176,14 +141,14 @@ class AssessmentCategoryService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var Category $category */
-            $Category = $this->em->getRepository(Category::class)->find($id);
+            /** @var CareLevelGroup $careLevelGroup */
+            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->find($id);
 
-            if (is_null($Category)) {
-                throw new AssessmentCategoryNotFoundException();
+            if (is_null($careLevelGroup)) {
+                throw new AssessmentCareLevelGroupNotFoundException();
             }
 
-            $this->em->remove($Category);
+            $this->em->remove($careLevelGroup);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
@@ -202,33 +167,27 @@ class AssessmentCategoryService extends BaseService implements IGridService
     {
         try {
             if (empty($ids)) {
-                throw new AssessmentCategoryNotFoundException();
+                throw new AssessmentCareLevelGroupNotFoundException();
             }
 
-            $categories = $this->em->getRepository(Category::class)->findByIds($ids);
+            $careLevelGroups = $this->em->getRepository(CareLevelGroup::class)->findByIds($ids);
 
-            if (empty($categories)) {
-                throw new AssessmentCategoryNotFoundException();
+            if (empty($careLevelGroups)) {
+                throw new AssessmentCareLevelGroupNotFoundException();
             }
 
             /**
-             * @var Category $category
+             * @var CareLevelGroup $careLevelGroup
              */
             $this->em->getConnection()->beginTransaction();
 
-            foreach ($categories as $category) {
-                $rows = $category->getRows();
-
-                foreach ($rows as $row) {
-                    $this->em->remove($row);
-                }
-
-                $this->em->remove($category);
+            foreach ($careLevelGroups as $careLevelGroup) {
+                $this->em->remove($careLevelGroup);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch(AssessmentCategoryNotFoundException $e) {
+        } catch(AssessmentCareLevelGroupNotFoundException $e) {
             throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();

@@ -247,7 +247,7 @@ class AssessmentCategoryController extends BaseController
             [
                 'title'      => $request->get('title'),
                 'space_id'   => $request->get('space_id'),
-                'multi_item' => $request->get('multi_item') ? true : false,
+                'multi_item' => $request->get('multi_item'),
                 'rows'       => $request->get('rows')
             ]
         );
@@ -312,7 +312,7 @@ class AssessmentCategoryController extends BaseController
             [
                 'title'      => $request->get('title'),
                 'space_id'   => $request->get('space_id'),
-                'multi_item' => $request->get('multi_item') ? true : false,
+                'multi_item' => $request->get('multi_item'),
                 'rows'       => $request->get('rows')
             ]
         );

@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Assessment;
 
 use App\Entity\Assessment\Category;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class AssessmentCategoryRepository
+ * Class CategoryRepository
  * @package App\Repository
  */
-class AssessmentCategoryRepository extends EntityRepository
+class CategoryRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder

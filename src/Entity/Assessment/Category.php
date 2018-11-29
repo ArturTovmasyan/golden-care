@@ -13,12 +13,12 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 
 /**
  * @ORM\Table(name="tbl_assessment_category")
- * @ORM\Entity(repositoryClass="App\Repository\AssessmentCategoryRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Assessment\CategoryRepository")
  * @Grid(
  *     api_admin_assessment_category_grid={
  *          {"id", "number", true, true, "ac.id"},
  *          {"title", "string", true, true, "ac.title"},
- *          {"multi_item", "string", true, true, "ac.multiItem"}
+ *          {"multi_item", "number", true, true, "ac.multiItem"}
  *     }
  * )
  */
@@ -52,7 +52,6 @@ class Category
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
     private $space;
 

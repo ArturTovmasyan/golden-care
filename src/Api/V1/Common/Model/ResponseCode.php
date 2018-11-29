@@ -70,6 +70,7 @@ class ResponseCode
     const PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       = 663;
     const PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     = 664;
     const ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                = 665;
+    const ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        = 666;
 
     /**
      * @var array
@@ -135,5 +136,6 @@ class ResponseCode
         self::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Speciality duplicate request'],
         self::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'PaymentSource not found'],
         self::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment category not found'],
+        self::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level group not found'],
     ];
 }
