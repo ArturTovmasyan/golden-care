@@ -61,7 +61,13 @@ class Space
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_assessment_category_list",
+     *     "api_admin_assessment_category_get",
+     *     "api_admin_assessment_care_level_list",
+     *     "api_admin_assessment_care_level_get",
+     *     "api_admin_assessment_care_level_group_list",
+     *     "api_admin_assessment_care_level_group_get"
      * })
      */
     private $id;

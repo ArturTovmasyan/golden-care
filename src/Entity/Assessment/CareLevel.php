@@ -55,6 +55,10 @@ class CareLevel
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
+     * @Groups({
+     *      "api_admin_assessment_care_level_list",
+     *      "api_admin_assessment_care_level_get"
+     * })
      */
     private $space;
 

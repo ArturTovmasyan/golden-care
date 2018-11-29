@@ -52,6 +52,10 @@ class Category
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
+     * @Groups({
+     *      "api_admin_assessment_category_list",
+     *      "api_admin_assessment_category_get"
+     * })
      */
     private $space;
 

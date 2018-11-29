@@ -4,6 +4,7 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Annotation\Grid;
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -215,14 +216,16 @@ class BaseController extends Controller
      */
     protected function getOptionsByGroupName(string $entityName, string $groupName)
     {
-        return new JsonResponse(
-            $this->get('jms_serializer')->serialize(
-                $this->getGrid($entityName)->getGroupOptions($groupName),
-                'json'
-            ),
+        $options = $this->getGrid($entityName)->getGroupOptions($groupName);
+
+        if(!$options) {
+            throw new GridOptionsNotFoundException();
+        }
+
+        return $this->respondSuccess(
             Response::HTTP_OK,
-            [],
-            true
+            '',
+            $options
         );
     }
 

@@ -74,6 +74,7 @@ class ResponseCode
     const RESIDENT_RENT_NOT_FOUND_EXCEPTION                      = 667;
     const RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 = 668;
     const ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              = 669;
+    const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
 
     /**
      * @var array
@@ -143,5 +144,7 @@ class ResponseCode
         self::RESIDENT_RENT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentRent not found'],
         self::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Cannot post a Resident Rent with a negative Remaining total'],
         self::ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level not found'],
+
+        self::GRID_OPTIONS_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Grid options not found'],
     ];
 }

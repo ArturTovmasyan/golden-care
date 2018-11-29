@@ -4,7 +4,6 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\AssessmentCareLevelService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\CareLevel;
-use App\Entity\Assessment\CareLevelGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +36,7 @@ class AssessmentCareLevelController extends BaseController
      * @apiVersion 1.0.0
      * @apiName Get AssessmentCareLevel Grid
      * @apiGroup Admin AssessmentCareLevel
-     * @apiDescription This function is used to listing assessmentCareLevelGroups
+     * @apiDescription This function is used to listing assessmentCareLevels
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -115,7 +114,7 @@ class AssessmentCareLevelController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(CareLevelGroup::class, 'api_admin_assessment_care_level_grid');
+        return $this->getOptionsByGroupName(CareLevel::class, 'api_admin_assessment_care_level_grid');
     }
 
     /**
@@ -157,7 +156,7 @@ class AssessmentCareLevelController extends BaseController
     {
         return $this->respondList(
             $request,
-            CareLevelGroup::class,
+            CareLevel::class,
             'api_admin_assessment_care_level_list',
             $careLevelService
         );
