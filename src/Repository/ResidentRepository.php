@@ -44,12 +44,6 @@ class ResidentRepository extends EntityRepository
                 Join::WITH,
                 's = r.space'
             )
-            ->leftJoin(
-                Physician::class,
-                'p',
-                Join::WITH,
-                'p = r.physician'
-            )
             ->groupBy('r.id');
     }
 

@@ -363,7 +363,7 @@ class ResidentController extends BaseController
      *          "option": [
      *              "date_admitted": "12-24-2016"
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,
@@ -394,7 +394,7 @@ class ResidentController extends BaseController
      *              "csz_id": 1,
      *              "street_address": "Alaverdyan str"
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,
@@ -441,7 +441,7 @@ class ResidentController extends BaseController
                 'gender'        => $request->get('gender'),
                 'photo'         => $request->get('photo'),
                 'option'        => $request->get('option'),
-                'phone'         => $request->get('phone'),
+                'phones'        => $request->get('phones'),
             ]
         );
 
@@ -480,7 +480,7 @@ class ResidentController extends BaseController
      *              "ambulatory": 1,
      *              "polst": 1
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,
@@ -501,7 +501,7 @@ class ResidentController extends BaseController
      *          "option": [
      *              "date_admitted": "12-24-2016"
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,
@@ -530,7 +530,7 @@ class ResidentController extends BaseController
      *              "csz_id": 1,
      *              "street_address": "Alaverdyan str"
      *          ],
-     *          "phone": [
+     *          "phones": [
      *              {
      *                  "compatibility": 1,
      *                  "type": 1,
@@ -579,7 +579,7 @@ class ResidentController extends BaseController
                 'gender'        => $request->get('gender'),
                 'photo'         => $request->get('photo'),
                 'option'        => $request->get('option'),
-                'phone'         => $request->get('phone'),
+                'phones'        => $request->get('phones'),
             ]
         );
 

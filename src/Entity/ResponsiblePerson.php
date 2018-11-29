@@ -109,10 +109,6 @@ class ResponsiblePerson
      * @var string
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_responsible_person_edit",
-     *     "api_admin_responsible_person_add"
-     * })
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",

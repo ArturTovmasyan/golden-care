@@ -347,7 +347,7 @@ class ResponsiblePersonController extends BaseController
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'phone'             => $request->get('phone')
+                'phones'            => $request->get('phones')
             ]
         );
 
@@ -429,7 +429,7 @@ class ResponsiblePersonController extends BaseController
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'phone'             => $request->get('phone')
+                'phones'            => $request->get('phones')
             ]
         );
 

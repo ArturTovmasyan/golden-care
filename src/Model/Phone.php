@@ -46,21 +46,21 @@ class Phone
      * @var array
      */
     private static $compatibleValues = [
-        self::US_COMPATIBLE => '1',
-        self::WW_COMPATIBLE => '2',
+        self::US_COMPATIBLE,
+        self::WW_COMPATIBLE,
     ];
 
     /**
      * @var array
      */
     private static $typeValues = [
-        self::TYPE_HOME      => '1',
-        self::TYPE_MOBILE    => '2',
-        self::TYPE_WORK      => '3',
-        self::TYPE_OFFICE    => '4',
-        self::TYPE_EMERGENCY => '5',
-        self::TYPE_FAX       => '6',
-        self::TYPE_ROOM      => '7'
+        self::TYPE_HOME,
+        self::TYPE_MOBILE,
+        self::TYPE_WORK,
+        self::TYPE_OFFICE,
+        self::TYPE_EMERGENCY,
+        self::TYPE_FAX,
+        self::TYPE_ROOM
     ];
 
     /**

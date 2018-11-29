@@ -168,7 +168,7 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($option);
 
             // save phone numbers
-            $this->savePhones($resident, $params['phone'] ?? []);
+            $this->savePhones($resident, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -253,7 +253,7 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($option);
 
             // save phone numbers
-            $this->savePhones($resident, $params['phone'] ?? []);
+            $this->savePhones($resident, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -286,9 +286,9 @@ class ResidentService extends BaseService implements IGridService
         foreach($phones as $phone) {
             $residentPhone = new ResidentPhone();
             $residentPhone->setResident($resident);
-            $residentPhone->setCompatibility($phone['compatibility'] ?? 0);
-            $residentPhone->setType($phone['type'] ?? 0);
-            $residentPhone->setNumber($phone['number'] ?? 0);
+            $residentPhone->setCompatibility($phone['compatibility'] ?? null);
+            $residentPhone->setType($phone['type']);
+            $residentPhone->setNumber($phone['number']);
             $residentPhone->setPrimary((bool) $phone['primary'] ?? false);
             $residentPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
 

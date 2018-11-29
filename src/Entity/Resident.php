@@ -23,7 +23,6 @@ use JMS\Serializer\Annotation as Serializer;
  *          {"last_name",  "string", true, true, "r.lastName"},
  *          {"middle_name","string", true, true, "r.middleName"},
  *          {"space","string", true, true, "s.name"},
- *          {"physician_id","string", true, true, "p.id"},
  *          {"gender","number", true, true, "r.gender"},
  *          {"birthday","number", true, true, "r.birthday"},
  *     }

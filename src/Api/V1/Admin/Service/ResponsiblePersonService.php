@@ -127,7 +127,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $this->em->persist($responsiblePerson);
 
             // save phone numbers
-            $this->savePhones($responsiblePerson, $params['phone'] ?? []);
+            $this->savePhones($responsiblePerson, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -207,7 +207,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $this->em->persist($responsiblePerson);
 
             // save phone numbers
-            $this->savePhones($responsiblePerson, $params['phone'] ?? []);
+            $this->savePhones($responsiblePerson, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -239,12 +239,12 @@ class ResponsiblePersonService extends BaseService implements IGridService
         foreach($phones as $phone) {
             $responsiblePersonPhone = new ResponsiblePersonPhone();
             $responsiblePersonPhone->setResponsiblePerson($responsiblePerson);
-            $responsiblePersonPhone->setCompatibility($phone['compatibility'] ?? 0);
-            $responsiblePersonPhone->setType($phone['type'] ?? 0);
-            $responsiblePersonPhone->setNumber($phone['number'] ?? 0);
+            $responsiblePersonPhone->setCompatibility($phone['compatibility'] ?? null);
+            $responsiblePersonPhone->setType($phone['type']);
+            $responsiblePersonPhone->setNumber($phone['number']);
             $responsiblePersonPhone->setPrimary((bool) $phone['primary'] ?? false);
             $responsiblePersonPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
-            $responsiblePersonPhone->setExtension($phone['extension'] ?? '');
+            $responsiblePersonPhone->setExtension($phone['extension']);
 
             if ($responsiblePersonPhone->isPrimary()) {
                 if ($hasPrimary) {
