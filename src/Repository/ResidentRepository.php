@@ -6,7 +6,6 @@ use App\Entity\Apartment;
 use App\Entity\ApartmentRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityRoom;
-use App\Entity\Physician;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentApartmentOption;

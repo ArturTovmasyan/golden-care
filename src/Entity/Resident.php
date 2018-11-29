@@ -57,7 +57,9 @@ class Resident
      *      "api_admin_resident_responsible_person_list",
      *      "api_admin_resident_responsible_person_get",
      *      "api_admin_resident_physician_list",
-     *      "api_admin_resident_physician_get"
+     *      "api_admin_resident_physician_get",
+     *      "api_admin_resident_rent_list",
+     *      "api_admin_resident_rent_get"
      * })
      */
     private $id;
