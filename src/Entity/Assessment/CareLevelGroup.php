@@ -35,7 +35,9 @@ class CareLevelGroup
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_care_level_group_list",
-     *     "api_admin_assessment_care_level_group_get"
+     *     "api_admin_assessment_care_level_group_get",
+     *     "api_admin_assessment_care_level_list",
+     *     "api_admin_assessment_care_level_get"
      * })
      */
     private $id;
@@ -67,10 +69,12 @@ class CareLevelGroup
      *          "api_admin_assessment_care_level_group_add"
      *      }
      * )
-     * @ORM\Column(name="title", type="string", unique=true, length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_assessment_care_level_group_list",
-     *     "api_admin_assessment_care_level_group_get"
+     *     "api_admin_assessment_care_level_group_get",
+     *     "api_admin_assessment_care_level_list",
+     *     "api_admin_assessment_care_level_get"
      * })
      */
     private $title;

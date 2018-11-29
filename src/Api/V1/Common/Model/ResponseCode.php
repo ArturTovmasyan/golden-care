@@ -73,7 +73,7 @@ class ResponseCode
     const ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        = 666;
     const RESIDENT_RENT_NOT_FOUND_EXCEPTION                      = 667;
     const RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 = 668;
-
+    const ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              = 669;
 
     /**
      * @var array
@@ -142,5 +142,6 @@ class ResponseCode
         self::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level group not found'],
         self::RESIDENT_RENT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentRent not found'],
         self::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Cannot post a Resident Rent with a negative Remaining total'],
+        self::ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level not found'],
     ];
 }
