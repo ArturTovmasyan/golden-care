@@ -13,18 +13,18 @@ use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
 /**
- * Class CareLevelGroup
+ * Class Form
  *
- * @ORM\Entity(repositoryClass="App\Repository\Assessment\CareLevelGroupRepository")
- * @ORM\Table(name="tbl_assessment_care_level_group")
+ * @ORM\Entity(repositoryClass="App\Repository\Assessment\FormRepository")
+ * @ORM\Table(name="tbl_assessment_form")
  * @Grid(
- *     api_admin_assessment_care_level_group_grid={
- *          {"id", "number", true, true, "aclg.id"},
- *          {"title", "string", true, true, "aclg.title"}
+ *     api_admin_assessment_form_grid={
+ *          {"id", "number", true, true, "af.id"},
+ *          {"title", "string", true, true, "af.title"}
  *     }
  * )
  */
-class CareLevelGroup
+class Form
 {
     use TimeAwareTrait;
     use UserAwareTrait;
@@ -35,10 +35,6 @@ class CareLevelGroup
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_assessment_care_level_group_list",
-     *     "api_admin_assessment_care_level_group_get",
-     *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get"
      * })
@@ -50,17 +46,13 @@ class CareLevelGroup
      * @Assert\NotNull(
      *      message = "Please select a Space",
      *      groups={
-     *          "api_admin_assessment_care_level_group_add",
-     *          "api_admin_assessment_care_level_group_edit"
+     *          "api_admin_assessment_form_list",
+     *          "api_admin_assessment_form_get"
      *      }
      * )
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
-     * })
-     * @Groups({
-     *      "api_admin_assessment_care_level_group_list",
-     *      "api_admin_assessment_care_level_group_get"
+     *      @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $space;
@@ -72,16 +64,12 @@ class CareLevelGroup
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_assessment_care_level_group_edit",
-     *          "api_admin_assessment_care_level_group_add"
+     *          "api_admin_assessment_form_edit",
+     *          "api_admin_assessment_form_add"
      *      }
      * )
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
-     *     "api_admin_assessment_care_level_group_list",
-     *     "api_admin_assessment_care_level_group_get",
-     *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get"
      * })
@@ -89,25 +77,31 @@ class CareLevelGroup
     private $title;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Form", inversedBy="careLevelGroups", cascade={"persist", "remove"})
-     * @ORM\JoinTable(
-     *      name="tbl_assessment_form_care_level_group",
-     *      joinColumns={
-     *          @ORM\JoinColumn(name="id_care_level_group", referencedColumnName="id", onDelete="CASCADE")
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="CASCADE")
-     *      }
-     * )
+     * @ORM\ManyToMany(targetEntity="CareLevelGroup", mappedBy="forms", cascade={"persist", "remove"})
+     * @Groups({
+     *     "api_admin_assessment_form_list",
+     *     "api_admin_assessment_form_get"
+     * })
      */
-    private $forms;
+    protected $careLevelGroups;
 
     /**
-     * CareLevelGroup constructor.
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="FormCategory", mappedBy="form", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"orderNumber" = "ASC"})
+     * @Groups({
+     *     "api_admin_assessment_form_list",
+     *     "api_admin_assessment_form_get"
+     * })
+     */
+    private $formCategories;
+
+    /**
+     * Form constructor.
      */
     public function __construct()
     {
-        $this->forms = new ArrayCollection();
+        $this->careLevelGroups = new ArrayCollection();
     }
 
     /**
@@ -161,32 +155,54 @@ class CareLevelGroup
     /**
      * @return mixed
      */
-    public function getForms()
+    public function getCareLevelGroups()
     {
-        return $this->forms;
+        return $this->careLevelGroups;
     }
 
     /**
-     * @param mixed $forms
+     * @param mixed $careLevelGroups
      */
-    public function setForms($forms): void
+    public function setCareLevelGroups($careLevelGroups): void
     {
-        $this->forms = $forms;
+        $this->careLevelGroups = $careLevelGroups;
+
+        foreach ($careLevelGroups as $careLevelGroup) {
+            $careLevelGroup->addForm($this);
+        }
     }
 
     /**
-     * @param Form $form
+     * @param CareLevelGroup $careLevelGroup
      */
-    public function addForm($form)
+    public function addCareLevelGroup($careLevelGroup)
     {
-        $this->forms->add($form);
+        $careLevelGroup->addForm($this);
+        $this->careLevelGroups[] = $careLevelGroup;
     }
 
     /**
-     * @param Form $form
+     * @param CareLevelGroup $careLevelGroup
      */
-    public function removeForm(Form $form)
+    public function removeCareLevelGroup(CareLevelGroup $careLevelGroup)
     {
-        $this->forms->removeElement($form);
+        $this->careLevelGroups->removeElement($careLevelGroup);
+        $careLevelGroup->removeForm($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFormCategories()
+    {
+        return $this->formCategories;
+    }
+
+    /**
+     * @param ArrayCollection $formCategories
+     */
+    public function setFormCategories($formCategories)
+    {
+        $this->formCategories = $formCategories;
     }
 }

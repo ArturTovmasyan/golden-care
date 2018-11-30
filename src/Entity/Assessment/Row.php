@@ -23,7 +23,9 @@ class Row
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_form_list",
+     *      "api_admin_assessment_form_get"
      * })
      */
     private $id;
@@ -57,7 +59,9 @@ class Row
      * )
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_form_list",
+     *      "api_admin_assessment_form_get"
      * })
      */
     private $title;
@@ -73,7 +77,9 @@ class Row
      * )
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_form_list",
+     *      "api_admin_assessment_form_get"
      * })
      */
     private $score = 0;
@@ -83,7 +89,9 @@ class Row
      * @ORM\Column(name="order_number", type="integer", nullable=false)
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_form_list",
+     *      "api_admin_assessment_form_get"
      * })
      */
     private $orderNumber = 0;
