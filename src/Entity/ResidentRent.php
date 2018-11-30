@@ -23,7 +23,6 @@ use App\Annotation\Grid;
  *          {"type", "enum", true, true, "rr.type", {"\App\Model\ResidentRentType", "getTypeDefaultNames"}},
  *          {"amount", "number", true, true, "rr.amount"},
  *          {"notes", "string", true, true, "rr.notes"},
- *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -55,21 +54,6 @@ class ResidentRent
      * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
     private $resident;
-
-    /**
-     * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
-     * })
-     * @Groups({
-     *     "api_admin_resident_rent_grid",
-     *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
-     * })
-     */
-    private $space;
 
     /**
      * @var \DateTime
@@ -173,25 +157,6 @@ class ResidentRent
     public function setResident(?Resident $resident): self
     {
         $this->resident = $resident;
-
-        return $this;
-    }
-
-    /**
-     * @return Space|null
-     */
-    public function getSpace(): ?Space
-    {
-        return $this->space;
-    }
-
-    /**
-     * @param Space|null $space
-     * @return ResidentRent
-     */
-    public function setSpace(?Space $space): self
-    {
-        $this->space = $space;
 
         return $this;
     }

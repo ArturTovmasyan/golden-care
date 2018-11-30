@@ -49,7 +49,6 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
      * @apiSuccess {String}   source          The source of the residentRent
-     * @apiSuccess {Object}   space           The space of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -65,8 +64,7 @@ class ResidentRentController extends BaseController
      *                  "end": null,
      *                  "type": 1,
      *                  "amount": 5000,
-     *                  "notes": "some notes",
-     *                  "space": "alms"
+     *                  "notes": "some notes"
      *              }
      *          ]
      *     }
@@ -143,7 +141,6 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
      * @apiSuccess {String}   source          The source of the residentRent
-     * @apiSuccess {Object}   space           The space of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -163,11 +160,7 @@ class ResidentRentController extends BaseController
      *                  "type": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
-     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
+     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]"
      *              }
      *          ]
      *     }
@@ -208,7 +201,6 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
      * @apiSuccess {String}   source          The source of the residentRent
-     * @apiSuccess {Object}   space           The space of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -223,11 +215,7 @@ class ResidentRentController extends BaseController
      *                  "type": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
-     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
+     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]"
      *          }
      *     }
      *
@@ -264,12 +252,10 @@ class ResidentRentController extends BaseController
      * @apiParam {Float}   amount          The amount of the residentRent
      * @apiParam {String}  [notes]         The notes of the residentRent
      * @apiParam {Object}  [source]        The payment sources of the residentRent
-     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "resident_id": 1,
-     *          "space_id": 1,
      *          "start": "2016-10-01",
      *          "end": "",
      *          "type": 1,
@@ -311,7 +297,6 @@ class ResidentRentController extends BaseController
         $residentRentService->add(
             [
                 'resident_id' => $request->get('resident_id'),
-                'space_id' => $request->get('space_id'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
                 'type' => $request->get('type'),
@@ -343,12 +328,10 @@ class ResidentRentController extends BaseController
      * @apiParam {Float}   amount          The amount of the residentRent
      * @apiParam {String}  [notes]         The notes of the residentRent
      * @apiParam {Array}   [source]        The payment sources of the residentRent
-     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "resident_id": 1,
-     *          "space_id": 1,
      *          "start": "2016-10-01",
      *          "end": "",
      *          "type": 1,
@@ -392,7 +375,6 @@ class ResidentRentController extends BaseController
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
-                'space_id' => $request->get('space_id'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
                 'type' => $request->get('type'),

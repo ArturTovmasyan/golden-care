@@ -60,8 +60,6 @@ class Space
      *     "api_admin_responsible_person_get",
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
-     *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get",
      *     "api_admin_assessment_category_list",
      *     "api_admin_assessment_category_get",
      *     "api_admin_assessment_care_level_list",
@@ -98,9 +96,7 @@ class Space
      *     "api_admin_physician_speciality_list",
      *     "api_admin_physician_speciality_get",
      *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get",
-     *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_payment_source_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

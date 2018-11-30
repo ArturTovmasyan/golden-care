@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Resident;
 use App\Entity\ResidentRent;
-use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -28,12 +27,6 @@ class ResidentRentRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'r = rr.resident'
-            )
-            ->leftJoin(
-                Space::class,
-                's',
-                Join::WITH,
-                's = rr.space'
             )
             ->groupBy('rr.id');
     }

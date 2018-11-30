@@ -5,11 +5,9 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentRentNegativeRemainingTotalException;
 use App\Api\V1\Common\Service\Exception\ResidentRentNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Resident;
 use App\Entity\ResidentRent;
-use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -64,10 +62,8 @@ class ResidentRentService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $residentId = $params['resident_id'] ?? 0;
-            $spaceId = $params['space_id'] ?? 0;
 
             $resident = null;
-            $space = null;
 
             if ($residentId && $residentId > 0) {
                 /** @var Resident $resident */
@@ -78,19 +74,8 @@ class ResidentRentService extends BaseService implements IGridService
                 }
             }
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
-            }
-
             $residentRent = new ResidentRent();
             $residentRent->setResident($resident);
-            $residentRent->setSpace($space);
             $residentRent->setType($params['type']);
             $residentRent->setAmount($params['amount']);
             $residentRent->setNotes($params['notes']);
@@ -163,10 +148,8 @@ class ResidentRentService extends BaseService implements IGridService
             }
 
             $residentId = $params['resident_id'] ?? 0;
-            $spaceId = $params['space_id'] ?? 0;
 
             $resident = null;
-            $space = null;
 
             if ($residentId && $residentId > 0) {
                 /** @var Resident $resident */
@@ -177,18 +160,7 @@ class ResidentRentService extends BaseService implements IGridService
                 }
             }
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
-            }
-
             $entity->setResident($resident);
-            $entity->setSpace($space);
             $entity->setType($params['type']);
             $entity->setAmount($params['amount']);
             $entity->setNotes($params['notes']);
