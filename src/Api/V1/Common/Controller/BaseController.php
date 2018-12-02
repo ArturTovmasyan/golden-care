@@ -63,7 +63,7 @@ class BaseController extends Controller
         $this->validator  = $validator;
         $this->encoder    = $encoder;
         $this->reader     = $reader;
-        $this->pdf     = $pdf;
+        $this->pdf        = $pdf;
     }
 
     /**

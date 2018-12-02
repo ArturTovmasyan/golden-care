@@ -124,7 +124,7 @@ class FileService
 
         if (empty($data)) {
             $data = $base64;
-        } elseif (count($data) != 2) {
+        } elseif (count($data) == 2) {
             $data = $data[1];
         } else {
             throw new FileExtensionException();
