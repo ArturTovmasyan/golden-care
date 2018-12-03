@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * Class Form
@@ -99,6 +100,7 @@ class Form
      *     "api_admin_assessment_list",
      *     "api_admin_assessment_get"
      * })
+     * @SerializedName("categories")
      */
     private $formCategories;
 

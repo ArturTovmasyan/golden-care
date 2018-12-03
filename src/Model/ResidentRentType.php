@@ -36,10 +36,10 @@ class ResidentRentType
      * @var array
      */
     private static $typeValues = [
-        self::MONTHLY => '1',
-        self::WEEKLY => '2',
-        self::DAILY => '3',
-        self::HOURLY => '4',
+        self::MONTHLY,
+        self::WEEKLY,
+        self::DAILY,
+        self::HOURLY,
     ];
 
     /**

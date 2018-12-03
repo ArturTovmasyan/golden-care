@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class ResidentRent
@@ -122,8 +123,8 @@ class ResidentRent
      *      maxMessage = "Source cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
      * )
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
+//     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
     private $source = '[]';
 
     /**
@@ -247,5 +248,19 @@ class ResidentRent
     public function setSource(string $source): void
     {
         $this->source = $source;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("source")
+     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     */
+    public function getSourceObject()
+    {
+        if (!empty($this->source)) {
+            return json_decode($this->source, true);
+        }
+
+        return [];
     }
 }
