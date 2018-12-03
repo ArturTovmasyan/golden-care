@@ -22,8 +22,8 @@ use App\Annotation\Grid;
  *          {"ihc", "enum", true, true, "ed.ihc", {"\App\Model\Boolean", "defaultValues"}},
  *          {"il", "enum", true, true, "ed.il", {"\App\Model\Boolean", "defaultValues"}},
  *          {"physician", "enum", true, true, "ed.physician", {"\App\Model\Boolean", "defaultValues"}},
- *          {"responsiblePerson", "enum", true, true, "ed.responsiblePerson", {"\App\Model\Boolean", "defaultValues"}},
- *          {"additionalDate", "enum", true, true, "ed.additionalDate", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"responsible_person", "enum", true, true, "ed.responsiblePerson", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"additional_date", "enum", true, true, "ed.additionalDate", {"\App\Model\Boolean", "defaultValues"}},
  *          {"space", "string", true, true, "s.name"},
  *     }
  * )
