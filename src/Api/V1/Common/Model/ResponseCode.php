@@ -80,6 +80,10 @@ class ResponseCode
     const ASSESSMENT_NOT_FOUND_EXCEPTION                         = 683;
     const ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION                 = 684;
     const ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION                 = 685;
+    const PHYSICIAN_NOT_BE_BLANK_EXCEPTION                       = 686;
+    const RESPONSIBLE_PERSON_NOT_BE_BLANK_EXCEPTION              = 687;
+    const ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION                 = 688;
+    const RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     = 689;
 
     /**
      * @var array
@@ -155,5 +159,9 @@ class ResponseCode
         self::EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'EventDefinition not found'],
         self::ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment category haven\'t multiple status'],
         self::ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment row not available'],
+        self::PHYSICIAN_NOT_BE_BLANK_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a Physician'],
+        self::RESPONSIBLE_PERSON_NOT_BE_BLANK_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a ResponsiblePerson'],
+        self::ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select an AdditionalDate'],
+        self::RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentEvent not found'],
     ];
 }

@@ -41,6 +41,8 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $id;
@@ -57,7 +59,9 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
-     *     "api_admin_resident_responsible_person_get"
+     *     "api_admin_resident_responsible_person_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $firstName;
@@ -74,7 +78,9 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
-     *     "api_admin_resident_responsible_person_get"
+     *     "api_admin_resident_responsible_person_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $lastName;
@@ -211,7 +217,9 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $salutation;

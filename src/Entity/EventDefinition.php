@@ -41,7 +41,9 @@ class EventDefinition
      * @Groups({
      *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
+     *     "api_admin_event_definition_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $id;
@@ -58,7 +60,9 @@ class EventDefinition
      * @Groups({
      *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
+     *     "api_admin_event_definition_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $title;

@@ -66,7 +66,9 @@ class Physician
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $id;
@@ -99,7 +101,9 @@ class Physician
      * })
      * @Groups({
      *      "api_admin_physician_list",
-     *      "api_admin_physician_get"
+     *      "api_admin_physician_get",
+     *      "api_admin_resident_event_list",
+     *      "api_admin_resident_event_get"
      * })
      */
     private $salutation;
@@ -163,7 +167,9 @@ class Physician
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $firstName;
@@ -185,7 +191,9 @@ class Physician
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_admin_physician_speciality_list",
-     *     "api_admin_physician_speciality_get"
+     *     "api_admin_physician_speciality_get",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
      * })
      */
     private $lastName;
