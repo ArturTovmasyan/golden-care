@@ -76,7 +76,7 @@ class ResidentRentService extends BaseService implements IGridService
 
             $residentRent = new ResidentRent();
             $residentRent->setResident($resident);
-            $residentRent->setType($params['type']);
+            $residentRent->setType((int)$params['type']);
             $residentRent->setAmount($params['amount']);
             $residentRent->setNotes($params['notes']);
 
@@ -102,7 +102,7 @@ class ResidentRentService extends BaseService implements IGridService
 
             $paymentSources = $params['source'];
 
-            $source = json_encode([]);
+            $source = [];
 
             if (!empty($paymentSources)) {
                 $amounts = array_map(function($item){return $item['amount'];} , $paymentSources);
@@ -112,7 +112,7 @@ class ResidentRentService extends BaseService implements IGridService
                     throw new ResidentRentNegativeRemainingTotalException();
                 }
 
-                $source = json_encode($paymentSources);
+                $source = $paymentSources;
             }
 
             $residentRent->setSource($source);
@@ -161,7 +161,7 @@ class ResidentRentService extends BaseService implements IGridService
             }
 
             $entity->setResident($resident);
-            $entity->setType($params['type']);
+            $entity->setType((int)$params['type']);
             $entity->setAmount($params['amount']);
             $entity->setNotes($params['notes']);
 
@@ -187,7 +187,7 @@ class ResidentRentService extends BaseService implements IGridService
 
             $paymentSources = $params['source'];
 
-            $source = json_encode([]);
+            $source = [];
 
             if (!empty($paymentSources)) {
                 $amounts = array_map(function($item){return $item['amount'];} , $paymentSources);
@@ -197,7 +197,7 @@ class ResidentRentService extends BaseService implements IGridService
                     throw new ResidentRentNegativeRemainingTotalException();
                 }
 
-                $source = json_encode($paymentSources);
+                $source = $paymentSources;
             }
 
             $entity->setSource($source);

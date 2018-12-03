@@ -24,6 +24,7 @@ use JMS\Serializer\Annotation as Serializer;
  *          {"type", "enum", true, true, "rr.type", {"\App\Model\ResidentRentType", "getTypeDefaultNames"}},
  *          {"amount", "number", true, true, "rr.amount"},
  *          {"notes", "string", true, true, "rr.notes"},
+ *          {"source", "string", true, true, "rr.source"},
  *     }
  * )
  */
@@ -116,16 +117,16 @@ class ResidentRent
     private $notes;
 
     /**
-     * @var string $source
-     * @ORM\Column(name="source", type="text", length=512, nullable=true)
-     * @Assert\Length(
-     *      max = 512,
-     *      maxMessage = "Source cannot be longer than {{ limit }} characters",
+     * @var array $source
+     * @ORM\Column(name="source", type="json_array", length=1024, nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot specify more than {{ limit }} sources",
      *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
      * )
+     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
-//     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
-    private $source = '[]';
+    private $source = [];
 
     /**
      * @return int
@@ -235,32 +236,18 @@ class ResidentRent
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getSource(): string
+    public function getSource(): array
     {
         return $this->source;
     }
 
     /**
-     * @param string $source
+     * @param array $source
      */
-    public function setSource(string $source): void
+    public function setSource(array $source): void
     {
         $this->source = $source;
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("source")
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
-     */
-    public function getSourceObject()
-    {
-        if (!empty($this->source)) {
-            return json_decode($this->source, true);
-        }
-
-        return [];
     }
 }

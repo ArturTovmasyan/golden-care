@@ -48,7 +48,7 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      type            The type of the residentRent
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
-     * @apiSuccess {String}   source          The source of the residentRent
+     * @apiSuccess {Array}    source          The source of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -64,7 +64,17 @@ class ResidentRentController extends BaseController
      *                  "end": null,
      *                  "type": 1,
      *                  "amount": 5000,
-     *                  "notes": "some notes"
+     *                  "notes": "some notes",
+     *                  "source": [
+     *                        {
+     *                          "id": 1,
+     *                          "amount": 2500
+     *                        },
+     *                        {
+     *                          "id": 2,
+     *                          "amount": 2500
+     *                        }
+     *                    ]
      *              }
      *          ]
      *     }
@@ -140,7 +150,7 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      type            The type of the residentRent
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
-     * @apiSuccess {String}   source          The source of the residentRent
+     * @apiSuccess {Array}    source          The source of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -160,7 +170,16 @@ class ResidentRentController extends BaseController
      *                  "type": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
-     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]"
+     *                  "source": [
+     *                        {
+     *                          "id": 1,
+     *                          "amount": 2500
+     *                        },
+     *                        {
+     *                          "id": 2,
+     *                          "amount": 2500
+     *                        }
+     *                    ]
      *              }
      *          ]
      *     }
@@ -200,7 +219,7 @@ class ResidentRentController extends BaseController
      * @apiSuccess {Int}      type            The type of the residentRent
      * @apiSuccess {Int}      amount          The amount of the residentRent
      * @apiSuccess {String}   notes           The notes of the residentRent
-     * @apiSuccess {String}   source          The source of the residentRent
+     * @apiSuccess {Array}    source          The source of the residentRent
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -215,7 +234,16 @@ class ResidentRentController extends BaseController
      *                  "type": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
-     *                  "source": "[{\"id \":\"1\",\"amount\":\"2500\"},{\"id \":\"2\",\"amount\":\"2500\"}]"
+     *                  "source": [
+     *                        {
+     *                          "id": 1,
+     *                          "amount": 2500
+     *                        },
+     *                        {
+     *                          "id": 2,
+     *                          "amount": 2500
+     *                        }
+     *                    ]
      *          }
      *     }
      *
@@ -251,7 +279,7 @@ class ResidentRentController extends BaseController
      * @apiParam {Int}     type            The type of the residentRent
      * @apiParam {Float}   amount          The amount of the residentRent
      * @apiParam {String}  [notes]         The notes of the residentRent
-     * @apiParam {Object}  [source]        The payment sources of the residentRent
+     * @apiParam {Array}   [source]        The payment sources of the residentRent
      *
      * @apiParamExample {json} Request-Example:
      *     {
