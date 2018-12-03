@@ -74,17 +74,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->validate($category, null, ['api_admin_assessment_category_add']);
             $this->em->persist($category);
 
-            if (!empty($params['rows'])) {
-                foreach ($params['rows'] as $row) {
-                    $entity = new Row();
-                    $entity->setTitle($row['title'] ?? '');
-                    $entity->setScore($row['score'] ?? 0);
-                    $entity->setCategory($category);
-
-                    $this->validate($entity, null, ['api_admin_assessment_row_add']);
-                    $this->em->persist($entity);
-                }
-            }
+            $this->saveRows($category, $params['rows']);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -134,28 +124,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->validate($category, null, ['api_admin_assessment_category_edit']);
             $this->em->persist($category);
 
-            // remove old rows
-            $rows = $category->getRows();
-
-            if (!empty($rows)) {
-                foreach ($rows as $row) {
-                    $category->removeRow($row);
-                    $this->em->remove($row);
-                }
-            }
-
-            // create new rows
-            if (!empty($params['rows'])) {
-                foreach ($params['rows'] as $row) {
-                    $entity = new Row();
-                    $entity->setTitle($row['title'] ?? '');
-                    $entity->setScore($row['score'] ?? 0);
-                    $entity->setCategory($category);
-
-                    $this->validate($entity, null, ['api_admin_assessment_row_add']);
-                    $this->em->persist($entity);
-                }
-            }
+            $this->saveRows($category, $params['rows']);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -163,6 +132,57 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param Category $category
+     * @param $rows
+     * @throws \ReflectionException
+     */
+    private function saveRows(Category $category, $rows)
+    {
+        /**
+         * @var Row $oldRow
+         */
+        $oldRows      = $category->getRows();
+        $oldRowsByIds = [];
+        $rowIds       = [];
+
+        if (!empty($oldRows)) {
+            foreach ($oldRows as $oldRow) {
+                $oldRowsByIds[$oldRow->getId()] = $oldRow;
+            }
+        }
+
+        // create and update row
+        if (!empty($rows)) {
+            foreach ($rows as $key => $row) {
+                if (isset($row['id']) && isset($oldRowsByIds[$row['id']])) {
+                    $entity   = $oldRowsByIds[$row['id']];
+                    $rowIds[] = $row['id'];
+                } else {
+                    $entity = new Row();
+                }
+
+                $entity->setTitle($row['title'] ?? '');
+                $entity->setScore($row['score'] ?? 0);
+                $entity->setCategory($category);
+                $entity->setOrderNumber($key + 1);
+
+                $this->validate($entity, null, ['api_admin_assessment_row_add']);
+                $this->em->persist($entity);
+            }
+        }
+
+        // remove old rows
+        if (!empty($oldRows)) {
+            foreach ($oldRows as $oldRow) {
+                if (!in_array($oldRow->getId(), $rowIds)) {
+                    $this->em->remove($oldRow);
+                    $this->em->flush();
+                }
+            }
         }
     }
 

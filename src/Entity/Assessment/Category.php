@@ -88,7 +88,7 @@ class Category
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Row", mappedBy="category", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Row", mappedBy="category", cascade={"persist"})
      * @ORM\OrderBy({"orderNumber" = "ASC"})
      * @Groups({
      *      "api_admin_assessment_category_list",
