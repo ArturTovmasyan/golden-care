@@ -36,7 +36,9 @@ class Category
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
-     *      "api_admin_assessment_form_get"
+     *      "api_admin_assessment_form_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $id;
@@ -56,7 +58,9 @@ class Category
      * })
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $space;
@@ -75,7 +79,9 @@ class Category
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
-     *      "api_admin_assessment_form_get"
+     *      "api_admin_assessment_form_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $title;
@@ -88,7 +94,9 @@ class Category
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
-     *      "api_admin_assessment_form_get"
+     *      "api_admin_assessment_form_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $rows;
@@ -104,7 +112,9 @@ class Category
      * )
      * @Groups({
      *      "api_admin_assessment_category_list",
-     *      "api_admin_assessment_category_get"
+     *      "api_admin_assessment_category_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $multiItem = false;

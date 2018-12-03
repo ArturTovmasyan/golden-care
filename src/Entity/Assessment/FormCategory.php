@@ -26,7 +26,9 @@ class FormCategory
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_list",
+     *     "api_admin_assessment_get"
      * })
      */
     private $id;
@@ -40,7 +42,9 @@ class FormCategory
      * })
      * @Groups({
      *      "api_admin_assessment_form_list",
-     *      "api_admin_assessment_form_get"
+     *      "api_admin_assessment_form_get",
+     *      "api_admin_assessment_list",
+     *      "api_admin_assessment_get"
      * })
      */
     private $orderNumber = 0;
@@ -53,7 +57,9 @@ class FormCategory
      * })
      * @Groups({
      *      "api_admin_assessment_form_list",
-     *      "api_admin_assessment_form_get"
+     *      "api_admin_assessment_form_get",
+     *     "api_admin_assessment_list",
+     *     "api_admin_assessment_get"
      * })
      */
     private $category;

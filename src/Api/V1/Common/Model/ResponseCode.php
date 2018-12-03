@@ -77,6 +77,9 @@ class ResponseCode
     const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
     const ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    = 681;
     const EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   = 682;
+    const ASSESSMENT_NOT_FOUND_EXCEPTION                         = 683;
+    const ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION                 = 684;
+    const ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION                 = 685;
 
     /**
      * @var array
@@ -147,7 +150,10 @@ class ResponseCode
         self::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Cannot post a Resident Rent with a negative Remaining total'],
         self::ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level not found'],
         self::ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment form not found'],
+        self::ASSESSMENT_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment not found'],
         self::GRID_OPTIONS_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Grid options not found'],
         self::EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'EventDefinition not found'],
+        self::ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment category haven\'t multiple status'],
+        self::ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment row not available'],
     ];
 }

@@ -1,10 +1,9 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\AssessmentFormService;
+use App\Api\V1\Admin\Service\AssessmentService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\Assessment\CareLevelGroup;
-use App\Entity\Assessment\Form;
+use App\Entity\Assessment\Assessment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,25 +24,25 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/assessment/form")
+ * @Route("/api/v1.0/admin/assessment")
  *
- * Class AssessmentFormController
+ * Class AssessmentController
  * @package App\Api\V1\Admin\Controller
  */
-class AssessmentFormController extends BaseController
+class AssessmentController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/assessment/form/grid Get AssessmentForm Grid
+     * @api {get} /api/v1.0/admin/assessment/grid Get Assessment Grid
      * @apiVersion 1.0.0
-     * @apiName Get AssessmentForm Grid
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to listing assessmentForms
+     * @apiName Get Assessment Grid
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to listing assessments
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id                 The unique identifier of the AssessmentForm
-     * @apiSuccess {String}  title              The title of the AssessmentForm
+     * @apiSuccess {Int}     id                 The unique identifier of the Assessment
+     * @apiSuccess {String}  title              The title of the Assessment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -54,33 +53,33 @@ class AssessmentFormController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "title": "Group 1"
+     *                  "title": "Assessment 1"
      *              }
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_assessment_form_grid", methods={"GET"})
+     * @Route("/grid", name="api_admin_assessment_grid", methods={"GET"})
      *
      * @param Request $request
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, AssessmentFormService $formService)
+    public function gridAction(Request $request, AssessmentService $assessmentService)
     {
         return $this->respondGrid(
             $request,
-            Form::class,
-            'api_admin_assessment_form_grid',
-            $formService
+            Assessment::class,
+            'api_admin_assessment_grid',
+            $assessmentService
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/assessment/form/grid Get AssessmentForm Grid Options
+     * @api {options} /api/v1.0/admin/assessment/grid Get Assessment Grid Options
      * @apiVersion 1.0.0
-     * @apiName Get AssessmentForm Grid Options
-     * @apiGroup Admin AssessmentForm
+     * @apiName Get Assessment Grid Options
+     * @apiGroup Admin Assessment
      * @apiDescription This function is used to describe options of listing
      *
      * @apiHeader {String} Content-Type  application/json
@@ -101,7 +100,7 @@ class AssessmentFormController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_assessment_form_grid_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_assessment_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
@@ -109,74 +108,86 @@ class AssessmentFormController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Form::class, 'api_admin_assessment_form_grid');
+        return $this->getOptionsByGroupName(Assessment::class, 'api_admin_assessment_grid');
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment/form Get AssessmentForm
+     * @api {get} /api/v1.0/admin/assessment Get Assessment
      * @apiVersion 1.0.0
-     * @apiName Get AssessmentForm
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to listing AssessmentForms
+     * @apiName Get Assessment
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to listing Assessments
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id    The unique identifier of the AssessmentForm
-     * @apiSuccess {String}  title The title of the AssessmentForm
+     * @apiSuccess {Int}     id    The unique identifier of the Assessment
+     * @apiSuccess {String}  title The title of the Assessment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     [
-     *         {
-     *              "id": 1,
-     *              "title": "Form 1",
-     *              "care_level_groups": [
-     *                  {
-     *                      "id": 1,
-     *                      "title": "Group 1"
-     *                  }
-     *              ],
+     *          "id": 3,
+     *          "form": {
+     *              "id": 25,
+     *              "title": "Form 1x",
      *              "form_categories": [
      *                  {
-     *                      "id": 1,
+     *                      "id": 8,
      *                      "order_number": 1,
      *                      "category": {
-     *                          "id": 5,
-     *                          "title": "Category 5",
-     *                          rows": [
+     *                          "id": 3,
+     *                          "title": "Category 1",
+     *                          "rows": [
      *                              {
      *                                  "id": 3,
      *                                  "title": "Row 1",
      *                                  "score": 1,
-     *                                  "order_number": 1
+     *                                  "order_number": 0
      *                              }
-     *                          ]
+     *                          ],
+     *                          "multi_item": false
      *                      }
      *                  }
      *              ]
-     *         }
+     *          },
+     *          "date": "1987-11-24T15:30:37+04:00",
+     *          "performed_by": "Harut",
+     *          "notes": "Hello note",
+     *          "assessment_rows": [
+     *              {
+     *                  "id": 4,
+     *                  "row": {
+     *                      "id": 3,
+     *                      "title": "Row 1",
+     *                      "score": 1,
+     *                      "order_number": 0
+     *                  },
+     *                  "score": 1
+     *              }
+     *          ],
+     *          "score": 0
      *     ]
      *
-     * @Route("", name="api_admin_assessment_form_list", methods={"GET"})
+     * @Route("", name="api_admin_assessment_list", methods={"GET"})
      *
      * @param Request $request
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, AssessmentFormService $formService)
+    public function listAction(Request $request, AssessmentService $assessmentService)
     {
         return $this->respondList(
             $request,
-            Form::class,
-            'api_admin_assessment_form_list',
-            $formService
+            Assessment::class,
+            'api_admin_assessment_list',
+            $assessmentService
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment/form/{id} Get AssessmentForm
+     * @api {get} /api/v1.0/admin/assessment/{id} Get Assessment
      * @apiVersion 1.0.0
      * @apiName Get CareLevel
      * @apiGroup Admin CareLevel
@@ -185,67 +196,82 @@ class AssessmentFormController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id     The unique identifier of the form
-     * @apiSuccess {String}  title  The title of the form
+     * @apiSuccess {Int}     id            The unique identifier of the form
+     * @apiSuccess {String}  title         The title of the form
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
-     *              "id": 1,
-     *              "title": "Form 1",
-     *              "care_level_groups": [
+     *              "id": 3,
+     *              "form": {
+     *                  "id": 25,
+     *                  "title": "Form 1x",
+     *                  "form_categories": [
+     *                      {
+     *                          "id": 8,
+     *                          "order_number": 1,
+     *                          "category": {
+     *                              "id": 3,
+     *                              "title": "Category 1",
+     *                              "rows": [
+     *                                  {
+     *                                      "id": 3,
+     *                                      "title": "Row 1",
+     *                                      "score": 1,
+     *                                      "order_number": 0
+     *                                  }
+     *                              ],
+     *                              "multi_item": false
+     *                          }
+     *                      }
+     *                  ]
+     *              },
+     *              "date": "1987-11-24T15:30:37+04:00",
+     *              "performed_by": "Harut",
+     *              "notes": "Hello note",
+     *              "assessment_rows": [
      *                  {
-     *                      "id": 1,
-     *                      "title": "Group 1"
+     *                      "id": 4,
+     *                      "row": {
+     *                          "id": 3,
+     *                          "title": "Row 1",
+     *                          "score": 1,
+     *                          "order_number": 0
+     *                      },
+     *                      "score": 1
      *                  }
      *              ],
-     *              "form_categories": [
-     *                  {
-     *                      "id": 1,
-     *                      "order_number": 1,
-     *                      "category": {
-     *                          "id": 5,
-     *                          "title": "Category 5",
-     *                          "rows": [
-     *                              {
-     *                                  "id": 3,
-     *                                  "title": "Row 1",
-     *                                  "score": 1,
-     *                                  "order_number": 1
-     *                              }
-     *                          ]
-     *                      }
-     *                  }
-     *              ]
+     *              "score": 0
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_get", methods={"GET"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_get", methods={"GET"})
      *
-     * @param AssessmentFormService $formService
+     * @param Request $request
      * @param $id
+     * @param AssessmentService $assessmentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentFormService $formService)
+    public function getAction(Request $request, $id, AssessmentService $assessmentService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $formService->getById($id),
-            ['api_admin_assessment_form_get']
+            $assessmentService->getById($id),
+            ['api_admin_assessment_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/admin/assessment/form Add AssessmentForm
+     * @api {post} /api/v1.0/admin/assessment Add Assessment
      * @apiVersion 1.0.0
-     * @apiName Add AssessmentForm
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to add AssessmentForm
+     * @apiName Add Assessment
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to add Assessment
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title             The title of the AssessmentForm
+     * @apiParam {String}  title             The title of the Assessment
      * @apiParam {Int}     space_id          The unique identifier of space
      *
      * @apiParamExample {json} Request-Example:
@@ -268,21 +294,23 @@ class AssessmentFormController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_assessment_form_add", methods={"POST"})
+     * @Route("", name="api_admin_assessment_add", methods={"POST"})
      *
      * @param Request $request
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, AssessmentFormService $formService)
+    public function addAction(Request $request, AssessmentService $assessmentService)
     {
-        $formService->add(
+        $assessmentService->add(
             [
-                'title'             => $request->get('title'),
-                'space_id'          => $request->get('space_id'),
-                'care_level_groups' => $request->get('care_level_groups'),
-                'categories'        => $request->get('categories'),
+                'space_id'     => $request->get('space_id'),
+                'form_id'      => $request->get('form_id'),
+                'date'         => $request->get('date'),
+                'performed_by' => $request->get('performed_by'),
+                'notes'        => $request->get('notes'),
+                'rows'         => $request->get('rows'),
             ]
         );
 
@@ -292,16 +320,16 @@ class AssessmentFormController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/assessment/form/{id} Edit AssessmentForm
+     * @api {put} /api/v1.0/admin/assessment/{id} Edit Assessment
      * @apiVersion 1.0.0
-     * @apiName Edit AssessmentForm
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to edit AssessmentForm
+     * @apiName Edit Assessment
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to edit Assessment
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title             The title of the AssessmentForm
+     * @apiParam {String}  title             The title of the Assessment
      * @apiParam {Int}     space_id          The unique identifier of space
      *
      * @apiParamExample {json} Request-Example:
@@ -324,23 +352,25 @@ class AssessmentFormController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_edit", methods={"PUT"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, AssessmentFormService $formService)
+    public function editAction(Request $request, $id, AssessmentService $assessmentService)
     {
-        $formService->edit(
+        $assessmentService->edit(
             $id,
             [
-                'title'             => $request->get('title'),
-                'space_id'          => $request->get('space_id'),
-                'care_level_groups' => $request->get('care_level_groups'),
-                'categories'        => $request->get('categories'),
+                'space_id'     => $request->get('space_id'),
+                'form_id'      => $request->get('form_id'),
+                'date'         => $request->get('date'),
+                'performed_by' => $request->get('performed_by'),
+                'notes'        => $request->get('notes'),
+                'rows'         => $request->get('rows'),
             ]
         );
 
@@ -350,11 +380,11 @@ class AssessmentFormController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment/form/{id} Delete AssessmentForm
+     * @api {delete} /api/v1.0/admin/assessment/{id} Delete Assessment
      * @apiVersion 1.0.0
-     * @apiName Delete AssessmentForm
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to remove AssessmentForm
+     * @apiName Delete Assessment
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to remove Assessment
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -369,17 +399,17 @@ class AssessmentFormController extends BaseController
      *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_delete", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_delete", methods={"DELETE"})
      *
      * @param $id
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentFormService $formService)
+    public function deleteAction(Request $request, $id, AssessmentService $assessmentService)
     {
-        $formService->remove($id);
+        $assessmentService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -387,11 +417,11 @@ class AssessmentFormController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment/form Bulk Delete AssessmentForm
+     * @api {delete} /api/v1.0/admin/assessment Bulk Delete Assessment
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete AssessmentForm
-     * @apiGroup Admin AssessmentForm
-     * @apiDescription This function is used to bulk remove AssessmentForm
+     * @apiName Bulk Delete Assessment
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to bulk remove Assessment
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -411,17 +441,17 @@ class AssessmentFormController extends BaseController
      *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("", name="api_admin_assessment_form_delete_bulk", methods={"DELETE"})
+     * @Route("", name="api_admin_assessment_delete_bulk", methods={"DELETE"})
      *
      * @param Request $request
-     * @param AssessmentFormService $formService
+     * @param AssessmentService $assessmentService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentFormService $formService)
+    public function deleteBulkAction(Request $request, AssessmentService $assessmentService)
     {
-        $formService->removeBulk($request->get('ids'));
+        $assessmentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

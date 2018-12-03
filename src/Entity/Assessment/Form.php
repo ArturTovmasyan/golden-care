@@ -36,7 +36,9 @@ class Form
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_list",
+     *     "api_admin_assessment_get"
      * })
      */
     private $id;
@@ -71,7 +73,9 @@ class Form
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_list",
+     *     "api_admin_assessment_get"
      * })
      */
     private $title;
@@ -91,7 +95,9 @@ class Form
      * @ORM\OrderBy({"orderNumber" = "ASC"})
      * @Groups({
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_list",
+     *     "api_admin_assessment_get"
      * })
      */
     private $formCategories;
