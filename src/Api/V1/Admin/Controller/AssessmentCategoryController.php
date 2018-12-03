@@ -204,15 +204,18 @@ class AssessmentCategoryController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title      The title of the category
-     * @apiParam {String}  multi_item The multi item status of the category
+     * @apiParam   {String}  title      The title of the category
+     * @apiParam   {Int}     space_id   The unique identifier of the space
+     * @apiParam   {String}  multi_item The multi item status of the category
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "title": "Test category",
+     *          "space_id": 1,
      *          "multi_item": 1,
      *          "rows": [
      *              {
+     *                  "id": 1
      *                  "title": "Category 1",
      *                  "score": 1
      *              },{
@@ -268,11 +271,13 @@ class AssessmentCategoryController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  title          The title of the assessment category
+     * @apiParam {Int}     space_id       The unique identifier of the space
      * @apiParam {String}  [description]  The multi item status of the assessment category
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "title": "Test Category",
+     *          "space_id": 1,
      *          "multi_item": 1,
      *          "rows": [
      *              {
