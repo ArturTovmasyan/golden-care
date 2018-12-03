@@ -42,7 +42,11 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id                 The unique identifier of the Assessment
-     * @apiSuccess {String}  title              The title of the Assessment
+     * @apiSuccess {String}  form               The title of the Assessment form
+     * @apiSuccess {String}  date               The date of the Assessment
+     * @apiSuccess {String}  performed_by       The performed by info of the Assessment
+     * @apiSuccess {String}  notes              The notes of the Assessment
+     * @apiSuccess {String}  score              The calculated score of the Assessment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -53,7 +57,11 @@ class AssessmentController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "title": "Assessment 1"
+     *                  "form": "Form 1x",
+     *                  "date": "1987-11-24T15:47:39+04:00",
+     *                  "performed_by": "Joe",
+     *                  "notes": "Custom note",
+     *                  "score": 2.00
      *              }
      *          ]
      *     }
@@ -121,8 +129,13 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id    The unique identifier of the Assessment
-     * @apiSuccess {String}  title The title of the Assessment
+     * @apiSuccess {Int}     id                 The unique identifier of the Assessment
+     * @apiSuccess {String}  form               The form of the Assessment
+     * @apiSuccess {String}  date               The date of the Assessment
+     * @apiSuccess {String}  performed_by       The performed by info of the Assessment
+     * @apiSuccess {String}  notes              The notes of the Assessment
+     * @apiSuccess {String}  assessment_rows    The filled rows of the Assessment
+     * @apiSuccess {String}  score              The calculated score of the Assessment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -143,7 +156,7 @@ class AssessmentController extends BaseController
      *                                  "id": 3,
      *                                  "title": "Row 1",
      *                                  "score": 1,
-     *                                  "order_number": 0
+     *                                  "order_number": 1
      *                              }
      *                          ],
      *                          "multi_item": false
@@ -161,12 +174,12 @@ class AssessmentController extends BaseController
      *                      "id": 3,
      *                      "title": "Row 1",
      *                      "score": 1,
-     *                      "order_number": 0
+     *                      "order_number": 1
      *                  },
      *                  "score": 1
      *              }
      *          ],
-     *          "score": 0
+     *          "score": 2.00
      *     ]
      *
      * @Route("", name="api_admin_assessment_list", methods={"GET"})
@@ -196,8 +209,13 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the form
-     * @apiSuccess {String}  title         The title of the form
+     * @apiSuccess {Int}     id                 The unique identifier of the Assessment
+     * @apiSuccess {String}  form               The form of the Assessment
+     * @apiSuccess {String}  date               The date of the Assessment
+     * @apiSuccess {String}  performed_by       The performed by info of the Assessment
+     * @apiSuccess {String}  notes              The notes of the Assessment
+     * @apiSuccess {String}  assessment_rows    The filled rows of the Assessment
+     * @apiSuccess {String}  score              The calculated score of the Assessment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -271,15 +289,21 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title             The title of the Assessment
-     * @apiParam {Int}     space_id          The unique identifier of space
+     * @apiParam {Int}  space_id          The unique identifier of the space
+     * @apiParam {Int}  form_id           The unique identifier of the form
+     * @apiParam {String}  performed_by   The performed by info of the assessment
+     * @apiParam {String}  notes          The notes of the assessment
+     * @apiParam {String}  date           The date of the assessment
+     * @apiParam {String}  rows           The filled rows of the assessment by form categories
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *          "title": "Dr.",
      *          "space_id": 1,
-     *          "care_level_groups": [1, 2],
-     *          "categories": [5, 1]
+     *          "form_id": 1,
+     *          "performed_by": "Joe"
+     *          "notes": "Custom note"
+     *          "date": "11-24-1987",
+     *          "rows": [3,4]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -329,15 +353,21 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title             The title of the Assessment
-     * @apiParam {Int}     space_id          The unique identifier of space
+     * @apiParam {Int}     space_id       The unique identifier of the space
+     * @apiParam {Int}     form_id        The unique identifier of the form
+     * @apiParam {String}  performed_by   The performed by info of the assessment
+     * @apiParam {String}  notes          The notes of the assessment
+     * @apiParam {String}  date           The date of the assessment
+     * @apiParam {String}  rows           The filled rows of the assessment by form categories
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *          "title": "Form 1",
      *          "space_id": 1,
-     *          "care_level_groups": [1, 2],
-     *          "categories": [5, 1]
+     *          "form_id": 1,
+     *          "performed_by": "Joe"
+     *          "notes": "Custom note"
+     *          "date": "11-24-1987",
+     *          "rows": [3,4]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
