@@ -26,10 +26,10 @@ class ResidentRentType
      * @var array
      */
     private static $typeDefaultNames = [
-        'Monthly' => '1',
-        'Weekly' => '2',
-        'Daily' => '3',
-        'Hourly' => '4',
+        'Monthly' => self::MONTHLY,
+        'Weekly' => self::WEEKLY,
+        'Daily' => self::DAILY,
+        'Hourly' => self::HOURLY,
     ];
 
     /**

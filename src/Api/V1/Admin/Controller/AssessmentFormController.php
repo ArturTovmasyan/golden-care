@@ -144,7 +144,7 @@ class AssessmentFormController extends BaseController
      *                      "category": {
      *                          "id": 5,
      *                          "title": "Category 5",
-     *                          rows": [
+     *                          "rows": [
      *                              {
      *                                  "id": 3,
      *                                  "title": "Row 1",
