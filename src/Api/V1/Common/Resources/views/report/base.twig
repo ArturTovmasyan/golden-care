@@ -1,0 +1,121 @@
+<html>
+<head>
+    <style type="text/css">
+        body {
+            font-size: 11px;
+            line-height: 12px;
+            font-family: 'sans serif', serif;
+        }
+
+        .report-page {
+            page-break-before: always;
+        }
+
+        .report-page-title {
+            text-align: center;
+        }
+
+        .report-table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .report-table.main-table {
+            margin-top: 20px;
+        }
+
+        b {
+            font-size: 12px;
+        }
+
+        .report-table thead td {
+            margin: 10px 0 10px 0;
+        }
+
+        .report-table td {
+            vertical-align: top;
+            font-size: 11px;
+            padding: 5px 5px 5px 10px;
+        }
+
+        .report-table tbody tr td:nth-of-type(1) {
+            /*font-weight: bold;*/
+            /*text-align: right;*/
+        }
+
+        table, tr, td, th, tbody, thead, tfoot {
+            page-break-inside: avoid !important;
+        }
+
+        .divider {
+            height: 20px;
+            width: 100%;
+            clear: both;
+        }
+
+        .dividerSecond {
+            height: 20px;
+            width: 100%;
+        }
+
+        .dividerThird {
+            height: 30px;
+            width: 100%;
+        }
+
+        table.bordered {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        table.bordered tbody td {
+            border: solid 1px darkgray;
+        }
+
+        .square {
+            border: solid 2px black;
+            background: #fff;
+            width: 12px;
+            height: 12px;
+        }
+
+        .page {
+            overflow: hidden;
+            page-break-after: always;
+        }
+
+        .rotate {
+            /* FF3.5+ */
+            -moz-transform: rotate(-90.0deg) translateX(-100%) translateY(-100%);
+            /* Opera 10.5 */
+            -o-transform: rotate(-90.0deg) translateX(-100%) translateY(-100%);
+            /* Saf3.1+, Chrome */
+            -webkit-transform: rotate(-90.0deg) translateX(-100%) translateY(-100%);
+            /* IE6,IE7 */
+            filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.083);
+            /* IE8 */
+            -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)";
+            /* Standard */
+            transform: rotate(-90.0deg) translateX(-100%) translateY(-100%);
+        }
+    </style>
+</head>
+<body>
+<div class="report-page">
+    <h2 class="report-page-title">
+        {% block pageTitle %}
+        {% endblock %}
+    </h2>
+
+    <div class="report-page-title">
+        {% block pageContent %}
+        {% endblock %}
+    </div>
+    <div class="report-page-footer">
+        {% block pageFooter %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

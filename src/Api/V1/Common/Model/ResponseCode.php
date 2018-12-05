@@ -84,6 +84,8 @@ class ResponseCode
     const RESPONSIBLE_PERSON_NOT_BE_BLANK_EXCEPTION              = 687;
     const ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION                 = 688;
     const RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     = 689;
+    const REPORT_NOT_FOUND_EXCEPTION                             = 690;
+    const REPORT_FORMAT_NOT_FOUND_EXCEPTION                      = 691;
 
     /**
      * @var array
@@ -163,5 +165,7 @@ class ResponseCode
         self::RESPONSIBLE_PERSON_NOT_BE_BLANK_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a ResponsiblePerson'],
         self::ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select an AdditionalDate'],
         self::RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentEvent not found'],
+        self::REPORT_NOT_FOUND_EXCEPTION                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report not found'],
+        self::REPORT_FORMAT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report format not found'],
     ];
 }

@@ -25,7 +25,8 @@ class AssessmentRow
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get"
+     *     "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -61,7 +62,8 @@ class AssessmentRow
      * )
      * @Groups({
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $row;
@@ -77,7 +79,8 @@ class AssessmentRow
      * )
      * @Groups({
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *      "api_admin_assessment_report"
      * })
      */
     private $score = 0;

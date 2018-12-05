@@ -4,6 +4,9 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\AssessmentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\Assessment;
+use App\Model\Assessment as AssessmentModel;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,6 +34,33 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  */
 class AssessmentController extends BaseController
 {
+    /**
+     * @api {get} /api/v1.0/admin/assessment/{id}/report Get Assessment Report
+     * @apiVersion 1.0.0
+     * @apiName Get Assessment Report
+     * @apiGroup Admin Assessment
+     * @apiDescription This function is used to download assessment report
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @Route("/{id}/report", requirements={"id"="\d+"}, name="api_admin_assessment_report", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param AssessmentService $assessmentService
+     * @return PdfResponse
+     * @throws \Exception
+     */
+    public function reportAction(Request $request, $id, AssessmentService $assessmentService)
+    {
+        return $this->respondReport(
+            $request,
+            'assessment',
+            $assessmentService->getReport($id, $request->get('type'))
+        );
+    }
+
     /**
      * @api {get} /api/v1.0/admin/assessment/grid Get Assessment Grid
      * @apiVersion 1.0.0
@@ -79,7 +109,8 @@ class AssessmentController extends BaseController
             $request,
             Assessment::class,
             'api_admin_assessment_grid',
-            $assessmentService
+            $assessmentService,
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -195,7 +226,8 @@ class AssessmentController extends BaseController
             $request,
             Assessment::class,
             'api_admin_assessment_list',
-            $assessmentService
+            $assessmentService,
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -289,8 +321,9 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int}  space_id          The unique identifier of the space
-     * @apiParam {Int}  form_id           The unique identifier of the form
+     * @apiParam {Int}     space_id       The unique identifier of the space
+     * @apiParam {Int}     resident_id    The unique identifier of the resident
+     * @apiParam {Int}     form_id        The unique identifier of the form
      * @apiParam {String}  performed_by   The performed by info of the assessment
      * @apiParam {String}  notes          The notes of the assessment
      * @apiParam {String}  date           The date of the assessment
@@ -299,6 +332,7 @@ class AssessmentController extends BaseController
      * @apiParamExample {json} Request-Example:
      *     {
      *          "space_id": 1,
+     *          "resident_id": 1,
      *          "form_id": 1,
      *          "performed_by": "Joe"
      *          "notes": "Custom note"
@@ -330,6 +364,7 @@ class AssessmentController extends BaseController
         $assessmentService->add(
             [
                 'space_id'     => $request->get('space_id'),
+                'resident_id'  => $request->get('resident_id'),
                 'form_id'      => $request->get('form_id'),
                 'date'         => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),
@@ -354,6 +389,7 @@ class AssessmentController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     space_id       The unique identifier of the space
+     * @apiParam {Int}     resident_id    The unique identifier of the resident
      * @apiParam {Int}     form_id        The unique identifier of the form
      * @apiParam {String}  performed_by   The performed by info of the assessment
      * @apiParam {String}  notes          The notes of the assessment
@@ -396,6 +432,7 @@ class AssessmentController extends BaseController
             $id,
             [
                 'space_id'     => $request->get('space_id'),
+                'resident_id'  => $request->get('resident_id'),
                 'form_id'      => $request->get('form_id'),
                 'date'         => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),

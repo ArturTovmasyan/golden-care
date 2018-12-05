@@ -39,7 +39,8 @@ class Form
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
      *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get"
+     *     "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -76,7 +77,8 @@ class Form
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
      *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get"
+     *     "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $title;
@@ -85,7 +87,8 @@ class Form
      * @ORM\ManyToMany(targetEntity="CareLevelGroup", mappedBy="forms", cascade={"persist", "remove"})
      * @Groups({
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_report"
      * })
      */
     protected $careLevelGroups;
@@ -98,7 +101,8 @@ class Form
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
      *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get"
+     *     "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      * @SerializedName("categories")
      */

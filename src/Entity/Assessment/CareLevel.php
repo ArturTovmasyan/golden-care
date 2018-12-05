@@ -37,7 +37,8 @@ class CareLevel
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get"
+     *     "api_admin_assessment_care_level_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -64,7 +65,7 @@ class CareLevel
 
     /**
      * @var CareLevelGroup
-     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\CareLevelGroup")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\CareLevelGroup", inversedBy="careLevels", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_care_level_group", referencedColumnName="id", onDelete="SET NULL")
      * })
@@ -96,7 +97,8 @@ class CareLevel
      * @Assert\NotBlank(groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
      * @Groups({
      *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get"
+     *     "api_admin_assessment_care_level_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $title;
@@ -107,7 +109,8 @@ class CareLevel
      * @Assert\Type(type="integer",message="The value {{ value }} is not a valid {{ type }}.")
      * @Groups({
      *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get"
+     *     "api_admin_assessment_care_level_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $levelLow = 0;
@@ -117,7 +120,8 @@ class CareLevel
      * @ORM\Column(name="level_high", type="integer", nullable=true)
      * @Groups({
      *     "api_admin_assessment_care_level_list",
-     *     "api_admin_assessment_care_level_get"
+     *     "api_admin_assessment_care_level_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $levelHigh;

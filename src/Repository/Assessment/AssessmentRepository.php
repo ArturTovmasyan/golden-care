@@ -4,6 +4,7 @@ namespace App\Repository\Assessment;
 
 use App\Entity\Assessment\Assessment;
 use App\Entity\Assessment\Form;
+use App\Entity\ResidentAssessment;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -16,12 +17,17 @@ class AssessmentRepository extends EntityRepository
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Assessment::class, 'a')
+            ->innerJoin(
+                ResidentAssessment::class,
+                'ra',
+                Join::WITH,
+                'a = ra.assessment'
+            )
             ->leftJoin(
                 Form::class,
                 'f',
@@ -40,6 +46,27 @@ class AssessmentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('a');
 
         return $qb->where($qb->expr()->in('a.id', $ids))
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $residentId
+     * @return mixed
+     */
+    public function findByResident($residentId)
+    {
+        return $this
+            ->createQueryBuilder('a')
+            ->innerJoin(
+                ResidentAssessment::class,
+                'ra',
+                Join::WITH,
+                'a = ra.assessment'
+            )
+            ->where('ra.resident = :residentId')
+            ->setParameter('residentId', $residentId)
             ->groupBy('a.id')
             ->getQuery()
             ->getResult();

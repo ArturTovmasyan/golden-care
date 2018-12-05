@@ -2,25 +2,22 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\AssessmentCareLevelGroupNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryMultipleException;
-use App\Api\V1\Common\Service\Exception\AssessmentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentRowNotAvailableException;
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Allergen;
 use App\Entity\Assessment\Assessment;
 use App\Entity\Assessment\AssessmentRow;
-use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
+use App\Entity\Resident;
+use App\Entity\ResidentAssessment;
 use App\Entity\Space;
-use App\Repository\Assessment\CategoryRepository;
-use App\Repository\Assessment\FormCategoryRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -32,11 +29,22 @@ class AssessmentService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
+     * @return bool|void
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Assessment::class)->search($queryBuilder);
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
+
+            $queryBuilder
+                ->where('ra.resident = :residentId')
+                ->setParameter('residentId', $residentId);
+
+
+            return $this->em->getRepository(Assessment::class)->search($queryBuilder);
+        }
+
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -45,16 +53,59 @@ class AssessmentService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        return $this->em->getRepository(Assessment::class)->findAll();
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
+
+            return $this->em->getRepository(Assessment::class)->findByResident($residentId);
+        }
+
+        throw new ResidentNotFoundException();
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return Assessment|null|object
      */
-    public function getById($id)
+    public function getById(int $id)
     {
         return $this->em->getRepository(Assessment::class)->find($id);
+    }
+
+    /**
+     * @param int $id
+     * @param int $type
+     * @return \App\Model\Report\Assessment
+     */
+    public function getReport(int $id, $type = \App\Model\Assessment::TYPE_FILLED)
+    {
+        /**
+         * @var Assessment $assessment
+         */
+        $assessment = $this->em->getRepository(Assessment::class)->find($id);
+
+        if (is_null($assessment)) {
+            throw new AssessmentNotFoundException();
+        }
+
+        $form            = $assessment->getForm();
+        $careLevelGroups = $form->getCareLevelGroups();
+
+        // create report
+        $report = new \App\Model\Report\Assessment();
+        $report->setType($type ?? \App\Model\Assessment::TYPE_FILLED);
+        $report->setTitle('Level of Care Assessment');
+        $report->setPerformedBy($assessment->getPerformedBy());
+        $report->setDate($assessment->getDate());
+        $report->setResidentFullName($assessment->getResidentAssessment()->getResident());
+        $report->setGroups($careLevelGroups);
+        $report->setAllGroups($careLevelGroups);
+        $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
+
+        unset($form);
+        unset($careLevelGroups);
+        unset($assessment);
+
+        return $report;
     }
 
     /**
@@ -67,29 +118,40 @@ class AssessmentService extends BaseService implements IGridService
             /**
              * @var Space $space
              * @var Form $form
+             * @var Resident $resident
              */
             $this->em->getConnection()->beginTransaction();
 
-            $rows    = $params['rows'] ?? [];
-            $spaceId = $params['space_id'] ?? 0;
-            $formId  = $params['form_id'] ?? 0;
-            $space   = null;
-            $form    = null;
+            $rows       = $params['rows'] ?? [];
+            $spaceId    = $params['space_id'] ?? 0;
+            $formId     = $params['form_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
+            $space      = null;
+            $form       = null;
+            $resident   = null;
 
             if ($spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
+            }
 
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
+            if (is_null($space)) {
+                throw new SpaceNotFoundException();
             }
 
             if ($formId > 0) {
                 $form = $this->em->getRepository(Form::class)->find($formId);
+            }
 
-                if (is_null($form)) {
-                    throw new AssessmentFormNotFoundException();
-                }
+            if (is_null($form)) {
+                throw new AssessmentFormNotFoundException();
+            }
+
+            if ($residentId > 0) {
+                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            }
+
+            if (is_null($resident)) {
+                throw new ResidentNotFoundException();
             }
 
             $assessment = new Assessment();
@@ -102,9 +164,17 @@ class AssessmentService extends BaseService implements IGridService
             $this->validate($assessment, null, ['api_admin_assessment_add']);
             $this->em->persist($assessment);
 
-            $score = $this->saveRows($assessment, $rows);
+            // save rows
+            $this->saveRows($assessment, $rows);
 
-            $assessment->setScore($score);
+            // save assessment resident
+            $residentAssessment = new ResidentAssessment();
+            $residentAssessment->setAssessment($assessment);
+            $residentAssessment->setResident($resident);
+            $this->em->persist($residentAssessment);
+
+            // calculate and save total score
+            $assessment->setScore($this->calculateTotalScore($assessment));
             $this->em->persist($assessment);
             $this->em->flush();
 
@@ -131,11 +201,13 @@ class AssessmentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
-            $formId  = $params['form_id'] ?? 0;
-            $rows    = $params['rows'] ?? [];
-            $space   = null;
-            $form    = null;
+            $spaceId    = $params['space_id'] ?? 0;
+            $formId     = $params['form_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
+            $rows       = $params['rows'] ?? [];
+            $space      = null;
+            $form       = null;
+            $resident   = null;
 
             if ($spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -150,6 +222,14 @@ class AssessmentService extends BaseService implements IGridService
 
                 if (is_null($form)) {
                     throw new AssessmentFormNotFoundException();
+                }
+            }
+
+            if ($residentId > 0) {
+                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+
+                if (is_null($resident)) {
+                    throw new ResidentNotFoundException();
                 }
             }
 
@@ -168,11 +248,19 @@ class AssessmentService extends BaseService implements IGridService
             $this->validate($assessment, null, ['api_admin_assessment_form_edit']);
             $this->em->persist($assessment);
 
-            $score = $this->saveRows($assessment, $rows);
-            $assessment->setScore($score);
-            $this->em->persist($assessment);
-            $this->em->flush();
+            // save rows
+            $this->saveRows($assessment, $rows);
 
+            // calculate and save total score
+            $assessment->setScore($this->calculateTotalScore($assessment));
+            $this->em->persist($assessment);
+
+            // save assessment resident
+            $residentAssessment = $assessment->getResidentAssessment();
+            $residentAssessment->setResident($resident);
+            $this->em->persist($residentAssessment);
+
+            $this->em->flush();
 
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -185,9 +273,8 @@ class AssessmentService extends BaseService implements IGridService
     /**
      * @param Assessment $assessment
      * @param $newRows
-     * @return float
      */
-    public function saveRows(Assessment $assessment, $newRows)
+    private function saveRows(Assessment $assessment, $newRows)
     {
         /**
          * @var FormCategory $formCategory
@@ -199,7 +286,6 @@ class AssessmentService extends BaseService implements IGridService
         $categoriesById           = [];
         $rowsById                 = [];
         $categoryIdsWithUniqueRow = [];
-        $score                    = 0;
         $formCategories           = $assessment->getForm()->getFormCategories();
 
         foreach ($formCategories as $formCategory) {
@@ -245,8 +331,6 @@ class AssessmentService extends BaseService implements IGridService
                     $categoryIdsWithUniqueRow[] = $categoryId;
                 }
 
-                $score += $rowsById[$rowId]->getScore();
-
                 $assessmentRow = new AssessmentRow();
                 $assessmentRow->setAssessment($assessment);
                 $assessmentRow->setRow($rowsById[$rowId]);
@@ -254,8 +338,19 @@ class AssessmentService extends BaseService implements IGridService
                 $this->em->persist($assessmentRow);
             }
         }
+    }
 
-        return $score;
+    /**
+     * @param Assessment $assessment
+     * @return int
+     */
+    private function calculateTotalScore(Assessment $assessment)
+    {
+        // create report
+        $report = new \App\Model\Report\Assessment();
+        $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
+
+        return $report->getTotalScore();
     }
 
     /**

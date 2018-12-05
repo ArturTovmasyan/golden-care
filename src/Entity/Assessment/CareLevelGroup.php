@@ -40,7 +40,8 @@ class CareLevelGroup
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -83,7 +84,8 @@ class CareLevelGroup
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get"
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $title;
@@ -101,6 +103,14 @@ class CareLevelGroup
      * )
      */
     private $forms;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CareLevel", mappedBy="careLevelGroup", cascade={"persist"})
+     * @Groups({
+     *     "api_admin_assessment_report"
+     * })
+     */
+    private $careLevels;
 
     /**
      * CareLevelGroup constructor.
@@ -188,5 +198,21 @@ class CareLevelGroup
     public function removeForm(Form $form)
     {
         $this->forms->removeElement($form);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCareLevels()
+    {
+        return $this->careLevels;
+    }
+
+    /**
+     * @param mixed $careLevels
+     */
+    public function setCareLevels($careLevels): void
+    {
+        $this->careLevels = $careLevels;
     }
 }

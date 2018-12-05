@@ -2,6 +2,7 @@
 
 namespace App\Entity\Assessment;
 
+use App\Entity\ResidentAssessment;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Form
@@ -39,7 +41,8 @@ class Assessment
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get"
+     *     "api_admin_assessment_get",
+     *     "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -75,6 +78,7 @@ class Assessment
      * )
      * @Groups({
      *     "api_admin_assessment_list",
+     *     "api_admin_assessment_report",
      *     "api_admin_assessment_get"
      * })
      */
@@ -92,6 +96,7 @@ class Assessment
      * )
      * @Groups({
      *     "api_admin_assessment_list",
+     *     "api_admin_assessment_report",
      *     "api_admin_assessment_get"
      * })
      */
@@ -109,6 +114,7 @@ class Assessment
      * )
      * @Groups({
      *     "api_admin_assessment_list",
+     *     "api_admin_assessment_report",
      *     "api_admin_assessment_get"
      * })
      */
@@ -119,6 +125,7 @@ class Assessment
      * @ORM\Column(name="notes", type="text", length=400, nullable=true)
      * @Groups({
      *     "api_admin_assessment_list",
+     *     "api_admin_assessment_report",
      *     "api_admin_assessment_get"
      * })
      */
@@ -129,6 +136,7 @@ class Assessment
      * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="assessment", cascade={"persist"})
      * @Groups({
      *     "api_admin_assessment_list",
+     *     "api_admin_assessment_report",
      *     "api_admin_assessment_get"
      * })
      */
@@ -145,10 +153,16 @@ class Assessment
      * )
      * @Groups({
      *      "api_admin_assessment_list",
+     *      "api_admin_assessment_report",
      *      "api_admin_assessment_get"
      * })
      */
     private $score = 0;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentAssessment", mappedBy="assessment", cascade={"persist"})
+     */
+    private $residentAssessment;
 
     /**
      * @return int
@@ -276,5 +290,21 @@ class Assessment
     public function setScore(float $score): void
     {
         $this->score = $score;
+    }
+
+    /**
+     * @return ResidentAssessment
+     */
+    public function getResidentAssessment()
+    {
+        return $this->residentAssessment;
+    }
+
+    /**
+     * @param mixed $residentAssessment
+     */
+    public function setResidentAssessment($residentAssessment): void
+    {
+        $this->residentAssessment = $residentAssessment;
     }
 }

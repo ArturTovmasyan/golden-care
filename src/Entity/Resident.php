@@ -248,6 +248,11 @@ class Resident
     private $phones;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAssessment", mappedBy="resident")
+     */
+    private $residentAssessments;
+
+    /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("number")
      * @Groups({"api_admin_resident_list_by_params"})

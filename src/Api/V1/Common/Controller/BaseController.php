@@ -5,7 +5,11 @@ namespace App\Api\V1\Common\Controller;
 use App\Annotation\Grid;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
+use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
+use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Report;
+use App\Model\Report\Base;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
@@ -152,27 +156,6 @@ class BaseController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param $data
-     * @param array $fields
-     * @return PdfResponse
-     */
-    protected function respondPdf(Request $request, $data, $fields)
-    {
-        // TODO(haykg): this is temporary solution, need to be added title and field lables
-        $html = $this->renderView(
-            '@api_grid/grid.html.twig',
-            [
-                'title' => 'Title',
-                'fields' => $fields,
-                'data' => $data
-            ]
-        );
-
-        return new PdfResponse($this->pdf->getOutputFromHtml($html));
-    }
-
-    /**
      * @param string $message
      * @param int $httpStatus
      * @param array $data
@@ -206,6 +189,77 @@ class BaseController extends Controller
         }
 
         return new JsonResponse($responseData, $httpStatus, $headers, true);
+    }
+
+    /**
+     * @param Request $request
+     * @param $data
+     * @param $fields
+     * @return PdfResponse
+     * @throws \Exception
+     */
+    protected function respondPdf(Request $request, $data, $fields)
+    {
+        return $this->respondFile(
+            '@api_grid/grid.html.twig',
+            'pdf',
+            [
+                'title'  => 'Title',
+                'fields' => $fields,
+                'data'   => $data
+            ]
+        );
+    }
+
+    /**
+     * @param $template
+     * @param string $format
+     * @param array $params
+     * @return PdfResponse
+     * @throws \Exception
+     */
+    protected function respondFile($template, $format = 'pdf', array $params = [])
+    {
+        $html = $this->renderView($template, $params);
+
+        if ($format == 'pdf') {
+            return new PdfResponse($this->pdf->getOutputFromHtml($html));
+        }
+
+        throw new \Exception('Support only pdf, other formats coming soon');
+    }
+
+    /**
+     * @param Request $request
+     * @param string $alias
+     * @param Base $dataObject
+     * @return PdfResponse
+     * @throws \Exception
+     */
+    protected function respondReport(Request $request, string $alias, Base $dataObject)
+    {
+        /**
+         * @var Base $className
+         * @var Report $report
+         */
+        $report = $this->em->getRepository(Report::class)->findOneBy(['alias' => $alias]);
+
+        if (is_null($report)) {
+            throw new ReportNotFoundException();
+        }
+
+        if (
+            ($request->get('format') == 'csv' && !$report->isCsv()) ||
+            ($request->get('format') == 'pdf' && !$report->isPdf())
+        ) {
+            throw new ReportFormatNotFoundException();
+        }
+
+        return $this->respondFile(
+            '@api_report/'. $alias .'.twig',
+            $request->get('format'),
+            ['data' => $dataObject]
+        );
     }
 
     /**

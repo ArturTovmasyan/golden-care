@@ -27,7 +27,8 @@ class Row
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *      "api_admin_assessment_report"
      * })
      */
     private $id;
@@ -65,7 +66,8 @@ class Row
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *      "api_admin_assessment_report"
      * })
      */
     private $title;
@@ -85,7 +87,8 @@ class Row
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *      "api_admin_assessment_report"
      * })
      */
     private $score = 0;
@@ -99,7 +102,8 @@ class Row
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
      *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get"
+     *      "api_admin_assessment_get",
+     *      "api_admin_assessment_report"
      * })
      */
     private $orderNumber = 0;
