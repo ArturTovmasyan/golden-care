@@ -34,36 +34,6 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class ResidentAssessmentController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/assessment/{id}/report Get Assessment Report
-     * @apiVersion 1.0.0
-     * @apiName Get Assessment Report
-     * @apiGroup Admin Assessment
-     * @apiDescription This function is used to download resident assessment report
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  format  The identifier of the format (available only pdf)
-     * @apiParam {Int}     type    The identifier of the report (1 - Filled, 2 - Blank)
-     *
-     * @Route("/{id}/report", requirements={"id"="\d+"}, name="api_admin_resident_assessment_report", methods={"GET"})
-     *
-     * @param Request $request
-     * @param $id
-     * @param ResidentAssessmentService $residentAssessmentService
-     * @return PdfResponse
-     * @throws \Exception
-     */
-    public function reportAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
-    {
-        return $this->respondReport(
-            $request,
-            'assessment',
-            $residentAssessmentService->getReport($id, $request->get('type'))
-        );
-    }
-
-    /**
      * @api {get} /api/v1.0/admin/resident/assessment/grid Get Assessment Grid
      * @apiVersion 1.0.0
      * @apiName Get Assessment Grid

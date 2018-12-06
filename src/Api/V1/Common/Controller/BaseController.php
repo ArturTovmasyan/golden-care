@@ -10,6 +10,7 @@ use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Report;
 use App\Model\Report\Base;
+use App\Util\Mailer;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
@@ -23,6 +24,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -46,6 +48,12 @@ class BaseController extends Controller
     /** @var Pdf */
     protected $pdf;
 
+    /** @var Mailer */
+    protected $mailer;
+
+    /** @var Security */
+    protected $security;
+
     /**
      * BaseController constructor.
      * @param SerializerInterface $serializer
@@ -53,6 +61,9 @@ class BaseController extends Controller
      * @param ValidatorInterface $validator
      * @param UserPasswordEncoderInterface $encoder
      * @param Reader $reader
+     * @param Pdf $pdf
+     * @param Mailer $mailer
+     * @param Security $security
      */
     public function __construct(
         SerializerInterface $serializer,
@@ -60,7 +71,9 @@ class BaseController extends Controller
         ValidatorInterface $validator,
         UserPasswordEncoderInterface $encoder,
         Reader $reader,
-        Pdf $pdf
+        Pdf $pdf,
+        Mailer $mailer,
+        Security $security
     ) {
         $this->serializer = $serializer;
         $this->em         = $em;
@@ -68,6 +81,8 @@ class BaseController extends Controller
         $this->encoder    = $encoder;
         $this->reader     = $reader;
         $this->pdf        = $pdf;
+        $this->mailer     = $mailer;
+        $this->security   = $security;
     }
 
     /**
@@ -232,33 +247,36 @@ class BaseController extends Controller
     /**
      * @param Request $request
      * @param string $alias
-     * @param Base $dataObject
      * @return PdfResponse
      * @throws \Exception
      */
-    protected function respondReport(Request $request, string $alias, Base $dataObject)
+    protected function respondReport(Request $request, string $alias)
     {
-        /**
-         * @var Base $className
-         * @var Report $report
-         */
-        $report = $this->em->getRepository(Report::class)->findOneBy(['alias' => $alias]);
+        $report = $this->container->getParameter('report')[$alias] ?? null;
 
         if (is_null($report)) {
             throw new ReportNotFoundException();
         }
 
-        if (
-            ($request->get('format') == 'csv' && !$report->isCsv()) ||
-            ($request->get('format') == 'pdf' && !$report->isPdf())
-        ) {
+        $availableFormats = $report['formats'];
+
+        if (!in_array($request->get('format'), $availableFormats)) {
             throw new ReportFormatNotFoundException();
         }
+
+        $service = new $report['service'](
+            $this->em,
+            $this->encoder,
+            $this->mailer,
+            $this->validator,
+            $this->security,
+            $this->reader
+        );
 
         return $this->respondFile(
             '@api_report/'. $alias .'.twig',
             $request->get('format'),
-            ['data' => $dataObject]
+            ['data' => $service->getReport($request)]
         );
     }
 

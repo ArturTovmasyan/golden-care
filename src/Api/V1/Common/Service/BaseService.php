@@ -44,12 +44,13 @@ class BaseService
     protected $reader;
 
     /**
-     * UserService constructor.
+     * BaseService constructor.
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
      * @param Mailer $mailer
      * @param ValidatorInterface $validator
      * @param Security $security
+     * @param Reader $reader
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -58,8 +59,7 @@ class BaseService
         ValidatorInterface $validator,
         Security $security,
         Reader $reader
-    )
-    {
+    ) {
         $this->em        = $em;
         $this->encoder   = $encoder;
         $this->mailer    = $mailer;

@@ -18,6 +18,7 @@ use App\Entity\Assessment\Row;
 use App\Entity\Resident;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ResidentAssessmentService
@@ -70,15 +71,16 @@ class ResidentAssessmentService extends BaseService implements IGridService
     }
 
     /**
-     * @param int $id
-     * @param int $type
+     * @param Request $request
      * @return \App\Model\Report\Assessment
      */
-    public function getReport(int $id, $type = \App\Model\Assessment::TYPE_FILLED)
+    public function getReport(Request $request)
     {
         /**
          * @var Assessment $assessment
          */
+        $id         = $request->get('id');
+        $type       = $request->get('type') ?? \App\Model\Assessment::TYPE_FILLED;
         $assessment = $this->em->getRepository(Assessment::class)->find($id);
 
         if (is_null($assessment)) {

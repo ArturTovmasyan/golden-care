@@ -5,6 +5,10 @@ parameters:
     file_service:
         extensions: ['jpg','jpeg','png','gif', 'doc','odt','docx']
         path: '%env(resolve:CDN_PATH)%'
+    report:
+        assessment:
+            service: App\Api\V1\Admin\Service\ResidentAssessmentService
+            formats: ['pdf']
 
 services:
     # default configuration for services in *this* file
