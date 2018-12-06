@@ -25,13 +25,17 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
-
-            $this->em->getRepository(ResidentMedicationAllergy::class)->findBy(['resident' => $residentId]);
-        } else {
-            $this->em->getRepository(ResidentMedicationAllergy::class)->search($queryBuilder);
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
+
+        $residentId = $params[0]['resident_id'];
+
+        $queryBuilder
+            ->where('a.resident = :residentId')
+            ->setParameter('residentId', $residentId);
+
+        $this->em->getRepository(ResidentMedicationAllergy::class)->search($queryBuilder);
     }
 
     public function list($params)
@@ -42,7 +46,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             return $this->em->getRepository(ResidentMedicationAllergy::class)->findBy(['resident' => $residentId]);
         }
 
-        return $this->em->getRepository(ResidentMedicationAllergy::class)->findAll();
+        throw new ResidentNotFoundException();
     }
 
     /**

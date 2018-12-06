@@ -31,13 +31,17 @@ class ResidentEventService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
-
-            $this->em->getRepository(ResidentEvent::class)->findBy(['resident' => $residentId]);
-        } else {
-            $this->em->getRepository(ResidentEvent::class)->search($queryBuilder);
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
+
+        $residentId = $params[0]['resident_id'];
+
+        $queryBuilder
+            ->where('a.resident = :residentId')
+            ->setParameter('residentId', $residentId);
+
+        $this->em->getRepository(ResidentEvent::class)->search($queryBuilder);
     }
 
     public function list($params)
@@ -48,7 +52,7 @@ class ResidentEventService extends BaseService implements IGridService
             return $this->em->getRepository(ResidentEvent::class)->findBy(['resident' => $residentId]);
         }
 
-        return $this->em->getRepository(ResidentEvent::class)->findAll();
+        throw new ResidentNotFoundException();
     }
 
     /**
