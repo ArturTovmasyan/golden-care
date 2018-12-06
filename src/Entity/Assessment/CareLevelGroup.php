@@ -41,7 +41,7 @@ class CareLevelGroup
      *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -85,7 +85,7 @@ class CareLevelGroup
      *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $title;
@@ -107,7 +107,7 @@ class CareLevelGroup
     /**
      * @ORM\OneToMany(targetEntity="CareLevel", mappedBy="careLevelGroup", cascade={"persist"})
      * @Groups({
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $careLevels;

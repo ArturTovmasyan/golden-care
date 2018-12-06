@@ -37,9 +37,9 @@ class Category
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -60,9 +60,9 @@ class Category
      * @Groups({
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $space;
@@ -82,9 +82,9 @@ class Category
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $title;
@@ -98,9 +98,9 @@ class Category
      *      "api_admin_assessment_category_get",
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $rows;
@@ -117,9 +117,9 @@ class Category
      * @Groups({
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $multiItem = false;

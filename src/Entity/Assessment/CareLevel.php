@@ -38,7 +38,7 @@ class CareLevel
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -98,7 +98,7 @@ class CareLevel
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $title;
@@ -110,7 +110,7 @@ class CareLevel
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $levelLow = 0;
@@ -121,7 +121,7 @@ class CareLevel
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $levelHigh;

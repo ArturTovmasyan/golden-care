@@ -193,68 +193,72 @@ class Assessment extends Base
         $table                 = [];
         $assessmentRowsByRowId = [];
 
-        foreach ($assessmentRows as $assessmentRow) {
-            $assessmentRowsByRowId[$assessmentRow->getRow()->getId()] = $assessmentRow;
+        if (!empty($assessmentRows)) {
+            foreach ($assessmentRows as $assessmentRow) {
+                $assessmentRowsByRowId[$assessmentRow->getRow()->getId()] = $assessmentRow;
+            }
         }
 
-        foreach ($formCategories as $formCategory) {
-            $category            = $formCategory->getCategory();
-            $subScore            = 0;
-            $t                   = 0;
-            $multiItemScoreWords = null;
-
-            $table[] = [
-                0 => $category->getTitle(), // activity
-                1 => $category->isMultiItem(), // score
-                2 => null, // subScore
-                3 => "activity",
-            ];
-
-            foreach ($category->getRows() as $row) {
-                $value = 0;
-
-                if (isset($assessmentRowsByRowId[$row->getId()])) {
-                    $value = $assessmentRowsByRowId[$row->getId()]->getScore();
-                }
-
-                $subScore += $value;
-
-                if ($category->isMultiItem()) {
-                    if ($subScore < 3) {
-                        $t = 2 - $subScore;
-                        $multiItemScoreWords = '( Severe mental impairment )';
-                    }
-                    if ($subScore > 2 && $subScore <= 4) {
-                        $t = 2 - $subScore;
-                        $multiItemScoreWords = '( Definite mental impairment )';
-                    }
-                    if ($subScore > 4 && $subScore <= 7) {
-                        $t = 1 - $subScore;
-                        $multiItemScoreWords = '( Mild mental impairment )';
-
-                    }
-                    if ($subScore > 7 && $subScore <= 10) {
-                        $t = 0 - $subScore;
-                        $multiItemScoreWords = '( Intact mental functioning )';
-                    }
-                }
+        if (!empty($formCategories)) {
+            foreach ($formCategories as $formCategory) {
+                $category            = $formCategory->getCategory();
+                $subScore            = 0;
+                $t                   = 0;
+                $multiItemScoreWords = null;
 
                 $table[] = [
-                    0 => $row->getTitle(),
-                    1 => $value,
-                    2 => null,
-                    3 => "row",
+                    0 => $category->getTitle(), // activity
+                    1 => $category->isMultiItem(), // score
+                    2 => null, // subScore
+                    3 => "activity",
                 ];
+
+                foreach ($category->getRows() as $row) {
+                    $value = 0;
+
+                    if (isset($assessmentRowsByRowId[$row->getId()])) {
+                        $value = $assessmentRowsByRowId[$row->getId()]->getScore();
+                    }
+
+                    $subScore += $value;
+
+                    if ($category->isMultiItem()) {
+                        if ($subScore < 3) {
+                            $t = 2 - $subScore;
+                            $multiItemScoreWords = '( Severe mental impairment )';
+                        }
+                        if ($subScore > 2 && $subScore <= 4) {
+                            $t = 2 - $subScore;
+                            $multiItemScoreWords = '( Definite mental impairment )';
+                        }
+                        if ($subScore > 4 && $subScore <= 7) {
+                            $t = 1 - $subScore;
+                            $multiItemScoreWords = '( Mild mental impairment )';
+
+                        }
+                        if ($subScore > 7 && $subScore <= 10) {
+                            $t = 0 - $subScore;
+                            $multiItemScoreWords = '( Intact mental functioning )';
+                        }
+                    }
+
+                    $table[] = [
+                        0 => $row->getTitle(),
+                        1 => $value,
+                        2 => null,
+                        3 => "row",
+                    ];
+                }
+
+                $table[] = array(
+                    0 => null,
+                    1 => $multiItemScoreWords,
+                    2 => $subScore + $t,
+                    3 => "score",
+                );
+
+                $this->totalScore += $subScore + $t;
             }
-
-            $table[] = array(
-                0 => null,
-                1 => $multiItemScoreWords,
-                2 => $subScore + $t,
-                3 => "score",
-            );
-
-            $this->totalScore += $subScore + $t;
         }
 
         $this->table = $table;

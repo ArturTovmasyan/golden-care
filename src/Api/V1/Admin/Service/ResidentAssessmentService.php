@@ -16,15 +16,14 @@ use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
 use App\Entity\Resident;
-use App\Entity\ResidentAssessment;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class AssessmentService
+ * Class ResidentAssessmentService
  * @package App\Api\V1\Admin\Service
  */
-class AssessmentService extends BaseService implements IGridService
+class ResidentAssessmentService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -33,18 +32,17 @@ class AssessmentService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
+        }
+
             $residentId = $params[0]['resident_id'];
 
             $queryBuilder
-                ->where('ra.resident = :residentId')
+                ->where('a.resident = :residentId')
                 ->setParameter('residentId', $residentId);
 
-
-            return $this->em->getRepository(Assessment::class)->search($queryBuilder);
-        }
-
-        throw new ResidentNotFoundException();
+            $this->em->getRepository(Assessment::class)->search($queryBuilder);
     }
 
     /**
@@ -96,7 +94,7 @@ class AssessmentService extends BaseService implements IGridService
         $report->setTitle('Level of Care Assessment');
         $report->setPerformedBy($assessment->getPerformedBy());
         $report->setDate($assessment->getDate());
-        $report->setResidentFullName($assessment->getResidentAssessment()->getResident());
+        $report->setResidentFullName($assessment->getResident());
         $report->setGroups($careLevelGroups);
         $report->setAllGroups($careLevelGroups);
         $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
@@ -156,6 +154,7 @@ class AssessmentService extends BaseService implements IGridService
 
             $assessment = new Assessment();
             $assessment->setSpace($space);
+            $assessment->setResident($resident);
             $assessment->setForm($form);
             $assessment->setDate(\DateTime::createFromFormat('m-d-Y', $params['date']));
             $assessment->setPerformedBy($params['performed_by']);
@@ -166,12 +165,6 @@ class AssessmentService extends BaseService implements IGridService
 
             // save rows
             $this->saveRows($assessment, $rows);
-
-            // save assessment resident
-            $residentAssessment = new ResidentAssessment();
-            $residentAssessment->setAssessment($assessment);
-            $residentAssessment->setResident($resident);
-            $this->em->persist($residentAssessment);
 
             // calculate and save total score
             $assessment->setScore($this->calculateTotalScore($assessment));
@@ -198,6 +191,7 @@ class AssessmentService extends BaseService implements IGridService
              * @var Assessment $assessment
              * @var Form $form
              * @var Space $space
+             * @var Resident $resident
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -240,6 +234,7 @@ class AssessmentService extends BaseService implements IGridService
             }
 
             $assessment->setSpace($space);
+            $assessment->setResident($resident);
             $assessment->setForm($form);
             $assessment->setDate(\DateTime::createFromFormat('m-d-Y', $params['date']));
             $assessment->setPerformedBy($params['performed_by']);
@@ -254,11 +249,6 @@ class AssessmentService extends BaseService implements IGridService
             // calculate and save total score
             $assessment->setScore($this->calculateTotalScore($assessment));
             $this->em->persist($assessment);
-
-            // save assessment resident
-            $residentAssessment = $assessment->getResidentAssessment();
-            $residentAssessment->setResident($resident);
-            $this->em->persist($residentAssessment);
 
             $this->em->flush();
 

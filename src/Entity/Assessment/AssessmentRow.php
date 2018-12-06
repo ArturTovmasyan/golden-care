@@ -24,9 +24,9 @@ class AssessmentRow
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_get",
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -40,8 +40,8 @@ class AssessmentRow
      * @Assert\NotNull(
      *      message = "Please select a Assessment",
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      */
@@ -56,14 +56,14 @@ class AssessmentRow
      * @Assert\NotNull(
      *      message = "Please select a Row",
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *     "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $row;
@@ -73,14 +73,14 @@ class AssessmentRow
      * @ORM\Column(name="score", type="decimal", precision=8, scale=2, nullable=false)
      * @Assert\NotNull(
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $score = 0;

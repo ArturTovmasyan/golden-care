@@ -1,10 +1,9 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
-use App\Api\V1\Admin\Service\AssessmentService;
+use App\Api\V1\Admin\Service\ResidentAssessmentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\Assessment;
-use App\Model\Assessment as AssessmentModel;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,42 +26,45 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/assessment")
+ * @Route("/api/v1.0/admin/resident/assessment")
  *
  * Class AssessmentController
  * @package App\Api\V1\Admin\Controller
  */
-class AssessmentController extends BaseController
+class ResidentAssessmentController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/assessment/{id}/report Get Assessment Report
+     * @api {get} /api/v1.0/admin/resident/assessment/{id}/report Get Assessment Report
      * @apiVersion 1.0.0
      * @apiName Get Assessment Report
      * @apiGroup Admin Assessment
-     * @apiDescription This function is used to download assessment report
+     * @apiDescription This function is used to download resident assessment report
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @Route("/{id}/report", requirements={"id"="\d+"}, name="api_admin_assessment_report", methods={"GET"})
+     * @apiParam {String}  format  The identifier of the format (available only pdf)
+     * @apiParam {Int}     type    The identifier of the report (1 - Filled, 2 - Blank)
+     *
+     * @Route("/{id}/report", requirements={"id"="\d+"}, name="api_admin_resident_assessment_report", methods={"GET"})
      *
      * @param Request $request
      * @param $id
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return PdfResponse
      * @throws \Exception
      */
-    public function reportAction(Request $request, $id, AssessmentService $assessmentService)
+    public function reportAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
     {
         return $this->respondReport(
             $request,
             'assessment',
-            $assessmentService->getReport($id, $request->get('type'))
+            $residentAssessmentService->getReport($id, $request->get('type'))
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment/grid Get Assessment Grid
+     * @api {get} /api/v1.0/admin/resident/assessment/grid Get Assessment Grid
      * @apiVersion 1.0.0
      * @apiName Get Assessment Grid
      * @apiGroup Admin Assessment
@@ -96,26 +98,26 @@ class AssessmentController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_assessment_grid", methods={"GET"})
+     * @Route("/grid", name="api_admin_resident_assessment_grid", methods={"GET"})
      *
      * @param Request $request
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, AssessmentService $assessmentService)
+    public function gridAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
         return $this->respondGrid(
             $request,
             Assessment::class,
-            'api_admin_assessment_grid',
-            $assessmentService,
+            'api_admin_resident_assessment_grid',
+            $residentAssessmentService,
             ['resident_id' => $request->get('resident_id')]
         );
     }
 
     /**
-     * @api {options} /api/v1.0/admin/assessment/grid Get Assessment Grid Options
+     * @api {options} /api/v1.0/admin/resident/assessment/grid Get Assessment Grid Options
      * @apiVersion 1.0.0
      * @apiName Get Assessment Grid Options
      * @apiGroup Admin Assessment
@@ -139,7 +141,7 @@ class AssessmentController extends BaseController
      *          ]
      *     }
      *
-     * @Route("/grid", name="api_admin_assessment_grid_options", methods={"OPTIONS"})
+     * @Route("/grid", name="api_admin_resident_assessment_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
      * @return JsonResponse
@@ -147,11 +149,11 @@ class AssessmentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Assessment::class, 'api_admin_assessment_grid');
+        return $this->getOptionsByGroupName(Assessment::class, 'api_admin_resident_assessment_grid');
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment Get Assessment
+     * @api {get} /api/v1.0/admin/resident/assessment Get Assessment
      * @apiVersion 1.0.0
      * @apiName Get Assessment
      * @apiGroup Admin Assessment
@@ -213,26 +215,26 @@ class AssessmentController extends BaseController
      *          "score": 2.00
      *     ]
      *
-     * @Route("", name="api_admin_assessment_list", methods={"GET"})
+     * @Route("", name="api_admin_resident_assessment_list", methods={"GET"})
      *
      * @param Request $request
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, AssessmentService $assessmentService)
+    public function listAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
         return $this->respondList(
             $request,
             Assessment::class,
-            'api_admin_assessment_list',
-            $assessmentService,
+            'api_admin_resident_assessment_list',
+            $residentAssessmentService,
             ['resident_id' => $request->get('resident_id')]
         );
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment/{id} Get Assessment
+     * @api {get} /api/v1.0/admin/resident/assessment/{id} Get Assessment
      * @apiVersion 1.0.0
      * @apiName Get CareLevel
      * @apiGroup Admin CareLevel
@@ -294,25 +296,25 @@ class AssessmentController extends BaseController
      *              "score": 0
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_get", methods={"GET"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_assessment_get", methods={"GET"})
      *
      * @param Request $request
      * @param $id
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentService $assessmentService)
+    public function getAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $assessmentService->getById($id),
-            ['api_admin_assessment_get']
+            $residentAssessmentService->getById($id),
+            ['api_admin_resident_assessment_get']
         );
     }
 
     /**
-     * @api {post} /api/v1.0/admin/assessment Add Assessment
+     * @api {post} /api/v1.0/admin/resident/assessment Add Assessment
      * @apiVersion 1.0.0
      * @apiName Add Assessment
      * @apiGroup Admin Assessment
@@ -352,16 +354,16 @@ class AssessmentController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_assessment_add", methods={"POST"})
+     * @Route("", name="api_admin_resident_assessment_add", methods={"POST"})
      *
      * @param Request $request
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, AssessmentService $assessmentService)
+    public function addAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
-        $assessmentService->add(
+        $residentAssessmentService->add(
             [
                 'space_id'     => $request->get('space_id'),
                 'resident_id'  => $request->get('resident_id'),
@@ -379,7 +381,7 @@ class AssessmentController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/assessment/{id} Edit Assessment
+     * @api {put} /api/v1.0/admin/resident/assessment/{id} Edit Assessment
      * @apiVersion 1.0.0
      * @apiName Edit Assessment
      * @apiGroup Admin Assessment
@@ -418,17 +420,17 @@ class AssessmentController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_edit", methods={"PUT"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_assessment_edit", methods={"PUT"})
      *
      * @param Request $request
      * @param $id
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, AssessmentService $assessmentService)
+    public function editAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
     {
-        $assessmentService->edit(
+        $residentAssessmentService->edit(
             $id,
             [
                 'space_id'     => $request->get('space_id'),
@@ -447,7 +449,7 @@ class AssessmentController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment/{id} Delete Assessment
+     * @api {delete} /api/v1.0/admin/resident/assessment/{id} Delete Assessment
      * @apiVersion 1.0.0
      * @apiName Delete Assessment
      * @apiGroup Admin Assessment
@@ -466,17 +468,17 @@ class AssessmentController extends BaseController
      *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_delete", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_assessment_delete", methods={"DELETE"})
      *
      * @param $id
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentService $assessmentService)
+    public function deleteAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
     {
-        $assessmentService->remove($id);
+        $residentAssessmentService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -484,7 +486,7 @@ class AssessmentController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment Bulk Delete Assessment
+     * @api {delete} /api/v1.0/admin/resident/assessment Bulk Delete Assessment
      * @apiVersion 1.0.0
      * @apiName Bulk Delete Assessment
      * @apiGroup Admin Assessment
@@ -508,17 +510,17 @@ class AssessmentController extends BaseController
      *          "error": "CareLevel not found"
      *     }
      *
-     * @Route("", name="api_admin_assessment_delete_bulk", methods={"DELETE"})
+     * @Route("", name="api_admin_resident_assessment_delete_bulk", methods={"DELETE"})
      *
      * @param Request $request
-     * @param AssessmentService $assessmentService
+     * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentService $assessmentService)
+    public function deleteBulkAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
-        $assessmentService->removeBulk($request->get('ids'));
+        $residentAssessmentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

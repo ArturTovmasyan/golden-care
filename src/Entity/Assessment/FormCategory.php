@@ -27,9 +27,9 @@ class FormCategory
      * @Groups({
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_get",
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -44,9 +44,9 @@ class FormCategory
      * @Groups({
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $orderNumber = 0;
@@ -60,9 +60,9 @@ class FormCategory
      * @Groups({
      *      "api_admin_assessment_form_list",
      *      "api_admin_assessment_form_get",
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_get",
-     *      "api_admin_assessment_report"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_get",
+     *      "api_admin_resident_assessment_report"
      * })
      */
     private $category;

@@ -4,7 +4,6 @@ namespace App\Repository\Assessment;
 
 use App\Entity\Assessment\Assessment;
 use App\Entity\Assessment\Form;
-use App\Entity\ResidentAssessment;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -22,12 +21,6 @@ class AssessmentRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Assessment::class, 'a')
-            ->innerJoin(
-                ResidentAssessment::class,
-                'ra',
-                Join::WITH,
-                'a = ra.assessment'
-            )
             ->leftJoin(
                 Form::class,
                 'f',
@@ -59,13 +52,7 @@ class AssessmentRepository extends EntityRepository
     {
         return $this
             ->createQueryBuilder('a')
-            ->innerJoin(
-                ResidentAssessment::class,
-                'ra',
-                Join::WITH,
-                'a = ra.assessment'
-            )
-            ->where('ra.resident = :residentId')
+            ->where('a.resident = :residentId')
             ->setParameter('residentId', $residentId)
             ->groupBy('a.id')
             ->getQuery()

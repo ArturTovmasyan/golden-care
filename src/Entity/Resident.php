@@ -248,9 +248,9 @@ class Resident
     private $phones;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAssessment", mappedBy="resident")
+     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="resident")
      */
-    private $residentAssessments;
+    private $assessments;
 
     /**
      * @Serializer\VirtualProperty()
@@ -485,16 +485,32 @@ class Resident
     /**
      * @return mixed
      */
-    public function getResidentPhones()
+    public function getPhones()
     {
-        return $this->residentPhones;
+        return $this->phones;
     }
 
     /**
-     * @param mixed $residentPhones
+     * @param mixed $phones
      */
-    public function setResidentPhones($residentPhones): void
+    public function setPhones($phones): void
     {
-        $this->residentPhones = $residentPhones;
+        $this->phones = $phones;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAssessments()
+    {
+        return $this->assessments;
+    }
+
+    /**
+     * @param mixed $assessments
+     */
+    public function setAssessments($assessments): void
+    {
+        $this->assessments = $assessments;
     }
 }

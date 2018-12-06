@@ -2,7 +2,7 @@
 
 namespace App\Entity\Assessment;
 
-use App\Entity\ResidentAssessment;
+use App\Entity\Resident;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\AssessmentRepository")
  * @ORM\Table(name="tbl_assessment")
  * @Grid(
- *     api_admin_assessment_grid={
+ *     api_admin_resident_assessment_grid={
  *          {"id", "number", true, true, "a.id"},
  *          {"form", "string", true, true, "f.title"},
  *          {"date", "string", true, true, "a.date"},
@@ -40,9 +40,9 @@ class Assessment
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_get",
-     *     "api_admin_assessment_report"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_get",
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $id;
@@ -56,12 +56,28 @@ class Assessment
      * @Assert\NotNull(
      *      message = "Please select a Space",
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      */
     private $space;
+
+    /**
+     * @var Resident
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="assessments", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(
+     *      message = "Please select a Resident",
+     *      groups={
+     *          "api_admin_assessment_assessment_add",
+     *          "api_admin_assessment_assessment_edit"
+     *      }
+     * )
+     */
+    private $resident;
 
     /**
      * @var Form
@@ -72,14 +88,14 @@ class Assessment
      * @Assert\NotNull(
      *      message = "Please select a Form",
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_report",
-     *     "api_admin_assessment_get"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_report",
+     *     "api_admin_resident_assessment_get"
      * })
      */
     private $form;
@@ -90,14 +106,14 @@ class Assessment
      * @Assert\NotBlank(
      *      message = "Please select a Date",
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_report",
-     *     "api_admin_assessment_get"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_report",
+     *     "api_admin_resident_assessment_get"
      * })
      */
     private $date;
@@ -108,14 +124,14 @@ class Assessment
      * @Assert\NotBlank(
      *     message = "This value can't be blank",
      *     groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *     }
      * )
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_report",
-     *     "api_admin_assessment_get"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_report",
+     *     "api_admin_resident_assessment_get"
      * })
      */
     private $performedBy;
@@ -124,9 +140,9 @@ class Assessment
      * @var string
      * @ORM\Column(name="notes", type="text", length=400, nullable=true)
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_report",
-     *     "api_admin_assessment_get"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_report",
+     *     "api_admin_resident_assessment_get"
      * })
      */
     private $notes;
@@ -135,9 +151,9 @@ class Assessment
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="assessment", cascade={"persist"})
      * @Groups({
-     *     "api_admin_assessment_list",
-     *     "api_admin_assessment_report",
-     *     "api_admin_assessment_get"
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_report",
+     *     "api_admin_resident_assessment_get"
      * })
      */
     private $assessmentRows;
@@ -147,22 +163,17 @@ class Assessment
      * @ORM\Column(name="score", type="decimal", precision=8, scale=2, nullable=false)
      * @Assert\NotNull(
      *      groups={
-     *          "api_admin_assessment_edit",
-     *          "api_admin_assessment_add"
+     *          "api_admin_resident_assessment_edit",
+     *          "api_admin_resident_assessment_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_assessment_list",
-     *      "api_admin_assessment_report",
-     *      "api_admin_assessment_get"
+     *      "api_admin_resident_assessment_list",
+     *      "api_admin_resident_assessment_report",
+     *      "api_admin_resident_assessment_get"
      * })
      */
     private $score = 0;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentAssessment", mappedBy="assessment", cascade={"persist"})
-     */
-    private $residentAssessment;
 
     /**
      * @return int
@@ -194,6 +205,22 @@ class Assessment
     public function setSpace(Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return Resident
+     */
+    public function getResident(): Resident
+    {
+        return $this->resident;
+    }
+
+    /**
+     * @param Resident $resident
+     */
+    public function setResident(Resident $resident): void
+    {
+        $this->resident = $resident;
     }
 
     /**
@@ -290,21 +317,5 @@ class Assessment
     public function setScore(float $score): void
     {
         $this->score = $score;
-    }
-
-    /**
-     * @return ResidentAssessment
-     */
-    public function getResidentAssessment()
-    {
-        return $this->residentAssessment;
-    }
-
-    /**
-     * @param mixed $residentAssessment
-     */
-    public function setResidentAssessment($residentAssessment): void
-    {
-        $this->residentAssessment = $residentAssessment;
     }
 }
