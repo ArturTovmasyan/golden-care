@@ -32,7 +32,7 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
         $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('a.resident = :residentId')
+            ->where('rmhc.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
         $this->em->getRepository(ResidentMedicalHistoryCondition::class)->search($queryBuilder);

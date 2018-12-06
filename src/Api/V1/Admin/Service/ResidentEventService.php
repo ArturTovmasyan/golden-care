@@ -38,7 +38,7 @@ class ResidentEventService extends BaseService implements IGridService
         $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('a.resident = :residentId')
+            ->where('re.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
         $this->em->getRepository(ResidentEvent::class)->search($queryBuilder);

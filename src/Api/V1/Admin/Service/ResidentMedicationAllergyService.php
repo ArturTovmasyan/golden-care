@@ -32,7 +32,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
         $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('a.resident = :residentId')
+            ->where('rma.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
         $this->em->getRepository(ResidentMedicationAllergy::class)->search($queryBuilder);
