@@ -24,7 +24,7 @@
                                 </tr>
                                 <tr>
                                     <td width="40%" align="right"><b>Date: </b></td>
-                                    <td width="40%">{{ data.date.format('m/d/Y') }}</td>
+                                    <td width="40%">{{ data.date }}</td>
                                     <td width="20%"></td>
                                 </tr>
                             </table>
@@ -100,10 +100,6 @@
                         {% set isSelectedLevel = false %}
                         {% if data.type == constant("App\\Model\\Assessment::TYPE_FILLED") %}
                             {% set isSelectedLevel = (isSelectedLevel or (data.totalScore|round >= careLevel.levelLow and data.totalScore|round <= careLevel.levelHigh)) %}
-                        {% else %}
-                            {% for careLevelGroup in data.form.careLevelGroups %}
-                                {% set isSelectedLevel = (isSelectedLevel or careLevelGroup.careLevel.id == careLevel.id) %}
-                            {% endfor %}
                         {% endif %}
                         {% set isSelectedLevel = isSelectedLevel and data.type == constant("App\\Model\\Assessment::TYPE_FILLED") %}
                         <tr>

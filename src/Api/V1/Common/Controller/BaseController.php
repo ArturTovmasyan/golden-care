@@ -274,7 +274,7 @@ class BaseController extends Controller
         );
 
         return $this->respondFile(
-            '@api_report/'. $alias .'.twig',
+            '@api_report/'. $alias .'.' . $request->get('format') . '.twig',
             $request->get('format'),
             ['data' => $service->getReport($request)]
         );

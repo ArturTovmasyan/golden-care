@@ -78,6 +78,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
     {
         /**
          * @var Assessment $assessment
+         * @var Resident $resident
          */
         $id         = $request->get('id');
         $type       = $request->get('type') ?? \App\Model\Assessment::TYPE_FILLED;
@@ -89,17 +90,27 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
         $form            = $assessment->getForm();
         $careLevelGroups = $form->getCareLevelGroups();
+        $type            = $type ?? \App\Model\Assessment::TYPE_FILLED;
+        $resident        = $assessment->getResident();
 
         // create report
         $report = new \App\Model\Report\Assessment();
-        $report->setType($type ?? \App\Model\Assessment::TYPE_FILLED);
+        $report->setType($type);
         $report->setTitle('Level of Care Assessment');
-        $report->setPerformedBy($assessment->getPerformedBy());
-        $report->setDate($assessment->getDate());
-        $report->setResidentFullName($assessment->getResident());
         $report->setGroups($careLevelGroups);
         $report->setAllGroups($careLevelGroups);
-        $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
+
+        if ($type == \App\Model\Assessment::TYPE_FILLED) {
+            $report->setResidentFullName($resident->getFirstName() . ' ' . $resident->getLastName());
+            $report->setDate($assessment->getDate());
+            $report->setPerformedBy($assessment->getPerformedBy());
+            $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
+        } else {
+            $report->setResidentFullName('_________________________');
+            $report->setDate('_________________________');
+            $report->setPerformedBy('_________________________');
+            $report->setBlankTable($assessment->getForm()->getFormCategories());
+        }
 
         unset($form);
         unset($careLevelGroups);

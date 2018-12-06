@@ -87,25 +87,29 @@ class Assessment extends Base
     /**
      * @return \DateTime
      */
-    public function getDate(): \DateTime
+    public function getDate():string
     {
         return $this->date;
     }
 
     /**
-     * @param \DateTime $date
+     * @param $date
      */
-    public function setDate(\DateTime $date): void
+    public function setDate($date): void
     {
-        $this->date = $date;
+        if ($date instanceof \DateTime) {
+            $this->date = $date->format('m/d/y');
+        } else {
+            $this->date = $date;
+        }
     }
 
     /**
-     * @param Resident $resident
+     * @param $residentFullName
      */
-    public function setResidentFullName(Resident $resident)
+    public function setResidentFullName($residentFullName)
     {
-        $this->residentFullName = $resident->getFirstName() . ' ' . $resident->getLastName();
+        $this->residentFullName = $residentFullName;
     }
 
     /**
@@ -119,7 +123,7 @@ class Assessment extends Base
     /**
      * @return int
      */
-    public function getTotalScore(): int
+    public function getTotalScore()
     {
         return $this->totalScore;
     }
@@ -262,6 +266,52 @@ class Assessment extends Base
         }
 
         $this->table = $table;
+    }
+
+    /**
+     * @param $formCategories
+     */
+    public function setBlankTable($formCategories)
+    {
+        /**
+         * @var FormCategory $formCategory
+         * @var Category $category
+         * @var Row $row
+         */
+        $table = [];
+
+        if (!empty($formCategories)) {
+            foreach ($formCategories as $formCategory) {
+                $category            = $formCategory->getCategory();
+                $multiItemScoreWords = null;
+
+                $table[] = [
+                    0 => $category->getTitle(), // activity
+                    1 => null,
+                    2 => null, // subScore
+                    3 => "activity",
+                ];
+
+                foreach ($category->getRows() as $row) {
+                    $table[] = [
+                        0 => $row->getTitle(),
+                        1 => $row->getScore(),
+                        2 => null,
+                        3 => "row",
+                    ];
+                }
+
+                $table[] = array(
+                    0 => null,
+                    1 => null,
+                    2 => "_________",
+                    3 => "score"
+                );
+            }
+        }
+
+        $this->totalScore = '_________________';
+        $this->table      = $table;
     }
 }
 
