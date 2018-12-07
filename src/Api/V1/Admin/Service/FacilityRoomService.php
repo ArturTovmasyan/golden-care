@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use Doctrine\ORM\QueryBuilder;
@@ -71,11 +72,19 @@ class FacilityRoomService extends BaseService implements IGridService
             $facilityRoom = new FacilityRoom();
             $facilityRoom->setFacility($facility);
             $facilityRoom->setNumber($params['number']);
-            $facilityRoom->setType($params['type']);
             $facilityRoom->setFloor($params['floor']);
-            $facilityRoom->setDisabled($params['disabled']);
-            $facilityRoom->setShared($params['shared']);
             $facilityRoom->setNotes($params['notes']);
+
+            if (!empty($params['beds'])) {
+                foreach ($params['beds'] as $bed) {
+                    $newBed = new FacilityBed();
+                    $newBed->setNumber($bed['number']);
+                    $newBed->setRoom($facilityRoom);
+                    $facilityRoom->addBed($newBed);
+
+                    $this->em->persist($newBed);
+                }
+            }
 
             $this->validate($facilityRoom, null, ['api_admin_facility_room_add']);
 
@@ -115,7 +124,6 @@ class FacilityRoomService extends BaseService implements IGridService
                 /** @var Facility $facility */
                 $facility = $this->em->getRepository(Facility::class)->find($facilityId);
 
-
                 if ($facility === null) {
                     throw new FacilityNotFoundException();
                 }
@@ -123,11 +131,47 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $entity->setFacility($facility);
             $entity->setNumber($params['number']);
-            $entity->setType($params['type']);
             $entity->setFloor($params['floor']);
-            $entity->setDisabled($params['disabled']);
-            $entity->setShared($params['shared']);
             $entity->setNotes($params['notes']);
+
+            $addedBeds = [];
+            $editedBeds = [];
+            $editedBedsIds = [];
+            if (!empty($params['beds'])) {
+                foreach ($params['beds'] as $bed) {
+                    if (empty($bed['id'])) {
+                        $addedBeds[] = $bed;
+                    } else {
+                        $editedBeds[$bed['id']] = $bed['number'];
+                        $editedBedsIds[] = $bed['id'];
+                    }
+                }
+            }
+
+            if ($entity->getBeds() !== null) {
+                /** @var FacilityBed $existingBed */
+                foreach ($entity->getBeds() as $existingBed) {
+                    if (\in_array($existingBed->getId(), $editedBedsIds, false)) {
+                        $existingBed->setNumber($editedBeds[$existingBed->getId()]);
+
+                        $this->em->persist($existingBed);
+                    } else {
+                        $entity->removeBed($existingBed);
+                        $this->em->remove($existingBed);
+                    }
+                }
+            }
+
+            if (!empty($addedBeds)) {
+                foreach ($addedBeds as $bed) {
+                    $newBed = new FacilityBed();
+                    $newBed->setNumber($bed['number']);
+                    $newBed->setRoom($entity);
+                    $entity->addBed($newBed);
+
+                    $this->em->persist($newBed);
+                }
+            }
 
             $this->validate($entity, null, ['api_admin_facility_room_edit']);
 
