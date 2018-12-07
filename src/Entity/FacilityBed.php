@@ -13,19 +13,19 @@ use App\Annotation\Grid;
 /**
  * Class FacilityBed
  *
- * @ORM\Entity(repositoryClass="App\Repository\FacilityRoomRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\FacilityBedRepository")
  * @UniqueEntity(
  *     fields={"room", "number"},
  *     errorPath="number",
  *     message="This number is already in use on that room",
  *     groups={
- *          "api_admin_bed_add",
- *          "api_admin_bed_edit"
+ *          "api_admin_facility_bed_add",
+ *          "api_admin_facility_bed_edit"
  *     }
  * )
  * @ORM\Table(name="tbl_facility_bed")
  * @Grid(
- *     api_admin_bed_grid={
+ *     api_admin_facility_bed_grid={
  *          {"id", "number", true, true, "fb.id"},
  *          {"number", "string", true, true, "fb.number"},
  *          {"room", "string", true, true, "fr.name"},
@@ -43,9 +43,9 @@ class FacilityBed
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_bed_grid",
-     *     "api_admin_bed_list",
-     *     "api_admin_bed_get",
+     *     "api_admin_facility_bed_grid",
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
      *     "api_admin_facility_room_grid",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get"
@@ -57,8 +57,8 @@ class FacilityBed
      * @var string
      * @Assert\NotBlank(
      *     groups={
-     *          "api_admin_bed_add",
-     *          "api_admin_bed_edit",
+     *          "api_admin_facility_bed_add",
+     *          "api_admin_facility_bed_edit",
      *          "api_admin_facility_room_add",
      *          "api_admin_facility_room_edit"
      *     }
@@ -67,17 +67,17 @@ class FacilityBed
      *      max = 10,
      *      maxMessage = "Number cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_bed_add",
-     *          "api_admin_bed_edit",
+     *          "api_admin_facility_bed_add",
+     *          "api_admin_facility_bed_edit",
      *          "api_admin_facility_room_add",
      *          "api_admin_facility_room_edit"
      *      }
      * )
      * @ORM\Column(name="number", type="string", length=10)
      * @Groups({
-     *     "api_admin_bed_grid",
-     *     "api_admin_bed_list",
-     *     "api_admin_bed_get",
+     *     "api_admin_facility_bed_grid",
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
      *     "api_admin_facility_room_grid",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get"
@@ -90,8 +90,8 @@ class FacilityBed
      * @Assert\NotNull(
      *     message = "Please select a FacilityRoom",
      *     groups={
-     *          "api_admin_bed_add",
-     *          "api_admin_bed_edit",
+     *          "api_admin_facility_bed_add",
+     *          "api_admin_facility_bed_edit",
      *          "api_admin_facility_room_add",
      *          "api_admin_facility_room_edit"
      *     }
@@ -100,7 +100,7 @@ class FacilityBed
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility_room", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_bed_grid", "api_admin_bed_list", "api_admin_bed_get"})
+     * @Groups({"api_admin_facility_bed_grid", "api_admin_facility_bed_list", "api_admin_facility_bed_get"})
      */
     private $room;
 

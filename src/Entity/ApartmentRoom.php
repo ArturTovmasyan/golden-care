@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use App\Model\RoomType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -14,15 +16,18 @@ use App\Annotation\Grid;
  * Class ApartmentRoom
  *
  * @ORM\Entity(repositoryClass="App\Repository\ApartmentRoomRepository")
+ * @UniqueEntity(
+ *     fields={"apartment", "number"},
+ *     errorPath="number",
+ *     message="This number is already in use on that apartment",
+ *     groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
+ * )
  * @ORM\Table(name="tbl_apartment_room")
  * @Grid(
  *     api_admin_apartment_room_grid={
  *          {"id", "number", true, true, "ar.id"},
  *          {"number", "string", true, true, "ar.number"},
  *          {"floor", "number", true, true, "ar.floor"},
- *          {"type", "enum", true, true, "ar.type", {"\App\Model\RoomType", "getTypeDefaultNames"}},
- *          {"disabled", "enum", true, true, "ar.disabled", {"\App\Model\Boolean", "defaultValues"}},
- *          {"shared", "enum", true, true, "ar.shared", {"\App\Model\Boolean", "defaultValues"}},
  *          {"notes", "string", true, true, "ar.notes"},
  *          {"apartment", "string", true, true, "a.name"},
  *     }
@@ -77,18 +82,6 @@ class ApartmentRoom
     /**
      * @var int
      * @Assert\NotBlank(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
-     * @Assert\Choice(
-     *     callback={"App\Model\RoomType","getTypeValues"},
-     *     groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
-     * )
-     * @ORM\Column(name="type", type="integer", length=1)
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
-     */
-    private $type = RoomType::PRIVATE;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)/",
      *      message="The value should be numeric",
@@ -105,20 +98,6 @@ class ApartmentRoom
     private $floor = 1;
 
     /**
-     * @var bool
-     * @ORM\Column(name="disabled", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
-     */
-    protected $disabled;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="shared", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
-     */
-    protected $shared;
-
-    /**
      * @var string $notes
      * @ORM\Column(name="notes", type="text", length=1000, nullable=true)
      * @Assert\Length(
@@ -129,6 +108,24 @@ class ApartmentRoom
      * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
      */
     private $notes;
+
+    /**
+     * @var ArrayCollection
+     * @Assert\Count(
+     *      min = 1,
+     *      minMessage = "You must specify at least one Bed",
+     *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
+     * )
+     * @Assert\Valid(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ApartmentBed", mappedBy="room", cascade={"remove", "persist"})
+     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
+     */
+    private $beds;
+
+    public function __construct()
+    {
+        $this->beds = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -181,18 +178,6 @@ class ApartmentRoom
         $this->number = preg_replace('/\s\s+/', ' ', $number);
     }
 
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType($type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getFloor(): ?int
     {
         return $this->floor;
@@ -205,38 +190,6 @@ class ApartmentRoom
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDisabled(): bool
-    {
-        return $this->disabled;
-    }
-
-    /**
-     * @param bool $disabled
-     */
-    public function setDisabled(bool $disabled): void
-    {
-        $this->disabled = $disabled;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isShared(): bool
-    {
-        return $this->shared;
-    }
-
-    /**
-     * @param bool $shared
-     */
-    public function setShared(bool $shared): void
-    {
-        $this->shared = $shared;
-    }
-
     public function getNotes(): ?string
     {
         return $this->notes;
@@ -247,5 +200,60 @@ class ApartmentRoom
         $this->notes = $notes;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBeds()
+    {
+        return $this->beds;
+    }
+
+    /**
+     * @param ArrayCollection $beds
+     */
+    public function setBeds(ArrayCollection $beds): void
+    {
+        $this->beds = $beds;
+    }
+
+    /**
+     * @param ApartmentBed $bed
+     */
+    public function addBed($bed): void
+    {
+        $bed->setRoom($this);
+        $this->beds->add($bed);
+    }
+
+    /**
+     * @param ApartmentBed $bed
+     */
+    public function removeBed($bed): void
+    {
+        $this->beds->removeElement($bed);
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     */
+    public function areBedsNumberValid(ExecutionContextInterface $context): void
+    {
+        $beds = $this->getBeds();
+        if ($beds !== null) {
+            $numbers = array_map(function($item){return strtolower($item->getNumber());} , $beds->toArray());
+
+            $counts = array_count_values($numbers);
+
+            foreach ($counts as $key => $count) {
+                if (!empty($key) && $count > 1) {
+                    $context->buildViolation('The number '.strtoupper($key).' or '.$key.' is already in use on that room')
+                        ->atPath('beds')
+                        ->addViolation();
+                }
+            }
+        }
     }
 }

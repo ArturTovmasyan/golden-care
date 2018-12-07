@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ApartmentRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\ApartmentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
 use Doctrine\ORM\QueryBuilder;
@@ -71,11 +72,19 @@ class ApartmentRoomService extends BaseService implements IGridService
             $apartmentRoom = new ApartmentRoom();
             $apartmentRoom->setApartment($apartment);
             $apartmentRoom->setNumber($params['number']);
-            $apartmentRoom->setType($params['type']);
             $apartmentRoom->setFloor($params['floor']);
-            $apartmentRoom->setDisabled($params['disabled']);
-            $apartmentRoom->setShared($params['shared']);
             $apartmentRoom->setNotes($params['notes']);
+
+            if (!empty($params['beds'])) {
+                foreach ($params['beds'] as $bed) {
+                    $newBed = new ApartmentBed();
+                    $newBed->setNumber($bed['number']);
+                    $newBed->setRoom($apartmentRoom);
+                    $apartmentRoom->addBed($newBed);
+
+                    $this->em->persist($newBed);
+                }
+            }
 
             $this->validate($apartmentRoom, null, ['api_admin_apartment_room_add']);
 
@@ -123,11 +132,47 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $entity->setApartment($apartment);
             $entity->setNumber($params['number']);
-            $entity->setType($params['type']);
             $entity->setFloor($params['floor']);
-            $entity->setDisabled($params['disabled']);
-            $entity->setShared($params['shared']);
             $entity->setNotes($params['notes']);
+
+            $addedBeds = [];
+            $editedBeds = [];
+            $editedBedsIds = [];
+            if (!empty($params['beds'])) {
+                foreach ($params['beds'] as $bed) {
+                    if (empty($bed['id'])) {
+                        $addedBeds[] = $bed;
+                    } else {
+                        $editedBeds[$bed['id']] = $bed['number'];
+                        $editedBedsIds[] = $bed['id'];
+                    }
+                }
+            }
+
+            if ($entity->getBeds() !== null) {
+                /** @var ApartmentBed $existingBed */
+                foreach ($entity->getBeds() as $existingBed) {
+                    if (\in_array($existingBed->getId(), $editedBedsIds, false)) {
+                        $existingBed->setNumber($editedBeds[$existingBed->getId()]);
+
+                        $this->em->persist($existingBed);
+                    } else {
+                        $entity->removeBed($existingBed);
+                        $this->em->remove($existingBed);
+                    }
+                }
+            }
+
+            if (!empty($addedBeds)) {
+                foreach ($addedBeds as $bed) {
+                    $newBed = new ApartmentBed();
+                    $newBed->setNumber($bed['number']);
+                    $newBed->setRoom($entity);
+                    $entity->addBed($newBed);
+
+                    $this->em->persist($newBed);
+                }
+            }
 
             $this->validate($entity, null, ['api_admin_apartment_room_edit']);
 

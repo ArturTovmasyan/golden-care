@@ -44,10 +44,7 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      id              The unique identifier of the apartmentRoom
      * @apiSuccess {Object}   apartment       The apartment of the apartmentRoom
      * @apiSuccess {String}   number          The number of the apartmentRoom
-     * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
-     * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
@@ -62,9 +59,6 @@ class ApartmentRoomController extends BaseController
      *                  "id": 1,
      *                  "number": "101",
      *                  "floor": 1,
-     *                  "type": 1,
-     *                  "disabled": false,
-     *                  "shared": false,
      *                  "notes": "some notes",
      *                  "apartment": "Auburn Oaks"
      *              }
@@ -137,11 +131,9 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      id              The unique identifier of the apartmentRoom
      * @apiSuccess {Object}   apartment       The apartment of the apartmentRoom
      * @apiSuccess {String}   number          The number of the apartmentRoom
-     * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
-     * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
+     * @apiSuccess {Array}    beds            The beds of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -158,11 +150,26 @@ class ApartmentRoomController extends BaseController
      *                      "name": "Auburn Oaks"
      *                  },
      *                  "number": "101",
-     *                  "type": 1,
      *                  "floor": 1,
-     *                  "disabled": false,
-     *                  "shared": false,
-     *                  "notes": "some notes"
+     *                  "notes": "some notes",
+     *                  "beds": [
+     *                        {
+     *                          "id": 9,
+     *                          "number": "A"
+     *                        },
+     *                        {
+     *                          "id": 10,
+     *                          "number": "B"
+     *                        },
+     *                        {
+     *                          "id": 11,
+     *                          "number": "C"
+     *                        },
+     *                        {
+     *                          "id": 12,
+     *                          "number": "D"
+     *                        }
+     *                    ]
      *              }
      *          ]
      *     }
@@ -198,11 +205,9 @@ class ApartmentRoomController extends BaseController
      * @apiSuccess {Int}      id              The unique identifier of the apartmentRoom
      * @apiSuccess {Object}   apartment       The apartment of the apartmentRoom
      * @apiSuccess {String}   number          The number of the apartmentRoom
-     * @apiSuccess {Int}      type            The type of the apartmentRoom
      * @apiSuccess {Int}      floor           The floor of the apartmentRoom
-     * @apiSuccess {Boolean}  disabled        The disabled status of the apartmentRoom
-     * @apiSuccess {Boolean}  shared          The shared status of the apartmentRoom
      * @apiSuccess {String}   notes           The notes of the apartmentRoom
+     * @apiSuccess {Array}    beds            The beds of the apartmentRoom
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -214,11 +219,26 @@ class ApartmentRoomController extends BaseController
      *                      "name": "Auburn Oaks"
      *                  },
      *                  "number": "101",
-     *                  "type": 1,
      *                  "floor": 1,
-     *                  "disabled": false,
-     *                  "shared": false,
-     *                  "notes": "some notes"
+     *                  "notes": "some notes",
+     *                  "beds": [
+     *                        {
+     *                          "id": 9,
+     *                          "number": "A"
+     *                        },
+     *                        {
+     *                          "id": 10,
+     *                          "number": "B"
+     *                        },
+     *                        {
+     *                          "id": 11,
+     *                          "number": "C"
+     *                        },
+     *                        {
+     *                          "id": 12,
+     *                          "number": "D"
+     *                        }
+     *                    ]
      *          }
      *     }
      *
@@ -250,21 +270,26 @@ class ApartmentRoomController extends BaseController
      *
      * @apiParam {Int}     apartment_id    The unique identifier of the apartment
      * @apiParam {String}  number          The number of the apartmentRoom
-     * @apiParam {Int}     type            The type of the apartmentRoom
      * @apiParam {Int}     floor           The floor of the apartmentRoom
-     * @apiParam {Int}     disabled        The disabled status of the apartmentRoom
-     * @apiParam {Int}     shared          The shared status of the apartmentRoom
      * @apiParam {String}  [notes]         The notes of the apartmentRoom
+     * @apiParam {Array}   beds            The beds of the apartmentRoom
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "apartment_id": 1,
      *          "number": "101",
-     *          "type": 1,
      *          "floor": 1,
-     *          "disabled": 0,
-     *          "shared": 0,
      *          "notes": "some notes",
+     *          "beds": [
+     *                        {
+     *                          "id": "",
+     *                          "number": "A"
+     *                        },
+     *                        {
+     *                          "id": "",
+     *                          "number": "B"
+     *                        }
+     *                    ]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -292,11 +317,9 @@ class ApartmentRoomController extends BaseController
             [
                 'apartment_id' => $request->get('apartment_id'),
                 'number' => $request->get('number'),
-                'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
-                'disabled' => $request->get('disabled'),
-                'shared' => $request->get('shared'),
-                'notes' => $request->get('notes') ?? ''
+                'notes' => $request->get('notes') ?? '',
+                'beds' => $request->get('beds')
             ]
         );
 
@@ -317,21 +340,34 @@ class ApartmentRoomController extends BaseController
      *
      * @apiParam {Int}     apartment_id    The unique identifier of the apartment
      * @apiParam {String}  number          The number of the apartmentRoom
-     * @apiParam {Int}     type            The type of the apartmentRoom
      * @apiParam {Int}     floor           The floor of the apartmentRoom
-     * @apiParam {Int}     disabled        The disabled status of the apartmentRoom
-     * @apiParam {Int}     shared          The shared status of the apartmentRoom
      * @apiParam {String}  [notes]         The notes of the apartmentRoom
+     * @apiParam {Array}   beds            The beds of the apartmentRoom
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *          "apartment_id": 1,
      *          "number": "101",
-     *          "type": 1,
      *          "floor": 1,
-     *          "disabled": 0,
-     *          "shared": 0,
      *          "notes": "some notes",
+     *          "beds": [
+     *                        {
+     *                          "id": 9,
+     *                          "number": "A"
+     *                        },
+     *                        {
+     *                          "id": 10,
+     *                          "number": "B"
+     *                        },
+     *                        {
+     *                          "id": "",
+     *                          "number": "C"
+     *                        },
+     *                        {
+     *                          "id": "",
+     *                          "number": "D"
+     *                        }
+     *                    ]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -361,11 +397,9 @@ class ApartmentRoomController extends BaseController
             [
                 'apartment_id' => $request->get('apartment_id'),
                 'number' => $request->get('number'),
-                'type' => $request->get('type'),
                 'floor' => $request->get('floor'),
-                'disabled' => $request->get('disabled'),
-                'shared' => $request->get('shared'),
-                'notes' => $request->get('notes') ?? ''
+                'notes' => $request->get('notes') ?? '',
+                'beds' => $request->get('beds')
             ]
         );
 
