@@ -7,7 +7,6 @@ use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentRowNotAvailableException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Assessment\Assessment;
 use App\Entity\Assessment\AssessmentRow;
@@ -16,7 +15,6 @@ use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
 use App\Entity\Resident;
-use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -127,27 +125,16 @@ class ResidentAssessmentService extends BaseService implements IGridService
     {
         try {
             /**
-             * @var Space $space
              * @var Form $form
              * @var Resident $resident
              */
             $this->em->getConnection()->beginTransaction();
 
             $rows       = $params['rows'] ?? [];
-            $spaceId    = $params['space_id'] ?? 0;
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
-            $space      = null;
             $form       = null;
             $resident   = null;
-
-            if ($spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-            }
-
-            if (is_null($space)) {
-                throw new SpaceNotFoundException();
-            }
 
             if ($formId > 0) {
                 $form = $this->em->getRepository(Form::class)->find($formId);
@@ -166,10 +153,9 @@ class ResidentAssessmentService extends BaseService implements IGridService
             }
 
             $assessment = new Assessment();
-            $assessment->setSpace($space);
             $assessment->setResident($resident);
             $assessment->setForm($form);
-            $assessment->setDate(\DateTime::createFromFormat('m-d-Y', $params['date']));
+            $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
             $assessment->setNotes($params['notes']);
 
@@ -203,26 +189,15 @@ class ResidentAssessmentService extends BaseService implements IGridService
             /**
              * @var Assessment $assessment
              * @var Form $form
-             * @var Space $space
              * @var Resident $resident
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId    = $params['space_id'] ?? 0;
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
             $rows       = $params['rows'] ?? [];
-            $space      = null;
             $form       = null;
             $resident   = null;
-
-            if ($spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
-            }
 
             if ($formId > 0) {
                 $form = $this->em->getRepository(Form::class)->find($formId);
@@ -246,10 +221,9 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 throw new AssessmentNotFoundException();
             }
 
-            $assessment->setSpace($space);
             $assessment->setResident($resident);
             $assessment->setForm($form);
-            $assessment->setDate(\DateTime::createFromFormat('m-d-Y', $params['date']));
+            $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
             $assessment->setNotes($params['notes']);
 

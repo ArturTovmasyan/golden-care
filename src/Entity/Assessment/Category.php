@@ -115,6 +115,8 @@ class Category
      *     }
      * )
      * @Groups({
+     *      "api_admin_assessment_form_list",
+     *      "api_admin_assessment_form_get",
      *      "api_admin_assessment_category_list",
      *      "api_admin_assessment_category_get",
      *      "api_admin_resident_assessment_list",

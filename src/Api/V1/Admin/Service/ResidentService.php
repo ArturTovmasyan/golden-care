@@ -352,7 +352,7 @@ class ResidentService extends BaseService implements IGridService
             $option = new ResidentFacilityOption();
             $option->setResident($resident);
             $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(\DateTime::createFromFormat('m-d-Y', $params['date_admitted']));
+            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
         }
 
         $option->setDiningRoom($diningRoom);
@@ -389,7 +389,7 @@ class ResidentService extends BaseService implements IGridService
             $option = new ResidentApartmentOption();
             $option->setResident($resident);
             $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(\DateTime::createFromFormat('m-d-Y', $params['date_admitted']));
+            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
         }
 
         $option->setApartmentRoom($apartmentRoom);
@@ -444,7 +444,7 @@ class ResidentService extends BaseService implements IGridService
             $option = new ResidentRegionOption();
             $option->setResident($resident);
             $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(\DateTime::createFromFormat('m-d-Y', $params['date_admitted']));
+            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
         }
 
         $option->setRegion($region);
@@ -520,6 +520,38 @@ class ResidentService extends BaseService implements IGridService
         } catch (ResidentNotFoundException $e) {
             throw $e;
         } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function photo($id, array $params) : void
+    {
+        try {
+            /**
+             * @var Resident $resident
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            $resident = $this->em->getRepository(Resident::class)->find($id);
+
+            if (is_null($resident)) {
+                throw new ResidentNotFoundException();
+            }
+
+            if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;

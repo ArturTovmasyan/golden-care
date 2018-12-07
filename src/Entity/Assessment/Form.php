@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
-use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Form
@@ -98,13 +98,10 @@ class Form
      * @ORM\OneToMany(targetEntity="FormCategory", mappedBy="form", cascade={"remove", "persist"})
      * @ORM\OrderBy({"orderNumber" = "ASC"})
      * @Groups({
-     *     "api_admin_assessment_form_list",
-     *     "api_admin_assessment_form_get",
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
      *     "api_admin_resident_assessment_report"
      * })
-     * @SerializedName("categories")
      */
     private $formCategories;
 
@@ -217,4 +214,25 @@ class Form
     {
         $this->formCategories = $formCategories;
     }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("categories")
+     * @Groups({
+     *     "api_admin_assessment_form_list",
+     *     "api_admin_assessment_form_get",
+     * })
+     */
+    public function getVirtualCategories()
+    {
+        $categories = [];
+
+        /** @var FormCategory $formCategory */
+        foreach ($this->formCategories as $formCategory) {
+            $categories[] = $formCategory->getCategory();
+        }
+
+        return $categories;
+    }
+
 }

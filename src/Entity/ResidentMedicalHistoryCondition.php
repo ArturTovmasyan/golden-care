@@ -18,7 +18,7 @@ use App\Annotation\Grid;
  *     api_admin_resident_medical_history_condition_grid={
  *          {"id", "number", true, true, "rmhc.id"},
  *          {"condition", "string", true, true, "mhc.title"},
- *          {"date", "string", true, true, "rmhc.date"},
+ *          {"date", "date", true, true, "rmhc.date"},
  *          {"notes", "string", true, true, "rmhc.notes"}
  *     }
  * )

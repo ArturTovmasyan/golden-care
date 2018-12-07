@@ -22,7 +22,7 @@ use JMS\Serializer\Annotation as Serializer;
  *     api_admin_resident_assessment_grid={
  *          {"id", "number", true, true, "a.id"},
  *          {"form", "string", true, true, "f.title"},
- *          {"date", "string", true, true, "a.date"},
+ *          {"date", "date", true, true, "a.date"},
  *          {"performed_by", "string", true, true, "a.performedBy"},
  *          {"notes", "string", true, true, "a.notes"},
  *          {"score", "number", true, true, "a.score"}
@@ -46,22 +46,6 @@ class Assessment
      * })
      */
     private $id;
-
-    /**
-     * @var Space
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
-     * })
-     * @Assert\NotNull(
-     *      message = "Please select a Space",
-     *      groups={
-     *          "api_admin_resident_assessment_edit",
-     *          "api_admin_resident_assessment_add"
-     *      }
-     * )
-     */
-    private $space;
 
     /**
      * @var Resident
@@ -152,8 +136,7 @@ class Assessment
      * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="assessment", cascade={"persist"})
      * @Groups({
      *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report",
-     *     "api_admin_resident_assessment_get"
+     *     "api_admin_resident_assessment_report"
      * })
      */
     private $assessmentRows;
@@ -189,22 +172,6 @@ class Assessment
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return Space
-     */
-    public function getSpace(): Space
-    {
-        return $this->space;
-    }
-
-    /**
-     * @param Space $space
-     */
-    public function setSpace(Space $space): void
-    {
-        $this->space = $space;
     }
 
     /**
@@ -317,5 +284,26 @@ class Assessment
     public function setScore(float $score): void
     {
         $this->score = $score;
+    }
+
+
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("rows")
+     * @Groups({
+     *     "api_admin_resident_assessment_get"
+     * })
+     */
+    public function getVirtualRows()
+    {
+        $rows = [];
+
+        /** @var AssessmentRow $formCategory */
+        foreach ($this->assessmentRows as $assessmentRow) {
+            $rows[] = $assessmentRow->getRow()->getId();
+        }
+
+        return $rows;
     }
 }

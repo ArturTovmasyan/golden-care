@@ -670,4 +670,62 @@ class ResidentController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+
+    /**
+     * @api {put} /api/v1.0/admin/resident/{id}/photo Edit Resident Photo
+     * @apiVersion 1.0.0
+     * @apiName Edit Resident Photo
+     * @apiGroup Admin Residents
+     * @apiDescription This function is used to edit resident photo
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int}     id   The unique identifier of the resident
+     * @apiParam {String}  photo The Base64 URL of the resident photo
+     *
+     * @apiParamExample {json} Facility Option Request:
+     *     {
+     *          "photo": "data:image/jpeg;base64,/9j/4AAQSkZJRgAB....",
+     *     }
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 201 Created
+     *     {}
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 610,
+     *          "error": "Validation error",
+     *          "details": {
+     *              "name": "Sorry, this name is already in use."
+     *          }
+     *     }
+     *
+     * @Route("/{id}/photo", requirements={"id"="\d+"}, name="api_admin_resident_edit_photo", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function photoAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
+    {
+        $residentService->setResidentPhotoHelper($residentPhotoHelper);
+
+        $residentService->photo(
+            $id,
+            [
+                'photo'         => $request->get('photo'),
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }
