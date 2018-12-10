@@ -1,0 +1,7 @@
+{{ data.type }},Physician Name, Residents Count
+{% set typeName = null %}
+{% for physicianData in data.physicianData %}
+    {% for physician in physicianData %}{% if typeName != physician.typeName %}{% set typeName = physician.typeName %}{% endif %}
+        {{ physician.typeName }}, {{ physician[0].firstName ~ ' ' ~ physician[0].lastName }}, {{ physician.residentCount }}
+    {% endfor %}
+{% endfor %}

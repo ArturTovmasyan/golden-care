@@ -230,7 +230,7 @@ class BaseController extends Controller
      * @param $template
      * @param string $format
      * @param array $params
-     * @return PdfResponse
+     * @return PdfResponse|Response
      * @throws \Exception
      */
     protected function respondFile($template, $format = 'pdf', array $params = [])
@@ -239,6 +239,14 @@ class BaseController extends Controller
 
         if ($format == 'pdf') {
             return new PdfResponse($this->pdf->getOutputFromHtml($html));
+        } elseif($format == 'csv') {
+            return new Response($html, Response::HTTP_OK, [
+                'Content-Type'              => 'text/csv',
+                'Content-Disposition'       => 'attachment; filename="output.csv"',
+                'Content-Transfer-Encoding' => 'binary',
+                'Pragma'                    => 'no-cache',
+                'Expires'                   => '0',
+            ]);
         }
 
         throw new \Exception('Support only pdf, other formats coming soon');
