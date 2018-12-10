@@ -9,12 +9,20 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpecialityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Apartment;
 use App\Entity\CityStateZip;
+use App\Entity\Facility;
 use App\Entity\Physician;
+use App\Entity\Region;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
+use App\Model\Report\Base;
+use App\Model\Report\PhysicianSimple;
+use App\Model\Resident;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PhysicianService
@@ -302,5 +310,90 @@ class PhysicianService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getReport(Request $request)
+    {
+        if ($request->get('alias') == 'physician-full') {
+            return $this->getFullReport($request);
+        }
+
+        return $this->getSimpleReport($request);
+    }
+
+    /**
+     * @param Request $request
+     * @return PhysicianSimple
+     */
+    private function getSimpleReport(Request $request)
+    {
+        /**
+         * @var Physician $physician
+         */
+        $residentId = $request->get('resident_id');
+        $type       = $request->get('type');
+        $all        = (bool) $request->get('all') ?? false;
+
+        if (!$all && !$residentId) {
+            throw new ParameterNotFoundException('type, resident');
+        }
+
+        try {
+            if ($type == Resident::TYPE_FACILITY) {
+                if ($residentId) {
+                    $facility   = $this->em->getRepository(Facility::class)->findByResident($residentId);
+                    $physicians = $facility ? $this->em->getRepository(Physician::class)->findByFacility($facility) : [];
+                } else {
+                    $physicians = $this->em->getRepository(Physician::class)->findByFacility();
+                }
+
+                $type = "Facility";
+            } elseif ($type == Resident::TYPE_APARTMENT) {
+                if ($residentId) {
+                    $apartment  = $this->em->getRepository(Apartment::class)->findByResident($residentId);
+                    $physicians = $apartment ? $this->em->getRepository(Physician::class)->findByApartment($apartment) : [];
+                } else {
+                    $physicians = $this->em->getRepository(Physician::class)->findByApartment();
+                }
+
+                $type = "Apartment";
+            } else {
+                if ($residentId) {
+                    $region     = $this->em->getRepository(Region::class)->findByResident($residentId);
+                    $physicians = $region ? $this->em->getRepository(Physician::class)->findByRegion($region) : [];
+                } else {
+                    $physicians = $this->em->getRepository(Physician::class)->findByRegion();
+                }
+
+                $type = "Region";
+            }
+        } catch (\Exception $e) {
+            $physicians = [];
+        }
+
+        $physiciansByTypeId = [];
+        foreach ($physicians as $physician) {
+            $physiciansByTypeId[$physician['typeId']][] = $physician;
+        }
+
+        // create report
+        $report = new PhysicianSimple();
+        $report->setTitle('PHYSICIAN, ROSTER SIMPLE');
+        $report->setType($type);
+        $report->setPhysicianData($physiciansByTypeId);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     */
+    private function getFullReport(Request $request)
+    {
+
     }
 }

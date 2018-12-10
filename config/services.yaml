@@ -9,6 +9,12 @@ parameters:
         assessment:
             service: App\Api\V1\Admin\Service\ResidentAssessmentService
             formats: ['pdf']
+        physician-simple:
+            service: App\Api\V1\Admin\Service\PhysicianService
+            formats: ['pdf', 'csv']
+        physician-full:
+            service: App\Api\V1\Admin\Service\PhysicianService
+            formats: ['pdf', 'csv']
 
 services:
     # default configuration for services in *this* file

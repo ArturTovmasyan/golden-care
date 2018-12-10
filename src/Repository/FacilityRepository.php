@@ -4,6 +4,9 @@ namespace App\Repository;
 
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\FacilityRoom;
+use App\Entity\Resident;
+use App\Entity\ResidentFacilityOption;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -50,5 +53,33 @@ class FacilityRepository extends EntityRepository
             ->groupBy('f.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param $residentId
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByResident($residentId)
+    {
+        return $this->createQueryBuilder('f')
+            ->innerJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'f = fr.facility'
+            )
+            ->innerJoin(
+                ResidentFacilityOption::class,
+                'rfo',
+                Join::WITH,
+                'fr = rfo.facilityRoom'
+            )
+            ->where('rfo.resident = :residentId')
+            ->setParameter('residentId', $residentId)
+            ->groupBy('f.id')
+            ->getQuery()
+            ->getSingleResult();
     }
 }

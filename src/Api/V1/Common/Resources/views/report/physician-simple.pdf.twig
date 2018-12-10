@@ -1,0 +1,83 @@
+{% extends '@api_report/base.twig' %}
+
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% set latest = 0 %}
+    {% for typeId, physicianData in data.physicianData %}
+
+        <table style="margin: 0; padding: 0; page-break-inside: avoid !important;">
+            <tr style="width:100%; clear: both; margin: 0; padding: 0; page-break-inside: avoid !important;"></tr>
+        </table>
+
+        {% if  typeId == latest %}
+            <div class="page"></div>
+            {% set latest = typeId %}
+        {% endif %}
+
+        <table class="report-table main-table">
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <th colspan="3">
+                        <div style="margin-bottom: 5px;">
+                            <div style="float: left">
+                                <div style="height: 5px;"></div>
+                                <b style="font-size: 20px !important">{{ data.title }}</b>
+                                <p style="margin-bottom: 5px;"></p>
+                                <b style="font-size: 14px !important">
+                                    {% for key, physician in physicianData %}
+                                        {% if key == 0 %}
+                                            {{ data.type }}:&nbsp;{{ physician.typeName }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </b>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                        </div>
+                    </td>
+                    <td style="padding-left: 50px;">
+                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                        </div>
+                    </td>
+                    <td style="padding-left: 50px;">
+                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                        </div>
+                    </td>
+                </tr>
+                {% set itemCount = 29 %}
+                <tr>
+                    {% for key, physician in physicianData %}
+                        {% if (key == 0) or (key == 29) or (key==58) %}
+                            <td style="font-size: 13px !important;">
+                        {% endif %}
+
+                        <div style="line-height: 20px; width: 280px;">
+                            <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">{{ physician[0].firstName ~ ' ' ~ physician[0].lastName }}</span>
+                            <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">{{ physician.residentCount }}</span><br/>
+                        </div>
+
+                        {% if (key == 0) or (key == 29) or (key==58) %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}{% endblock %}

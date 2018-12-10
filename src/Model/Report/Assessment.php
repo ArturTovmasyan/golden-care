@@ -8,7 +8,6 @@ use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
-use App\Entity\Resident;
 
 class Assessment extends Base
 {
