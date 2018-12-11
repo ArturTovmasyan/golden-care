@@ -249,10 +249,15 @@ class FacilityRoom
 
             $counts = array_count_values($numbers);
 
-            foreach ($counts as $key => $count) {
-                if (!empty($key) && $count > 1) {
-                    $context->buildViolation('The number '.strtoupper($key).' or '.$key.' is already in use on that room')
-                        ->atPath('beds')
+            /**
+             * @var integer $idx
+             * @var FacilityBed $bed
+             */
+            foreach ($beds as $idx => $bed) {
+                $number = strtolower($bed->getNumber());
+                if (!empty($counts[$number]) && $counts[$number] > 1) {
+                    $context->buildViolation('The number "'.$bed->getNumber().'" is already in use.')
+                        ->atPath("beds.$idx.number")
                         ->addViolation();
                 }
             }
