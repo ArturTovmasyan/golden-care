@@ -86,6 +86,10 @@ class ResponseCode
     const RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     = 689;
     const REPORT_NOT_FOUND_EXCEPTION                             = 690;
     const REPORT_FORMAT_NOT_FOUND_EXCEPTION                      = 691;
+    const FACILITY_BED_NOT_FOUND_EXCEPTION                       = 692;
+    const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 693;
+    const CONTRACT_NOT_FOUND_EXCEPTION                           = 694;
+    const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 695;
 
     /**
      * @var array
@@ -167,5 +171,9 @@ class ResponseCode
         self::RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentEvent not found'],
         self::REPORT_NOT_FOUND_EXCEPTION                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report not found'],
         self::REPORT_FORMAT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report format not found'],
+        self::FACILITY_BED_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityBed not found'],
+        self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentBed not found'],
+        self::CONTRACT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Contract not found'],
+        self::CONTRACT_ALREADY_EXIST_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Active contract already exist for this resident'],
     ];
 }

@@ -61,7 +61,9 @@ class Resident
      *      "api_admin_resident_rent_list",
      *      "api_admin_resident_rent_get",
      *      "api_admin_resident_event_list",
-     *      "api_admin_resident_event_get"
+     *      "api_admin_resident_event_get",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $id;

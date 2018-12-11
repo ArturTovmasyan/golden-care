@@ -36,7 +36,12 @@ class Region
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_list",
+     *     "api_admin_region_get",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get"
+     * })
      */
     private $id;
 
@@ -49,7 +54,13 @@ class Region
      *      groups={"api_admin_region_add", "api_admin_region_edit"}
      * )
      * @ORM\Column(name="name", type="string", length=100)
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get"
+     * })
      */
     private $name;
 

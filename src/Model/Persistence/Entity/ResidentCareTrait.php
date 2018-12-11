@@ -14,61 +14,63 @@ trait ResidentCareTrait
 {
     /**
      * @var bool
-     * @ORM\Column(name="dnr", type="boolean", nullable=false)
-     * @Assert\NotNull(groups={
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
-     * })
+     * @ORM\Column(name="dnr", type="boolean", options={"default" = 0})
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $dnr = false;
 
     /**
      * @var bool
-     * @ORM\Column(name="polst", type="boolean", nullable=false)
-     * @Assert\NotNull(groups={
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
-     * })
+     * @ORM\Column(name="polst", type="boolean", options={"default" = 0})
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $polst = false;
 
     /**
      * @var bool
-     * @ORM\Column(name="ambulatory", type="boolean", nullable=false)
-     * @Assert\NotNull(groups={
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
-     * })
+     * @ORM\Column(name="ambulatory", type="boolean", options={"default" = 0})
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $ambulatory = false;
 
     /**
      * @var int
-     * @ORM\Column(name="care_group", type="smallint", nullable=false)
-     * @Assert\Regex(pattern = "/^[0-9]+$/i", message="Please provide a valid care group.")
+     * @ORM\Column(name="care_group", type="smallint")
+     * @Assert\Regex(pattern = "/^[0-9]+$/i", message="Please provide a valid care group")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
+     *     "api_admin_resident_edit",
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
      * })
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $careGroup;
@@ -77,16 +79,21 @@ trait ResidentCareTrait
      * @var CareLevel
      * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="SET NULL")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
-     *     "api_admin_resident_edit"
+     *     "api_admin_resident_edit",
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
      * })
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
      * })
      */
     private $careLevel;
@@ -150,7 +157,7 @@ trait ResidentCareTrait
     /**
      * @param int $careGroup
      */
-    public function setCareGroup(int $careGroup): void
+    public function setCareGroup($careGroup): void
     {
         $this->careGroup = $careGroup;
     }
@@ -166,7 +173,7 @@ trait ResidentCareTrait
     /**
      * @param CareLevel $careLevel
      */
-    public function setCareLevel(CareLevel $careLevel): void
+    public function setCareLevel($careLevel): void
     {
         $this->careLevel = $careLevel;
     }

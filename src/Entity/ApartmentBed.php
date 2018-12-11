@@ -48,7 +48,9 @@ class ApartmentBed
      *     "api_admin_apartment_bed_get",
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
-     *     "api_admin_apartment_room_get"
+     *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get"
      * })
      */
     private $id;
@@ -80,7 +82,9 @@ class ApartmentBed
      *     "api_admin_apartment_bed_get",
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
-     *     "api_admin_apartment_room_get"
+     *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get"
      * })
      */
     private $number;

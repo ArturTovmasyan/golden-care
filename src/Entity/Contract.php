@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Model\ContractState;
+use App\Model\ContractType;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use App\Model\PaymentPeriod;
@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Contract
@@ -22,7 +23,7 @@ use App\Annotation\Grid;
  *          {"period", "enum", true, true, "c.period", {"\App\Model\PaymentPeriod", "getTypeDefaultNames"}},
  *          {"start", "string", true, true, "c.start"},
  *          {"end", "string", true, true, "c.end"},
- *          {"state", "enum", true, true, "c.state", {"\App\Model\ContractState", "getTypeDefaultNames"}},
+ *          {"type", "enum", true, true, "c.type", {"\App\Model\ContractType", "getTypeDefaultNames"}},
  *     }
  * )
  */
@@ -86,15 +87,76 @@ class Contract
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @ORM\Column(name="type", type="smallint")
      * @Assert\Choice(
-     *     callback={"App\Model\ContractState","getTypeValues"},
-     *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
+     *     callback={"App\Model\ContractType","getTypeValues"},
+     *     groups={
+     *          "api_admin_contract_add"
+     *     }
      * )
-     * @ORM\Column(name="state", type="integer", length=1)
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get",
+     * })
      */
-    private $state = ContractState::ACTIVE;
+    private $type;
+
+    /**
+     * @var ContractFacilityOption
+     * @ORM\OneToOne(targetEntity="App\Entity\ContractFacilityOption", mappedBy="contract")
+     */
+    private $contractFacilityOption;
+
+    /**
+     * @var ContractApartmentOption
+     * @ORM\OneToOne(targetEntity="App\Entity\ContractApartmentOption", mappedBy="contract")
+     */
+    private $contractApartmentOption;
+
+    /**
+     * @var ContractRegionOption
+     * @ORM\OneToOne(targetEntity="App\Entity\ContractRegionOption", mappedBy="contract")
+     */
+    private $contractRegionOption;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("number")
+     * @Groups({"api_admin_resident_list_by_params", "api_admin_contract_list_by_params"})
+     */
+    public function getOptionNumber(): ?string
+    {
+        switch($this->type) {
+            case ContractType::TYPE_FACILITY:
+                return $this->contractFacilityOption->getFacilityBed()->getNumber();
+            case ContractType::TYPE_APARTMENT:
+                return $this->contractApartmentOption->getApartmentBed()->getNumber();
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("option")
+     * @Groups({
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get"
+     * })
+     */
+    public function getOption()
+    {
+        switch($this->type) {
+            case ContractType::TYPE_FACILITY:
+                return $this->contractFacilityOption;
+            case ContractType::TYPE_APARTMENT:
+                return $this->contractApartmentOption;
+            case ContractType::TYPE_REGION:
+                return $this->contractRegionOption;
+        }
+
+        return null;
+    }
 
     /**
      * @return int
@@ -175,14 +237,14 @@ class Contract
         $this->end = $end;
     }
 
-    public function getState(): ?int
+    public function getType(): ?int
     {
-        return $this->state;
+        return $this->type;
     }
 
-    public function setState($state): self
+    public function setType($type): self
     {
-        $this->state = $state;
+        $this->type = $type;
 
         return $this;
     }
