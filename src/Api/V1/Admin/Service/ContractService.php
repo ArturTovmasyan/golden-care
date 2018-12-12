@@ -294,7 +294,9 @@ class ContractService extends BaseService implements IGridService
         }
 
         if ($editMode) {
-            $option->setState($params['state'] ? (int)$params['state'] : 0);
+            $state = isset($params['state']) ? (int)$params['state'] : 0;
+
+            $option->setState($state);
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -340,7 +342,9 @@ class ContractService extends BaseService implements IGridService
         }
 
         if ($editMode) {
-            $option->setState($params['state'] ? (int)$params['state'] : 0);
+            $state = isset($params['state']) ? (int)$params['state'] : 0;
+
+            $option->setState($state);
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -400,7 +404,9 @@ class ContractService extends BaseService implements IGridService
         }
 
         if ($editMode) {
-            $option->setState($params['state'] ? (int)$params['state'] : 0);
+            $state = isset($params['state']) ? (int)$params['state'] : 0;
+
+            $option->setState($state);
         } else {
             $option->setState(ContractState::ACTIVE);
         }
