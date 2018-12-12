@@ -71,8 +71,8 @@ class ResponseCode
     const PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     = 664;
     const ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                = 665;
     const ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        = 666;
-    const RESIDENT_RENT_NOT_FOUND_EXCEPTION                      = 667;
-    const RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 = 668;
+    const RESIDENT_PAYMENT_NOT_FOUND_EXCEPTION                   = 667;
+    const RESIDENT_PAYMENT_NEGATIVE_REMAINING_TOTAL              = 668;
     const ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              = 669;
     const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
     const ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    = 681;
@@ -158,8 +158,8 @@ class ResponseCode
         self::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'PaymentSource not found'],
         self::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment category not found'],
         self::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level group not found'],
-        self::RESIDENT_RENT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentRent not found'],
-        self::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Cannot post a Resident Rent with a negative Remaining total'],
+        self::RESIDENT_PAYMENT_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentPayment not found'],
+        self::RESIDENT_PAYMENT_NEGATIVE_REMAINING_TOTAL              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Cannot post a Resident Payment with a negative Remaining total'],
         self::ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment care level not found'],
         self::ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment form not found'],
         self::ASSESSMENT_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment not found'],
