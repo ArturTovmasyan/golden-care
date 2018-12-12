@@ -15,6 +15,9 @@ parameters:
         physician-full:
             service: App\Api\V1\Admin\Service\PhysicianService
             formats: ['pdf', 'csv']
+        residents-birthday-list:
+            service: App\Api\V1\Admin\Service\ResidentService
+            formats: ['pdf']
 
 services:
     # default configuration for services in *this* file

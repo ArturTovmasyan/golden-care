@@ -30,7 +30,10 @@ use App\Entity\ResidentPhone;
 use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ResidentService
@@ -556,5 +559,49 @@ class ResidentService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getReport(Request $request)
+    {
+        /** @todo add other reports about residents **/
+        if ($request->get('alias') == 'residents-birthday-list') {
+            return $this->getBirthdayListReport($request);
+        } else {
+            throw new ParameterNotFoundException('Invalid report');
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return ResidentBirthdayList
+     */
+    private function getBirthdayListReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id');
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
+                $residents = $this->em->getRepository(Resident::class)->getByType($type, $typeId);
+            } else {
+                $residents = $this->em->getRepository(Resident::class)->findAll();
+            }
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new ResidentBirthdayList();
+        $report->setResidents($residents);
+
+        return $report;
     }
 }

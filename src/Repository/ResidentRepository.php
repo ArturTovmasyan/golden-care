@@ -144,4 +144,87 @@ class ResidentRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
+    public function getByType($type, $id)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        switch ($type) {
+            case \App\Model\Resident::TYPE_APARTMENT:
+                $queryBuilder
+                    ->leftJoin(
+                        ResidentApartmentOption::class,
+                        'o',
+                        Join::WITH,
+                        'o.resident = r'
+                    )
+                    ->leftJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'o.apartmentRoom = ar'
+                    )
+                    ->leftJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    )
+                    ->where('a.id = :id')
+                    ->setParameter('id', $id);
+                break;
+            case \App\Model\Resident::TYPE_REGION:
+                $queryBuilder
+                    ->leftJoin(
+                        ResidentRegionOption::class,
+                        'o',
+                        Join::WITH,
+                        'o.resident = r'
+                    )
+                    ->leftJoin(
+                        Region::class,
+                        'r',
+                        Join::WITH,
+                        'o.region = r'
+                    )
+                    ->where('r.id = :id')
+                    ->setParameter('id', $id);
+                break;
+            default:
+                $queryBuilder
+                    ->leftJoin(
+                        ResidentFacilityOption::class,
+                        'o',
+                        Join::WITH,
+                        'o.resident = r'
+                    )
+                    ->leftJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'o.facilityRoom = fr'
+                    )
+                    ->leftJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->where('f.id = :id')
+                    ->setParameter('id', $id);
+        }
+
+        $queryBuilder->andWhere('r.type = :type')
+            ->setParameter("type", $type);
+
+        return $queryBuilder
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

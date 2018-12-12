@@ -515,4 +515,52 @@ class Resident
     {
         $this->assessments = $assessments;
     }
+
+    /**
+     * @return ResidentFacilityOption
+     */
+    public function getResidentFacilityOption(): ResidentFacilityOption
+    {
+        return $this->residentFacilityOption;
+    }
+
+    /**
+     * @param ResidentFacilityOption $residentFacilityOption
+     */
+    public function setResidentFacilityOption(ResidentFacilityOption $residentFacilityOption): void
+    {
+        $this->residentFacilityOption = $residentFacilityOption;
+    }
+
+    /**
+     * @return ResidentApartmentOption
+     */
+    public function getResidentApartmentOption(): ResidentApartmentOption
+    {
+        return $this->residentApartmentOption;
+    }
+
+    /**
+     * @param ResidentApartmentOption $residentApartmentOption
+     */
+    public function setResidentApartmentOption(ResidentApartmentOption $residentApartmentOption): void
+    {
+        $this->residentApartmentOption = $residentApartmentOption;
+    }
+
+    /**
+     * @return ResidentRegionOption
+     */
+    public function getResidentRegionOption(): ResidentRegionOption
+    {
+        return $this->residentRegionOption;
+    }
+
+    /**
+     * @param ResidentRegionOption $residentRegionOption
+     */
+    public function setResidentRegionOption(ResidentRegionOption $residentRegionOption): void
+    {
+        $this->residentRegionOption = $residentRegionOption;
+    }
 }
