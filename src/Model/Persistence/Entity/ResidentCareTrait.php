@@ -57,7 +57,16 @@ trait ResidentCareTrait
     /**
      * @var int
      * @ORM\Column(name="care_group", type="smallint")
-     * @Assert\Regex(pattern = "/^[0-9]+$/i", message="Please provide a valid care group")
+     * @Assert\Regex(
+     *     pattern = "/(^[1-9][0-9]*$)/",
+     *     message="Please provide a valid care group",
+     *     groups={
+     *     "api_admin_resident_add",
+     *     "api_admin_resident_edit",
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * }
+     * )
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit",

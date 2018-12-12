@@ -316,7 +316,7 @@ class ContractService extends BaseService implements IGridService
         $option->setDnr($params['dnr'] ?? false);
         $option->setPolst($params['polst'] ?? false);
         $option->setAmbulatory($params['ambulatory'] ?? false);
-        $option->setCareGroup($params['care_group'] ?? '');
+        $option->setCareGroup($params['care_group'] ? (int)$params['care_group'] : 0);
         $option->setCareLevel($careLevel);
 
         return $option;
@@ -435,7 +435,7 @@ class ContractService extends BaseService implements IGridService
         $option->setDnr($params['dnr'] ?? false);
         $option->setPolst($params['polst'] ?? false);
         $option->setAmbulatory($params['ambulatory'] ?? false);
-        $option->setCareGroup($params['care_group'] ?? '');
+        $option->setCareGroup($params['care_group'] ? (int)$params['care_group'] : 0);
         $option->setCareLevel($careLevel);
 
         return $option;
