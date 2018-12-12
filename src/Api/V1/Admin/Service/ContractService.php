@@ -7,10 +7,12 @@ use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\ContractAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
+use App\Api\V1\Common\Service\Exception\EndDateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\ContractNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ApartmentBed;
 use App\Entity\CareLevel;
@@ -209,6 +211,10 @@ class ContractService extends BaseService implements IGridService
 
             if (!empty($end)) {
                 $end = new \DateTime($params['end']);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
+                }
             } else {
                 $end = null;
             }
@@ -297,6 +303,10 @@ class ContractService extends BaseService implements IGridService
             $state = isset($params['state']) ? (int)$params['state'] : 0;
 
             $option->setState($state);
+
+            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+                throw new EndDateNotBeBlankException();
+            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -345,6 +355,10 @@ class ContractService extends BaseService implements IGridService
             $state = isset($params['state']) ? (int)$params['state'] : 0;
 
             $option->setState($state);
+
+            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+                throw new EndDateNotBeBlankException();
+            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -407,6 +421,10 @@ class ContractService extends BaseService implements IGridService
             $state = isset($params['state']) ? (int)$params['state'] : 0;
 
             $option->setState($state);
+
+            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+                throw new EndDateNotBeBlankException();
+            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }

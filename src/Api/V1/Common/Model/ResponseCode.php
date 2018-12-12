@@ -90,6 +90,8 @@ class ResponseCode
     const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 693;
     const CONTRACT_NOT_FOUND_EXCEPTION                           = 694;
     const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 695;
+    const START_GREATER_END_DATE_EXCEPTION                       = 696;
+    const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 697;
 
     /**
      * @var array
@@ -175,5 +177,7 @@ class ResponseCode
         self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentBed not found'],
         self::CONTRACT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Contract not found'],
         self::CONTRACT_ALREADY_EXIST_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Active contract already exist for this resident'],
+        self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the end date'],
+        self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank'],
     ];
 }
