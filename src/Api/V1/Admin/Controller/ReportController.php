@@ -32,6 +32,35 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 class ReportController extends BaseController
 {
     /**
+     * @api {get} /api/v1.0/admin/report/list Get Report List
+     * @apiVersion 1.0.0
+     * @apiName Get Report List
+     * @apiGroup Admin Report
+     * @apiDescription This function is used to listing all report types
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {String}  format            The identifier of the format (available pdf, csv)
+     * @apiParam {Int}     type (assessment) The type of the report (1 - Filled, 2 - Blank), used for <code>Assessment</code>
+     * @apiParam {Int}     type (physician)  The care type of the report (1 - Facility, 2 - Apartment, 3 - Region), used for <code>Physician</code>
+     * @apiParam {Int}     resident_id  The  identifier of the resident, used for <code>Physician</code>
+     *
+     * @Route("/list", name="api_admin_report_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listAction(Request $request)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $this->container->getParameter('report')
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/admin/report Get Report
      * @apiVersion 1.0.0
      * @apiName Get Report
