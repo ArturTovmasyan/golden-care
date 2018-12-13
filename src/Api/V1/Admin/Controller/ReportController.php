@@ -53,10 +53,23 @@ class ReportController extends BaseController
      */
     public function listAction(Request $request)
     {
+        $reports = $this->container->getParameter('report');
+
+        $data = [];
+
+        foreach ($reports as $key => $report) {
+            $data[$report['group_alias']]['title']         = $report['group'];
+            $data[$report['group_alias']]['reports'][$key] = $report;
+
+            unset($data[$report['group_alias']]['reports'][$key]['group_alias']);
+            unset($data[$report['group_alias']]['reports'][$key]['group']);
+            unset($data[$report['group_alias']]['reports'][$key]['service']);
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $this->container->getParameter('report')
+            $data
         );
     }
 

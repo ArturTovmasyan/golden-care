@@ -5,46 +5,157 @@ parameters:
     file_service:
         extensions: ['jpg','jpeg','png','gif', 'doc','odt','docx']
         path: '%env(resolve:CDN_PATH)%'
+
     report:
         assessment:
             service: App\Api\V1\Admin\Service\ResidentAssessmentService
             formats: ['pdf']
-            params:
-                id:
-                    description: 'assessment identifier'
-                type:
-                    values: '0 - not filled, 1 - filled'
-                    description: 'filled status'
+            group: 'Assessment Reports'
+            group_alias: 'assessment_reports'
+            show_in_list: false
+            title: 'Assessment Reports (filled and blanked)'
+            parameter_groups:
+                by_assessment:
+                    title: 'By Assessment'
+                    parameters:
+                        id:
+                            title: 'assessment unique identifier'
+                            type: 'integer'
+                            url: '/api/v1.0/admin/resident/assessment?resident_id=:resident_id'
+                            required: true
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'report type'
+                            type: "choice"
+                            values:
+                                0:
+                                    title: blank
+                                    value: 0
+                                1:
+                                    title: filled
+                                    value: 1
         physician-simple:
             service: App\Api\V1\Admin\Service\PhysicianService
             formats: ['pdf', 'csv']
-            params:
-                resident_id:
-                    description: 'resident identifier'
-                type:
-                    values: '1 - facility, 2 - apartment, 3 - region'
-                    description: 'type'
-                all:
-                    values: '0 - empty, 1 - all'
-                    description: 'status for select all residents. required if resident_id not defined'
+            group: 'Physician Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Physician Roster Simple : List of physicians, with contact information and resident count'
+            parameter_groups:
+                by_resident:
+                    title: 'By Resident'
+                    parameters:
+                        resident_id:
+                            title: 'Resident unique identifier'
+                            type: 'integer'
+                            url: '/api/v1.0/admin/resident'
+                            required: false
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
+                                2:
+                                    title: 'apartment'
+                                    value: 2
+                                3:
+                                    title: 'region'
+                                    value: 3
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
         #physician-full:
         #    service: App\Api\V1\Admin\Service\PhysicianService
         #    formats: ['pdf', 'csv']
         residents-birthday-list:
             service: App\Api\V1\Admin\Service\ResidentService
             formats: ['pdf']
-            params:
-                type_id:
-                    description: 'unique identifier for facility, apartment or region'
-                type:
-                    values: '1 - facility, 2 - apartment, 3 - region'
-                    description: 'type'
-                all:
-                    values: '0 - empty, 1 - all'
-                    description: 'status for select all types. required if type_id not defined'
+            group: 'Form Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Birthday list : List of all residents birthdays, Monthly'
+            parameter_groups:
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
+                                2:
+                                    title: 'apartment'
+                                    value: 2
+                                3:
+                                    title: 'region'
+                                    value: 3
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment', '/api/v1.0/admin/region']
+                            required: false
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
         blood-pressure-charting:
             service: App\Api\V1\Admin\Service\ResidentService
             formats: ['pdf']
+            group: 'Form Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Blood Pressure : Blood pressure charting'
+            parameter_groups:
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
+                                2:
+                                    title: 'apartment'
+                                    value: 2
+                                3:
+                                    title: 'region'
+                                    value: 3
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment', '/api/v1.0/admin/region']
+                            required: false
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
 
 services:
     # default configuration for services in *this* file
