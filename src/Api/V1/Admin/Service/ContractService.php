@@ -17,6 +17,7 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ApartmentBed;
 use App\Entity\CareLevel;
 use App\Entity\CityStateZip;
+use App\Entity\ContractAction;
 use App\Entity\ContractApartmentOption;
 use App\Entity\ContractFacilityOption;
 use App\Entity\ContractRegionOption;
@@ -153,6 +154,19 @@ class ContractService extends BaseService implements IGridService
             $this->validate($option, null, ['api_admin_contract_add']);
             $this->em->persist($option);
 
+            switch ($contract->getType()) {
+                case ContractType::TYPE_APARTMENT:
+                    $contractAction = $this->saveContractActionForApartment($contract, $option, $editMode);
+                    break;
+                case ContractType::TYPE_REGION:
+                    $contractAction = $this->saveContractActionForRegion($contract, $option, $editMode);
+                    break;
+                default:
+                    $contractAction = $this->saveContractActionForFacility($contract, $option, $editMode);
+            }
+
+            $this->em->persist($contractAction);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -240,6 +254,26 @@ class ContractService extends BaseService implements IGridService
 
             $this->validate($option, null, ['api_admin_contract_edit']);
             $this->em->persist($option);
+
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $optionChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($option);
+
+            if (!empty($optionChangeSet)) {
+                switch ($entity->getType()) {
+                    case ContractType::TYPE_APARTMENT:
+                        $contractAction = $this->saveContractActionForApartment($entity, $option, $editMode);
+                        break;
+                    case ContractType::TYPE_REGION:
+                        $contractAction = $this->saveContractActionForRegion($entity, $option, $editMode);
+                        break;
+                    default:
+                        $contractAction = $this->saveContractActionForFacility($entity, $option, $editMode);
+                }
+
+                $this->em->persist($contractAction);
+            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -439,6 +473,114 @@ class ContractService extends BaseService implements IGridService
         $option->setCareLevel($careLevel);
 
         return $option;
+    }
+
+    /**
+     * @param Contract $contract
+     * @param ContractFacilityOption $option
+     * @param boolean $editMode
+     * @return ContractAction|null|object
+     */
+    private function saveContractActionForFacility(Contract $contract, ContractFacilityOption $option, bool $editMode)
+    {
+        $newDateTime = new \DateTime('now');
+
+        $contractAction = new ContractAction();
+        $contractAction->setContract($contract);
+        $contractAction->setType($contract->getType());
+        $contractAction->setStart($newDateTime);
+        $contractAction->setEnd(null);
+        $contractAction->setState($option->getState());
+        $contractAction->setFacilityBed($option->getFacilityBed());
+        $contractAction->setDnr($option->isDnr());
+        $contractAction->setPolst($option->isPolst());
+        $contractAction->setAmbulatory($option->isAmbulatory());
+        $contractAction->setCareGroup($option->getCareGroup());
+        $contractAction->setCareLevel($option->getCareLevel());
+
+        if ($editMode) {
+            /** @var ContractAction $lastAction */
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+
+            if ($lastAction !== null) {
+                $lastAction->setEnd($newDateTime);
+
+                $this->em->persist($lastAction);
+            }
+        }
+
+        return $contractAction;
+    }
+
+    /**
+     * @param Contract $contract
+     * @param ContractApartmentOption $option
+     * @param boolean $editMode
+     * @return ContractAction|null|object
+     */
+    private function saveContractActionForApartment(Contract $contract, ContractApartmentOption $option, bool $editMode)
+    {
+        $newDateTime = new \DateTime('now');
+
+        $contractAction = new ContractAction();
+        $contractAction->setContract($contract);
+        $contractAction->setType($contract->getType());
+        $contractAction->setStart($newDateTime);
+        $contractAction->setEnd(null);
+        $contractAction->setState($option->getState());
+        $contractAction->setApartmentBed($option->getApartmentBed());
+
+        if ($editMode) {
+            /** @var ContractAction $lastAction */
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+
+            if ($lastAction !== null) {
+                $lastAction->setEnd($newDateTime);
+
+                $this->em->persist($lastAction);
+            }
+        }
+
+        return $contractAction;
+    }
+
+    /**
+     * @param Contract $contract
+     * @param ContractRegionOption $option
+     * @param boolean $editMode
+     * @return ContractAction|null|object
+     */
+    private function saveContractActionForRegion(Contract $contract, ContractRegionOption $option, bool $editMode)
+    {
+        $newDateTime = new \DateTime('now');
+
+        $contractAction = new ContractAction();
+        $contractAction->setContract($contract);
+        $contractAction->setType($contract->getType());
+        $contractAction->setStart($newDateTime);
+        $contractAction->setEnd(null);
+        $contractAction->setState($option->getState());
+        $contractAction->setRegion($option->getRegion());
+        $contractAction->setCsz($option->getCsz());
+        $contractAction->setAddress($option->getAddress());
+        $contractAction->setDnr($option->isDnr());
+        $contractAction->setPolst($option->isPolst());
+        $contractAction->setAmbulatory($option->isAmbulatory());
+        $contractAction->setCareGroup($option->getCareGroup());
+        $contractAction->setCareLevel($option->getCareLevel());
+
+        if ($editMode) {
+            /** @var ContractAction $lastAction */
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+
+            if ($lastAction !== null) {
+                $lastAction->setEnd($newDateTime);
+
+                $this->em->persist($lastAction);
+            }
+        }
+
+        return $contractAction;
     }
 
     /**
