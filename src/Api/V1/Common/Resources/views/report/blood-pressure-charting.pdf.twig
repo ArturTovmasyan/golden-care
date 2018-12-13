@@ -1,0 +1,55 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+    <span style="float: left; width: 400px">{{ data.title }}</span>
+{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.residents %}
+        {% for typeId, resident in residentsByType %}
+
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered">
+                <tr class="divider"></tr>
+                <thead>
+                <tr>
+                    <th colspan="8">
+                        <div style="float: left">
+                            <h3>{{ resident['name'] }}</h3>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><b>DATE</b></td>
+                    <td><b>WEIGHT</b></td>
+                    <td><b>BLOOD PRESSURE</b></td>
+                    <td><b>CAREGIVER</b></td>
+                </tr>
+                </thead>
+                <tbody>
+
+            {% for data in resident['data'] %}
+                <tr>
+                    <td style="height: 50px; text-align: left; vertical-align: middle">
+                        {{ data['roomNumber'] }} {{ data['bedNumber'] }}<br/>{{ data['firstName'] ~ ' ' ~ data['lastName'] }}
+                    </td>
+                    <td style="height: 50px"></td>
+                    <td style="height: 50px"></td>
+                    <td style="height: 50px; width: 150px; padding: 0; background: #ffffff url({{ app.request.getSchemeAndHttpHost() ~ asset('cdn/images/line.png') }}) no-repeat center center"></td>
+                    <td style="height: 50px"></td>
+                </tr>
+            {% endfor %}
+
+                </tbody>
+            </table>
+
+            <table class="report-table main-table">
+                <tr class="divider"></tr>
+            </table>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

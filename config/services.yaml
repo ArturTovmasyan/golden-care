@@ -42,9 +42,9 @@ parameters:
                 all:
                     values: '0 - empty, 1 - all'
                     description: 'status for select all types. required if type_id not defined'
-        #blood-pressure-charting:
-            #service: App\Api\V1\Admin\Service\ResidentService
-            #formats: ['pdf']
+        blood-pressure-charting:
+            service: App\Api\V1\Admin\Service\ResidentService
+            formats: ['pdf']
 
 services:
     # default configuration for services in *this* file

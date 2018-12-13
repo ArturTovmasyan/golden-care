@@ -30,10 +30,12 @@ use App\Entity\ResidentPhone;
 use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Class ResidentService
@@ -570,6 +572,8 @@ class ResidentService extends BaseService implements IGridService
         /** @todo add other reports about residents **/
         if ($request->get('alias') == 'residents-birthday-list') {
             return $this->getBirthdayListReport($request);
+        } elseif ($request->get('alias') == 'blood-pressure-charting') {
+            return $this->getBloodPressureChartingReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -600,6 +604,41 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $report = new ResidentBirthdayList();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return BloodPressureCharting
+     */
+    private function getBloodPressureChartingReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id');
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_APARTMENT])) {
+            throw new InvalidParameterException('type_id');
+        }
+
+        try {
+            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
+                $residents = $this->em->getRepository(Resident::class)->getContractInfoByType($type, $typeId);
+            } else {
+                $residents = $this->em->getRepository(Resident::class)->getContractInfo();
+            }
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new BloodPressureCharting();
+        $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
         $report->setResidents($residents);
 
         return $report;

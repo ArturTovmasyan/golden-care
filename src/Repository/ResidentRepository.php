@@ -3,8 +3,14 @@
 namespace App\Repository;
 
 use App\Entity\Apartment;
+use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
+use App\Entity\Contract;
+use App\Entity\ContractApartmentOption;
+use App\Entity\ContractFacilityOption;
+use App\Entity\ContractRegionOption;
 use App\Entity\Facility;
+use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Region;
 use App\Entity\Resident;
@@ -147,11 +153,12 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $id
+     * @param $typeId
      * @return mixed
      */
-    public function getByType($type, $id)
+    public function getByType($type, $typeId)
     {
+        /** @todo Harut: optimize and use array result without entity **/
         $queryBuilder = $this->createQueryBuilder('r');
 
         switch ($type) {
@@ -176,7 +183,7 @@ class ResidentRepository extends EntityRepository
                         'ar.apartment = a'
                     )
                     ->where('a.id = :id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $typeId);
                 break;
             case \App\Model\Resident::TYPE_REGION:
                 $queryBuilder
@@ -193,7 +200,7 @@ class ResidentRepository extends EntityRepository
                         'o.region = r'
                     )
                     ->where('r.id = :id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $typeId);
                 break;
             default:
                 $queryBuilder
@@ -216,7 +223,7 @@ class ResidentRepository extends EntityRepository
                         'fr.facility = f'
                     )
                     ->where('f.id = :id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $typeId);
         }
 
         $queryBuilder->andWhere('r.type = :type')
@@ -226,5 +233,208 @@ class ResidentRepository extends EntityRepository
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param $type
+     * @param $typeId
+     * @return mixed
+     */
+    public function getContractInfoByType($type, $typeId)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($type == \App\Model\Resident::TYPE_APARTMENT) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    ar.number as roomNumber,
+                    ab.number as bedNumber,
+                    a.name as name
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractApartmentOption::class,
+                    'cao',
+                    Join::WITH,
+                    'cao.contract = c'
+                )
+                ->innerJoin(
+                    ApartmentBed::class,
+                    'ab',
+                    Join::WITH,
+                    'cao.apartmentBed = ab'
+                )
+                ->innerJoin(
+                    ApartmentRoom::class,
+                    'ar',
+                    Join::WITH,
+                    'ab.room = ar'
+                )
+                ->innerJoin(
+                    Apartment::class,
+                    'a',
+                    Join::WITH,
+                    'ar.apartment = a'
+                )
+                ->where('a.id = :id')
+                ->setParameter('id', $typeId);
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber,
+                    f.name as name
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->where('f.id = :id')
+                ->setParameter('id', $typeId);
+        }
+
+        $queryBuilder
+            ->andWhere('r.type = :type')
+            ->setParameter("type", $type);
+
+        return $queryBuilder
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function getContractInfo()
+    {
+        $apartmentResult = $this->createQueryBuilder('r')
+            ->select('
+                r.id as id, 
+                r.firstName as firstName, 
+                r.lastName as lastName,
+                r.type as type,
+                ar.number as roomNumber,
+                ab.number as bedNumber,
+                a.id as typeId,
+                a.name as name
+            ')
+            ->innerJoin(
+                Contract::class,
+                'c',
+                Join::WITH,
+                'c.resident = r'
+            )
+            ->innerJoin(
+                ContractApartmentOption::class,
+                'cao',
+                Join::WITH,
+                'cao.contract = c'
+            )
+            ->innerJoin(
+                ApartmentBed::class,
+                'ab',
+                Join::WITH,
+                'cao.apartmentBed = ab'
+            )
+            ->innerJoin(
+                ApartmentRoom::class,
+                'ar',
+                Join::WITH,
+                'ab.room = ar'
+            )
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'ar.apartment = a'
+            )
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+
+        $facilityResult = $this->createQueryBuilder('r')
+            ->select('
+                r.id as id, 
+                r.firstName as firstName, 
+                r.lastName as lastName,
+                r.type as type,
+                fr.number as roomNumber,
+                fb.number as bedNumber,
+                f.id as typeId,
+                f.name as name
+            ')
+            ->innerJoin(
+                Contract::class,
+                'c',
+                Join::WITH,
+                'c.resident = r'
+            )
+            ->innerJoin(
+                ContractFacilityOption::class,
+                'cfo',
+                Join::WITH,
+                'cfo.contract = c'
+            )
+            ->innerJoin(
+                FacilityBed::class,
+                'fb',
+                Join::WITH,
+                'cfo.facilityBed = fb'
+            )
+            ->innerJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'fb.room = fr'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'fr.facility = f'
+            )
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+
+        return array_merge($apartmentResult, $facilityResult);
     }
 }
