@@ -30,7 +30,7 @@ class ResidentPaymentService extends BaseService implements IGridService
         $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('rr.resident = :residentId')
+            ->where('rp.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
         $this->em->getRepository(ResidentPayment::class)->search($queryBuilder);

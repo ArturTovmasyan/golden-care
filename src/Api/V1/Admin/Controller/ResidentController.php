@@ -728,4 +728,22 @@ class ResidentController extends BaseController
             Response::HTTP_CREATED
         );
     }
+
+    /**
+     * @Route("/{id}/move", requirements={"id"="\d+"}, name="api_admin_resident_edit_move", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentService $residentService
+     * @param ResidentPhotoHelper $residentPhotoHelper
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function moveAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
+    {
+        // TODO(armenv): add move functional
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }

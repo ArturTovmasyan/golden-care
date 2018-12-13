@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class FacilityBed
@@ -157,5 +158,40 @@ class FacilityBed
         $this->room = $room;
 
         return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("resident")
+     * @Groups({
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     */
+    public function getResident()
+    {
+        $resident = null;
+        // TODO(armenv): add resident info
+        switch ($this->id) {
+            case 51:
+                $resident = 1;
+                break;
+            case 52:
+                $resident = null;
+                break;
+            case 53:
+                $resident = 1;
+                break;
+            case 56:
+                $resident = 1;
+                break;
+            case 57:
+                $resident = 1;
+                break;
+        }
+
+        return $resident ? ['id' => $resident] : null;
     }
 }
