@@ -188,7 +188,10 @@ class FacilityRoomController extends BaseController
             FacilityRoom::class,
             'api_admin_facility_room_list',
             $facilityRoomService,
-            ['facility_id' => $request->get('facility_id')]
+            [
+                'facility_id' => $request->get('facility_id'),
+                'vacant' => $request->get('vacant')
+            ]
         );
     }
 

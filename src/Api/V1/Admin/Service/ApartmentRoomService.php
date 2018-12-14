@@ -30,6 +30,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
     public function list($params)
     {
+        $vacant = false;
+        if (!empty($params) && !empty($params[0]['vacant']) && $params[0]['vacant'] === 1) {
+            $vacant = true;
+        }
+
         if (!empty($params) && !empty($params[0]['apartment_id'])) {
             $apartmentId = $params[0]['apartment_id'];
 
@@ -48,24 +53,47 @@ class ApartmentRoomService extends BaseService implements IGridService
                 $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
             }
 
-            $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_FACILITY, $bedIds);
+            if ($vacant) {
+                $contractActions = $this->em->getRepository(ContractAction::class)->getBeds(ContractType::TYPE_APARTMENT, $bedIds);
 
-            $actions = [];
-            if (!empty($contractActions)) {
-                foreach ($contractActions as $contractAction) {
-                    $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                $occupancyBedIds = [];
+                if (!empty($contractActions)) {
+                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $contractActions);
                 }
-            }
 
-            /** @var ApartmentRoom $room */
-            foreach ($rooms as $room) {
-                $beds = $room->getBeds();
+                /** @var ApartmentRoom $room */
+                foreach ($rooms as $room) {
+                    $beds = $room->getBeds();
 
-                if (\count($beds)) {
-                    /** @var ApartmentBed $bed */
-                    foreach ($beds as $bed) {
-                        if (!empty($actions[$bed->getId()])) {
-                            $bed->setResident($actions[$bed->getId()]);
+                    if (\count($beds)) {
+                        /** @var ApartmentBed $bed */
+                        foreach ($beds as $bed) {
+                            if (\in_array($bed->getId(), $occupancyBedIds, false)) {
+                                $room->removeBed($bed);
+                            }
+                        }
+                    }
+                }
+            } else {
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_APARTMENT, $bedIds);
+
+                $actions = [];
+                if (!empty($contractActions)) {
+                    foreach ($contractActions as $contractAction) {
+                        $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                    }
+                }
+
+                /** @var ApartmentRoom $room */
+                foreach ($rooms as $room) {
+                    $beds = $room->getBeds();
+
+                    if (\count($beds)) {
+                        /** @var ApartmentBed $bed */
+                        foreach ($beds as $bed) {
+                            if (!empty($actions[$bed->getId()])) {
+                                $bed->setResident($actions[$bed->getId()]);
+                            }
                         }
                     }
                 }

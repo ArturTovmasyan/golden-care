@@ -188,7 +188,10 @@ class ApartmentRoomController extends BaseController
             ApartmentRoom::class,
             'api_admin_apartment_room_list',
             $apartmentRoomService,
-            ['apartment_id' => $request->get('apartment_id')]
+            [
+                'apartment_id' => $request->get('apartment_id'),
+                'vacant' => $request->get('vacant')
+            ]
         );
     }
 

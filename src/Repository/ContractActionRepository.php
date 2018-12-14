@@ -116,4 +116,50 @@ class ContractActionRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $type
+     * @param $ids
+     * @return mixed
+     */
+    public function getBeds($type, $ids)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->where('ca.state=:state AND ca.end IS NULL')
+            ->setParameter('state', ContractState::ACTIVE);
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->select('fb.id AS bedId')
+                    ->join('ca.facilityBed', 'fb')
+                    ->andWhere('fb.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->select('ab.id AS bedId')
+                    ->join('ca.apartmentBed', 'ab')
+                    ->andWhere('ab.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->select('r.id AS regionId')
+                    ->join('ca.region', 'r')
+                    ->andWhere('r.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
