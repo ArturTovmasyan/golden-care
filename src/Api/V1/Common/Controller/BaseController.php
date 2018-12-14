@@ -235,10 +235,16 @@ class BaseController extends Controller
      */
     protected function respondFile($template, $format = 'pdf', array $params = [])
     {
+        $options = [];
+
+        if (property_exists($params['data'], 'options')) {
+            $options = $params['data']->getOptions();
+        }
+
         $html = $this->renderView($template, $params);
 
         if ($format == 'pdf') {
-            return new PdfResponse($this->pdf->getOutputFromHtml($html));
+            return new PdfResponse($this->pdf->getOutputFromHtml($html, $options));
         } elseif($format == 'csv') {
             return new Response($html, Response::HTTP_OK, [
                 'Content-Type'              => 'text/csv',

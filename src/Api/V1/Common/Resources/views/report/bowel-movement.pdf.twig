@@ -27,28 +27,28 @@
                     <table class="report-table main-table bordered" style="margin-bottom: 15px;">
                         <tr class="divider"></tr>
                         <thead>
-                        <tr>Indicate
-                            <th colspan="8">
-                                <b style="float: left; margin: 5px 0; font-size: 16px !important">
-                                    {% if (data['type'] == constant("App\\Model\\Resident::TYPE_FACILITY")) %}
-                                        {{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] ~ ' ' ~ data['firstName'] ~ ' ' ~ data['lastName'] }}
-                                    {% else %}
-                                        {{ data['firstName'] ~ ' ' ~ data['lastName'] }}
-                                    {% endif %}
-                                </b>
-                            </th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><b>Su</b></td>
-                            <td><b>M</b></td>
-                            <td><b>T</b></td>
-                            <td><b>W</b></td>
-                            <td><b>Th</b></td>
-                            <td><b>Fa</b></td>
-                            <td><b>Sa</b></td>
-                        </tr>
-                        </thead>
+                            <tr>
+                                <th colspan="8">
+                                    <b style="float: left; margin: 5px 0; font-size: 16px !important">
+                                        {% if (data['type'] == constant("App\\Model\\Resident::TYPE_FACILITY")) %}
+                                            {{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] ~ ' ' ~ data['firstName'] ~ ' ' ~ data['lastName'] }}
+                                        {% else %}
+                                            {{ data['firstName'] ~ ' ' ~ data['lastName'] }}
+                                        {% endif %}
+                                    </b>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><b>Su</b></td>
+                                <td><b>M</b></td>
+                                <td><b>T</b></td>
+                                <td><b>W</b></td>
+                                <td><b>Th</b></td>
+                                <td><b>Fa</b></td>
+                                <td><b>Sa</b></td>
+                            </tr>
+                            </thead>
                         <tbody>
 
                         <tr style="margin-left: 60px">

@@ -32,6 +32,7 @@ use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
+use App\Model\Report\Manicure;
 use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -579,6 +580,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getBloodPressureChartingReport($request);
         } elseif ($request->get('alias') == 'bowel-movement') {
             return $this->getBowelMovementReport($request);
+        } elseif ($request->get('alias') == 'manicure') {
+            return $this->getManicureReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -678,6 +681,41 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $report = new BowelMovement();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return Manicure
+     */
+    private function getManicureReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id');
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type_id');
+        }
+
+        try {
+            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
+                $residents = $this->em->getRepository(Resident::class)->getManicureInfoByType($type, $typeId);
+            } else {
+                $residents = $this->em->getRepository(Resident::class)->getManicureInfo();
+            }
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new Manicure();
+        $report->setTitle('MANICURE REPORT');
         $report->setResidents($residents);
 
         return $report;

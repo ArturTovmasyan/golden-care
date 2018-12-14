@@ -1,0 +1,66 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+
+{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.residents %}
+        {% for typeId, resident in residentsByType %}
+
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+                <thead>
+                    <tr>
+                        <th colspan="8">
+                            <div style="float: right">
+                                <div>___________________________________</div>
+                                <div style="text-align: left">Month</div>
+                            </div>
+                            <div style="float: left">
+                                <h3>{{ resident['name'] }}</h3>
+                                Please initial and make notations in box.
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><b>WEEK 1 </b></td>
+                        <td><b>WEEK 2 </b></td>
+                        <td><b>WEEK 3 </b></td>
+                        <td><b>WEEK 4 </b></td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for data in resident['data'] %}
+                    <tr>
+                        <td style="height: 40px; border-right: hidden; vertical-align: middle;">
+                            {% if (data['type'] == constant("App\\Model\\Resident::TYPE_FACILITY")) %}
+                                {{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}
+                            {% endif %}
+                        </td>
+                        <td style="height: 40px; border-left: hidden; vertical-align: middle;">
+                            {{  data['firstName'] ~ ' ' ~ data['lastName'] }}
+                        </td>
+                        <td style="height: 40px"></td>
+                        <td style="height: 40px"></td>
+                        <td style="height: 40px"></td>
+                        <td style="height: 40px"></td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+            <table class="report-table main-table" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+            </table>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
