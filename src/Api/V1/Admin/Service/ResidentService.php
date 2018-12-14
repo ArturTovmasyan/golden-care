@@ -83,7 +83,9 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $this->em->getRepository(Resident::class)->find($id);
 
-        if (!is_null($resident)) {
+        if (is_null($resident)) {
+            throw new ResidentNotFoundException();
+        } else {
             $photo = $this->residentPhotoHelper->get($resident->getId());
 
             if (!empty($photo)) {
