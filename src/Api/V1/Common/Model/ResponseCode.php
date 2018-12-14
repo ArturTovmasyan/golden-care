@@ -93,6 +93,7 @@ class ResponseCode
     const START_GREATER_END_DATE_EXCEPTION                       = 696;
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 697;
     const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 698;
+    const CAN_NOT_REMOVE_BED_EXCEPTION                           = 699;
 
     /**
      * @var array
@@ -181,5 +182,6 @@ class ResponseCode
         self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the end date'],
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region'],
+        self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bad has resident. Move resident to another bad'],
     ];
 }

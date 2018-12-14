@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ApartmentRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\ApartmentNotFoundException;
+use App\Api\V1\Common\Service\Exception\CanNotRemoveBadException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
@@ -249,6 +250,12 @@ class ApartmentRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
+                        $action = $this->em->getRepository(ContractAction::class)->getResidentByBed(ContractType::TYPE_APARTMENT, $existingBed->getId());
+
+                        if ($action !== null) {
+                            throw new CanNotRemoveBadException();
+                        }
+
                         $entity->removeBed($existingBed);
                         $this->em->remove($existingBed);
                     }
