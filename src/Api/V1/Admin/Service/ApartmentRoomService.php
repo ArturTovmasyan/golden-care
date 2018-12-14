@@ -8,6 +8,8 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
+use App\Entity\ContractAction;
+use App\Model\ContractType;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -31,10 +33,46 @@ class ApartmentRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['apartment_id'])) {
             $apartmentId = $params[0]['apartment_id'];
 
-            return $this->em->getRepository(ApartmentRoom::class)->findBy(['apartment' => $apartmentId]);
+            $rooms = $this->em->getRepository(ApartmentRoom::class)->findBy(['apartment' => $apartmentId]);
+        } else {
+            $rooms = $this->em->getRepository(ApartmentRoom::class)->findAll();
         }
 
-        return $this->em->getRepository(ApartmentRoom::class)->findAll();
+        if (!empty($rooms)) {
+
+            $roomIds = array_map(function($item){return $item->getId();} , $rooms);
+
+            $facilityBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdsByRooms($roomIds);
+            $bedIds = [];
+            if (\count($facilityBeds)) {
+                $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
+            }
+
+            $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_FACILITY, $bedIds);
+
+            $actions = [];
+            if (!empty($contractActions)) {
+                foreach ($contractActions as $contractAction) {
+                    $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                }
+            }
+
+            /** @var ApartmentRoom $room */
+            foreach ($rooms as $room) {
+                $beds = $room->getBeds();
+
+                if (\count($beds)) {
+                    /** @var ApartmentBed $bed */
+                    foreach ($beds as $bed) {
+                        if (!empty($actions[$bed->getId()])) {
+                            $bed->setResident($actions[$bed->getId()]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $rooms;
     }
 
     /**
@@ -43,7 +81,33 @@ class ApartmentRoomService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ApartmentRoom::class)->find($id);
+        $room = $this->em->getRepository(ApartmentRoom::class)->find($id);
+
+        if ($room !== null) {
+            $beds = $room->getBeds();
+
+            if ($beds !== null) {
+                $ids = array_map(function($item){return $item->getId();} , $beds->toArray());
+
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_APARTMENT, $ids);
+
+                $actions = [];
+                if (!empty($contractActions)) {
+                    foreach ($contractActions as $contractAction) {
+                        $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                    }
+                }
+
+                /** @var ApartmentBed $bed */
+                foreach ($beds as $bed) {
+                    if (!empty($actions[$bed->getId()])) {
+                        $bed->setResident($actions[$bed->getId()]);
+                    }
+                }
+            }
+        }
+
+        return $room;
     }
 
     /**

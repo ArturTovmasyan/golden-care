@@ -5,9 +5,11 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ContractAction;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
+use App\Model\ContractType;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -31,10 +33,47 @@ class FacilityRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            return $this->em->getRepository(FacilityRoom::class)->findBy(['facility' => $facilityId]);
+            $rooms = $this->em->getRepository(FacilityRoom::class)->findBy(['facility' => $facilityId]);
+        } else {
+            $rooms = $this->em->getRepository(FacilityRoom::class)->findAll();
         }
 
-        return $this->em->getRepository(FacilityRoom::class)->findAll();
+        if (!empty($rooms)) {
+
+            $roomIds = array_map(function($item){return $item->getId();} , $rooms);
+
+            $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdsByRooms($roomIds);
+            $bedIds = [];
+            if (\count($facilityBeds)) {
+                $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
+            }
+
+            $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_FACILITY, $bedIds);
+
+            $actions = [];
+            if (!empty($contractActions)) {
+                foreach ($contractActions as $contractAction) {
+                    $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                }
+            }
+
+            /** @var FacilityRoom $room */
+            foreach ($rooms as $room) {
+                $beds = $room->getBeds();
+
+                if (\count($beds)) {
+                    /** @var FacilityBed $bed */
+                    foreach ($beds as $bed) {
+                        if (!empty($actions[$bed->getId()])) {
+                            $bed->setResident($actions[$bed->getId()]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $rooms;
+
     }
 
     /**
@@ -43,7 +82,33 @@ class FacilityRoomService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(FacilityRoom::class)->find($id);
+        $room = $this->em->getRepository(FacilityRoom::class)->find($id);
+
+        if ($room !== null) {
+            $beds = $room->getBeds();
+
+            if ($beds !== null) {
+                $ids = array_map(function($item){return $item->getId();} , $beds->toArray());
+
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_FACILITY, $ids);
+
+                $actions = [];
+                if (!empty($contractActions)) {
+                    foreach ($contractActions as $contractAction) {
+                        $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                    }
+                }
+
+                /** @var FacilityBed $bed */
+                foreach ($beds as $bed) {
+                    if (!empty($actions[$bed->getId()])) {
+                        $bed->setResident($actions[$bed->getId()]);
+                    }
+                }
+            }
+        }
+
+        return $room;
     }
 
     /**

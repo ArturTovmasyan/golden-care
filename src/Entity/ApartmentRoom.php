@@ -54,7 +54,7 @@ class ApartmentRoom
     /**
      * @var Apartment
      * @Assert\NotNull(message = "Please select a Apartment", groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
-     * @ORM\ManyToOne(targetEntity="App\Entity\Apartment")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Apartment", inversedBy="rooms", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_apartment", referencedColumnName="id", onDelete="CASCADE")
      * })

@@ -10,6 +10,7 @@ use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\EndDateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\ContractNotFoundException;
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
@@ -141,6 +142,9 @@ class ContractService extends BaseService implements IGridService
             $editMode = false;
 
             switch ($contract->getType()) {
+                case ContractType::TYPE_FACILITY:
+                    $option = $this->saveFacilityOption($contract, $option, $editMode);
+                    break;
                 case ContractType::TYPE_APARTMENT:
                     $option = $this->saveApartmentOption($contract, $option, $editMode);
                     break;
@@ -148,13 +152,16 @@ class ContractService extends BaseService implements IGridService
                     $option = $this->saveRegionOption($contract, $option, $editMode);
                     break;
                 default:
-                    $option = $this->saveFacilityOption($contract, $option, $editMode);
+                    throw new IncorrectStrategyTypeException();
             }
 
             $this->validate($option, null, ['api_admin_contract_add']);
             $this->em->persist($option);
 
             switch ($contract->getType()) {
+                case ContractType::TYPE_FACILITY:
+                    $contractAction = $this->saveContractActionForFacility($contract, $option, $editMode);
+                    break;
                 case ContractType::TYPE_APARTMENT:
                     $contractAction = $this->saveContractActionForApartment($contract, $option, $editMode);
                     break;
@@ -162,7 +169,7 @@ class ContractService extends BaseService implements IGridService
                     $contractAction = $this->saveContractActionForRegion($contract, $option, $editMode);
                     break;
                 default:
-                    $contractAction = $this->saveContractActionForFacility($contract, $option, $editMode);
+                    throw new IncorrectStrategyTypeException();
             }
 
             $this->em->persist($contractAction);
@@ -242,6 +249,9 @@ class ContractService extends BaseService implements IGridService
             $editMode = true;
 
             switch ($entity->getType()) {
+                case ContractType::TYPE_FACILITY:
+                    $option = $this->saveFacilityOption($entity, $option, $editMode);
+                    break;
                 case ContractType::TYPE_APARTMENT:
                     $option = $this->saveApartmentOption($entity, $option, $editMode);
                     break;
@@ -249,7 +259,7 @@ class ContractService extends BaseService implements IGridService
                     $option = $this->saveRegionOption($entity, $option, $editMode);
                     break;
                 default:
-                    $option = $this->saveFacilityOption($entity, $option, $editMode);
+                    throw new IncorrectStrategyTypeException();
             }
 
             $this->validate($option, null, ['api_admin_contract_edit']);
@@ -262,6 +272,9 @@ class ContractService extends BaseService implements IGridService
 
             if (!empty($optionChangeSet)) {
                 switch ($entity->getType()) {
+                    case ContractType::TYPE_FACILITY:
+                        $contractAction = $this->saveContractActionForFacility($entity, $option, $editMode);
+                        break;
                     case ContractType::TYPE_APARTMENT:
                         $contractAction = $this->saveContractActionForApartment($entity, $option, $editMode);
                         break;
@@ -269,7 +282,7 @@ class ContractService extends BaseService implements IGridService
                         $contractAction = $this->saveContractActionForRegion($entity, $option, $editMode);
                         break;
                     default:
-                        $contractAction = $this->saveContractActionForFacility($entity, $option, $editMode);
+                        throw new IncorrectStrategyTypeException();
                 }
 
                 $this->em->persist($contractAction);

@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Apartment
@@ -186,6 +188,13 @@ class Apartment
     private $space;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ApartmentRoom", mappedBy="apartment", cascade={"remove", "persist"})
+     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     */
+    private $rooms;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -319,5 +328,39 @@ class Apartment
         $this->space = $space;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRooms(): ArrayCollection
+    {
+        return $this->rooms;
+    }
+
+    /**
+     * @param ArrayCollection $rooms
+     */
+    public function setRooms(ArrayCollection $rooms): void
+    {
+        $this->rooms = $rooms;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("occupation")
+     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     */
+    public function getOccupation()
+    {
+        $occupation = 0;
+        if ($this->rooms !== null) {
+            /** @var ApartmentRoom $room */
+            foreach ($this->rooms as $room) {
+                $occupation += $room->getBeds()->count();
+            }
+        }
+
+        return $occupation;
     }
 }

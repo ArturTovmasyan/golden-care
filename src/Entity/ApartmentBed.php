@@ -109,6 +109,17 @@ class ApartmentBed
     private $room;
 
     /**
+     * @var Resident
+     * @Groups({
+     *     "api_admin_apartment_bed_list",
+     *     "api_admin_apartment_bed_get",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
+     */
+    private $resident;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -157,5 +168,21 @@ class ApartmentBed
         $this->room = $room;
 
         return $this;
+    }
+
+    /**
+     * @return Resident|null
+     */
+    public function getResident(): ?Resident
+    {
+        return $this->resident;
+    }
+
+    /**
+     * @param Resident|null $resident
+     */
+    public function setResident(?Resident $resident): void
+    {
+        $this->resident = $resident;
     }
 }

@@ -44,4 +44,23 @@ class ApartmentBedRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function getBedIdsByRooms($ids)
+    {
+        $qb = $this->createQueryBuilder('ab');
+
+        return $qb
+            ->select(
+                'ab.id AS id'
+            )
+            ->join('ab.room', 'r')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
 }

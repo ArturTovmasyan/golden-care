@@ -92,6 +92,7 @@ class ResponseCode
     const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 695;
     const START_GREATER_END_DATE_EXCEPTION                       = 696;
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 697;
+    const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 698;
 
     /**
      * @var array
@@ -179,5 +180,6 @@ class ResponseCode
         self::CONTRACT_ALREADY_EXIST_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Active contract already exist for this resident'],
         self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the end date'],
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank'],
+        self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region'],
     ];
 }

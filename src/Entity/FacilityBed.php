@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class FacilityBed
@@ -110,6 +109,17 @@ class FacilityBed
     private $room;
 
     /**
+     * @var Resident
+     * @Groups({
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     */
+    private $resident;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -161,37 +171,18 @@ class FacilityBed
     }
 
     /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("resident")
-     * @Groups({
-     *     "api_admin_facility_bed_list",
-     *     "api_admin_facility_bed_get",
-     *     "api_admin_facility_room_list",
-     *     "api_admin_facility_room_get"
-     * })
+     * @return Resident|null
      */
-    public function getResident()
+    public function getResident(): ?Resident
     {
-        $resident = null;
-        // TODO(armenv): add resident info
-        switch ($this->id) {
-            case 51:
-                $resident = 1;
-                break;
-            case 52:
-                $resident = null;
-                break;
-            case 53:
-                $resident = 1;
-                break;
-            case 56:
-                $resident = 1;
-                break;
-            case 57:
-                $resident = 1;
-                break;
-        }
+        return $this->resident;
+    }
 
-        return $resident ? ['id' => $resident] : null;
+    /**
+     * @param Resident|null $resident
+     */
+    public function setResident(?Resident $resident): void
+    {
+        $this->resident = $resident;
     }
 }

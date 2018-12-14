@@ -359,7 +359,7 @@ class Facility
     public function getOccupation()
     {
         $occupation = 0;
-        if (!empty($this->rooms)) {
+        if ($this->rooms !== null) {
             /** @var FacilityRoom $room */
             foreach ($this->rooms as $room) {
                 $occupation += $room->getBeds()->count();
