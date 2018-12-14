@@ -20,7 +20,7 @@ use App\Annotation\Grid;
  *          {"date", "string", true, true, "rp.date"},
  *          {"amount", "number", true, true, "rp.amount"},
  *          {"notes", "string", true, true, "rp.notes"},
- *          {"sources", "string", true, true, "rp.source"},
+ *          {"source", "string", true, true, "rp.source"},
  *     }
  * )
  */

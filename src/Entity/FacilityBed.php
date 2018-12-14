@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class FacilityBed

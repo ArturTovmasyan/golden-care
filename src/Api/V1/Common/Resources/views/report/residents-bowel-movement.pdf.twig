@@ -1,0 +1,91 @@
+{% extends '@reportForm/template.html.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.careGroup %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.careGroup %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
+            <div class="page">
+            </div>
+            <div>
+                <div style="float: right">
+                    <div>___________________________________</div>
+                    <div style="text-align: left">Week of</div>
+                </div>
+                <div style="float: left">
+                    <div style="height: 5px;"></div>
+                    <b style="font-size: 18px !important">BM&nbsp;CHART</b>
+                    <p style="font-size: 14px !important">{{ resident.groupName }}</p>
+                    <b style="font-size: 16px !important">Group {{ resident.careGroup }}</b><br>
+                </div>
+            </div>
+        {% endif %}
+
+        <span class="divider"></span>
+        <span class="divider"></span>
+        <table class="report-table main-table bordered" style="margin-bottom: 15px;">
+        <tr class="divider"></tr>
+        <thead>
+        <tr>Indicate
+            <th colspan="8">
+                <b style="float: left; margin: 5px 0; font-size: 16px !important">{{ resident.number }}&nbsp;{{ resident.fullName }}</b>
+            </th>
+        </tr>
+        <tr>
+            <td></td>
+            <td><b>Su</b></td>
+            <td><b>M</b></td>
+            <td><b>T</b></td>
+            <td><b>W</b></td>
+            <td><b>Th</b></td>
+            <td><b>Fa</b></td>
+            <td><b>Sa</b></td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr style="margin-left: 60px">
+            <td style="height: 30px; width: 60px; text-align: center; vertical-align: middle;">a.m.</td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+        </tr>
+        <tr style="margin-left: 60px">
+            <td style="height: 30px; width: 60px; text-align: center; vertical-align: middle;">p.m.</td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+        </tr>
+        <tr style="background-color: grey; margin-left: 60px; margin-bottom: 10px;">
+            <td style="height: 30px; width: 60px; text-align: center; vertical-align: middle;"><p style="margin: 2px 7px 2px 7px; width: 50px; height: 20px; background-color: black; color: white; text-align: center; vertical-align: middle;">night</p></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+            <td style="height: 30px; width: 60px;"></td>
+        </tr>
+
+        </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

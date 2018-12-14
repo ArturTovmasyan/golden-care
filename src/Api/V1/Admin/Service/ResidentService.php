@@ -31,6 +31,7 @@ use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
+use App\Model\Report\BowelMovement;
 use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -82,9 +83,7 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $this->em->getRepository(Resident::class)->find($id);
 
-        if (is_null($resident)) {
-            throw new ResidentNotFoundException();
-        } else {
+        if (!is_null($resident)) {
             $photo = $this->residentPhotoHelper->get($resident->getId());
 
             if (!empty($photo)) {
@@ -576,6 +575,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getBirthdayListReport($request);
         } elseif ($request->get('alias') == 'blood-pressure-charting') {
             return $this->getBloodPressureChartingReport($request);
+        } elseif ($request->get('alias') == 'bowel-movement') {
+            return $this->getBowelMovementReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -641,6 +642,40 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return BowelMovement
+     */
+    private function getBowelMovementReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id');
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type_id');
+        }
+
+        try {
+            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
+                $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfoByType($type, $typeId);
+            } else {
+                $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfo();
+            }
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new BowelMovement();
         $report->setResidents($residents);
 
         return $report;

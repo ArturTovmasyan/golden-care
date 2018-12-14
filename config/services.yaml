@@ -140,13 +140,45 @@ parameters:
                                 2:
                                     title: 'apartment'
                                     value: 2
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment']
+                            required: false
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
+        bowel-movement:
+            service: App\Api\V1\Admin\Service\ResidentService
+            formats: ['pdf']
+            group: 'Form Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Bowel movement : Bowel Movement tracking form, Weekly'
+            parameter_groups:
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
                                 3:
                                     title: 'region'
                                     value: 3
                         type_id:
                             title: 'Unique identifier of type'
                             type: 'integer'
-                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment', '/api/v1.0/admin/region']
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment']
                             required: false
                         all:
                             title: 'All types'

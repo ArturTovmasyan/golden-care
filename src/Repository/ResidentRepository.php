@@ -5,7 +5,10 @@ namespace App\Repository;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
+use App\Entity\Assessment\Assessment;
+use App\Entity\CareLevel;
 use App\Entity\Contract;
+use App\Entity\ContractAction;
 use App\Entity\ContractApartmentOption;
 use App\Entity\ContractFacilityOption;
 use App\Entity\ContractRegionOption;
@@ -19,6 +22,7 @@ use App\Entity\ResidentFacilityOption;
 use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\ContractState;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -250,6 +254,8 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
+                    r.type as type,
+                    a.id as typeId,
                     ar.number as roomNumber,
                     ab.number as bedNumber,
                     a.name as name
@@ -292,6 +298,8 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
+                    r.type as type,
+                    f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
                     f.name as name
@@ -436,5 +444,227 @@ class ResidentRepository extends EntityRepository
             ->getResult();
 
         return array_merge($apartmentResult, $facilityResult);
+    }
+
+    /**
+     * @param $type
+     * @param $typeId
+     * @return mixed
+     */
+    public function getBowelMovementInfoByType($type, $typeId)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($type == \App\Model\Resident::TYPE_REGION) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    reg.id as typeId,
+                    reg.name as name,
+                    cro.careGroup'
+                )
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractRegionOption::class,
+                    'cro',
+                    Join::WITH,
+                    'cro.contract = c'
+                )
+                ->innerJoin(
+                    Region::class,
+                    'reg',
+                    Join::WITH,
+                    'cro.region = reg'
+                )
+                ->where('reg.id = :id AND ca.state=:state AND ca.end IS NULL')
+                ->setParameter('id', $typeId)
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('cro.careGroup', 'ASC');
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    f.id as typeId,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber,
+                    f.name as name,
+                    cfo.careGroup
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->where('f.id = :id AND ca.state=:state AND ca.end IS NULL')
+                ->setParameter('id', $typeId)
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('fr.number', 'ASC')
+                ->addOrderBy('fb.number', 'ASC')
+                ->addOrderBy('cfo.careGroup', 'ASC');
+        }
+
+        return $queryBuilder
+            ->andWhere('r.type = :type')
+            ->setParameter("type", $type)
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBowelMovementInfo()
+    {
+        $regionsResult = $this->createQueryBuilder('r')
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    reg.id as typeId,
+                    reg.name as name,
+                    cro.careGroup'
+                )
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractRegionOption::class,
+                    'cro',
+                    Join::WITH,
+                    'cro.contract = c'
+                )
+                ->innerJoin(
+                    Region::class,
+                    'reg',
+                    Join::WITH,
+                    'cro.region = reg'
+                )
+                ->where('r.type=:type AND ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
+                ->addOrderBy('cro.careGroup', 'ASC')
+                ->groupBy('r.id')
+                ->getQuery()
+                ->getResult();
+
+        $facilityResult = $this->createQueryBuilder('r')
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    f.id as typeId,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber,
+                    f.name as name,
+                    cfo.careGroup
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->where('r.type = :type AND ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
+                ->addOrderBy('fr.number', 'ASC')
+                ->addOrderBy('fb.number', 'ASC')
+                ->addOrderBy('cfo.careGroup', 'ASC')
+                ->andWhere('r.type = :type')
+                ->groupBy('r.id')
+                ->getQuery()
+                ->getResult();
+
+        return array_merge($regionsResult, $facilityResult);
     }
 }
