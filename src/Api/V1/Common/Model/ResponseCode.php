@@ -94,6 +94,7 @@ class ResponseCode
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 697;
     const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 698;
     const CAN_NOT_REMOVE_BED_EXCEPTION                           = 699;
+    const CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    = 700;
 
     /**
      * @var array
@@ -183,5 +184,6 @@ class ResponseCode
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region'],
         self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bad has resident. Move resident to another bad'],
+        self::CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ContractAction not found'],
     ];
 }

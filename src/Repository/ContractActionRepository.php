@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Entity\Contract;
 use App\Entity\ContractAction;
+use App\Entity\ContractApartmentOption;
+use App\Entity\ContractFacilityOption;
+use App\Entity\ContractRegionOption;
 use App\Model\ContractState;
 use App\Model\ContractType;
 use Doctrine\ORM\EntityRepository;
@@ -62,6 +65,49 @@ class ContractActionRepository extends EntityRepository
             ->setParameter('id', $id)
             ->orderBy('ca.id', 'DESC')
             ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
+    public function getDataByResident($type, $id)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->select('ca, c')
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->setParameter('id', $id)
+            ->setParameter('state', ContractState::ACTIVE);
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->addSelect('o')
+                    ->join('c.contractFacilityOption', 'o');
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect('o')
+                    ->join('c.contractApartmentOption', 'o');
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->addSelect('o')
+                    ->join('c.contractRegionOption', 'o');
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
             ->getQuery()
             ->getOneOrNullResult();
     }

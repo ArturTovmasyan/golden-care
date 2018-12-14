@@ -1,6 +1,7 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
+use App\Api\V1\Admin\Service\ContractService;
 use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\FileService;
@@ -721,6 +722,62 @@ class ResidentController extends BaseController
             $id,
             [
                 'photo'         => $request->get('photo'),
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @api {put} /api/v1.0/admin/resident/{id}/move Move Resident
+     * @apiVersion 1.0.0
+     * @apiName Move Resident
+     * @apiGroup Admin Residents
+     * @apiDescription This function is used to move resident
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int}     type      Strategy type of the resident
+     * @apiParam {Int}     move_id   The unique identifier where the resident to move
+     *
+     * @apiParamExample {json} Sample Response:
+     *     {
+     *          "type": "1",
+     *          "move_id": "1"
+     *     }
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 201 Created
+     *     {}
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 610,
+     *          "error": "Validation error",
+     *          "details": {
+     *              "type": "Sorry, this type is already in use."
+     *          }
+     *     }
+     *
+     * @Route("/{id}/move", requirements={"id"="\d+"}, name="api_admin_resident_edit_move", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ContractService $contractService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function moveAction(Request $request, $id, ContractService $contractService)
+    {
+        $contractService->move(
+            $id,
+            [
+                'type'    => $request->get('type'),
+                'move_id' => $request->get('move_id'),
             ]
         );
 

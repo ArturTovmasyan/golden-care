@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ApartmentBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\ContractActionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ContractAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\EndDateNotBeBlankException;
@@ -286,6 +287,123 @@ class ContractService extends BaseService implements IGridService
                 }
 
                 $this->em->persist($contractAction);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Exception
+     */
+    public function move($id, array $params) : void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $resident = $this->em->getRepository(Resident::class)->find($id);
+
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            $moveId = !empty($params['move_id']) ? (int)$params['move_id'] : 0;
+            $type = !empty($params['type']) ? (int)$params['type'] : 0;
+
+            /** @var ContractAction $action */
+            $action = $this->em->getRepository(ContractAction::class)->getDataByResident($type, $id);
+
+            if ($action === null) {
+                throw new ContractActionNotFoundException();
+            }
+
+            $editMode = true;
+            switch ($action->getType()) {
+                case ContractType::TYPE_FACILITY:
+                    /** @var FacilityBed $entity */
+                    $entity = $this->em->getRepository(FacilityBed::class)->find($moveId);
+
+                    if ($entity === null) {
+                        throw new FacilityBedNotFoundException();
+                    }
+
+                    $contract = $action->getContract();
+
+                    if ($contract !== null) {
+                        $option = $contract->getOption();
+
+                        if ($option !== null) {
+                            $option->setFacilityBed($entity);
+
+                            $this->em->persist($option);
+
+                            $contractAction = $this->saveContractActionForFacility($contract, $option, $editMode);
+
+                            $this->em->persist($contractAction);
+                        }
+                    }
+
+                    break;
+                case ContractType::TYPE_APARTMENT:
+                    /** @var ApartmentBed $entity */
+                    $entity = $this->em->getRepository(ApartmentBed::class)->find($moveId);
+
+                    if ($entity === null) {
+                        throw new ApartmentBedNotFoundException();
+                    }
+
+                    $contract = $action->getContract();
+
+                    if ($contract !== null) {
+                        $option = $contract->getOption();
+
+                        if ($option !== null) {
+                            $option->setApartmentBed($entity);
+
+                            $this->em->persist($option);
+
+                            $contractAction = $this->saveContractActionForApartment($contract, $option, $editMode);
+
+                            $this->em->persist($contractAction);
+                        }
+                    }
+
+                    break;
+                case ContractType::TYPE_REGION:
+                    /** @var Region $entity */
+                    $entity = $this->em->getRepository(Region::class)->find($moveId);
+
+                    if ($entity === null) {
+                        throw new RegionNotFoundException();
+                    }
+
+                    $contract = $action->getContract();
+
+                    if ($contract !== null) {
+                        $option = $contract->getOption();
+
+                        if ($option !== null) {
+                            $option->setRegion($entity);
+
+                            $this->em->persist($option);
+
+                            $contractAction = $this->saveContractActionForRegion($contract, $option, $editMode);
+
+                            $this->em->persist($contractAction);
+                        }
+                    }
+
+                    break;
+                default:
+                    throw new IncorrectStrategyTypeException();
             }
 
             $this->em->flush();
