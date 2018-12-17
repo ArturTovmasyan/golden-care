@@ -1006,4 +1006,127 @@ class ResidentRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $type
+     * @param bool $typeId
+     * @return array
+     */
+    public function getMealMonitorInfo($type, $typeId = false)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($type == \App\Model\Resident::TYPE_REGION) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    reg.id as typeId,
+                    reg.name as name,
+                    cro.careGroup'
+                )
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractRegionOption::class,
+                    'cro',
+                    Join::WITH,
+                    'cro.contract = c'
+                )
+                ->innerJoin(
+                    Region::class,
+                    'reg',
+                    Join::WITH,
+                    'cro.region = reg'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('cro.careGroup', 'ASC');
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    f.id as typeId,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber,
+                    f.name as name,
+                    cfo.careGroup
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('fr.number', 'ASC')
+                ->addOrderBy('fb.number', 'ASC')
+                ->addOrderBy('cfo.careGroup', 'ASC');
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        }
+
+        return $queryBuilder
+            ->andWhere('r.type = :type')
+            ->setParameter("type", $type)
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
