@@ -33,6 +33,7 @@ use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
+use App\Model\Report\DietaryRestriction;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
 use App\Model\Report\ResidentBirthdayList;
@@ -588,6 +589,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getChangeoverNotesReport($request);
         } elseif ($request->get('alias') == 'meal-monitor') {
             return $this->getMealMonitorReport($request);
+        } elseif ($request->get('alias') == 'dietary-restrictions') {
+            return $this->getDietaryRestrictionsReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -790,6 +793,40 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $report = new MealMonitor();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return DietaryRestriction
+     */
+    private function getDietaryRestrictionsReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($type, $typeId);
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new DietaryRestriction();
         $report->setResidents($residents);
 
         return $report;

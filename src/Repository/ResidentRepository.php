@@ -12,12 +12,15 @@ use App\Entity\ContractAction;
 use App\Entity\ContractApartmentOption;
 use App\Entity\ContractFacilityOption;
 use App\Entity\ContractRegionOption;
+use App\Entity\Diet;
+use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentApartmentOption;
+use App\Entity\ResidentDiet;
 use App\Entity\ResidentFacilityOption;
 use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
@@ -1126,6 +1129,180 @@ class ResidentRepository extends EntityRepository
             ->andWhere('r.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $type
+     * @param bool $typeId
+     * @return array
+     */
+    public function getDietaryRestrictionsInfo($type, $typeId = false)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($type == \App\Model\Resident::TYPE_REGION) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    sal.title as salutation, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    reg.id as typeId,
+                    reg.name as name,
+                    cro.careGroup,
+                    diet.color as dietColor,
+                    diet.title as dietTitle,
+                    rd.description as dietDescription
+                ')
+                ->innerJoin(
+                    Salutation::class,
+                    'sal',
+                    Join::WITH,
+                    'r.salutation = sal'
+                )
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractRegionOption::class,
+                    'cro',
+                    Join::WITH,
+                    'cro.contract = c'
+                )
+                ->innerJoin(
+                    Region::class,
+                    'reg',
+                    Join::WITH,
+                    'cro.region = reg'
+                )
+                ->leftJoin(
+                    ResidentDiet::class,
+                    'rd',
+                    Join::WITH,
+                    'rd.resident = r'
+                )
+                ->leftJoin(
+                    Diet::class,
+                    'diet',
+                    Join::WITH,
+                    'rd.diet = diet'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('cro.careGroup', 'ASC');
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    sal.title as salutation, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    f.id as typeId,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber,
+                    f.name as name,
+                    cfo.careGroup,
+                    dr.title as diningRoom,
+                    diet.color as dietColor,
+                    diet.title as dietTitle,
+                    rd.description as dietDescription
+                ')
+                ->innerJoin(
+                    Salutation::class,
+                    'sal',
+                    Join::WITH,
+                    'r.salutation = sal'
+                )
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    DiningRoom::class,
+                    'dr',
+                    Join::WITH,
+                    'cfo.diningRoom = dr'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->leftJoin(
+                    ResidentDiet::class,
+                    'rd',
+                    Join::WITH,
+                    'rd.resident = r'
+                )
+                ->leftJoin(
+                    Diet::class,
+                    'diet',
+                    Join::WITH,
+                    'rd.diet = diet'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE)
+                ->addOrderBy('fr.number', 'ASC')
+                ->addOrderBy('fb.number', 'ASC')
+                ->addOrderBy('cfo.careGroup', 'ASC');
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        }
+
+        return $queryBuilder
+            ->andWhere('r.type = :type')
+            ->setParameter("type", $type)
+            ->groupBy('rd.id')
             ->getQuery()
             ->getResult();
     }
