@@ -36,6 +36,7 @@ use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
+use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -591,6 +592,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getMealMonitorReport($request);
         } elseif ($request->get('alias') == 'dietary-restrictions') {
             return $this->getDietaryRestrictionsReport($request);
+        } elseif ($request->get('alias') == 'night-activity') {
+            return $this->getNightActivityReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -827,6 +830,40 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $report = new DietaryRestriction();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return NightActivity
+     */
+    private function getNightActivityReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $residents = $this->em->getRepository(Resident::class)->getNightActivityInfo($type, $typeId);
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new NightActivity();
         $report->setResidents($residents);
 
         return $report;
