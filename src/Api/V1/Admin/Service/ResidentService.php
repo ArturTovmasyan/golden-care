@@ -32,6 +32,7 @@ use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
+use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\Manicure;
 use App\Model\Report\ResidentBirthdayList;
 use Doctrine\ORM\QueryBuilder;
@@ -582,6 +583,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getBowelMovementReport($request);
         } elseif ($request->get('alias') == 'manicure') {
             return $this->getManicureReport($request);
+        } elseif ($request->get('alias') == 'changeover-notes') {
+            return $this->getChangeoverNotesReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -716,6 +719,40 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return ChangeoverNotes
+     */
+    private function getChangeoverNotesReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $residents = $this->em->getRepository(Resident::class)->getChangeoverNotesInfo($type, $typeId);
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new ChangeoverNotes();
         $report->setResidents($residents);
 
         return $report;

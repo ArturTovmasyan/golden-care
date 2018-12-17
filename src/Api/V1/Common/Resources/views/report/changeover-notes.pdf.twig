@@ -1,0 +1,67 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+
+{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByTypeAndGroup in data.residents %}
+        {% for typeId, residentsByGroup in residentsByTypeAndGroup %}
+            {% for group, resident in residentsByGroup %}
+
+                <div class="page"></div>
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left">
+                        <div style="height: 5px;"></div>
+                        <b style="font-size: 18px !important">CHANGEOVER&nbsp;NOTES</b>
+                        <p style="margin-bottom: 8px;"></p>
+                        <b style="font-size: 16px !important">{{ resident['name'] }}</b>
+                        <p style="margin-bottom: 16px;"></p>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="float: left; margin-right: 15px;">
+                        <div>_________________________________________</div>
+                        <div style="text-align: left">A.M. Caregivers </div>
+                    </div>
+                    <div style="float: left; margin-right: 15px;">
+                        <div>_________________________________________</div>
+                        <div style="text-align: left">P.M. Caregivers</div>
+                    </div>
+                    <div style="float: right">
+                        <div>_____________________________</div>
+                        <div style="text-align: left">Date</div>
+                    </div>
+                    <div style="clear: both; margin-bottom: 15px;"></div>
+                </div>
+
+                <span class="divider"></span>
+                <span class="divider"></span>
+                <table class="report-table bordered" style="margin: 0 !important; ">
+                    <tr class="divider"></tr>
+                    <thead>
+                    <tr>
+                        <td style="width: 70px"><b>Group {{ group }}</b></td>
+                        <td style="width: 250px"></td>
+                        <td><b>Comments</b></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in resident['data'] %}
+                            <td style="height: 100px; width: 70px; font-size: 13px !important; border-right: none">
+                                <p>{{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}</p>
+                                <p class="square" style="margin-left: 4px;"></p>
+                            </td>
+                            <td style="height: 100px; width: 250px; font-size: 13px !important; border-right: none; border-left: none">{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</td>
+                            <td style="height: 100px; border-left: none"></td>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
