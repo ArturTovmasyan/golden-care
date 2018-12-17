@@ -5,9 +5,6 @@ namespace App\Repository;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Entity\Contract;
 use App\Entity\ContractAction;
-use App\Entity\ContractApartmentOption;
-use App\Entity\ContractFacilityOption;
-use App\Entity\ContractRegionOption;
 use App\Model\ContractState;
 use App\Model\ContractType;
 use Doctrine\ORM\EntityRepository;
@@ -65,6 +62,28 @@ class ContractActionRepository extends EntityRepository
             ->setParameter('id', $id)
             ->orderBy('ca.id', 'DESC')
             ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getActiveByResident($id)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->select('ca, c')
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->setParameter('id', $id)
+            ->setParameter('state', ContractState::ACTIVE);
+
+        return $qb
             ->getQuery()
             ->getOneOrNullResult();
     }

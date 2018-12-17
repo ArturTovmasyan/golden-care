@@ -40,7 +40,8 @@ class Region
      *     "api_admin_region_list",
      *     "api_admin_region_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -59,7 +60,8 @@ class Region
      *     "api_admin_region_list",
      *     "api_admin_region_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $name;

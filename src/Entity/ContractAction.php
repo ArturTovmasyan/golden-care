@@ -35,7 +35,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -46,7 +47,12 @@ class ContractAction
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_contract", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_contract_action_grid", "api_admin_contract_action_list", "api_admin_contract_action_get"})
+     * @Groups({
+     *     "api_admin_contract_action_grid",
+     *     "api_admin_contract_action_list",
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $contract;
 
@@ -56,6 +62,7 @@ class ContractAction
      * @Groups({
      *      "api_admin_contract_action_list",
      *      "api_admin_contract_action_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $type;
@@ -66,7 +73,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $start;
@@ -77,7 +85,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $end;
@@ -89,7 +98,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $state;
@@ -103,7 +113,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $facilityBed;
@@ -117,7 +128,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $apartmentBed;
@@ -131,7 +143,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $region;
@@ -145,7 +158,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $csz;
@@ -156,7 +170,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $address;
@@ -167,7 +182,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $dnr;
@@ -178,7 +194,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $polst;
@@ -189,7 +206,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $ambulatory;
@@ -200,7 +218,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $careGroup;
@@ -214,7 +233,8 @@ class ContractAction
      * @Groups({
      *     "api_admin_contract_action_grid",
      *     "api_admin_contract_action_list",
-     *     "api_admin_contract_action_get"
+     *     "api_admin_contract_action_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $careLevel;

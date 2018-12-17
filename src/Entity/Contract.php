@@ -40,7 +40,8 @@ class Contract
      * @Groups({
      *     "api_admin_contract_grid",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -64,7 +65,12 @@ class Contract
      *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
      * )
      * @ORM\Column(name="payment_period", type="integer", length=1)
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $period = PaymentPeriod::MONTHLY;
 
@@ -73,7 +79,12 @@ class Contract
      * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
      * @Assert\DateTime(groups={"api_admin_contract_add", "api_admin_contract_edit"})
      * @ORM\Column(name="start", type="datetime")
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $start;
 
@@ -81,7 +92,12 @@ class Contract
      * @var \DateTime
      * @Assert\DateTime(groups={"api_admin_contract_add", "api_admin_contract_edit"})
      * @ORM\Column(name="end", type="datetime", nullable=true)
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $end;
 

@@ -79,6 +79,15 @@ class ContractService extends BaseService implements IGridService
     }
 
     /**
+     * @param $id
+     * @return ContractAction|null|object
+     */
+    public function getActiveById($id)
+    {
+        return $this->em->getRepository(ContractAction::class)->getActiveByResident($id);
+    }
+
+    /**
      * @param $type
      * @param $id
      * @param $state

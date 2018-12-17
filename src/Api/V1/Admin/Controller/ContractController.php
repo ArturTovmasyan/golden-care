@@ -42,11 +42,10 @@ class ContractController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
-     * @apiSuccess {Object}   resident             The resident of the contract
-     * @apiSuccess {Object}   period               The period of the contract
-     * @apiSuccess {Object}   start                The start date of the contract
-     * @apiSuccess {Object}   end                  The end date of the contract
-     * @apiSuccess {Object}   type                 The type of the contract
+     * @apiSuccess {Int}      period               The period of the contract
+     * @apiSuccess {String}   start                The start date of the contract
+     * @apiSuccess {String}   end                  The end date of the contract
+     * @apiSuccess {Int}      type                 The type of the contract
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -132,10 +131,10 @@ class ContractController extends BaseController
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
      * @apiSuccess {Object}   resident             The resident of the contract
-     * @apiSuccess {Object}   period               The period of the contract
-     * @apiSuccess {Object}   start                The start date of the contract
-     * @apiSuccess {Object}   end                  The end date of the contract
-     * @apiSuccess {Object}   type                 The type of the contract
+     * @apiSuccess {Int}      period               The period of the contract
+     * @apiSuccess {String}   start                The start date of the contract
+     * @apiSuccess {String}   end                  The end date of the contract
+     * @apiSuccess {Int}      type                 The type of the contract
      * @apiSuccess {Array}    option               The option data(by type) of the contract
      *
      * @apiSuccessExample {json} Sample Response:
@@ -207,10 +206,10 @@ class ContractController extends BaseController
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
      * @apiSuccess {Object}   resident             The resident of the contract
-     * @apiSuccess {Object}   period               The period of the contract
-     * @apiSuccess {Object}   start                The start date of the contract
-     * @apiSuccess {Object}   end                  The end date of the contract
-     * @apiSuccess {Object}   type                 The type of the contract
+     * @apiSuccess {Int}      period               The period of the contract
+     * @apiSuccess {String}   start                The start date of the contract
+     * @apiSuccess {String}   end                  The end date of the contract
+     * @apiSuccess {Int}      type                 The type of the contract
      * @apiSuccess {Array}    option               The option data(by type) of the contract
      *
      * @apiSuccessExample {json} Sample Response:
@@ -536,6 +535,83 @@ class ContractController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/contract/{id}/active Get Active Contract
+     * @apiVersion 1.0.0
+     * @apiName Get Active Contract
+     * @apiGroup Admin Contracts
+     * @apiDescription This function is used to get active contract
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the contract action
+     * @apiSuccess {Object}   contract             The contract of the resident
+     * @apiSuccess {Int}      type                 The type of the contract
+     * @apiSuccess {String}   start                The start date of the contract
+     * @apiSuccess {String}   end                  The end date of the contract
+     * @apiSuccess {Int}      state                The state of the contract
+     * @apiSuccess {Object}   facility_bed         The facility bed of the contract
+     * @apiSuccess {Object}   apartment_bed        The apartment bed of the contract
+     * @apiSuccess {Object}   region               The region bed of the contract
+     * @apiSuccess {Object}   csz                  The csz bed of the region
+     * @apiSuccess {String}   address              The address bed of the region
+     * @apiSuccess {Boolean}  dnr                  The dnr of the resident
+     * @apiSuccess {Boolean}  polst                The polst of the resident
+     * @apiSuccess {Boolean}  ambulatory           The ambulatory of the resident
+     * @apiSuccess {Int}      care_group           The care group of the resident
+     * @apiSuccess {Object}   care_level           The care level of the resident
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                   "id": 4,
+     *                   "contract": {
+     *                      "id": 5,
+     *                      "period": 1,
+     *                      "start": "2018-12-11T20:18:00+00:00",
+     *                      "end": null
+     *                   },
+     *                   "type": 1,
+     *                   "start": "2018-12-14T16:45:58+00:00",
+     *                   "end": null,
+     *                   "state": 1,
+     *                   "facility_bed": {
+     *                      "id": 25,
+     *                      "number": "C"
+     *                   },
+     *                   "apartment_bed": null,
+     *                   "region": null,
+     *                   "csz": null,
+     *                   "address": null,
+     *                   "dnr": false,
+     *                   "polst": false,
+     *                   "ambulatory": true,
+     *                   "care_group": 1,
+     *                   "care_level": {
+     *                      "id": 1,
+     *                      "title": "Level 1"
+     *                   }
+     *          }
+     *     }
+     *
+     * @Route("/{id}/active", requirements={"id"="\d+"}, name="api_admin_contract_get_active", methods={"GET"})
+     *
+     * @param ContractService $contractService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getActiveAction(Request $request, $id, ContractService $contractService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $contractService->getActiveById($id),
+            ['api_admin_contract_get_active']
         );
     }
 }

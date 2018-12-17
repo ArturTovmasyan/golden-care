@@ -51,7 +51,8 @@ class CityStateZip
      *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -93,7 +94,8 @@ class CityStateZip
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
+     *     "api_admin_apartment_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $stateAbbr;
@@ -117,7 +119,8 @@ class CityStateZip
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
+     *     "api_admin_apartment_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $zipMain;
@@ -160,7 +163,8 @@ class CityStateZip
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
+     *     "api_admin_apartment_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $city;

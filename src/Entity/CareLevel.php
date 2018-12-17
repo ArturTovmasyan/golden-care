@@ -43,7 +43,8 @@ class CareLevel
      *     "api_admin_resident_get",
      *     "api_admin_resident_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -63,7 +64,8 @@ class CareLevel
      *     "api_admin_care_level_get",
      *     "api_admin_resident_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $title;
