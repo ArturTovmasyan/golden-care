@@ -3,7 +3,7 @@
 namespace App\Model\Report;
 
 
-class PhysicianSimple extends Base
+class PhysicianSimple1 extends Base
 {
     /**
      * @var array

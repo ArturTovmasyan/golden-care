@@ -172,16 +172,22 @@ class PhysicianRepository extends EntityRepository
     }
 
     /**
-     * @param $facility
+     * @param $type
+     * @param $typeId
      * @return mixed
      */
-    public function findByFacility($facility = null)
+    public function getPhysicianSimpleReport($type, $typeId = false)
     {
-        $physicianTable              = $this->getClassMetadata()->getTableName();
-        $residentPhysicianTable      = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
-        $residentFacilityOptionTable = $this->_em->getClassMetadata(ResidentFacilityOption::class)->getTableName();
-        $facilityRoomTable           = $this->_em->getClassMetadata(FacilityRoom::class)->getTableName();
-        $facilityTable               = $this->_em->getClassMetadata(Facility::class)->getTableName();
+        $physicianTable               = $this->getClassMetadata()->getTableName();
+        $residentPhysicianTable       = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
+        $residentFacilityOptionTable  = $this->_em->getClassMetadata(ResidentFacilityOption::class)->getTableName();
+        $facilityRoomTable            = $this->_em->getClassMetadata(FacilityRoom::class)->getTableName();
+        $facilityTable                = $this->_em->getClassMetadata(Facility::class)->getTableName();
+        $residentApartmentOptionTable = $this->_em->getClassMetadata(ResidentApartmentOption::class)->getTableName();
+        $apartmentRoomTable           = $this->_em->getClassMetadata(ApartmentRoom::class)->getTableName();
+        $apartmentTable               = $this->_em->getClassMetadata(Apartment::class)->getTableName();
+        $residentRegionOptionTable    = $this->_em->getClassMetadata(ResidentRegionOption::class)->getTableName();
+        $regionTable                  = $this->_em->getClassMetadata(Region::class)->getTableName();
 
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult(Physician::class , 'p');
@@ -192,7 +198,8 @@ class PhysicianRepository extends EntityRepository
         $rsm->addScalarResult('typeName', 'typeName');
         $rsm->addScalarResult('residentCount', 'residentCount');
 
-        $sql = "SELECT
+        if ($type == \App\Model\Resident::TYPE_FACILITY) {
+            $sql = "SELECT
                     p.id,
                     p.first_name,
                     p.last_name,
@@ -205,43 +212,19 @@ class PhysicianRepository extends EntityRepository
                   INNER JOIN ". $facilityRoomTable ." fr on rfo.id_facility_room = fr.id
                   INNER JOIN ". $facilityTable ." f on f.id = fr.id_facility";
 
-        if ($facility instanceof Facility) {
-            $sql .= " WHERE fr.id_facility = :id_facility ";
-        }
+            if ($typeId) {
+                $sql .= " WHERE fr.id_facility = :id_facility ";
+            }
 
-        $sql .= " GROUP BY p.id";
+            $sql .= " GROUP BY p.id";
 
-        $query = $this->_em->createNativeQuery($sql, $rsm);
+            $query = $this->_em->createNativeQuery($sql, $rsm);
 
-        if ($facility instanceof Facility) {
-            $query->setParameter('id_facility', $facility->getId());
-        }
-
-        return $query->getResult();
-    }
-
-    /**
-     * @param $apartment
-     * @return mixed
-     */
-    public function findByApartment($apartment = null)
-    {
-        $physicianTable               = $this->getClassMetadata()->getTableName();
-        $residentPhysicianTable       = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
-        $residentApartmentOptionTable = $this->_em->getClassMetadata(ResidentApartmentOption::class)->getTableName();
-        $apartmentRoomTable           = $this->_em->getClassMetadata(ApartmentRoom::class)->getTableName();
-        $apartmentTable               = $this->_em->getClassMetadata(Apartment::class)->getTableName();
-
-        $rsm = new ResultSetMapping();
-        $rsm->addEntityResult(Physician::class , 'p');
-        $rsm->addFieldResult('p', 'id', 'id');
-        $rsm->addFieldResult('p', 'first_name', 'firstName');
-        $rsm->addFieldResult('p', 'last_name', 'lastName');
-        $rsm->addScalarResult('typeId', 'typeId');
-        $rsm->addScalarResult('typeName', 'typeName');
-        $rsm->addScalarResult('residentCount', 'residentCount');
-
-        $sql = "SELECT
+            if ($typeId) {
+                $query->setParameter('id_facility', $typeId);
+            }
+        } elseif ($type == \App\Model\Resident::TYPE_APARTMENT) {
+            $sql = "SELECT
                     p.id,
                     p.first_name,
                     p.last_name,
@@ -255,42 +238,19 @@ class PhysicianRepository extends EntityRepository
                   INNER JOIN ". $apartmentTable ." a on a.id = ar.id_apartment
                 WHERE ar.id_apartment = :id_apartment";
 
-        if ($apartment instanceof Apartment) {
-            $sql .= " WHERE ar.id_apartment = :id_apartment ";
-        }
+            if ($typeId) {
+                $sql .= " WHERE ar.id_apartment = :id_apartment ";
+            }
 
-        $sql .= " GROUP BY p.id";
+            $sql .= " GROUP BY p.id";
 
-        $query = $this->_em->createNativeQuery($sql, $rsm);
+            $query = $this->_em->createNativeQuery($sql, $rsm);
 
-        if ($apartment instanceof Apartment) {
-            $query->setParameter('id_apartment', $apartment->getId());
-        }
-
-        return $query->getResult();
-    }
-
-    /**
-     * @param $region
-     * @return mixed
-     */
-    public function findByRegion($region = null)
-    {
-        $physicianTable            = $this->getClassMetadata()->getTableName();
-        $residentPhysicianTable    = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
-        $residentRegionOptionTable = $this->_em->getClassMetadata(ResidentRegionOption::class)->getTableName();
-        $regionTable               = $this->_em->getClassMetadata(Region::class)->getTableName();
-
-        $rsm = new ResultSetMapping();
-        $rsm->addEntityResult(Physician::class , 'p');
-        $rsm->addFieldResult('p', 'id', 'id');
-        $rsm->addFieldResult('p', 'first_name', 'firstName');
-        $rsm->addFieldResult('p', 'last_name', 'lastName');
-        $rsm->addScalarResult('typeId', 'typeId');
-        $rsm->addScalarResult('typeName', 'typeName');
-        $rsm->addScalarResult('residentCount', 'residentCount');
-
-        $sql = "SELECT
+            if ($typeId) {
+                $query->setParameter('id_apartment', $typeId);
+            }
+        } else {
+            $sql = "SELECT
                     p.id,
                     p.first_name,
                     p.last_name,
@@ -304,16 +264,17 @@ class PhysicianRepository extends EntityRepository
                 WHERE rr.id_region = :id_region
                 GROUP BY p.id";
 
-        if ($region instanceof Region) {
-            $sql .= " WHERE rr.id_region = :id_region ";
-        }
+            if ($typeId) {
+                $sql .= " WHERE rr.id_region = :id_region ";
+            }
 
-        $sql .= "GROUP BY p.id";
+            $sql .= "GROUP BY p.id";
 
-        $query = $this->_em->createNativeQuery($sql, $rsm);
+            $query = $this->_em->createNativeQuery($sql, $rsm);
 
-        if ($region instanceof Region) {
-            $query->setParameter('id_region', $region->getId());
+            if ($typeId) {
+                $query->setParameter('id_region', $typeId);
+            }
         }
 
         return $query->getResult();

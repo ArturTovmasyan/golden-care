@@ -23,6 +23,7 @@ use App\Model\Resident;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Class PhysicianService
@@ -320,9 +321,9 @@ class PhysicianService extends BaseService implements IGridService
     {
         if ($request->get('alias') == 'physician-full') {
             return $this->getFullReport($request);
+        } elseif ($request->get('alias') == 'physician-simple') {
+            return $this->getSimpleReport($request);
         }
-
-        return $this->getSimpleReport($request);
     }
 
     /**
@@ -331,46 +332,24 @@ class PhysicianService extends BaseService implements IGridService
      */
     private function getSimpleReport(Request $request)
     {
-        /**
-         * @var Physician $physician
-         */
-        $residentId = $request->get('resident_id');
-        $type       = $request->get('type');
-        $all        = (bool) $request->get('all') ?? false;
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
 
-        if (!$all && !$residentId) {
-            throw new ParameterNotFoundException('type, resident');
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if ($type && !in_array($type, Resident::getTypeValues())) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
         }
 
         try {
-            if ($type == Resident::TYPE_FACILITY) {
-                if ($residentId) {
-                    $facility   = $this->em->getRepository(Facility::class)->findByResident($residentId);
-                    $physicians = $facility ? $this->em->getRepository(Physician::class)->findByFacility($facility) : [];
-                } else {
-                    $physicians = $this->em->getRepository(Physician::class)->findByFacility();
-                }
-
-                $type = "Facility";
-            } elseif ($type == Resident::TYPE_APARTMENT) {
-                if ($residentId) {
-                    $apartment  = $this->em->getRepository(Apartment::class)->findByResident($residentId);
-                    $physicians = $apartment ? $this->em->getRepository(Physician::class)->findByApartment($apartment) : [];
-                } else {
-                    $physicians = $this->em->getRepository(Physician::class)->findByApartment();
-                }
-
-                $type = "Apartment";
-            } else {
-                if ($residentId) {
-                    $region     = $this->em->getRepository(Region::class)->findByResident($residentId);
-                    $physicians = $region ? $this->em->getRepository(Physician::class)->findByRegion($region) : [];
-                } else {
-                    $physicians = $this->em->getRepository(Physician::class)->findByRegion();
-                }
-
-                $type = "Region";
-            }
+            $physicians = $this->em->getRepository(Physician::class)->getPhysicianSimpleReport($type, $typeId);
         } catch (\Exception $e) {
             $physicians = [];
         }
