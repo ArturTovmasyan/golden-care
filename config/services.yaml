@@ -363,6 +363,41 @@ parameters:
                                 1:
                                     title: 'All types'
                                     value: 1
+        room-audit:
+            service: App\Api\V1\Admin\Service\ResidentService
+            formats: ['pdf']
+            group: 'Form Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Room Audit : Resident Room Audit form'
+            parameter_groups:
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
+                                3:
+                                    title: 'region'
+                                    value: 3
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/region']
+                            required: false
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
 
 services:
     # default configuration for services in *this* file

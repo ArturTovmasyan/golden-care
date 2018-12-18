@@ -1,0 +1,59 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+    <span style="float: left">{{ data.title }}</span>
+{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.residents %}
+        {% for typeId, resident in residentsByType %}
+
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+                <thead>
+                    <tr>
+                        <th colspan="8">
+                            <div style="float: left">
+                                <h3>{{ resident['name'] }}</h3>
+                                Please initial and date each box when completed.
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><b>CLOTHES</b></td>
+                        <td><b>DRAWERS/CLOSET</b></td>
+                        <td><b>EXTRA THINGS</b></td>
+                        <td><b>TOILETRIES</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for data in resident['data'] %}
+                    <tr>
+                        <td style="height: 60px; text-align: left;">
+                            {% if data['roomNumber'] is defined %}
+                                {{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}<br/>{{  data['firstName'] ~ ' ' ~ data['lastName'] }}
+                            {% else %}
+                                {{  data['firstName'] ~ ' ' ~ data['lastName'] }}
+                            {% endif %}
+                        </td>
+                        <td style="height: 60px"></td>
+                        <td style="height: 60px"></td>
+                        <td style="height: 60px"></td>
+                        <td style="height: 60px"></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <table class="report-table main-table" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+            </table>
+
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

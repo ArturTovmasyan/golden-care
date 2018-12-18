@@ -38,6 +38,7 @@ use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
+use App\Model\Report\RoomAudit;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -594,6 +595,8 @@ class ResidentService extends BaseService implements IGridService
             return $this->getDietaryRestrictionsReport($request);
         } elseif ($request->get('alias') == 'night-activity') {
             return $this->getNightActivityReport($request);
+        } elseif ($request->get('alias') == 'room-audit') {
+            return $this->getRoomAuditReport($request);
         } else {
             throw new ParameterNotFoundException('Invalid report');
         }
@@ -864,6 +867,41 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $report = new NightActivity();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomAudit
+     */
+    private function getRoomAuditReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $residents = $this->em->getRepository(Resident::class)->getRoomAuditInfo($type, $typeId);
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new RoomAudit();
+        $report->setTitle('ROOM AUDIT REPORT');
         $report->setResidents($residents);
 
         return $report;
