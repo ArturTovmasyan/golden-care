@@ -44,14 +44,6 @@ parameters:
             show_in_list: true
             title: 'Physician Roster Simple : List of physicians, with contact information and resident count'
             parameter_groups:
-                by_resident:
-                    title: 'By Resident'
-                    parameters:
-                        resident_id:
-                            title: 'Resident unique identifier'
-                            type: 'integer'
-                            url: '/api/v1.0/admin/resident'
-                            required: false
                 by_type:
                     title: 'By Type'
                     parameters:
@@ -65,10 +57,15 @@ parameters:
                                     value: 1
                                 2:
                                     title: 'apartment'
-                                    value: 2
+                                    value: 1
                                 3:
                                     title: 'region'
                                     value: 3
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment', '/api/v1.0/admin/region']
+                            required: false
                         all:
                             title: 'All types'
                             type: "choice"
@@ -77,9 +74,44 @@ parameters:
                                 1:
                                     title: 'All types'
                                     value: 1
-        #physician-full:
-        #    service: App\Api\V1\Admin\Service\PhysicianService
-        #    formats: ['pdf', 'csv']
+        physician-full:
+            service: App\Api\V1\Admin\Service\PhysicianService
+            formats: ['pdf', 'csv']
+            group: 'Physician Reports'
+            group_alias: 'form_reports'
+            show_in_list: true
+            title: 'Physician Roster Full : List of physicians, with contact information and resident count'
+            parameter_groups:
+                by_type:
+                    title: 'By Type'
+                    parameters:
+                        type:
+                            title: 'Type'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'facility'
+                                    value: 1
+                                2:
+                                    title: 'apartment'
+                                    value: 1
+                                3:
+                                    title: 'region'
+                                    value: 3
+                        type_id:
+                            title: 'Unique identifier of type'
+                            type: 'integer'
+                            url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/apartment', '/api/v1.0/admin/region']
+                            required: false
+                        all:
+                            title: 'All types'
+                            type: "choice"
+                            required: false
+                            values:
+                                1:
+                                    title: 'All types'
+                                    value: 1
         residents-birthday-list:
             service: App\Api\V1\Admin\Service\ResidentService
             formats: ['pdf']

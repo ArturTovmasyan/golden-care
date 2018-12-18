@@ -17,7 +17,9 @@ use App\Entity\Region;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
+use App\Model\ContractType;
 use App\Model\Report\Base;
+use App\Model\Report\PhysicianFull;
 use App\Model\Report\PhysicianSimple;
 use App\Model\Resident;
 use Doctrine\ORM\QueryBuilder;
@@ -370,9 +372,38 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param Request $request
+     * @return PhysicianFull
      */
     private function getFullReport(Request $request)
     {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
 
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if ($type && !in_array($type, Resident::getTypeValues())) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $physicians = $this->em->getRepository(Physician::class)->getPhysicianFullReport($type, $typeId);
+        } catch (\Exception $e) {
+            $physicians = [];
+        }
+
+        // create report
+        $report = new PhysicianFull();
+        $report->setTitle('PHYSICIAN ROSTER, FULL');
+        $report->setType(ContractType::getTypes()[$type]);
+        $report->setPhysicians($physicians);
+
+        return $report;
     }
 }

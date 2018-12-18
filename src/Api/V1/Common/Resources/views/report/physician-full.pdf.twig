@@ -1,0 +1,62 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+    {{ data.title }}
+{% endblock %}
+{% block pageContent %}
+
+    {% for type, physiciansByType in data.physicians %}
+        {% for typeId, physician in physiciansByType %}
+
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered">
+                <tr class="divider"></tr>
+                <thead>
+                    <tr>
+                        <th colspan="8">
+                            <h3>{{ physician['name'] }}</h3>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><b>Physician Name</b></td>
+                        <td><b>Count</b></td>
+                        <td><b>Address, Csz</b></td>
+                        <td><b>Office Phone</b></td>
+                        <td><b>Emergency Phone</b></td>
+                        <td><b>Fax</b></td>
+                        <td><b>Email</b></td>
+                        <td><b>Website Url</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for data in physician['data'] %}
+
+                    <tr>
+                        <td>{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</td>
+                        <td>{{ data['residentCount'] }}</td>
+                        <td>
+                            {{ data['address'] }},
+                            <br/> {{ data['city'] }} {{ data['state'] }} {{ data['zip'] }}
+                        </td>
+                        <td>{{ data['officePhone'] }}</td>
+                        <td>{{ data['emergencyPhone'] }}</td>
+                        <td>{{ data['fax'] }}</td>
+                        <td>{{ data['email'] }}</td>
+                        <td>{{ data['websiteUrl'] }}</td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+            <table class="report-table main-table">
+                <tr class="divider"></tr>
+            </table>
+
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
