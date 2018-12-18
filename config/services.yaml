@@ -461,6 +461,11 @@ parameters:
                             type: 'integer'
                             url: ['/api/v1.0/admin/facility', '/api/v1.0/admin/region']
                             required: false
+                        resident_id:
+                            title: 'Unique identifier of resident'
+                            type: 'integer'
+                            url: '/api/v1.0/admin/resident'
+                            required: false
                         all:
                             title: 'All types'
                             type: "choice"
