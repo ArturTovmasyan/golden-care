@@ -8,7 +8,6 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
-use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
@@ -39,6 +38,7 @@ use App\Model\Report\MealMonitor;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\RoomAudit;
+use App\Model\Report\ShowerSkinInspection;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -574,6 +574,38 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param Request $request
+     * @return mixed
+     */
+    public function getReport(Request $request)
+    {
+        /** @todo add other reports about residents **/
+        if ($request->get('alias') == 'residents-birthday-list') {
+            return $this->getBirthdayListReport($request);
+        } elseif ($request->get('alias') == 'blood-pressure-charting') {
+            return $this->getBloodPressureChartingReport($request);
+        } elseif ($request->get('alias') == 'bowel-movement') {
+            return $this->getBowelMovementReport($request);
+        } elseif ($request->get('alias') == 'manicure') {
+            return $this->getManicureReport($request);
+        } elseif ($request->get('alias') == 'changeover-notes') {
+            return $this->getChangeoverNotesReport($request);
+        } elseif ($request->get('alias') == 'meal-monitor') {
+            return $this->getMealMonitorReport($request);
+        } elseif ($request->get('alias') == 'dietary-restrictions') {
+            return $this->getDietaryRestrictionsReport($request);
+        } elseif ($request->get('alias') == 'night-activity') {
+            return $this->getNightActivityReport($request);
+        } elseif ($request->get('alias') == 'room-audit') {
+            return $this->getRoomAuditReport($request);
+        } elseif ($request->get('alias') == 'shower-skin-inspection') {
+            return $this->getShowerSkinInspectionReport($request);
+        } else {
+            throw new ParameterNotFoundException('Invalid report');
+        }
+    }
+
+    /**
+     * @param Request $request
      * @return ResidentBirthdayList
      */
     public function getBirthdayListReport(Request $request)
@@ -868,6 +900,41 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return ShowerSkinInspection
+     */
+    private function getShowerSkinInspectionReport(Request $request)
+    {
+        $all        = (bool) $request->get('all') ?? false;
+        $type       = $request->get('type');
+        $typeId     = $request->get('type_id') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$type && !$residentId) {
+            throw new ParameterNotFoundException('type, resident_id');
+        }
+
+        if ($type && !$typeId && !$all) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        try {
+            $residents = $this->em->getRepository(Resident::class)->getShowerSkinInspectionInfo($type, $typeId, $residentId);
+        } catch (\Exception $e) {
+            $residents = [];
+        }
+
+        $report = new ShowerSkinInspection();
         $report->setResidents($residents);
 
         return $report;

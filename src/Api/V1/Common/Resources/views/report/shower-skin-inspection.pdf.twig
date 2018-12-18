@@ -1,0 +1,58 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.residents %}
+        {% for typeId, resident in residentsByType %}
+
+            {% for data in resident['data'] %}
+
+                <table class="report-table main-table">
+                    <tbody>
+
+                    <tr>
+                        <td style="width: 450px; margin-right: 100px">
+                            <p style="text-align: left; font-size: 18px;"><b style="font-size: 18px !important;">SHOWER SKIN INSPECTION</b></p>
+                            <h2 style="margin-bottom: 15px;"><b>{{ data['name'] }}</b></h2>
+                            <p style="margin: 15px 0">RESIDENT NAME: <b>{{ data['salutation'] }} {{ data['firstName'] ~ ' ' ~ data['lastName'] }}</b></p>
+                            <p style="margin: 15px 0">ROOM#: <b>{% if data['roomNumber'] is defined %}{{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}{% endif %}</b></p>
+                            <p style="margin: 15px 0">CAREGIVER NAME: ___________________________________</p>
+                            <p style="margin: 15px 0">DATE: ____/____/________</p>
+                            <p style="margin: 15px 0"><b>CIRCLE ONE:</b></p>
+                            <p style="margin: 15px 0">SKIN INTACT: YES OR NO</p>
+                            <p style="margin: 15px 0">SKIN PROBLEM(S): YES OR NO</p>
+                            <p style="margin: 15px 0"><b>CHECK ONE:</b></p>
+                            <div>
+                                <div style="clear: both"><div class="square" style="margin-right: 10px; margin-bottom: 10px; float: left"></div><div style="float: left; vertical-align: middle; padding-top: 2px">SHOWER</div></div>
+                                <div style="clear: both"><div class="square" style="margin-right: 10px; margin-bottom: 10px; float: left"></div><div style="float: left; vertical-align: middle; padding-top: 2px">TUB&nbspBATH</div></div>
+                                <div style="clear: both"><div class="square" style="margin-right: 10px; margin-bottom: 10px; float: left"></div><div style="float: left; vertical-align: middle; padding-top: 2px">BED&nbspBATH</div></div>
+                                <div style="clear: both"><div class="square" style="margin-right: 10px; margin-bottom: 10px; float: left"></div><div style="float: left; vertical-align: middle; padding-top: 2px">SHAVE</div></div>
+                            </div>
+                            <div style="clear: both"></div>
+                            <p><b style="margin: 15px 0; text-align: left">BODY REPORT</b></p>
+                            <p style="margin: 15px 0">BRUISE(S): ___________________________________________</p>
+                            <p style="margin: 15px 0">SKIN TEAR(S): _______________________________________</p>
+                            <p style="margin: 15px 0">RASH: _______________________________________________</p>
+                            <p style="margin: 15px 0">REDDENDED AREA(S): ________________________________</p>
+                            <p style="margin: 15px 0">OPEN AREA(S): _______________________________________</p>
+                            <p style="margin: 15px 0">FEMALE FACIAL HAIR REMOVAL: YES OR NO</p>
+                            <p style="margin: 15px 0">FINGER NAILS CLIPPED AND CLEANED: YES OR NO</p>
+                            <p style="margin-top: 15px">TOE NAILS NEED CARE: YES OR NO</p>
+                        </td>
+                        <td style="">
+                            <b style="margin: 25px 0; text-align: center">CHECK ALL PRESSURE POINTS CAREFULLY. MARK SITE, TYPE AND APPROX. SIZE OF ANY SKIN PROBLEM ON
+                                FIGURES BELOW:</b>
+                            <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('cdn/images/residents-shower-list.jpg') }}" style="display: block; margin: 0 auto; padding: 0;"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {% endfor %}
+
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

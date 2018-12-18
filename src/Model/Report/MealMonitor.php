@@ -9,6 +9,9 @@ class MealMonitor extends Base
      */
     private $residents = [];
 
+    /**
+     * @var array
+     */
     private $options = [];
 
     /**
