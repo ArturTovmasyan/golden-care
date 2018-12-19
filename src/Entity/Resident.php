@@ -15,11 +15,8 @@ use JMS\Serializer\Annotation as Serializer;
  * @Grid(
  *     api_admin_resident_grid={
  *          {"id",         "number", true, true, "r.id"},
- *          {"salutation", "string", true, true, "sal.title"},
- *          {"first_name", "string", true, true, "r.firstName"},
- *          {"last_name",  "string", true, true, "r.lastName"},
- *          {"middle_name","string", true, true, "r.middleName"},
- *          {"gender",     "enum", true, true, "r.gender"},
+ *          {"full_name",  "string", true, true, "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, r.lastName)"},
+ *          {"gender",     "enum", true, true, "r.gender", {"\App\Model\User", "genderValues"}},
  *          {"birthday",   "date", true, true, "r.birthday"},
  *          {"space",      "string", true, true, "s.name"},
  *     }

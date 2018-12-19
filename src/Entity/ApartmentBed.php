@@ -106,7 +106,12 @@ class ApartmentBed
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_apartment_room", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_apartment_bed_grid", "api_admin_apartment_bed_list", "api_admin_apartment_bed_get"})
+     * @Groups({
+     *     "api_admin_apartment_bed_grid",
+     *     "api_admin_apartment_bed_list",
+     *     "api_admin_apartment_bed_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $room;
 

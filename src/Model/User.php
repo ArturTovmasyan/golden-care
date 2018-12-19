@@ -48,6 +48,17 @@ class User
     /**
      * @return array
      */
+    public static function genderValues()
+    {
+        return [
+            'Male'   => self::GENDER_MALE,
+            'Female' => self::GENDER_FEMALE,
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public static function getGenderValues()
     {
         return self::$genderValues;

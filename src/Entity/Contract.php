@@ -113,6 +113,7 @@ class Contract
      * @Groups({
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $type;
@@ -157,7 +158,8 @@ class Contract
      * @Serializer\SerializedName("option")
      * @Groups({
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     public function getOption()

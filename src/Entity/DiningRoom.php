@@ -40,7 +40,8 @@ class DiningRoom
      *     "api_admin_resident_list",
      *     "api_admin_resident_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -60,7 +61,8 @@ class DiningRoom
      *     "api_admin_dining_room_get",
      *     "api_admin_resident_get",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $title;
@@ -72,7 +74,12 @@ class DiningRoom
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_dining_room_grid", "api_admin_dining_room_list", "api_admin_dining_room_get"})
+     * @Groups({
+     *     "api_admin_dining_room_grid",
+     *     "api_admin_dining_room_list",
+     *     "api_admin_dining_room_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $facility;
 

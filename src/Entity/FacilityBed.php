@@ -107,7 +107,12 @@ class FacilityBed
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility_room", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_facility_bed_grid", "api_admin_facility_bed_list", "api_admin_facility_bed_get"})
+     * @Groups({
+     *     "api_admin_facility_bed_grid",
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $room;
 

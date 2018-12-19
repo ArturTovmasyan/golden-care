@@ -39,7 +39,12 @@ class ContractApartmentOption
      *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
      * )
      * @ORM\Column(name="state", type="integer", length=1)
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $state = ContractState::ACTIVE;
 
@@ -57,6 +62,7 @@ class ContractApartmentOption
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      * @Serializer\SerializedName("bed")
      */

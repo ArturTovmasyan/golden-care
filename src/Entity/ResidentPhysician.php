@@ -17,8 +17,7 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_resident_physician_grid={
  *          {"id", "number", true, true, "rp.id"},
- *          {"resident", "string", true, true, "CONCAT(r.firstName, ' ', r.lastName)"},
- *          {"physician", "string", true, true, "CONCAT(p.firstName, ' ', p.lastName)"},
+ *          {"physician", "string", true, true, "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"},
  *          {"primary", "number", true, true, "rp.primary"}
  *     }
  * )

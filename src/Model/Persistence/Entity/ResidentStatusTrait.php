@@ -17,7 +17,8 @@ trait ResidentStatusTrait
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_get_active"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_add"
@@ -31,7 +32,8 @@ trait ResidentStatusTrait
      * @Groups({
      *      "api_admin_resident_grid",
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_contract_get_active"
      * })
      * @Assert\Choice({1, 2}, groups={
      *     "api_admin_resident_add"

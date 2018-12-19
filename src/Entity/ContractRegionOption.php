@@ -41,7 +41,12 @@ class ContractRegionOption
      *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
      * )
      * @ORM\Column(name="state", type="integer", length=1)
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *      "api_admin_contract_list",
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
+     * })
      */
     private $state = ContractState::ACTIVE;
 
@@ -58,7 +63,8 @@ class ContractRegionOption
      * @Groups({
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $region;
@@ -77,6 +83,7 @@ class ContractRegionOption
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $csz;
@@ -96,7 +103,8 @@ class ContractRegionOption
      * @Groups({
      *     "api_admin_contract_grid",
      *     "api_admin_contract_list",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $address;

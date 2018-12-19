@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentPhysician;
+use App\Entity\Salutation;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -34,6 +35,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 'p',
                 Join::WITH,
                 'p = rp.physician'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'ps',
+                Join::WITH,
+                'ps = p.salutation'
             )
             ->groupBy('rp.id');
 

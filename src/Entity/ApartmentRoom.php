@@ -47,6 +47,7 @@ class ApartmentRoom
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -58,7 +59,11 @@ class ApartmentRoom
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_apartment", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
+     * @Groups({
+     *     "api_admin_apartment_room_grid",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
      */
     private $apartment;
 
@@ -75,6 +80,7 @@ class ApartmentRoom
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $number;
@@ -93,7 +99,12 @@ class ApartmentRoom
      *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
      * )
      * @ORM\Column(name="floor", type="integer", length=2)
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
+     * @Groups({
+     *     "api_admin_apartment_room_grid",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $floor = 1;
 

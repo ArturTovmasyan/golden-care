@@ -47,7 +47,8 @@ class FacilityRoom
      *     "api_admin_facility_room_grid",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;
@@ -76,7 +77,8 @@ class FacilityRoom
      *     "api_admin_facility_room_grid",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $number;
@@ -95,7 +97,12 @@ class FacilityRoom
      *      groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
      * )
      * @ORM\Column(name="floor", type="integer", length=2)
-     * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
+     * @Groups({
+     *     "api_admin_facility_room_grid",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $floor = 1;
 
@@ -107,7 +114,11 @@ class FacilityRoom
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_facility_room_add", "api_admin_facility_room_edit"}
      * )
-     * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
+     * @Groups({
+     *     "api_admin_facility_room_grid",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
      */
     private $notes;
 

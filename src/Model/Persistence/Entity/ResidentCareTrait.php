@@ -21,7 +21,8 @@ trait ResidentCareTrait
      *      "api_admin_resident_get",
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $dnr = false;
@@ -35,7 +36,8 @@ trait ResidentCareTrait
      *      "api_admin_resident_get",
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $polst = false;
@@ -49,7 +51,8 @@ trait ResidentCareTrait
      *      "api_admin_resident_get",
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $ambulatory = false;
@@ -79,7 +82,8 @@ trait ResidentCareTrait
      *      "api_admin_resident_get",
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $careGroup;
@@ -102,7 +106,8 @@ trait ResidentCareTrait
      *      "api_admin_resident_get",
      *      "api_admin_contract_grid",
      *      "api_admin_contract_list",
-     *      "api_admin_contract_get"
+     *      "api_admin_contract_get",
+     *      "api_admin_contract_get_active"
      * })
      */
     private $careLevel;
