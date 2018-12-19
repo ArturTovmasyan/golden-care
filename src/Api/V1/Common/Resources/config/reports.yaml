@@ -153,8 +153,8 @@ form:
       parameters:
         group:
           select_all: true
-    shower-skin-resident:
-      service: App\Api\V1\Admin\Service\ResidentService::
+    shower-skin-inspection:
+      service: App\Api\V1\Admin\Service\ResidentService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection Selected Resident : Shower Skin Inspection for current selected resident'
       show_in_list: true
       formats: ['pdf']
