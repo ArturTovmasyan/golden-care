@@ -317,22 +317,9 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param Request $request
-     * @return mixed
-     */
-    public function getReport(Request $request)
-    {
-        if ($request->get('alias') == 'physician-full') {
-            return $this->getFullReport($request);
-        } elseif ($request->get('alias') == 'physician-simple') {
-            return $this->getSimpleReport($request);
-        }
-    }
-
-    /**
-     * @param Request $request
      * @return PhysicianSimple
      */
-    private function getSimpleReport(Request $request)
+    public function getSimpleReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -374,7 +361,7 @@ class PhysicianService extends BaseService implements IGridService
      * @param Request $request
      * @return PhysicianFull
      */
-    private function getFullReport(Request $request)
+    public function getFullReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');

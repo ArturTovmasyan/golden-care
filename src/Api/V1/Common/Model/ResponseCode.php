@@ -86,15 +86,16 @@ class ResponseCode
     const RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     = 689;
     const REPORT_NOT_FOUND_EXCEPTION                             = 690;
     const REPORT_FORMAT_NOT_FOUND_EXCEPTION                      = 691;
-    const FACILITY_BED_NOT_FOUND_EXCEPTION                       = 692;
-    const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 693;
-    const CONTRACT_NOT_FOUND_EXCEPTION                           = 694;
-    const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 695;
-    const START_GREATER_END_DATE_EXCEPTION                       = 696;
-    const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 697;
-    const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 698;
-    const CAN_NOT_REMOVE_BED_EXCEPTION                           = 699;
-    const CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    = 700;
+    const REPORT_MISCONFIGURATION_EXCEPTION                      = 692;
+    const FACILITY_BED_NOT_FOUND_EXCEPTION                       = 693;
+    const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 694;
+    const CONTRACT_NOT_FOUND_EXCEPTION                           = 695;
+    const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 696;
+    const START_GREATER_END_DATE_EXCEPTION                       = 697;
+    const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 698;
+    const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 699;
+    const CAN_NOT_REMOVE_BED_EXCEPTION                           = 700;
+    const CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    = 701;
 
     /**
      * @var array
@@ -176,6 +177,7 @@ class ResponseCode
         self::RESIDENT_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentEvent not found'],
         self::REPORT_NOT_FOUND_EXCEPTION                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report not found'],
         self::REPORT_FORMAT_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report format not found'],
+        self::REPORT_MISCONFIGURATION_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report misconfiguration'],
         self::FACILITY_BED_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityBed not found'],
         self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentBed not found'],
         self::CONTRACT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Contract not found'],

@@ -1,0 +1,279 @@
+resident:
+  title: 'Resident Reports'
+  show_in_list: true
+  reports:
+    profile:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Profile : Profile for selected resident / all residents'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    face-sheet:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    detailed-roster:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    simple-roster:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Simple Roster : Simple list of Residents, sorted by Room Number'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    dietary-restrictions:
+      service: App\Api\V1\Admin\Service\ResidentService::getDietaryRestrictionsReport
+      title: 'Dietary Restrictions : Dietary Restrictions Report'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    sixty-days-roster:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: '60 Days Roster : 60 Days Roster Report'
+      show_in_list: true
+      formats: ['csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/d/Y"
+    event-list:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Events : List of Residents Events'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
+form:
+  title: 'Forms Reports'
+  show_in_list: true
+  reports:
+    birthday-list:
+      service: App\Api\V1\Admin\Service\ResidentService::getBirthdayListReport
+      title: 'Birthday list : List of all residents birthdays, Monthly'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    blood-pressure:
+      service: App\Api\V1\Admin\Service\ResidentService::getBloodPressureChartingReport
+      title: 'Blood Pressure : Blood pressure charting'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    bowel-movement:
+      service: App\Api\V1\Admin\Service\ResidentService::getBowelMovementReport
+      title: 'Bowel movement : Bowel Movement tracking form, Weekly'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    changeover-notes:
+      service: App\Api\V1\Admin\Service\ResidentService::getChangeoverNotesReport
+      title: 'Changeover notes : Shift Changeover Notes, Daily'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    manicure:
+      service: App\Api\V1\Admin\Service\ResidentService::getManicureReport
+      title: 'Manicure : Manicure Tracking Form, Monthly'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    meal-monitor:
+      service: App\Api\V1\Admin\Service\ResidentService::getMealMonitorReport
+      title: 'Meal Monitor : Meal Consumption Tracking Form, Weekly'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    medication-chart:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    medications-list-all:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Medications List All Residents : Medications list for all residents.'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    medications-list-resident:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Medications List Selected Resident : Medications list for selected resident'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    night-activity:
+      service: App\Api\V1\Admin\Service\ResidentService::getNightActivityReport
+      title: 'Night activity : Night Activity Tracking Form, Daily'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    room-audit:
+      service: App\Api\V1\Admin\Service\ResidentService::getRoomAuditReport
+      title: 'Room Audit : Resident Room Audit form'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    shower-skin-resident:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Shower Skin Inspection Selected Resident : Shower Skin Inspection for current selected resident'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    shower-skin-list:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number.'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+
+room:
+  title: 'Room Reports'
+  show_in_list: true
+  reports:
+    payor:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Payor Report : Monthly Payor Report.'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/Y"
+    room-list:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room : List of Rooms, with occupants and room rent rates.'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/d/Y"
+    room-rent:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room Rent : Monthly Rent Report.'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/Y"
+    room-rent-master:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room Rent Master : Historical Rent Graphs, Data - for Finance Use only.'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+        date: "m/Y"
+    room-rent-master-new:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room Rent Master: New! : Monthly Rent Master Report.'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/Y"
+    room-vacancy:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room Vacancy List : List of Vacant Rooms, by Facility. Calculated as of today'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+    room-occupancy:
+      service: App\Api\V1\Admin\Service\ResidentService::
+      title: 'Room Occupancy Rates : Facility Occupancy Rate Summary (calculated as of today)'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+
+physician:
+  title: 'Physicians Reports'
+  show_in_list: true
+  reports:
+    simple:
+      service: App\Api\V1\Admin\Service\PhysicianService::getSimpleReport
+      title: 'Physician Roster Simple : List of physicians, with contact information and resident count'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+    full:
+      service: App\Api\V1\Admin\Service\PhysicianService::getFullReport
+      title: 'Physician Roster Full : List of physicians, with contact information and resident count'
+      show_in_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+
+assessment:
+  title: 'Assessment Reports'
+  show_in_list: false
+  reports:
+    blank:
+      service: App\Api\V1\Admin\Service\ResidentAssessmentService::getBlankReport
+      title: 'Assessment Report (Blank)'
+      show_in_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: false
+    filled:
+      service: App\Api\V1\Admin\Service\ResidentAssessmentService::getFilledReport
+      title: 'Assessment Report (Filled)'
+      show_in_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: false

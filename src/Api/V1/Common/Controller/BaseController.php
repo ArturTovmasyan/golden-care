@@ -3,13 +3,10 @@
 namespace App\Api\V1\Common\Controller;
 
 use App\Annotation\Grid;
+use App\Api\V1\Admin\Service\ReportService;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
-use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
-use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Report;
-use App\Model\Report\Base;
 use App\Util\Mailer;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -91,7 +88,7 @@ class BaseController extends Controller
      * @param string $groupName
      * @param IGridService $service
      * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     protected function respondList(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
@@ -260,37 +257,20 @@ class BaseController extends Controller
 
     /**
      * @param Request $request
+     * @param string $group
      * @param string $alias
+     * @param ReportService $reportService
      * @return PdfResponse
      * @throws \Exception
      */
-    protected function respondReport(Request $request, string $alias)
+    protected function respondReport(Request $request, string $group, string $alias, ReportService $reportService)
     {
-        $report = $this->container->getParameter('report')[$alias] ?? null;
-
-        if (is_null($report)) {
-            throw new ReportNotFoundException();
-        }
-
-        $availableFormats = $report['formats'];
-
-        if (!in_array($request->get('format'), $availableFormats)) {
-            throw new ReportFormatNotFoundException();
-        }
-
-        $service = new $report['service'](
-            $this->em,
-            $this->encoder,
-            $this->mailer,
-            $this->validator,
-            $this->security,
-            $this->reader
-        );
+        $report = $reportService->report($request, $group, $alias);
 
         return $this->respondFile(
-            '@api_report/'. $alias .'.' . $request->get('format') . '.twig',
+            '@api_report/'. $group . '/' . $alias .'.' . $request->get('format') . '.twig',
             $request->get('format'),
-            ['data' => $service->getReport($request)]
+            ['data' => $report]
         );
     }
 

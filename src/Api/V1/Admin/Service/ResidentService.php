@@ -574,39 +574,9 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param Request $request
-     * @return mixed
-     */
-    public function getReport(Request $request)
-    {
-        /** @todo add other reports about residents **/
-        if ($request->get('alias') == 'residents-birthday-list') {
-            return $this->getBirthdayListReport($request);
-        } elseif ($request->get('alias') == 'blood-pressure-charting') {
-            return $this->getBloodPressureChartingReport($request);
-        } elseif ($request->get('alias') == 'bowel-movement') {
-            return $this->getBowelMovementReport($request);
-        } elseif ($request->get('alias') == 'manicure') {
-            return $this->getManicureReport($request);
-        } elseif ($request->get('alias') == 'changeover-notes') {
-            return $this->getChangeoverNotesReport($request);
-        } elseif ($request->get('alias') == 'meal-monitor') {
-            return $this->getMealMonitorReport($request);
-        } elseif ($request->get('alias') == 'dietary-restrictions') {
-            return $this->getDietaryRestrictionsReport($request);
-        } elseif ($request->get('alias') == 'night-activity') {
-            return $this->getNightActivityReport($request);
-        } elseif ($request->get('alias') == 'room-audit') {
-            return $this->getRoomAuditReport($request);
-        } else {
-            throw new ParameterNotFoundException('Invalid report');
-        }
-    }
-
-    /**
-     * @param Request $request
      * @return ResidentBirthdayList
      */
-    private function getBirthdayListReport(Request $request)
+    public function getBirthdayListReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -636,7 +606,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return BloodPressureCharting
      */
-    private function getBloodPressureChartingReport(Request $request)
+    public function getBloodPressureChartingReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -671,7 +641,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return BowelMovement
      */
-    private function getBowelMovementReport(Request $request)
+    public function getBowelMovementReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -705,7 +675,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return Manicure
      */
-    private function getManicureReport(Request $request)
+    public function getManicureReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -740,7 +710,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return ChangeoverNotes
      */
-    private function getChangeoverNotesReport(Request $request)
+    public function getChangeoverNotesReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -758,11 +728,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getChangeoverNotesInfo($type, $typeId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getChangeoverNotesInfo($type, $typeId);
 
         $report = new ChangeoverNotes();
         $report->setResidents($residents);
@@ -774,7 +740,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return MealMonitor
      */
-    private function getMealMonitorReport(Request $request)
+    public function getMealMonitorReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -808,7 +774,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return DietaryRestriction
      */
-    private function getDietaryRestrictionsReport(Request $request)
+    public function getDietaryRestrictionsReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -842,7 +808,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return NightActivity
      */
-    private function getNightActivityReport(Request $request)
+    public function getNightActivityReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
@@ -876,7 +842,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Request $request
      * @return RoomAudit
      */
-    private function getRoomAuditReport(Request $request)
+    public function getRoomAuditReport(Request $request)
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');

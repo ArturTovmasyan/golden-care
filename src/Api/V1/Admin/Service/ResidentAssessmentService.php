@@ -68,18 +68,27 @@ class ResidentAssessmentService extends BaseService implements IGridService
         return $this->em->getRepository(Assessment::class)->find($id);
     }
 
+    public function getBlankReport(Request $request)
+    {
+        return $this->getReportByType($request, \App\Model\Assessment::TYPE_BLANK);
+    }
+
+    public function getFilledReport(Request $request)
+    {
+        return $this->getReportByType($request, \App\Model\Assessment::TYPE_FILLED);
+    }
+
     /**
      * @param Request $request
      * @return \App\Model\Report\Assessment
      */
-    public function getReport(Request $request)
+    private function getReportByType(Request $request, $type)
     {
         /**
          * @var Assessment $assessment
          * @var Resident $resident
          */
         $id         = $request->get('id');
-        $type       = $request->get('type') ?? \App\Model\Assessment::TYPE_FILLED;
         $assessment = $this->em->getRepository(Assessment::class)->find($id);
 
         if (is_null($assessment)) {
@@ -88,7 +97,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
         $form            = $assessment->getForm();
         $careLevelGroups = $form->getCareLevelGroups();
-        $type            = $type ?? \App\Model\Assessment::TYPE_FILLED;
         $resident        = $assessment->getResident();
 
         // create report
