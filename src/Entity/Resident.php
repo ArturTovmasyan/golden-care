@@ -2,13 +2,10 @@
 
 namespace App\Entity;
 
-use App\Entity\Physician;
 use App\Model\Persistence\Entity\TimeAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Annotation\Grid as Grid;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -22,9 +19,9 @@ use JMS\Serializer\Annotation as Serializer;
  *          {"first_name", "string", true, true, "r.firstName"},
  *          {"last_name",  "string", true, true, "r.lastName"},
  *          {"middle_name","string", true, true, "r.middleName"},
- *          {"space","string", true, true, "s.name"},
- *          {"gender","number", true, true, "r.gender"},
- *          {"birthday","number", true, true, "r.birthday"},
+ *          {"gender",     "enum", true, true, "r.gender"},
+ *          {"birthday",   "date", true, true, "r.birthday"},
+ *          {"space",      "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -99,22 +96,6 @@ class Resident
      * })
      */
     private $salutation;
-
-    /**
-     * @var int
-     * @ORM\Column(name="type", type="smallint", nullable=false)
-     * @Assert\Choice(
-     *     callback={"App\Model\Resident","getTypeValues"},
-     *     groups={
-     *          "api_admin_resident_add"
-     *     }
-     * )
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get",
-     * })
-     */
-    private $type;
 
     /**
      * @var string
@@ -218,31 +199,6 @@ class Resident
     private $gender;
 
     /**
-     * @todo implement after resident events
-     * @var \DateTime
-     * @ORM\Column(name="date_left", type="datetime", nullable=true)
-     */
-    private $dateLeft;
-
-    /**
-     * @var ResidentFacilityOption
-     * @ORM\OneToOne(targetEntity="ResidentFacilityOption", mappedBy="resident")
-     */
-    private $residentFacilityOption;
-
-    /**
-     * @var ResidentApartmentOption
-     * @ORM\OneToOne(targetEntity="ResidentApartmentOption", mappedBy="resident")
-     */
-    private $residentApartmentOption;
-
-    /**
-     * @var ResidentRegionOption
-     * @ORM\OneToOne(targetEntity="ResidentRegionOption", mappedBy="resident")
-     */
-    private $residentRegionOption;
-
-    /**
      * @ORM\OneToMany(targetEntity="ResidentPhone", mappedBy="resident")
      * @Groups({
      *      "api_admin_resident_list",
@@ -255,44 +211,6 @@ class Resident
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="resident")
      */
     private $assessments;
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("number")
-     * @Groups({"api_admin_resident_list_by_params"})
-     */
-    public function getOptionNumber()
-    {
-        if (!is_null($this->residentFacilityOption)) {
-            return $this->residentFacilityOption->getFacilityRoom()->getNumber();
-        } elseif (!is_null($this->residentApartmentOption)) {
-            return $this->residentApartmentOption->getApartmentRoom()->getNumber();
-        }
-
-        return null;
-    }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("option")
-     * @Groups({
-     *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
-     * })
-     */
-    public function getOption()
-    {
-        switch($this->type) {
-            case \App\Model\Resident::TYPE_FACILITY:
-                return $this->residentFacilityOption;
-            case \App\Model\Resident::TYPE_APARTMENT:
-                return $this->residentApartmentOption;
-            case \App\Model\Resident::TYPE_REGION:
-                return $this->residentRegionOption;
-        }
-
-        return null;
-    }
 
     /**
      * @return int
@@ -391,22 +309,6 @@ class Resident
     }
 
     /**
-     * @return int
-     */
-    public function getType(): int
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param int $type
-     */
-    public function setType(int $type): void
-    {
-        $this->type = $type;
-    }
-
-    /**
      * @return string
      */
     public function getPhoto()
@@ -471,22 +373,6 @@ class Resident
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getDateLeft(): \DateTime
-    {
-        return $this->dateLeft;
-    }
-
-    /**
-     * @param \DateTime $dateLeft
-     */
-    public function setDateLeft(\DateTime $dateLeft): void
-    {
-        $this->dateLeft = $dateLeft;
-    }
-
-    /**
      * @return mixed
      */
     public function getPhones()
@@ -516,53 +402,5 @@ class Resident
     public function setAssessments($assessments): void
     {
         $this->assessments = $assessments;
-    }
-
-    /**
-     * @return ResidentFacilityOption
-     */
-    public function getResidentFacilityOption(): ResidentFacilityOption
-    {
-        return $this->residentFacilityOption;
-    }
-
-    /**
-     * @param ResidentFacilityOption $residentFacilityOption
-     */
-    public function setResidentFacilityOption(ResidentFacilityOption $residentFacilityOption): void
-    {
-        $this->residentFacilityOption = $residentFacilityOption;
-    }
-
-    /**
-     * @return ResidentApartmentOption
-     */
-    public function getResidentApartmentOption(): ResidentApartmentOption
-    {
-        return $this->residentApartmentOption;
-    }
-
-    /**
-     * @param ResidentApartmentOption $residentApartmentOption
-     */
-    public function setResidentApartmentOption(ResidentApartmentOption $residentApartmentOption): void
-    {
-        $this->residentApartmentOption = $residentApartmentOption;
-    }
-
-    /**
-     * @return ResidentRegionOption
-     */
-    public function getResidentRegionOption(): ResidentRegionOption
-    {
-        return $this->residentRegionOption;
-    }
-
-    /**
-     * @param ResidentRegionOption $residentRegionOption
-     */
-    public function setResidentRegionOption(ResidentRegionOption $residentRegionOption): void
-    {
-        $this->residentRegionOption = $residentRegionOption;
     }
 }

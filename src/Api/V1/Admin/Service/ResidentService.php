@@ -2,11 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\ApartmentRoomNotFoundException;
-use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
-use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
-use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
-use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -14,20 +9,12 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\ApartmentRoom;
-use App\Entity\CareLevel;
-use App\Entity\CityStateZip;
-use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityRoom;
 use App\Entity\Medication;
 use App\Entity\Physician;
-use App\Entity\Region;
 use App\Entity\Resident;
-use App\Entity\ResidentApartmentOption;
-use App\Entity\ResidentFacilityOption;
 use App\Entity\ResidentPhone;
-use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
@@ -105,17 +92,6 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
-     * @param $type
-     * @param $id
-     * @param $state
-     * @return mixed
-     */
-    public function getByTypeAndState($type, $id, $state)
-    {
-        return $this->em->getRepository(Resident::class)->getByTypeAndState($type, $id, $state);
-    }
-
-    /**
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
@@ -163,30 +139,15 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
 
+            // save phone numbers
+            $this->savePhones($resident, $params['phones'] ?? []);
+            $this->em->flush();
+
             // save photo
             if (!empty($params['photo'])) {
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
-            // save option
-            switch ($resident->getType()) {
-                case \App\Model\Resident::TYPE_APARTMENT:
-                    $option = $this->saveApartmentOption($resident, $params['option']);
-                    break;
-                case \App\Model\Resident::TYPE_REGION:
-                    $option = $this->saveRegionOption($resident, $params['option']);
-                    break;
-                default:
-                    $option = $this->saveFacilityOption($resident, $params['option']);
-            }
-
-            $this->validate($option, null, ['api_admin_resident_add']);
-            $this->em->persist($option);
-
-            // save phone numbers
-            $this->savePhones($resident, $params['phones'] ?? []);
-
-            $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
@@ -253,21 +214,6 @@ class ResidentService extends BaseService implements IGridService
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
-            // save option
-            switch ($resident->getType()) {
-                case \App\Model\Resident::TYPE_APARTMENT:
-                    $option = $this->saveApartmentOption($resident, $params['option']);
-                    break;
-                case \App\Model\Resident::TYPE_REGION:
-                    $option = $this->saveRegionOption($resident, $params['option']);
-                    break;
-                default:
-                    $option = $this->saveFacilityOption($resident, $params['option']);
-            }
-
-            $this->validate($option, null, ['api_admin_resident_edit']);
-            $this->em->persist($option);
-
             // save phone numbers
             $this->savePhones($resident, $params['phones'] ?? []);
 
@@ -319,160 +265,6 @@ class ResidentService extends BaseService implements IGridService
             $this->validate($residentPhone, null, ['api_admin_resident_edit']);
             $this->em->persist($residentPhone);
         }
-    }
-
-    /**
-     * @param Resident $resident
-     * @param array $params
-     * @return ResidentFacilityOption|null|object
-     */
-    private function saveFacilityOption(Resident $resident, array $params)
-    {
-        /**
-         * @var ResidentFacilityOption $option
-         * @var DiningRoom $diningRoom
-         * @var FacilityRoom $facilityRoom
-         * @var CareLevel $careLevel
-         */
-        $option = $this->em->getRepository(ResidentFacilityOption::class)->findOneBy(['resident' => $resident]);
-
-        if (!isset($params['dining_room_id']) || !$params['dining_room_id']) {
-            throw new DiningRoomNotFoundException();
-        }
-
-        if (!isset($params['room_id']) || !$params['room_id']) {
-            throw new FacilityRoomNotFoundException();
-        }
-
-        if (!isset($params['care_level_id']) || !$params['care_level_id']) {
-            throw new CareLevelNotFoundException();
-        }
-
-        $diningRoom   = $this->em->getRepository(DiningRoom::class)->find($params['dining_room_id']);
-        $facilityRoom = $this->em->getRepository(FacilityRoom::class)->find($params['room_id']);
-        $careLevel    = $this->em->getRepository(CareLevel::class)->find($params['care_level_id']);
-
-        if (is_null($diningRoom)) {
-            throw new DiningRoomNotFoundException();
-        }
-
-        if (is_null($careLevel)) {
-            throw new CareLevelNotFoundException();
-        }
-
-        if (is_null($facilityRoom)) {
-            throw new FacilityRoomNotFoundException();
-        }
-
-        if (is_null($option)) {
-            $option = new ResidentFacilityOption();
-            $option->setResident($resident);
-            $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
-        }
-
-        $option->setDiningRoom($diningRoom);
-        $option->setFacilityRoom($facilityRoom);
-        $option->setDnr($params['dnr'] ?? false);
-        $option->setPolst($params['polst'] ?? false);
-        $option->setAmbulatory($params['ambulatory'] ?? false);
-        $option->setCareGroup($params['care_group'] ?? '');
-        $option->setCareLevel($careLevel);
-
-        return $option;
-    }
-
-    /**
-     * @param Resident $resident
-     * @param array $params
-     * @return ResidentApartmentOption|null|object
-     */
-    private function saveApartmentOption(Resident $resident, array $params)
-    {
-        /**
-         * @var ResidentApartmentOption $option
-         * @var ApartmentRoom $apartmentRoom
-         */
-        $option = $this->em->getRepository(ResidentApartmentOption::class)->findOneBy(['resident' => $resident]);
-
-        if (!isset($params['room_id']) || !$params['room_id']) {
-            throw new ApartmentRoomNotFoundException();
-        }
-
-        $apartmentRoom = $this->em->getRepository(ApartmentRoom::class)->find($params['room_id']);
-
-        if (is_null($option)) {
-            $option = new ResidentApartmentOption();
-            $option->setResident($resident);
-            $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
-        }
-
-        $option->setApartmentRoom($apartmentRoom);
-
-        return $option;
-    }
-
-    /**
-     * @param Resident $resident
-     * @param array $params
-     * @return ResidentFacilityOption|ResidentRegionOption|null|object
-     */
-    private function saveRegionOption(Resident $resident, array $params)
-    {
-        /**
-         * @var ResidentFacilityOption $option
-         * @var Region $region
-         * @var CityStateZip $csz
-         * @var CareLevel $careLevel
-         */
-        $option = $this->em->getRepository(ResidentRegionOption::class)->findOneBy(['resident' => $resident]);
-
-        if (!isset($params['region_id']) || !$params['region_id']) {
-            throw new RegionNotFoundException();
-        }
-
-        if (!isset($params['csz_id']) || !$params['csz_id']) {
-            throw new CityStateZipNotFoundException();
-        }
-
-        if (!isset($params['care_level']) || !$params['care_level']) {
-            throw new CareLevelNotFoundException();
-        }
-
-        $region    = $this->em->getRepository(Region::class)->find($params['region_id']);
-        $csz       = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
-        $careLevel = $this->em->getRepository(CareLevel::class)->find($params['care_level']);
-
-        if (is_null($region)) {
-            throw new RegionNotFoundException();
-        }
-
-        if (is_null($csz)) {
-            throw new CityStateZipNotFoundException();
-        }
-
-        if (is_null($careLevel)) {
-            throw new CareLevelNotFoundException();
-        }
-
-        if (is_null($option)) {
-            $option = new ResidentRegionOption();
-            $option->setResident($resident);
-            $option->setState(\App\Model\Resident::ACTIVE);
-            $option->setDateAdmitted(new \DateTime($params['date_admitted']));
-        }
-
-        $option->setRegion($region);
-        $option->setCsz($csz);
-        $option->setStreetAddress($params['street_address']);
-        $option->setDnr($params['dnr'] ?? false);
-        $option->setPolst($params['polst'] ?? false);
-        $option->setAmbulatory($params['ambulatory'] ?? false);
-        $option->setCareGroup($params['care_group'] ?? '');
-        $option->setCareLevel($careLevel);
-
-        return $option;
     }
 
     /**

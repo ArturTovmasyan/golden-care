@@ -24,15 +24,15 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/contract")
+ * @Route("/api/v1.0/admin/resident/contract")
  *
  * Class ContractController
  * @package App\Api\V1\Admin\Controller
  */
-class ContractController extends BaseController
+class ResidentContractController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/contract/grid Get Contracts Grid
+     * @api {get} /api/v1.0/admin/resident/contract/grid Get Contracts Grid
      * @apiVersion 1.0.0
      * @apiName Get Contracts Grid
      * @apiGroup Admin Contracts
@@ -84,7 +84,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/contract/grid Get Contract Grid Options
+     * @api {options} /api/v1.0/admin/resident/contract/grid Get Contract Grid Options
      * @apiVersion 1.0.0
      * @apiName Get Contract Grid Options
      * @apiGroup Admin Contracts
@@ -120,7 +120,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/contract Get Contracts
+     * @api {get} /api/v1.0/admin/resident/contract Get Contracts
      * @apiVersion 1.0.0
      * @apiName Get Contracts
      * @apiGroup Admin Contracts
@@ -181,7 +181,7 @@ class ContractController extends BaseController
      * @param Request $request
      * @param ContractService $contractService
      * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function listAction(Request $request, ContractService $contractService)
     {
@@ -195,7 +195,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/contract/{id} Get Contract
+     * @api {get} /api/v1.0/admin/resident/contract/{id} Get Contract
      * @apiVersion 1.0.0
      * @apiName Get Contract
      * @apiGroup Admin Contracts
@@ -263,7 +263,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/contract Add Contract
+     * @api {post} /api/v1.0/admin/resident/contract Add Contract
      * @apiVersion 1.0.0
      * @apiName Add Contract
      * @apiGroup Admin Contracts
@@ -359,7 +359,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/contract/{id} Edit Contract
+     * @api {put} /api/v1.0/admin/resident/contract/{id} Edit Contract
      * @apiVersion 1.0.0
      * @apiName Edit Contract
      * @apiGroup Admin Contracts
@@ -460,7 +460,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/contract/{id} Delete Contract
+     * @api {delete} /api/v1.0/admin/resident/contract/{id} Delete Contract
      * @apiVersion 1.0.0
      * @apiName Delete Contract
      * @apiGroup Admin Contracts
@@ -497,7 +497,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/contract Bulk Delete Contracts
+     * @api {delete} /api/v1.0/admin/resident/contract Bulk Delete Contracts
      * @apiVersion 1.0.0
      * @apiName Bulk Delete Contracts
      * @apiGroup Admin Contracts
@@ -539,7 +539,7 @@ class ContractController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/contract/{id}/active Get Active Contract
+     * @api {get} /api/v1.0/admin/resident/contract/{id}/active Get Active Contract
      * @apiVersion 1.0.0
      * @apiName Get Active Contract
      * @apiGroup Admin Contracts

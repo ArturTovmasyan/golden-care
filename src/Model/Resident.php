@@ -35,9 +35,9 @@ class Resident
      * @var array
      */
     private static $typeValues = [
-        self::TYPE_FACILITY  => 1,
-        self::TYPE_APARTMENT => 2,
-        self::TYPE_REGION    => 3,
+        self::TYPE_FACILITY,
+        self::TYPE_APARTMENT,
+        self::TYPE_REGION,
     ];
 
     /**

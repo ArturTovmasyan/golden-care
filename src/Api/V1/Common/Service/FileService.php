@@ -170,21 +170,14 @@ class FileService
      */
     private function getFilePath($id, $name, $extension)
     {
-        $path = $this->generatePath($id, $name, $extension);
+        $path = $this->cdnPath . DIRECTORY_SEPARATOR . $this->generatePath($id, $name, $extension);
+        $path_info = pathinfo($path);
 
-        $filePaths = explode(DIRECTORY_SEPARATOR, $path);
-        array_pop($filePaths);
-
-        $dir = $this->cdnPath;
-        foreach ($filePaths as $p) {
-            $dir .= DIRECTORY_SEPARATOR . $p;
-
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
-            }
+        if (!is_dir($path_info['dirname'])) {
+            mkdir($path_info['dirname'], 0777, true);
         }
 
-        return $this->cdnPath . DIRECTORY_SEPARATOR . $path;
+        return $path;
     }
 
     /**
@@ -197,9 +190,11 @@ class FileService
     {
         $maskId = sprintf($this->mask, $id);
         $path   = sprintf(
-            '%s/%s/%s.%s',
+            '%s%s%s%s%s.%s',
             trim($this->folder, DIRECTORY_SEPARATOR),
+            DIRECTORY_SEPARATOR,
             implode(DIRECTORY_SEPARATOR, str_split($maskId, $this->pathDelimiterLength)),
+            DIRECTORY_SEPARATOR,
             $name,
             $extension
         );

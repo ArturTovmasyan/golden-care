@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Region;
-use App\Entity\ResidentRegionOption;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -44,27 +43,5 @@ class RegionRepository extends EntityRepository
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @param $residentId
-     * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findByResident($residentId)
-    {
-        return $this->createQueryBuilder('r')
-            ->innerJoin(
-                ResidentRegionOption::class,
-                'rro',
-                Join::WITH,
-                'r = rro.region'
-            )
-            ->where('rro.resident = :residentId')
-            ->setParameter('residentId', $residentId)
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getSingleResult();
     }
 }
