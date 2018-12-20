@@ -113,7 +113,7 @@ class Contract
      * @Groups({
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
+     *      "api_admin_contract_get_active"
      * })
      */
     private $type;
@@ -159,7 +159,7 @@ class Contract
      * @Groups({
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
+     *      "api_admin_contract_get_active"
      * })
      */
     public function getOption()

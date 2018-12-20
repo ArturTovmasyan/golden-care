@@ -16,7 +16,6 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_contract_action_grid={
  *          {"id", "number", true, true, "ca.id"},
- *          {"type", "enum", true, true, "ca.type", {"\App\Model\ContractType", "getTypeDefaultNames"}},
  *          {"start", "string", true, true, "ca.start"},
  *          {"end", "string", true, true, "ca.end"},
  *     }
@@ -55,17 +54,6 @@ class ContractAction
      * })
      */
     private $contract;
-
-    /**
-     * @var int
-     * @ORM\Column(name="type", type="smallint")
-     * @Groups({
-     *      "api_admin_contract_action_list",
-     *      "api_admin_contract_action_get",
-     *      "api_admin_contract_get_active"
-     * })
-     */
-    private $type;
 
     /**
      * @var \DateTime
@@ -270,18 +258,6 @@ class ContractAction
     public function setContract(?Contract $contract): self
     {
         $this->contract = $contract;
-
-        return $this;
-    }
-
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType($type): self
-    {
-        $this->type = $type;
 
         return $this;
     }

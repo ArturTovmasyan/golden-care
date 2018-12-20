@@ -335,7 +335,7 @@ class ContractService extends BaseService implements IGridService
             }
 
             $editMode = true;
-            switch ($action->getType()) {
+            switch ($type) {
                 case ContractType::TYPE_FACILITY:
                     /** @var FacilityBed $entity */
                     $entity = $this->em->getRepository(FacilityBed::class)->find($moveId);
@@ -627,7 +627,6 @@ class ContractService extends BaseService implements IGridService
 
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
-        $contractAction->setType($contract->getType());
         $contractAction->setStart($newDateTime);
         $contractAction->setEnd(null);
         $contractAction->setState($option->getState());
@@ -664,7 +663,6 @@ class ContractService extends BaseService implements IGridService
 
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
-        $contractAction->setType($contract->getType());
         $contractAction->setStart($newDateTime);
         $contractAction->setEnd(null);
         $contractAction->setState($option->getState());
@@ -696,7 +694,6 @@ class ContractService extends BaseService implements IGridService
 
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
-        $contractAction->setType($contract->getType());
         $contractAction->setStart($newDateTime);
         $contractAction->setEnd(null);
         $contractAction->setState($option->getState());

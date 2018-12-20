@@ -572,11 +572,11 @@ class ResidentContractController extends BaseController
      *                   "id": 4,
      *                   "contract": {
      *                      "id": 5,
+     *                      "type": 1,
      *                      "period": 1,
      *                      "start": "2018-12-11T20:18:00+00:00",
      *                      "end": null
      *                   },
-     *                   "type": 1,
      *                   "start": "2018-12-14T16:45:58+00:00",
      *                   "end": null,
      *                   "state": 1,

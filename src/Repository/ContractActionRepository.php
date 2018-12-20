@@ -103,6 +103,8 @@ class ContractActionRepository extends EntityRepository
             ->join('c.resident', 'r')
             ->where('ca.state=:state AND ca.end IS NULL')
             ->andWhere('r.id=:id')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type)
             ->setParameter('id', $id)
             ->setParameter('state', ContractState::ACTIVE);
 
@@ -145,6 +147,8 @@ class ContractActionRepository extends EntityRepository
             ->join('ca.contract', 'c')
             ->join('c.resident', 'r')
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -193,6 +197,8 @@ class ContractActionRepository extends EntityRepository
             ->join('ca.contract', 'c')
             ->join('c.resident', 'r')
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -239,6 +245,8 @@ class ContractActionRepository extends EntityRepository
             ->join('ca.contract', 'c')
             ->join('c.resident', 'r')
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
