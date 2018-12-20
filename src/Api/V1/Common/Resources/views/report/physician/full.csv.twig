@@ -1,4 +1,12 @@
 {{ data.type }}, Physician Name, Count, Address/Csz, Office Phone, Emergency Phone, Fax, Email, Website Url
-{% for type, physiciansByType in data.physicians %}{% for typeId, physician in physiciansByType %}{% for data in physician['data'] %}
-{{ physician['name'] }}, {{ data['firstName'] ~ ' ' ~ data['lastName'] }}, {{ data['residentCount'] }}, {{ data['address'] }} - {{ data['city'] }} {{ data['state'] }} {{ data['zip'] }}, {{ data['officePhone'] }}, {{ data['emergencyPhone'] }}, {{ data['fax'] }}, {{ data['email'] }}, {{ data['websiteUrl'] }}
-{% endfor %}{% endfor %}{% endfor %}
+{% spaceless %}
+    {% for type, physiciansByType in data.physicians %}
+        {% for typeId, physician in physiciansByType %}
+            {% for data in physician['data'] %}
+                {{ physician['name'] }}, {{ data['firstName'] ~ ' ' ~ data['lastName'] }}, {{ data['residentCount'] }}, {{ data['address'] }} - {{ data['city'] }} {{ data['state'] }} {{ data['zip'] }}, {{ data['officePhone'] }}, {{ data['emergencyPhone'] }}, {{ data['fax'] }}, {{ data['email'] }}, {{ data['websiteUrl'] }}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+{% endspaceless %}
+
+
