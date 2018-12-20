@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Salutation;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -19,8 +21,14 @@ class SalutationRepository extends EntityRepository
     public function search(QueryBuilder $queryBuilder)
     {
         $queryBuilder
-            ->from(Salutation::class, 's')
-            ->groupBy('s.id');
+            ->from(Salutation::class, 'sa')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = sa.space'
+            )
+            ->groupBy('sa.id');
     }
 
     /**
@@ -29,10 +37,10 @@ class SalutationRepository extends EntityRepository
      */
     public function findByIds($ids)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('sa');
 
-        return $qb->where($qb->expr()->in('s.id', $ids))
-            ->groupBy('s.id')
+        return $qb->where($qb->expr()->in('sa.id', $ids))
+            ->groupBy('sa.id')
             ->getQuery()
             ->getResult();
     }

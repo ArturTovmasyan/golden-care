@@ -41,12 +41,13 @@ class SalutationController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id            The unique identifier of the salutation
-     * @apiSuccess {String}  title         The title of the salutation
+     * @apiSuccess {Int}     id             The unique identifier of the salutation
+     * @apiSuccess {String}  title          The title of the salutation
      * @apiSuccess {String}  created_at     The created time of the salutation
      * @apiSuccess {String}  updated_at     The updated time of the salutation
      * @apiSuccess {Int}     created_by     The created user id of the salutation
      * @apiSuccess {Int}     updated_by     The updated user id of the salutation
+     * @apiSuccess {Object}  space          The space of the salutation
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -62,7 +63,8 @@ class SalutationController extends BaseController
      *                  "created_by": 1,
      *                  "updated_by": 5,
      *                  "id": 1,
-     *                  "title": "Dr."
+     *                  "title": "Dr.",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -136,6 +138,7 @@ class SalutationController extends BaseController
      * @apiSuccess {String}  updated_at     The updated time of the salutation
      * @apiSuccess {Int}     created_by     The created user id of the salutation
      * @apiSuccess {Int}     updated_by     The updated user id of the salutation
+     * @apiSuccess {Object}  space          The space of the salutation
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -151,7 +154,11 @@ class SalutationController extends BaseController
      *                  "created_by": 1,
      *                  "updated_by": 5,
      *                  "id": 1,
-     *                  "title": "Dr."
+     *                  "title": "Dr.",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -189,6 +196,7 @@ class SalutationController extends BaseController
      * @apiSuccess {String}  updated_at     The updated time of the salutation
      * @apiSuccess {Int}     created_by     The created user id of the salutation
      * @apiSuccess {Int}     updated_by     The updated user id of the salutation
+     * @apiSuccess {Object}  space          The space of the salutation
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -199,7 +207,11 @@ class SalutationController extends BaseController
      *                  "created_by": 1,
      *                  "updated_by": 5,
      *                  "id": 1,
-     *                  "title": "Dr."
+     *                  "title": "Dr.",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -230,6 +242,7 @@ class SalutationController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  title     The title of the salutation
+     * @apiParam {Int}     space_id  The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -259,7 +272,8 @@ class SalutationController extends BaseController
     {
         $salutationService->add(
             [
-                'title' => $request->get('title')
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -278,7 +292,8 @@ class SalutationController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title          The title of the salutation
+     * @apiParam {String}  title     The title of the salutation
+     * @apiParam {Int}     space_id  The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -311,6 +326,7 @@ class SalutationController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
+                'space_id' => $request->get('space_id')
             ]
         );
 

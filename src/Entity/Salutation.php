@@ -18,8 +18,9 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_salutation")
  * @Grid(
  *     api_admin_salutation_grid={
- *          {"id", "number", true, true, "s.id"},
- *          {"title", "string", true, true, "s.title"}
+ *          {"id", "number", true, true, "sa.id"},
+ *          {"title", "string", true, true, "sa.title"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -72,6 +73,21 @@ class Salutation
      */
     private $title;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_salutation_grid",
+     *     "api_admin_salutation_list",
+     *     "api_admin_salutation_get",
+     * })
+     */
+    private $space;
+
     public function getId(): int
     {
         return $this->id;
@@ -91,5 +107,24 @@ class Salutation
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return Salutation
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }
