@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
@@ -17,11 +18,15 @@ use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
+use App\Entity\Medication;
+use App\Entity\Physician;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentApartmentOption;
 use App\Entity\ResidentDiet;
 use App\Entity\ResidentFacilityOption;
+use App\Entity\ResidentMedication;
+use App\Entity\ResidentPhysician;
 use App\Entity\ResidentRegionOption;
 use App\Entity\Salutation;
 use App\Entity\Space;
@@ -1586,8 +1591,10 @@ class ResidentRepository extends EntityRepository
             $resident = $this->find($residentId);
 
             if (!$resident) {
-                $type = $resident->getType();
+                throw new ResidentNotFoundException();
             }
+
+            $type = $resident->getType();
         }
 
         if ($type == \App\Model\Resident::TYPE_REGION) {
@@ -1699,6 +1706,168 @@ class ResidentRepository extends EntityRepository
                     'f',
                     Join::WITH,
                     'fr.facility = f'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE);
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        }
+
+        if ($residentId) {
+            return $queryBuilder
+                ->andWhere('r.id = :id')
+                ->setParameter("id", $residentId)
+                ->getQuery()
+                ->getResult();
+        }
+
+        return $queryBuilder
+            ->andWhere('r.type = :type')
+            ->setParameter("type", $type)
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $type
+     * @param bool $typeId
+     * @param bool $residentId
+     * @return mixed
+     */
+    public function getResidentsInfoByTypeOrId($type, $typeId = false, $residentId = false)
+    {
+        /**
+         * @var Resident $resident
+         */
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($residentId) {
+            $resident = $this->find($residentId);
+
+            if (!$resident) {
+                throw new ResidentNotFoundException();
+            }
+
+            $type = $resident->getType();
+        }
+
+        if ($type == \App\Model\Resident::TYPE_REGION) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.type as type,
+                    r.birthday as birthday,
+                    cro.address as address,
+                    sal.title as salutation, 
+                    reg.id as typeId,
+                    reg.name as typeName
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractRegionOption::class,
+                    'cro',
+                    Join::WITH,
+                    'cro.contract = c'
+                )
+                ->innerJoin(
+                    Region::class,
+                    'reg',
+                    Join::WITH,
+                    'cro.region = reg'
+                )
+                ->innerJoin(
+                    Salutation::class,
+                    'sal',
+                    Join::WITH,
+                    'r.salutation = sal'
+                )
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE);
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    r.birthday as birthday,
+                    r.type as type,
+                    sal.title as salutation, 
+                    f.id as typeId,
+                    f.name as typeName,
+                    f.address as address,
+                    f.license as license
+                ')
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c.resident = r'
+                )
+                ->innerJoin(
+                    ContractAction::class,
+                    'ca',
+                    Join::WITH,
+                    'ca.contract = c'
+                )
+                ->innerJoin(
+                    ContractFacilityOption::class,
+                    'cfo',
+                    Join::WITH,
+                    'cfo.contract = c'
+                )
+                ->innerJoin(
+                    DiningRoom::class,
+                    'dr',
+                    Join::WITH,
+                    'cfo.diningRoom = dr'
+                )
+                ->innerJoin(
+                    FacilityBed::class,
+                    'fb',
+                    Join::WITH,
+                    'cfo.facilityBed = fb'
+                )
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fb.room = fr'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'fr.facility = f'
+                )
+                ->innerJoin(
+                    Salutation::class,
+                    'sal',
+                    Join::WITH,
+                    'r.salutation = sal'
                 )
                 ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE);

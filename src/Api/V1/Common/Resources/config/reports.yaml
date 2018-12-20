@@ -162,8 +162,24 @@ form:
         resident:
           select_all: true
     shower-skin-list:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number.'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    medication-list-resident:
+      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      title: 'Medications List Selected Resident : Medications list for selected resident'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+          group:
+              select_all: true
+    medication-list-all:
+      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      title: 'Medications List All Residents : Medications list for all residents.'
       show_in_list: true
       formats: ['pdf']
       parameters:

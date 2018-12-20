@@ -20,6 +20,7 @@ use App\Entity\CityStateZip;
 use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityRoom;
+use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Region;
 use App\Entity\Resident;
@@ -35,6 +36,7 @@ use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
+use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\RoomAudit;
@@ -936,6 +938,47 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return MedicationList
+     */
+    public function getMedicationListReport(Request $request)
+    {
+        $all        = (bool) $request->get('all') ?? false;
+        $type       = $request->get('type');
+        $typeId     = $request->get('type_id') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$type && !$residentId) {
+            throw new ParameterNotFoundException('type, resident_id');
+        }
+
+        if ($type && !$typeId && !$all) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $residents     = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId, $residentId);
+        $residentIds   = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[]                  = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
+
+        $report = new MedicationList();
+        $report->setResidents($residentsById);
+        $report->setMedications($medications);
 
         return $report;
     }

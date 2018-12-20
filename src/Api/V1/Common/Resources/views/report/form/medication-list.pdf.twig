@@ -1,0 +1,70 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% for residentId, resident in data.residents %}
+        {% if resident['medications'] is defined %}
+
+            <div class="page"></div>
+            <span class="divider"></span>
+            <span class="divider"></span>
+
+            <table class="report-table main-table bordered">
+                <tr class="divider"></tr>
+                <thead>
+                    <tr>
+                        <th colspan="11">
+                            <div style="float: left">
+                                <p style="font-size: 20px !important; text-align: left;">Medication List Report</p>
+                                <p style="font-size: 16px !important; text-align: left;">{{ resident['lastName'] }},&nbsp;{{ resident['firstName'] }}</p>
+                                <p style="text-align: left;">DOB: {{ resident['birthday'].format("m/d/Y") }}</p>
+                            </div>
+                            <div style="float: right">
+                                <p style="font-size: 16px !important; text-align: right;">{{ resident['typeName'] }}</p>
+                                <p style="text-align: right;">{{ resident['address'] }} </p>
+                                <p style="text-align: right;">{% if resident['license'] is defined and resident['license'] %}#{{ resident['license'] }}{% endif %}</p>
+                            </div>
+                            <div style="clear: both"></div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><b>Medication</b></td>
+                        <td><b>Dosage</b></td>
+                        <td><b>Medication Notes</b></td>
+                        <td><b>AM</b></td>
+                        <td><b>NN</b></td>
+                        <td><b>PM</b></td>
+                        <td><b>HS</b></td>
+                        <td><b>PRN</b></td>
+                        <td><b>TR</b></td>
+                        <td><b>Prescription #</b></td>
+                        <td><b>Prescribing Physician</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medication in resident['medications'] %}
+
+                        <tr>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>
+                            <td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>
+                            <td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>
+                            <td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>
+                        </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
