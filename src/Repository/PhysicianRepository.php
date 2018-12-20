@@ -188,13 +188,14 @@ class PhysicianRepository extends EntityRepository
     {
         $physicianTable               = $this->getClassMetadata()->getTableName();
         $residentPhysicianTable       = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
-        $residentFacilityOptionTable  = $this->_em->getClassMetadata(ResidentFacilityOption::class)->getTableName();
+        $contractTable                = $this->_em->getClassMetadata(Contract::class)->getTableName();
+        $contractActionTable          = $this->_em->getClassMetadata(ContractAction::class)->getTableName();
+        $facilityBedTable             = $this->_em->getClassMetadata(FacilityBed::class)->getTableName();
         $facilityRoomTable            = $this->_em->getClassMetadata(FacilityRoom::class)->getTableName();
         $facilityTable                = $this->_em->getClassMetadata(Facility::class)->getTableName();
-        $residentApartmentOptionTable = $this->_em->getClassMetadata(ResidentApartmentOption::class)->getTableName();
+        $apartmentBedTable            = $this->_em->getClassMetadata(ApartmentBed::class)->getTableName();
         $apartmentRoomTable           = $this->_em->getClassMetadata(ApartmentRoom::class)->getTableName();
         $apartmentTable               = $this->_em->getClassMetadata(Apartment::class)->getTableName();
-        $residentRegionOptionTable    = $this->_em->getClassMetadata(ResidentRegionOption::class)->getTableName();
         $regionTable                  = $this->_em->getClassMetadata(Region::class)->getTableName();
 
         $rsm = new ResultSetMapping();
@@ -216,8 +217,10 @@ class PhysicianRepository extends EntityRepository
                     fr.id_facility AS typeId
                 FROM ". $physicianTable ." p
                   INNER JOIN ". $residentPhysicianTable ." rp on p.id = rp.id_physician
-                  INNER JOIN ". $residentFacilityOptionTable ." rfo on rfo.id_resident = rp.id_resident
-                  INNER JOIN ". $facilityRoomTable ." fr on rfo.id_facility_room = fr.id
+                  INNER JOIN ". $contractTable ." c on c.id_resident = rp.id_resident
+                  INNER JOIN ". $contractActionTable ." ca on ca.id_contract = c.id
+                  INNER JOIN ". $facilityBedTable ." fb on ca.id_facility_bed = fb.id
+                  INNER JOIN ". $facilityRoomTable ." fr on fb.id_facility_room = fr.id
                   INNER JOIN ". $facilityTable ." f on f.id = fr.id_facility";
 
             if ($typeId) {
@@ -241,8 +244,10 @@ class PhysicianRepository extends EntityRepository
                     ar.id_apartment AS typeId
                 FROM ". $physicianTable ." p
                   INNER JOIN ". $residentPhysicianTable ." rp on p.id = rp.id_physician
-                  INNER JOIN ". $residentApartmentOptionTable ." rao on rao.id_resident = rp.id_resident
-                  INNER JOIN ". $apartmentRoomTable ." ar on rao.id_apartment_room = ar.id
+                  INNER JOIN ". $contractTable ." c on c.id_resident = rp.id_resident
+                  INNER JOIN ". $contractActionTable ." ca on ca.id_contract = c.id
+                  INNER JOIN ". $apartmentBedTable ." ab on ca.id_apartment_bed = ab.id
+                  INNER JOIN ". $apartmentRoomTable ." ar on ab.id_apartment_room = ar.id
                   INNER JOIN ". $apartmentTable ." a on a.id = ar.id_apartment
                 WHERE ar.id_apartment = :id_apartment";
 
@@ -267,8 +272,9 @@ class PhysicianRepository extends EntityRepository
                     rr.id_region AS typeId
                 FROM ". $physicianTable ." p
                   INNER JOIN ". $residentPhysicianTable ." rp on p.id = rp.id_physician
-                  INNER JOIN ". $residentRegionOptionTable ." rr on rr.id_resident = rp.id_resident
-                  INNER JOIN ". $regionTable ." r on r.id = rp.id_region
+                  INNER JOIN ". $contractTable ." c on c.id_resident = rp.id_resident
+                  INNER JOIN ". $contractActionTable ." ca on ca.id_contract = c.id
+                  INNER JOIN ". $regionTable ." r on r.id = ca.id_region
                 WHERE rr.id_region = :id_region
                 GROUP BY p.id";
 

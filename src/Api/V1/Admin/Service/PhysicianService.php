@@ -337,11 +337,7 @@ class PhysicianService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $physicians = $this->em->getRepository(Physician::class)->getPhysicianSimpleReport($type, $typeId);
-        } catch (\Exception $e) {
-            $physicians = [];
-        }
+        $physicians = $this->em->getRepository(Physician::class)->getPhysicianSimpleReport($type, $typeId);
 
         $physiciansByTypeId = [];
         foreach ($physicians as $physician) {

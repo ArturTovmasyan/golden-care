@@ -233,7 +233,7 @@ class ResidentRepository extends EntityRepository
      * @param $typeId
      * @return mixed
      */
-    public function getContractInfoByType($type, $typeId)
+    public function getContractInfoByType($type, $typeId = false)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -243,7 +243,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    r.type as type,
+                    c.type as type,
                     a.id as typeId,
                     ar.number as roomNumber,
                     ab.number as bedNumber,
@@ -256,16 +256,16 @@ class ResidentRepository extends EntityRepository
                     'c.resident = r'
                 )
                 ->innerJoin(
-                    ContractApartmentOption::class,
-                    'cao',
+                    ContractAction::class,
+                    'ca',
                     Join::WITH,
-                    'cao.contract = c'
+                    'ca.contract = c'
                 )
                 ->innerJoin(
                     ApartmentBed::class,
                     'ab',
                     Join::WITH,
-                    'cao.apartmentBed = ab'
+                    'ca.apartmentBed = ab'
                 )
                 ->innerJoin(
                     ApartmentRoom::class,
@@ -278,16 +278,20 @@ class ResidentRepository extends EntityRepository
                     'a',
                     Join::WITH,
                     'ar.apartment = a'
-                )
-                ->where('a.id = :id')
-                ->setParameter('id', $typeId);
+                );
+
+            if ($typeId) {
+                $queryBuilder
+                    ->where('a.id = :id')
+                    ->setParameter('id', $typeId);
+            }
         } else {
             $queryBuilder
                 ->select('
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    r.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -300,16 +304,16 @@ class ResidentRepository extends EntityRepository
                     'c.resident = r'
                 )
                 ->innerJoin(
-                    ContractFacilityOption::class,
-                    'cfo',
+                    ContractAction::class,
+                    'ca',
                     Join::WITH,
-                    'cfo.contract = c'
+                    'ca.contract = c'
                 )
                 ->innerJoin(
                     FacilityBed::class,
                     'fb',
                     Join::WITH,
-                    'cfo.facilityBed = fb'
+                    'ca.facilityBed = fb'
                 )
                 ->innerJoin(
                     FacilityRoom::class,
@@ -322,14 +326,18 @@ class ResidentRepository extends EntityRepository
                     'f',
                     Join::WITH,
                     'fr.facility = f'
-                )
-                ->where('f.id = :id')
-                ->setParameter('id', $typeId);
+                );
+            if ($typeId) {
+                $queryBuilder
+                    ->where('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
         }
 
         $queryBuilder
-            ->andWhere('r.type = :type')
-            ->setParameter("type", $type);
+            ->andWhere('c.type = :type AND ca.state=:state AND ca.end IS NULL')
+            ->setParameter("type", $type)
+            ->setParameter("state", ContractState::ACTIVE);
 
         return $queryBuilder
             ->groupBy('r.id')
@@ -338,109 +346,11 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
-     * @return array
-     */
-    public function getContractInfo()
-    {
-        $apartmentResult = $this->createQueryBuilder('r')
-            ->select('
-                r.id as id, 
-                r.firstName as firstName, 
-                r.lastName as lastName,
-                r.type as type,
-                ar.number as roomNumber,
-                ab.number as bedNumber,
-                a.id as typeId,
-                a.name as name
-            ')
-            ->innerJoin(
-                Contract::class,
-                'c',
-                Join::WITH,
-                'c.resident = r'
-            )
-            ->innerJoin(
-                ContractApartmentOption::class,
-                'cao',
-                Join::WITH,
-                'cao.contract = c'
-            )
-            ->innerJoin(
-                ApartmentBed::class,
-                'ab',
-                Join::WITH,
-                'cao.apartmentBed = ab'
-            )
-            ->innerJoin(
-                ApartmentRoom::class,
-                'ar',
-                Join::WITH,
-                'ab.room = ar'
-            )
-            ->innerJoin(
-                Apartment::class,
-                'a',
-                Join::WITH,
-                'ar.apartment = a'
-            )
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
-
-        $facilityResult = $this->createQueryBuilder('r')
-            ->select('
-                r.id as id, 
-                r.firstName as firstName, 
-                r.lastName as lastName,
-                r.type as type,
-                fr.number as roomNumber,
-                fb.number as bedNumber,
-                f.id as typeId,
-                f.name as name
-            ')
-            ->innerJoin(
-                Contract::class,
-                'c',
-                Join::WITH,
-                'c.resident = r'
-            )
-            ->innerJoin(
-                ContractFacilityOption::class,
-                'cfo',
-                Join::WITH,
-                'cfo.contract = c'
-            )
-            ->innerJoin(
-                FacilityBed::class,
-                'fb',
-                Join::WITH,
-                'cfo.facilityBed = fb'
-            )
-            ->innerJoin(
-                FacilityRoom::class,
-                'fr',
-                Join::WITH,
-                'fb.room = fr'
-            )
-            ->innerJoin(
-                Facility::class,
-                'f',
-                Join::WITH,
-                'fr.facility = f'
-            )
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
-
-        return array_merge($apartmentResult, $facilityResult);
-    }
-
-    /**
      * @param $type
      * @param $typeId
      * @return mixed
      */
-    public function getBowelMovementInfoByType($type, $typeId)
+    public function getBowelMovementInfoByType($type, $typeId = false)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -450,7 +360,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    r.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name,
                     cro.careGroup'
@@ -477,19 +387,23 @@ class ResidentRepository extends EntityRepository
                     Region::class,
                     'reg',
                     Join::WITH,
-                    'cro.region = reg'
+                    'ca.region = reg'
                 )
-                ->where('reg.id = :id AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('id', $typeId)
+                ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE)
                 ->addOrderBy('cro.careGroup', 'ASC');
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
         } else {
             $queryBuilder
                 ->select('
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    r.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -518,7 +432,7 @@ class ResidentRepository extends EntityRepository
                     FacilityBed::class,
                     'fb',
                     Join::WITH,
-                    'cfo.facilityBed = fb'
+                    'ca.facilityBed = fb'
                 )
                 ->innerJoin(
                     FacilityRoom::class,
@@ -532,16 +446,20 @@ class ResidentRepository extends EntityRepository
                     Join::WITH,
                     'fr.facility = f'
                 )
-                ->where('f.id = :id AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('id', $typeId)
+                ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE)
                 ->addOrderBy('fr.number', 'ASC')
                 ->addOrderBy('fb.number', 'ASC')
                 ->addOrderBy('cfo.careGroup', 'ASC');
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -549,120 +467,11 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
-     * @return mixed
-     */
-    public function getBowelMovementInfo()
-    {
-        $regionsResult = $this->createQueryBuilder('r')
-                ->select('
-                    r.id as id, 
-                    r.firstName as firstName, 
-                    r.lastName as lastName,
-                    ca.type as type,
-                    reg.id as typeId,
-                    reg.name as name,
-                    cro.careGroup'
-                )
-                ->innerJoin(
-                    Contract::class,
-                    'c',
-                    Join::WITH,
-                    'c.resident = r'
-                )
-                ->innerJoin(
-                    ContractAction::class,
-                    'ca',
-                    Join::WITH,
-                    'ca.contract = c'
-                )
-                ->innerJoin(
-                    ContractRegionOption::class,
-                    'cro',
-                    Join::WITH,
-                    'cro.contract = c'
-                )
-                ->innerJoin(
-                    Region::class,
-                    'reg',
-                    Join::WITH,
-                    'cro.region = reg'
-                )
-                ->where('ca.type=:type AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('state', ContractState::ACTIVE)
-                ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
-                ->addOrderBy('cro.careGroup', 'ASC')
-                ->groupBy('r.id')
-                ->getQuery()
-                ->getResult();
-
-        $facilityResult = $this->createQueryBuilder('r')
-                ->select('
-                    r.id as id, 
-                    r.firstName as firstName, 
-                    r.lastName as lastName,
-                    ca.type as type,
-                    f.id as typeId,
-                    fr.number as roomNumber,
-                    fb.number as bedNumber,
-                    f.name as name,
-                    cfo.careGroup
-                ')
-                ->innerJoin(
-                    Contract::class,
-                    'c',
-                    Join::WITH,
-                    'c.resident = r'
-                )
-                ->innerJoin(
-                    ContractAction::class,
-                    'ca',
-                    Join::WITH,
-                    'ca.contract = c'
-                )
-                ->innerJoin(
-                    ContractFacilityOption::class,
-                    'cfo',
-                    Join::WITH,
-                    'cfo.contract = c'
-                )
-                ->innerJoin(
-                    FacilityBed::class,
-                    'fb',
-                    Join::WITH,
-                    'cfo.facilityBed = fb'
-                )
-                ->innerJoin(
-                    FacilityRoom::class,
-                    'fr',
-                    Join::WITH,
-                    'fb.room = fr'
-                )
-                ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'fr.facility = f'
-                )
-                ->where('ca.type = :type AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('state', ContractState::ACTIVE)
-                ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
-                ->addOrderBy('fr.number', 'ASC')
-                ->addOrderBy('fb.number', 'ASC')
-                ->addOrderBy('cfo.careGroup', 'ASC')
-                ->andWhere('r.type = :type')
-                ->groupBy('r.id')
-                ->getQuery()
-                ->getResult();
-
-        return array_merge($regionsResult, $facilityResult);
-    }
-
-    /**
      * @param $type
      * @param $typeId
      * @return mixed
      */
-    public function getManicureInfoByType($type, $typeId)
+    public function getManicureInfoByType($type, $typeId = false)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -672,7 +481,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name'
                 )
@@ -700,17 +509,21 @@ class ResidentRepository extends EntityRepository
                     Join::WITH,
                     'cro.region = reg'
                 )
-                ->where('reg.id = :id AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('id', $typeId)
+                ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE)
                 ->addOrderBy('cro.careGroup', 'ASC');
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
         } else {
             $queryBuilder
                 ->select('
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -752,125 +565,25 @@ class ResidentRepository extends EntityRepository
                     Join::WITH,
                     'fr.facility = f'
                 )
-                ->where('f.id = :id AND ca.state=:state AND ca.end IS NULL')
-                ->setParameter('id', $typeId)
+                ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE)
                 ->addOrderBy('fr.number', 'ASC')
                 ->addOrderBy('fb.number', 'ASC')
                 ->addOrderBy('cfo.careGroup', 'ASC');
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+
+            }
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getManicureInfo()
-    {
-        $regionsResult = $this->createQueryBuilder('r')
-            ->select('
-                    r.id as id, 
-                    r.firstName as firstName, 
-                    r.lastName as lastName,
-                    ca.type as type,
-                    reg.id as typeId,
-                    reg.name as name'
-            )
-            ->innerJoin(
-                Contract::class,
-                'c',
-                Join::WITH,
-                'c.resident = r'
-            )
-            ->innerJoin(
-                ContractAction::class,
-                'ca',
-                Join::WITH,
-                'ca.contract = c'
-            )
-            ->innerJoin(
-                ContractRegionOption::class,
-                'cro',
-                Join::WITH,
-                'cro.contract = c'
-            )
-            ->innerJoin(
-                Region::class,
-                'reg',
-                Join::WITH,
-                'cro.region = reg'
-            )
-            ->where('ca.type=:type AND ca.state=:state AND ca.end IS NULL')
-            ->setParameter('state', ContractState::ACTIVE)
-            ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
-
-        $facilityResult = $this->createQueryBuilder('r')
-            ->select('
-                    r.id as id, 
-                    r.firstName as firstName, 
-                    r.lastName as lastName,
-                    ca.type as type,
-                    f.id as typeId,
-                    fr.number as roomNumber,
-                    fb.number as bedNumber,
-                    f.name as name
-                ')
-            ->innerJoin(
-                Contract::class,
-                'c',
-                Join::WITH,
-                'c.resident = r'
-            )
-            ->innerJoin(
-                ContractAction::class,
-                'ca',
-                Join::WITH,
-                'ca.contract = c'
-            )
-            ->innerJoin(
-                ContractFacilityOption::class,
-                'cfo',
-                Join::WITH,
-                'cfo.contract = c'
-            )
-            ->innerJoin(
-                FacilityBed::class,
-                'fb',
-                Join::WITH,
-                'cfo.facilityBed = fb'
-            )
-            ->innerJoin(
-                FacilityRoom::class,
-                'fr',
-                Join::WITH,
-                'fb.room = fr'
-            )
-            ->innerJoin(
-                Facility::class,
-                'f',
-                Join::WITH,
-                'fr.facility = f'
-            )
-            ->where('r.type = :type AND ca.state=:state AND ca.end IS NULL')
-            ->setParameter('state', ContractState::ACTIVE)
-            ->setParameter("type", \App\Model\Resident::TYPE_FACILITY)
-            ->addOrderBy('fr.number', 'ASC')
-            ->addOrderBy('fb.number', 'ASC')
-            ->andWhere('ca.type = :type')
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
-
-        return array_merge($regionsResult, $facilityResult);
     }
 
     /**
@@ -888,7 +601,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name,
                     cro.careGroup'
@@ -932,7 +645,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -989,7 +702,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -1011,7 +724,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name,
                     cro.careGroup'
@@ -1055,7 +768,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -1112,7 +825,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -1135,7 +848,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name,
                     cro.careGroup,
@@ -1201,7 +914,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -1286,7 +999,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('rd.id')
             ->getQuery()
@@ -1308,7 +1021,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name,
                     cro.careGroup'
@@ -1352,7 +1065,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -1409,7 +1122,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -1432,7 +1145,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name
                 ')
@@ -1481,7 +1194,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -1546,7 +1259,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -1585,7 +1298,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     reg.id as typeId,
                     reg.name as name
                 ')
@@ -1634,7 +1347,7 @@ class ResidentRepository extends EntityRepository
                     sal.title as salutation, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     f.id as typeId,
                     fr.number as roomNumber,
                     fb.number as bedNumber,
@@ -1707,7 +1420,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()
@@ -1743,7 +1456,7 @@ class ResidentRepository extends EntityRepository
                     r.id as id, 
                     r.firstName as firstName, 
                     r.lastName as lastName,
-                    ca.type as type,
+                    c.type as type,
                     r.birthday as birthday,
                     cro.address as address,
                     sal.title as salutation, 
@@ -1795,7 +1508,7 @@ class ResidentRepository extends EntityRepository
                     r.firstName as firstName, 
                     r.lastName as lastName,
                     r.birthday as birthday,
-                    ca.type as type,
+                    c.type as type,
                     sal.title as salutation, 
                     f.id as typeId,
                     f.name as typeName,
@@ -1869,7 +1582,7 @@ class ResidentRepository extends EntityRepository
         }
 
         return $queryBuilder
-            ->andWhere('ca.type = :type')
+            ->andWhere('c.type = :type')
             ->setParameter("type", $type)
             ->groupBy('r.id')
             ->getQuery()

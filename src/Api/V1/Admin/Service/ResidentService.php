@@ -432,25 +432,21 @@ class ResidentService extends BaseService implements IGridService
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
-        $typeId = $request->get('type_id');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_APARTMENT])) {
+            throw new InvalidParameterException('type');
+        }
 
         if (!$all && !$typeId) {
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_APARTMENT])) {
-            throw new InvalidParameterException('type_id');
-        }
-
-        try {
-            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
-                $residents = $this->em->getRepository(Resident::class)->getContractInfoByType($type, $typeId);
-            } else {
-                $residents = $this->em->getRepository(Resident::class)->getContractInfo();
-            }
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getContractInfoByType($type, $typeId);
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
@@ -467,25 +463,21 @@ class ResidentService extends BaseService implements IGridService
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
-        $typeId = $request->get('type_id');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type_id');
+        }
 
         if (!$all && !$typeId) {
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
-            throw new InvalidParameterException('type_id');
-        }
-
-        try {
-            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
-                $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfoByType($type, $typeId);
-            } else {
-                $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfo();
-            }
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfoByType($type, $typeId);
 
         $report = new BowelMovement();
         $report->setResidents($residents);
@@ -501,25 +493,17 @@ class ResidentService extends BaseService implements IGridService
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
-        $typeId = $request->get('type_id');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type || !in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
 
         if (!$all && !$typeId) {
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        if ($typeId && !in_array($typeId, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
-            throw new InvalidParameterException('type_id');
-        }
-
-        try {
-            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
-                $residents = $this->em->getRepository(Resident::class)->getManicureInfoByType($type, $typeId);
-            } else {
-                $residents = $this->em->getRepository(Resident::class)->getManicureInfo();
-            }
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getManicureInfoByType($type, $typeId);
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
