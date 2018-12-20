@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
+use App\Entity\ContractAction;
 use App\Entity\ContractApartmentOption;
 use App\Entity\ContractFacilityOption;
 use App\Entity\ContractRegionOption;
@@ -12,10 +13,12 @@ use App\Entity\FacilityBed;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\Contract;
+use App\Model\ContractState;
 use App\Model\ContractType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\UnexpectedResultException;
 
 /**
  * Class ContractRepository

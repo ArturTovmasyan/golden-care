@@ -83,7 +83,7 @@ class ReportService
     {
         $config_filtered = $this->config;
 
-        return $this->array_remove_keys($config_filtered, ['service']);
+        return $this->array_remove_keys($config_filtered, ['service', 'template']);
     }
 
     /**
@@ -107,6 +107,10 @@ class ReportService
 
         if (!in_array($request->get('format'), $report['formats'])) {
             throw new ReportFormatNotFoundException();
+        }
+
+        if (!empty($report['template'])) {
+            $request->request->add(['template' => $report['template']]);
         }
 
         [$service, $action] = explode('::', $report['service']);

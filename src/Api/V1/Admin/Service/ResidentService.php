@@ -406,21 +406,17 @@ class ResidentService extends BaseService implements IGridService
     {
         $all    = (bool) $request->get('all') ?? false;
         $type   = $request->get('type');
-        $typeId = $request->get('type_id');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
 
         if (!$all && !$typeId) {
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            if ($type && in_array($type, \App\Model\Resident::getTypeValues())) {
-                $residents = $this->em->getRepository(Resident::class)->getByType($type, $typeId);
-            } else {
-                $residents = $this->em->getRepository(Resident::class)->findAll();
-            }
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getByType($type, $typeId);
 
         $report = new ResidentBirthdayList();
         $report->setResidents($residents);

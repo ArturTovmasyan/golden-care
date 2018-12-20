@@ -267,8 +267,14 @@ class BaseController extends Controller
     {
         $report = $reportService->report($request, $group, $alias);
 
+        if ($request->get('template')) {
+            $file = '@api_report/'. $group . '/' . $request->get('template') .'.' . $request->get('format') . '.twig';
+        } else {
+            $file = '@api_report/'. $group . '/' . $alias .'.' . $request->get('format') . '.twig';
+        }
+
         return $this->respondFile(
-            '@api_report/'. $group . '/' . $alias .'.' . $request->get('format') . '.twig',
+            $file,
             $request->get('format'),
             ['data' => $report]
         );

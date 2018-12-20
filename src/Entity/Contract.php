@@ -48,11 +48,11 @@ class Contract
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_contract_add", "api_admin_contract_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
+     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_contract_add", "api_admin_contract_edit"})
      * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
      */
     private $resident;

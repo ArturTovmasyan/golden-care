@@ -13,7 +13,7 @@
                                 <div style="height: 5px;"></div>
                                 <b style="font-size: 18px !important">BIRTHDAY&nbsp;LIST</b>
                                 <p style="margin-bottom: 5px;"></p>
-                                <b style="font-size: 16px !important">{{ type.name }}</b>
+                                <b style="font-size: 16px !important">{{ type['name'] }}</b>
                             </div>
                             <div style="clear: both"></div>
                         </div>
@@ -30,14 +30,14 @@
                         <td colspan="3">
                             {% for monthData in type.dates %}
 
-                                <div style="font-size: 13px !important; margin-bottom: 10px;">{{ monthData.name }}</div>
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">{{ monthData['name'] }}</div>
 
-                                {% if monthData.birthdays is defined and monthData.birthdays is not empty %}
+                                {% if monthData.birthdays is defined and monthData['birthdays'] is not empty %}
                                     {% for birthdayData in monthData.birthdays %}
                                         <div style="font-size: 13px !important; margin-bottom: 10px;">
-                                            <div style="float: left; margin-left: 40px;">{{ birthdayData.day }}</div>
-                                            <div style="float: left; width: 250px !important; margin-left: 100px;">{{ birthdayData.name }}</div>
-                                            <div style="float: left; margin-left: 70px; text-align: left">{{ birthdayData.age }}</div>
+                                            <div style="float: left; margin-left: 40px;">{{ birthdayData['day'] }}</div>
+                                            <div style="float: left; width: 250px !important; margin-left: 100px;">{{ birthdayData['name'] }}</div>
+                                            <div style="float: left; margin-left: 70px; text-align: left">{{ birthdayData['age'] }}</div>
                                             <div style="clear: both"></div>
                                         </div>
                                     {% endfor %}

@@ -37,28 +37,17 @@ class ResidentBirthdayList extends Base
          * @var Resident $resident
          */
         foreach ($residents as $key => $resident) {
-            if ($resident->getType() == \App\Model\Resident::TYPE_FACILITY) {
-                $facility = $resident->getResidentFacilityOption()->getFacilityRoom()->getFacility();
-                $name   = $facility->getName();
-            } elseif ($resident->getType() == \App\Model\Resident::TYPE_APARTMENT) {
-                $apartment = $resident->getResidentApartmentOption()->getApartmentRoom()->getApartment();
-                $name   = $apartment->getName();
-            } else {
-                $region = $resident->getResidentRegionOption()->getRegion();
-                $name   = $region->getName();
-            }
-
-            $this->types[$key]['name'] = $name;
+            $this->types[$key]['name'] = $resident['name'];
 
             if (empty($this->types[$key]['dates'])) {
                 $this->types[$key]['dates'] = $this->locateMonths();
             }
 
-            $birthday = $resident->getBirthday();
+            $birthday = $resident['birthday'];
 
             $this->types[$key]['dates'][$birthday->format('n')]['birthdays'][] =
                 [
-                    'name' => $resident->getFirstName() . ' ' . $resident->getLastName(),
+                    'name' => $resident['firstName'] . ' ' . $resident['lastName'],
                     'age'  => $now->diff($birthday)->y + 1,
                     'day'  => $birthday->format('m/d/Y')
                 ];
