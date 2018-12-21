@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\MedicationNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Medication;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,9 +48,25 @@ class MedicationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             // save Medication
             $medication = new Medication();
             $medication->setName($params['name'] ?? null);
+            $medication->setSpace($space);
+
             $this->validate($medication, null, ["api_admin_medication_add"]);
 
             $this->em->persist($medication);
@@ -80,7 +98,23 @@ class MedicationService extends BaseService implements IGridService
                 throw new MedicationNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $medication->setName($params['name'] ?? null);
+            $medication->setSpace($space);
+
             $this->validate($medication, null, ["api_admin_medication_edit"]);
 
             $this->em->persist($medication);

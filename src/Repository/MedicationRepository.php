@@ -6,6 +6,7 @@ use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\ResidentMedication;
 use App\Entity\Resident;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -24,6 +25,12 @@ class MedicationRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Medication::class, 'm')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = m.space'
+            )
             ->groupBy('m.id');
     }
 

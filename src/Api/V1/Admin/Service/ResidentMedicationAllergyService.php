@@ -94,6 +94,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
                 $medication = new Medication();
                 $medication->setName($newMedicationName);
+                $medication->setSpace($resident->getSpace());
             }
 
             if (!empty($medicationId)) {
@@ -168,6 +169,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
                 $medication = new Medication();
                 $medication->setName($newMedicationName);
+                $medication->setSpace($resident->getSpace());
             }
 
             if (!empty($medicationId)) {

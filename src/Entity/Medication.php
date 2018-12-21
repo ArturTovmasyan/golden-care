@@ -26,11 +26,13 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_medication_grid={
  *          {"id", "number", true, true, "m.id"},
- *          {"name", "string", true, true, "m.name"}
+ *          {"name", "string", true, true, "m.name"},
+ *          {"space", "string", true, true, "s.name"},
  *     },
  *     api_dashboard_medication_grid={
  *          {"id", "number", true, true, "m.id"},
- *          {"name", "string", true, true, "m.name"}
+ *          {"name", "string", true, true, "m.name"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -89,6 +91,21 @@ class Medication
     private $name;
 
     /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_medication_add", "api_admin_medication_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_medication_grid",
+     *     "api_admin_medication_list",
+     *     "api_admin_medication_get"
+     * })
+     */
+    private $space;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -118,5 +135,24 @@ class Medication
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return Medication
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }
