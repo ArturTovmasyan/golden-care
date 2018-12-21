@@ -17,12 +17,12 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"}
+ *          {"name", "string", true, true, "r.name"},
  *          {"space", "string", true, true, "s.name"},
  *     },
  *     api_dashboard_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"}
+ *          {"name", "string", true, true, "r.name"},
  *          {"space", "string", true, true, "s.name"},
  *     }
  * )
