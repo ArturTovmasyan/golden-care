@@ -44,6 +44,7 @@ class DietController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the diet
      * @apiSuccess {String}  title         The title of the diet
      * @apiSuccess {String}  color         The color time of the diet
+     * @apiSuccess {Object}  space         The space of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -56,7 +57,8 @@ class DietController extends BaseController
      *              {
      *                  "id": 1,
      *                  "title": "Diabetic",
-     *                  "color": "#ffff00"
+     *                  "color": "#ffff00",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -127,6 +129,7 @@ class DietController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the diet
      * @apiSuccess {String}  title         The title of the diet
      * @apiSuccess {String}  color         The color time of the diet
+     * @apiSuccess {Object}  space         The space of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -139,7 +142,11 @@ class DietController extends BaseController
      *              {
      *                  "id": 1,
      *                  "title": "Diabetic",
-     *                  "color": "#ffff00"
+     *                  "color": "#ffff00",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -174,6 +181,7 @@ class DietController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the diet
      * @apiSuccess {String}  title         The title of the diet
      * @apiSuccess {String}  color         The color time of the diet
+     * @apiSuccess {Object}  space         The space of the diet
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -181,7 +189,11 @@ class DietController extends BaseController
      *          "data": {
      *                  "id": 1,
      *                  "title": "Diabetic",
-     *                  "color": "#ffff00"
+     *                  "color": "#ffff00",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -213,11 +225,13 @@ class DietController extends BaseController
      *
      * @apiParam {String}  title     The title of the diet
      * @apiParam {String}  color     The color of the diet
+     * @apiParam {Int}     space_id  The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Dr.",
-     *         "color": "#ffff00"
+     *         "color": "#ffff00",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -244,7 +258,8 @@ class DietController extends BaseController
         $dietService->add(
             [
                 'title' => $request->get('title'),
-                'color' => $request->get('color')
+                'color' => $request->get('color'),
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -263,13 +278,15 @@ class DietController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  title          The title of the diet
+     * @apiParam {String}  title     The title of the diet
      * @apiParam {String}  color     The color of the diet
+     * @apiParam {Int}     space_id  The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Dr.",
-     *         "color": "#ffff00"
+     *         "color": "#ffff00",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -298,7 +315,8 @@ class DietController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'color' => $request->get('color')
+                'color' => $request->get('color'),
+                'space_id' => $request->get('space_id')
             ]
         );
 

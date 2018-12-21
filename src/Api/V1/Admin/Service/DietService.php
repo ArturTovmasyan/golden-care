@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\DietNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Diet;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,9 +48,24 @@ class DietService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $diet = new Diet();
             $diet->setTitle($params['title']);
             $diet->setColor($params['color']);
+            $diet->setSpace($space);
 
             $this->validate($diet, null, ['api_admin_diet_add']);
 
@@ -80,8 +97,23 @@ class DietService extends BaseService implements IGridService
                 throw new DietNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setTitle($params['title']);
             $entity->setColor($params['color']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_diet_edit']);
 

@@ -18,7 +18,8 @@ use App\Annotation\Grid;
  *     api_admin_diet_grid={
  *          {"id", "number", true, true, "d.id"},
  *          {"title", "string", true, true, "d.title"},
- *          {"color", "string", true, true, "d.color"}
+ *          {"color", "string", true, true, "d.color"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -79,6 +80,21 @@ class Diet
      */
     private $color;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_diet_add", "api_admin_diet_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_diet_grid",
+     *     "api_admin_diet_list",
+     *     "api_admin_diet_get"
+     * })
+     */
+    private $space;
+
     public function getId(): int
     {
         return $this->id;
@@ -108,5 +124,23 @@ class Diet
     public function setColor(?string $color): void
     {
         $this->color = $color;
+    }
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return Diet
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }
