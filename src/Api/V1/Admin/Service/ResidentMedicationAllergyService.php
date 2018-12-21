@@ -90,10 +90,10 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             $medication = null;
 
             if (!empty($newMedication)) {
-                $newMedicationName = $newMedication['name'] ?? '';
+                $newMedicationTitle = $newMedication['title'] ?? '';
 
                 $medication = new Medication();
-                $medication->setName($newMedicationName);
+                $medication->setTitle($newMedicationTitle);
                 $medication->setSpace($resident->getSpace());
             }
 
@@ -165,10 +165,10 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             $medication = null;
 
             if (!empty($newMedication)) {
-                $newMedicationName = $newMedication['name'] ?? '';
+                $newMedicationTitle = $newMedication['title'] ?? '';
 
                 $medication = new Medication();
-                $medication->setName($newMedicationName);
+                $medication->setTitle($newMedicationTitle);
                 $medication->setSpace($resident->getSpace());
             }
 

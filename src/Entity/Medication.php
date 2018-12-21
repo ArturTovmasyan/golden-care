@@ -26,12 +26,12 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_medication_grid={
  *          {"id", "number", true, true, "m.id"},
- *          {"name", "string", true, true, "m.name"},
+ *          {"title", "string", true, true, "m.title"},
  *          {"space", "string", true, true, "s.name"},
  *     },
  *     api_dashboard_medication_grid={
  *          {"id", "number", true, true, "m.id"},
- *          {"name", "string", true, true, "m.name"},
+ *          {"title", "string", true, true, "m.title"},
  *          {"space", "string", true, true, "s.name"},
  *     }
  * )
@@ -59,7 +59,7 @@ class Medication
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string", length=20, nullable=false)
+     * @ORM\Column(name="title", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_medication_grid",
      *     "api_admin_medication_list",
@@ -88,7 +88,7 @@ class Medication
      *      }
      * )
      */
-    private $name;
+    private $title;
 
     /**
      * @var Space
@@ -124,17 +124,17 @@ class Medication
     /**
      * @return string
      */
-    public function getName(): string
+    public function getTitle(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
     /**
-     * @param string $name
+     * @param string $title
      */
-    public function setName(string $name): void
+    public function setTitle(string $title): void
     {
-        $this->name = $name;
+        $this->title = $title;
     }
 
     /**

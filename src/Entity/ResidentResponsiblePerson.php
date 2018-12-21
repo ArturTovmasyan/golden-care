@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  *          {"id", "number", true, true, "rrp.id"},
  *          {"resident", "string", true, true, "CONCAT(r.firstName, ' ', r.lastName)"},
  *          {"responsible_person", "string", true, true, "CONCAT(rp.firstName, ' ', rp.lastName)"},
- *          {"relationship", "string", true, true, "rel.name"}
+ *          {"relationship", "string", true, true, "rel.title"}
  *     }
  * )
  */

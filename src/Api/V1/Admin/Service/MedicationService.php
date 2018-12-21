@@ -64,7 +64,7 @@ class MedicationService extends BaseService implements IGridService
 
             // save Medication
             $medication = new Medication();
-            $medication->setName($params['name'] ?? null);
+            $medication->setTitle($params['title'] ?? null);
             $medication->setSpace($space);
 
             $this->validate($medication, null, ["api_admin_medication_add"]);
@@ -112,7 +112,7 @@ class MedicationService extends BaseService implements IGridService
                 }
             }
 
-            $medication->setName($params['name'] ?? null);
+            $medication->setTitle($params['title'] ?? null);
             $medication->setSpace($space);
 
             $this->validate($medication, null, ["api_admin_medication_edit"]);

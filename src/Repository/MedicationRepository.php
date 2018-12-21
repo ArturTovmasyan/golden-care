@@ -71,7 +71,7 @@ class MedicationRepository extends EntityRepository
                     rm.notes as notes,
                     rm.dosage as dosage,
                     rm.dosageUnit as dosageUnit,
-                    m.name as medication
+                    m.title as medication
             ')
             ->innerJoin(
                 ResidentMedication::class,

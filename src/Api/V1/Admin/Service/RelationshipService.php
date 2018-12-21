@@ -64,7 +64,7 @@ class RelationshipService extends BaseService implements IGridService
 
             // save Relationship
             $relationship = new Relationship();
-            $relationship->setName($params['name'] ?? null);
+            $relationship->setTitle($params['title'] ?? null);
             $relationship->setSpace($space);
 
             $this->validate($relationship, null, ["api_admin_relationship_add"]);
@@ -112,7 +112,7 @@ class RelationshipService extends BaseService implements IGridService
                 }
             }
 
-            $relationship->setName($params['name'] ?? null);
+            $relationship->setTitle($params['title'] ?? null);
             $relationship->setSpace($space);
 
             $this->validate($relationship, null, ["api_admin_relationship_edit"]);

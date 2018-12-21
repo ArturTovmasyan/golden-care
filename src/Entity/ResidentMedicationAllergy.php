@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_resident_medication_allergy_grid={
  *          {"id", "number", true, true, "rma.id"},
- *          {"medication", "string", true, true, "m.name"},
+ *          {"medication", "string", true, true, "m.title"},
  *          {"notes", "string", true, true, "rma.notes"}
  *     }
  * )

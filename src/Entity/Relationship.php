@@ -17,12 +17,12 @@ use JMS\Serializer\Annotation\Groups;
  * @Grid(
  *     api_admin_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"},
+ *          {"title", "string", true, true, "r.title"},
  *          {"space", "string", true, true, "s.name"},
  *     },
  *     api_dashboard_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"},
+ *          {"title", "string", true, true, "r.title"},
  *          {"space", "string", true, true, "s.name"},
  *     }
  * )
@@ -49,7 +49,7 @@ class Relationship
     /**
      * @var string
      * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
-     * @ORM\Column(name="name", type="string", length=20, nullable=false)
+     * @ORM\Column(name="title", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
@@ -60,7 +60,7 @@ class Relationship
      *     "api_admin_resident_responsible_person_get"
      * })
      */
-    private $name;
+    private $title;
 
     /**
      * @var Space
@@ -101,17 +101,17 @@ class Relationship
     /**
      * @return string
      */
-    public function getName(): string
+    public function getTitle(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
     /**
-     * @param string $name
+     * @param string $title
      */
-    public function setName(string $name): void
+    public function setTitle(string $title): void
     {
-        $this->name = $name;
+        $this->title = $title;
     }
 
     /**

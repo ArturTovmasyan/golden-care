@@ -42,7 +42,7 @@ class MedicationController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id     The unique identifier of the medication
-     * @apiSuccess {String}  name   The name of the medication
+     * @apiSuccess {String}  title  The title of the medication
      * @apiSuccess {Object}  space  The space of the medication
      *
      * @apiSuccessExample {json} Sample Response:
@@ -54,7 +54,7 @@ class MedicationController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "name": "Lidocaine",
+     *                  "title": "Lidocaine",
      *                  "space": "alms"
      *              }
      *          ]
@@ -124,7 +124,7 @@ class MedicationController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id     The unique identifier of the medication
-     * @apiSuccess {String}  name   The name of the medication
+     * @apiSuccess {String}  title  The title of the medication
      * @apiSuccess {Object}  space  The space of the medication
      *
      * @apiSuccessExample {json} Sample Response:
@@ -133,7 +133,7 @@ class MedicationController extends BaseController
      *          [
      *              {
      *                  "id": 1,
-     *                  "name": "Lidocaine",
+     *                  "title": "Lidocaine",
      *                  "space": {
      *                      "id": 1,
      *                      "name": "alms"
@@ -170,14 +170,14 @@ class MedicationController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}     id            The unique identifier of the medication
-     * @apiSuccess {String}  name          The Name of the medication
+     * @apiSuccess {String}  title         The title of the medication
      * @apiSuccess {Object}  space         The space of the medication
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "id": 1,
-     *          "name": "Lidocaine",
+     *          "title": "Lidocaine",
      *          "space": {
      *              "id": 1,
      *              "name": "alms"
@@ -211,12 +211,12 @@ class MedicationController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  name       The name of the medication
+     * @apiParam {String}  title      The title of the medication
      * @apiParam {Int}     space_id   The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "name": "Lidocaine",
+     *         "title": "Lidocaine",
      *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -228,7 +228,7 @@ class MedicationController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "name": "Sorry, this name is already in use."
+     *              "title": "Sorry, this title is already in use."
      *          }
      *     }
      *
@@ -243,7 +243,7 @@ class MedicationController extends BaseController
     {
         $medicationService->add(
             [
-                'name' => $request->get('name'),
+                'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -264,12 +264,12 @@ class MedicationController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     id         The unique identifier of the medication
-     * @apiParam {String}  name       The name of the medication
+     * @apiParam {String}  title      The title of the medication
      * @apiParam {Int}     space_id   The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "name": "Lidocaine",
+     *         "title": "Lidocaine",
      *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -281,7 +281,7 @@ class MedicationController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "name": "Sorry, this name is already in use."
+     *              "title": "Sorry, this title is already in use."
      *          }
      *     }
      *
@@ -298,7 +298,7 @@ class MedicationController extends BaseController
         $medicationService->edit(
             $id,
             [
-                'name' => $request->get('name'),
+                'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
             ]
         );
