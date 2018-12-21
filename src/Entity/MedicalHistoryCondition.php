@@ -18,7 +18,8 @@ use App\Annotation\Grid;
  *     api_admin_medical_history_condition_grid={
  *          {"id", "number", true, true, "mhc.id"},
  *          {"title", "string", true, true, "mhc.title"},
- *          {"description", "string", true, true, "mhc.description"}
+ *          {"description", "string", true, true, "mhc.description"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -88,6 +89,22 @@ class MedicalHistoryCondition
      */
     private $description;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_medical_history_condition_add", "api_admin_medical_history_condition_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_medical_history_condition_grid",
+     *     "api_admin_medical_history_condition_list",
+     *     "api_admin_medical_history_condition_get"
+     * })
+     */
+    private $space;
+
+
     public function getId(): int
     {
         return $this->id;
@@ -118,6 +135,25 @@ class MedicalHistoryCondition
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return MedicalHistoryCondition
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
 
         return $this;
     }

@@ -96,6 +96,7 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
                 $medicalHistoryCondition = new MedicalHistoryCondition();
                 $medicalHistoryCondition->setTitle($newMedicalHistoryConditionTitle);
                 $medicalHistoryCondition->setDescription($newMedicalHistoryConditionDescription);
+                $medicalHistoryCondition->setSpace($resident->getSpace());
             }
 
             if (!empty($medicalHistoryConditionId)) {
@@ -181,6 +182,7 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
                 $medicalHistoryCondition = new MedicalHistoryCondition();
                 $medicalHistoryCondition->setTitle($newMedicalHistoryConditionTitle);
                 $medicalHistoryCondition->setDescription($newMedicalHistoryConditionDescription);
+                $medicalHistoryCondition->setSpace($resident->getSpace());
             }
 
             if (!empty($medicalHistoryConditionId)) {

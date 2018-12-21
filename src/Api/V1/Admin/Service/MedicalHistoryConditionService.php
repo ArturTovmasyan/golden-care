@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\MedicalHistoryConditionNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\MedicalHistoryCondition;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,9 +48,24 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $medicalHistoryCondition = new MedicalHistoryCondition();
             $medicalHistoryCondition->setTitle($params['title']);
             $medicalHistoryCondition->setDescription($params['description']);
+            $medicalHistoryCondition->setSpace($space);
 
             $this->validate($medicalHistoryCondition, null, ['api_admin_medical_history_condition_add']);
 
@@ -80,8 +97,23 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
                 throw new MedicalHistoryConditionNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setTitle($params['title']);
             $entity->setDescription($params['description']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_medical_history_condition_edit']);
 

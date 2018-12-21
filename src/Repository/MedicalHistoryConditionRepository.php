@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\MedicalHistoryCondition;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class MedicalHistoryConditionRepository extends EntityRepository
     {
         $queryBuilder
             ->from(MedicalHistoryCondition::class, 'mhc')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = mhc.space'
+            )
             ->groupBy('mhc.id');
     }
 

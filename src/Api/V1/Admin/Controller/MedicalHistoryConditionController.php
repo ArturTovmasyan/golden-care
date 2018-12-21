@@ -44,6 +44,7 @@ class MedicalHistoryConditionController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the medicalHistoryCondition
      * @apiSuccess {String}  title         The title of the medicalHistoryCondition
      * @apiSuccess {String}  description   The description time of the medicalHistoryCondition
+     * @apiSuccess {Object}  space         The space of the medicalHistoryCondition
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -56,7 +57,8 @@ class MedicalHistoryConditionController extends BaseController
      *              {
      *                  "id": 1,
      *                  "title": "Acetylsalicylic Acid",
-     *                  "description": "ASA"
+     *                  "description": "ASA",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -127,6 +129,7 @@ class MedicalHistoryConditionController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the medicalHistoryCondition
      * @apiSuccess {String}  title         The title of the medicalHistoryCondition
      * @apiSuccess {String}  description   The description time of the medicalHistoryCondition
+     * @apiSuccess {Object}  space         The space of the medicalHistoryCondition
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -139,7 +142,11 @@ class MedicalHistoryConditionController extends BaseController
      *              {
      *                  "id": 1,
      *                  "title": "Acetylsalicylic Acid",
-     *                  "description": "ASA"
+     *                  "description": "ASA",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -174,6 +181,7 @@ class MedicalHistoryConditionController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the medicalHistoryCondition
      * @apiSuccess {String}  title         The title of the medicalHistoryCondition
      * @apiSuccess {String}  description   The description time of the medicalHistoryCondition
+     * @apiSuccess {Object}  space         The space of the medicalHistoryCondition
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -181,7 +189,11 @@ class MedicalHistoryConditionController extends BaseController
      *          "data": {
      *                  "id": 1,
      *                  "title": "Acetylsalicylic Acid",
-     *                  "description": "ASA"
+     *                  "description": "ASA",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -213,11 +225,13 @@ class MedicalHistoryConditionController extends BaseController
      *
      * @apiParam {String}  title           The title of the medicalHistoryCondition
      * @apiParam {String}  [description]   The description of the medicalHistoryCondition
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Acetylsalicylic Acid",
-     *         "description": "ASA"
+     *         "description": "ASA",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -244,7 +258,8 @@ class MedicalHistoryConditionController extends BaseController
         $medicalHistoryConditionService->add(
             [
                 'title' => $request->get('title'),
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -265,11 +280,13 @@ class MedicalHistoryConditionController extends BaseController
      *
      * @apiParam {String}  title          The title of the medicalHistoryCondition
      * @apiParam {String}  [description]  The description of the medicalHistoryCondition
+     * @apiParam {Int}     space_id       The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Acetylsalicylic Acid",
-     *         "description": "ASA"
+     *         "description": "ASA",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -298,7 +315,8 @@ class MedicalHistoryConditionController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
