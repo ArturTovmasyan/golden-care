@@ -99,8 +99,7 @@ class ResidentMedication
      * @var string $dosage
      * @ORM\Column(name="dosage", type="string", length=10)
      * @Assert\NotBlank(groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
-     * @Assert\Regex(pattern= "/[^0-9\.\-\/]/",
-     *     match=false,
+     * @Assert\Regex(pattern= "/[0-9\.\-\/]+/",
      *     message="The value {{ value }} is not a valid type. Try to add something like '2, 0.5, 10/15, 0.4-4'",
      *     groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
      * )
@@ -117,8 +116,7 @@ class ResidentMedication
      * @var string $dosageUnit
      * @ORM\Column(name="dosage_unit", type="string", length=20)
      * @Assert\NotBlank(groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
-     * @Assert\Regex(pattern= "/[^a-zA-Z0-9\%\+\/]/",
-     *     match=false,
+     * @Assert\Regex(pattern= "/[a-zA-Z0-9\%\+\/]+/",
      *     message="The value {{ value }} is not a valid type. Available symbols are: '%, +, /'",
      *     groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
      * )
