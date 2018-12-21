@@ -67,7 +67,11 @@ class Space
      *     "api_admin_assessment_care_level_group_list",
      *     "api_admin_assessment_care_level_group_get",
      *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
+     *     "api_admin_event_definition_get",
+     *     "api_admin_salutation_list",
+     *     "api_admin_salutation_get",
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get"
      * })
      */
     private $id;
@@ -100,7 +104,11 @@ class Space
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
+     *     "api_admin_event_definition_get",
+     *     "api_admin_salutation_list",
+     *     "api_admin_salutation_get",
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

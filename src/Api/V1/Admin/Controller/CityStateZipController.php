@@ -51,6 +51,7 @@ class CityStateZipController extends BaseController
      * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
      * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
      * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
+     * @apiSuccess {Object}  space          The space of the cityStateZip
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -70,7 +71,8 @@ class CityStateZipController extends BaseController
      *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
-     *                  "city": "Verdi"
+     *                  "city": "Verdi",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -148,6 +150,7 @@ class CityStateZipController extends BaseController
      * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
      * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
      * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
+     * @apiSuccess {Object}  space          The space of the cityStateZip
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -163,7 +166,11 @@ class CityStateZipController extends BaseController
      *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
-     *                  "city": "Verdi"
+     *                  "city": "Verdi",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -205,6 +212,7 @@ class CityStateZipController extends BaseController
      * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
      * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
      * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
+     * @apiSuccess {Object}  space          The space of the cityStateZip
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -219,7 +227,11 @@ class CityStateZipController extends BaseController
      *                  "state_abbr": "CA",
      *                  "zip_main": "89439",
      *                  "zip_sub": "",
-     *                  "city": "Verdi"
+     *                  "city": "Verdi",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -254,6 +266,7 @@ class CityStateZipController extends BaseController
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
      * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
+     * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -261,7 +274,8 @@ class CityStateZipController extends BaseController
      *         "state_abbr": "CA",
      *         "zip_main": "89439",
      *         "zip_sub": "",
-     *         "city": "Verdi"
+     *         "city": "Verdi",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -272,7 +286,7 @@ class CityStateZipController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "title": "Sorry, this city should not be blank."
+     *              "city": "Sorry, this value should not be blank."
      *          }
      *     }
      *
@@ -291,7 +305,8 @@ class CityStateZipController extends BaseController
                 'state_abbr' => $request->get('state_abbr'),
                 'zip_main' => $request->get('zip_main'),
                 'zip_sub' => $request->get('zip_sub') ?? '',
-                'city' => $request->get('city')
+                'city' => $request->get('city'),
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -315,6 +330,7 @@ class CityStateZipController extends BaseController
      * @apiParam {String}  zip_main         The zipMain of the cityStateZip
      * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
      * @apiParam {String}  city             The city of the cityStateZip
+     * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -322,7 +338,8 @@ class CityStateZipController extends BaseController
      *         "state_abbr": "CA",
      *         "zip_main": "89439",
      *         "zip_sub": "",
-     *         "city": "Verdi"
+     *         "city": "Verdi",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -333,7 +350,7 @@ class CityStateZipController extends BaseController
      *          "code": 610,
      *          "error": "Validation error",
      *          "details": {
-     *              "name": "Sorry, this city should not be blank."
+     *              "city": "Sorry, this value should not be blank."
      *          }
      *     }
      *
@@ -354,7 +371,8 @@ class CityStateZipController extends BaseController
                 'state_abbr' => $request->get('state_abbr'),
                 'zip_main' => $request->get('zip_main'),
                 'zip_sub' => $request->get('zip_sub') ?? '',
-                'city' => $request->get('city')
+                'city' => $request->get('city'),
+                'space_id' => $request->get('space_id')
             ]
         );
 

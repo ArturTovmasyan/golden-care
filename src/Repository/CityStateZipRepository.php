@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\CityStateZip;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class CityStateZipRepository extends EntityRepository
     {
         $queryBuilder
             ->from(CityStateZip::class, 'csz')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = csz.space'
+            )
             ->groupBy('csz.id');
     }
 

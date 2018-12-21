@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,12 +48,27 @@ class CityStateZipService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $cityStateZip = new CityStateZip();
             $cityStateZip->setStateFull($params['state_full']);
             $cityStateZip->setStateAbbr($params['state_abbr']);
             $cityStateZip->setZipMain($params['zip_main']);
             $cityStateZip->setZipSub($params['zip_sub']);
             $cityStateZip->setCity($params['city']);
+            $cityStateZip->setSpace($space);
 
             $this->validate($cityStateZip, null, ['api_admin_city_state_zip_add']);
 
@@ -83,11 +100,26 @@ class CityStateZipService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setStateFull($params['state_full']);
             $entity->setStateAbbr($params['state_abbr']);
             $entity->setZipMain($params['zip_main']);
             $entity->setZipSub($params['zip_sub']);
             $entity->setCity($params['city']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_city_state_zip_edit']);
 

@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -23,6 +22,7 @@ use App\Annotation\Grid;
  *          {"zip_main", "string", true, true, "csz.zipMain"},
  *          {"zip_sub", "string", true, true, "csz.zipSub"},
  *          {"city", "string", true, true, "csz.city"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -170,6 +170,20 @@ class CityStateZip
     private $city;
 
     /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_city_state_zip_list",
+     *     "api_admin_city_state_zip_get"
+     * })
+     */
+    private $space;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -236,5 +250,24 @@ class CityStateZip
     public function setCity(?string $city): void
     {
         $this->city = $city;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return CityStateZip
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }
