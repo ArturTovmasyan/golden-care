@@ -75,7 +75,9 @@ class Space
      *     "api_admin_care_level_list",
      *     "api_admin_care_level_get",
      *     "api_admin_relationship_list",
-     *     "api_admin_relationship_get"
+     *     "api_admin_relationship_get",
+     *     "api_admin_medication_form_factor_list",
+     *     "api_admin_medication_form_factor_get"
      * })
      */
     private $id;
@@ -116,7 +118,9 @@ class Space
      *     "api_admin_care_level_list",
      *     "api_admin_care_level_get",
      *     "api_admin_relationship_list",
-     *     "api_admin_relationship_get"
+     *     "api_admin_relationship_get",
+     *     "api_admin_medication_form_factor_list",
+     *     "api_admin_medication_form_factor_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

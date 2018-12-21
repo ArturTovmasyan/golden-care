@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\MedicationFormFactorNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\MedicationFormFactor;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,8 +48,23 @@ class MedicationFormFactorService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $medicationFormFactor = new MedicationFormFactor();
             $medicationFormFactor->setTitle($params['title']);
+            $medicationFormFactor->setSpace($space);
 
             $this->validate($medicationFormFactor, null, ['api_admin_medication_form_factor_add']);
 
@@ -79,7 +96,22 @@ class MedicationFormFactorService extends BaseService implements IGridService
                 throw new MedicationFormFactorNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setTitle($params['title']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_medication_form_factor_edit']);
 

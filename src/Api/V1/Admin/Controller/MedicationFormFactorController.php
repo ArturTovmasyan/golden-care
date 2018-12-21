@@ -43,6 +43,7 @@ class MedicationFormFactorController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
      * @apiSuccess {String}  title         The title of the medicationFormFactor
+     * @apiSuccess {Object}  space         The space of the medicationFormFactor
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -54,7 +55,8 @@ class MedicationFormFactorController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "title": "Factor second"
+     *                  "title": "Factor second",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -124,6 +126,7 @@ class MedicationFormFactorController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
      * @apiSuccess {String}  title         The title of the medicationFormFactor
+     * @apiSuccess {Object}  space         The space of the medicationFormFactor
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -135,7 +138,11 @@ class MedicationFormFactorController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "title": "Factor second"
+     *                  "title": "Factor second",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -169,13 +176,18 @@ class MedicationFormFactorController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
      * @apiSuccess {String}  title         The title of the medicationFormFactor
+     * @apiSuccess {Object}  space         The space of the medicationFormFactor
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "data": {
      *                  "id": 1,
-     *                  "title": "Factor second"
+     *                  "title": "Factor second",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -206,10 +218,12 @@ class MedicationFormFactorController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  title           The title of the medicationFormFactor
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Factor second"
+     *         "title": "Factor second",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -235,7 +249,8 @@ class MedicationFormFactorController extends BaseController
     {
         $medicationFormFactorService->add(
             [
-                'title' => $request->get('title')
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -255,10 +270,12 @@ class MedicationFormFactorController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {String}  title          The title of the medicationFormFactor
+     * @apiParam {Int}     space_id       The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
-     *         "title": "Factor second"
+     *         "title": "Factor second",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -286,7 +303,8 @@ class MedicationFormFactorController extends BaseController
         $medicationFormFactorService->edit(
             $id,
             [
-                'title' => $request->get('title')
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id')
             ]
         );
 

@@ -17,7 +17,8 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_medication_form_factor_grid={
  *          {"id", "number", true, true, "mff.id"},
- *          {"title", "string", true, true, "mff.title"}
+ *          {"title", "string", true, true, "mff.title"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -59,6 +60,21 @@ class MedicationFormFactor
      */
     private $title;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_medication_form_factor_add", "api_admin_medication_form_factor_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_medication_form_factor_grid",
+     *     "api_admin_medication_form_factor_list",
+     *     "api_admin_medication_form_factor_get"
+     * })
+     */
+    private $space;
+
     public function getId(): int
     {
         return $this->id;
@@ -78,5 +94,24 @@ class MedicationFormFactor
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return MedicationFormFactor
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }

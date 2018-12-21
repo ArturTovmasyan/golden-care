@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\MedicationFormFactor;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class MedicationFormFactorRepository extends EntityRepository
     {
         $queryBuilder
             ->from(MedicationFormFactor::class, 'mff')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = mff.space'
+            )
             ->groupBy('mff.id');
     }
 
