@@ -73,7 +73,9 @@ class Space
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
      *     "api_admin_care_level_list",
-     *     "api_admin_care_level_get"
+     *     "api_admin_care_level_get",
+     *     "api_admin_relationship_list",
+     *     "api_admin_relationship_get"
      * })
      */
     private $id;
@@ -112,7 +114,9 @@ class Space
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
      *     "api_admin_care_level_list",
-     *     "api_admin_care_level_get"
+     *     "api_admin_care_level_get",
+     *     "api_admin_relationship_list",
+     *     "api_admin_relationship_get"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

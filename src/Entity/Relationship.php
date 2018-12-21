@@ -18,10 +18,12 @@ use JMS\Serializer\Annotation\Groups;
  *     api_admin_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"}
+ *          {"space", "string", true, true, "s.name"},
  *     },
  *     api_dashboard_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
  *          {"name", "string", true, true, "r.name"}
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -46,7 +48,7 @@ class Relationship
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
      * @ORM\Column(name="name", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_relationship_grid",
@@ -57,9 +59,23 @@ class Relationship
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
      * })
-     * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
      */
     private $name;
+
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_relationship_grid",
+     *     "api_admin_relationship_list",
+     *     "api_admin_relationship_get"
+     * })
+     */
+    private $space;
 
     /**
      * @ORM\OneToMany(targetEntity="ResidentResponsiblePerson", mappedBy="relationship", cascade={"persist", "remove"})
@@ -96,6 +112,25 @@ class Relationship
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return Relationship
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 
     /**

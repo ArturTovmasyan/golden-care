@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Relationship;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,9 +48,25 @@ class RelationshipService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             // save Relationship
             $relationship = new Relationship();
             $relationship->setName($params['name'] ?? null);
+            $relationship->setSpace($space);
+
             $this->validate($relationship, null, ["api_admin_relationship_add"]);
 
             $this->em->persist($relationship);
@@ -80,7 +98,23 @@ class RelationshipService extends BaseService implements IGridService
                 throw new RelationshipNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $relationship->setName($params['name'] ?? null);
+            $relationship->setSpace($space);
+
             $this->validate($relationship, null, ["api_admin_relationship_edit"]);
 
             $this->em->persist($relationship);

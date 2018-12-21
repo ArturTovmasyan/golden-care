@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Relationship;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class RelationshipRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Relationship::class, 'r')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
             ->groupBy('r.id');
     }
 
