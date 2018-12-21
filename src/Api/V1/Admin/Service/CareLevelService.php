@@ -4,8 +4,10 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CareLevel;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -47,9 +49,24 @@ class CareLevelService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $careLevel = new CareLevel();
             $careLevel->setTitle($params['title']);
             $careLevel->setDescription($params['description']);
+            $careLevel->setSpace($space);
 
             $this->validate($careLevel, null, ['api_admin_care_level_add']);
 
@@ -81,8 +98,23 @@ class CareLevelService extends BaseService implements IGridService
                 throw new CareLevelNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setTitle($params['title']);
             $entity->setDescription($params['description']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_care_level_edit']);
 

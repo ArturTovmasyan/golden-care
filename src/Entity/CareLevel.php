@@ -21,6 +21,7 @@ use App\Annotation\Grid;
  *          {"id", "number", true, true, "cl.id"},
  *          {"title", "string", true, true, "cl.title"},
  *          {"description", "string", true, true, "cl.description"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -82,6 +83,21 @@ class CareLevel
      */
     private $description;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_care_level_grid",
+     *     "api_admin_care_level_list",
+     *     "api_admin_care_level_get"
+     * })
+     */
+    private $space;
+
     public function getId(): int
     {
         return $this->id;
@@ -111,5 +127,24 @@ class CareLevel
     public function setDescription(?string $description): void
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return CareLevel
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
+
+        return $this;
     }
 }

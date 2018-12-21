@@ -44,10 +44,11 @@ class CareLevelController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the careLevel
      * @apiSuccess {String}  title         The title of the careLevel
      * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {String}  created_at    The created time of the careLevel
+     * @apiSuccess {String}  updated_at    The updated time of the careLevel
+     * @apiSuccess {Int}     created_by    The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by    The updated user id of the careLevel
+     * @apiSuccess {Object}  space         The space of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -64,7 +65,8 @@ class CareLevelController extends BaseController
      *                  "updated_by": 5,
      *                  "id": 1,
      *                  "title": "Dr.",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -135,10 +137,11 @@ class CareLevelController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the careLevel
      * @apiSuccess {String}  title         The title of the careLevel
      * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {String}  created_at    The created time of the careLevel
+     * @apiSuccess {String}  updated_at    The updated time of the careLevel
+     * @apiSuccess {Int}     created_by    The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by    The updated user id of the careLevel
+     * @apiSuccess {Object}  space         The space of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -151,7 +154,11 @@ class CareLevelController extends BaseController
      *                  "updated_by": 5,
      *                  "id": 1,
      *                  "title": "Dr.",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -186,10 +193,11 @@ class CareLevelController extends BaseController
      * @apiSuccess {Int}     id            The unique identifier of the careLevel
      * @apiSuccess {String}  title         The title of the careLevel
      * @apiSuccess {String}  description   The description of the careLevel
-     * @apiSuccess {String}  created_at     The created time of the careLevel
-     * @apiSuccess {String}  updated_at     The updated time of the careLevel
-     * @apiSuccess {Int}     created_by     The created user id of the careLevel
-     * @apiSuccess {Int}     updated_by     The updated user id of the careLevel
+     * @apiSuccess {String}  created_at    The created time of the careLevel
+     * @apiSuccess {String}  updated_at    The updated time of the careLevel
+     * @apiSuccess {Int}     created_by    The created user id of the careLevel
+     * @apiSuccess {Int}     updated_by    The updated user id of the careLevel
+     * @apiSuccess {Object}  space         The space of the careLevel
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -201,7 +209,11 @@ class CareLevelController extends BaseController
      *                  "update_by": 5,
      *                  "id": 1,
      *                  "title": "Dr.",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -233,11 +245,13 @@ class CareLevelController extends BaseController
      *
      * @apiParam {String}  title             The title of the careLevel
      * @apiParam {String}  [description]     The description of the careLevel
+     * @apiParam {Int}     space_id          The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Dr.",
-     *         "description": "some description"
+     *         "description": "some description",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -264,7 +278,8 @@ class CareLevelController extends BaseController
         $careLevelService->add(
             [
                 'title' => $request->get('title'),
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -285,11 +300,13 @@ class CareLevelController extends BaseController
      *
      * @apiParam {String}  title            The title of the careLevel
      * @apiParam {String}  [description]    The description of the careLevel
+     * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "Dr.",
-     *         "description": "some description"
+     *         "description": "some description",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -318,7 +335,8 @@ class CareLevelController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
