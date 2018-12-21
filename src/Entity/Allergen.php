@@ -18,7 +18,8 @@ use App\Annotation\Grid;
  *     api_admin_allergen_grid={
  *          {"id", "number", true, true, "a.id"},
  *          {"title", "string", true, true, "a.title"},
- *          {"description", "string", true, true, "a.description"}
+ *          {"description", "string", true, true, "a.description"},
+ *          {"space", "string", true, true, "s.name"},
  *     }
  * )
  */
@@ -89,6 +90,21 @@ class Allergen
      */
     private $description;
 
+    /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_allergen_add", "api_admin_allergen_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_allergen_grid",
+     *     "api_admin_allergen_list",
+     *     "api_admin_allergen_get"
+     * })
+     */
+    private $space;
+
     public function getId(): int
     {
         return $this->id;
@@ -119,6 +135,25 @@ class Allergen
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space|null $space
+     * @return Allergen
+     */
+    public function setSpace(?Space $space): self
+    {
+        $this->space = $space;
 
         return $this;
     }

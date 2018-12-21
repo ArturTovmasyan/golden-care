@@ -85,7 +85,9 @@ class Space
      *     "api_admin_diet_list",
      *     "api_admin_diet_get",
      *     "api_admin_diagnosis_list",
-     *     "api_admin_diagnosis_get"
+     *     "api_admin_diagnosis_get",
+     *     "api_admin_allergen_grid",
+     *     "api_admin_allergen_list"
      * })
      */
     private $id;
@@ -136,7 +138,9 @@ class Space
      *     "api_admin_diet_list",
      *     "api_admin_diet_get",
      *     "api_admin_diagnosis_list",
-     *     "api_admin_diagnosis_get"
+     *     "api_admin_diagnosis_get",
+     *     "api_admin_allergen_grid",
+     *     "api_admin_allergen_list"
      * })
      * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
      */

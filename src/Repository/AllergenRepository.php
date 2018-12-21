@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Allergen;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class AllergenRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Allergen::class, 'a')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = a.space'
+            )
             ->groupBy('a.id');
     }
 

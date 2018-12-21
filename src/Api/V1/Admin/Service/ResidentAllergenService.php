@@ -96,6 +96,7 @@ class ResidentAllergenService extends BaseService implements IGridService
                 $allergen = new Allergen();
                 $allergen->setTitle($newAllergenTitle);
                 $allergen->setDescription($newAllergenDescription);
+                $allergen->setSpace($resident->getSpace());
             }
 
             if (!empty($allergenId)) {
@@ -172,6 +173,7 @@ class ResidentAllergenService extends BaseService implements IGridService
                 $allergen = new Allergen();
                 $allergen->setTitle($newAllergenTitle);
                 $allergen->setDescription($newAllergenDescription);
+                $allergen->setSpace($resident->getSpace());
             }
 
             if (!empty($allergenId)) {
