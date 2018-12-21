@@ -41,17 +41,18 @@ class ApartmentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id              The unique identifier of the apartment
-     * @apiSuccess {String}  name            The name of the apartment
-     * @apiSuccess {String}  description     The description time of the apartment
-     * @apiSuccess {String}  shorthand       The shorthand time of the apartment
-     * @apiSuccess {String}  phone           The phone time of the apartment
-     * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address         The address time of the apartment
-     * @apiSuccess {String}  license         The license time of the apartment
-     * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     capacity        The capacity time of the apartment
-     * @apiSuccess {Object}  space           The space of the apartment
+     * @apiSuccess {Int}     id               The unique identifier of the apartment
+     * @apiSuccess {String}  name             The name of the apartment
+     * @apiSuccess {String}  description      The description time of the apartment
+     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
+     * @apiSuccess {String}  phone            The phone time of the apartment
+     * @apiSuccess {String}  fax              The fax time of the apartment
+     * @apiSuccess {String}  address          The address time of the apartment
+     * @apiSuccess {String}  license          The license time of the apartment
+     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
+     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
+     * @apiSuccess {Int}     capacity         The capacity time of the apartment
+     * @apiSuccess {Object}  space            The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -70,6 +71,7 @@ class ApartmentController extends BaseController
      *                  "fax": "(916) 729-9204",
      *                  "address": "Auburn Oaks",
      *                  "license": "347005555",
+     *                  "license_capacity": 48,
      *                  "capacity": 48,
      *                  "space": "alms",
      *                  "csz_str": "Verdi CA, 89439"
@@ -140,17 +142,18 @@ class ApartmentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id              The unique identifier of the apartment
-     * @apiSuccess {String}  name            The name of the apartment
-     * @apiSuccess {String}  description     The description time of the apartment
-     * @apiSuccess {String}  shorthand       The shorthand time of the apartment
-     * @apiSuccess {String}  phone           The phone time of the apartment
-     * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address         The address time of the apartment
-     * @apiSuccess {String}  license         The license time of the apartment
-     * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     capacity        The capacity time of the apartment
-     * @apiSuccess {Object}  space           The space of the apartment
+     * @apiSuccess {Int}     id               The unique identifier of the apartment
+     * @apiSuccess {String}  name             The name of the apartment
+     * @apiSuccess {String}  description      The description time of the apartment
+     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
+     * @apiSuccess {String}  phone            The phone time of the apartment
+     * @apiSuccess {String}  fax              The fax time of the apartment
+     * @apiSuccess {String}  address          The address time of the apartment
+     * @apiSuccess {String}  license          The license time of the apartment
+     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
+     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
+     * @apiSuccess {Int}     capacity         The capacity time of the apartment
+     * @apiSuccess {Object}  space            The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -175,6 +178,7 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
+     *                  "license_capacity": 48,
      *                  "capacity": 48,
      *                  "space": {
      *                      "id": 1,
@@ -211,17 +215,18 @@ class ApartmentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiSuccess {Int}     id              The unique identifier of the apartment
-     * @apiSuccess {String}  name            The name of the apartment
-     * @apiSuccess {String}  description     The description time of the apartment
-     * @apiSuccess {String}  shorthand       The shorthand time of the apartment
-     * @apiSuccess {String}  phone           The phone time of the apartment
-     * @apiSuccess {String}  fax             The fax time of the apartment
-     * @apiSuccess {String}  address         The address time of the apartment
-     * @apiSuccess {String}  license         The license time of the apartment
-     * @apiSuccess {Object}  csz             The City State & Zip of the apartment
-     * @apiSuccess {Int}     capacity        The capacity time of the apartment
-     * @apiSuccess {Object}  space           The space of the apartment
+     * @apiSuccess {Int}     id               The unique identifier of the apartment
+     * @apiSuccess {String}  name             The name of the apartment
+     * @apiSuccess {String}  description      The description time of the apartment
+     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
+     * @apiSuccess {String}  phone            The phone time of the apartment
+     * @apiSuccess {String}  fax              The fax time of the apartment
+     * @apiSuccess {String}  address          The address time of the apartment
+     * @apiSuccess {String}  license          The license time of the apartment
+     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
+     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
+     * @apiSuccess {Int}     capacity         The capacity time of the apartment
+     * @apiSuccess {Object}  space            The space of the apartment
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -241,6 +246,7 @@ class ApartmentController extends BaseController
      *                      "zip_main": "89439",
      *                      "city": "Verdi"
      *                  },
+     *                  "license_capacity": 48,
      *                  "capacity": 48,
      *                  "space": {
      *                      "id": 1,
@@ -275,16 +281,17 @@ class ApartmentController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  name            The name of the apartment
-     * @apiParam {String}  [description]   The description of the apartment
-     * @apiParam {String}  shorthand       The shorthand of the apartment
-     * @apiParam {String}  [phone]         The phone of the apartment
-     * @apiParam {String}  [fax]           The fax of the apartment
-     * @apiParam {String}  address         The address of the apartment
-     * @apiParam {String}  [license]       The license of the apartment
-     * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     capacity        The capacity of the apartment
-     * @apiParam {Int}     space_id        The unique identifier of the space
+     * @apiParam {String}  name             The name of the apartment
+     * @apiParam {String}  [description]    The description of the apartment
+     * @apiParam {String}  shorthand        The shorthand of the apartment
+     * @apiParam {String}  [phone]          The phone of the apartment
+     * @apiParam {String}  [fax]            The fax of the apartment
+     * @apiParam {String}  address          The address of the apartment
+     * @apiParam {String}  [license]        The license of the apartment
+     * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
+     * @apiParam {Int}     license_capacity The license capacity of the apartment
+     * @apiParam {Int}     capacity         The capacity of the apartment
+     * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -296,6 +303,7 @@ class ApartmentController extends BaseController
      *          "address": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
+     *          "license_capacity": 48,
      *          "capacity": 48,
      *          "space_id": 1
      *     }
@@ -331,6 +339,7 @@ class ApartmentController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
+                'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
                 'space_id' => $request->get('space_id')
             ]
@@ -351,16 +360,17 @@ class ApartmentController extends BaseController
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {String}  name            The name of the apartment
-     * @apiParam {String}  [description]   The description of the apartment
-     * @apiParam {String}  shorthand       The shorthand of the apartment
-     * @apiParam {String}  [phone]         The phone of the apartment
-     * @apiParam {String}  [fax]           The fax of the apartment
-     * @apiParam {String}  address         The address of the apartment
-     * @apiParam {String}  [license]       The license of the apartment
-     * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     capacity        The capacity of the apartment
-     * @apiParam {Int}     space_id        The unique identifier of the space
+     * @apiParam {String}  name             The name of the apartment
+     * @apiParam {String}  [description]    The description of the apartment
+     * @apiParam {String}  shorthand        The shorthand of the apartment
+     * @apiParam {String}  [phone]          The phone of the apartment
+     * @apiParam {String}  [fax]            The fax of the apartment
+     * @apiParam {String}  address          The address of the apartment
+     * @apiParam {String}  [license]        The license of the apartment
+     * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
+     * @apiParam {Int}     license_capacity The license capacity of the apartment
+     * @apiParam {Int}     capacity         The capacity of the apartment
+     * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -372,6 +382,7 @@ class ApartmentController extends BaseController
      *          "address": "Auburn Oaks",
      *          "license": "347005555",
      *          "csz_id": 1,
+     *          "license_capacity": 48,
      *          "capacity": 48,
      *          "space_id": 1
      *     }
@@ -409,6 +420,7 @@ class ApartmentController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
+                'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
                 'space_id' => $request->get('space_id')
             ]

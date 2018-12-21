@@ -6,6 +6,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -26,6 +27,7 @@ use JMS\Serializer\Annotation as Serializer;
  *          {"fax", "string", true, true, "f.fax"},
  *          {"address", "string", true, true, "f.address"},
  *          {"license", "string", true, true, "f.license"},
+ *          {"license_capacity", "string", true, true, "f.licenseCapacity"},
  *          {"capacity", "string", true, true, "f.capacity"},
  *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
  *          {"space", "string", true, true, "s.name"}
@@ -176,6 +178,19 @@ class Facility
      *      message="The value should be numeric",
      *      groups={"api_admin_facility_add", "api_admin_facility_edit"}
      * )
+     * @ORM\Column(name="license_capacity", type="integer")
+     * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
+     */
+    private $licenseCapacity;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={"api_admin_facility_add", "api_admin_facility_edit"})
+     * @Assert\Regex(
+     *      pattern="/(^[1-9][0-9]*$)/",
+     *      message="The value should be numeric",
+     *      groups={"api_admin_facility_add", "api_admin_facility_edit"}
+     * )
      * @ORM\Column(name="capacity", type="integer")
      * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
      */
@@ -299,6 +314,18 @@ class Facility
         return $this;
     }
 
+    public function getLicenseCapacity(): ?int
+    {
+        return $this->licenseCapacity;
+    }
+
+    public function setLicenseCapacity($licenseCapacity): self
+    {
+        $this->licenseCapacity = $licenseCapacity;
+
+        return $this;
+    }
+
     public function getCapacity(): ?int
     {
         return $this->capacity;
@@ -367,5 +394,21 @@ class Facility
         }
 
         return $occupation;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={"api_admin_facility_add", "api_admin_facility_edit"})
+     */
+    public function areCapacityValid(ExecutionContextInterface $context): void
+    {
+        $licenseCapacity = $this->getLicenseCapacity();
+        $capacity = $this->getCapacity();
+
+        if ($capacity > $licenseCapacity) {
+            $context->buildViolation('The capacity "'.$capacity.'" should be less than license capacity "'.$licenseCapacity.'".')
+                ->atPath('capacity')
+                ->addViolation();
+        }
     }
 }
