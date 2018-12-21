@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Diagnosis;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,6 +22,12 @@ class DiagnosisRepository extends EntityRepository
     {
         $queryBuilder
             ->from(Diagnosis::class, 'd')
+            ->leftJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = d.space'
+            )
             ->groupBy('d.id');
     }
 

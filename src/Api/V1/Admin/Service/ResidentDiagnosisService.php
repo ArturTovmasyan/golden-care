@@ -98,6 +98,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
                 $diagnosis->setTitle($newDiagnosisTitle);
                 $diagnosis->setAcronym($newDiagnosisAcronym);
                 $diagnosis->setDescription($newDiagnosisDescription);
+                $diagnosis->setSpace($resident->getSpace());
             }
 
             if (!empty($diagnosisId)) {
@@ -177,6 +178,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
                 $diagnosis->setTitle($newDiagnosisTitle);
                 $diagnosis->setAcronym($newDiagnosisAcronym);
                 $diagnosis->setDescription($newDiagnosisDescription);
+                $diagnosis->setSpace($resident->getSpace());
             }
 
             if (!empty($diagnosisId)) {

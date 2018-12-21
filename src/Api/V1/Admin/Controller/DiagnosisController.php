@@ -45,6 +45,7 @@ class DiagnosisController extends BaseController
      * @apiSuccess {String}  title         The title of the diagnosis
      * @apiSuccess {String}  acronym       The acronym time of the diagnosis
      * @apiSuccess {String}  description   The description time of the diagnosis
+     * @apiSuccess {Object}  space         The space of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -58,7 +59,8 @@ class DiagnosisController extends BaseController
      *                  "id": 1,
      *                  "title": "High Blood Pressure",
      *                  "acronym": "HBP",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": "alms"
      *              }
      *          ]
      *     }
@@ -130,6 +132,7 @@ class DiagnosisController extends BaseController
      * @apiSuccess {String}  title         The title of the diagnosis
      * @apiSuccess {String}  acronym       The acronym time of the diagnosis
      * @apiSuccess {String}  description   The description time of the diagnosis
+     * @apiSuccess {Object}  space         The space of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -143,7 +146,11 @@ class DiagnosisController extends BaseController
      *                  "id": 1,
      *                  "title": "High Blood Pressure",
      *                  "acronym": "HBP",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *              }
      *          ]
      *     }
@@ -179,6 +186,7 @@ class DiagnosisController extends BaseController
      * @apiSuccess {String}  title         The title of the diagnosis
      * @apiSuccess {String}  acronym       The acronym time of the diagnosis
      * @apiSuccess {String}  description   The description time of the diagnosis
+     * @apiSuccess {Object}  space         The space of the diagnosis
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -187,7 +195,11 @@ class DiagnosisController extends BaseController
      *                  "id": 1,
      *                  "title": "High Blood Pressure",
      *                  "acronym": "HBP",
-     *                  "description": "some description"
+     *                  "description": "some description",
+     *                  "space": {
+     *                      "id": 1,
+     *                      "name": "alms"
+     *                  }
      *          }
      *     }
      *
@@ -220,12 +232,14 @@ class DiagnosisController extends BaseController
      * @apiParam {String}  title           The title of the diagnosis
      * @apiParam {String}  [acronym]       The acronym of the diagnosis
      * @apiParam {String}  [description]   The description of the diagnosis
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "High Blood Pressure",
      *         "acronym": "HBP",
-     *         "description": "some description"
+     *         "description": "some description",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -253,7 +267,8 @@ class DiagnosisController extends BaseController
             [
                 'title' => $request->get('title'),
                 'acronym' => $request->get('acronym') ?? '',
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 
@@ -275,12 +290,14 @@ class DiagnosisController extends BaseController
      * @apiParam {String}  title          The title of the diagnosis
      * @apiParam {String}  [acronym]      The acronym of the diagnosis
      * @apiParam {String}  [description]  The description of the diagnosis
+     * @apiParam {Int}     space_id        The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
      *     {
      *         "title": "High Blood Pressure",
      *         "acronym": "HBP",
-     *         "description": "some description"
+     *         "description": "some description",
+     *         "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -310,7 +327,8 @@ class DiagnosisController extends BaseController
             [
                 'title' => $request->get('title'),
                 'acronym' => $request->get('acronym') ?? '',
-                'description' => $request->get('description') ?? ''
+                'description' => $request->get('description') ?? '',
+                'space_id' => $request->get('space_id')
             ]
         );
 

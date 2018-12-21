@@ -3,8 +3,10 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\DiagnosisNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Diagnosis;
+use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,10 +48,25 @@ class DiagnosisService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $diagnosis = new Diagnosis();
             $diagnosis->setTitle($params['title']);
             $diagnosis->setAcronym($params['acronym']);
             $diagnosis->setDescription($params['description']);
+            $diagnosis->setSpace($space);
 
             $this->validate($diagnosis, null, ['api_admin_diagnosis_add']);
 
@@ -81,9 +98,24 @@ class DiagnosisService extends BaseService implements IGridService
                 throw new DiagnosisNotFoundException();
             }
 
+            $spaceId = $params['space_id'] ?? 0;
+
+            $space = null;
+
+            if ($spaceId && $spaceId > 0) {
+                /** @var Space $space */
+                $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
+                }
+            }
+
             $entity->setTitle($params['title']);
             $entity->setAcronym($params['acronym']);
             $entity->setDescription($params['description']);
+            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_diagnosis_edit']);
 
