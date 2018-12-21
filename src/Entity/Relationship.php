@@ -13,7 +13,15 @@ use JMS\Serializer\Annotation\Groups;
  *
  * @ORM\Table(name="tbl_relationship")
  * @ORM\Entity(repositoryClass="App\Repository\RelationshipRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
+ * @UniqueEntity(
+ *     fields="title",
+ *     message="Sorry, this title is already in use.",
+ *     groups={
+ *          "api_admin_relationship_add",
+ *          "api_admin_relationship_edit"
+ *     }
+ * )
+ *
  * @Grid(
  *     api_admin_relationship_grid={
  *          {"id", "number", true, true, "r.id"},
