@@ -9,14 +9,10 @@
             {% for group, resident in residentsByGroup %}
 
                 <div class="page"></div>
-                <div>
-                    <div style="float: left">
-                        <div style="height: 8px;"></div>
-                        <b style="font-size: 20px !important">Meal&nbsp;Monitor</b>
-                        <p style="margin-bottom: 5px;"></p>
-                        <p style="font-size: 14px !important; margin-bottom: 3px; padding-bottom: 0;">{{ resident['name'] }}</p>
-                    </div>
-                    <div style="clear: both"></div>
+                <div style="text-align: left; margin-bottom: 15px;">
+                    <div style="height: 8px;"></div>
+                    <b style="font-size: 20px !important">Meal&nbsp;Monitor</b>
+                    <p style="font-size: 14px !important; margin: 15px 0; padding-bottom: 0;">{{ resident['name'] }}</p>
                 </div>
 
                 {% set i = 0 %}
@@ -25,7 +21,7 @@
                         {% if i == 0 %}
                             <thead style="margin: 0; padding: 0;">
                                 <tr style="">
-                                    <td colspan="9" style="text-align: left; border: none;"><b style="font-size: 16px !important; line-height: 1px;">Group {{ group }}</b></td>
+                                    <td colspan="9" style="text-align: left; border: none; padding-bottom: 10px"><b style="font-size: 16px !important; line-height: 1px;">Group {{ group }}</b></td>
                                 </tr>
                                 <tr style="margin: 0; padding: 0;">
                                     <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;text-align: left; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">Date:</b></td>
