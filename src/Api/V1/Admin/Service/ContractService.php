@@ -406,7 +406,7 @@ class ContractService extends BaseService implements IGridService
             //transfer mode
             if (!empty($params['option'])) {
                 /** @var ContractAction $action */
-                $action = $this->em->getRepository(ContractAction::class)->getDataByResidentId($id);
+                $action = $this->em->getRepository(ContractAction::class)->getActiveByResident($id);
 
                 if ($action === null) {
                     throw new ContractActionNotFoundException();
