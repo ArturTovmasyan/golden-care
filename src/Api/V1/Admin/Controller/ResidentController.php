@@ -536,11 +536,43 @@ class ResidentController extends BaseController
      *
      * @apiParam {Int}     type      Strategy type of the resident
      * @apiParam {Int}     move_id   The unique identifier where the resident to move
+     * @apiParam {Array}   option    The option data where the resident to transfer
      *
      * @apiParamExample {json} Sample Response:
      *     {
      *          "type": "1",
      *          "move_id": "1"
+     *     }
+     * @apiParamExample {json} Facility Option Request:
+     *     {
+     *          "option": {
+     *              "dining_room_id": 1,
+     *              "bed_id": 1,
+     *              "dnr": 1,
+     *              "polst": 1
+     *              "ambulatory": 1,
+     *              "care_group": 5,
+     *              "care_level_id": 1
+     *          }
+     *     }
+     * @apiParamExample {json} Apartment Option Request:
+     *     {
+     *          "option": {
+     *              "bed_id": 1,
+     *          }
+     *     }
+     * @apiParamExample {json} Region Option Request:
+     *     {
+     *          "option": {
+     *              "region_id": 1,
+     *              "csz_id": 1,
+     *              "street_address": "7952 Old Auburn Road"
+     *              "dnr": 1,
+     *              "polst": 1,
+     *              "ambulatory": 1,
+     *              "care_group": 5,
+     *              "care_level": 1
+     *          }
      *     }
      *
      * @apiSuccessExample {json} Sample Response:
@@ -572,6 +604,7 @@ class ResidentController extends BaseController
             [
                 'type'    => $request->get('type'),
                 'move_id' => $request->get('move_id'),
+                'option'  => $request->get('option')
             ]
         );
 

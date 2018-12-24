@@ -134,6 +134,28 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param $id
+     * @return mixed
+     */
+    public function getDataByResidentId($id)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->select('ca, c')
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->setParameter('id', $id)
+            ->setParameter('state', ContractState::ACTIVE);
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $type
      * @param $id
      * @return mixed

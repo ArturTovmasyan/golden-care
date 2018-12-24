@@ -276,7 +276,7 @@ class ResidentContractController extends BaseController
      * @apiParam {Int}     period          The type of the contract
      * @apiParam {Int}     type            The type of the contract
      * @apiParam {String}  start           The start date of the contract
-     * @apiParam {Array}  option          The option data of the contract
+     * @apiParam {Array}   option          The option data of the contract
      *
      * @apiParamExample {json} Facility Option Request:
      *     {
@@ -349,7 +349,7 @@ class ResidentContractController extends BaseController
                 'period' => $request->get('period'),
                 'type' => $request->get('type'),
                 'start' => $request->get('start'),
-                'option'        => $request->get('option')
+                'option' => $request->get('option')
             ]
         );
 
@@ -372,7 +372,7 @@ class ResidentContractController extends BaseController
      * @apiParam {Int}     period          The type of the contract
      * @apiParam {String}  start           The start date of the contract
      * @apiParam {String}  end             The end date of the contract
-     * @apiParam {Array}  option          The option data of the contract
+     * @apiParam {Array}   option          The option data of the contract
      *
      * @apiParamExample {json} Facility Option Request:
      *     {
@@ -450,7 +450,7 @@ class ResidentContractController extends BaseController
                 'period' => $request->get('period'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
-                'option'        => $request->get('option')
+                'option' => $request->get('option')
             ]
         );
 
