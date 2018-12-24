@@ -61,6 +61,7 @@ class MedicationRepository extends EntityRepository
                     r.id as residentId,
                     p.firstName as physicianFirstName,
                     p.lastName as physicianLastName,
+                    p.officePhone as physicianOfficePhone,
                     rm.prescriptionNumber as prescriptionNumber,
                     rm.treatment as medicationTreatment,
                     rm.prn as medicationPrn,

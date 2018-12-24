@@ -1457,6 +1457,7 @@ class ResidentRepository extends EntityRepository
                     r.firstName as firstName, 
                     r.lastName as lastName,
                     c.type as type,
+                    ca.dnr as dnr,
                     r.birthday as birthday,
                     cro.address as address,
                     sal.title as salutation, 
@@ -1509,11 +1510,14 @@ class ResidentRepository extends EntityRepository
                     r.lastName as lastName,
                     r.birthday as birthday,
                     c.type as type,
+                    ca.dnr as dnr,
                     sal.title as salutation, 
                     f.id as typeId,
                     f.name as typeName,
                     f.address as address,
-                    f.license as license
+                    f.license as license,
+                    fr.number as roomNumber,
+                    fb.number as bedNumber
                 ')
                 ->innerJoin(
                     Contract::class,

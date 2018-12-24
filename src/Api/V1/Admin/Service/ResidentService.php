@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Allergen;
 use App\Entity\Facility;
 use App\Entity\FacilityRoom;
 use App\Entity\Medication;
@@ -23,6 +24,7 @@ use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
+use App\Model\Report\MedicationChart;
 use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
@@ -751,6 +753,42 @@ class ResidentService extends BaseService implements IGridService
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return MedicationChart
+     */
+    public function getMedicationChartReport(Request $request)
+    {
+        $type       = $request->get('type') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        $residents     = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, false, $residentId);
+        $residentIds   = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[]                  = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
+        $allergens   = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
+
+        $report = new MedicationChart();
+        $report->setResidents($residents);
+        $report->setMedications($medications);
+        $report->setAllergens($allergens);
+
+        //dump($report->getResidents());
+        //dump($report->getMedications());exit;
 
         return $report;
     }
