@@ -113,6 +113,15 @@ form:
       parameters:
         group:
           select_all: true
+    medication-chart:
+      service: App\Api\V1\Admin\Service\ResidentService::getMedicationChartReport
+      title: 'Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
+      show_in_list: true
+      formats: ['pdf']
+      template: 'medication-chart'
+      parameters:
+        resident:
+          select_all: true
     medication-list-resident:
         service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
         title: 'Medications List Selected Resident : Medications list for selected resident'
@@ -120,7 +129,7 @@ form:
         formats: ['pdf']
         template: 'medication-list'
         parameters:
-            group:
+            resident:
                 select_all: true
     medication-list-all:
         service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
@@ -128,15 +137,6 @@ form:
         show_in_list: true
         formats: ['pdf']
         template: 'medication-list'
-        parameters:
-            group:
-                select_all: true
-    medication-chart:
-        service: App\Api\V1\Admin\Service\ResidentService::getMedicationChartReport
-        title: 'Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
-        show_in_list: true
-        formats: ['pdf']
-        template: 'medication-chart'
         parameters:
             group:
                 select_all: true
