@@ -20,26 +20,13 @@ class MedicationChart extends Base
     private $residents = [];
 
     /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
      * MealMonitor constructor.
      */
     public function __construct()
     {
-        $this->options = [
-            'orientation'  => 'Landscape'
-        ];
-    }
+        parent::__construct();
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        $this->addOption('orientation', self::ORIENTATION_LANDSCAPE);
     }
 
     /**

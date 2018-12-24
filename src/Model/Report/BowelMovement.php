@@ -9,32 +9,23 @@ class BowelMovement extends Base
      */
     private $residents = [];
 
-    private $options = [];
-
     /**
      * BowelMovement constructor.
      */
     public function __construct()
     {
-        $this->options = [
-            'footer-spacing' => 6,
-            'footer-left'    => '_________________________________________________________________
+        parent::__construct();
+
+        $this
+            ->addOption('footer-spacing', 6)
+            ->addOption('footer-left', '_________________________________________________________________
 Indicate size of stool
 S=Small  M=Medium  L=Large  N=None
-Ciminocare Reports',
-            'footer-right' => '______________________________________________________________________
+Ciminocare Reports')
+            ->addOption('footer-right', '______________________________________________________________________
 Indicate consistency of stool
 D=Diarrhea or Loose   B=Bloody or Dark
-Report page [page] of [topage] - ' . date('\ m/d/Y ')
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+Report page [page] of [topage] - ' . date('\ m/d/Y '));
     }
 
     /**

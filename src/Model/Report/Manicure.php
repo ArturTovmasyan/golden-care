@@ -10,14 +10,18 @@ class Manicure extends Base
     private $residents = [];
 
     /**
-     * @var array
+     * Manicure constructor.
      */
-    private $options = [
-        'footer-spacing' => 4,
-        'footer-center' => ' _________________________________________________________________________________________________________________________________________
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this
+            ->addOption('footer-spacing', 4)
+            ->addOption('footer-center', ' _________________________________________________________________________________________________________________________________________
 NP = NEW POLISH      F = FILE\TRIM      R = REFUSED      O = OTHER (please specify)
-                                                    '
-    ];
+                                                    ');
+    }
 
     /**
      * @return mixed
@@ -25,14 +29,6 @@ NP = NEW POLISH      F = FILE\TRIM      R = REFUSED      O = OTHER (please speci
     public function getResidents()
     {
         return $this->residents;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 
     /**

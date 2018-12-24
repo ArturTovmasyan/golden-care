@@ -567,11 +567,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getMealMonitorInfo($type, $typeId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getMealMonitorInfo($type, $typeId);
 
         $report = new MealMonitor();
         $report->setResidents($residents);
@@ -601,11 +597,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($type, $typeId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($type, $typeId);
 
         $report = new DietaryRestriction();
         $report->setResidents($residents);
@@ -635,11 +627,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getNightActivityInfo($type, $typeId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getNightActivityInfo($type, $typeId);
 
         $report = new NightActivity();
         $report->setResidents($residents);
@@ -669,11 +657,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getRoomAuditInfo($type, $typeId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getRoomAuditInfo($type, $typeId);
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
@@ -705,11 +689,7 @@ class ResidentService extends BaseService implements IGridService
             throw new ParameterNotFoundException('type_id, all');
         }
 
-        try {
-            $residents = $this->em->getRepository(Resident::class)->getShowerSkinInspectionInfo($type, $typeId, $residentId);
-        } catch (\Exception $e) {
-            $residents = [];
-        }
+        $residents = $this->em->getRepository(Resident::class)->getShowerSkinInspectionInfo($type, $typeId, $residentId);
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);

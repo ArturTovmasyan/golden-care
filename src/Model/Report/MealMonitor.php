@@ -10,28 +10,16 @@ class MealMonitor extends Base
     private $residents = [];
 
     /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
      * MealMonitor constructor.
      */
     public function __construct()
     {
-        $this->options = [
-            'orientation'  => 'Landscape',
-            'footer-left'  => 'Ciminocare Reports                    100%          75%          50%',
-            'footer-right' => '<=Less than 50%          *="Other"                    Report page [page] of [topage] - ' . date('\ m/d/Y ')
-        ];
-    }
+        parent::__construct();
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        $this
+            ->addOption('orientation', self::ORIENTATION_LANDSCAPE)
+            ->addOption('footer-left', 'Ciminocare Reports                    100%          75%          50%')
+            ->addOption('footer-right', '<=Less than 50%          *="Other"                    Report page [page] of [topage] - ' . date('\ m/d/Y '));
     }
 
     /**

@@ -10,29 +10,17 @@ class NightActivity extends Base
     private $residents = [];
 
     /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
-     * MealMonitor constructor.
+     * NightActivity constructor.
      */
     public function __construct()
     {
-        $this->options = [
-            'footer-spacing' => 5,
-            'footer-center'  => ' _________________________________________________________________________________________________________________________________________
-A = AWAKE      B = TO BATHROOM      DC = DIAPER CHANGE      S = SLEEPING      M = MEDICINE
-                                                    ',
-        ];
-    }
+        parent::__construct();
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        $this
+            ->addOption('footer-spacing', 5)
+            ->addOption('footer-center', ' _________________________________________________________________________________________________________________________________________
+A = AWAKE      B = TO BATHROOM      DC = DIAPER CHANGE      S = SLEEPING      M = MEDICINE
+                                                    ');
     }
 
     /**
