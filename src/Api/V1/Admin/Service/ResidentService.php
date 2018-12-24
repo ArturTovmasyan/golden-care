@@ -28,6 +28,7 @@ use App\Model\Report\MedicationChart;
 use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
+use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\ShowerSkinInspection;
 use Doctrine\ORM\QueryBuilder;
@@ -787,8 +788,33 @@ class ResidentService extends BaseService implements IGridService
         $report->setMedications($medications);
         $report->setAllergens($allergens);
 
-        //dump($report->getResidents());
-        //dump($report->getMedications());exit;
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return ResidentSimpleRoster
+     */
+    public function getSimpleRosterReport(Request $request)
+    {
+        $type       = $request->get('type') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !in_array($type, [\App\Model\Resident::TYPE_FACILITY, \App\Model\Resident::TYPE_REGION])) {
+            throw new InvalidParameterException('type');
+        }
+
+        $residents     = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, false, $residentId);
+        $residentIds   = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[]                  = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $report = new ResidentSimpleRoster();
+        $report->setResidents($residents);
 
         return $report;
     }

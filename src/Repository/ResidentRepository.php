@@ -8,6 +8,7 @@ use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Assessment\Assessment;
 use App\Entity\CareLevel;
+use App\Entity\CityStateZip;
 use App\Entity\Contract;
 use App\Entity\ContractAction;
 use App\Entity\ContractApartmentOption;
@@ -1460,6 +1461,9 @@ class ResidentRepository extends EntityRepository
                     ca.dnr as dnr,
                     r.birthday as birthday,
                     cro.address as address,
+                    csz.city as city,
+                    csz.state as state,
+                    csz.zip as zip,
                     sal.title as salutation, 
                     reg.id as typeId,
                     reg.name as typeName
@@ -1494,6 +1498,12 @@ class ResidentRepository extends EntityRepository
                     Join::WITH,
                     'r.salutation = sal'
                 )
+                ->innerJoin(
+                    CityStateZip::class,
+                    'csz',
+                    Join::WITH,
+                    'cro.csz = csz'
+                )
                 ->where('ca.state=:state AND ca.end IS NULL')
                 ->setParameter('state', ContractState::ACTIVE);
 
@@ -1517,6 +1527,7 @@ class ResidentRepository extends EntityRepository
                     f.address as address,
                     f.license as license,
                     fr.number as roomNumber,
+                    fr.floor as floor,
                     fb.number as bedNumber
                 ')
                 ->innerJoin(

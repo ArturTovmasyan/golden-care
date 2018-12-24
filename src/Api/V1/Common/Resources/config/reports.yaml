@@ -27,7 +27,7 @@ resident:
         group:
           select_all: true
     simple-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getSimpleRosterReport
       title: 'Simple Roster : Simple list of Residents, sorted by Room Number'
       show_in_list: true
       formats: ['pdf']

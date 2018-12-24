@@ -1,0 +1,90 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.residents %}
+
+        {% for typeId, residentsByFloor in residentsByType %}
+
+            <div class="page"></div>
+
+            <table class="report-table main-table">
+                <thead>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <th colspan="3">
+                            <div style="margin-bottom: 5px;">
+                                <div style="float: left">
+                                    <div style="height: 5px;"></div>
+                                    <b style="font-size: 18px !important">ROSTER&nbsp;SIMPLE</b>
+                                    <p style="margin-bottom: 5px;"></p>
+                                    <b style="font-size: 14px !important">{{ residentsByFloor['data']['name'] }}</b>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </th>
+                    </tr>
+                    {% if type != constant("App\\Model\\Resident::TYPE_REGION") %}
+                        <tr>
+                            <td><b style="width: 200px; text-align: left; font-size: 13px !important;">1st Floor</b></td>
+                            <td><b style="width: 200px; text-align: left; font-size: 13px !important;">2nd Floor</b></td>
+                            <td><b style="width: 200px; text-align: left; font-size: 13px !important;">3rd Floor</b></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 200px; font-size: 13px !important;">
+                                {% if residentsByFloor['floors'][1] is defined %}
+                                    {% for floor, resident in residentsByFloor['floors'][1] %}
+                                        <div style="line-height: 20px;">
+                                            {{ resident['roomNumber'] ~ ' ' ~ resident['bedNumber'] ~ ' ' ~ resident['firstName'] ~ ' ' ~ resident['lastName'] }}<br/>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td style="width: 200px; font-size: 13px !important;">
+                                {% if residentsByFloor['floor'][2] is defined %}
+                                    {% for floor, resident in residentsByFloor['floor'][2] %}
+                                        <div style="line-height: 20px;">
+                                            {{ resident['roomNumber'] ~ ' ' ~ resident['bedNumber'] ~ ' ' ~ resident['firstName'] ~ ' ' ~ resident['lastName'] }}<br/>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td style="width: 200px; font-size: 13px !important;">
+                                {% if residentsByFloor['floor'][3] is defined %}
+                                    {% for floor, resident in residentsByFloor['floor'][3] %}
+                                        <div style="line-height: 20px;">
+                                            {{ resident['roomNumber'] ~ ' ' ~ resident['bedNumber'] ~ ' ' ~ resident['firstName'] ~ ' ' ~ resident['lastName'] }}<br/>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td><b style="width: 200px; text-align: left; font-size: 13px !important;">Resident</b></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 13px !important;">
+                                {% for floor, resident in residentsByFloor['floors'] %}
+                                    <div style="line-height: 20px;">
+                                        {{ resident['firstName'] ~ ' ' ~ resident['lastName'] }}
+                                        {% if resident['address'] is defined and resident['address'] %},&nbsp;{{ resident['address'] }}{% endif %}
+                                        {% if resident['license'] is defined and resident['license'] %},&nbsp;#{{ resident['license'] }}{% endif %}
+                                        {% if resident['city'] is defined and resident['city'] %},&nbsp;{{ resident['city'] }}&nbsp;{{ resident['state'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                                    </div>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+        {% endfor %}
+
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
