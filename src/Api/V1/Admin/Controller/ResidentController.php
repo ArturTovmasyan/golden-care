@@ -614,7 +614,7 @@ class ResidentController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/{type}/{id}/active Get Active Residents
+     * @api {get} /api/v1.0/admin/resident/active/{type}/{id} Get Active Residents
      * @apiVersion 1.0.0
      * @apiName Get Active Residents
      * @apiGroup Admin Residents
@@ -643,7 +643,7 @@ class ResidentController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{type}/{id}/active", requirements={"type"="\d+", "id"="\d+"}, name="api_admin_resident_get_active", methods={"GET"})
+     * @Route("/active/{type}/{id}", requirements={"type"="\d+", "id"="\d+"}, name="api_admin_resident_get_active", methods={"GET"})
      *
      * @param ContractService $contractService
      * @param $type
