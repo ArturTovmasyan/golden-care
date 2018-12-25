@@ -19,7 +19,7 @@ resident:
         resident:
           select_all: true
     detailed-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getDetailedRosterReport
       title: 'Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
       show_in_list: true
       formats: ['pdf']

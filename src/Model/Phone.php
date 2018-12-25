@@ -32,7 +32,7 @@ class Phone
     /**
      * @var array
      */
-    private static $typeNames = [
+    public static $typeNames = [
         self::TYPE_HOME      => 'Home',
         self::TYPE_MOBILE    => 'Mobile',
         self::TYPE_WORK      => 'Work',

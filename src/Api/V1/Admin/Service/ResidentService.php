@@ -16,6 +16,7 @@ use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentPhone;
+use App\Entity\ResponsiblePerson;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\Report\BloodPressureCharting;
@@ -28,6 +29,7 @@ use App\Model\Report\MedicationChart;
 use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
+use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\ShowerSkinInspection;
@@ -803,6 +805,47 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new ResidentSimpleRoster();
         $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return ResidentDetailedRoster
+     */
+    public function getDetailedRosterReport(Request $request)
+    {
+        $all    = (bool) $request->get('all') ?? false;
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, \App\Model\Resident::getTypeValues())) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $residents = $this->em->getRepository(Resident::class)->getResidentDetailedInfo($type, $typeId);
+
+        $residentIds   = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[]                  = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+
+        $report = new ResidentDetailedRoster();
+        $report->setResidents($residents);
+        $report->setResponsiblePersons($responsiblePersons);
 
         return $report;
     }
