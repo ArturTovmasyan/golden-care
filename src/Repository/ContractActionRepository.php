@@ -343,4 +343,80 @@ class ContractActionRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $type
+     * @param id
+     * @return mixed
+     */
+    public function getInactiveResidentsByStrategy($type, $id)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ca.end IS NOT NULL')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type);
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fb.number AS bed_number'
+                    )
+                    ->join('c.contractFacilityOption', 'o')
+                    ->join('ca.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->andWhere('fbrf.id=:id')
+                    ->andWhere('o.state=:state')
+                    ->setParameter('id', $id)
+                    ->setParameter('state', ContractState::TERMINATED);
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'ab.number AS bed_number'
+                    )
+                    ->join('c.contractApartmentOption', 'o')
+                    ->join('ca.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('ab.apartment', 'abra')
+                    ->andWhere('abra.id=:id')
+                    ->andWhere('o.state=:state')
+                    ->setParameter('id', $id)
+                    ->setParameter('state', ContractState::TERMINATED);
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->join('c.contractRegionOption', 'o')
+                    ->join('ca.region', 'r')
+                    ->andWhere('r.id=:id')
+                    ->andWhere('o.state=:state')
+                    ->setParameter('id', $id)
+                    ->setParameter('state', ContractState::TERMINATED);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        $qb
+            ->andWhere('r.id NOT IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
+            ->distinct('r.id');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
