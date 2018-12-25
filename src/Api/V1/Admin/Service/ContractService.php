@@ -563,9 +563,9 @@ class ContractService extends BaseService implements IGridService
 
             $option->setState($state);
 
-            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
-                throw new EndDateNotBeBlankException();
-            }
+//            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+//                throw new EndDateNotBeBlankException();
+//            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -615,9 +615,9 @@ class ContractService extends BaseService implements IGridService
 
             $option->setState($state);
 
-            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
-                throw new EndDateNotBeBlankException();
-            }
+//            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+//                throw new EndDateNotBeBlankException();
+//            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -681,9 +681,9 @@ class ContractService extends BaseService implements IGridService
 
             $option->setState($state);
 
-            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
-                throw new EndDateNotBeBlankException();
-            }
+//            if ($option->getState() === ContractState::TERMINATED && $contract->getEnd() === null) {
+//                throw new EndDateNotBeBlankException();
+//            }
         } else {
             $option->setState(ContractState::ACTIVE);
         }
@@ -713,7 +713,13 @@ class ContractService extends BaseService implements IGridService
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
         $contractAction->setStart($newDateTime);
-        $contractAction->setEnd(null);
+
+        if ($option->getState() === ContractState::TERMINATED) {
+            $contractAction->setEnd($newDateTime);
+        } else {
+            $contractAction->setEnd(null);
+        }
+
         $contractAction->setState($option->getState());
         $contractAction->setFacilityBed($option->getFacilityBed());
         $contractAction->setDnr($option->isDnr());
@@ -749,7 +755,13 @@ class ContractService extends BaseService implements IGridService
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
         $contractAction->setStart($newDateTime);
-        $contractAction->setEnd(null);
+
+        if ($option->getState() === ContractState::TERMINATED) {
+            $contractAction->setEnd($newDateTime);
+        } else {
+            $contractAction->setEnd(null);
+        }
+
         $contractAction->setState($option->getState());
         $contractAction->setApartmentBed($option->getApartmentBed());
 
@@ -780,7 +792,13 @@ class ContractService extends BaseService implements IGridService
         $contractAction = new ContractAction();
         $contractAction->setContract($contract);
         $contractAction->setStart($newDateTime);
-        $contractAction->setEnd(null);
+
+        if ($option->getState() === ContractState::TERMINATED) {
+            $contractAction->setEnd($newDateTime);
+        } else {
+            $contractAction->setEnd(null);
+        }
+
         $contractAction->setState($option->getState());
         $contractAction->setRegion($option->getRegion());
         $contractAction->setCsz($option->getCsz());
