@@ -1599,4 +1599,26 @@ class ResidentRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getNoContractResidents()
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->leftJoin('r.salutation', 'rs')
+            ->where('r.id NOT IN (SELECT cr.id FROM App:Contract c JOIN c.resident cr)');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

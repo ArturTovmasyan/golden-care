@@ -659,4 +659,45 @@ class ResidentController extends BaseController
             ['api_admin_resident_get_active']
         );
     }
+
+    /**
+     * @api {get} /api/v1.0/admin/resident/no-contract Get Residents No Contract
+     * @apiVersion 1.0.0
+     * @apiName Get Residents No Contract
+     * @apiGroup Admin Residents
+     * @apiDescription This function is used to get Residents without contract
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the resident
+     * @apiSuccess {String}   first_name           The firstName of the resident
+     * @apiSuccess {String}   last_name            The lastName of the resident
+     * @apiSuccess {String}   salutation           The salutation of the resident
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                   "id": 4,
+     *                   "first_name": FirstName,
+     *                   "last_name": LastName,
+     *                   "salutation": Mr.
+     *          }
+     *     }
+     *
+     * @Route("/no-contract",  name="api_admin_resident_get_no_contract", methods={"GET"})
+     *
+     * @param ResidentService $residentService
+     * @return JsonResponse
+     */
+    public function getNoContractAction(Request $request, ResidentService $residentService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentService->getNoContractResidents(),
+            ['api_admin_resident_get_no_contract']
+        );
+    }
 }

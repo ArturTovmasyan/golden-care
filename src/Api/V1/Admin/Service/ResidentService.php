@@ -95,6 +95,14 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
+     * @return Resident|null|object
+     */
+    public function getNoContractResidents()
+    {
+        return $this->em->getRepository(Resident::class)->getNoContractResidents();
+    }
+
+    /**
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
