@@ -12,7 +12,17 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_role_add", "api_admin_role_edit", "api_dashboard_role_add", "api_dashboard_role_edit"})
+ * @UniqueEntity(
+ *     fields={"space", "name"},
+ *     errorPath="name",
+ *     message="This name is already in use on that space",
+ *     groups={
+ *          "api_admin_role_add",
+ *          "api_admin_role_edit",
+ *          "api_dashboard_role_add",
+ *          "api_dashboard_role_edit"
+ *     }
+ * )
  * @Grid(
  *     api_admin_role_grid={
  *          {"id", "number", true, true, "r.id"},
@@ -51,7 +61,7 @@ class Role
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string", unique=true, length=255)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Groups({
      *     "api_admin_role_grid",
      *     "api_admin_role_list",

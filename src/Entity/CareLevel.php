@@ -14,7 +14,15 @@ use App\Annotation\Grid;
  * Class CareLevel
  *
  * @ORM\Entity(repositoryClass="App\Repository\CareLevelRepository")
- * @UniqueEntity("title", groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_care_level_add",
+ *          "api_admin_care_level_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_care_level")
  * @Grid(
  *     api_admin_care_level_grid={
@@ -58,7 +66,7 @@ class CareLevel
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
      * )
-     * @ORM\Column(name="title", type="string", unique=true, length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_care_level_grid",
      *     "api_admin_care_level_list",

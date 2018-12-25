@@ -14,7 +14,15 @@ use App\Annotation\Grid;
  * Class Salutation
  *
  * @ORM\Entity(repositoryClass="App\Repository\SalutationRepository")
- * @UniqueEntity("title", groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_salutation_add",
+ *          "api_admin_salutation_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_salutation")
  * @Grid(
  *     api_admin_salutation_grid={
@@ -58,7 +66,7 @@ class Salutation
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_salutation_add", "api_admin_salutation_edit"}
      * )
-     * @ORM\Column(name="title", type="string", unique=true, length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_salutation_grid",
      *     "api_admin_salutation_list",

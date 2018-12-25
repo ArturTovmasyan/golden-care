@@ -14,14 +14,15 @@ use JMS\Serializer\Annotation\Groups;
  * @ORM\Table(name="tbl_medication")
  * @ORM\Entity(repositoryClass="App\Repository\MedicationRepository")
  * @UniqueEntity(
- *     fields="title",
- *     message="Sorry, this title is already in use.",
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
  *     groups={
  *          "api_admin_medication_add",
  *          "api_admin_medication_edit",
  *          "api_admin_resident_medication_allergy_add",
  *          "api_admin_resident_medication_allergy_edit"
- *      }
+ *     }
  * )
  * @Grid(
  *     api_admin_medication_grid={
