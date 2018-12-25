@@ -76,7 +76,7 @@ class ApartmentRoomService extends BaseService implements IGridService
                     }
                 }
             } else {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_APARTMENT, $bedIds);
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_APARTMENT, $bedIds);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -118,7 +118,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             if ($beds !== null) {
                 $ids = array_map(function($item){return $item->getId();} , $beds->toArray());
 
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidents(ContractType::TYPE_APARTMENT, $ids);
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_APARTMENT, $ids);
 
                 $actions = [];
                 if (!empty($contractActions)) {

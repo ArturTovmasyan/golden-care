@@ -184,7 +184,7 @@ class ContractActionRepository extends EntityRepository
      * @param $ids
      * @return mixed
      */
-    public function getResidents($type, $ids)
+    public function getResidentsByBeds($type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -270,6 +270,70 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.region', 'r')
                     ->andWhere('r.id IN (:ids)')
                     ->setParameter('ids', $ids);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $type
+     * @param id
+     * @return mixed
+     */
+    public function getActiveResidentsByStrategy($type, $id)
+    {
+        $qb = $this->createQueryBuilder('ca');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->join('ca.contract', 'c')
+            ->join('c.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type=:type')
+            ->setParameter('type', $type)
+            ->setParameter('state', ContractState::ACTIVE);
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fb.number AS bed_number'
+                    )
+                    ->join('ca.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->andWhere('fbrf.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'ab.number AS bed_number'
+                    )
+                    ->join('ca.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('ab.apartment', 'abra')
+                    ->andWhere('abra.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->join('ca.region', 'r')
+                    ->andWhere('r.id=:id')
+                    ->setParameter('id', $id);
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
