@@ -169,6 +169,7 @@ form:
       title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number.'
       show_in_list: true
       formats: ['pdf']
+      template: 'shower-skin-inspection'
       parameters:
         group:
           select_all: true

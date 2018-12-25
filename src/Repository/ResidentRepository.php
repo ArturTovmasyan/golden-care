@@ -1272,8 +1272,6 @@ class ResidentRepository extends EntityRepository
      * @param bool $typeId
      * @param bool $residentId
      * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getShowerSkinInspectionInfo($type, $typeId = false, $residentId = false)
     {
@@ -1288,8 +1286,6 @@ class ResidentRepository extends EntityRepository
             if (!$resident) {
                 throw new ResidentNotFoundException();
             }
-
-            $type = $resident->getType();
         }
 
         if ($type == \App\Model\Resident::TYPE_REGION) {
