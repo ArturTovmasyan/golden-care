@@ -461,6 +461,7 @@ class ContractService extends BaseService implements IGridService
                 $contract->setStart($newDateTime);
 
                 $action->setEnd($newDateTime);
+                $action->setState(ContractState::TERMINATED);
 
                 $this->validate($contract, null, ['api_admin_contract_add']);
                 $this->em->persist($contract);

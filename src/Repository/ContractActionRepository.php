@@ -355,6 +355,7 @@ class ContractActionRepository extends EntityRepository
 
         $qb
             ->select(
+                'MAX(ca.id) AS HIDDEN caId',
                 'r.id AS id',
                 'r.firstName AS first_name',
                 'r.lastName AS last_name',
@@ -412,6 +413,7 @@ class ContractActionRepository extends EntityRepository
         }
 
         $qb
+            ->andWhere('ca.id IN (SELECT MAX(lca.id) FROM App:ContractAction lca JOIN lca.contract lc JOIN lc.resident lr WHERE lca.state='. ContractState::TERMINATED .' AND lca.end IS NOT NULL GROUP BY lr.id)')
             ->andWhere('r.id NOT IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
             ->groupBy('r.id');
 
