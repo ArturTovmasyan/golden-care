@@ -325,14 +325,14 @@ class ContractActionRepository extends EntityRepository
                     )
                     ->join('ca.apartmentBed', 'ab')
                     ->join('ab.room', 'abr')
-                    ->join('ab.apartment', 'abra')
+                    ->join('abr.apartment', 'abra')
                     ->andWhere('abra.id=:id')
                     ->setParameter('id', $id);
                 break;
             case ContractType::TYPE_REGION:
                 $qb
-                    ->join('ca.region', 'r')
-                    ->andWhere('r.id=:id')
+                    ->join('ca.region', 'reg')
+                    ->andWhere('reg.id=:id')
                     ->setParameter('id', $id);
                 break;
             default:
@@ -393,7 +393,7 @@ class ContractActionRepository extends EntityRepository
                     ->join('c.contractApartmentOption', 'o')
                     ->join('o.apartmentBed', 'ab')
                     ->join('ab.room', 'abr')
-                    ->join('ab.apartment', 'abra')
+                    ->join('abr.apartment', 'abra')
                     ->andWhere('abra.id=:id')
                     ->andWhere('o.state=:state')
                     ->setParameter('id', $id)
@@ -402,8 +402,8 @@ class ContractActionRepository extends EntityRepository
             case ContractType::TYPE_REGION:
                 $qb
                     ->join('c.contractRegionOption', 'o')
-                    ->join('o.region', 'r')
-                    ->andWhere('r.id=:id')
+                    ->join('o.region', 'reg')
+                    ->andWhere('reg.id=:id')
                     ->andWhere('o.state=:state')
                     ->setParameter('id', $id)
                     ->setParameter('state', ContractState::TERMINATED);
