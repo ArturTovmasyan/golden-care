@@ -214,6 +214,7 @@ class BaseController extends Controller
     {
         return $this->respondFile(
             '@api_grid/grid.html.twig',
+            'output',
             'pdf',
             [
                 'title'  => 'Title',
@@ -225,12 +226,13 @@ class BaseController extends Controller
 
     /**
      * @param $template
+     * @param string $actualName
      * @param string $format
      * @param array $params
      * @return PdfResponse|Response
      * @throws \Exception
      */
-    protected function respondFile($template, $format = 'pdf', array $params = [])
+    protected function respondFile($template, $actualName, $format = 'pdf', array $params = [])
     {
         $options = [];
 
@@ -241,18 +243,18 @@ class BaseController extends Controller
         $html = $this->renderView($template, $params);
 
         if ($format == 'pdf') {
-            return new PdfResponse($this->pdf->getOutputFromHtml($html, $options));
+            return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName .'.pdf');
         } elseif($format == 'csv') {
             return new Response($html, Response::HTTP_OK, [
                 'Content-Type'              => 'text/csv',
-                'Content-Disposition'       => 'attachment; filename="output.csv"',
+                'Content-Disposition'       => 'attachment; filename="'. $actualName .'.csv"',
                 'Content-Transfer-Encoding' => 'binary',
                 'Pragma'                    => 'no-cache',
                 'Expires'                   => '0',
             ]);
         }
 
-        throw new \Exception('Support only pdf, other formats coming soon');
+        throw new \Exception('Support only pdf and csv formats');
     }
 
     /**
@@ -275,6 +277,7 @@ class BaseController extends Controller
 
         return $this->respondFile(
             $file,
+            $group . '-' . $alias,
             $request->get('format'),
             ['data' => $report]
         );
