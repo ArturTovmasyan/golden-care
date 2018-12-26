@@ -52,7 +52,7 @@ resident:
           select_all: true
         date: "m/d/Y"
     event-list:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getEventReport
       title: 'Events : List of Residents Events'
       show_in_list: true
       formats: ['pdf', 'csv']

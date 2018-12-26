@@ -1,0 +1,18 @@
+{% for type, residentsByType in data.events %}
+{% for typeId, residentData in residentsByType %}
+{% spaceless %}{{ residentData['name'] }} Events Report: {{ residentData['start'].format("m/d/Y") }}{% if residentData['end'] is not null %} through {{ residentData['end'].format("m/d/Y") }}{% endif %}{% endspaceless %}
+
+
+{% spaceless %}{{ residentData['name'] }} Short Name,Resident Full Name,Date,Event,Value,Note{% endspaceless %}
+        {% for residentId, residentEvents in residentData['data'] %}
+            {% set m = 0 %}
+            {% for event in residentEvents %}
+                {% if m == 0  %}
+
+{% spaceless %}{{ residentData['shorthand'] }},"{{ event['firstName'] ~ ' ' ~ event['lastName'] }}",{% endspaceless %}{% endif %}
+{% spaceless %}{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %},{% if event['definitionTitle'] %}{{ event['definitionTitle'] }}{% else %}N/A{% endif %},{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %}{% if event['endDate'] is not null %} - {{ event['endDate'].format('m/d/Y') }}{% endif %},{% if event['notes'] is not null %}{{ event['notes'] }}{% else %}N/A{% endif %},{% endspaceless %}
+                {% set m = m + 1 %}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}

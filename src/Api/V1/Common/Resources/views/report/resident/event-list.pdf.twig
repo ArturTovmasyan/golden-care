@@ -1,0 +1,63 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% for type, residentsByType in data.events %}
+        {% for typeId, residentData in residentsByType %}
+            <div class="page"></div>
+            <table class="report-table main-table bordered" style="margin-bottom: 10px; text-align: left !important;">
+                <thead>
+                    <tr>
+                        <th colspan="9">
+                            <div style="margin-bottom: 5px;">
+                                <div style="float: left">
+                                    <div style="height: 5px;"></div>
+                                    <b style="font-size: 18px !important">{{ residentData['name'] }}&nbsp;Events&nbsp;Report</b>
+                                    <p style="margin-bottom: 5px;"></p>
+                                    <b style="font-size: 14px !important">{{ residentData['start'].format("m/d/Y") }}&nbsp{% if residentData['end'] is not null %} through&nbsp;{{ residentData['end'].format("m/d/Y") }}{% endif %}</b>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr style="">
+                        <td colspan="9" style=""><b style="font-size: 18px !important;">{{ residentData['shorthand'] }}</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for residentId, residentEvents in residentData['data'] %}
+                        {% set m = 0 %}
+                        {% for event in residentEvents %}
+                            {% if m == 0  %}
+                                <tr class="dividerSecond"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                                <tr style="border: none; margin: 0;">
+                                    <td colspan="4" style="border: none; margin: 0; "><b style="font-size: 14px !important;">{{ event['firstName'] ~ ' ' ~ event['lastName'] }}</b></td>
+                                </tr>
+                                <tr style="margin: 0;">
+                                    <td style="font-size: 13px !important; margin: 0;">
+                                        <div style="float: left; width: 11% !important; margin: 0;">Date</div>
+                                        <div style="float: left; width: 19% !important; margin: 0;">Event&nbsp;type</div>
+                                        <div style="float: left; width: 35% !important; margin: 0;">Value</div>
+                                        <div style="float: left; width: 35% !important; margin: 0;">Note</div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr style="margin: 0;">
+                                <td style="margin: 0;">
+                                    <div style="float: left; width: 11% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %}</b></div>
+                                    <div style="float: left; width: 19% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event['definitionTitle'] %}{{ event['definitionTitle'] }}{% else %}N/A{% endif %}</b></div>
+                                    <div style="float: left; width: 35% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %}{% if event['endDate'] is not null %} - {{ event['endDate'].format('m/d/Y') }}{% endif %}</b></div>
+                                    <div style="float: left; width: 35% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event['notes'] is not null %}{{ event['notes'] }}{% else %}N/A{% endif %}</b></div>
+                                </td>
+                            </tr>
+                            {% set m = m + 1 %}
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

@@ -15,6 +15,7 @@ use App\Entity\FacilityRoom;
 use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Resident;
+use App\Entity\ResidentEvent;
 use App\Entity\ResidentPhone;
 use App\Entity\ResponsiblePerson;
 use App\Entity\Salutation;
@@ -846,6 +847,40 @@ class ResidentService extends BaseService implements IGridService
         $report = new ResidentDetailedRoster();
         $report->setResidents($residents);
         $report->setResponsiblePersons($responsiblePersons);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return ResidentDetailedRoster
+     */
+    public function getEventReport(Request $request)
+    {
+        $type       = $request->get('type');
+        $typeId     = $request->get('type_id') ?? false;
+        $startDate  = $request->get('start_date');
+        $endDate    = $request->get('end_date');
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, \App\Model\Resident::getTypeValues())) {
+            throw new InvalidParameterException('type');
+        }
+
+        list($m1, $d1, $y1) = explode('/', $startDate);
+        list($m2, $d2, $y2) = explode('/', $endDate);
+
+        if (!checkdate($m1, $d1, $y1) || !checkdate($m2, $d2, $y2)) {
+            throw new InvalidParameterException('start_date, end_date');
+        }
+
+        $events = $this->em->getRepository(ResidentEvent::class)->getByPeriodAndType($startDate, $endDate, $type, $typeId);
+
+        $report = new \App\Model\Report\ResidentEvent();
+        $report->setEvents($events);
 
         return $report;
     }
