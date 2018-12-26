@@ -375,7 +375,7 @@ class ContractActionRepository extends EntityRepository
                         'fb.number AS bed_number'
                     )
                     ->join('c.contractFacilityOption', 'o')
-                    ->join('ca.facilityBed', 'fb')
+                    ->join('o.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
                     ->andWhere('fbrf.id=:id')
@@ -390,7 +390,7 @@ class ContractActionRepository extends EntityRepository
                         'ab.number AS bed_number'
                     )
                     ->join('c.contractApartmentOption', 'o')
-                    ->join('ca.apartmentBed', 'ab')
+                    ->join('o.apartmentBed', 'ab')
                     ->join('ab.room', 'abr')
                     ->join('ab.apartment', 'abra')
                     ->andWhere('abra.id=:id')
@@ -401,7 +401,7 @@ class ContractActionRepository extends EntityRepository
             case ContractType::TYPE_REGION:
                 $qb
                     ->join('c.contractRegionOption', 'o')
-                    ->join('ca.region', 'r')
+                    ->join('o.region', 'r')
                     ->andWhere('r.id=:id')
                     ->andWhere('o.state=:state')
                     ->setParameter('id', $id)
@@ -413,7 +413,7 @@ class ContractActionRepository extends EntityRepository
 
         $qb
             ->andWhere('r.id NOT IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
-            ->distinct('r.id');
+            ->groupBy('r.id');
 
         return $qb
             ->getQuery()
