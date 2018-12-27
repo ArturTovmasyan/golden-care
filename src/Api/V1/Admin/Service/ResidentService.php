@@ -853,7 +853,7 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param Request $request
-     * @return ResidentDetailedRoster
+     * @return \App\Model\Report\ResidentEvent
      */
     public function getEventReport(Request $request)
     {
@@ -876,6 +876,9 @@ class ResidentService extends BaseService implements IGridService
         if (!checkdate($m1, $d1, $y1) || !checkdate($m2, $d2, $y2)) {
             throw new InvalidParameterException('start_date, end_date');
         }
+
+        $startDate = \DateTime::createFromFormat('m/d/Y', $startDate);
+        $endDate   = \DateTime::createFromFormat('m/d/Y', $endDate);
 
         $events = $this->em->getRepository(ResidentEvent::class)->getByPeriodAndType($startDate, $endDate, $type, $typeId);
 

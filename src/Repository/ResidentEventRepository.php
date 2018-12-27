@@ -99,7 +99,7 @@ class ResidentEventRepository extends EntityRepository
      * @param bool $typeId
      * @return mixed
      */
-    public function getByPeriodAndType($startDate, $endDate, $type, $typeId = false)
+    public function getByPeriodAndType(\DateTime $startDate, \DateTime $endDate, $type, $typeId = false)
     {
         $queryBuilder = $this->createQueryBuilder('re');
 
@@ -315,17 +315,20 @@ class ResidentEventRepository extends EntityRepository
             }
         }
 
-        $queryBuilder
+        $startDate->setTime(00, 00);
+        $endDate->setTime(23, 59);
+
+        return $queryBuilder
             ->innerJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,
                 'r.salutation = sal'
-            );
-
-        return $queryBuilder
-            ->andWhere('c.type = :type')
+            )
+            ->andWhere('c.type = :type AND re.date >= :startDate AND re.date <= :endDate')
             ->setParameter("type", $type)
+            ->setParameter('startDate', $startDate->format('Y-m-d'))
+            ->setParameter('endDate', $endDate->format('Y-m-d'))
             ->groupBy('re.id')
             ->getQuery()
             ->getResult();
