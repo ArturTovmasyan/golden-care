@@ -43,7 +43,7 @@ resident:
         group:
           select_all: true
     sixty-days-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getSixtyDaysReport
       title: '60 Days Roster : 60 Days Roster Report'
       show_in_list: true
       formats: ['csv']

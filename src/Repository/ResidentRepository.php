@@ -6,8 +6,8 @@ use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
-use App\Entity\Assessment\Assessment;
 use App\Entity\CareLevel;
+use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\CityStateZip;
 use App\Entity\Contract;
 use App\Entity\ContractAction;
@@ -19,17 +19,18 @@ use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
-use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Region;
+use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentDiet;
-use App\Entity\ResidentMedication;
 use App\Entity\ResidentPhysician;
+use App\Entity\ResidentResponsiblePerson;
+use App\Entity\ResponsiblePerson;
+use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\ContractState;
-use App\Model\ContractType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -1856,6 +1857,151 @@ class ResidentRepository extends EntityRepository
             ->where('r.id NOT IN (SELECT cr.id FROM App:Contract c JOIN c.resident cr)');
 
         return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @param $type
+     * @param bool $typeId
+     * @return mixed
+     */
+    public function getResidentContracts(\DateTime $startDate, \DateTime $endDate, $type, $typeId = false)
+    {
+        /**
+         * @var ContractAction $contractAction
+         */
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        if ($type == \App\Model\Resident::TYPE_REGION) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    sal.title as salutation, 
+                    c.type as type,
+                    reg.id as typeId,
+                    reg.name as typeName,
+                    ca.start as startDate,
+                    ca.end as endDate,
+                    cro.careGroup as careGroup,
+                    cl.id as careLevelId,
+                    cl.title as careLevelTitle,
+                    rel.title as relationship,
+                    rp.id as responsiblePersonId,
+                    rp.firstName as responsiblePersonFirstName,
+                    rp.lastName as responsiblePersonLastName,
+                    rp.email as responsiblePersonEmail,
+                    rpp.number as responsiblePersonPhoneNumber,
+                    rpp.type as responsiblePersonPhoneType
+                ')
+                ->innerJoin(Contract::class,'c')
+                ->innerJoin(ContractAction::class,'ca')
+                ->innerJoin(ContractRegionOption::class,'cro')
+                ->innerJoin(Region::class,'reg')
+                ->innerJoin(CareLevel::class,'cl', Join::WITH, 'cro.careLevel = cl')
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE);
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('reg.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+
+            $queryBuilder->groupBy('cro.id');
+        } elseif ($type == \App\Model\Resident::TYPE_APARTMENT) {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    sal.title as salutation, 
+                    c.type as type,
+                    a.id as typeId,
+                    a.name as typeName,
+                    ca.start as startDate,
+                    ca.end as endDate,
+                    rel.title as relationship,
+                    rp.id as responsiblePersonId,
+                    rp.firstName as responsiblePersonFirstName,
+                    rp.lastName as responsiblePersonLastName,
+                    rp.email as responsiblePersonEmail,
+                    rpp.number as responsiblePersonPhoneNumber,
+                    rpp.type as responsiblePersonPhoneType
+                ')
+                ->innerJoin(Contract::class,'c')
+                ->innerJoin(ContractAction::class,'ca')
+                ->innerJoin(ContractApartmentOption::class,'cao')
+                ->innerJoin(ApartmentBed::class,'ab')
+                ->innerJoin(ApartmentRoom::class,'ar')
+                ->innerJoin(Apartment::class,'a')
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE);
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+
+            $queryBuilder->groupBy('cao.id');
+        } else {
+            $queryBuilder
+                ->select('
+                    r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    sal.title as salutation, 
+                    c.type as type,
+                    f.id as typeId,
+                    f.name as typeName,
+                    ca.start as startDate,
+                    ca.end as endDate,
+                    cfo.careGroup as careGroup,
+                    cl.id as careLevelId,
+                    cl.title as careLevelTitle,
+                    rel.title as relationship,
+                    rp.id as responsiblePersonId,
+                    rp.firstName as responsiblePersonFirstName,
+                    rp.lastName as responsiblePersonLastName,
+                    rp.email as responsiblePersonEmail,
+                    rpp.number as responsiblePersonPhoneNumber,
+                    rpp.type as responsiblePersonPhoneType
+                ')
+                ->innerJoin(Contract::class,'c')
+                ->innerJoin(ContractAction::class,'ca')
+                ->innerJoin(ContractFacilityOption::class,'cfo')
+                ->innerJoin(FacilityBed::class,'fb')
+                ->innerJoin(FacilityRoom::class,'fr')
+                ->innerJoin(Facility::class,'f')
+                ->innerJoin(CareLevel::class,'cl', Join::WITH, 'cfo.careLevel = cl')
+                ->where('ca.state=:state AND ca.end IS NULL')
+                ->setParameter('state', ContractState::ACTIVE);
+
+            if ($typeId) {
+                $queryBuilder
+                    ->andWhere('f.id = :id')
+                    ->setParameter('id', $typeId);
+            }
+
+            $queryBuilder->groupBy('cfo.id');
+        }
+
+        return $queryBuilder
+            ->innerJoin(Salutation::class,'sal')
+            ->leftJoin(ResidentResponsiblePerson::class,'rrp', Join::WITH, 'rrp.resident = r')
+            ->leftJoin(ResponsiblePerson::class,'rp', Join::WITH, 'rrp.responsiblePerson = rp')
+            ->leftJoin(Relationship::class,'rel', Join::WITH, 'rrp.relationship = rel')
+            ->leftJoin(ResponsiblePersonPhone::class,'rpp', Join::WITH, 'rpp.responsiblePerson = rp AND rpp.primary = 1')
+            ->andWhere('c.type = :type AND ca.start <= :endDate AND (ca.end IS NULL OR ca.end >= :startDate)')
+            ->setParameter("type", $type)
+            ->setParameter("startDate", $startDate->format('Y-m-d'))
+            ->setParameter("endDate", $endDate->format('Y-m-d'))
+            ->addOrderBy('r.id', 'ASC')
             ->getQuery()
             ->getResult();
     }

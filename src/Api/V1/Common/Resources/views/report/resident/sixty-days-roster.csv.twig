@@ -1,0 +1,11 @@
+{% spaceless %}
+    {% for type, contracts in data.contracts %}
+{{ contracts['name'] }} {{ data.title }}: {{ data.date }}
+{{ contracts['name'] }} ID,{{ contracts['name'] }} Name,Resident ID,Resident First Name,Resident Last Name,Admitted Date,Discharge Date,Discharge Event Note,Responsible Person ID, Responsible Person Full Name,Relationship,Phone Type,Phone Number,{% if contracts['type'] != constant("App\\Model\\ContractType::TYPE_APARTMENT") %}Care Group,Level of Care,{% endif %}Email
+
+
+        {% for contract in contracts['data'] %}
+{{ contract['typeId'] }}, {{ contract['typeName'] }}, {{ contract['id'] }},{{ contract['firstName'] }},{{ contract['lastName'] }},{{ contract['startDate'].format("m/d/Y") }},{% if contract['endDate'] is not null %}{{ contract['endDate'].format("m/d/Y") }}{% else %}N/A{% endif %},N/A,{{ contract['responsiblePersonId'] }},{{ contract['responsiblePersonFirstName'] ~ ' ' ~ contract['responsiblePersonLastName'] }},{{ contract['relationship'] }},{{ contract['responsiblePersonPhoneType'] }},{{ contract['responsiblePersonPhoneNumber'] }},{% if contracts['type'] != constant("App\\Model\\ContractType::TYPE_APARTMENT") %}{{ contract['careGroup'] }},{{ contract['careLevelTitle'] }},{% endif %}"{{ contract['responsiblePersonEmail'] }}"
+        {% endfor %}
+    {% endfor %}
+{% endspaceless %}

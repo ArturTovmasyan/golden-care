@@ -34,6 +34,7 @@ use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\ShowerSkinInspection;
+use App\Model\Report\SixtyDays;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -884,6 +885,49 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new \App\Model\Report\ResidentEvent();
         $report->setEvents($events);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return SixtyDays
+     * @throws \Exception
+     */
+    public function getSixtyDaysReport(Request $request)
+    {
+        $type   = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date   = $request->get('date');
+
+        if (!$type) {
+            throw new ParameterNotFoundException('type');
+        }
+
+        if (!in_array($type, \App\Model\Resident::getTypeValues())) {
+            throw new InvalidParameterException('type');
+        }
+
+        list($m1, $d1, $y1) = explode('/', $date);
+
+        if (!checkdate($m1, $d1, $y1)) {
+            throw new InvalidParameterException('start_date');
+        }
+
+        $endDate   = \DateTime::createFromFormat('m/d/Y', $date);
+        $startDate = clone $endDate;
+        $startDate->sub(new \DateInterval('P2M'));
+        $startDate->setTime(0, 0);
+        $endDate->setTime(23, 59);
+
+        $data = $this->em->getRepository(Resident::class)->getResidentContracts($startDate, $endDate, $type, $typeId);
+
+        //dump($data);exit;
+
+        $report = new SixtyDays();
+        $report->setTitle('60 Days Roster Report');
+        $report->setDate($date);
+        $report->setContracts($data);
 
         return $report;
     }
