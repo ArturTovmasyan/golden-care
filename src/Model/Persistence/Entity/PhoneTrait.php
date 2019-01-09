@@ -17,7 +17,8 @@ trait PhoneTrait
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_profile_me"
      * })
      */
     private $compatibility;
@@ -30,14 +31,16 @@ trait PhoneTrait
      *          "api_admin_resident_add",
      *          "api_admin_resident_edit",
      *          "api_admin_responsible_person_add",
-     *          "api_admin_responsible_person_edit"
+     *          "api_admin_responsible_person_edit",
+     *          "api_profile_edit"
      *      }
      * )
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_profile_me"
      * })
      */
     private $type;
@@ -48,13 +51,15 @@ trait PhoneTrait
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit",
      *     "api_admin_responsible_person_add",
-     *     "api_admin_responsible_person_edit"
+     *     "api_admin_responsible_person_edit",
+     *     "api_profile_edit"
      * })
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_profile_me"
      * })
      */
     private $number;
@@ -66,13 +71,15 @@ trait PhoneTrait
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit",
      *     "api_admin_responsible_person_add",
-     *     "api_admin_responsible_person_edit"
+     *     "api_admin_responsible_person_edit",
+     *     "api_profile_edit"
      * })
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_profile_me"
      * })
      */
     private $primary = false;
@@ -84,7 +91,8 @@ trait PhoneTrait
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_profile_me"
      * })
      */
     private $smsEnabled = false;

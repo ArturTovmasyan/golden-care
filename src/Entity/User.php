@@ -27,7 +27,6 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {"last_name", "string", true, true, "u.lastName"},
  *          {"username", "string", true, true, "u.username"},
  *          {"email", "string", true, true, "u.email"},
- *          {"phone", "string", true, true, "u.phone"},
  *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\User", "enabledValues"}},
  *          {"completed", "enum", true, true, "u.completed", {"\App\Model\User", "completedValues"}},
  *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
@@ -38,7 +37,6 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {"last_name", "string", true, true, "u.lastName"},
  *          {"username", "string", true, true, "u.username"},
  *          {"email", "string", true, true, "u.email"},
- *          {"phone", "string", true, true, "u.phone"},
  *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\User", "enabledValues"}},
  *          {"completed", "enum", true, true, "u.completed", {"\App\Model\User", "completedValues"}},
  *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
@@ -140,29 +138,38 @@ class User implements UserInterface
      */
     private $email;
 
+//    /**
+//     * @var string
+//     * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+//     * @Groups({
+//     *     "api_admin_user_grid",
+//     *     "api_admin_user_list",
+//     *     "api_dashboard_space_user_grid",
+//     *     "api_dashboard_space_user_list",
+//     *     "api_admin_user_get",
+//     *     "api_dashboard_space_user_get",
+//     *     "api_profile_me"
+//     * })
+//     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete"})
+//     * @Assert\Regex(
+//     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
+//     *     groups={
+//     *     "api_admin_user_add",
+//     *     "api_admin_user_edit",
+//     *     "api_profile_edit",
+//     *     "api_dashboard_space_user_complete"
+//     * })
+//     */
+//    private $phone;
+
     /**
-     * @var string
-     * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+     * @ORM\OneToMany(targetEntity="UserPhone", mappedBy="user")
      * @Groups({
-     *     "api_admin_user_grid",
-     *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
-     *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
-     *     "api_profile_me"
-     * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete"})
-     * @Assert\Regex(
-     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
-     *     groups={
-     *     "api_admin_user_add",
-     *     "api_admin_user_edit",
-     *     "api_profile_edit",
-     *     "api_dashboard_space_user_complete"
+     *      "api_profile_me",
+     *      "api_profile_edit"
      * })
      */
-    private $phone;
+    private $phones;
 
     /**
      * @var bool
@@ -211,38 +218,27 @@ class User implements UserInterface
     /**
      * @var string
      * @Assert\NotBlank(groups={"api_profile_edit", "api_profile_change_password"})
-     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
      * @ValidationSerializedName(
      *     api_profile_change_password="password",
      *     api_profile_edit="password"
      * )
      */
+    //     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
     private $oldPassword;
-
-    /**
-     * @var string
-     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
-     * @Assert\EqualTo(
-     *     propertyPath="plainPassword",
-     *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"},
-     *     message="This value should be equal to password"
-     * )
-     * @ValidationSerializedName(
-     *     api_profile_change_password="re_new_password",
-     *     api_admin_user_add="re_password",
-     *     api_dashboard_account_forgot_password_confirm_password="re_password",
-     *     api_dashboard_account_signup="re_password"
-     * )
-     */
-    private $confirmPassword;
 
     /**
      * @var string $plainPassword
      * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
-     * @Assert\NotEqualTo(propertyPath="oldPassword", groups={"api_profile_change_password"}, message="This value should not be equal to old password")
+     * @Assert\NotEqualTo(
+     *     propertyPath="oldPassword",
+     *     groups={
+     *         "api_profile_change_password"
+     *     },
+     *     message="This value should not be equal to current password."
+     * )
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
+     *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
      *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
      * )
      * @ValidationSerializedName(
@@ -256,11 +252,39 @@ class User implements UserInterface
 
     /**
      * @var string
+     * @Assert\NotBlank(
+     *     groups={
+     *         "api_profile_change_password",
+     *         "api_admin_user_add",
+     *         "api_dashboard_account_signup",
+     *         "api_dashboard_account_forgot_password_confirm_password"
+     * })
+     * @Assert\EqualTo(
+     *     propertyPath="plainPassword",
+     *     groups={
+     *         "api_profile_change_password",
+     *         "api_admin_user_add",
+     *         "api_dashboard_account_signup",
+     *         "api_dashboard_account_forgot_password_confirm_password"
+     *     },
+     *     message="This value should match new password."
+     * )
+     * @ValidationSerializedName(
+     *     api_profile_change_password="re_new_password",
+     *     api_admin_user_add="re_password",
+     *     api_dashboard_account_forgot_password_confirm_password="re_password",
+     *     api_dashboard_account_signup="re_password"
+     * )
+     */
+    private $confirmPassword;
+
+    /**
+     * @var string
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
      * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_reset_password", "api_profile_change_password", "api_dashboard_account_signup"})
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="Password of at least length 8 and it containing at least one lowercase letter, at least one uppercase letter, at least one number and at least a special character (non-word characters).",
+     *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
      *     groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
      * )
      */
@@ -277,6 +301,15 @@ class User implements UserInterface
      * @ORM\Column(name="password_recovery_hash", type="string", length=255, nullable=true)
      */
     private $passwordRecoveryHash = '';
+
+    /**
+     * @var string
+     * @Groups({
+     *     "api_profile_edit",
+     *     "api_profile_me"
+     * })
+     */
+    private $avatar;
 
     /**
      * @todo remove after investigate jms listener
@@ -442,20 +475,19 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getPhone()
+    public function getPhones()
     {
-        return $this->phone;
+        return $this->phones;
     }
 
     /**
-     * @param string $phone
-     * @return User
+     * @param mixed $phones
      */
-    public function setPhone($phone)
+    public function setPhones($phones): void
     {
-        $this->phone = $phone;
+        $this->phones = $phones;
     }
 
     /**
@@ -610,4 +642,21 @@ class User implements UserInterface
     {
         return $this->spaceUserRoles;
     }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string $avatar
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+    }
+
 }

@@ -2,7 +2,9 @@
 
 namespace App\Api\V1\Common\Controller;
 
+use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Api\V1\Common\Service\ProfileService;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,12 +92,18 @@ class ProfileController extends BaseController
      * @var Request $request
      * @return JsonResponse
      */
-    public function getAction(Request $request)
+    public function getAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper)
     {
+        $profileService->setUserAvatarHelper($userAvatarHelper);
+
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user->setAvatar($userAvatarHelper->get($user->getId()));
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $this->get('security.token_storage')->getToken()->getUser(),
+            $user,
             ['api_profile_me']
         );
     }
@@ -141,8 +149,10 @@ class ProfileController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, ProfileService $profileService)
+    public function editAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper)
     {
+        $profileService->setUserAvatarHelper($userAvatarHelper);
+
         $profileService->edit(
             $this->get('security.token_storage')->getToken()->getUser(),
             [
@@ -150,7 +160,8 @@ class ProfileController extends BaseController
                 'first_name'  => $request->get('first_name'),
                 'last_name'   => $request->get('last_name'),
                 'email'       => $request->get('email'),
-                'phone'       => $request->get('phone')
+                'phones'      => $request->get('phones'),
+                'avatar'      => $request->get('avatar')
             ]
         );
 

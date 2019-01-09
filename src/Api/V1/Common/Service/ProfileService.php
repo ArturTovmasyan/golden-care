@@ -1,7 +1,10 @@
 <?php
 namespace App\Api\V1\Common\Service;
 
+use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
+use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Entity\User;
+use App\Entity\UserPhone;
 
 /**
  * Class ProfileService
@@ -9,6 +12,14 @@ use App\Entity\User;
  */
 class ProfileService extends BaseService
 {
+    /** @var UserAvatarHelper */
+    private $userAvatarHelper;
+
+    public function setUserAvatarHelper(UserAvatarHelper $userAvatarHelper)
+    {
+        $this->userAvatarHelper = $userAvatarHelper;
+    }
+
     /**
      * @param User $user
      * @param array $params
@@ -23,11 +34,18 @@ class ProfileService extends BaseService
             $user->setFirstName($params['first_name']);
             $user->setLastName($params['last_name']);
             $user->setEmail($params['email']);
-            $user->setPhone($params['phone']);
 
             $this->validate($user, null, ["api_profile_edit"]);
 
             $this->em->persist($user);
+
+            if (!empty($params['avatar'])) {
+                $this->userAvatarHelper->remove($user->getId());
+                $this->userAvatarHelper->save($user->getId(), $params['avatar']);
+            }
+
+            $this->savePhones($user, $params['phones'] ?? []);
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -67,6 +85,47 @@ class ProfileService extends BaseService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param array $phones
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    private function savePhones($user, array $phones = [])
+    {
+        /**
+         * @var UserPhone[] $oldPhones
+         */
+        $oldPhones = $this->em->getRepository(UserPhone::class)->findBy(['user' => $user]);
+
+        foreach ($oldPhones as $phone) {
+            $this->em->remove($phone);
+        }
+
+        $hasPrimary = false;
+
+        foreach($phones as $phone) {
+            $userPhone = new UserPhone();
+            $userPhone->setUser($user);
+            $userPhone->setCompatibility($phone['compatibility'] ?? null);
+            $userPhone->setType($phone['type']);
+            $userPhone->setNumber($phone['number']);
+            $userPhone->setPrimary((bool) $phone['primary'] ?? false);
+            $userPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
+
+            if ($userPhone->isPrimary()) {
+                if ($hasPrimary) {
+                    throw new PhoneSinglePrimaryException();
+                }
+
+                $hasPrimary = true;
+            }
+
+            $this->validate($userPhone, null, ['api_profile_edit']);
+            $this->em->persist($userPhone);
         }
     }
 }

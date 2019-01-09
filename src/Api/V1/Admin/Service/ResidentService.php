@@ -160,6 +160,7 @@ class ResidentService extends BaseService implements IGridService
 
             // save photo
             if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->remove($resident->getId());
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
@@ -226,6 +227,7 @@ class ResidentService extends BaseService implements IGridService
 
             // save photo
             if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->remove($resident->getId());
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 

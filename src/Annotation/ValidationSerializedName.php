@@ -62,7 +62,7 @@ class ValidationSerializedName
             return '_' . lcfirst($matches[1]);
         }, $originalPropertyPath);
 
-        if (!empty($groups)) {
+        if (!empty($group)) {
             $property = new ReflectionProperty($entityClass, $originalPropertyPath);
             if ($property != null) {
 
