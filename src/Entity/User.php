@@ -217,13 +217,13 @@ class User implements UserInterface
 
     /**
      * @var string
+     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
      * @Assert\NotBlank(groups={"api_profile_edit", "api_profile_change_password"})
      * @ValidationSerializedName(
      *     api_profile_change_password="password",
      *     api_profile_edit="password"
      * )
      */
-    //     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
     private $oldPassword;
 
     /**
