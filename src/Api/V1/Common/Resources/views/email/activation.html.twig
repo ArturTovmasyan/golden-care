@@ -2,7 +2,8 @@
 {% block title %}{{ subject }}{% endblock %}
 {% block content %}
     <p>Dear {{ user.fullName }},</p>
-    <p>To reset your password, please click
-        <a href="{{ baseUrl }}/reset-password?key={{ user.passwordRecoveryHash }}">here</a>.
+    <p>Welcome to SeniorCare!</p>
+    <p>To activate you account, please click
+        <a href="{{ baseUrl }}/activate?key={{ user.activationHash }}">here</a>.
     </p>
 {% endblock %}

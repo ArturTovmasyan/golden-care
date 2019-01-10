@@ -189,6 +189,30 @@ class Mailer
 
     /**
      * @param User $user
+     * @param $baseUrl
+     * @return bool|mixed
+     * @throws \Exception
+     */
+    public function sendActivationLink(User $user, $baseUrl)
+    {
+        if (!$user) {
+            throw new \Exception('Email has dependency on user');
+        }
+
+        return $this
+            ->setRecipient($user->getEmail())
+            ->setTemplate("@api_email/activation.html.twig")
+            ->setSubject('Welcome to SeniorCare')
+            ->setVars([
+                'subject' => $this->subject,
+                'user'    => $user,
+                'baseUrl' => $baseUrl,
+            ])
+            ->send();
+    }
+
+    /**
+     * @param User $user
      * @param $url
      * @return mixed
      * @throws \Exception

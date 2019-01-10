@@ -3,6 +3,7 @@ namespace App\Api\V1\Dashboard\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\InvalidConfirmationTokenException;
+use App\Api\V1\Common\Service\Exception\InvalidRecoveryLinkException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SystemErrorException;
@@ -31,17 +32,10 @@ class UserService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function signup(array $params)
+    public function signup(array $params, string $baseUrl)
     {
         try {
             $this->em->getConnection()->beginTransaction();
-
-            /** @var User $user */
-            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
-
-            if ($user) {
-                throw new DuplicateUserException();
-            }
 
             /** @var Role $defaultRoleForSpace **/
             $defaultRoleForSpace = $this->em->getRepository(Role::class)->getSpaceDefaultRole();
@@ -53,14 +47,15 @@ class UserService extends BaseService
             $user->setUsername(strtolower($params['last_name']) . time());
             $user->setEmail($params['email']);
             $user->setLastActivityAt(new \DateTime());
-            $user->setEnabled(true);
-            $user->setCompleted(true);
+            $user->setEnabled(false);
+            $user->setCompleted(false);
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
             $user->setPlainPassword($params['password']);
             $user->setConfirmPassword($params['re_password']);
             $user->setPassword($encoded);
+            $user->setActivationHash();
 
             // validate user
             $this->validate($user, null, ["api_dashboard_account_signup"]);
@@ -68,6 +63,8 @@ class UserService extends BaseService
 
             // create space
             $space = new Space();
+            $space->setName($params['organization']);
+            $this->validate($space, null, ["api_dashboard_account_signup"]);
             $this->em->persist($space);
 
             // connect user to space
@@ -95,11 +92,46 @@ class UserService extends BaseService
             $this->em->persist($log);
 
             $this->em->flush();
+
+            // send mail with complete url
+            $this->mailer->sendActivationLink($user, $baseUrl);
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function activate(array $params)
+    {
+        /** @var User $user **/
+        $user = $this->em->getRepository(User::class)->findOneBy(['activationHash' => $params['hash']]);
+
+        if (is_null($user)) {
+            throw new InvalidRecoveryLinkException();
+        }
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $user->setActivationHash();
+            $user->setEnabled(true);
+            $user->setCompleted(true);
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw new SystemErrorException();
         }
     }
 
@@ -139,13 +171,13 @@ class UserService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function confirmPassword(array $params)
+    public function resetPassword(array $params)
     {
         /** @var User $user **/
         $user = $this->em->getRepository(User::class)->findOneBy(['passwordRecoveryHash' => $params['hash']]);
 
         if (is_null($user)) {
-            throw new UserNotFoundException();
+            throw new InvalidRecoveryLinkException();
         }
 
         try {
@@ -160,7 +192,7 @@ class UserService extends BaseService
             $user->setPasswordRecoveryHash();
             $this->em->persist($user);
 
-            $this->validate($user, null, ["api_dashboard_account_forgot_password_confirm_password"]);
+            $this->validate($user, null, ["api_dashboard_account_reset_password"]);
 
             $this->em->flush();
 

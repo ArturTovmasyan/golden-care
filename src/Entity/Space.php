@@ -142,7 +142,7 @@ class Space
      *     "api_admin_allergen_grid",
      *     "api_admin_allergen_list"
      * })
-     * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit"})
+     * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit", "api_dashboard_account_signup"})
      */
     private $name;
 

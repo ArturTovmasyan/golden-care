@@ -77,12 +77,14 @@ class AccountController extends BaseController
     {
         $userService->signup(
             [
-                'first_name'  => $request->get('first_name'),
-                'last_name'   => $request->get('last_name'),
-                'email'       => $request->get('email'),
-                'password'    => $request->get('password'),
-                're_password' => $request->get('re_password')
-            ]
+                'organization' => $request->get('organization'),
+                'first_name'   => $request->get('first_name'),
+                'last_name'    => $request->get('last_name'),
+                'email'        => $request->get('email'),
+                'password'     => $request->get('password'),
+                're_password'  => $request->get('re_password')
+            ],
+            $request->getSchemeAndHttpHost()
         );
 
         return $this->respondSuccess(
@@ -133,12 +135,12 @@ class AccountController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/dashboard/account/confirm-password Confirm Password
+     * @api {put} /api/v1.0/dashboard/account/reset-password Reset Password
      * @apiVersion 1.0.0
-     * @apiName Confirm Password
+     * @apiName Reset Password
      * @apiGroup Dashboard Account
      * @apiPermission none
-     * @apiDescription This function is used to confirm password with hash
+     * @apiDescription This function is used to reset password with hash
      *
      * @apiHeader {String} Content-Type  application/json
      *
@@ -162,20 +164,66 @@ class AccountController extends BaseController
      *          "error": "User not found"
      *     }
      *
-     * @Route("/confirm-password", name="api_dashboard_account_forgot_password_confirm_password", methods={"PUT"})
+     * @Route("/reset-password", name="api_dashboard_account_reset_password", methods={"PUT"})
      *
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function confirmPasswordAction(Request $request, UserService $userService)
+    public function resetPasswordAction(Request $request, UserService $userService)
     {
-        $userService->confirmPassword(
+        $userService->resetPassword(
             [
                 'hash'        => $request->get('hash'),
                 'password'    => $request->get('password'),
                 're_password' => $request->get('re_password')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @api {put} /api/v1.0/dashboard/account/activate Activate
+     * @apiVersion 1.0.0
+     * @apiName Activate
+     * @apiGroup Dashboard Account
+     * @apiPermission none
+     * @apiDescription This function is used to activate user with hash
+     *
+     * @apiHeader {String} Content-Type  application/json
+     *
+     * @apiParam {String} hash         The email address of the user
+     *
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *         "hash": "ddasdsadft%453543543",
+     *     }
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 201 Created
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 613,
+     *          "error": "User not found"
+     *     }
+     *
+     * @Route("/activate", name="api_dashboard_account_activate", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function activateAction(Request $request, UserService $userService)
+    {
+        $userService->activate(
+            [
+                'hash'        => $request->get('hash'),
             ]
         );
 

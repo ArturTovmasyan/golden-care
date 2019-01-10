@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Security;
 
@@ -58,6 +59,11 @@ class MainListener
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception->getErrors()
+            );
+        } else if ($exception instanceof UnauthorizedHttpException) {
+            $response = $this->respondError(
+                $exception->getMessage(),
+                $exception->getStatusCode()
             );
         } else if ($exception instanceof \ErrorException) {
             $response = $this->respondError(

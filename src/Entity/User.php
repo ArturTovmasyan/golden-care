@@ -18,8 +18,8 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 /**
  * @ORM\Table(name="tbl_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="Sorry, this email address is already in use.", groups={"api_admin_user_add"})
- * @UniqueEntity(fields="username", message="Sorry, this username is already taken.", groups={"api_admin_user_add"})
+ * @UniqueEntity(fields="email", message="This email address was already in use.", groups={"api_admin_user_add", "api_dashboard_account_signup"})
+ * @UniqueEntity(fields="username", message="This username was already taken.", groups={"api_admin_user_add", "api_dashboard_account_signup"})
  * @Grid(
  *     api_admin_user_grid={
  *          {"id", "number", true, true, "u.id"},
@@ -228,7 +228,7 @@ class User implements UserInterface
 
     /**
      * @var string $plainPassword
-     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"})
+     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"})
      * @Assert\NotEqualTo(
      *     propertyPath="oldPassword",
      *     groups={
@@ -239,12 +239,12 @@ class User implements UserInterface
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
-     *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"}
      * )
      * @ValidationSerializedName(
      *     api_profile_change_password="new_password",
      *     api_admin_user_add="password",
-     *     api_dashboard_account_forgot_password_confirm_password="password",
+     *     api_dashboard_account_reset_password="password",
      *     api_dashboard_account_signup="password"
      * )
      */
@@ -257,7 +257,7 @@ class User implements UserInterface
      *         "api_profile_change_password",
      *         "api_admin_user_add",
      *         "api_dashboard_account_signup",
-     *         "api_dashboard_account_forgot_password_confirm_password"
+     *         "api_dashboard_account_reset_password"
      * })
      * @Assert\EqualTo(
      *     propertyPath="plainPassword",
@@ -265,14 +265,14 @@ class User implements UserInterface
      *         "api_profile_change_password",
      *         "api_admin_user_add",
      *         "api_dashboard_account_signup",
-     *         "api_dashboard_account_forgot_password_confirm_password"
+     *         "api_dashboard_account_reset_password"
      *     },
      *     message="This value should match new password."
      * )
      * @ValidationSerializedName(
      *     api_profile_change_password="re_new_password",
      *     api_admin_user_add="re_password",
-     *     api_dashboard_account_forgot_password_confirm_password="re_password",
+     *     api_dashboard_account_reset_password="re_password",
      *     api_dashboard_account_signup="re_password"
      * )
      */
@@ -285,7 +285,7 @@ class User implements UserInterface
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
-     *     groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_forgot_password_confirm_password"}
+     *     groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"}
      * )
      */
     private $password;
@@ -301,6 +301,12 @@ class User implements UserInterface
      * @ORM\Column(name="password_recovery_hash", type="string", length=255, nullable=true)
      */
     private $passwordRecoveryHash = '';
+
+    /**
+     * @var string
+     * @ORM\Column(name="activation_hash", type="string", length=255, nullable=true)
+     */
+    private $activationHash = '';
 
     /**
      * @var string
@@ -552,7 +558,23 @@ class User implements UserInterface
      */
     public function setPasswordRecoveryHash(): void
     {
-        $this->passwordRecoveryHash = $this->passwordRecoveryHash = hash('sha256', $this->email . time());
+        $this->passwordRecoveryHash = hash('sha256', $this->email . time());
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivationHash(): string
+    {
+        return $this->activationHash;
+    }
+
+    /**
+     *
+     */
+    public function setActivationHash(): void
+    {
+        $this->activationHash = hash('sha256', $this->email . time());;
     }
 
     /**
