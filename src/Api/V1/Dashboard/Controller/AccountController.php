@@ -82,7 +82,8 @@ class AccountController extends BaseController
                 'last_name'    => $request->get('last_name'),
                 'email'        => $request->get('email'),
                 'password'     => $request->get('password'),
-                're_password'  => $request->get('re_password')
+                're_password'  => $request->get('re_password'),
+                'phone'        => $request->get('phone')
             ],
             $request->getSchemeAndHttpHost()
         );

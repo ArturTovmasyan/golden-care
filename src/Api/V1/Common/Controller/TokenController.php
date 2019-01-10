@@ -110,8 +110,8 @@ class TokenController extends BaseController
          */
         $user = $this->em->getRepository(User::class)->findUserByUsername($request->get('username'));
 
-        if ($user) {
-            if ($response->getStatusCode() == Response::HTTP_OK) {
+        if ($response->getStatusCode() == Response::HTTP_OK) {
+            if ($user) {
                 // create log
                 $log = new UserLog();
                 $log->setCreatedAt(new \DateTime());
@@ -122,7 +122,9 @@ class TokenController extends BaseController
                 $this->em->persist($log);
 
                 $this->em->flush();
-            } else {
+            }
+        } else {
+            if ($user) {
                 /**
                  * @var UserAttemptRepository $userAttemptRepository
                  */
@@ -155,18 +157,17 @@ class TokenController extends BaseController
                 $this->em->persist($user);
 
                 $this->em->flush();
-
-                $content = json_decode($response->getContent(), 1);
-                $message = '';
-
-                if (!empty($content['error_description'])) {
-                    $message = $content['error_description'];
-                }
-
-                throw new UnauthorizedHttpException("token", $message);
             }
-        }
 
+            $content = json_decode($response->getContent(), 1);
+            $message = '';
+
+            if (!empty($content['error_description'])) {
+                $message = $content['error_description'];
+            }
+
+            throw new UnauthorizedHttpException("token", $message);
+        }
 
         return $response;
     }
@@ -178,15 +179,15 @@ class TokenController extends BaseController
     {
         if (getenv('HTTP_CLIENT_IP')) {
             $ip = getenv('HTTP_CLIENT_IP');
-        } else if(getenv('HTTP_X_FORWARDED_FOR')) {
+        } else if (getenv('HTTP_X_FORWARDED_FOR')) {
             $ip = getenv('HTTP_X_FORWARDED_FOR');
-        } else if(getenv('HTTP_X_FORWARDED')) {
+        } else if (getenv('HTTP_X_FORWARDED')) {
             $ip = getenv('HTTP_X_FORWARDED');
-        } else if(getenv('HTTP_FORWARDED_FOR')) {
+        } else if (getenv('HTTP_FORWARDED_FOR')) {
             $ip = getenv('HTTP_FORWARDED_FOR');
-        } else if(getenv('HTTP_FORWARDED')) {
+        } else if (getenv('HTTP_FORWARDED')) {
             $ip = getenv('HTTP_FORWARDED');
-        } else if(getenv('REMOTE_ADDR')) {
+        } else if (getenv('REMOTE_ADDR')) {
             $ip = getenv('REMOTE_ADDR');
         } else {
             $ip = 'UNKNOWN';

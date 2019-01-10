@@ -18,6 +18,7 @@ use App\Entity\SpaceUser;
 use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use App\Entity\UserLog;
+use App\Entity\UserPhone;
 use App\Model\Log;
 
 /**
@@ -57,9 +58,20 @@ class UserService extends BaseService
             $user->setPassword($encoded);
             $user->setActivationHash();
 
+            if($params['phone']) { // TODO: review
+                $userPhone = new UserPhone();
+                $userPhone->setUser($user);
+                $userPhone->setCompatibility( null);
+                $userPhone->setType(\App\Model\Phone::TYPE_OFFICE);
+                $userPhone->setNumber($params['phone']);
+                $userPhone->setPrimary(true);
+                $userPhone->setSmsEnabled(false);
+            }
+
             // validate user
             $this->validate($user, null, ["api_dashboard_account_signup"]);
             $this->em->persist($user);
+            $this->em->persist($userPhone);
 
             // create space
             $space = new Space();
