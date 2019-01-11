@@ -60,7 +60,7 @@ class Medication
 
     /**
      * @var string
-     * @ORM\Column(name="title", type="string", length=20, nullable=false)
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      * @Groups({
      *     "api_admin_medication_grid",
      *     "api_admin_medication_list",
@@ -79,7 +79,7 @@ class Medication
      *     "api_admin_resident_medication_allergy_edit"
      * })
      * @Assert\Length(
-     *      max = 20,
+     *      max = 255,
      *      maxMessage = "Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_medication_add",
