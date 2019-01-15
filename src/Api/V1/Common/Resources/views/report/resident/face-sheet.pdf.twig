@@ -1,0 +1,334 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% for residentId, resident in data.residents %}
+
+        <table style="margin: 0; padding: 0; page-break-inside: avoid !important;">
+            <tr style="width:100%; clear: both; margin: 0; padding: 0; page-break-inside: avoid !important;"></tr>
+        </table>
+
+        <table class="report-table main-table bordered">
+            <tr class="divider"></tr>
+            <thead>
+                <tr>
+                    <th colspan="9">
+                        <div style="float: right">
+                            <p style="font-size: 16px !important; margin: 0;"><b>DNR&nbsp;on&nbsp;file:&nbsp;{% if resident['dnr'] == true %}Yes{% else %}No{% endif %}</b></p>
+                            <p style="font-size: 16px !important; margin: 0;"><b>POLST&nbsp;on&nbsp;file:&nbsp;{% if resident['polst'] == true %}Yes{% else %}No{% endif %}</b></p>
+                        </div>
+                        <div style="float: left; width: 400px !important;">
+                            <div style="height: 5px;"></div>
+                            <p style="font-size: 20px !important; margin: 0;">Emergency&nbsp;Information</p>
+                            <p style="font-size: 12px !important;margin: 0;">{{ resident['typeName'] }}&nbsp;
+                                {% if resident['address'] is defined and resident['address'] %}Address:&nbsp;{{ resident['address'] }}{% endif %}
+                            </p>
+                            <p style="font-size: 11px !important; margin: 0;">
+                                {% if resident['typePhone'] is defined and resident['typePhone'] %}Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}
+                                {% if resident['typeFax'] is defined and resident['typeFax'] %}Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
+                                {% if resident['license'] is defined and resident['license'] %}License:&nbsp;#{{ resident['license'] }}{% endif %}
+                                {% if resident['city'] is defined and resident['city'] %}{{ resident['city'] }}&nbsp;{{ resident['state'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                            </p>
+                        </div>
+                        <div style="clear: both"></div>
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                        {% if resident['bedNumber'] is defined and resident['bedNumber'] %}<div style="float: left; width: 11%">Bed</div>{% endif %}
+                        <div style="float: left; width: 28%">Full&nbsp;name</div>
+                        {% if resident['birthday'] is defined and resident['birthday'] %}<div style="float: left; width: 16%">Birthday</div>{% endif %}
+                        {% if resident['birthday'] is defined and resident['birthday'] %}<div style="float: left; width: 6%">Age</div>{% endif %}
+                        {% if resident['floor'] is defined and resident['floor'] %}<div style="float: left; width: 10%">Floor</div>{% endif %}
+                        <div style="float: left; width: 12%">Group</div>
+                        <div style="float: left; width: 17%">Care&nbsp;level</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9">
+                        {% if resident['bedNumber'] is defined and resident['bedNumber'] %}<div style="float: left; width: 11%"><b style="font-size: 12px !important;">{% if resident['roomNumber'] %}{{ resident['roomNumber'] }}&nbsp;{% endif %}{% if resident['bedNumber'] %}{{ resident['bedNumber'] }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        <div style="float: left; width: 28%"><b style="font-size: 12px !important;">{% if resident['firstName'] %}{{ resident['firstName'] }}{% if resident['lastName'] %}&nbsp;{{ resident['lastName'] }}{% endif %}{% else %}N/A{% endif %}</b></div>
+                        {% if resident['birthday'] is defined and resident['birthday'] %}<div style="float: left; width: 16%"><b style="font-size: 12px !important;">{% if resident['birthday'] %}{{ resident['birthday']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        {% if resident['birthday'] is defined and resident['birthday'] %}<div style="float: left; width: 6%"><b style="font-size: 12px !important;">{% if resident['birthday'] %}{{ age(resident['birthday']|date("m/d/Y")) }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        {% if resident.floor is defined and resident.floor %}<div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if resident.floor %}{{ resident.floor }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        <div style="float: left; width: 12%"><b style="font-size: 12px !important;">{% if resident['careGroup'] %}{{ resident['careGroup'] }}{% else %}N/A{% endif %}</b></div>
+                        <div style="float: left; width: 17%"><b style="font-size: 12px !important;">{% if resident['careLevel'] %}{{ resident['careLevel'] }}{% else %}N/A{% endif %}</b></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                        <div style="float: left; width: 20%">Admitted</div>
+                        <div style="float: left; width: 20%">Male&nbsp;/&nbsp;Female</div>
+                        <div style="float: left; width: 20%">Status</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9">
+                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
+                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
+                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            {% if resident['responsiblePersons'] is defined %}
+                {% set y = 0 %}
+                {% for responsiblePerson in resident['responsiblePersons'] %}
+                    {% if (responsiblePerson.emergency == false and responsiblePerson.financially == true)
+                    or (responsiblePerson.emergency == true and responsiblePerson.financially == false)
+                    or (responsiblePerson.emergency == true and responsiblePerson.financially == true) %}
+                        {% set y = y + 1%}
+                        {% if y > 1 %}
+                            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                        {% endif %}
+                        <tr style="border-left: solid 1px darkgrey; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                {% if responsiblePerson.emergency == false and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing</b>
+                                {% elseif responsiblePerson.emergency == true and responsiblePerson.financially == false %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Emergency</b>
+                                {% elseif responsiblePerson.emergency == true and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing&nbsp;/&nbsp;Emergency</b>{% endif %}
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                                <div style="float: left; width: 30%">Full&nbsp;name</div>
+                                <div style="float: left; width: 20%">Relationship</div>
+                                <div style="float: left; width: 25%">Primary&nbsp;phone</div>
+                                <div style="float: left; width: 25%">Emergency&nbsp;phone</div>
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName }}&nbsp;{{ responsiblePerson.lastName }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if responsiblePerson.relationshipTitle %}{{ responsiblePerson.relationshipTitle }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 25%"><b style="font-size: 10px !important;">
+                                        {% set a = 0 %}
+                                        {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                            {% if responsiblePersonPhone.rpId == responsiblePerson.id and responsiblePersonPhone.primary == true %}
+                                                {% set a = a + 1 %}
+                                                {{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if a == 0 %}N/A{% endif %}
+                                    </b>
+                                </div>
+                                <div style="float: left; width: 25%"><b style="font-size: 10px !important;">
+                                        {% set b = 0 %}
+                                        {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                            {% if responsiblePersonPhone.rpId == responsiblePerson.id and responsiblePersonPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                                                {% set b = b + 1 %}
+                                                {{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if b == 0 %}N/A{% endif %}
+                                    </b>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="border-right: solid 1px darkgray; border-left: solid 1px darkgray; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                            <td colspan="9" style="font-size: 13px !important; border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 50%">Address</div>
+                                <div style="float: left; width: 30%">City</div>
+                                <div style="float: left; width: 10%">State</div>
+                                <div style="float: left; width: 10%">Zip</div>
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray; border-bottom: solid 1px darkgray">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 50%"><b style="font-size: 12px !important;">{% if responsiblePerson.address %}{{ responsiblePerson.address }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.city %}{{ responsiblePerson.city }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.state %}{{ responsiblePerson.state }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.zip %}{{ responsiblePerson.zip }}{% else %}N/A{% endif %}</b></div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if resident['physicians'] is defined %}
+                {% for physician in resident['physicians'] %}
+                    <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                    <tr style="border-left: solid 1px darkgray; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">
+                        <td colspan="9" style="border-left: none; border-top: none; border-bottom: none;"><b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray;">Physician{% if physician.primary == true %}&nbsp;(Primary){% endif %}</b></td>
+                    </tr>
+                    <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                        <td colspan="9" style="font-size: 13px !important; border-left: none; border-top: none; border-bottom: solid 0.5px darkgray">
+                            <div style="float: left; width: 40%">Full&nbsp;name</div>
+                            <div style="float: left; width: 20%">Work&nbsp;phone</div>
+                            <div style="float: left; width: 20%">Emergency&nbsp;phone</div>
+                            <div style="float: left; width: 20%">Fax&nbsp;phone</div>
+                        </td>
+                    </tr>
+                    <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                        <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                            <div style="float: left; width: 40%"><b style="font-size: 12px !important;">{% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName }}&nbsp;{{ physician.lastName }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.officePhone %}{{ physician.officePhone }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.emergencyPhone %}{{ physician.emergencyPhone }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.fax %}{{ physician.fax }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                    <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                        <td colspan="9" style="font-size: 13px !important; border-left: none; border-top: none; border-bottom: solid 0.5px darkgray">
+                            <div style="float: left; width: 50%">Address</div>
+                            <div style="float: left; width: 30%">City</div>
+                            <div style="float: left; width: 10%">State</div>
+                            <div style="float: left; width: 10%">Zip</div>
+                        </td>
+                    </tr>
+                    <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray; border-bottom: solid 1px darkgray">
+                        <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                            <div style="float: left; width: 50%"><b style="font-size: 12px !important;">{% if physician.address %}{{ physician.address }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if physician.city %}{{ physician.city }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if physician.state %}{{ physician.state }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if physician.zip %}{{ physician.zip }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Diagnosis</b></td>
+            </tr>
+            <tr style="">
+                <td colspan="9" style="font-size: 13px !important;">
+                    <div style="float: left; width: 50%">Primary&nbsp;diagnosis</div>
+                    <div style="float: left; width: 50%">Secondary&nbsp;diagnosis</div>
+                </td>
+            </tr>
+            <tr style="">
+                <td colspan="9" style="font-size: 12px !important;">
+                    <div style="float: left; width: 50%">
+                        {% if resident['diagnosis'] is defined %}
+                            {% for diagnosis in resident['diagnosis'] %}
+                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::PRIMARY') %}<b>{{ diagnosis.diagnosisTitle }}</b><br/>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            No&nbsp;Primary&nbsp;diagnosis
+                        {% endif %}
+                    </div>
+                    <div style="float: left; width: 50%">
+                        {% if resident['diagnosis'] is defined %}
+                            {% for diagnosis in resident['diagnosis'] %}
+                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::SECONDARY') %}<b>{{ diagnosis.diagnosisTitle }}</b><br/>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            No&nbsp;Secondary&nbsp;diagnosis
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Medications</b></td>
+            </tr>
+            {% if resident['medications'] is defined %}
+                {% set k = 0 %}
+                {% for medication in resident['medications'] %}
+                    {% set k = k + 1 %}
+                    {% if k == 1  %}
+                        <tr style="">
+                            <td colspan="9" style="font-size: 12px !important;">
+                                <div style="float: left; width: 20% !important;">Medication</div>
+                                <div style="float: left; width: 4% !important;">AM</div>
+                                <div style="float: left; width: 4% !important;">NN</div>
+                                <div style="float: left; width: 4% !important;">PM</div>
+                                <div style="float: left; width: 4% !important;">HS</div>
+                                <div style="float: left; width: 4% !important;">PRN</div>
+                                <div style="float: left; width: 16% !important;">QTY</div>
+                                <div style="float: left; width: 4% !important;">DC</div>
+                                <div style="float: left; width: 4% !important;">TR</div>
+                                <div style="float: left; width: 36% !important;">Comments</div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="9">
+                            <div style="float: left; width: 20% !important;"><b style="font-size: 10px !important;">{% if medication.medication %}{{ medication.medication }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationAm %}{{ medication.medicationAm }}{% else %}0{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationNn %}{{ medication.medicationNn }}{% else %}0{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% else %}0{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% else %}0{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</b></div>
+                            <div style="float: left; width: 16% !important;"><b style="font-size: 10px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationDiscont %}Yes{% else %}No{% endif %}</b></div>
+                            <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</b></div>
+                            <div style="float: left; width: 36% !important;"><b style="font-size: 9px !important;">{% if medication.notes %}{{ medication.notes }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else  %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Medications</td>
+                </tr>
+            {% endif %}
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Allergens</b></td>
+            </tr>
+            {% if resident['allergens'] is defined %}
+                {% set l = 0 %}
+                {% for allergen in resident['allergens'] %}
+                    {% set l = l + 1 %}
+                    {% if l == 1  %}
+                        <tr style="">
+                            <td colspan="9" style="font-size: 13px !important;">
+                                <div style="float: left; width: 40% !important;">Medical&nbsp;allergens</div>
+                                <div style="float: left; width: 60% !important;">Description</div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr style="">
+                        <td colspan="9">
+                            <div style="float: left; width: 40% !important;"><b style="font-size: 12px !important;">{% if allergen.title %}{{ allergen.title }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 60% !important;"><b style="font-size: 12px !important;">{% if allergen.description %}{{ allergen.description }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else  %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Allergens</td>
+                </tr>
+            {% endif %}
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Prescriptions</b></td>
+            </tr>
+            {% if resident['medications'] is defined %}
+            {% set m = 0 %}
+            {% for medication in resident['medications'] %}
+                {% set m = m + 1 %}
+                {% if m == 1  %}
+                    <tr style="">
+                        <td colspan="9" style="font-size: 13px !important;">
+                            <div style="float: left; width: 40% !important;">Medication</div>
+                            <div style="float: left; width: 20% !important;">Dosage</div>
+                            <div style="float: left; width: 20% !important;">Prescription#</div>
+                            <div style="float: left; width: 20% !important;">Physician</div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr style="">
+                    <td colspan="9">
+                        <div style="float: left; width: 40% !important;"><b style="font-size: 12px !important;">{% if medication.medication %}{{ medication.medication }}{% else %}N/A{% endif %}</b></div>
+                        <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                        <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.prescriptionNumber %}{{ medication.prescriptionNumber }}{% else %}N/A{% endif %}</b></div>
+                        <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.physicianFirstName and medication.physicianLastName %}Dr.&nbsp;{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}{% else %}N/A{% endif %}</b></div>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Prescriptions</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

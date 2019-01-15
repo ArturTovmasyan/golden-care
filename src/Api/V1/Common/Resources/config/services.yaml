@@ -2,6 +2,7 @@ parameters:
     core.model.user.provider.class: App\Model\User\UserProvider
     core.entity.user.class: App\Entity\User
     core.repository.user.class: App\Repository\UserRepository
+    count.age.extension.class: App\Util\Twig\Extension\CountAgeExtension
 
 services:
     core.model.user.provider:
@@ -15,3 +16,7 @@ services:
         class: %core.repository.user.class%
         arguments: ['%core.entity.user.class%']
         factory: ['@core.user.manager', getRepository]
+    count.age.extension:
+        class: %count.age.extension.class%
+        tags:
+          - { name: twig.extension }

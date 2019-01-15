@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CityStateZip;
+use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
@@ -84,13 +85,20 @@ class ResponsiblePersonRepository extends EntityRepository
                     csz.city as city,
                     rpp.type as phoneType,
                     rpp.extension as phoneExtension,
-                    rpp.number as phoneNumber
+                    rpp.number as phoneNumber,
+                    rel.title as relationshipTitle
             ')
             ->innerJoin(
                 ResidentResponsiblePerson::class,
                 'rrp',
                 Join::WITH,
                 'rrp.responsiblePerson = rp'
+            )
+            ->innerJoin(
+                Relationship::class,
+                'rel',
+                Join::WITH,
+                'rrp.relationship = rel'
             )
             ->innerJoin(
                 Resident::class,
@@ -111,7 +119,7 @@ class ResponsiblePersonRepository extends EntityRepository
                 'rpp.responsiblePerson = rp'
             )
             ->where($qb->expr()->in('r.id', $residentIds))
-            ->groupBy('rpp.id')
+            ->groupBy('rrp.id')
             ->getQuery()
             ->getResult();
     }

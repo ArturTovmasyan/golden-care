@@ -64,6 +64,7 @@ class MedicationRepository extends EntityRepository
                     p.officePhone as physicianOfficePhone,
                     rm.prescriptionNumber as prescriptionNumber,
                     rm.treatment as medicationTreatment,
+                    rm.discontinued as medicationDiscont,
                     rm.prn as medicationPrn,
                     rm.hs as medicationHs,
                     rm.pm as medicationPm,
@@ -93,6 +94,13 @@ class MedicationRepository extends EntityRepository
                 'rm.resident = r'
             )
             ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('rm.treatment', 'ASC')
+            ->addOrderBy('rm.am', 'DESC')
+            ->addOrderBy('rm.nn', 'DESC')
+            ->addOrderBy('rm.pm', 'DESC')
+            ->addOrderBy('rm.hs', 'DESC')
+            ->addOrderBy('rm.prn', 'DESC')
+            ->addOrderBy('m.title')
             ->groupBy('rm.id')
             ->getQuery()
             ->getResult();

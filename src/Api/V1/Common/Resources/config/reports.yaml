@@ -11,7 +11,7 @@ resident:
         resident:
           select_all: true
     face-sheet:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getFaceSheetReport
       title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
       show_in_list: true
       formats: ['pdf']

@@ -546,4 +546,59 @@ class PhysicianRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb
+            ->select(
+                'p.id as id,
+                    r.id as residentId,
+                    p.firstName as firstName,
+                    p.lastName as lastName,
+                    sal.title as salutation,
+                    p.address_1 as address,
+                    rp.primary as primary,
+                    csz.stateFull as state,
+                    csz.zipMain as zip,
+                    csz.city as city,
+                    p.officePhone as officePhone,
+                    p.emergencyPhone as emergencyPhone,
+                    p.fax as fax'
+            )
+            ->innerJoin(
+                ResidentPhysician::class,
+                'rp',
+                Join::WITH,
+                'rp.physician = p'
+            )
+            ->innerJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'p.salutation = sal'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rp.resident = r'
+            )
+            ->innerJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'p.csz = csz'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('rp.primary', 'DESC')
+            ->groupBy('rp.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

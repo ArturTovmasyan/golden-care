@@ -59,6 +59,7 @@ class AllergenRepository extends EntityRepository
             ->select('
                     a.id as id,
                     a.title as title,
+                    a.description as description,
                     r.id as residentId
             ')
             ->innerJoin(
@@ -74,6 +75,7 @@ class AllergenRepository extends EntityRepository
                 'ra.resident = r'
             )
             ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('a.title')
             ->groupBy('ra.id')
             ->getQuery()
             ->getResult();

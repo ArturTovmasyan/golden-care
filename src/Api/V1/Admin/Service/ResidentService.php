@@ -10,20 +10,24 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Allergen;
+use App\Entity\Diagnosis;
 use App\Entity\Facility;
-use App\Entity\FacilityRoom;
 use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentPhone;
+use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
+use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\ContractType;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\DietaryRestriction;
+use App\Model\Report\FaceSheet;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
 use App\Model\Report\MedicationChart;
@@ -924,12 +928,68 @@ class ResidentService extends BaseService implements IGridService
 
         $data = $this->em->getRepository(Resident::class)->getResidentContracts($startDate, $endDate, $type, $typeId);
 
-        //dump($data);exit;
-
         $report = new SixtyDays();
         $report->setTitle('60 Days Roster Report');
         $report->setDate($date);
         $report->setContracts($data);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return FaceSheet
+     */
+    public function getFaceSheetReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$type && !$residentId) {
+            throw new ParameterNotFoundException('type, resident_id');
+        }
+
+        if ($type && !$typeId && !$all) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $residents = $this->em->getRepository(Resident::class)->getResidentsFullInfoByTypeOrId($type, $typeId, $residentId);
+        $residentIds = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
+        $allergens = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
+        $diagnosis = $this->em->getRepository(Diagnosis::class)->getByResidentIds($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
+
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($responsiblePersonIds);
+        }
+
+        $report = new FaceSheet();
+        $report->setResidents($residentsById);
+        $report->setMedications($medications);
+        $report->setAllergens($allergens);
+        $report->setDiagnosis($diagnosis);
+        $report->setResponsiblePersons($responsiblePersons);
+        $report->setResponsiblePersonPhones($responsiblePersonPhones);
+        $report->setPhysicians($physicians);
 
         return $report;
     }
