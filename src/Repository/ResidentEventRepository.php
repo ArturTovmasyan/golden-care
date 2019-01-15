@@ -334,28 +334,69 @@ class ResidentEventRepository extends EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('re');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return $qb
+            ->select(
+                're.id as id,
+                    r.id as residentId,
+                    ed.title as title,
+                    re.date as date,
+                    re.additionalDate as additionalDate,
+                    re.notes as notes,
+                    p.firstName as physicianFirstName,
+                    p.lastName as physicianLastName,
+                    psal.title as physicianSalutation,
+                    rp.firstName as responsiblePersonFirstName,
+                    rp.lastName as responsiblePersonLastName,
+                    rpsal.title as responsiblePersonSalutation'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                're.resident = r'
+            )
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                're.definition = ed'
+            )
+            ->leftJoin(
+                Physician::class,
+                'p',
+                Join::WITH,
+                're.physician = p'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'psal',
+                Join::WITH,
+                'p.salutation = psal'
+            )
+            ->leftJoin(
+                ResponsiblePerson::class,
+                'rp',
+                Join::WITH,
+                're.responsiblePerson = rp'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'rpsal',
+                Join::WITH,
+                'rp.salutation = rpsal'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('re.date', 'DESC')
+            ->groupBy('re.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

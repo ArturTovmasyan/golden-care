@@ -3,7 +3,7 @@ resident:
   show_in_list: true
   reports:
     profile:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getProfileReport
       title: 'Profile : Profile for selected resident / all residents'
       show_in_list: true
       formats: ['pdf']

@@ -33,6 +33,7 @@ use App\Model\Report\MealMonitor;
 use App\Model\Report\MedicationChart;
 use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
+use App\Model\Report\Profile;
 use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
@@ -990,6 +991,66 @@ class ResidentService extends BaseService implements IGridService
         $report->setResponsiblePersons($responsiblePersons);
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return Profile
+     */
+    public function getProfileReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $residentId = $request->get('resident_id') ?? false;
+
+        if ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$type && !$residentId) {
+            throw new ParameterNotFoundException('type, resident_id');
+        }
+
+        if ($type && !$typeId && !$all) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $residents = $this->em->getRepository(Resident::class)->getResidentsFullInfoByTypeOrId($type, $typeId, $residentId);
+        $residentIds = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
+        $allergens = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
+        $diagnosis = $this->em->getRepository(Diagnosis::class)->getByResidentIds($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
+        $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIds($residentIds);
+
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($responsiblePersonIds);
+        }
+
+        $report = new Profile();
+        $report->setResidents($residentsById);
+        $report->setMedications($medications);
+        $report->setAllergens($allergens);
+        $report->setDiagnosis($diagnosis);
+        $report->setResponsiblePersons($responsiblePersons);
+        $report->setResponsiblePersonPhones($responsiblePersonPhones);
+        $report->setPhysicians($physicians);
+        $report->setEvents($events);
 
         return $report;
     }
