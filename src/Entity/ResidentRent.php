@@ -20,7 +20,7 @@ use App\Annotation\Grid;
  *          {"id", "number", true, true, "rr.id"},
  *          {"start", "string", true, true, "rr.start"},
  *          {"end", "string", true, true, "rr.end"},
- *          {"period", "enum", true, true, "c.period", {"\App\Model\RentPeriod", "getTypeDefaultNames"}},
+ *          {"period", "enum", true, true, "rr.period", {"\App\Model\RentPeriod", "getTypeDefaultNames"}},
  *          {"amount", "number", true, true, "rr.amount"},
  *          {"notes", "string", true, true, "rr.notes"},
  *          {"sources", "string", true, true, "rr.source"},

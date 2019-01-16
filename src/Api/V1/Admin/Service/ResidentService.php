@@ -949,7 +949,7 @@ class ResidentService extends BaseService implements IGridService
         $typeId = $request->get('type_id') ?? false;
         $residentId = $request->get('resident_id') ?? false;
 
-        if ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!$type || ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false))) {
             throw new InvalidParameterException('type');
         }
 
@@ -1007,7 +1007,7 @@ class ResidentService extends BaseService implements IGridService
         $typeId = $request->get('type_id') ?? false;
         $residentId = $request->get('resident_id') ?? false;
 
-        if ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!$type || ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false))) {
             throw new InvalidParameterException('type');
         }
 
