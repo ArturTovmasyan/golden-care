@@ -18,8 +18,8 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_resident_rent_grid={
  *          {"id", "number", true, true, "rr.id"},
- *          {"start", "string", true, true, "rr.start"},
- *          {"end", "string", true, true, "rr.end"},
+ *          {"start", "date", true, true, "rr.start"},
+ *          {"end", "date", true, true, "rr.end"},
  *          {"period", "enum", true, true, "rr.period", {"\App\Model\RentPeriod", "getTypeDefaultNames"}},
  *          {"amount", "number", true, true, "rr.amount"},
  *          {"notes", "string", true, true, "rr.notes"},

@@ -19,8 +19,8 @@ use JMS\Serializer\Annotation as Serializer;
  * @Grid(
  *     api_admin_contract_grid={
  *          {"id", "number", true, true, "c.id"},
- *          {"start", "string", true, true, "c.start"},
- *          {"end", "string", true, true, "c.end"},
+ *          {"start", "date", true, true, "c.start"},
+ *          {"end", "date", true, true, "c.end"},
  *          {"type", "enum", true, true, "c.type", {"\App\Model\ContractType", "getTypeDefaultNames"}},
  *     }
  * )
