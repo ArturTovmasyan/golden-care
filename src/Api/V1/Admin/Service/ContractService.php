@@ -149,12 +149,10 @@ class ContractService extends BaseService implements IGridService
                 throw new ContractAlreadyExistException();
             }
 
-            $period = $params['period'] ? (int)$params['period'] : 0;
             $type = $params['type'] ? (int)$params['type'] : 0;
 
             $contract = new Contract();
             $contract->setResident($resident);
-            $contract->setPeriod($period);
             $contract->setType($type);
             $contract->setEnd(null);
 
@@ -246,10 +244,7 @@ class ContractService extends BaseService implements IGridService
                 }
             }
 
-            $period = $params['period'] ? (int)$params['period'] : 0;
-
             $entity->setResident($resident);
-            $entity->setPeriod($period);
 
             $start = $params['start'];
 
@@ -438,10 +433,8 @@ class ContractService extends BaseService implements IGridService
                 $oldContract = $action->getContract();
 
                 $resident = null;
-                $period = 0;
                 if ($oldContract) {
                     $resident = $oldContract->getResident();
-                    $period = $oldContract->getPeriod();
 
                     $oldOption = $oldContract->getOption();
                     if ($oldOption) {
@@ -453,7 +446,6 @@ class ContractService extends BaseService implements IGridService
 
                 $contract = new Contract();
                 $contract->setResident($resident);
-                $contract->setPeriod($period);
                 $contract->setType($type);
                 $contract->setEnd(null);
 

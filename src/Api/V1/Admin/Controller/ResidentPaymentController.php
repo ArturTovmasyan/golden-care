@@ -43,7 +43,9 @@ class ResidentPaymentController extends BaseController
      *
      * @apiSuccess {Int}      id              The unique identifier of the residentPayment
      * @apiSuccess {Object}   resident        The resident of the residentPayment
-     * @apiSuccess {String}   date            The date date of the residentPayment
+     * @apiSuccess {String}   start           The start date of the residentPayment
+     * @apiSuccess {String}   end             The end date of the residentPayment
+     * @apiSuccess {Int}      period          The period of the residentPayment
      * @apiSuccess {Int}      amount          The amount of the residentPayment
      * @apiSuccess {String}   notes           The notes of the residentPayment
      * @apiSuccess {Array}    source          The source of the residentPayment
@@ -58,7 +60,9 @@ class ResidentPaymentController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "date": "2016-10-01T00:00:00+00:00",
+     *                  "start": "2016-10-01T00:00:00+00:00",
+     *                  "end": null,
+     *                  "period": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
      *                  "source": [
@@ -141,7 +145,9 @@ class ResidentPaymentController extends BaseController
      *
      * @apiSuccess {Int}      id              The unique identifier of the residentPayment
      * @apiSuccess {Object}   resident        The resident of the residentPayment
-     * @apiSuccess {String}   date            The date date of the residentPayment
+     * @apiSuccess {String}   start           The start date of the residentPayment
+     * @apiSuccess {String}   end             The end date of the residentPayment
+     * @apiSuccess {Int}      period          The period of the residentPayment
      * @apiSuccess {Int}      amount          The amount of the residentPayment
      * @apiSuccess {String}   notes           The notes of the residentPayment
      * @apiSuccess {Array}    source          The source of the residentPayment
@@ -159,7 +165,9 @@ class ResidentPaymentController extends BaseController
      *                  "resident": {
      *                      "id": 1
      *                  },
-     *                  "date": "2016-10-01T00:00:00+00:00",
+     *                  "start": "2016-10-01T00:00:00+00:00",
+     *                  "end": null,
+     *                  "period": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
      *                  "source": [
@@ -206,7 +214,9 @@ class ResidentPaymentController extends BaseController
      *
      * @apiSuccess {Int}      id              The unique identifier of the residentPayment
      * @apiSuccess {Object}   resident        The resident of the residentPayment
-     * @apiSuccess {String}   date            The date date of the residentPayment
+     * @apiSuccess {String}   start           The start date of the residentPayment
+     * @apiSuccess {String}   end             The end date of the residentPayment
+     * @apiSuccess {Int}      period          The period of the residentPayment
      * @apiSuccess {Int}      amount          The amount of the residentPayment
      * @apiSuccess {String}   notes           The notes of the residentPayment
      * @apiSuccess {Array}    source          The source of the residentPayment
@@ -219,7 +229,9 @@ class ResidentPaymentController extends BaseController
      *                  "resident": {
      *                      "id": 1
      *                  },
-     *                  "date": "2016-10-01T00:00:00+00:00",
+     *                  "start": "2016-10-01T00:00:00+00:00",
+     *                  "end": null,
+     *                  "period": 1,
      *                  "amount": 5000,
      *                  "notes": "some notes",
      *                  "source": [
@@ -262,7 +274,9 @@ class ResidentPaymentController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {String}  date            The date date of the residentPayment
+     * @apiParam {String}  start           The start date of the residentPayment
+     * @apiParam {String}  end             The end date of the residentPayment
+     * @apiParam {Int}     period          The type of the residentPayment
      * @apiParam {Float}   amount          The amount of the residentPayment
      * @apiParam {String}  [notes]         The notes of the residentPayment
      * @apiParam {Array}   [source]        The payment sources of the residentPayment
@@ -270,7 +284,9 @@ class ResidentPaymentController extends BaseController
      * @apiParamExample {json} Request-Example:
      *     {
      *          "resident_id": 1,
-     *          "date": "2016-10-01",
+     *          "start": "2016-10-01",
+     *          "end": "",
+     *          "period": 1,
      *          "amount": 5000,
      *          "notes": "some notes",
      *          "source": [
@@ -309,7 +325,9 @@ class ResidentPaymentController extends BaseController
         $residentPaymentService->add(
             [
                 'resident_id' => $request->get('resident_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
+                'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
                 'source' => $request->get('source'),
@@ -332,7 +350,9 @@ class ResidentPaymentController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {String}  date            The date date of the residentPayment
+     * @apiParam {String}  start           The start date of the residentPayment
+     * @apiParam {String}  end             The end date of the residentPayment
+     * @apiParam {Int}     period          The type of the residentPayment
      * @apiParam {Float}   amount          The amount of the residentPayment
      * @apiParam {String}  [notes]         The notes of the residentPayment
      * @apiParam {Array}   [source]        The payment sources of the residentPayment
@@ -340,7 +360,9 @@ class ResidentPaymentController extends BaseController
      * @apiParamExample {json} Request-Example:
      *     {
      *          "resident_id": 1,
-     *          "date": "2016-10-01",
+     *          "start": "2016-10-01",
+     *          "end": "",
+     *          "period": 1,
      *          "amount": 5000,
      *          "notes": "some notes",
      *          "source": [
@@ -381,7 +403,9 @@ class ResidentPaymentController extends BaseController
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
+                'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
                 'source' => $request->get('source'),

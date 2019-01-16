@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\PaymentPeriod;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +18,9 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_resident_payment_grid={
  *          {"id", "number", true, true, "rp.id"},
- *          {"date", "string", true, true, "rp.date"},
+ *          {"start", "string", true, true, "rp.start"},
+ *          {"end", "string", true, true, "rp.end"},
+ *          {"period", "enum", true, true, "c.period", {"\App\Model\PaymentPeriod", "getTypeDefaultNames"}},
  *          {"amount", "number", true, true, "rp.amount"},
  *          {"notes", "string", true, true, "rp.notes"},
  *          {"sources", "string", true, true, "rp.source"},
@@ -57,10 +60,38 @@ class ResidentPayment
      * @var \DateTime
      * @Assert\NotBlank(groups={"api_admin_resident_payment_add", "api_admin_resident_payment_edit"})
      * @Assert\DateTime(groups={"api_admin_resident_payment_add", "api_admin_resident_payment_edit"})
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="start", type="datetime")
      * @Groups({"api_admin_resident_payment_grid", "api_admin_resident_payment_list", "api_admin_resident_payment_get"})
      */
-    private $date;
+    private $start;
+
+    /**
+     * @var \DateTime
+     * @Assert\DateTime(groups={"api_admin_resident_payment_add", "api_admin_resident_payment_edit"})
+     * @ORM\Column(name="end", type="datetime", nullable=true)
+     * @Groups({
+     *     "api_admin_resident_payment_grid",
+     *     "api_admin_resident_payment_list",
+     *     "api_admin_resident_payment_get"
+     * })
+     */
+    private $end;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={"api_admin_resident_payment_add", "api_admin_resident_payment_edit"})
+     * @Assert\Choice(
+     *     callback={"App\Model\PaymentPeriod","getTypeValues"},
+     *     groups={"api_admin_resident_payment_add", "api_admin_resident_payment_edit"}
+     * )
+     * @ORM\Column(name="payment_period", type="integer", length=1)
+     * @Groups({
+     *     "api_admin_resident_payment_grid",
+     *     "api_admin_resident_payment_list",
+     *     "api_admin_resident_payment_get"
+     * })
+     */
+    private $period = PaymentPeriod::MONTHLY;
 
     /**
      * @var int $amount
@@ -142,17 +173,45 @@ class ResidentPayment
     /**
      * @return \DateTime
      */
-    public function getDate(): \DateTime
+    public function getStart(): \DateTime
     {
-        return $this->date;
+        return $this->start;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime $start
      */
-    public function setDate($date): void
+    public function setStart($start): void
     {
-        $this->date = $date;
+        $this->start = $start;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getEnd(): ?\DateTime
+    {
+        return $this->end;
+    }
+
+    /**
+     * @param \DateTime $end
+     */
+    public function setEnd($end): void
+    {
+        $this->end = $end;
+    }
+
+    public function getPeriod(): ?int
+    {
+        return $this->period;
+    }
+
+    public function setPeriod($period): self
+    {
+        $this->period = $period;
+
+        return $this;
     }
 
     /**

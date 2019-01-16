@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Model\ContractType;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use App\Model\PaymentPeriod;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -20,7 +19,6 @@ use JMS\Serializer\Annotation as Serializer;
  * @Grid(
  *     api_admin_contract_grid={
  *          {"id", "number", true, true, "c.id"},
- *          {"period", "enum", true, true, "c.period", {"\App\Model\PaymentPeriod", "getTypeDefaultNames"}},
  *          {"start", "string", true, true, "c.start"},
  *          {"end", "string", true, true, "c.end"},
  *          {"type", "enum", true, true, "c.type", {"\App\Model\ContractType", "getTypeDefaultNames"}},
@@ -56,23 +54,6 @@ class Contract
      * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
      */
     private $resident;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
-     * @Assert\Choice(
-     *     callback={"App\Model\PaymentPeriod","getTypeValues"},
-     *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
-     * )
-     * @ORM\Column(name="payment_period", type="integer", length=1)
-     * @Groups({
-     *     "api_admin_contract_grid",
-     *     "api_admin_contract_list",
-     *     "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
-     * })
-     */
-    private $period = PaymentPeriod::MONTHLY;
 
     /**
      * @var \DateTime
@@ -207,18 +188,6 @@ class Contract
     public function setResident(?Resident $resident): self
     {
         $this->resident = $resident;
-
-        return $this;
-    }
-
-    public function getPeriod(): ?int
-    {
-        return $this->period;
-    }
-
-    public function setPeriod($period): self
-    {
-        $this->period = $period;
 
         return $this;
     }

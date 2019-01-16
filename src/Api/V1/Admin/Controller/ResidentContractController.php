@@ -42,7 +42,6 @@ class ResidentContractController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
-     * @apiSuccess {Int}      period               The period of the contract
      * @apiSuccess {String}   start                The start date of the contract
      * @apiSuccess {String}   end                  The end date of the contract
      * @apiSuccess {Int}      type                 The type of the contract
@@ -57,7 +56,6 @@ class ResidentContractController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "period": 1,
      *                  "start": "2018-12-11T20:18:00+00:00",
      *                  "end": null,
      *                  "type": "1"
@@ -131,7 +129,6 @@ class ResidentContractController extends BaseController
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
      * @apiSuccess {Object}   resident             The resident of the contract
-     * @apiSuccess {Int}      period               The period of the contract
      * @apiSuccess {String}   start                The start date of the contract
      * @apiSuccess {String}   end                  The end date of the contract
      * @apiSuccess {Int}      type                 The type of the contract
@@ -168,7 +165,6 @@ class ResidentContractController extends BaseController
      *                  "resident": {
      *                      "id": 1
      *                  },
-     *                  "period": 1,
      *                  "start": "2018-12-11T20:18:00+00:00",
      *                  "end": null,
      *                  "type": "1"
@@ -206,7 +202,6 @@ class ResidentContractController extends BaseController
      *
      * @apiSuccess {Int}      id                   The unique identifier of the contract
      * @apiSuccess {Object}   resident             The resident of the contract
-     * @apiSuccess {Int}      period               The period of the contract
      * @apiSuccess {String}   start                The start date of the contract
      * @apiSuccess {String}   end                  The end date of the contract
      * @apiSuccess {Int}      type                 The type of the contract
@@ -239,7 +234,6 @@ class ResidentContractController extends BaseController
      *                  "resident": {
      *                      "id": 1
      *                  },
-     *                  "period": 1,
      *                  "start": "2018-12-11T20:18:00+00:00",
      *                  "end": null,
      *                  "type": "1"
@@ -273,7 +267,6 @@ class ResidentContractController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {Int}     period          The type of the contract
      * @apiParam {Int}     type            The type of the contract
      * @apiParam {String}  start           The start date of the contract
      * @apiParam {Array}   option          The option data of the contract
@@ -281,7 +274,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Facility Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "type": 1,
      *          "start": "2016-10-01",
      *          "option": {
@@ -297,7 +289,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Apartment Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "type": 1,
      *          "start": "2016-10-01",
      *          "option": {
@@ -307,7 +298,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Region Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "type": 1,
      *          "start": "2016-10-01",
      *          "option": {
@@ -346,7 +336,6 @@ class ResidentContractController extends BaseController
         $contractService->add(
             [
                 'resident_id' => $request->get('resident_id'),
-                'period' => $request->get('period'),
                 'type' => $request->get('type'),
                 'start' => $request->get('start'),
                 'option' => $request->get('option')
@@ -369,7 +358,6 @@ class ResidentContractController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {Int}     period          The type of the contract
      * @apiParam {String}  start           The start date of the contract
      * @apiParam {String}  end             The end date of the contract
      * @apiParam {Array}   option          The option data of the contract
@@ -377,7 +365,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Facility Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "start": "2016-10-01",
      *          "end": "",
      *          "option": {
@@ -394,7 +381,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Apartment Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "start": "2016-10-01",
      *          "end": "",
      *          "option": {
@@ -405,7 +391,6 @@ class ResidentContractController extends BaseController
      * @apiParamExample {json} Region Option Request:
      *     {
      *          "resident_id": 1,
-     *          "period": 1,
      *          "start": "2016-10-01",
      *          "end": "",
      *          "option": {
@@ -447,7 +432,6 @@ class ResidentContractController extends BaseController
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
-                'period' => $request->get('period'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
                 'option' => $request->get('option')
@@ -573,7 +557,6 @@ class ResidentContractController extends BaseController
      *                   "contract": {
      *                      "id": 5,
      *                      "type": 1,
-     *                      "period": 1,
      *                      "start": "2018-12-11T20:18:00+00:00",
      *                      "end": null
      *                   },

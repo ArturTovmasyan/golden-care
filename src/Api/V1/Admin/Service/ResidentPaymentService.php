@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentPaymentNegativeRemainingTotalException;
 use App\Api\V1\Common\Service\Exception\ResidentPaymentNotFoundException;
+use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Resident;
 use App\Entity\ResidentPayment;
@@ -78,18 +79,35 @@ class ResidentPaymentService extends BaseService implements IGridService
                 }
             }
 
+            $period = $params['period'] ? (int)$params['period'] : 0;
+
             $residentPayment = new ResidentPayment();
             $residentPayment->setResident($resident);
+            $residentPayment->setPeriod($period);
             $residentPayment->setAmount($params['amount']);
             $residentPayment->setNotes($params['notes']);
 
-            $date = $params['date'];
+            $start = $params['start'];
 
-            if (!empty($date)) {
-                $date = new \DateTime($params['date']);
+            if (!empty($start)) {
+                $start = new \DateTime($params['start']);
             }
 
-            $residentPayment->setDate($date);
+            $residentPayment->setStart($start);
+
+            $end = $params['end'];
+
+            if (!empty($end)) {
+                $end = new \DateTime($params['end']);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
+                }
+            } else {
+                $end = null;
+            }
+
+            $residentPayment->setEnd($end);
 
             $paymentSources = $params['source'];
 
@@ -151,17 +169,34 @@ class ResidentPaymentService extends BaseService implements IGridService
                 }
             }
 
+            $period = $params['period'] ? (int)$params['period'] : 0;
+
             $entity->setResident($resident);
+            $entity->setPeriod($period);
             $entity->setAmount($params['amount']);
             $entity->setNotes($params['notes']);
 
-            $date = $params['date'];
+            $start = $params['start'];
 
-            if (!empty($date)) {
-                $date = new \DateTime($params['date']);
+            if (!empty($start)) {
+                $start = new \DateTime($params['start']);
             }
 
-            $entity->setDate($date);
+            $entity->setStart($start);
+
+            $end = $params['end'];
+
+            if (!empty($end)) {
+                $end = new \DateTime($params['end']);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
+                }
+            } else {
+                $end = null;
+            }
+
+            $entity->setEnd($end);
 
             $paymentSources = $params['source'];
 
