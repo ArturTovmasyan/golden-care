@@ -74,8 +74,15 @@
                 <tr>
                     <td colspan="9">
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
-                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
-                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
+                        {% if resident['rents'] is defined %}
+                            {% for rent in resident['rents'] %}
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">$&nbsp;{{ 0|number_format(2, '.', ',') }}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
+                        {% endif %}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                     </td>
@@ -291,8 +298,15 @@
                 <tr>
                     <td colspan="9">
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
-                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
-                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
+                        {% if resident['rents'] is defined %}
+                            {% for rent in resident['rents'] %}
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">$&nbsp;{{ 0|number_format(2, '.', ',') }}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
+                        {% endif %}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                     </td>
@@ -375,8 +389,15 @@
                             <tr>
                                 <td colspan="9">
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
-                                    <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
-                                    <div style="float: left; width: 20%"><b style="font-size: 12px !important;">TODO</b></div>
+                                    {% if resident['rents'] is defined %}
+                                        {% for rent in resident['rents'] %}
+                                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">$&nbsp;{{ 0|number_format(2, '.', ',') }}</b></div>
+                                        <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
+                                    {% endif %}
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                                 </td>

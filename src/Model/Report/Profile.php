@@ -111,5 +111,15 @@ class Profile extends Base
             $this->residents[$event['residentId']]['events'][] = $event;
         }
     }
+
+    /**
+     * @param $rents
+     */
+    public function setRents($rents): void
+    {
+        foreach ($rents as $rent) {
+            $this->residents[$rent['residentId']]['rents'][] = $rent;
+        }
+    }
 }
 

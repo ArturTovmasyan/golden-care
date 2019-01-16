@@ -17,6 +17,7 @@ use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentPhone;
+use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
@@ -1033,6 +1034,7 @@ class ResidentService extends BaseService implements IGridService
         $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
         $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
         $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIds($residentIds);
+        $rents = $this->em->getRepository(ResidentRent::class)->getByResidentIds($residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -1051,6 +1053,7 @@ class ResidentService extends BaseService implements IGridService
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
         $report->setEvents($events);
+        $report->setRents($rents);
 
         return $report;
     }

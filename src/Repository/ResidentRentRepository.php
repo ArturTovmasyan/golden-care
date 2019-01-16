@@ -44,4 +44,31 @@ class ResidentRentRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rr');
+
+        return $qb
+            ->select('
+                    rr.id as id,
+                    rr.start as start,
+                    rr.amount as amount,
+                    r.id as residentId
+            ')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rr.resident = r'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
+            ->getQuery()
+            ->getResult();
+    }
 }
