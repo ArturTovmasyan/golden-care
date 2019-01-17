@@ -1,0 +1,4 @@
+{{ data.strategy }} Name, Room/Bed Number, Notes
+{% for datum in data.data %}
+    {{ datum.typeName }},{{ datum.roomNumber }} {{ datum.bedNumber }}, {{ datum.notes }},
+{% endfor %}

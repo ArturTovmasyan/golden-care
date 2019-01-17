@@ -75,12 +75,19 @@ class ApartmentBedRepository extends EntityRepository
         return $qb
             ->select(
                 'ab.id AS id,
-                type.id AS typeId'
-            )
+                type.id AS typeId,
+                type.name AS typeName,
+                r.number AS roomNumber,
+                r.notes AS notes,
+                ab.number AS bedNumber
+            ')
             ->join('ab.room', 'r')
             ->join('r.apartment', 'type')
             ->where('r.id IN (:ids)')
             ->setParameter('ids', $ids)
+            ->orderBy('type.name')
+            ->addOrderBy('r.number')
+            ->addOrderBy('ab.number')
             ->getQuery()
             ->getResult();
     }

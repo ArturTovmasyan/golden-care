@@ -1,0 +1,69 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% set i = 0 %}
+    {% for datum in data.data %}
+        {% set i = i + 1 %}
+        {% if renderedGroup == datum.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = datum.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
+
+        {% if newGroup %}
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered">
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="3">
+                    <div style="margin-bottom: 5px;">
+                        <div style="float: left">
+                            <div style="height: 5px;"></div>
+                            <b style="font-size: 18px !important">ROOM&nbsp;VACANCY&nbsp;LIST</b>
+                            <p style="margin-bottom: 5px;"></p>
+                            <b style="font-size: 14px !important">{{ data.strategy }}&nbsp;{{ datum.typeName }}</b>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <td><b>{{ data.strategy }}&nbsp;Name</b></td>
+                <td><b>Room/Bed&nbsp;Number</b></td>
+                <td><b>Notes</b></td>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+
+        <tr>
+            <td>{{ datum.typeName }}</td>
+            <td>{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>
+            <td>{{ datum.notes }}</td>
+        </tr>
+    {% endfor %}
+
+    {% if i == 0 %}
+        <div style="height: 5px;"></div>
+        <div style="font-size: 18px !important">No&nbsp;Vacant&nbsp;Rooms</div>
+    {% endif %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    <table class="report-table main-table">
+        <tr class="divider"></tr>
+    </table>
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
