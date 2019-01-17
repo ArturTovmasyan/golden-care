@@ -1089,7 +1089,7 @@ class ResidentService extends BaseService implements IGridService
         if ((int)$type === ContractType::TYPE_FACILITY) {
             if ($typeId) {
                 $rooms = $this->em->getRepository(FacilityRoom::class)->findBy(['facility' => $typeId]);
-                $types = $this->em->getRepository(Facility::class)->findOneBy(['id' => $typeId]);
+                $types = $this->em->getRepository(Facility::class)->findBy(['id' => $typeId]);
             }
 
             if ($all) {
@@ -1139,7 +1139,7 @@ class ResidentService extends BaseService implements IGridService
         elseif ((int)$type === ContractType::TYPE_APARTMENT) {
             if ($typeId) {
                 $rooms = $this->em->getRepository(ApartmentRoom::class)->findBy(['apartment' => $typeId]);
-                $types = $this->em->getRepository(Apartment::class)->findOneBy(['id' => $typeId]);
+                $types = $this->em->getRepository(Apartment::class)->findBy(['id' => $typeId]);
             }
 
             if ($all) {
