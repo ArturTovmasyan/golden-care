@@ -1,0 +1,60 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% set i = 0 %}
+
+    <table class="report-table bordered" style="margin: 0;">
+        <thead>
+        <tr>
+            <th colspan="3">
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left">
+                        <div style="height: 5px;"></div>
+                        <b style="font-size: 18px !important">Room&nbsp;Occupancy&nbsp;Rates</b>
+                        <p style="margin-bottom: 5px;"></p>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td><b>{{ data.strategy }}&nbsp;Name</b></td>
+            <td><b>License&nbsp;Max</b></td>
+            <td><b>License&nbsp;Capacity</b></td>
+            <td><b>Available&nbsp;Rooms</b></td>
+            <td><b>Resident&nbsp;Count</b></td>
+            <td><b>Occupancy&nbsp;Rate</b></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for datum in data.data %}
+            {% set i = i + 1 %}
+            <tr>
+                <td>{{ datum.name }}</td>
+                <td>{{ datum.capacity }}</td>
+                <td>{{ datum.licenseCapacity }}</td>
+                <td>{{ datum.availableCount }}</td>
+                <td>{{ datum.occupiedCount }}</td>
+                <td>
+                    {% if datum.availableCount > 0 %}
+                        {{ ((datum.occupiedCount / datum.availableCount) * 100)|number_format(2) }}&nbsp;%
+                    {% else %}
+                        0.00&nbsp;%
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        {% if i == 0 %}
+            <div style="height: 5px;"></div>
+            <div style="font-size: 18px !important">No&nbsp;Occupancy&nbsp;Rooms</div>
+        {% endif %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

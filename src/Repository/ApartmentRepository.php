@@ -52,4 +52,16 @@ class ApartmentRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function orderedFindAll()
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        return $qb->orderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

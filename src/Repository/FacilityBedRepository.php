@@ -63,4 +63,25 @@ class FacilityBedRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function getBedIdAndTypeIdByRooms($ids)
+    {
+        $qb = $this->createQueryBuilder('fb');
+
+        return $qb
+            ->select(
+                'fb.id AS id,
+                type.id AS typeId'
+            )
+            ->join('fb.room', 'r')
+            ->join('r.facility', 'type')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -10,20 +10,26 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Allergen;
+use App\Entity\Apartment;
+use App\Entity\ApartmentBed;
+use App\Entity\ApartmentRoom;
+use App\Entity\ContractAction;
 use App\Entity\Diagnosis;
 use App\Entity\Facility;
+use App\Entity\FacilityBed;
+use App\Entity\FacilityRoom;
 use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentPhone;
 use App\Entity\ResidentRent;
-use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\ContractType;
+use App\Model\Report\RoomOccupancyRate;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
@@ -1054,6 +1060,136 @@ class ResidentService extends BaseService implements IGridService
         $report->setPhysicians($physicians);
         $report->setEvents($events);
         $report->setRents($rents);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomOccupancyRate
+     */
+    public function getRoomOccupancyRateReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+
+        if (!$type || ($type && !\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_APARTMENT], false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $rooms = [];
+        $types = [];
+        $data = [];
+
+        if ((int)$type === ContractType::TYPE_FACILITY) {
+            if ($typeId) {
+                $rooms = $this->em->getRepository(FacilityRoom::class)->findBy(['facility' => $typeId]);
+                $types = $this->em->getRepository(Facility::class)->findOneBy(['id' => $typeId]);
+            }
+
+            if ($all) {
+                $rooms = $this->em->getRepository(FacilityRoom::class)->findAll();
+                $types = $this->em->getRepository(Facility::class)->orderedFindAll();
+            }
+
+            $bedIds = [];
+            $occupancyBedIds = [];
+            if (!empty($rooms)) {
+
+                $roomIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $rooms);
+
+                $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdAndTypeIdByRooms($roomIds);
+
+                $ids = [];
+                if (\count($facilityBeds)) {
+                    $ids = array_map(function($item){return $item['id'];} , $facilityBeds);
+                    $bedIds = array_column($facilityBeds, 'typeId', 'id');
+                    $bedIds = array_count_values($bedIds);
+                }
+
+                $contractActions = $this->em->getRepository(ContractAction::class)->getBedIdAndTypeId(ContractType::TYPE_FACILITY, $ids);
+
+                if (!empty($contractActions)) {
+                    $occupancyBedIds = array_column($contractActions, 'typeId', 'bedId');
+                    $occupancyBedIds = array_count_values($occupancyBedIds);
+                }
+            }
+
+            if (!empty($types)) {
+                /** @var Facility $facility */
+                foreach ($types as $facility) {
+                    $data[] = [
+                        'typeId' => $facility->getId(),
+                        'name' => $facility->getName(),
+                        'capacity' => $facility->getCapacity(),
+                        'licenseCapacity' => $facility->getLicenseCapacity(),
+                        'availableCount' => array_key_exists($facility->getId(), $bedIds) ? $bedIds[$facility->getId()] : 0,
+                        'occupiedCount' => array_key_exists($facility->getId(), $occupancyBedIds) ? $occupancyBedIds[$facility->getId()] : 0,
+                    ];
+                }
+            }
+        }
+        elseif ((int)$type === ContractType::TYPE_APARTMENT) {
+            if ($typeId) {
+                $rooms = $this->em->getRepository(ApartmentRoom::class)->findBy(['apartment' => $typeId]);
+                $types = $this->em->getRepository(Apartment::class)->findOneBy(['id' => $typeId]);
+            }
+
+            if ($all) {
+                $rooms = $this->em->getRepository(ApartmentRoom::class)->findAll();
+                $types = $this->em->getRepository(Apartment::class)->orderedFindAll();
+            }
+
+            $bedIds = [];
+            $occupancyBedIds = [];
+            if (!empty($rooms)) {
+
+                $roomIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $rooms);
+
+                $apartmentBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdAndTypeIdByRooms($roomIds);
+
+                $ids = [];
+                if (\count($apartmentBeds)) {
+                    $ids = array_map(function($item){return $item['id'];} , $apartmentBeds);
+                    $bedIds = array_column($apartmentBeds, 'typeId', 'id');
+                    $bedIds = array_count_values($bedIds);
+                }
+
+                $contractActions = $this->em->getRepository(ContractAction::class)->getBedIdAndTypeId(ContractType::TYPE_APARTMENT, $ids);
+
+                if (!empty($contractActions)) {
+                    $occupancyBedIds = array_column($contractActions, 'typeId', 'bedId');
+                    $occupancyBedIds = array_count_values($occupancyBedIds);
+                }
+            }
+
+            if (!empty($types)) {
+                /** @var Apartment $apartment */
+                foreach ($types as $apartment) {
+                    $data[] = [
+                        'typeId' => $apartment->getId(),
+                        'name' => $apartment->getName(),
+                        'capacity' => $apartment->getCapacity(),
+                        'licenseCapacity' => $apartment->getLicenseCapacity(),
+                        'availableCount' => array_key_exists($apartment->getId(), $bedIds) ? $bedIds[$apartment->getId()] : 0,
+                        'occupiedCount' => array_key_exists($apartment->getId(), $occupancyBedIds) ? $occupancyBedIds[$apartment->getId()] : 0,
+                    ];
+                }
+            }
+        }
+
+        $report = new RoomOccupancyRate();
+        $report->setData($data);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
 
         return $report;
     }

@@ -51,4 +51,16 @@ class FacilityRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function orderedFindAll()
+    {
+        $qb = $this->createQueryBuilder('f');
+
+        return $qb->orderBy('f.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

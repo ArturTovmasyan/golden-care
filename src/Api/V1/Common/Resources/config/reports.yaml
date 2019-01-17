@@ -231,7 +231,7 @@ room:
         group:
           select_all: true
     room-occupancy:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getRoomOccupancyRateReport
       title: 'Room Occupancy Rates : Facility Occupancy Rate Summary (calculated as of today)'
       show_in_list: true
       formats: ['pdf', 'csv']
