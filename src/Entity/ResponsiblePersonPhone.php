@@ -38,7 +38,7 @@ class ResponsiblePersonPhone
     private $responsiblePerson;
 
     /**
-     * @ORM\Column(name="extension", type="integer", nullable=false)
+     * @ORM\Column(name="extension", type="integer", nullable=true)
      * @Groups({
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get"

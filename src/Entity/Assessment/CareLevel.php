@@ -44,26 +44,6 @@ class CareLevel
     private $id;
 
     /**
-     * @var Space
-     * @Assert\NotNull(
-     *      message = "Please select a Space",
-     *      groups={
-     *          "api_admin_assessment_care_level_add",
-     *          "api_admin_assessment_care_level_edit"
-     *      }
-     * )
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
-     * })
-     * @Groups({
-     *      "api_admin_assessment_care_level_list",
-     *      "api_admin_assessment_care_level_get"
-     * })
-     */
-    private $space;
-
-    /**
      * @var CareLevelGroup
      * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\CareLevelGroup", inversedBy="careLevels", cascade={"persist"})
      * @ORM\JoinColumns({
@@ -140,22 +120,6 @@ class CareLevel
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return Space
-     */
-    public function getSpace(): Space
-    {
-        return $this->space;
-    }
-
-    /**
-     * @param Space $space
-     */
-    public function setSpace(Space $space): void
-    {
-        $this->space = $space;
     }
 
     /**

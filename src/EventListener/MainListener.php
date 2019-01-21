@@ -137,9 +137,9 @@ class MainListener
             /** @var User $user **/
             $user = $this->security->getToken()->getUser();
 
-            $this->checkPermission($event, $user);
-
             if (($user instanceof User) && !($user->isActiveNow())) {
+                $this->checkPermission($event, $user);
+
                 $user->setLastActivityAt(new \DateTime());
 
                 $this->em->persist($user);

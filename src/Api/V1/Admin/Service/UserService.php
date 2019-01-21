@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\User;
+use App\Entity\UserPhone;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -60,8 +61,18 @@ class UserService extends BaseService implements IGridService
             $user->setEmail($params['email']);
             $user->setLastActivityAt(new \DateTime());
             $user->setEnabled((bool) $params['email']);
-            $user->setPhone($params['phone']);
+//            $user->setPhone($params['phone']);
             $user->setCompleted(true);
+
+            if($params['phone']) { // TODO: review
+                $userPhone = new UserPhone();
+                $userPhone->setUser($user);
+                $userPhone->setCompatibility( null);
+                $userPhone->setType(\App\Model\Phone::TYPE_OFFICE);
+                $userPhone->setNumber($params['phone']);
+                $userPhone->setPrimary(true);
+                $userPhone->setSmsEnabled(false);
+            }
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);

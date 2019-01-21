@@ -27,8 +27,8 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {"last_name", "string", true, true, "u.lastName"},
  *          {"username", "string", true, true, "u.username"},
  *          {"email", "string", true, true, "u.email"},
- *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\User", "enabledValues"}},
- *          {"completed", "enum", true, true, "u.completed", {"\App\Model\User", "completedValues"}},
+ *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"completed", "enum", true, true, "u.completed", {"\App\Model\Boolean", "defaultValues"}},
  *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
  *     },
  *     api_dashboard_space_user_grid={
@@ -37,8 +37,8 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {"last_name", "string", true, true, "u.lastName"},
  *          {"username", "string", true, true, "u.username"},
  *          {"email", "string", true, true, "u.email"},
- *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\User", "enabledValues"}},
- *          {"completed", "enum", true, true, "u.completed", {"\App\Model\User", "completedValues"}},
+ *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\Boolean", "defaultValues"}},
+ *          {"completed", "enum", true, true, "u.completed", {"\App\Model\Boolean", "defaultValues"}},
  *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
  *     }
  * )
@@ -217,11 +217,10 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @SecurityAssert\UserPassword(groups={"api_profile_edit", "api_profile_change_password"})
-     * @Assert\NotBlank(groups={"api_profile_edit", "api_profile_change_password"})
+     * @SecurityAssert\UserPassword(groups={"api_profile_change_password"})
+     * @Assert\NotBlank(groups={"api_profile_change_password"})
      * @ValidationSerializedName(
-     *     api_profile_change_password="password",
-     *     api_profile_edit="password"
+     *     api_profile_change_password="password"
      * )
      */
     private $oldPassword;
