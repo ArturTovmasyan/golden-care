@@ -165,8 +165,9 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="UserPhone", mappedBy="user")
      * @Groups({
-     *      "api_profile_me",
-     *      "api_profile_edit"
+     *     "api_admin_user_get",
+     *     "api_profile_me",
+     *     "api_profile_edit"
      * })
      */
     private $phones;
@@ -238,7 +239,13 @@ class User implements UserInterface
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
      *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
-     *     groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"}
+     *     groups={
+     *         "api_profile_change_password",
+     *         "api_admin_user_add",
+     *         "api_admin_user_edit",
+     *         "api_dashboard_account_signup",
+     *         "api_dashboard_account_reset_password"
+     *     }
      * )
      * @ValidationSerializedName(
      *     api_profile_change_password="new_password",
@@ -263,6 +270,7 @@ class User implements UserInterface
      *     groups={
      *         "api_profile_change_password",
      *         "api_admin_user_add",
+     *         "api_admin_user_edit",
      *         "api_dashboard_account_signup",
      *         "api_dashboard_account_reset_password"
      *     },
@@ -271,6 +279,7 @@ class User implements UserInterface
      * @ValidationSerializedName(
      *     api_profile_change_password="re_new_password",
      *     api_admin_user_add="re_password",
+     *     api_admin_user_edit="re_password",
      *     api_dashboard_account_reset_password="re_password",
      *     api_dashboard_account_signup="re_password"
      * )

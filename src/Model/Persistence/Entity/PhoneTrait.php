@@ -14,6 +14,7 @@ trait PhoneTrait
     /**
      * @ORM\Column(name="compatibility", type="integer", nullable=true)
      * @Groups({
+     *      "api_admin_user_get",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
@@ -28,6 +29,8 @@ trait PhoneTrait
      * @Assert\Choice(
      *      callback={"App\Model\Phone","getTypeValues"},
      *      groups={
+     *          "api_admin_user_add",
+     *          "api_admin_user_edit",
      *          "api_admin_resident_add",
      *          "api_admin_resident_edit",
      *          "api_admin_responsible_person_add",
@@ -36,6 +39,7 @@ trait PhoneTrait
      *      }
      * )
      * @Groups({
+     *      "api_admin_user_get",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
@@ -48,6 +52,8 @@ trait PhoneTrait
     /**
      * @ORM\Column(name="number", type="string", nullable=false, length=50)
      * @Assert\NotBlank(groups={
+     *      "api_admin_user_add",
+     *      "api_admin_user_edit",
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit",
      *     "api_admin_responsible_person_add",
@@ -55,6 +61,7 @@ trait PhoneTrait
      *     "api_profile_edit"
      * })
      * @Groups({
+     *      "api_admin_user_get",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
@@ -68,6 +75,8 @@ trait PhoneTrait
      * @var bool
      * @ORM\Column(name="is_primary", type="boolean", nullable=false)
      * @Assert\NotNull(groups={
+     *      "api_admin_user_add",
+     *      "api_admin_user_edit",
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit",
      *     "api_admin_responsible_person_add",
@@ -75,6 +84,7 @@ trait PhoneTrait
      *     "api_profile_edit"
      * })
      * @Groups({
+     *      "api_admin_user_get",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
@@ -88,6 +98,7 @@ trait PhoneTrait
      * @var bool
      * @ORM\Column(name="is_sms_enabled", type="boolean", nullable=false)
      * @Groups({
+     *      "api_admin_user_get",
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",

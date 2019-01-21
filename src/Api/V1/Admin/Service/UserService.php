@@ -59,20 +59,10 @@ class UserService extends BaseService implements IGridService
             $user->setLastName($params['last_name']);
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
+            $user->setEnabled((bool) $params['enabled']);
             $user->setLastActivityAt(new \DateTime());
-            $user->setEnabled((bool) $params['email']);
-//            $user->setPhone($params['phone']);
-            $user->setCompleted(true);
 
-            if($params['phone']) { // TODO: review
-                $userPhone = new UserPhone();
-                $userPhone->setUser($user);
-                $userPhone->setCompatibility( null);
-                $userPhone->setType(\App\Model\Phone::TYPE_OFFICE);
-                $userPhone->setNumber($params['phone']);
-                $userPhone->setPrimary(true);
-                $userPhone->setSmsEnabled(false);
-            }
+            $user->setCompleted(true);
 
             // encode password
             $encoded = $this->encoder->encodePassword($user, $params['password']);
@@ -81,6 +71,8 @@ class UserService extends BaseService implements IGridService
             $user->setPassword($encoded);
 
             $this->validate($user, null, ["api_admin_user_add"]);
+
+            $this->savePhones($user, $params['phones'] ?? [], 'api_admin_user_add');
 
             $this->em->persist($user);
             $this->em->flush();
@@ -102,6 +94,7 @@ class UserService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var User $user */
             $user = $this->em->getRepository(User::class)->find($id);
 
             if (is_null($user)) {
@@ -110,10 +103,21 @@ class UserService extends BaseService implements IGridService
 
             $user->setFirstName($params['first_name']);
             $user->setLastName($params['last_name']);
+            $user->setUsername(strtolower($params['username']));
+            $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
-            $user->setPhone($params['phone']);
+
+            if(!empty($params['password'])) {
+                // encode password
+                $encoded = $this->encoder->encodePassword($user, $params['password']);
+                $user->setConfirmPassword($params['re_password']);
+                $user->setPlainPassword($params['password']);
+                $user->setPassword($encoded);
+            }
 
             $this->validate($user, null, ["api_admin_user_edit"]);
+
+            $this->savePhones($user, $params['phones'] ?? [], 'api_admin_user_edit');
 
             $this->em->persist($user);
             $this->em->flush();
@@ -163,6 +167,49 @@ class UserService extends BaseService implements IGridService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+
+
+    /**
+     * @param User $user
+     * @param array $phones
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    private function savePhones($user, array $phones = [], $group)
+    {
+        /**
+         * @var UserPhone[] $oldPhones
+         */
+        $oldPhones = $this->em->getRepository(UserPhone::class)->findBy(['user' => $user]);
+
+        foreach ($oldPhones as $phone) {
+            $this->em->remove($phone);
+        }
+
+        $hasPrimary = false;
+
+        foreach($phones as $phone) {
+            $userPhone = new UserPhone();
+            $userPhone->setUser($user);
+            $userPhone->setCompatibility($phone['compatibility'] ?? null);
+            $userPhone->setType($phone['type']);
+            $userPhone->setNumber($phone['number']);
+            $userPhone->setPrimary((bool) $phone['primary'] ?? false);
+            $userPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
+
+            if ($userPhone->isPrimary()) {
+                if ($hasPrimary) {
+                    throw new PhoneSinglePrimaryException();
+                }
+
+                $hasPrimary = true;
+            }
+
+            $this->validate($userPhone, null, [$group]);
+            $this->em->persist($userPhone);
         }
     }
 }

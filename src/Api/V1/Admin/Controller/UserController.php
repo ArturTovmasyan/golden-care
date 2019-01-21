@@ -285,7 +285,7 @@ class UserController extends BaseController
                 'email'       => $request->get('email'),
                 'password'    => $request->get('password'),
                 're_password' => $request->get('re_password'),
-                'phone'       => $request->get('phone'),
+                'phones'      => $request->get('phones'),
                 'enabled'     => $request->get('enabled'),
             ]
         );
@@ -346,7 +346,11 @@ class UserController extends BaseController
             [
                 'first_name'  => $request->get('first_name'),
                 'last_name'   => $request->get('last_name'),
-                'phone'       => $request->get('phone'),
+                'username'    => $request->get('username'),
+                'email'       => $request->get('email'),
+                'password'    => $request->get('password'),
+                're_password' => $request->get('re_password'),
+                'phones'      => $request->get('phones'),
                 'enabled'     => $request->get('enabled'),
             ]
         );
