@@ -175,7 +175,7 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
+     * @Assert\NotNull(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
