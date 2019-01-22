@@ -7,43 +7,39 @@ class RentPeriod
     /**
      * Types
      */
-    const YEARLY = 1;
-    const MONTHLY = 2;
+    const HOURLY = 1;
+    const DAILY = 2;
     const WEEKLY = 3;
-    const DAILY = 4;
-    const HOURLY = 5;
+    const MONTHLY = 4;
 
     /**
      * @var array
      */
     private static $typeNames = [
-        self::YEARLY => 'Yearly',
-        self::MONTHLY => 'Monthly',
-        self::WEEKLY => 'Weekly',
-        self::DAILY => 'Daily',
         self::HOURLY => 'Hourly',
+        self::DAILY => 'Daily',
+        self::WEEKLY => 'Weekly',
+        self::MONTHLY => 'Monthly',
     ];
 
     /**
      * @var array
      */
     private static $typeDefaultNames = [
-        'Yearly' => '1',
-        'Monthly' => '2',
+        'Hourly' => '1',
+        'Daily' => '2',
         'Weekly' => '3',
-        'Daily' => '4',
-        'Hourly' => '5',
+        'Monthly' => '4',
     ];
 
     /**
      * @var array
      */
     private static $typeValues = [
-        self::YEARLY,
-        self::MONTHLY,
-        self::WEEKLY,
-        self::DAILY,
         self::HOURLY,
+        self::DAILY,
+        self::WEEKLY,
+        self::MONTHLY,
     ];
 
     /**
