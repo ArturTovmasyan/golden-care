@@ -251,14 +251,14 @@ class Grid
                     continue;
                 }
 
-                if (!isset($filter['c']) || !isset($filter['v'])) {
-                    continue;
-                }
+//                if (!isset($filter['c']) || !isset($filter['v'])) {
+//                    continue;
+//                }
 
                 $fieldKey    = $options[$key]['field'];
                 $suffix = 0;
 
-                switch ($options[$key][self::FIELD_OPTIONS[self::FIELD_OPTION_TYPE]]) {
+                switch ($options[$key]['type']) {
                     case self::FIELD_TYPE_TEXT:
                         switch ($filter['c']) {
                             case '0':
@@ -282,6 +282,7 @@ class Grid
                                 break;*/
                         }
                         break;
+                    case self::FIELD_TYPE_ID:
                     case self::FIELD_TYPE_NUMBER:
                         switch ($filter['c']) {
                             case '0': // =
@@ -312,6 +313,8 @@ class Grid
                         }
                         break;
                     case self::FIELD_TYPE_DATE:
+                    case self::FIELD_TYPE_TIME:
+                    case self::FIELD_TYPE_DATETIME:
                         switch ($filter['c']) {
                             case '0': // =
                                 $this->queryBuilder->andHaving("$fieldKey = :date_$suffix");
@@ -338,6 +341,16 @@ class Grid
                             foreach ($filter['v'] as $idx => $item) {
                                 $enumHaving .= " OR $fieldKey = :enum_$suffix" . "_$idx";
                                 $this->queryBuilder->setParameter("enum_$suffix" . "_$idx", $idx);
+                            }
+                            $this->queryBuilder->andHaving($this->removePrefix($enumHaving, " OR "));
+                        }
+                        break;
+                    case self::FIELD_TYPE_BOOLEAN:
+                        if (count($filter['v']) > 0) {
+                            $enumHaving = "";
+                            foreach ($filter['v'] as $idx => $item) {
+                                $enumHaving .= " OR $fieldKey = :enum_$suffix" . "_$idx";
+                                $this->queryBuilder->setParameter("enum_$suffix" . "_$idx", boolval($item));
                             }
                             $this->queryBuilder->andHaving($this->removePrefix($enumHaving, " OR "));
                         }
