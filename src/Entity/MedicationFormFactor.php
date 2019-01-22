@@ -16,9 +16,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_medication_form_factor")
  * @Grid(
  *     api_admin_medication_form_factor_grid={
- *          {"id", "number", true, true, "mff.id"},
- *          {"title", "string", true, true, "mff.title"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "mff.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "mff.title"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

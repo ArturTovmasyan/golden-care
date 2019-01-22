@@ -27,9 +27,27 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="tbl_facility_bed")
  * @Grid(
  *     api_admin_facility_bed_grid={
- *          {"id", "number", true, true, "fb.id"},
- *          {"number", "string", true, true, "fb.number"},
- *          {"room", "string", true, true, "fr.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fb.id"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fb.number"
+ *          },
+ *          {
+ *              "id"         = "room",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fr.name"
+ *          }
  *     }
  * )
  */

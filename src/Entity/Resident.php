@@ -14,11 +14,43 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass="App\Repository\ResidentRepository")
  * @Grid(
  *     api_admin_resident_grid={
- *          {"id",         "number", true, true, "r.id"},
- *          {"full_name",  "string", true, true, "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, r.lastName)"},
- *          {"gender",     "enum", true, true, "r.gender", {"\App\Model\User", "genderValues"}},
- *          {"birthday",   "date", true, true, "r.birthday"},
- *          {"space",      "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "full_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, r.lastName)",
+ *              "link"       = "/resident/:id"
+ *          },
+ *          {
+ *              "id"         = "gender",
+ *              "type"       = "enum",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.gender",
+ *              "values"     = "\App\Model\User::genderValues"
+ *          },
+ *          {
+ *              "id"         = "birthday",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.birthday"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

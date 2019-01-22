@@ -18,8 +18,20 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_assessment_care_level_group")
  * @Grid(
  *     api_admin_assessment_care_level_group_grid={
- *          {"id", "number", true, true, "aclg.id"},
- *          {"title", "string", true, true, "aclg.title"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "aclg.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "aclg.title"
+ *          }
  *     }
  * )
  */

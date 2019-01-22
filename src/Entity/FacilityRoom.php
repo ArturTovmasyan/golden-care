@@ -25,11 +25,41 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_facility_room")
  * @Grid(
  *     api_admin_facility_room_grid={
- *          {"id", "number", true, true, "fr.id"},
- *          {"number", "string", true, true, "fr.number"},
- *          {"floor", "number", true, true, "fr.floor"},
- *          {"notes", "string", true, true, "fr.notes"},
- *          {"facility", "string", true, true, "f.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fr.id"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fr.number"
+ *          },
+ *          {
+ *              "id"         = "floor",
+ *              "type"       = "number",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fr.floor"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "fr.notes"
+ *          },
+ *          {
+ *              "id"         = "facility",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.name"
+ *          }
  *     }
  * )
  */

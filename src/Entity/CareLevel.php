@@ -26,10 +26,34 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_care_level")
  * @Grid(
  *     api_admin_care_level_grid={
- *          {"id", "number", true, true, "cl.id"},
- *          {"title", "string", true, true, "cl.title"},
- *          {"description", "string", true, true, "cl.description"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "cl.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "cl.title"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "cl.description"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

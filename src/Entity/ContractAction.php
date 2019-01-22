@@ -15,9 +15,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_contract_action")
  * @Grid(
  *     api_admin_contract_action_grid={
- *          {"id", "number", true, true, "ca.id"},
- *          {"start", "string", true, true, "ca.start"},
- *          {"end", "string", true, true, "ca.end"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ca.id"
+ *          },
+ *          {
+ *              "id"         = "start",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ca.start"
+ *          },
+ *          {
+ *              "id"         = "end",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ca.end"
+ *          }
  *     }
  * )
  */

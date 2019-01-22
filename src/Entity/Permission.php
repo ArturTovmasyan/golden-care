@@ -13,12 +13,36 @@ use App\Annotation\Grid as Grid;
  * @ORM\Entity(repositoryClass="App\Repository\PermissionRepository")
  * @Grid(
  *     api_dashboard_permission_grid={
- *          {"id", "number", true, true, "p.id"},
- *          {"name", "string", true, true, "p.name"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.name"
+ *          }
  *     },
  *     api_admin_permission_grid={
- *          {"id", "number", true, true, "p.id"},
- *          {"name", "string", true, true, "p.name"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.name"
+ *          }
  *     }
  * )
  */

@@ -26,9 +26,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_salutation")
  * @Grid(
  *     api_admin_salutation_grid={
- *          {"id", "number", true, true, "sa.id"},
- *          {"title", "string", true, true, "sa.title"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sa.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sa.title"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

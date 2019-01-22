@@ -17,11 +17,41 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_assessment_care_level")
  * @Grid(
  *     api_admin_assessment_care_level_grid={
- *          {"id", "number", true, true, "acl.id"},
- *          {"title", "string", true, true, "acl.title"},
- *          {"level_low", "string", true, true, "acl.levelLow"},
- *          {"level_high", "string", true, true, "acl.levelHigh"},
- *          {"care_level_group", "string", true, true, "aclg.title"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "acl.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "acl.title"
+ *          },
+ *          {
+ *              "id"         = "level_low",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "acl.levelLow"
+ *          },
+ *          {
+ *              "id"         = "level_high",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "acl.levelHigh"
+ *          },
+ *          {
+ *              "id"         = "care_level_group",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "aclg.title"
+ *          }
  *     }
  * )
  */

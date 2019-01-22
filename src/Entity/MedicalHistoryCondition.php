@@ -16,10 +16,34 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_medical_history_condition")
  * @Grid(
  *     api_admin_medical_history_condition_grid={
- *          {"id", "number", true, true, "mhc.id"},
- *          {"title", "string", true, true, "mhc.title"},
- *          {"description", "string", true, true, "mhc.description"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "mhc.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "mhc.title"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "mhc.description"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

@@ -16,11 +16,41 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_diagnosis")
  * @Grid(
  *     api_admin_diagnosis_grid={
- *          {"id", "number", true, true, "d.id"},
- *          {"title", "string", true, true, "d.title"},
- *          {"acronym", "string", true, true, "d.acronym"},
- *          {"description", "string", true, true, "d.description"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.title"
+ *          },
+ *          {
+ *              "id"         = "acronym",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.acronym"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.description"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

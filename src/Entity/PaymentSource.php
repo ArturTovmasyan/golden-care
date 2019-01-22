@@ -16,9 +16,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_payment_source")
  * @Grid(
  *     api_admin_payment_source_grid={
- *          {"id", "number", true, true, "ps.id"},
- *          {"title", "string", true, true, "ps.title"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ps.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ps.title"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

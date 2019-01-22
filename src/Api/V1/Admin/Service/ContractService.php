@@ -154,7 +154,6 @@ class ContractService extends BaseService implements IGridService
             $contract = new Contract();
             $contract->setResident($resident);
             $contract->setType($type);
-            $contract->setEnd(null);
 
             $start = $params['start'];
 
@@ -163,6 +162,20 @@ class ContractService extends BaseService implements IGridService
             }
 
             $contract->setStart($start);
+
+            $end = $params['end'];
+
+            if (!empty($end)) {
+                $end = new \DateTime($params['end']);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
+                }
+            } else {
+                $end = null;
+            }
+
+            $contract->setEnd($end);
 
             $this->validate($contract, null, ['api_admin_contract_add']);
             $this->em->persist($contract);

@@ -16,9 +16,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_physician")
  * @Grid(
  *     api_admin_resident_physician_grid={
- *          {"id", "number", true, true, "rp.id"},
- *          {"physician", "string", true, true, "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"},
- *          {"primary", "number", true, true, "rp.primary"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rp.id"
+ *          },
+ *          {
+ *              "id"         = "physician",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"
+ *          },
+ *          {
+ *              "id"         = "primary",
+ *              "type"       = "number",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rp.primary"
+ *          }
  *     }
  * )
  */

@@ -338,6 +338,7 @@ class ResidentContractController extends BaseController
                 'resident_id' => $request->get('resident_id'),
                 'type' => $request->get('type'),
                 'start' => $request->get('start'),
+                'end' => $request->get('end'),
                 'option' => $request->get('option')
             ]
         );

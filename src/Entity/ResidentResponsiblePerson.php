@@ -16,10 +16,34 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_responsible_person")
  * @Grid(
  *     api_admin_resident_responsible_person_grid={
- *          {"id", "number", true, true, "rrp.id"},
- *          {"resident", "string", true, true, "CONCAT(r.firstName, ' ', r.lastName)"},
- *          {"responsible_person", "string", true, true, "CONCAT(rp.firstName, ' ', rp.lastName)"},
- *          {"relationship", "string", true, true, "rel.title"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rrp.id"
+ *          },
+ *          {
+ *              "id"         = "resident",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(r.firstName, ' ', r.lastName)"
+ *          },
+ *          {
+ *              "id"         = "responsible_person",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(rp.firstName, ' ', rp.lastName)"
+ *          },
+ *          {
+ *              "id"         = "relationship",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rel.title"
+ *          }
  *     }
  * )
  */

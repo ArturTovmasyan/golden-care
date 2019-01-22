@@ -19,8 +19,20 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="tbl_assessment_form")
  * @Grid(
  *     api_admin_assessment_form_grid={
- *          {"id", "number", true, true, "af.id"},
- *          {"title", "string", true, true, "af.title"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "af.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "af.title"
+ *          }
  *     }
  * )
  */

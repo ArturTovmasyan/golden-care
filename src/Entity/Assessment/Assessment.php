@@ -20,12 +20,48 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="tbl_assessment")
  * @Grid(
  *     api_admin_resident_assessment_grid={
- *          {"id", "number", true, true, "a.id"},
- *          {"form", "string", true, true, "f.title"},
- *          {"date", "date", true, true, "a.date"},
- *          {"performed_by", "string", true, true, "a.performedBy"},
- *          {"notes", "string", true, true, "a.notes"},
- *          {"score", "number", true, true, "a.score"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.id"
+ *          },
+ *          {
+ *              "id"         = "form",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.title"
+ *          },
+ *          {
+ *              "id"         = "date",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.date"
+ *          },
+ *          {
+ *              "id"         = "performed_by",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.performedBy"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.notes"
+ *          },
+ *          {
+ *              "id"         = "score",
+ *              "type"       = "number",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.score"
+ *          }
  *     }
  * )
  */

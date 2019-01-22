@@ -16,9 +16,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_allergen")
  * @Grid(
  *     api_admin_resident_allergen_grid={
- *          {"id", "number", true, true, "ra.id"},
- *          {"allergen", "string", true, true, "a.title"},
- *          {"notes", "string", true, true, "ra.notes"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ra.id"
+ *          },
+ *          {
+ *              "id"         = "allergen",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "a.title"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ra.notes"
+ *          }
  *     }
  * )
  */

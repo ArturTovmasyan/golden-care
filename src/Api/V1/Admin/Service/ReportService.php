@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
 use App\Api\V1\Common\Service\Exception\ReportMisconfigurationException;
 use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Model\Report;
+use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -83,7 +84,7 @@ class ReportService
     {
         $config_filtered = $this->config;
 
-        return $this->array_remove_keys($config_filtered, ['service', 'template']);
+        return ArrayUtil::remove_keys($config_filtered, ['service', 'template']);
     }
 
     /**
@@ -135,33 +136,5 @@ class ReportService
         );
 
         return $service->$action($request);
-    }
-
-    private function array_remove_keys($array, $keys = array())
-    {
-        // If $keys is a comma-separated list, convert to an array.
-        if (is_string($keys)) {
-            $keys = explode(',', $keys);
-        }
-
-        // If array is empty or not an array at all, don't bother
-        // doing anything else.
-        if (empty($array) || (!is_array($array))) {
-            return $array;
-        }
-
-        // array_diff_key() expected an associative array.
-        $assocKeys = array();
-        foreach ($keys as $key) {
-            $assocKeys[$key] = true;
-        }
-
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $array[$key] = $this->array_remove_keys($array[$key], $keys);
-            }
-        }
-
-        return array_diff_key($array, $assocKeys);
     }
 }

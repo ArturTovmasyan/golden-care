@@ -7,6 +7,7 @@ use App\Api\V1\Admin\Service\ReportService;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -296,6 +297,8 @@ class BaseController extends Controller
         if(!$options) {
             throw new GridOptionsNotFoundException();
         }
+
+        $options = ArrayUtil::remove_keys($options, ['field']);
 
         return $this->respondSuccess(
             Response::HTTP_OK,

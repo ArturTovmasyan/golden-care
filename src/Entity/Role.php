@@ -25,17 +25,71 @@ use App\Annotation\Grid as Grid;
  * )
  * @Grid(
  *     api_admin_role_grid={
- *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"},
- *          {"space", "string", false, false, "s.name"},
- *          {"default", "enum", true, true, "r.default", {"\App\Model\Boolean", "defaultValues"}},
- *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Boolean", "defaultValues"}}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.name"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = false,
+ *              "filterable" = false,
+ *              "field"      = "s.name"
+ *          },
+ *          {
+ *              "id"         = "default",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.default"
+ *          },
+ *          {
+ *              "id"         = "space_default",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.spaceDefault"
+ *          }
  *     },
  *     api_dashboard_space_role_grid={
- *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"},
- *          {"default", "enum", true, true, "r.default", {"\App\Model\Boolean", "defaultValues"}},
- *          {"space_default", "enum", true, true, "r.spaceDefault", {"\App\Model\Boolean", "defaultValues"}}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.name"
+ *          },
+ *          {
+ *              "id"         = "default",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.default"
+ *          },
+ *          {
+ *              "id"         = "space_default",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.spaceDefault"
+ *          }
  *     }
  * )
  */

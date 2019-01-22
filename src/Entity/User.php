@@ -22,24 +22,62 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  * @UniqueEntity(fields="username", message="This username was already taken.", groups={"api_admin_user_add", "api_dashboard_account_signup"})
  * @Grid(
  *     api_admin_user_grid={
- *          {"id", "number", true, true, "u.id"},
- *          {"first_name", "string", true, true, "u.firstName"},
- *          {"last_name", "string", true, true, "u.lastName"},
- *          {"username", "string", true, true, "u.username"},
- *          {"email", "string", true, true, "u.email"},
- *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\Boolean", "defaultValues"}},
- *          {"completed", "enum", true, true, "u.completed", {"\App\Model\Boolean", "defaultValues"}},
- *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
- *     },
- *     api_dashboard_space_user_grid={
- *          {"id", "integer", true, true, "u.id"},
- *          {"first_name", "string", true, true, "u.firstName"},
- *          {"last_name", "string", true, true, "u.lastName"},
- *          {"username", "string", true, true, "u.username"},
- *          {"email", "string", true, true, "u.email"},
- *          {"enabled", "enum", true, true, "u.enabled", {"\App\Model\Boolean", "defaultValues"}},
- *          {"completed", "enum", true, true, "u.completed", {"\App\Model\Boolean", "defaultValues"}},
- *          {"last_activity_at", "date", true, true, "u.lastActivityAt"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.id"
+ *          },
+ *          {
+ *              "id"         = "first_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.firstName"
+ *          },
+ *          {
+ *              "id"         = "last_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.lastName"
+ *          },
+ *          {
+ *              "id"         = "username",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.username"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.email"
+ *          },
+ *          {
+ *              "id"         = "enabled",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.enabled"
+ *          },
+ *          {
+ *              "id"         = "completed",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.completed"
+ *          },
+ *          {
+ *              "id"         = "last_activity_at",
+ *              "type"       = "datetime",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "u.lastActivityAt"
+ *          }
  *     }
  * )
  */

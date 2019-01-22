@@ -16,13 +16,55 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_city_state_zip")
  * @Grid(
  *     api_admin_city_state_zip_grid={
- *          {"id", "number", true, true, "csz.id"},
- *          {"state_full", "string", true, true, "csz.stateFull"},
- *          {"state_abbr", "string", true, true, "csz.stateAbbr"},
- *          {"zip_main", "string", true, true, "csz.zipMain"},
- *          {"zip_sub", "string", true, true, "csz.zipSub"},
- *          {"city", "string", true, true, "csz.city"},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.id"
+ *          },
+ *          {
+ *              "id"         = "state_full",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.stateFull"
+ *          },
+ *          {
+ *              "id"         = "state_abbr",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.stateAbbr"
+ *          },
+ *          {
+ *              "id"         = "zip_main",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.zipMain"
+ *          },
+ *          {
+ *              "id"         = "zip_sub",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.zipSub"
+ *          },
+ *          {
+ *              "id"         = "city",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "csz.city"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

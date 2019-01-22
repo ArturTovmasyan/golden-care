@@ -19,18 +19,90 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="tbl_facility")
  * @Grid(
  *     api_admin_facility_grid={
- *          {"id", "number", true, true, "f.id"},
- *          {"name", "string", true, true, "f.name"},
- *          {"description", "string", true, true, "f.description"},
- *          {"shorthand", "string", true, true, "f.shorthand"},
- *          {"phone", "string", true, true, "f.phone"},
- *          {"fax", "string", true, true, "f.fax"},
- *          {"address", "string", true, true, "f.address"},
- *          {"license", "string", true, true, "f.license"},
- *          {"license_capacity", "string", true, true, "f.licenseCapacity"},
- *          {"capacity", "string", true, true, "f.capacity"},
- *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
- *          {"space", "string", true, true, "s.name"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.name"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.description"
+ *          },
+ *          {
+ *              "id"         = "shorthand",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.shorthand"
+ *          },
+ *          {
+ *              "id"         = "phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.phone"
+ *          },
+ *          {
+ *              "id"         = "fax",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.fax"
+ *          },
+ *          {
+ *              "id"         = "address",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.address"
+ *          },
+ *          {
+ *              "id"         = "license",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.license"
+ *          },
+ *          {
+ *              "id"         = "license_capacity",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.licenseCapacity"
+ *          },
+ *          {
+ *              "id"         = "capacity",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "f.capacity"
+ *          },
+ *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

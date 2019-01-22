@@ -16,10 +16,34 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_diet")
  * @Grid(
  *     api_admin_resident_diet_grid={
- *          {"id", "number", true, true, "rd.id"},
- *          {"diet_title", "string", true, true, "d.title"},
- *          {"diet_color", "string", true, true, "d.color"},
- *          {"description", "string", true, true, "rd.description"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rd.id"
+ *          },
+ *          {
+ *              "id"         = "diet_title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.title"
+ *          },
+ *          {
+ *              "id"         = "diet_color",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.color"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rd.description"
+ *          }
  *     }
  * )
  */

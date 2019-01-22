@@ -16,20 +16,104 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_medication")
  * @Grid(
  *     api_admin_resident_medication_grid={
- *          {"id", "number", true, true, "rm.id"},
- *          {"medication", "string", true, true, "m.title"},
- *          {"form_factor", "string", true, true, "ff.title"},
- *          {"dosage", "string", true, true, "rm.dosage"},
- *          {"dosage_unit", "string", true, true, "rm.dosageUnit"},
- *          {"am", "string", true, true, "rm.am"},
- *          {"nn", "string", true, true, "rm.nn"},
- *          {"pm", "string", true, true, "rm.pm"},
- *          {"hs", "string", true, true, "rm.hs"},
- *          {"prn", "enum", true, true, "rm.prn", {"\App\Model\Boolean", "defaultValues"}},
- *          {"discontinued", "enum", true, true, "rm.discontinued", {"\App\Model\Boolean", "defaultValues"}},
- *          {"treatment", "enum", true, true, "rm.treatment", {"\App\Model\Boolean", "defaultValues"}},
- *          {"notes", "string", true, true, "rm.notes"},
- *          {"prescription_number", "string", true, true, "rm.prescriptionNumber"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.id"
+ *          },
+ *          {
+ *              "id"         = "medication",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "m.title"
+ *          },
+ *          {
+ *              "id"         = "form_factor",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ff.title"
+ *          },
+ *          {
+ *              "id"         = "dosage",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.dosage"
+ *          },
+ *          {
+ *              "id"         = "dosage_unit",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.dosageUnit"
+ *          },
+ *          {
+ *              "id"         = "am",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.am"
+ *          },
+ *          {
+ *              "id"         = "nn",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.nn"
+ *          },
+ *          {
+ *              "id"         = "pm",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.pm"
+ *          },
+ *          {
+ *              "id"         = "hs",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.hs"
+ *          },
+ *          {
+ *              "id"         = "prn",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.prn"
+ *          },
+ *          {
+ *              "id"         = "discontinued",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.discontinued"
+ *          },
+ *          {
+ *              "id"         = "treatment",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.treatment"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.notes"
+ *          },
+ *          {
+ *              "id"         = "prescription_number",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rm.prescriptionNumber"
+ *          }
  *     }
  * )
  */

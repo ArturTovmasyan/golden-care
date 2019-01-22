@@ -16,13 +16,55 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_region")
  * @Grid(
  *     api_admin_region_grid={
- *          {"id", "number", true, true, "r.id"},
- *          {"name", "string", true, true, "r.name"},
- *          {"description", "string", true, true, "r.description"},
- *          {"shorthand", "string", true, true, "r.shorthand"},
- *          {"phone", "string", true, true, "r.phone"},
- *          {"fax", "string", true, true, "r.fax"},
- *          {"space", "string", true, true, "s.name"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.name"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.description"
+ *          },
+ *          {
+ *              "id"         = "shorthand",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.shorthand"
+ *          },
+ *          {
+ *              "id"         = "phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.phone"
+ *          },
+ *          {
+ *              "id"         = "fax",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "r.fax"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

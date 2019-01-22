@@ -18,10 +18,35 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="tbl_contract")
  * @Grid(
  *     api_admin_contract_grid={
- *          {"id", "number", true, true, "c.id"},
- *          {"start", "date", true, true, "c.start"},
- *          {"end", "date", true, true, "c.end"},
- *          {"type", "enum", true, true, "c.type", {"\App\Model\ContractType", "getTypeDefaultNames"}},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "c.id"
+ *          },
+ *          {
+ *              "id"         = "start",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "c.start"
+ *          },
+ *          {
+ *              "id"         = "end",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "c.end"
+ *          },
+ *          {
+ *              "id"         = "type",
+ *              "type"       = "enum",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "c.type",
+ *              "values"     = "\App\Model\ContractType::getTypeDefaultNames"
+ *          }
  *     }
  * )
  */

@@ -12,37 +12,211 @@ use JMS\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\PhysicianRepository")
  * @Grid(
  *     api_admin_physician_grid={
- *          {"id", "number", true, true, "p.id"},
- *          {"speciality", "string", true, true, "sp.title"},
- *          {"salutation", "string", true, true, "sal.title"},
- *          {"first_name", "string", true, true, "p.firstName"},
- *          {"middle_name", "string", true, true, "p.middleName"},
- *          {"last_name", "string", true, true, "p.lastName"},
- *          {"address_1", "string", true, true, "p.address_1"},
- *          {"address_2", "string", true, true, "p.address_2"},
- *          {"office_phone", "string", true, true, "p.officePhone"},
- *          {"fax", "string", true, true, "p.fax"},
- *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
- *          {"email", "string", true, true, "p.email"},
- *          {"website_url", "string", true, true, "p.websiteUrl"},
- *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
- *          {"space", "string", true, true, "s.name"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.id"
+ *          },
+ *          {
+ *              "id"         = "speciality",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sp.title"
+ *          },
+ *          {
+ *              "id"         = "salutation",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sal.title"
+ *          },
+ *          {
+ *              "id"         = "first_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.firstName"
+ *          },
+ *          {
+ *              "id"         = "middle_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.middleName"
+ *          },
+ *          {
+ *              "id"         = "last_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.lastName"
+ *          },
+ *          {
+ *              "id"         = "address_1",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.address_1"
+ *          },
+ *          {
+ *              "id"         = "address_2",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.address_2"
+ *          },
+ *          {
+ *              "id"         = "office_phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.officePhone"
+ *          },
+ *          {
+ *              "id"         = "fax",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.fax"
+ *          },
+ *          {
+ *              "id"         = "emergency_phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.emergencyPhone"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.email"
+ *          },
+ *          {
+ *              "id"         = "website_url",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.websiteUrl"
+ *          },
+ *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     },
  *     api_dashboard_physician_grid={
- *          {"id", "number", true, true, "p.id"},
- *          {"speciality", "string", true, true, "sp.title"},
- *          {"salutation", "string", true, true, "sal.title"},
- *          {"first_name", "string", true, true, "p.firstName"},
- *          {"middle_name", "string", true, true, "p.middleName"},
- *          {"last_name", "string", true, true, "p.lastName"},
- *          {"address_1", "string", true, true, "p.address_1"},
- *          {"address_2", "string", true, true, "p.address_2"},
- *          {"office_phone", "string", true, true, "p.officePhone"},
- *          {"fax", "string", true, true, "p.fax"},
- *          {"emergency_phone", "string", true, true, "p.emergencyPhone"},
- *          {"email", "string", true, true, "p.email"},
- *          {"website_url", "string", true, true, "p.websiteUrl"},
- *          {"csz_str", "string", true, true, "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.id"
+ *          },
+ *          {
+ *              "id"         = "speciality",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sp.title"
+ *          },
+ *          {
+ *              "id"         = "salutation",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "sal.title"
+ *          },
+ *          {
+ *              "id"         = "first_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.firstName"
+ *          },
+ *          {
+ *              "id"         = "middle_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.middleName"
+ *          },
+ *          {
+ *              "id"         = "last_name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.lastName"
+ *          },
+ *          {
+ *              "id"         = "address_1",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.address_1"
+ *          },
+ *          {
+ *              "id"         = "address_2",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.address_2"
+ *          },
+ *          {
+ *              "id"         = "office_phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.officePhone"
+ *          },
+ *          {
+ *              "id"         = "fax",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.fax"
+ *          },
+ *          {
+ *              "id"         = "emergency_phone",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.emergencyPhone"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.email"
+ *          },
+ *          {
+ *              "id"         = "website_url",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "p.websiteUrl"
+ *          },
+ *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
+ *          }
  *     }
  * )
  */

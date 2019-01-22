@@ -26,9 +26,27 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_apartment_bed")
  * @Grid(
  *     api_admin_apartment_bed_grid={
- *          {"id", "number", true, true, "ab.id"},
- *          {"number", "string", true, true, "ab.number"},
- *          {"room", "string", true, true, "ar.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ab.id"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ab.number"
+ *          },
+ *          {
+ *              "id"         = "room",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ar.name"
+ *          }
  *     }
  * )
  */

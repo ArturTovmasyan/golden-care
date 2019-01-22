@@ -16,15 +16,69 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_event_definition")
  * @Grid(
  *     api_admin_event_definition_grid={
- *          {"id", "number", true, true, "ed.id"},
- *          {"title", "string", true, true, "ed.title"},
- *          {"ffc", "enum", true, true, "ed.ffc", {"\App\Model\Boolean", "defaultValues"}},
- *          {"ihc", "enum", true, true, "ed.ihc", {"\App\Model\Boolean", "defaultValues"}},
- *          {"il", "enum", true, true, "ed.il", {"\App\Model\Boolean", "defaultValues"}},
- *          {"physician", "enum", true, true, "ed.physician", {"\App\Model\Boolean", "defaultValues"}},
- *          {"responsible_person", "enum", true, true, "ed.responsiblePerson", {"\App\Model\Boolean", "defaultValues"}},
- *          {"additional_date", "enum", true, true, "ed.additionalDate", {"\App\Model\Boolean", "defaultValues"}},
- *          {"space", "string", true, true, "s.name"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.title"
+ *          },
+ *          {
+ *              "id"         = "ffc",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.ffc"
+ *          },
+ *          {
+ *              "id"         = "ihc",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.ihc"
+ *          },
+ *          {
+ *              "id"         = "il",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.il"
+ *          },
+ *          {
+ *              "id"         = "physician",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.physician"
+ *          },
+ *          {
+ *              "id"         = "responsible_person",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.responsiblePerson"
+ *          },
+ *          {
+ *              "id"         = "additional_date",
+ *              "type"       = "boolean",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ed.additionalDate"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */

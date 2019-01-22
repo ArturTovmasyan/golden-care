@@ -17,13 +17,56 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_rent")
  * @Grid(
  *     api_admin_resident_rent_grid={
- *          {"id", "number", true, true, "rr.id"},
- *          {"start", "date", true, true, "rr.start"},
- *          {"end", "date", true, true, "rr.end"},
- *          {"period", "enum", true, true, "rr.period", {"\App\Model\RentPeriod", "getTypeDefaultNames"}},
- *          {"amount", "number", true, true, "rr.amount"},
- *          {"notes", "string", true, true, "rr.notes"},
- *          {"sources", "string", true, true, "rr.source"},
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.id"
+ *          },
+ *          {
+ *              "id"         = "start",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.start"
+ *          },
+ *          {
+ *              "id"         = "end",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.end"
+ *          },
+ *          {
+ *              "id"         = "period",
+ *              "type"       = "enum",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.period",
+ *              "values"     = "\App\Model\RentPeriod::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "amount",
+ *              "type"       = "number",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.amount"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.notes"
+ *          },
+ *          {
+ *              "id"         = "sources",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rr.source"
+ *          }
  *     }
  * )
  */

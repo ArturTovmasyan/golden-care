@@ -13,31 +13,37 @@ class Grid
     /**
      * Field options
      */
-    const FIELD_OPTION_ID               = 0;
-    const FIELD_OPTION_TYPE             = 1;
-    const FIELD_OPTION_SORTABLE         = 2;
-    const FIELD_OPTION_FILTERABLE       = 3;
-    const FIELD_OPTION_ORIGINAL         = 4;
-    const FIELD_OPTION_AVAILABLE_VALUES = 5;
+    const FIELD_OPTION_ID               = 'id';
+    const FIELD_OPTION_TYPE             = 'type';
+    const FIELD_OPTION_SORTABLE         = 'sortable';
+    const FIELD_OPTION_FILTERABLE       = 'filterable';
+    const FIELD_OPTION_ORIGINAL         = 'field';
+    const FIELD_OPTION_AVAILABLE_VALUES = 'values';
+    const FIELD_OPTION_LINK             = 'link';
 
     /**
      * Field types
      */
-    const FIELD_TYPE_TEXT    = 'string';
-    const FIELD_TYPE_NUMBER  = 'number';
-    const FIELD_TYPE_DATE    = 'date';
-    const FIELD_TYPE_ENUM    = 'enum';
+    const FIELD_TYPE_ID                 = 'id';
+    const FIELD_TYPE_TEXT               = 'string';
+    const FIELD_TYPE_BOOLEAN            = 'boolean';
+    const FIELD_TYPE_NUMBER             = 'number';
+    const FIELD_TYPE_DATE               = 'date';
+    const FIELD_TYPE_TIME               = 'time';
+    const FIELD_TYPE_DATETIME           = 'datetime';
+    const FIELD_TYPE_ENUM               = 'enum';
 
     /**
      * Field options listing
      */
     public const FIELD_OPTIONS = [
-        self::FIELD_OPTION_ID               => 'id',
-        self::FIELD_OPTION_TYPE             => 'type',
-        self::FIELD_OPTION_SORTABLE         => 'sortable',
-        self::FIELD_OPTION_FILTERABLE       => 'filterable',
-        self::FIELD_OPTION_ORIGINAL         => 'field',
-        self::FIELD_OPTION_AVAILABLE_VALUES => 'values',
+        self::FIELD_OPTION_ID,
+        self::FIELD_OPTION_TYPE,
+        self::FIELD_OPTION_SORTABLE,
+        self::FIELD_OPTION_FILTERABLE,
+        self::FIELD_OPTION_ORIGINAL,
+        self::FIELD_OPTION_AVAILABLE_VALUES,
+        self::FIELD_OPTION_LINK,
     ];
 
     /**
@@ -82,16 +88,14 @@ class Grid
         foreach ($options as $groupName => $groupOptions) {
             foreach ($groupOptions as $index => $groupOption) {
                 foreach ($groupOption as $key => $fieldOption) {
-                    if (isset(self::FIELD_OPTIONS[$key])) {
-                        if (self::FIELD_OPTIONS[$key] == 'values') {
-                            $className  = $fieldOption[0];
-                            $methodName = $fieldOption[1];
-
-                            $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $className::$methodName();
-                        } else {
-                            $this->groups[$groupName][$index][self::FIELD_OPTIONS[$key]] = $fieldOption;
-                            $this->groupsById[$groupName][$groupOption[0]][self::FIELD_OPTIONS[$key]] = $fieldOption;
+                    if (in_array($key, self::FIELD_OPTIONS)) {
+                        if ($key == 'values') {
+                            [$className, $methodName] = explode("::", $fieldOption);
+                            $fieldOption = $className::$methodName();
                         }
+
+                        $this->groups[$groupName][$index][$key] = $fieldOption;
+                        $this->groupsById[$groupName][$groupOption['id']][$key] = $fieldOption;
                     }
                 }
             }

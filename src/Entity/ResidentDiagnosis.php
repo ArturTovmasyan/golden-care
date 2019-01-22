@@ -17,10 +17,35 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident_diagnosis")
  * @Grid(
  *     api_admin_resident_diagnosis_grid={
- *          {"id", "number", true, true, "rd.id"},
- *          {"diagnosis", "string", true, true, "d.title"},
- *          {"type", "enum", true, true, "rd.type", {"\App\Model\DiagnosisType", "getTypeDefaultNames"}},
- *          {"notes", "string", true, true, "rd.notes"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rd.id"
+ *          },
+ *          {
+ *              "id"         = "diagnosis",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "d.title"
+ *          },
+ *          {
+ *              "id"         = "type",
+ *              "type"       = "enum",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rd.type",
+ *              "values"     = "\App\Model\DiagnosisType::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "rd.notes"
+ *          }
  *     }
  * )
  */

@@ -15,11 +15,28 @@ use App\Annotation\Grid as Grid;
  * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
  * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_dashboard_space_edit"})
- * @Grid(
  *     api_admin_space_grid={
- *          {"id", "number", true, true, "s.id"},
- *          {"name", "string", true, true, "s.name"},
- *          {"created_at", "date", true, true, "s.createdAt"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.id"
+ *          },
+ *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.name"
+ *          },
+ *          {
+ *              "id"         = "created_at",
+ *              "type"       = "date",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "s.createdAt"
+ *          }
  *     }
  * )
  */

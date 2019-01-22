@@ -16,9 +16,27 @@ use App\Model\Persistence\Entity\UserAwareTrait;
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\CategoryRepository")
  * @Grid(
  *     api_admin_assessment_category_grid={
- *          {"id", "number", true, true, "ac.id"},
- *          {"title", "string", true, true, "ac.title"},
- *          {"multi_item", "number", true, true, "ac.multiItem"}
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ac.id"
+ *          },
+ *          {
+ *              "id"         = "title",
+ *              "type"       = "string",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ac.title"
+ *          },
+ *          {
+ *              "id"         = "multi_item",
+ *              "type"       = "number",
+ *              "sortable"   = true,
+ *              "filterable" = true,
+ *              "field"      = "ac.multiItem"
+ *          }
  *     }
  * )
  */
