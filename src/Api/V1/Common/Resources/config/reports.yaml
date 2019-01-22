@@ -178,14 +178,14 @@ room:
   show_in_list: true
   reports:
     payor:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getPayorReport
       title: 'Payor Report : Monthly Payor Report.'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
           select_all: true
-        date: "m/Y"
+        date: "m/d/Y"
     room-list:
       service: App\Api\V1\Admin\Service\ResidentService::
       title: 'Room : List of Rooms, with occupants and room rent rates.'

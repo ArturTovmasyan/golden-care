@@ -7,6 +7,7 @@ use App\Entity\Contract;
 use App\Entity\ContractAction;
 use App\Model\ContractState;
 use App\Model\ContractType;
+use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -471,5 +472,27 @@ class ContractActionRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param ImtDateTimeInterval|null $dateTimeInterval
+     * @return QueryBuilder
+     */
+    public function getContractActionIntervalQb(ImtDateTimeInterval $dateTimeInterval = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('ca');
+        if ($dateTimeInterval) {
+            $qb
+                ->join('ca.contract', 'cac')
+                ->join('cac.resident', 'car')
+                ->where('ca.end IS NULL OR ca.end > = :start')
+                ->setParameter('start', $dateTimeInterval->getStart());
+            if ($dateTimeInterval->getEnd()) {
+                $qb
+                    ->andWhere('ca.start < = :end')
+                    ->setParameter('end', $dateTimeInterval->getEnd());
+            }
+        }
+        return $qb;
     }
 }

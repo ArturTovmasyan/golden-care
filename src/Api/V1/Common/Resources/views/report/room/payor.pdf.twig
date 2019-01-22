@@ -1,0 +1,99 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% set i = false %}
+    {% for datumKey, datum in data.data %}
+        {% set i = true %}
+        {% if renderedGroup == datum.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = datum.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
+
+        {% if newGroup %}
+            <div class="page"></div>
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+                <thead>
+                    <tr>
+                        <th colspan="9">
+                            <div style="margin-bottom: 5px;">
+                                <div style="float: left">
+                                    <div style="height: 5px;"></div>
+                                    <b style="font-size: 18px !important">{{ data.strategy }}&nbsp;Payor&nbsp;Report</b>
+                                    <p style="margin-bottom: 5px;"></p>
+                                    <b style="font-size: 14px !important">{{ data.strategy }}:&nbsp;{{ datum.typeName }}</b><br/>
+                                    <b style="font-size: 14px !important">{{ data.date }}</b>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
+                        <td><b>Resident</b></td>
+                        {% for source in data.sources %}
+                            <td><b>{{ source.title }}</b></td>
+                        {% endfor %}
+                        <td><b>Room&nbsp;Rent&nbsp;Total&nbsp;for&nbsp;month</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+
+        <tr>
+            {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
+            <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
+            {% for source in data.sources %}
+                {% set found=false %}
+                <td style="height: 40px; text-align: left;">
+                    {% for paymentSource in datum.sources %}
+                        {% if paymentSource.id == source.id %}
+                            {% set found=true %}
+                            {% if paymentSource.amount is defined and paymentSource.amount %}$ {{ paymentSource.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if not found %}
+                        N/A
+                    {% endif %}
+                </td>
+            {% endfor %}
+            <td style="height: 40px; text-align: left;">
+                {% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+            </td>
+        </tr>
+        {% if datumKey+1 == data.place[renderedGroup] %}
+            <tr>
+                <td colspan="10">
+                    <div style="margin-bottom: 5px; float: right">
+                        <b style="font-size: 20px !important">
+                            {% for key, sum in data.total %}
+                                {% if key == renderedGroup %}
+                                    Total:&nbsp;$&nbsp;{{ sum|number_format(2, '.', ',') }}
+                                {% endif %}
+                            {% endfor %}
+                        </b>
+                    </div>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+    {% if not i %}
+        <b style="font-size: 18px !important">{{ data.date }} not any rents found.</b>
+    {% endif %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

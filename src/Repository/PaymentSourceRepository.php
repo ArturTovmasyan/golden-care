@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\PaymentSource;
 use App\Entity\Space;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -43,5 +44,20 @@ class PaymentSourceRepository extends EntityRepository
             ->groupBy('ps.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentSources()
+    {
+        return $this->createQueryBuilder('ps')
+            ->select(
+                'ps.id as id',
+                'ps.title as title'
+            )
+            ->orderBy('ps.title', 'ASC')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 }

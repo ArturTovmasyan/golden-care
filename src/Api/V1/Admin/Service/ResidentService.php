@@ -19,6 +19,7 @@ use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Medication;
+use App\Entity\PaymentSource;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
@@ -29,6 +30,7 @@ use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\ContractType;
+use App\Model\Report\Payor;
 use App\Model\Report\RoomOccupancyRate;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
@@ -48,6 +50,7 @@ use App\Model\Report\RoomAudit;
 use App\Model\Report\RoomVacancyList;
 use App\Model\Report\ShowerSkinInspection;
 use App\Model\Report\SixtyDays;
+use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -1213,7 +1216,6 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $rooms = [];
-        $types = [];
         $data = [];
 
         if ((int)$type === ContractType::TYPE_FACILITY) {
@@ -1289,6 +1291,73 @@ class ResidentService extends BaseService implements IGridService
         $report = new RoomVacancyList();
         $report->setData($data);
         $report->setStrategy(ContractType::getTypes()[(int)$type]);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return SixtyDays
+     * @throws \Exception
+     */
+    public function getPayorReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date = $request->get('date');
+
+        if (!$type || ($type && !\in_array($type, ContractType::getTypeValues(), false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $reportDate = new \DateTime('now');
+        $reportDateFormatted = $reportDate->format('M/Y');
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+            $reportDateFormatted = $reportDate->format('M/Y');
+        }
+
+        $interval = ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m'));
+
+        $data = $this->em->getRepository(ResidentRent::class)->getRentsWithSources((int)$type, $interval, $typeId);
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
+
+        $typeIds = array_unique($typeIds);
+
+        $total = [];
+        foreach ($typeIds as $typeId) {
+            $sum = 0.00;
+            foreach ($data as $rent) {
+                if ($typeId === $rent['typeId']) {
+                    $sum += $rent['amount'];
+                }
+            }
+            $total[$typeId] = $sum;
+        }
+
+        $sources = $this->em->getRepository(PaymentSource::class)->getPaymentSources();
+
+        $report = new Payor();
+        $report->setData($data);
+        $report->setPlace($place);
+        $report->setTotal($total);
+        $report->setSources($sources);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setDate($reportDateFormatted);
 
         return $report;
     }
