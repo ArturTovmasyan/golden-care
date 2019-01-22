@@ -142,6 +142,7 @@ class ResidentRentRepository extends EntityRepository
                     ->addSelect(
                         'f.id as typeId,
                         f.name as typeName,
+                        f.shorthand as typeShorthand,
                         fr.number as roomNumber,
                         fb.number as bedNumber'
                     )
@@ -186,6 +187,7 @@ class ResidentRentRepository extends EntityRepository
                     ->addSelect(
                         'a.id as typeId,
                         a.name as typeName,
+                        a.shorthand as typeShorthand,
                         ar.number as roomNumber,
                         ab.number as bedNumber'
                     )
@@ -229,7 +231,8 @@ class ResidentRentRepository extends EntityRepository
                 $qb
                     ->addSelect(
                         'reg.id as typeId,
-                        reg.name as typeName'
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand'
                     )
                     ->innerJoin(
                         ContractRegionOption::class,

@@ -18,6 +18,11 @@ class Payor extends Base
     private $strategy;
 
     /**
+     * @var int
+     */
+    private $strategyId;
+
+    /**
      * @var string
      */
     private $date;
@@ -100,6 +105,22 @@ class Payor extends Base
     public function getStrategy()
     {
         return $this->strategy;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 
     /**

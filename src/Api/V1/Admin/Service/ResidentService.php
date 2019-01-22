@@ -1357,6 +1357,7 @@ class ResidentService extends BaseService implements IGridService
         $report->setTotal($total);
         $report->setSources($sources);
         $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setStrategyId((int)$type);
         $report->setDate($reportDateFormatted);
 
         return $report;
