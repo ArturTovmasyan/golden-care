@@ -93,7 +93,7 @@ class MedicationFormFactor
      */
     private $space;
 
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
