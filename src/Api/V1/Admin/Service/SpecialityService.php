@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\PhysicianSpecialityNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpecialityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;

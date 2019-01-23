@@ -54,7 +54,6 @@ class ValidationSerializedName
      * @param $group
      * @param $original_property_path
      * @return string
-     * @throws \ReflectionException
      */
     public static function convert(Reader $reader, $entityClass, $group, $originalPropertyPath)
     {
@@ -62,16 +61,23 @@ class ValidationSerializedName
             return '_' . lcfirst($matches[1]);
         }, $originalPropertyPath);
 
+        $propertyPath = str_replace('[', '.', $propertyPath);
+        $propertyPath = str_replace(']', '', $propertyPath);
+
         if (!empty($group)) {
-            $property = new ReflectionProperty($entityClass, $originalPropertyPath);
-            if ($property != null) {
+            try {
+                $property = new ReflectionProperty($entityClass, $originalPropertyPath);
+                if ($property != null) {
 
-                /** @var ValidationSerializedName $propertyAnnotation */
-                $propertyAnnotation = $reader->getPropertyAnnotation($property, ValidationSerializedName::class);
+                    /** @var ValidationSerializedName $propertyAnnotation */
+                    $propertyAnnotation = $reader->getPropertyAnnotation($property, ValidationSerializedName::class);
 
-                if ($propertyAnnotation != null) {
-                    $propertyPath = $propertyAnnotation->getName($group);
+                    if ($propertyAnnotation != null) {
+                        $propertyPath = $propertyAnnotation->getName($group);
+                    }
                 }
+            } catch (\ReflectionException $e) {
+
             }
         }
 

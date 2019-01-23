@@ -229,6 +229,10 @@ class Resident
 
     /**
      * @ORM\OneToMany(targetEntity="ResidentPhone", mappedBy="resident")
+     * @Assert\Valid(groups={
+     *      "api_admin_resident_add",
+     *      "api_admin_resident_edit"
+     * })
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"

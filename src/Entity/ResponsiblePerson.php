@@ -298,6 +298,10 @@ class ResponsiblePerson
 
     /**
      * @ORM\OneToMany(targetEntity="ResponsiblePersonPhone", mappedBy="responsiblePerson")
+     * @Assert\Valid(groups={
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
+     * })
      * @Groups({
      *      "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",

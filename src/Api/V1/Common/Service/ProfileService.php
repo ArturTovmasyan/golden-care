@@ -35,17 +35,16 @@ class ProfileService extends BaseService
             $user->setLastName($params['last_name']);
             $user->setEmail($params['email']);
 
-            $this->validate($user, null, ["api_profile_edit"]);
+            $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
-            $this->em->persist($user);
+            $this->validate($user, null, ["api_profile_edit"]);
 
             if (!empty($params['avatar'])) {
                 $this->userAvatarHelper->remove($user->getId());
                 $this->userAvatarHelper->save($user->getId(), $params['avatar']);
             }
 
-            $this->savePhones($user, $params['phones'] ?? []);
-
+            $this->em->persist($user);
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -91,8 +90,7 @@ class ProfileService extends BaseService
     /**
      * @param User $user
      * @param array $phones
-     * @return mixed
-     * @throws \ReflectionException
+     * @return array
      */
     private function savePhones($user, array $phones = [])
     {
@@ -106,6 +104,8 @@ class ProfileService extends BaseService
         }
 
         $hasPrimary = false;
+
+        $userPhones = [];
 
         foreach($phones as $phone) {
             $userPhone = new UserPhone();
@@ -124,8 +124,11 @@ class ProfileService extends BaseService
                 $hasPrimary = true;
             }
 
-            $this->validate($userPhone, null, ['api_profile_edit']);
             $this->em->persist($userPhone);
+
+            $userPhones[] = $userPhone;
         }
+
+        return $userPhones;
     }
 }

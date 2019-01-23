@@ -80,6 +80,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
     /**
      * @param Request $request
+     * @param integer $type
      * @return \App\Model\Report\Assessment
      */
     private function getReportByType(Request $request, $type)

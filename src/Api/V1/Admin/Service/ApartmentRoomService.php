@@ -11,6 +11,7 @@ use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
 use App\Entity\ContractAction;
 use App\Model\ContractType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,7 +47,7 @@ class ApartmentRoomService extends BaseService implements IGridService
 
         if (!empty($rooms)) {
 
-            $roomIds = array_map(function($item){return $item->getId();} , $rooms);
+            $roomIds = array_map(function(ApartmentRoom $item){return $item->getId();} , $rooms);
 
             $facilityBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdsByRooms($roomIds);
             $bedIds = [];
@@ -113,10 +114,11 @@ class ApartmentRoomService extends BaseService implements IGridService
         $room = $this->em->getRepository(ApartmentRoom::class)->find($id);
 
         if ($room !== null) {
+            /** @var ArrayCollection $beds */
             $beds = $room->getBeds();
 
             if ($beds !== null) {
-                $ids = array_map(function($item){return $item->getId();} , $beds->toArray());
+                $ids = array_map(function(ApartmentBed $item){return $item->getId();} , $beds->toArray());
 
                 $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_APARTMENT, $ids);
 

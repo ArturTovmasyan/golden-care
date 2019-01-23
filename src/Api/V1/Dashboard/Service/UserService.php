@@ -58,18 +58,21 @@ class UserService extends BaseService
             $user->setPassword($encoded);
             $user->setActivationHash();
 
+            $user->setPhone($params['phone']);
+
+            // validate user
+            $this->validate($user, null, ["api_dashboard_account_signup"]);
+
             if($params['phone']) { // TODO: review
                 $userPhone = new UserPhone();
                 $userPhone->setUser($user);
                 $userPhone->setCompatibility( null);
                 $userPhone->setType(\App\Model\Phone::TYPE_OFFICE);
-                $userPhone->setNumber($params['phone']);
+                $userPhone->setNumber($user->getPhone());
                 $userPhone->setPrimary(true);
                 $userPhone->setSmsEnabled(false);
             }
 
-            // validate user
-            $this->validate($user, null, ["api_dashboard_account_signup"]);
             $this->em->persist($user);
             $this->em->persist($userPhone);
 

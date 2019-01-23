@@ -176,32 +176,26 @@ class User implements UserInterface
      */
     private $email;
 
-//    /**
-//     * @var string
-//     * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-//     * @Groups({
-//     *     "api_admin_user_grid",
-//     *     "api_admin_user_list",
-//     *     "api_dashboard_space_user_grid",
-//     *     "api_dashboard_space_user_list",
-//     *     "api_admin_user_get",
-//     *     "api_dashboard_space_user_get",
-//     *     "api_profile_me"
-//     * })
-//     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete"})
-//     * @Assert\Regex(
-//     *     pattern="/(\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$)/",
-//     *     groups={
-//     *     "api_admin_user_add",
-//     *     "api_admin_user_edit",
-//     *     "api_profile_edit",
-//     *     "api_dashboard_space_user_complete"
-//     * })
-//     */
-//    private $phone;
+    /**
+     * @var string
+     * @Groups({
+     *     "api_dashboard_account_signup"
+     * })
+     * @Assert\NotBlank(groups={"api_dashboard_account_signup"})
+     * @Assert\Regex(
+     *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
+     *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
+     *     groups={"api_dashboard_account_signup"})
+     */
+    private $phone;
 
     /**
      * @ORM\OneToMany(targetEntity="UserPhone", mappedBy="user")
+     * @Assert\Valid(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit"
+     * })
      * @Groups({
      *     "api_admin_user_get",
      *     "api_profile_me",
@@ -519,11 +513,26 @@ class User implements UserInterface
 
     /**
      * @param string $email
-     * @return User
      */
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone(string $phone): void
+    {
+        $this->phone = $phone;
     }
 
     /**

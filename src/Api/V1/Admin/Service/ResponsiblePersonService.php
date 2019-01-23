@@ -122,12 +122,10 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setEmail($params['email'] ?? '');
             $responsiblePerson->setFinancially($params['financially'] ?? false);
             $responsiblePerson->setEmergency($params['emergency'] ?? false);
+            $responsiblePerson->setPhones($this->savePhones($responsiblePerson, $params['phones'] ?? []));
 
             $this->validate($responsiblePerson, null, ['api_admin_responsible_person_add']);
             $this->em->persist($responsiblePerson);
-
-            // save phone numbers
-            $this->savePhones($responsiblePerson, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -203,11 +201,10 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setFinancially($params['financially'] ?? false);
             $responsiblePerson->setEmergency($params['emergency'] ?? false);
 
+            $responsiblePerson->setPhones($this->savePhones($responsiblePerson, $params['phones'] ?? []));
+
             $this->validate($responsiblePerson, null, ['api_admin_responsible_person_edit']);
             $this->em->persist($responsiblePerson);
-
-            // save phone numbers
-            $this->savePhones($responsiblePerson, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -221,7 +218,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
     /**
      * @param ResponsiblePerson $responsiblePerson
      * @param array $phones
-     * @throws \ReflectionException
+     * @return array
      */
     private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = [])
     {
@@ -235,6 +232,8 @@ class ResponsiblePersonService extends BaseService implements IGridService
         }
 
         $hasPrimary = false;
+
+        $responsiblePersonPhones = [];
 
         foreach($phones as $phone) {
             $responsiblePersonPhone = new ResponsiblePersonPhone();
@@ -254,9 +253,12 @@ class ResponsiblePersonService extends BaseService implements IGridService
                 $hasPrimary = true;
             }
 
-            $this->validate($responsiblePersonPhone, null, ['api_admin_responsible_person_edit']);
             $this->em->persist($responsiblePersonPhone);
+
+            $responsiblePersonPhones[] = $responsiblePersonPhone;
         }
+
+        return $responsiblePersonPhones;
     }
 
     /**

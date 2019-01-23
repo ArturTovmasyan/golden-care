@@ -11,6 +11,7 @@ use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use App\Model\ContractType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -46,7 +47,7 @@ class FacilityRoomService extends BaseService implements IGridService
 
         if (!empty($rooms)) {
 
-            $roomIds = array_map(function($item){return $item->getId();} , $rooms);
+            $roomIds = array_map(function(FacilityRoom $item){return $item->getId();} , $rooms);
 
             $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdsByRooms($roomIds);
             $bedIds = [];
@@ -114,10 +115,11 @@ class FacilityRoomService extends BaseService implements IGridService
         $room = $this->em->getRepository(FacilityRoom::class)->find($id);
 
         if ($room !== null) {
+            /** @var ArrayCollection $beds */
             $beds = $room->getBeds();
 
             if ($beds !== null) {
-                $ids = array_map(function($item){return $item->getId();} , $beds->toArray());
+                $ids = array_map(function(FacilityBed $item){return $item->getId();} , $beds->toArray());
 
                 $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_FACILITY, $ids);
 

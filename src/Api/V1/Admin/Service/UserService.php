@@ -2,6 +2,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\User;
@@ -69,10 +70,9 @@ class UserService extends BaseService implements IGridService
             $user->setConfirmPassword($params['re_password']);
             $user->setPlainPassword($params['password']);
             $user->setPassword($encoded);
+            $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
             $this->validate($user, null, ["api_admin_user_add"]);
-
-            $this->savePhones($user, $params['phones'] ?? [], 'api_admin_user_add');
 
             $this->em->persist($user);
             $this->em->flush();
@@ -115,9 +115,9 @@ class UserService extends BaseService implements IGridService
                 $user->setPassword($encoded);
             }
 
-            $this->validate($user, null, ["api_admin_user_edit"]);
+            $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
-            $this->savePhones($user, $params['phones'] ?? [], 'api_admin_user_edit');
+            $this->validate($user, null, ["api_admin_user_edit"]);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -175,10 +175,9 @@ class UserService extends BaseService implements IGridService
     /**
      * @param User $user
      * @param array $phones
-     * @return mixed
-     * @throws \ReflectionException
+     * @return array
      */
-    private function savePhones($user, array $phones = [], $group)
+    private function savePhones($user, array $phones = [])
     {
         /**
          * @var UserPhone[] $oldPhones
@@ -190,6 +189,8 @@ class UserService extends BaseService implements IGridService
         }
 
         $hasPrimary = false;
+
+        $userPhones = [];
 
         foreach($phones as $phone) {
             $userPhone = new UserPhone();
@@ -208,8 +209,11 @@ class UserService extends BaseService implements IGridService
                 $hasPrimary = true;
             }
 
-            $this->validate($userPhone, null, [$group]);
             $this->em->persist($userPhone);
+
+            $userPhones[] = $userPhone;
         }
+
+        return $userPhones;
     }
 }

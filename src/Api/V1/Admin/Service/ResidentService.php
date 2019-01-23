@@ -161,18 +161,14 @@ class ResidentService extends BaseService implements IGridService
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
             $resident->setMiddleName($params['middle_name'] ?? '');
-            $resident->setType($params['type'] ?? 0);
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(new \DateTime($params['birthday']));
+            $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
-
-            // save phone numbers
-            $this->savePhones($resident, $params['phones'] ?? []);
-            $this->em->flush();
 
             // save photo
             if (!empty($params['photo'])) {
@@ -180,6 +176,7 @@ class ResidentService extends BaseService implements IGridService
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
+            $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
@@ -237,6 +234,7 @@ class ResidentService extends BaseService implements IGridService
             $resident->setSalutation($salutation);
             $resident->setGender($params['gender'] ?? 0);
             $resident->setBirthday(new \DateTime($params['birthday']));
+            $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
             $this->em->persist($resident);
@@ -246,9 +244,6 @@ class ResidentService extends BaseService implements IGridService
                 $this->residentPhotoHelper->remove($resident->getId());
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
-
-            // save phone numbers
-            $this->savePhones($resident, $params['phones'] ?? []);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -262,8 +257,7 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param $resident
      * @param array $phones
-     * @return mixed
-     * @throws \ReflectionException
+     * @return array
      */
     private function savePhones($resident, array $phones = [])
     {
@@ -277,6 +271,8 @@ class ResidentService extends BaseService implements IGridService
         }
 
         $hasPrimary = false;
+
+        $residentPhones = [];
 
         foreach($phones as $phone) {
             $residentPhone = new ResidentPhone();
@@ -295,9 +291,12 @@ class ResidentService extends BaseService implements IGridService
                 $hasPrimary = true;
             }
 
-            $this->validate($residentPhone, null, ['api_admin_resident_edit']);
             $this->em->persist($residentPhone);
+
+            $residentPhones[] = $residentPhone;
         }
+
+        return $residentPhones;
     }
 
     /**
@@ -1105,7 +1104,7 @@ class ResidentService extends BaseService implements IGridService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function ($item) {
+                $roomIds = array_map(function (FacilityRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1154,7 +1153,7 @@ class ResidentService extends BaseService implements IGridService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function ($item) {
+                $roomIds = array_map(function (ApartmentRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1230,7 +1229,7 @@ class ResidentService extends BaseService implements IGridService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function ($item) {
+                $roomIds = array_map(function (FacilityRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1264,7 +1263,7 @@ class ResidentService extends BaseService implements IGridService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function ($item) {
+                $roomIds = array_map(function (ApartmentRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1297,7 +1296,7 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param Request $request
-     * @return SixtyDays
+     * @return Payor
      * @throws \Exception
      */
     public function getPayorReport(Request $request)

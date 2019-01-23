@@ -80,7 +80,6 @@ class AssessmentCareLevelService extends BaseService implements IGridService
 
             $careLevel = new CareLevel();
             $careLevel->setTitle($params['title']);
-            $careLevel->setSpace($space);
             $careLevel->setLevelLow($params['level_low']);
             $careLevel->setLevelHigh($params['level_high']);
             $careLevel->setCareLevelGroup($careLevelGroup);
@@ -141,7 +140,6 @@ class AssessmentCareLevelService extends BaseService implements IGridService
             }
 
             $careLevel->setTitle($params['title']);
-            $careLevel->setSpace($space);
             $careLevel->setLevelLow($params['level_low']);
             $careLevel->setLevelHigh($params['level_high']);
             $careLevel->setCareLevelGroup($careLevelGroup);

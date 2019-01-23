@@ -2,15 +2,11 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\MedicationNotSingleException;
-use App\Api\V1\Common\Service\Exception\MedicationNotFoundException;
 use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResidentMedicationAllergyNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Medication;
 use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentMedicationAllergy;
