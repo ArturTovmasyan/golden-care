@@ -195,7 +195,7 @@ class Facility
      * @var string
      * @Assert\Regex(
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
-     *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
+     *     message="Invalid fax number format. Valid format is (XXX) XXX-XXXX.",
      *     groups={
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
