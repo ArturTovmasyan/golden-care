@@ -144,7 +144,8 @@ class ResidentRentRepository extends EntityRepository
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fb.number as bedNumber'
+                        fb.number as bedNumber,
+                        fb.id as bedId'
                     )
                     ->innerJoin(
                         ContractFacilityOption::class,
@@ -189,7 +190,8 @@ class ResidentRentRepository extends EntityRepository
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
-                        ab.number as bedNumber'
+                        ab.number as bedNumber
+                        ab.id as bedId'
                     )
                     ->innerJoin(
                         ContractApartmentOption::class,
@@ -275,6 +277,22 @@ class ResidentRentRepository extends EntityRepository
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
             ->andWhere('ca.id IN (SELECT MAX(mca.id) FROM App:ContractAction mca JOIN mca.contract mcac JOIN mcac.resident mcacr GROUP BY mcacr.id)')
+            ->andWhere('r.id IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param bool $typeId
+     * @return mixed
+     */
+    public function getRoomRentMasterNewData($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    {
+        return $this
+            ->getContractActionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
             ->andWhere('r.id IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);

@@ -2,6 +2,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -9,6 +10,7 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
+use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Allergen;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -21,6 +23,7 @@ use App\Entity\FacilityRoom;
 use App\Entity\Medication;
 use App\Entity\PaymentSource;
 use App\Entity\Physician;
+use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentPhone;
@@ -47,6 +50,7 @@ use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
+use App\Model\Report\RoomRentMasterNew;
 use App\Model\Report\RoomVacancyList;
 use App\Model\Report\ShowerSkinInspection;
 use App\Model\Report\SixtyDays;
@@ -1358,6 +1362,166 @@ class ResidentService extends BaseService implements IGridService
         $report->setStrategy(ContractType::getTypes()[(int)$type]);
         $report->setStrategyId((int)$type);
         $report->setDate($reportDateFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomRentMasterNew
+     * @throws \Exception
+     */
+    public function getRoomRentMasterNewReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date = $request->get('date');
+
+        if (!$type || ($type && !\in_array($type, ContractType::getTypeValues(), false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $now = new \DateTime('now');
+        $reportDate = $now;
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+        }
+
+        $month = $reportDate->format('m');
+        $year = $reportDate->format('Y');
+
+        if (is_numeric($month) && $month > 0 && $month < 12 && is_numeric($year) && $year > 2000 && $year <= $now->format('Y')) {
+            $subInterval = ImtDateTimeInterval::getWithMonthAndYear($year, $month);
+        } else {
+            $subInterval = ImtDateTimeInterval::getWithDateTimes(new \DateTime('2010-01-01 00:00:00'), new \DateTime('now'));
+        }
+
+        $dateStart = $subInterval->getStart()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+
+        $types = [];
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Facility::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Facility::class)->orderedFindAll();
+                }
+
+                break;
+            case ContractType::TYPE_APARTMENT:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Apartment::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Apartment::class)->orderedFindAll();
+                }
+
+                break;
+            case ContractType::TYPE_REGION:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Region::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Region::class)->orderedFindAll();
+                }
+
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        $rents = $this->em->getRepository(ResidentRent::class)->getRoomRentMasterNewData((int)$type, $subInterval, $typeId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+        $data = [];
+
+        if ((int)$type !== ContractType::TYPE_REGION) {
+            $incomePer = 'bedId';
+        } else {
+            $incomePer = 'id';
+        }
+
+        if (!empty($types)) {
+            foreach ($types as $value) {
+                $typeId = $value->getId();
+
+                $data[$typeId] = array(
+                    'typeName' => $value->getName(),
+                    'grossRevenue' => 0.00,
+                    'avgNum' => 0.00,
+                    'incomePer' => 0.00,
+                    'incomes' => [],
+                    'occupancy' => 0.00,
+                    'occupancies' => [],
+                );
+                $sum = 0.00;
+
+                foreach ($rents as $rent) {
+                    if ($typeId === $rent['typeId']) {
+                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']) );
+                        if (!isset($data[$typeId]['occupancies'][$rent[$incomePer]])) {
+                            $data[$typeId]['occupancies'][$rent[$incomePer]] = 0.00;
+                        }
+                        $data[$typeId]['occupancies'][$rent[$incomePer]] += $rentPeriodFactory->calculateOccupancyForInterval($interval);
+                        $calculationResults = $rentPeriodFactory->calculateForInterval(
+                            $interval,
+                            $rent['period'],
+                            $rent['amount']
+                        );
+                        $amount = $calculationResults['amount'];
+                        if ($amount > 0) {
+                            if (!isset($data[$typeId]['incomes'][$rent[$incomePer]])) {
+                                $data[$typeId]['incomes'][$rent[$incomePer]] = [];
+                            }
+                            $data[$typeId]['incomes'][$rent[$incomePer]][] = $amount;
+                        }
+                        $sum += $amount;
+                    }
+                }
+                foreach ($data[$typeId]['incomes'] as $incomePerId => $incomes) {
+                    $data[$typeId]['incomes'][$incomePerId] = array_sum($data[$typeId]['incomes'][$incomePerId]);
+                }
+
+                if ((int)$type !== ContractType::TYPE_REGION) {
+                    $data[$typeId]['occupancy'] = \count($data[$typeId]['occupancies']) === 0 ? 0 : array_sum($data[$typeId]['occupancies']) / \count($data[$typeId]['occupancies']);
+                    $data[$typeId]['occupancy'] = number_format($data[$typeId]['occupancy'] * 100, 2);
+                    $data[$typeId]['occupancy'] = $data[$typeId]['occupancy'] > 100 ? 100 : $data[$typeId]['occupancy'];
+
+                    $occupancyRate = $this->getRoomOccupancyRateReport($request);
+
+                    foreach ($occupancyRate->getData() as $val) {
+                        if ($val['typeId'] === $typeId) {
+                            $availableCount = $val['availableCount'];
+
+                            $data[$typeId]['avgNum'] = $availableCount === 0 ? 0 : (100 - $data[$typeId]['occupancy']) * $availableCount / 100;
+                            $data[$typeId]['avgNum'] = number_format($data[$typeId]['avgNum'], 2);
+                            $data[$typeId]['avgNum'] = $data[$typeId]['avgNum'] < 0 ? 0 : $data[$typeId]['avgNum'];
+                        }
+                    }
+                }
+                $data[$typeId]['incomePer'] = \count($data[$typeId]['incomes']) === 0 ? 0 : array_sum($data[$typeId]['incomes']) / \count($data[$typeId]['incomes']);
+                $data[$typeId]['incomePer'] = number_format($data[$typeId]['incomePer'], 2);
+                $data[$typeId]['grossRevenue'] = number_format($sum, 2);
+                unset($data[$typeId]['incomes'], $data[$typeId]['occupancies']);
+            }
+        }
+
+        $report = new RoomRentMasterNew();
+        $report->setData($data);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setStrategyId((int)$type);
+        $report->setDateStart($dateStart);
+        $report->setDateEnd($dateEnd);
 
         return $report;
     }

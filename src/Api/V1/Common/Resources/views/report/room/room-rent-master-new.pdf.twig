@@ -1,0 +1,57 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    <span class="divider"></span>
+    <span class="divider"></span>
+    <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+        <tr class="divider"></tr>
+        <thead>
+        <tr>
+            <th colspan="10">
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left">
+                        <div style="height: 5px;"></div>
+                        <b style="font-size: 18px !important">{{ data.strategy }}&nbsp;{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}Room&nbsp;{% endif %}Rent&nbsp;Master(New!)&nbsp;Report</b>
+                        <p style="margin-bottom: 5px;"></p>
+                        <b style="font-size: 14px !important">{{ data.dateStart|date("m/d/Y") }}&nbsp;-&nbsp;{{ data.dateEnd|date("m/d/Y") }}</b>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </th>
+        </tr>
+        <tr>
+            <td><b>{{ data.strategy }}</b></td>
+            <td><b>Gross&nbsp;Revenue</b></td>
+            {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+                <td><b>Avg&nbsp;Num&nbsp;of&nbsp;avail&nbsp;beds</b></td>
+            {% endif %}
+            <td><b>Avg&nbsp;Income&nbsp;Per&nbsp;{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}Room/Bed{% else %}Resident{% endif %}</b></td>
+            {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+                <td><b>%&nbsp;Occupancy&nbsp;For&nbsp;the&nbsp;Month</b></td>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for datum in data.data %}
+            <tr>
+                <td style="height: 40px; text-align: left;">{{ datum.typeName }}</td>
+                <td style="height: 40px; text-align: left;">$&nbsp;{{ datum.grossRevenue }}</td>
+                {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+                    <td style="height: 40px; text-align: left;">{{ datum.avgNum }}</td>
+                {% endif %}
+                <td style="height: 40px; text-align: left;">$&nbsp;{{ datum.incomePer }}</td>
+                {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+                    <td style="height: 40px; text-align: left;">{{ datum.occupancy }}&nbsp;%</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

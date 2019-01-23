@@ -99,6 +99,7 @@ class ResponseCode
     const CAN_NOT_REMOVE_BED_EXCEPTION                           = 700;
     const CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    = 701;
     const REGION_CAN_NOT_HAVE_BED_EXCEPTION                      = 702;
+    const UNHANDLED_RENT_PERIOD_EXCEPTION                        = 703;
 
     /**
      * @var array
@@ -193,5 +194,6 @@ class ResponseCode
         self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bad has resident. Move resident to another bad.'],
         self::CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ContractAction not found.'],
         self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region can not hav bed.'],
+        self::UNHANDLED_RENT_PERIOD_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Unhandled rent period.'],
     ];
 }

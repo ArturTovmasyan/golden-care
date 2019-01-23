@@ -214,14 +214,14 @@ room:
           select_all: true
         date: "m/Y"
     room-rent-master-new:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getRoomRentMasterNewReport
       title: 'Room Rent Master: New! : Monthly Rent Master Report.'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
           select_all: true
-        date: "m/Y"
+        date: "m/d/Y"
     room-vacancy:
       service: App\Api\V1\Admin\Service\ResidentService::getRoomVacancyListReport
       title: 'Room Vacancy List : List of Vacant Rooms, by Facility. Calculated as of today'

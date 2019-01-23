@@ -44,4 +44,16 @@ class RegionRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function orderedFindAll()
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->orderBy('r.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
