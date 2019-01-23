@@ -1329,6 +1329,7 @@ class ResidentService extends BaseService implements IGridService
         $interval = ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m'));
 
         $data = $this->em->getRepository(ResidentRent::class)->getRentsWithSources((int)$type, $interval, $typeId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
         $countTypeIds = array_count_values($typeIds);
@@ -1341,12 +1342,21 @@ class ResidentService extends BaseService implements IGridService
 
         $typeIds = array_unique($typeIds);
 
+        $calcAmount = [];
         $total = [];
         foreach ($typeIds as $typeId) {
             $sum = 0.00;
             foreach ($data as $rent) {
                 if ($typeId === $rent['typeId']) {
-                    $sum += $rent['amount'];
+                    $calculationResults = $rentPeriodFactory->calculateForInterval(
+                        $interval,
+                        $rent['period'],
+                        $rent['amount']
+                    );
+
+                    $calcAmount[$rent['id']] = $calculationResults['amount'];
+
+                    $sum += $calculationResults['amount'] > 0 ? $calculationResults['amount'] : $rent['amount'];
                 }
             }
             $total[$typeId] = $sum;
@@ -1356,6 +1366,7 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new Payor();
         $report->setData($data);
+        $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
         $report->setSources($sources);

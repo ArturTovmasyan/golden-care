@@ -79,9 +79,9 @@ class RentPeriodFactory
 
     /**
      * @param $period
-     * @return mixed
+     * @return RentPeriod
      */
-    public function getPeriod($period)
+    public function getPeriod($period): RentPeriod
     {
         if (!isset($this->periods[$period])) {
             $this->periods[$period] = RentPeriod::getPeriodById($period);

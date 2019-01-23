@@ -39,6 +39,8 @@
                     <tr>
                         {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
                         <td><b>Resident</b></td>
+                        <td><b>Rent</b></td>
+                        <td><b>Frequency</b></td>
                         {% for source in data.sources %}
                             <td><b>{{ source.title }}</b></td>
                         {% endfor %}
@@ -51,6 +53,8 @@
         <tr>
             {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
+            <td style="height: 40px; text-align: left;">{% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</td>
+            <td style="height: 40px; text-align: left;">{% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}{% else %}N/A{% endif %}</td>
             {% for source in data.sources %}
                 {% set found=false %}
                 <td style="height: 40px; text-align: left;">
@@ -66,7 +70,7 @@
                 </td>
             {% endfor %}
             <td style="height: 40px; text-align: left;">
-                {% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                {% if data.calcAmount[datum.id] is defined %}$ {{ data.calcAmount[datum.id]|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
             </td>
         </tr>
         {% if datumKey+1 == data.place[renderedGroup] %}

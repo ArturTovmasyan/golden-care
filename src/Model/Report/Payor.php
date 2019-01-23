@@ -8,6 +8,7 @@ class Payor extends Base
      * @var array
      */
     private $data = [];
+    private $calcAmount = [];
     private $place = [];
     private $total = [];
     private $sources = [];
@@ -41,6 +42,22 @@ class Payor extends Base
     public function getData(): ?array
     {
         return $this->data;
+    }
+
+    /**
+     * @param $calcAmount
+     */
+    public function setCalcAmount($calcAmount): void
+    {
+        $this->calcAmount = $calcAmount;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCalcAmount(): ?array
+    {
+        return $this->calcAmount;
     }
 
     /**
