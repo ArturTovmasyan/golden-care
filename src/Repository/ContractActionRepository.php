@@ -495,4 +495,22 @@ class ContractActionRepository extends EntityRepository
         }
         return $qb;
     }
+
+    /**
+     * @param ImtDateTimeInterval $dateTimeInterval
+     * @return QueryBuilder
+     */
+    public function getRoomListContractActionIntervalQb(ImtDateTimeInterval $dateTimeInterval): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('ca');
+        if ($dateTimeInterval) {
+            $qb
+                ->join('ca.contract', 'cac')
+                ->join('cac.resident', 'car')
+                ->andWhere('(ca.start < = :end AND ca.start > = :start) OR (ca.start < :start AND (ca.end IS NULL OR ca.end > :start))')
+                ->setParameter('start', $dateTimeInterval->getStart())
+                ->setParameter('end', $dateTimeInterval->getEnd());
+        }
+        return $qb;
+    }
 }

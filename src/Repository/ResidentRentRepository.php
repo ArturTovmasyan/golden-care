@@ -6,10 +6,9 @@ use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
+use App\Entity\CareLevel;
+use App\Entity\CityStateZip;
 use App\Entity\ContractAction;
-use App\Entity\ContractApartmentOption;
-use App\Entity\ContractFacilityOption;
-use App\Entity\ContractRegionOption;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
@@ -107,7 +106,7 @@ class ResidentRentRepository extends EntityRepository
             ->from(Resident::class, 'r')
             ->andWhere('rr.resident = r')
             ->andWhere('rr.resident = car')
-            ->andWhere('(rr.end IS NULL OR rr.end > =  ca.start) AND (ca.end IS NULL OR rr.start < =  ca.end)')
+            ->andWhere('(rr.end IS NULL OR rr.end > = ca.start) AND (ca.end IS NULL OR rr.start < = ca.end)')
             ->andWhere('cac.type=:type')
             ->setParameter('type', $type)
             ->select(
@@ -149,16 +148,10 @@ class ResidentRentRepository extends EntityRepository
                         fb.id as bedId'
                     )
                     ->innerJoin(
-                        ContractFacilityOption::class,
-                        'cfo',
-                        Join::WITH,
-                        'cfo.contract = cac'
-                    )
-                    ->innerJoin(
                         FacilityBed::class,
                         'fb',
                         Join::WITH,
-                        'cfo.facilityBed = fb'
+                        'ca.facilityBed = fb'
                     )
                     ->innerJoin(
                         FacilityRoom::class,
@@ -195,16 +188,10 @@ class ResidentRentRepository extends EntityRepository
                         ab.id as bedId'
                     )
                     ->innerJoin(
-                        ContractApartmentOption::class,
-                        'cao',
-                        Join::WITH,
-                        'cao.contract = cac'
-                    )
-                    ->innerJoin(
                         ApartmentBed::class,
                         'ab',
                         Join::WITH,
-                        'cao.apartmentBed = ab'
+                        'ca.apartmentBed = ab'
                     )
                     ->innerJoin(
                         ApartmentRoom::class,
@@ -238,16 +225,10 @@ class ResidentRentRepository extends EntityRepository
                         reg.shorthand as typeShorthand'
                     )
                     ->innerJoin(
-                        ContractRegionOption::class,
-                        'cro',
-                        Join::WITH,
-                        'cro.contract = cac'
-                    )
-                    ->innerJoin(
                         Region::class,
                         'reg',
                         Join::WITH,
-                        'cro.region = reg'
+                        'ca.region = reg'
                     );
 
                 $qb
@@ -274,13 +255,59 @@ class ResidentRentRepository extends EntityRepository
      */
     public function getRentsWithSources($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
     {
-        return $this
+        $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
-            ->andWhere('ca.id IN (SELECT MAX(mca.id) FROM App:ContractAction mca JOIN mca.contract mcac JOIN mcac.resident mcacr GROUP BY mcacr.id)')
-            ->andWhere('r.id IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
-            ->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ca.start) AND (ca.end IS NULL OR mrr.start < = ca.end)
+                        GROUP BY res.id)'
+            );
+
+        if ($reportInterval) {
+            if ($reportInterval->getEnd()) {
+                $qb
+                    ->andWhere('ca.id IN (SELECT MAX(mca.id)
+                        FROM App:ContractAction mca
+                        JOIN mca.contract mcac
+                        JOIN mcac.resident mcacr
+                        WHERE (mca.end IS NULL OR mca.end > = :startDate) AND (mca.start < = :endDate)
+                        GROUP BY mcacr.id)'
+                    )
+                    ->setParameter('startDate', $reportInterval->getStart())
+                    ->setParameter('endDate', $reportInterval->getEnd());
+            } else {
+                $qb
+                    ->andWhere('ca.id IN (SELECT MAX(mca.id)
+                        FROM App:ContractAction mca
+                        JOIN mca.contract mcac
+                        JOIN mcac.resident mcacr
+                        WHERE (mca.end IS NULL OR mca.end > = :startDate)
+                        GROUP BY mcacr.id)'
+                    )
+                    ->setParameter('startDate', $reportInterval->getStart());
+            }
+        } else {
+            $qb
+                ->andWhere('ca.id IN (SELECT MAX(mca.id)
+                    FROM App:ContractAction mca
+                    JOIN mca.contract mcac
+                    JOIN mcac.resident mcacr
+                    GROUP BY mcacr.id)'
+                );
+        }
+
+        $qb
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            );
+
+            return $qb
+                ->getQuery()
+                ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**
@@ -293,8 +320,18 @@ class ResidentRentRepository extends EntityRepository
     {
         return $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
-            ->andWhere('r.id IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ca.start) AND (ca.end IS NULL OR mrr.start < = ca.end)
+                        GROUP BY res.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            )
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
@@ -309,8 +346,232 @@ class ResidentRentRepository extends EntityRepository
     {
         return $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
-            ->andWhere('r.id IN (SELECT ar.id FROM App:ContractAction aca JOIN aca.contract ac JOIN ac.resident ar WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)')
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ca.start) AND (ca.end IS NULL OR mrr.start < = ca.end)
+                        GROUP BY res.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            )
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval $reportInterval
+     * @param bool $typeId
+     * @return QueryBuilder
+     */
+    public function getRoomListContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this
+            ->getEntityManager()
+            ->getRepository(ContractAction::class)
+            ->getRoomListContractActionIntervalQb($reportInterval);
+
+        $qb
+            ->from(ResidentRent::class, 'rr')
+            ->from(Resident::class, 'r')
+            ->andWhere('rr.resident = r')
+            ->andWhere('rr.resident = car')
+            ->andWhere('(rr.start < = :end AND rr.start > = :start) OR (rr.start < :start AND (rr.end IS NULL OR rr.end > :start))')
+            ->andWhere('cac.type=:type')
+            ->setParameter('type', $type)
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'ca.id as actionId',
+                'cac.start as admitted',
+                'rr.id as rentId',
+                'rr.amount as amount',
+                'rr.period as period'
+            );
+
+        if ($reportInterval) {
+            $qb
+                ->andWhere('rr.end IS NULL OR rr.end > = :start');
+            if ($reportInterval->getEnd()) {
+                $qb
+                    ->andWhere('rr.start < = :end');
+            }
+        }
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        fr.number as roomNumber,
+                        fr.floor as roomFloor,
+                        fb.number as bedNumber,
+                        fb.id as bedId,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ca.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ca.careLevel = cl'
+                    );
+
+                $qb
+                    ->orderBy('f.shorthand')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ar.floor as roomFloor,
+                        ab.number as bedNumber
+                        ab.id as bedId'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ca.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                $qb
+                    ->orderBy('a.shorthand')
+                    ->addOrderBy('ar.number')
+                    ->addOrderBy('ab.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand,
+                        ca.address as address,
+                        csz.city as city,
+                        csz.stateAbbr as state,
+                        csz.zipMain as zip,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ca.region = reg'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ca.careLevel = cl'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'ca.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('reg.shorthand');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval $reportInterval
+     * @param bool $typeId
+     * @return mixed
+     */
+    public function getRoomListData($type, ImtDateTimeInterval $reportInterval, $typeId = false)
+    {
+        return $this
+            ->getRoomListContractActionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.start < = :endDate AND mrr.start > = :startDate) OR (mrr.start < :startDate AND (mrr.end IS NULL OR mrr.end > :startDate))
+                        GROUP BY res.id)'
+            )
+            ->andWhere('ca.id IN (SELECT MAX(mca.id)
+                        FROM App:ContractAction mca
+                        JOIN mca.contract mcac
+                        JOIN mcac.resident mcacr
+                        WHERE (mca.start < = :endDate AND mca.start > = :startDate) OR (mca.start < :startDate AND (mca.end IS NULL OR mca.end > :startDate))
+                        GROUP BY mcacr.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            )
+            ->setParameter('startDate', $reportInterval->getStart())
+            ->setParameter('endDate', $reportInterval->getEnd())
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }

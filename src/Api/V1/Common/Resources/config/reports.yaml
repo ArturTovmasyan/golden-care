@@ -187,7 +187,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-list:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getRoomListReport
       title: 'Room : List of Rooms, with occupants and room rent rates.'
       show_in_list: true
       formats: ['pdf', 'csv']

@@ -34,6 +34,7 @@ use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\ContractType;
 use App\Model\Report\Payor;
+use App\Model\Report\RoomList;
 use App\Model\Report\RoomOccupancyRate;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
@@ -1655,6 +1656,82 @@ class ResidentService extends BaseService implements IGridService
         $report->setStrategyId((int)$type);
         $report->setDateStart($dateStart);
         $report->setDateEnd($dateEnd);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomList
+     * @throws \Exception
+     */
+    public function getRoomListReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date = $request->get('date');
+
+        if (!$type || ($type && !\in_array($type, ContractType::getTypeValues(), false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $reportDate = new \DateTime('now');
+        $reportDateFormatted = $reportDate->format('m/d/Y');
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+            $reportDateFormatted = $reportDate->format('m/d/Y');
+        }
+
+        $interval = ImtDateTimeInterval::getWithDays($reportDateFormatted, $reportDateFormatted);
+
+        $data = $this->em->getRepository(ResidentRent::class)->getRoomListData((int)$type, $interval, $typeId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
+
+        $typeIds = array_unique($typeIds);
+
+        $calcAmount = [];
+        $total = [];
+        foreach ($typeIds as $typeId) {
+            $sum = 0.00;
+            foreach ($data as $rent) {
+                if ($typeId === $rent['typeId']) {
+                    $calculationResults = $rentPeriodFactory->calculateForInterval(
+                        ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')),
+                        $rent['period'],
+                        $rent['amount']
+                    );
+
+                    $calcAmount[$rent['id']] = $calculationResults['amount'];
+
+                    $sum += $calculationResults['amount'];
+                }
+            }
+            $total[$typeId] = $sum;
+        }
+
+        $report = new RoomList();
+        $report->setData($data);
+        $report->setCalcAmount($calcAmount);
+        $report->setPlace($place);
+        $report->setTotal($total);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setStrategyId((int)$type);
+        $report->setDate($reportDateFormatted);
 
         return $report;
     }
