@@ -50,6 +50,7 @@ use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
+use App\Model\Report\RoomRent;
 use App\Model\Report\RoomRentMasterNew;
 use App\Model\Report\RoomVacancyList;
 use App\Model\Report\ShowerSkinInspection;
@@ -1356,7 +1357,7 @@ class ResidentService extends BaseService implements IGridService
 
                     $calcAmount[$rent['id']] = $calculationResults['amount'];
 
-                    $sum += $calculationResults['amount'] > 0 ? $calculationResults['amount'] : $rent['amount'];
+                    $sum += $calculationResults['amount'];
                 }
             }
             $total[$typeId] = $sum;
@@ -1529,6 +1530,127 @@ class ResidentService extends BaseService implements IGridService
 
         $report = new RoomRentMasterNew();
         $report->setData($data);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setStrategyId((int)$type);
+        $report->setDateStart($dateStart);
+        $report->setDateEnd($dateEnd);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomRent
+     * @throws \Exception
+     */
+    public function getRoomRentReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date = $request->get('date');
+
+        if (!$type || ($type && !\in_array($type, ContractType::getTypeValues(), false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $now = new \DateTime('now');
+        $reportDate = $now;
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+        }
+
+        $subInterval = ImtDateTimeInterval::getDateDiffForMonthAndYear($reportDate->format('Y'), $reportDate->format('m'));
+
+        $dateStart = $subInterval->getStart()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+
+        $data = $this->em->getRepository(ResidentRent::class)->getRoomRentData((int)$type, $subInterval, $typeId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+
+        $residentIds = array_map(function($item){return $item['id'];} , $data);
+        $residentIds = array_unique($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
+
+        $typeIds = array_unique($typeIds);
+
+        $calcAmount = [];
+        $total = [];
+        foreach ($typeIds as $typeId) {
+            $sum = 0.00;
+            foreach ($data as $rent) {
+                if ($typeId === $rent['typeId']) {
+                    $calculationResults = $rentPeriodFactory->calculateForInterval(
+                        ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
+                        $rent['period'],
+                        $rent['amount']
+                    );
+
+                    $calcAmount[$rent['id']][$rent['actionId']] = ['days' => $calculationResults['days'], 'amount' => $calculationResults['amount']];
+
+                    $sum += $calculationResults['amount'];
+                }
+            }
+            $total[$typeId] = $sum;
+        }
+
+        //for CSV report
+        $changedData = [];
+        foreach ($data as $rent) {
+            $rentArray = [
+                'fullName' => $rent['firstName'] . ' ' . $rent['lastName'],
+                'number' => array_key_exists('roomNumber', $rent) && array_key_exists('bedNumber', $rent) ? $rent['roomNumber'] . ' ' . $rent['bedNumber'] : null,
+                'period' => $rent['period'],
+                'rentId' => $rent['rentId'],
+                'actionId' => $rent['actionId'],
+                'amount' => $rent['amount'],
+                'id' => $rent['id'],
+                'admitted' => $rent['admitted'],
+                'discharged' => $rent['discharged'],
+                'typeName' => $rent['typeName'],
+                'typeId' => $rent['typeId'],
+                'typeShorthand' => $rent['typeShorthand'],
+                'responsiblePerson' => [],
+            ];
+            $rpArray = array();
+            foreach ($responsiblePersons as $responsiblePerson) {
+                if ($responsiblePerson['residentId'] === $rent['id']) {
+                    if ($responsiblePerson['financially'] === true) {
+                        $rpArray['responsiblePerson'][$responsiblePerson['rpId']] = $responsiblePerson['firstName'] . ' ' . $responsiblePerson['lastName'] . ' (' . $responsiblePerson['relationshipTitle'] . ')';
+                    }
+                }
+            }
+            $changedData[] = array_merge($rentArray, $rpArray);
+        }
+
+        $csvData = [];
+        foreach ($changedData as $changedDatum) {
+            $string_version = implode("\r\n", $changedDatum['responsiblePerson']);
+            $changedDatum['responsiblePerson'] = $string_version;
+            $csvData[] = $changedDatum;
+        }
+
+        $report = new RoomRent();
+        $report->setData($data);
+        $report->setCsvData($csvData);
+        $report->setCalcAmount($calcAmount);
+        $report->setPlace($place);
+        $report->setTotal($total);
+        $report->setResponsiblePersons($responsiblePersons);
         $report->setStrategy(ContractType::getTypes()[(int)$type]);
         $report->setStrategyId((int)$type);
         $report->setDateStart($dateStart);

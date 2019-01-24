@@ -83,6 +83,7 @@ class ResponsiblePersonRepository extends EntityRepository
                     csz.stateFull as state,
                     csz.zipMain as zip,
                     csz.city as city,
+                    rpp.id as rpId,
                     rpp.type as phoneType,
                     rpp.extension as phoneExtension,
                     rpp.number as phoneNumber,
