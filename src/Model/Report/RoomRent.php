@@ -35,6 +35,16 @@ class RoomRent extends Base
     private $dateEnd;
 
     /**
+     * RoomRent constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->addOption('orientation', self::ORIENTATION_LANDSCAPE);
+    }
+
+    /**
      * @param $data
      */
     public function setData($data): void
