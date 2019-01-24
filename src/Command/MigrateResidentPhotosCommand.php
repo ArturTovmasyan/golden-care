@@ -35,10 +35,10 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $fileSystem = new Filesystem();
-
-        if ($fileSystem->exists($input->getOption('json'))) {
-            $file = file_get_contents($input->getOption('json'));
+        $file_system = new Filesystem();
+        $json_filename = $input->getOption('json');
+        if ($file_system->exists($json_filename)) {
+            $file = file_get_contents($json_filename);
             $data = json_decode($file, true);
 
             $progressBar = new ProgressBar($output, count($data));
@@ -47,18 +47,19 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
             foreach ($data as $item) {
                 $data = file_get_contents($item['photo']);
 
-                if($data) {
+                if ($data) {
                     $type = pathinfo($item['photo'], PATHINFO_EXTENSION);
                     $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
                     $this->photoHelper->save($item['id'], $base64);
                 } else {
-                    $output->writeln("Download failed");
+                    $output->writeln(sprintf("Download of '%s' for resident '%d' failed.", $item['photo'], $item['id']));
                 }
                 $progressBar->advance();
             }
+
             $progressBar->finish();
         } else {
-            $output->writeln("Invalid input file");
+            $output->writeln(sprintf("Invalid input file '%s'.", $json_filename));
         }
     }
 }
