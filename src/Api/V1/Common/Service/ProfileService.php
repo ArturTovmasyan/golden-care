@@ -62,16 +62,20 @@ class ProfileService extends BaseService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function changePassword(User $user, array $params)
+    public function changePassword(User $loggedUser, array $params)
     {
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $encoded = $this->encoder->encodePassword($user, $params['new_password']);
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)
+                             ->findOneBy(['username' => $loggedUser->getUsername()]);
 
             $user->setOldPassword($params['password']);
             $user->setPlainPassword($params['new_password']);
             $user->setConfirmPassword($params['re_new_password']);
+
+            $encoded = $this->encoder->encodePassword($user, $params['new_password']);
             $user->setPassword($encoded);
 
             $this->validate($user, null, ["api_profile_change_password"]);
