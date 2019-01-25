@@ -65,14 +65,14 @@ class UserService extends BaseService implements IGridService
 
             $user->setCompleted(true);
 
-            // encode password
-            $encoded = $this->encoder->encodePassword($user, $params['password']);
-            $user->setConfirmPassword($params['re_password']);
             $user->setPlainPassword($params['password']);
-            $user->setPassword($encoded);
+            $user->setConfirmPassword($params['re_password']);
             $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
             $this->validate($user, null, ["api_admin_user_add"]);
+
+            $encoded = $this->encoder->encodePassword($user, $params['password']);
+            $user->setPassword($encoded);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -108,16 +108,18 @@ class UserService extends BaseService implements IGridService
             $user->setEnabled((bool) $params['enabled']);
 
             if(!empty($params['password'])) {
-                // encode password
-                $encoded = $this->encoder->encodePassword($user, $params['password']);
-                $user->setConfirmPassword($params['re_password']);
                 $user->setPlainPassword($params['password']);
-                $user->setPassword($encoded);
+                $user->setConfirmPassword($params['re_password']);
             }
 
             $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
             $this->validate($user, null, ["api_admin_user_edit"]);
+
+            if(!empty($params['password'])) {
+                $encoded = $this->encoder->encodePassword($user, $params['password']);
+                $user->setPassword($encoded);
+            }
 
             $this->em->persist($user);
             $this->em->flush();

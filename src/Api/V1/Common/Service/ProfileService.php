@@ -75,10 +75,10 @@ class ProfileService extends BaseService
             $user->setPlainPassword($params['new_password']);
             $user->setConfirmPassword($params['re_new_password']);
 
+            $this->validate($user, null, ["api_profile_change_password"]);
+
             $encoded = $this->encoder->encodePassword($user, $params['new_password']);
             $user->setPassword($encoded);
-
-            $this->validate($user, null, ["api_profile_change_password"]);
 
             $this->em->persist($user);
             $this->em->flush();

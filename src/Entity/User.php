@@ -321,12 +321,6 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_reset_password", "api_profile_change_password", "api_dashboard_account_signup"})
-     * @Assert\Regex(
-     *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
-     *     groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"}
-     * )
      */
     private $password;
 
