@@ -25,57 +25,42 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "u.id"
  *          },
  *          {
  *              "id"         = "first_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.firstName"
  *          },
  *          {
  *              "id"         = "last_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.lastName"
  *          },
  *          {
  *              "id"         = "username",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.username"
  *          },
  *          {
  *              "id"         = "email",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.email"
  *          },
  *          {
  *              "id"         = "enabled",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.enabled"
  *          },
  *          {
  *              "id"         = "completed",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.completed"
  *          },
  *          {
  *              "id"         = "last_activity_at",
  *              "type"       = "datetime",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "u.lastActivityAt"
  *          }
  *     }

@@ -19,22 +19,17 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "mff.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "mff.title"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

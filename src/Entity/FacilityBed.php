@@ -30,22 +30,17 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "fb.id"
  *          },
  *          {
  *              "id"         = "number",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "fb.number"
  *          },
  *          {
  *              "id"         = "room",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "fr.name"
  *          }
  *     }
@@ -146,6 +141,24 @@ class FacilityBed
     private $resident;
 
     /**
+     * @var bool
+     * @ORM\Column(name="enabled", type="boolean", options={"default" = 1})
+     * @Assert\NotNull(groups={
+     *          "api_admin_facility_bed_add",
+     *          "api_admin_facility_bed_edit",
+     *          "api_admin_facility_room_add",
+     *          "api_admin_facility_room_edit"
+     * })
+     * @Groups({
+     *     "api_admin_facility_bed_list",
+     *     "api_admin_facility_bed_get",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     */
+    private $enabled;
+
+    /**
      * @return int
      */
     public function getId()
@@ -210,5 +223,21 @@ class FacilityBed
     public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     */
+    public function setEnabled(?bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 }

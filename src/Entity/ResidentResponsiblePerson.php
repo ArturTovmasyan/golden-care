@@ -19,29 +19,22 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rrp.id"
  *          },
  *          {
  *              "id"         = "resident",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(r.firstName, ' ', r.lastName)"
  *          },
  *          {
  *              "id"         = "responsible_person",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(rp.firstName, ' ', rp.lastName)"
  *          },
  *          {
  *              "id"         = "relationship",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rel.title"
  *          }
  *     }

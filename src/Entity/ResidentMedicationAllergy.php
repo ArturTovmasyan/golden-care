@@ -19,22 +19,17 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rma.id"
  *          },
  *          {
  *              "id"         = "medication",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "m.title"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rma.notes"
  *          }
  *     }

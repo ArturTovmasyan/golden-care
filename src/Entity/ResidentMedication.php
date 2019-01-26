@@ -19,99 +19,72 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rm.id"
  *          },
  *          {
  *              "id"         = "medication",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "m.title"
  *          },
  *          {
  *              "id"         = "form_factor",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ff.title"
  *          },
  *          {
  *              "id"         = "dosage",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.dosage"
  *          },
  *          {
  *              "id"         = "dosage_unit",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.dosageUnit"
  *          },
  *          {
  *              "id"         = "am",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.am"
  *          },
  *          {
  *              "id"         = "nn",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.nn"
  *          },
  *          {
  *              "id"         = "pm",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.pm"
  *          },
  *          {
  *              "id"         = "hs",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.hs"
  *          },
  *          {
  *              "id"         = "prn",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.prn"
  *          },
  *          {
  *              "id"         = "discontinued",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.discontinued"
  *          },
  *          {
  *              "id"         = "treatment",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.treatment"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.notes"
  *          },
  *          {
  *              "id"         = "prescription_number",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rm.prescriptionNumber"
  *          }
  *     }

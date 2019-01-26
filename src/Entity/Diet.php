@@ -19,29 +19,22 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "d.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "d.title"
  *          },
  *          {
  *              "id"         = "color",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "d.color"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

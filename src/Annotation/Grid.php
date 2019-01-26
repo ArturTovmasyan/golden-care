@@ -20,6 +20,7 @@ class Grid
     const FIELD_OPTION_ORIGINAL         = 'field';
     const FIELD_OPTION_AVAILABLE_VALUES = 'values';
     const FIELD_OPTION_LINK             = 'link';
+    const FIELD_OPTION_HIDDEN           = 'hidden';
 
     /**
      * Field types
@@ -44,6 +45,7 @@ class Grid
         self::FIELD_OPTION_ORIGINAL,
         self::FIELD_OPTION_AVAILABLE_VALUES,
         self::FIELD_OPTION_LINK,
+        self::FIELD_OPTION_HIDDEN
     ];
 
     /**
@@ -87,6 +89,17 @@ class Grid
 
         foreach ($options as $groupName => $groupOptions) {
             foreach ($groupOptions as $index => $groupOption) {
+                $this->groups[$groupName][$index] = [
+                    self::FIELD_OPTION_ID               => null,
+                    self::FIELD_OPTION_TYPE             => null,
+                    self::FIELD_OPTION_SORTABLE         => true,
+                    self::FIELD_OPTION_FILTERABLE       => true,
+                    self::FIELD_OPTION_ORIGINAL         => null,
+                    self::FIELD_OPTION_AVAILABLE_VALUES => null,
+                    self::FIELD_OPTION_LINK             => null,
+                    self::FIELD_OPTION_HIDDEN           => false,
+                ];
+
                 foreach ($groupOption as $key => $fieldOption) {
                     if (in_array($key, self::FIELD_OPTIONS)) {
                         if ($key == 'values') {
@@ -95,9 +108,13 @@ class Grid
                         }
 
                         $this->groups[$groupName][$index][$key] = $fieldOption;
-                        $this->groupsById[$groupName][$groupOption['id']][$key] = $fieldOption;
                     }
                 }
+
+                $this->groups[$groupName][$index] = array_filter($this->groups[$groupName][$index], function ($value) {
+                    return $value !== null;
+                });
+                $this->groupsById[$groupName][$groupOption['id']] = $this->groups[$groupName][$index];
             }
         }
     }

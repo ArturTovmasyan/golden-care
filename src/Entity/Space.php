@@ -19,22 +19,17 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "s.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          },
  *          {
  *              "id"         = "created_at",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.createdAt"
  *          }
  *     }

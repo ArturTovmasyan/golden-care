@@ -176,6 +176,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     $newBed = new FacilityBed();
                     $newBed->setNumber($bed['number']);
                     $newBed->setRoom($facilityRoom);
+                    $newBed->setEnabled($bed['enabled']);
                     $facilityRoom->addBed($newBed);
 
                     $this->em->persist($newBed);
@@ -238,7 +239,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     if (empty($bed['id'])) {
                         $addedBeds[] = $bed;
                     } else {
-                        $editedBeds[$bed['id']] = $bed['number'];
+                        $editedBeds[$bed['id']] = $bed;
                         $editedBedsIds[] = $bed['id'];
                     }
                 }
@@ -248,7 +249,8 @@ class FacilityRoomService extends BaseService implements IGridService
                 /** @var FacilityBed $existingBed */
                 foreach ($entity->getBeds() as $existingBed) {
                     if (\in_array($existingBed->getId(), $editedBedsIds, false)) {
-                        $existingBed->setNumber($editedBeds[$existingBed->getId()]);
+                        $existingBed->setNumber($editedBeds[$existingBed->getId()]['number']);
+                        $existingBed->setEnabled($editedBeds[$existingBed->getId()]['enabled']);
 
                         $this->em->persist($existingBed);
                     } else {
@@ -268,6 +270,7 @@ class FacilityRoomService extends BaseService implements IGridService
                 foreach ($addedBeds as $bed) {
                     $newBed = new FacilityBed();
                     $newBed->setNumber($bed['number']);
+                    $newBed->setEnabled($bed['enabled']);
                     $newBed->setRoom($entity);
                     $entity->addBed($newBed);
 

@@ -20,51 +20,38 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rr.id"
  *          },
  *          {
  *              "id"         = "start",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.start"
  *          },
  *          {
  *              "id"         = "end",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.end"
  *          },
  *          {
  *              "id"         = "period",
  *              "type"       = "enum",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.period",
  *              "values"     = "\App\Model\RentPeriod::getTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "amount",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.amount"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.notes"
  *          },
  *          {
  *              "id"         = "sources",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rr.source"
  *          }
  *     }

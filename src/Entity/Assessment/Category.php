@@ -19,22 +19,17 @@ use App\Model\Persistence\Entity\UserAwareTrait;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "ac.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ac.title"
  *          },
  *          {
  *              "id"         = "multi_item",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ac.multiItem"
  *          }
  *     }

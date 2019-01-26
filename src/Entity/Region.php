@@ -19,50 +19,37 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "r.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.name"
  *          },
  *          {
  *              "id"         = "description",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.description"
  *          },
  *          {
  *              "id"         = "shorthand",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.shorthand"
  *          },
  *          {
  *              "id"         = "phone",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.phone"
  *          },
  *          {
  *              "id"         = "fax",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.fax"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

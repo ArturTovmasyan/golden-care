@@ -16,85 +16,62 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rp.id"
  *          },
  *          {
  *              "id"         = "salutation",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "sal.title"
  *          },
  *          {
  *              "id"         = "first_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.firstName"
  *          },
  *          {
  *              "id"         = "middle_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.middleName"
  *          },
  *          {
  *              "id"         = "last_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.lastName"
  *          },
  *          {
  *              "id"         = "address_1",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.address_1"
  *          },
  *          {
  *              "id"         = "address_2",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.address_2"
  *          },
  *          {
  *              "id"         = "financially",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.financially"
  *          },
  *          {
  *              "id"         = "emergency",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.emergency"
  *          },
  *          {
  *              "id"         = "email",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.email"
  *          },
  *          {
  *              "id"         = "csz_str",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

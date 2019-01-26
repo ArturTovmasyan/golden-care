@@ -20,30 +20,23 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rd.id"
  *          },
  *          {
  *              "id"         = "diagnosis",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "d.title"
  *          },
  *          {
  *              "id"         = "type",
  *              "type"       = "enum",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rd.type",
  *              "values"     = "\App\Model\DiagnosisType::getTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rd.notes"
  *          }
  *     }

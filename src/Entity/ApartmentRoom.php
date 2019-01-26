@@ -28,36 +28,27 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "ar.id"
  *          },
  *          {
  *              "id"         = "number",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ar.number"
  *          },
  *          {
  *              "id"         = "floor",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ar.floor"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ar.notes"
  *          },
  *          {
  *              "id"         = "apartment",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "a.name"
  *          }
  *     }
@@ -119,14 +110,9 @@ class ApartmentRoom
      * @var int
      * @Assert\NotBlank(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
      * @Assert\Regex(
-     *      pattern="/(^[1-9][0-9]*$)/",
-     *      message="The value should be numeric",
+     *      pattern="/(^[1-9][0-9]?$)/",
+     *      message="The value should be numeric and more than zero and no longer than 2 characters.",
      *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
-     * @Assert\Length(
-     *      max = 2,
-     *      maxMessage = "Floor cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
      * )
      * @ORM\Column(name="floor", type="integer", length=2)
      * @Groups({
@@ -154,7 +140,7 @@ class ApartmentRoom
      * @var ArrayCollection
      * @Assert\Count(
      *      min = 1,
-     *      minMessage = "You must specify at least one Bed",
+     *      minMessage = "You must specify at least one bed.",
      *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
      * )
      * @Assert\Valid(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})

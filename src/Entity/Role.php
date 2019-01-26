@@ -28,15 +28,12 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "r.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.name"
  *          },
  *          {
@@ -49,15 +46,11 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "default",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.default"
  *          },
  *          {
  *              "id"         = "space_default",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.spaceDefault"
  *          }
  *     },
@@ -65,29 +58,22 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "r.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.name"
  *          },
  *          {
  *              "id"         = "default",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.default"
  *          },
  *          {
  *              "id"         = "space_default",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.spaceDefault"
  *          }
  *     }

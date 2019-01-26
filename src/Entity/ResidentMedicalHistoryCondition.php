@@ -19,29 +19,22 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rmhc.id"
  *          },
  *          {
  *              "id"         = "condition",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "mhc.title"
  *          },
  *          {
  *              "id"         = "date",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rmhc.date"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rmhc.notes"
  *          }
  *     }

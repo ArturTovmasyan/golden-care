@@ -29,22 +29,17 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "ab.id"
  *          },
  *          {
  *              "id"         = "number",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ab.number"
  *          },
  *          {
  *              "id"         = "room",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ar.name"
  *          }
  *     }
@@ -145,6 +140,24 @@ class ApartmentBed
     private $resident;
 
     /**
+     * @var bool
+     * @ORM\Column(name="enabled", type="boolean", options={"default" = 1})
+     * @Assert\NotNull(groups={
+     *          "api_admin_apartment_bed_add",
+     *          "api_admin_apartment_bed_edit",
+     *          "api_admin_apartment_room_add",
+     *          "api_admin_apartment_room_edit"
+     * })
+     * @Groups({
+     *     "api_admin_apartment_bed_list",
+     *     "api_admin_apartment_bed_get",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
+     */
+    private $enabled;
+
+    /**
      * @return int
      */
     public function getId()
@@ -209,5 +222,21 @@ class ApartmentBed
     public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     */
+    public function setEnabled(?bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 }

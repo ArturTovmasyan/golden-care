@@ -17,38 +17,29 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "r.id"
  *          },
  *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
- *              "field"      = "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, r.lastName)",
+ *              "field"      = "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, ' ', r.lastName)",
  *              "link"       = "/resident/:id"
  *          },
  *          {
  *              "id"         = "gender",
  *              "type"       = "enum",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.gender",
  *              "values"     = "\App\Model\User::genderValues"
  *          },
  *          {
  *              "id"         = "birthday",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "r.birthday"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

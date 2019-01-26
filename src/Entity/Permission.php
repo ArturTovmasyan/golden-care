@@ -16,15 +16,12 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "p.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "p.name"
  *          }
  *     },
@@ -32,15 +29,12 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "p.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "p.name"
  *          }
  *     }

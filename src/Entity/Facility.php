@@ -22,85 +22,62 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "f.id"
  *          },
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.name"
  *          },
  *          {
  *              "id"         = "description",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.description"
  *          },
  *          {
  *              "id"         = "shorthand",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.shorthand"
  *          },
  *          {
  *              "id"         = "phone",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.phone"
  *          },
  *          {
  *              "id"         = "fax",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.fax"
  *          },
  *          {
  *              "id"         = "address",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.address"
  *          },
  *          {
  *              "id"         = "license",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.license"
  *          },
  *          {
  *              "id"         = "license_capacity",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.licenseCapacity"
  *          },
  *          {
  *              "id"         = "capacity",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.capacity"
  *          },
  *          {
  *              "id"         = "csz_str",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

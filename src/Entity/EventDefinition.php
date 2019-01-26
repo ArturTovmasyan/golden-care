@@ -19,64 +19,47 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "ed.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.title"
  *          },
  *          {
  *              "id"         = "ffc",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.ffc"
  *          },
  *          {
  *              "id"         = "ihc",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.ihc"
  *          },
  *          {
  *              "id"         = "il",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.il"
  *          },
  *          {
  *              "id"         = "physician",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.physician"
  *          },
  *          {
  *              "id"         = "responsible_person",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.responsiblePerson"
  *          },
  *          {
  *              "id"         = "additional_date",
  *              "type"       = "boolean",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.additionalDate"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "s.name"
  *          }
  *     }

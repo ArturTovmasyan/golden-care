@@ -23,43 +23,32 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "a.id"
  *          },
  *          {
  *              "id"         = "form",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "f.title"
  *          },
  *          {
  *              "id"         = "date",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "a.date"
  *          },
  *          {
  *              "id"         = "performed_by",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "a.performedBy"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "a.notes"
  *          },
  *          {
  *              "id"         = "score",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "a.score"
  *          }
  *     }

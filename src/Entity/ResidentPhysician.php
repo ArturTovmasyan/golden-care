@@ -19,22 +19,17 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "rp.id"
  *          },
  *          {
  *              "id"         = "physician",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"
  *          },
  *          {
  *              "id"         = "primary",
  *              "type"       = "number",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "rp.primary"
  *          }
  *     }

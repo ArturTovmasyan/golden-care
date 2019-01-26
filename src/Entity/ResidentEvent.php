@@ -19,50 +19,37 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "re.id"
  *          },
  *          {
  *              "id"         = "definition",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "ed.title"
  *          },
  *          {
  *              "id"         = "date",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "re.date"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "re.notes"
  *          },
  *          {
  *              "id"         = "physician",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"
  *          },
  *          {
  *              "id"         = "responsible_person",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "CONCAT(rps.title, ' ', rp.firstName, ' ', rp.lastName)"
  *          },
  *          {
  *              "id"         = "additional_date",
  *              "type"       = "string",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "re.additionalDate"
  *          }
  *     }

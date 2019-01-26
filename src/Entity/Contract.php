@@ -21,29 +21,22 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
- *              "sortable"   = true,
- *              "filterable" = true,
+ *              "hidden"     = true,
  *              "field"      = "c.id"
  *          },
  *          {
  *              "id"         = "start",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "c.start"
  *          },
  *          {
  *              "id"         = "end",
  *              "type"       = "date",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "c.end"
  *          },
  *          {
  *              "id"         = "type",
  *              "type"       = "enum",
- *              "sortable"   = true,
- *              "filterable" = true,
  *              "field"      = "c.type",
  *              "values"     = "\App\Model\ContractType::getTypeDefaultNames"
  *          }
