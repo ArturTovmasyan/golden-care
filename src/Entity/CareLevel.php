@@ -166,10 +166,8 @@ class CareLevel
      * @param Space|null $space
      * @return CareLevel
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

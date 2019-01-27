@@ -182,11 +182,9 @@ class ApartmentRoom
      * @param Apartment|null $apartment
      * @return ApartmentRoom
      */
-    public function setApartment(?Apartment $apartment): self
+    public function setApartment(?Apartment $apartment): void
     {
         $this->apartment = $apartment;
-
-        return $this;
     }
 
     /**
@@ -210,11 +208,9 @@ class ApartmentRoom
         return $this->floor;
     }
 
-    public function setFloor($floor): self
+    public function setFloor($floor): void
     {
         $this->floor = $floor;
-
-        return $this;
     }
 
     public function getNotes(): ?string
@@ -222,11 +218,9 @@ class ApartmentRoom
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**

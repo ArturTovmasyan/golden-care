@@ -286,11 +286,9 @@ class Facility
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -298,11 +296,9 @@ class Facility
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     public function getShorthand(): ?string
@@ -310,11 +306,9 @@ class Facility
         return $this->shorthand;
     }
 
-    public function setShorthand(string $shorthand): self
+    public function setShorthand(string $shorthand): void
     {
         $this->shorthand = $shorthand;
-
-        return $this;
     }
 
     public function getPhone(): ?string
@@ -322,11 +316,9 @@ class Facility
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
-
-        return $this;
     }
 
     public function getFax(): ?string
@@ -334,11 +326,9 @@ class Facility
         return $this->fax;
     }
 
-    public function setFax(?string $fax): self
+    public function setFax(?string $fax): void
     {
         $this->fax = $fax;
-
-        return $this;
     }
 
     public function getAddress(): ?string
@@ -346,11 +336,9 @@ class Facility
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(string $address): void
     {
         $this->address = $address;
-
-        return $this;
     }
 
     public function getLicense(): ?string
@@ -358,11 +346,9 @@ class Facility
         return $this->license;
     }
 
-    public function setLicense(?string $license): self
+    public function setLicense(?string $license): void
     {
         $this->license = $license;
-
-        return $this;
     }
 
     public function getLicenseCapacity(): ?int
@@ -370,11 +356,9 @@ class Facility
         return $this->licenseCapacity;
     }
 
-    public function setLicenseCapacity($licenseCapacity): self
+    public function setLicenseCapacity($licenseCapacity): void
     {
         $this->licenseCapacity = $licenseCapacity;
-
-        return $this;
     }
 
     public function getCapacity(): ?int
@@ -382,11 +366,9 @@ class Facility
         return $this->capacity;
     }
 
-    public function setCapacity($capacity): self
+    public function setCapacity($capacity): void
     {
         $this->capacity = $capacity;
-
-        return $this;
     }
 
     public function getCsz(): ?CityStateZip
@@ -394,11 +376,9 @@ class Facility
         return $this->csz;
     }
 
-    public function setCsz(?CityStateZip $csz): self
+    public function setCsz(?CityStateZip $csz): void
     {
         $this->csz = $csz;
-
-        return $this;
     }
 
     public function getSpace(): ?Space
@@ -406,11 +386,9 @@ class Facility
         return $this->space;
     }
 
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 
     /**

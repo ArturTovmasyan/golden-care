@@ -160,11 +160,9 @@ class Relationship
      * @param Space|null $space
      * @return Relationship
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 
     /**

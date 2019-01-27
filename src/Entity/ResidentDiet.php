@@ -121,11 +121,9 @@ class ResidentDiet
      * @param Resident|null $resident
      * @return ResidentDiet
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -140,11 +138,9 @@ class ResidentDiet
      * @param Diet|null $diet
      * @return ResidentDiet
      */
-    public function setDiet(?Diet $diet): self
+    public function setDiet(?Diet $diet): void
     {
         $this->diet = $diet;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -152,10 +148,8 @@ class ResidentDiet
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 }

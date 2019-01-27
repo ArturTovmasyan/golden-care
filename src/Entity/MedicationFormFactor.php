@@ -121,10 +121,8 @@ class MedicationFormFactor
      * @param Space|null $space
      * @return MedicationFormFactor
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

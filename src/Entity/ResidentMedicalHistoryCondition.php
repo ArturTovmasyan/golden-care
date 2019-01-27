@@ -130,11 +130,9 @@ class ResidentMedicalHistoryCondition
      * @param Resident|null $resident
      * @return ResidentMedicalHistoryCondition
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -149,11 +147,9 @@ class ResidentMedicalHistoryCondition
      * @param MedicalHistoryCondition|null $condition
      * @return ResidentMedicalHistoryCondition
      */
-    public function setCondition(?MedicalHistoryCondition $condition): self
+    public function setCondition(?MedicalHistoryCondition $condition): void
     {
         $this->condition = $condition;
-
-        return $this;
     }
 
     public function getNotes(): ?string
@@ -161,11 +157,9 @@ class ResidentMedicalHistoryCondition
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**

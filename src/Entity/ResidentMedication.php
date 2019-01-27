@@ -307,11 +307,9 @@ class ResidentMedication
      * @param Resident|null $resident
      * @return ResidentMedication
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -326,11 +324,9 @@ class ResidentMedication
      * @param Physician|null $physician
      * @return ResidentMedication
      */
-    public function setPhysician(?Physician $physician): self
+    public function setPhysician(?Physician $physician): void
     {
         $this->physician = $physician;
-
-        return $this;
     }
 
     /**
@@ -345,11 +341,9 @@ class ResidentMedication
      * @param Medication|null $medication
      * @return ResidentMedication
      */
-    public function setMedication(?Medication $medication): self
+    public function setMedication(?Medication $medication): void
     {
         $this->medication = $medication;
-
-        return $this;
     }
 
     /**
@@ -364,11 +358,9 @@ class ResidentMedication
      * @param MedicationFormFactor|null $formFactor
      * @return ResidentMedication
      */
-    public function setFormFactor(?MedicationFormFactor $formFactor): self
+    public function setFormFactor(?MedicationFormFactor $formFactor): void
     {
         $this->formFactor = $formFactor;
-
-        return $this;
     }
 
     /**
@@ -424,11 +416,9 @@ class ResidentMedication
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**

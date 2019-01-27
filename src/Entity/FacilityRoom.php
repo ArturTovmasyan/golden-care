@@ -184,11 +184,9 @@ class FacilityRoom
      * @param Facility|null $facility
      * @return FacilityRoom
      */
-    public function setFacility(?Facility $facility): self
+    public function setFacility(?Facility $facility): void
     {
         $this->facility = $facility;
-
-        return $this;
     }
 
     /**
@@ -212,11 +210,9 @@ class FacilityRoom
         return $this->floor;
     }
 
-    public function setFloor($floor): self
+    public function setFloor($floor): void
     {
         $this->floor = $floor;
-
-        return $this;
     }
 
     public function getNotes(): ?string
@@ -224,11 +220,9 @@ class FacilityRoom
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**

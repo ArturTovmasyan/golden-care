@@ -163,11 +163,9 @@ class Diagnosis
         return $this->acronym;
     }
 
-    public function setAcronym(?string $acronym): self
+    public function setAcronym(?string $acronym): void
     {
         $this->acronym = $acronym;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -175,11 +173,9 @@ class Diagnosis
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     /**
@@ -194,10 +190,8 @@ class Diagnosis
      * @param Space|null $space
      * @return Diagnosis
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

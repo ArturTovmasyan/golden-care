@@ -268,11 +268,9 @@ class ContractAction
      * @param Contract|null $contract
      * @return ContractAction
      */
-    public function setContract(?Contract $contract): self
+    public function setContract(?Contract $contract): void
     {
         $this->contract = $contract;
-
-        return $this;
     }
 
     /**
@@ -312,11 +310,9 @@ class ContractAction
         return $this->state;
     }
 
-    public function setState($state): self
+    public function setState($state): void
     {
         $this->state = $state;
-
-        return $this;
     }
 
     /**

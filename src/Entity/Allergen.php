@@ -149,11 +149,9 @@ class Allergen
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     /**
@@ -168,10 +166,8 @@ class Allergen
      * @param Space|null $space
      * @return Allergen
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

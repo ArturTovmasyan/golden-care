@@ -176,10 +176,8 @@ class Medication
      * @param Space|null $space
      * @return Medication
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

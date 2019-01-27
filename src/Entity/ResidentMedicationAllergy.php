@@ -116,11 +116,9 @@ class ResidentMedicationAllergy
      * @param Resident|null $resident
      * @return ResidentMedicationAllergy
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -135,11 +133,9 @@ class ResidentMedicationAllergy
      * @param Medication|null $medication
      * @return ResidentMedicationAllergy
      */
-    public function setMedication(?Medication $medication): self
+    public function setMedication(?Medication $medication): void
     {
         $this->medication = $medication;
-
-        return $this;
     }
 
     public function getNotes(): ?string
@@ -147,10 +143,8 @@ class ResidentMedicationAllergy
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 }

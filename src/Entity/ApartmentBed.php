@@ -201,11 +201,9 @@ class ApartmentBed
      * @param ApartmentRoom|null $room
      * @return ApartmentBed
      */
-    public function setRoom(?ApartmentRoom $room): self
+    public function setRoom(?ApartmentRoom $room): void
     {
         $this->room = $room;
-
-        return $this;
     }
 
     /**

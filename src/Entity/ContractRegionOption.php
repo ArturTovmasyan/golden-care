@@ -146,11 +146,9 @@ class ContractRegionOption
         return $this->state;
     }
 
-    public function setState($state): self
+    public function setState($state): void
     {
         $this->state = $state;
-
-        return $this;
     }
 
     /**
@@ -190,10 +188,8 @@ class ContractRegionOption
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(string $address): void
     {
         $this->address = $address;
-
-        return $this;
     }
 }

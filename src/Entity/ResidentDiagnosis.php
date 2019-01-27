@@ -135,11 +135,9 @@ class ResidentDiagnosis
      * @param Resident|null $resident
      * @return ResidentDiagnosis
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -154,11 +152,9 @@ class ResidentDiagnosis
      * @param Diagnosis|null $diagnosis
      * @return ResidentDiagnosis
      */
-    public function setDiagnosis(?Diagnosis $diagnosis): self
+    public function setDiagnosis(?Diagnosis $diagnosis): void
     {
         $this->diagnosis = $diagnosis;
-
-        return $this;
     }
 
     public function getType(): ?int
@@ -166,11 +162,9 @@ class ResidentDiagnosis
         return $this->type;
     }
 
-    public function setType($type): self
+    public function setType($type): void
     {
         $this->type = $type;
-
-        return $this;
     }
 
     public function getNotes(): ?string
@@ -178,10 +172,8 @@ class ResidentDiagnosis
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 }

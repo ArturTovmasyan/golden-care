@@ -154,10 +154,8 @@ class Diet
      * @param Space|null $space
      * @return Diet
      */
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

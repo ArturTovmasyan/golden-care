@@ -203,11 +203,9 @@ class Contract
      * @param Resident|null $resident
      * @return Contract
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -247,10 +245,8 @@ class Contract
         return $this->type;
     }
 
-    public function setType($type): self
+    public function setType($type): void
     {
         $this->type = $type;
-
-        return $this;
     }
 }

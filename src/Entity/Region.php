@@ -188,11 +188,9 @@ class Region
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -200,11 +198,9 @@ class Region
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
     public function getShorthand(): ?string
@@ -212,11 +208,9 @@ class Region
         return $this->shorthand;
     }
 
-    public function setShorthand(string $shorthand): self
+    public function setShorthand(string $shorthand): void
     {
         $this->shorthand = $shorthand;
-
-        return $this;
     }
 
     public function getPhone(): ?string
@@ -224,11 +218,9 @@ class Region
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
-
-        return $this;
     }
 
     public function getFax(): ?string
@@ -236,11 +228,9 @@ class Region
         return $this->fax;
     }
 
-    public function setFax(?string $fax): self
+    public function setFax(?string $fax): void
     {
         $this->fax = $fax;
-
-        return $this;
     }
 
     public function getSpace(): ?Space
@@ -248,10 +238,8 @@ class Region
         return $this->space;
     }
 
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }

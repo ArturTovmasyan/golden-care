@@ -155,7 +155,7 @@ class ResidentRent
 
     /**
      * @var array $source
-     * @ORM\Column(name="source", type="json_array", length=1024, nullable=true)
+     * @ORM\Column(name="source", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
      *      maxMessage = "You cannot specify more than {{ limit }} sources",
@@ -193,11 +193,9 @@ class ResidentRent
      * @param Resident|null $resident
      * @return ResidentRent
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -237,11 +235,9 @@ class ResidentRent
         return $this->period;
     }
 
-    public function setPeriod($period): self
+    public function setPeriod($period): void
     {
         $this->period = $period;
-
-        return $this;
     }
 
     /**
@@ -265,11 +261,9 @@ class ResidentRent
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**

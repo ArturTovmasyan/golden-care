@@ -126,11 +126,9 @@ class ContractFacilityOption
         return $this->state;
     }
 
-    public function setState($state): self
+    public function setState($state): void
     {
         $this->state = $state;
-
-        return $this;
     }
 
     /**

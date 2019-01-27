@@ -172,11 +172,9 @@ class ResidentEvent
      * @param EventDefinition|null $definition
      * @return ResidentEvent
      */
-    public function setDefinition(?EventDefinition $definition): self
+    public function setDefinition(?EventDefinition $definition): void
     {
         $this->definition = $definition;
-
-        return $this;
     }
 
     /**
@@ -191,11 +189,9 @@ class ResidentEvent
      * @param Resident|null $resident
      * @return ResidentEvent
      */
-    public function setResident(?Resident $resident): self
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-
-        return $this;
     }
 
     /**
@@ -219,11 +215,9 @@ class ResidentEvent
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): self
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
-
-        return $this;
     }
 
     /**
@@ -238,11 +232,9 @@ class ResidentEvent
      * @param Physician|null $physician
      * @return ResidentEvent
      */
-    public function setPhysician(?Physician $physician): self
+    public function setPhysician(?Physician $physician): void
     {
         $this->physician = $physician;
-
-        return $this;
     }
 
     /**
@@ -257,11 +249,9 @@ class ResidentEvent
      * @param ResponsiblePerson|null $responsiblePerson
      * @return ResidentEvent
      */
-    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): self
+    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
     {
         $this->responsiblePerson = $responsiblePerson;
-
-        return $this;
     }
 
     /**

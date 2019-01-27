@@ -5,10 +5,10 @@ namespace App\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Class ReportRepository
+ * Class ReportNotificationRepository
  * @package App\Repository
  */
-class ReportRepository extends EntityRepository
+class ReportNotificationRepository extends EntityRepository
 {
 
 }

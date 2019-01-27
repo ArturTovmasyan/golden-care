@@ -140,10 +140,8 @@ class DiningRoom
      * @param Facility|null $facility
      * @return DiningRoom
      */
-    public function setFacility(?Facility $facility): self
+    public function setFacility(?Facility $facility): void
     {
         $this->facility = $facility;
-
-        return $this;
     }
 }

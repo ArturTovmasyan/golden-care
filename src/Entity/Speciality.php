@@ -118,10 +118,8 @@ class Speciality
         return $this->space;
     }
 
-    public function setSpace(?Space $space): self
+    public function setSpace(?Space $space): void
     {
         $this->space = $space;
-
-        return $this;
     }
 }
