@@ -30,7 +30,10 @@
                 isStacked: true,
                 width: 1200,
                 height: 700,
-                legend: {position: 'top', maxLines: 1},
+                legend: {position: 'top', maxLines: 1, alignment: 'center'},
+                titleTextStyle: {
+                    fontSize: 22
+                },
                 title: shorthand + ', ' + revenue + ', ' + avgRent,
                 vAxis: {
                     title: 'AVE RENT',
@@ -60,7 +63,11 @@
                     0: {targetAxisIndex: 0},
                     1: {targetAxisIndex: 1}
                 },
+                titleTextStyle: {
+                    fontSize: 22
+                },
                 title: shorthand + ', ' + revenue + ', ' + avgRent + ', ' + occupancy,
+                legend: {position: 'top', maxLines: 1, alignment: 'center'},
                 vAxes: {
                     0: {
                         title: 'AVE RENT',
