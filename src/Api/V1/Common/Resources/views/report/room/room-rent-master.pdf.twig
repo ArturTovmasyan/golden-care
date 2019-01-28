@@ -1,0 +1,164 @@
+{% extends '@api_report/base.twig' %}
+{% block javascript %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+        var is_region = {% if data.strategyId == constant('App\\Model\\ContractType::TYPE_REGION') %}true{% else %}false{% endif %};
+        var report_data = {{ data.data|json_encode()|raw }};
+
+        function init() {
+            google.load("visualization", "1.1", {packages: ["corechart"], callback: 'drawCharts'});
+        }
+
+        function drawCharts() {
+            Object.keys(report_data).forEach(function (key) {
+                if (is_region) {
+                    drawRentMaster0('chart-single-column-' + key, report_data[key]);
+                } else {
+                    drawRentMaster1('chart-dual-column-' + key, report_data[key]);
+                }
+                drawRentMaster2('chart-column-' + key, report_data[key]);
+            });
+        }
+
+        function drawRentMaster0(containerId, data) {
+            var shorthand = data['typeShorthand'];
+            var revenue = 'Revenue - ' + data['sum'] + '$';
+            var avgRent = 'Ave rent - ' + data['avgRent'] + '$';
+
+            var column_options = {
+                isStacked: true,
+                width: 1200,
+                height: 700,
+                legend: {position: 'top', maxLines: 1},
+                title: shorthand + ', ' + revenue + ', ' + avgRent,
+                vAxis: {
+                    title: 'AVE RENT',
+                    format: 'decimal'
+                }
+            };
+
+            var keys = ['', 'AVE RENT'];
+            var values = ['{{ data.dateStart|date("Y") }} - {{ data.dateStart|date("M") }}', data['ave']];
+
+            var cdata = google.visualization.arrayToDataTable([keys, values]);
+
+            var chart = new google.visualization.ColumnChart(document.getElementById(containerId));
+            chart.draw(cdata, column_options);
+        }
+
+        function drawRentMaster1(containerId, data) {
+            var shorthand = data['typeShorthand'];
+            var revenue = 'Revenue - ' + data['sum'] + '$';
+            var avgRent = 'Ave rent - ' + data['avgRent'] + '$';
+            var occupancy = 'Occupancy - ' + data['occ'] + '%';
+
+            var dual_column_options = {
+                width: 1200,
+                height: 700,
+                series: {
+                    0: {targetAxisIndex: 0},
+                    1: {targetAxisIndex: 1}
+                },
+                title: shorthand + ', ' + revenue + ', ' + avgRent + ', ' + occupancy,
+                vAxes: {
+                    0: {
+                        title: 'AVE RENT',
+                        format: 'decimal'
+                    },
+                    1: {
+                        title: 'OCCUPANCY',
+                        format: 'percent'
+                    }
+                }
+            };
+
+            var keys = ['', 'AVE RENT', 'OCCUPANCY'];
+            var values = ['{{ data.dateStart|date("Y") }} - {{ data.dateStart|date("M") }}', data['ave'], data['occupancy']];
+
+            var cdata = google.visualization.arrayToDataTable([keys, values]);
+
+            var chart = new google.visualization.ColumnChart(document.getElementById(containerId));
+            chart.draw(cdata, dual_column_options);
+        }
+
+        function drawRentMaster2(containerId, data) {
+            var column_options = {
+                isStacked: 'percent',
+                width: 1200,
+                height: 700,
+                legend: {position: 'top', maxLines: 1},
+                vAxis: {
+                    minValue: 0,
+                    ticks: [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1]
+                }
+            };
+
+            var keys = [''];
+            keys = keys.concat(Object.keys(data['revenue']));
+            keys.push({role: 'annotation'});
+
+            var values = ['{{ data.dateStart|date("Y") }} - {{ data.dateStart|date("M") }}'];
+            values = values.concat(Object.keys(data['revenue']).map(function (key) {
+                return data['revenue'][key];
+            }));
+            values.push('');
+
+            var cdata = google.visualization.arrayToDataTable([keys, values]);
+
+            var chart = new google.visualization.ColumnChart(document.getElementById(containerId));
+            chart.draw(cdata, column_options);
+        }
+    </script>
+{% endblock %}
+{% block bodyAttrib %}
+    onload="init()"
+{% endblock %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% for key, datum in data.data %}
+        <table class="report-table">
+        <thead>
+            <tr style="margin: 0">
+                <th>
+                    <div>
+                        <div style="float: left">
+                            <div style="height: 3px;"></div>
+                            <b style="font-size: 22px !important">{{ data.strategy }}
+                                &nbsp;{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}Room&nbsp;{% endif %}
+                                Rent&nbsp;Master</b>
+                            <p style="margin-bottom: 10px;"></p>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+            <tr style="margin: 0">
+                <td style="border: none; margin: 0">
+                    <div id="chart-dual-column-{{ key }}"></div>
+                </td>
+            </tr>
+        {% else %}
+            <tr style="margin: 0">
+                <td style="border: none; margin: 0">
+                    <div id="chart-single-column-{{ key }}"></div>
+                </td>
+            </tr>
+        {% endif %}
+        <tr style="margin: 0">
+            <td style="border: none; margin: 0">
+                <div id="chart-column-{{ key }}"></div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

@@ -52,6 +52,7 @@ use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\RoomRent;
+use App\Model\Report\RoomRentMaster;
 use App\Model\Report\RoomRentMasterNew;
 use App\Model\Report\RoomVacancyList;
 use App\Model\Report\ShowerSkinInspection;
@@ -1732,6 +1733,192 @@ class ResidentService extends BaseService implements IGridService
         $report->setStrategy(ContractType::getTypes()[(int)$type]);
         $report->setStrategyId((int)$type);
         $report->setDate($reportDateFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param Request $request
+     * @return RoomRentMaster
+     * @throws \Exception
+     */
+    public function getRoomRentMasterReport(Request $request)
+    {
+        $all = $request->get('all') ? (bool)$request->get('all') : false;
+        $type = $request->get('type');
+        $typeId = $request->get('type_id') ?? false;
+        $date = $request->get('date');
+
+        if (!$type || ($type && !\in_array($type, ContractType::getTypeValues(), false))) {
+            throw new InvalidParameterException('type');
+        }
+
+        if (!$all && !$typeId) {
+            throw new ParameterNotFoundException('type_id, all');
+        }
+
+        $now = new \DateTime('now');
+        $reportDate = $now;
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+        }
+
+        $month = $reportDate->format('m');
+        $year = $reportDate->format('Y');
+
+        $subInterval = ImtDateTimeInterval::getWithMonthAndYear($year, $month);
+
+        $dateStart = $subInterval->getStart()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+
+        $types = [];
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Facility::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Facility::class)->orderedFindAll();
+                }
+
+                break;
+            case ContractType::TYPE_APARTMENT:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Apartment::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Apartment::class)->orderedFindAll();
+                }
+
+                break;
+            case ContractType::TYPE_REGION:
+                if ($typeId) {
+                    $types = $this->em->getRepository(Region::class)->findBy(['id' => $typeId]);
+                }
+
+                if ($all) {
+                    $types = $this->em->getRepository(Region::class)->orderedFindAll();
+                }
+
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        $rents = $this->em->getRepository(ResidentRent::class)->getRoomRentMasterNewData((int)$type, $subInterval, $typeId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+        $data = [];
+
+        if ((int)$type !== ContractType::TYPE_REGION) {
+            $incomePer = 'bedId';
+        } else {
+            $incomePer = 'id';
+        }
+
+        if (!empty($types)) {
+            foreach ($types as $value) {
+                $typeId = $value->getId();
+
+                $data[$typeId] = array(
+                    'sum' => 0.00,
+                    'typeName' => $value->getName(),
+                    'typeShorthand' => $value->getShorthand(),
+                    'avgRent' => 0.00,
+                    'occ' => 0.00,
+                    'ave' => 0.00,
+                    'revenue' => array(
+                        'Vacant' => 0,
+                        '< 1k' => 0,
+                        '1k < 2k' => 0,
+                        '2k < 3k' => 0,
+                        '3k < 4k' => 0,
+                        '4k < 5k' => 0,
+                        '> 5k' => 0,
+                    )
+                );
+                $sum = 0.00;
+                $paymentsCount = 0;
+
+                foreach ($rents as $rent) {
+                    if ($typeId === $rent['typeId']) {
+                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']) );
+                        if (!isset($data[$typeId][$rent[$incomePer]])) {
+                            $data[$typeId]['occupancy'][$rent[$incomePer]] = 0.00;
+                        }
+                        $data[$typeId]['occupancy'][$rent[$incomePer]] += $rentPeriodFactory->calculateOccupancyForInterval($interval);
+                        $calculationResults = $rentPeriodFactory->calculateForInterval(
+                            $interval,
+                            $rent['period'],
+                            $rent['amount']
+                        );
+                        $amount = $calculationResults['amount'];
+
+                        if ($amount <= 1000) {
+                            $data[$typeId]['revenue']['< 1k']++;
+                        } elseif (1001 <= $amount && $amount <= 2000) {
+                            $data[$typeId]['revenue']['1k < 2k']++;
+                        } elseif (2001 <= $amount && $amount <= 3000) {
+                            $data[$typeId]['revenue']['2k < 3k']++;
+                        } elseif (3001 <= $amount && $amount <= 4000) {
+                            $data[$typeId]['revenue']['3k < 4k']++;
+                        } elseif (4001 <= $amount && $amount <= 5000) {
+                            $data[$typeId]['revenue']['4k < 5k']++;
+                        } else {
+                            $data[$typeId]['revenue']['> 5k']++;
+                        }
+
+                        if ($amount > 0) {
+                            $paymentsCount++;
+                        }
+                        $sum += $amount;
+                    }
+                }
+
+                $data[$typeId]['sum'] = number_format($sum, 2);
+                $data[$typeId]['ave'] = $paymentsCount > 0 ? $sum / $paymentsCount : 0;
+                $data[$typeId]['avgRent'] = number_format($data[$typeId]['ave'], 2, '.', null);
+
+                if ((int)$type !== ContractType::TYPE_REGION) {
+
+                    $occupancyRate = $this->getRoomOccupancyRateReport($request);
+
+                    $availableCount = [];
+                    foreach ($occupancyRate->getData() as $val) {
+                        if ($val['typeId'] === $typeId) {
+                            $availableCount[$typeId] = $val['availableCount'];
+                        }
+                    }
+
+                    $data[$typeId]['roomsCount'] = $roomsCount = $availableCount[$typeId];
+
+                    $data[$typeId]['occupancy'] = !isset($data[$typeId]['occupancy']) || $roomsCount === 0 ? 0 : array_sum($data[$typeId]['occupancy']) / $roomsCount;
+                    $data[$typeId]['occupancy'] = number_format($data[$typeId]['occupancy'] * 100, 2, '.', null);
+
+                    $revenueAll = array_sum($data[$typeId]['revenue']);
+                    foreach ($data[$typeId]['revenue'] as $revenueKey => &$revenueValue) {
+                        $revenueValue = $revenueAll === 0 ? 0 : ($revenueValue / $revenueAll) * $data[$typeId]['occupancy'];
+                    }
+                    $data[$typeId]['revenue']['Vacant'] = 100 - $data[$typeId]['occupancy'];
+                    $data[$typeId]['occ'] = $data[$typeId]['occupancy'];
+                    $data[$typeId]['occupancy'] = (float)($data[$typeId]['occupancy'] / 100);
+                } else {
+                    unset($data[$typeId]['revenue']['Vacant'], $data[$typeId]['occupancy']);
+                    foreach ($data[$typeId]['revenue'] as $revenueKey => &$revenueValue) {
+                        $revenueValue = number_format($revenueValue * 100, 2);
+                    }
+                }
+            }
+        }
+
+        $report = new RoomRentMaster();
+        $report->setData($data);
+        $report->setStrategy(ContractType::getTypes()[(int)$type]);
+        $report->setStrategyId((int)$type);
+        $report->setDateStart($dateStart);
+        $report->setDateEnd($dateEnd);
 
         return $report;
     }

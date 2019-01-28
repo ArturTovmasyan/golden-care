@@ -575,4 +575,30 @@ class ResidentRentRepository extends EntityRepository
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param bool $typeId
+     * @return mixed
+     */
+    public function getRoomRentMasterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    {
+        return $this
+            ->getContractActionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ca.start) AND (ca.end IS NULL OR mrr.start < = ca.end)
+                        GROUP BY res.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            )
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
 }

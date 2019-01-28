@@ -1,5 +1,8 @@
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    {% block javascript %}
+    {% endblock %}
     <style type="text/css">
         body {
             font-size: 11px;
@@ -101,7 +104,7 @@
         }
     </style>
 </head>
-<body>
+<body {% block bodyAttrib %}{% endblock %}>
 <div class="report-page">
     <h2 class="report-page-title">
         {% block pageTitle %}
@@ -118,4 +121,3 @@
     </div>
 </div>
 </body>
-</html>

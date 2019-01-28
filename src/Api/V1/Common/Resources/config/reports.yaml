@@ -205,7 +205,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-rent-master:
-      service: App\Api\V1\Admin\Service\ResidentService::
+      service: App\Api\V1\Admin\Service\ResidentService::getRoomRentMasterReport
       title: 'Room Rent Master : Historical Rent Graphs, Data - for Finance Use only.'
       show_in_list: true
       formats: ['pdf']
