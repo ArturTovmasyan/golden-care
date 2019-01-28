@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\RoleService;
+use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -196,12 +197,12 @@ class RoleController extends BaseController
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, RoleService $roleService)
+    public function getAction(Request $request, $id, RoleService $roleService, GrantService $grantService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $roleService->getById($id),
+            $roleService->getById($id, $grantService),
             ['api_admin_role_get']
         );
     }
@@ -220,7 +221,6 @@ class RoleController extends BaseController
      * @apiParam {Int}     space_id      The unique identifier of the space
      * @apiParam {Int}     default       The global status of the role
      * @apiParam {Int}     space_default The space status of the role
-     * @apiParam {Array}   permissions[] The parameter ids
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -228,7 +228,6 @@ class RoleController extends BaseController
      *         "space_id": 1,
      *         "default": true,
      *         "space_default": 0,
-     *         "permissions": [1, 2]
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -255,10 +254,10 @@ class RoleController extends BaseController
         $roleService->add(
             [
                 'name'          => $request->get('name'),
+                'grants'        => $request->get('grants'),
                 'space_id'      => $request->get('space_id'),
                 'default'       => $request->get('default'),
-                'space_default' => $request->get('space_default'),
-                'permissions'   => $request->get('permissions')
+                'space_default' => $request->get('space_default')
             ]
         );
 
@@ -317,10 +316,10 @@ class RoleController extends BaseController
             $id,
             [
                 'name'          => $request->get('name'),
+                'grants'        => $request->get('grants'),
                 'space_id'      => $request->get('space_id'),
                 'default'       => $request->get('default'),
-                'space_default' => $request->get('space_default'),
-                'permissions'   => $request->get('permissions')
+                'space_default' => $request->get('space_default')
             ]
         );
 

@@ -1,0 +1,318 @@
+persistence:
+  title: "Persistence"
+  fields: ['enabled', 'level', 'identity']
+  children:
+    security:
+      title: 'Security'
+      children:
+        access_token:
+          title: 'AccessToken'
+          class: App\Entity\AccessToken
+        auth_code:
+          title: 'AuthCode'
+          class: App\Entity\AuthCode
+        client:
+          title: 'Client'
+          class: App\Entity\Client
+        refresh_token:
+          title: 'RefreshToken'
+          class: App\Entity\RefreshToken
+
+        role:
+          title: 'Role'
+          class: App\Entity\Role
+        user:
+          title: 'User'
+          class: App\Entity\User
+        user_attempt:
+          title: 'UserAttempt'
+          class: App\Entity\UserAttempt
+        user_log:
+          title: 'UserLog'
+          class: App\Entity\UserLog
+        user_phone:
+          title: 'UserPhone'
+          class: App\Entity\UserPhone
+
+        space:
+          title: 'Space'
+          class: App\Entity\Space
+        space_user:
+          title: 'SpaceUser'
+          class: App\Entity\SpaceUser
+        space_user_role:
+          title: 'SpaceUserRole'
+          class: App\Entity\SpaceUserRole
+
+        permission:
+          title: 'Permission'
+          class: App\Entity\Permission
+
+    common:
+      title: 'Common'
+      children:
+        care_level:
+          title: 'CareLevel'
+          class: App\Entity\CareLevel
+        city_state_zip:
+          title: 'CityStateZip'
+          class: App\Entity\CityStateZip
+
+        event_definition:
+          title: 'EventDefinition'
+          class: App\Entity\EventDefinition
+        payment_source:
+          title: 'PaymentSource'
+          class: App\Entity\PaymentSource
+        report:
+          title: 'Report'
+          class: App\Entity\Report
+
+        relationship:
+          title: 'Relationship'
+          class: App\Entity\Relationship
+        salutation:
+          title: 'Salutation'
+          class: App\Entity\Salutation
+        speciality:
+          title: 'Speciality'
+          class: App\Entity\Speciality
+
+        allergen:
+          title: 'Allergen'
+          class: App\Entity\Allergen
+        diagnosis:
+          title: 'Diagnosis'
+          class: App\Entity\Diagnosis
+        diet:
+          title: 'Diet'
+          class: App\Entity\Diet
+        medical_history_condition:
+          title: 'MedicalHistoryCondition'
+          class: App\Entity\MedicalHistoryCondition
+        medication:
+          title: 'Medication'
+          class: App\Entity\Medication
+        medication_form_factor:
+          title: 'MedicationFormFactor'
+          class: App\Entity\MedicationFormFactor
+
+        physician:
+          title: 'Physician'
+          class: App\Entity\Physician
+        responsible_person:
+          title: 'ResponsiblePerson'
+          class: App\Entity\ResponsiblePerson
+        responsible_person_phone:
+          title: 'ResponsiblePersonPhone'
+          class: App\Entity\ResponsiblePersonPhone
+
+    assessment:
+      title: 'Assessment'
+      children:
+        care_level:
+          title: 'CareLevel'
+          class: App\Entity\Assessment\CareLevel
+        care_level_group:
+          title: 'CareLevelGroup'
+          class: App\Entity\Assessment\CareLevelGroup
+        category:
+          title: 'Category'
+          class: App\Entity\Assessment\Category
+        form:
+          title: 'Form'
+          class: App\Entity\Assessment\Form
+        form_category:
+          title: 'FormCategory'
+          class: App\Entity\Assessment\FormCategory
+        row:
+          title: 'Row'
+          class: App\Entity\Assessment\Row
+
+    apartment:
+      title: 'Apartment'
+      class: App\Entity\Apartment
+    apartment_room:
+      title: 'ApartmentRoom'
+      class: App\Entity\ApartmentRoom
+    apartment_bed:
+      title: 'ApartmentBed'
+      class: App\Entity\ApartmentBed
+
+    facility:
+      title: 'Facility'
+      class: App\Entity\Facility
+    facility_room:
+      title: 'FacilityRoom'
+      class: App\Entity\FacilityRoom
+    facility_bed:
+      title: 'FacilityBed'
+      class: App\Entity\FacilityBed
+    dining_room:
+      title: 'DiningRoom'
+      class: App\Entity\DiningRoom
+
+    region:
+      title: 'Region'
+      class: App\Entity\Region
+
+    resident:
+      title: 'Resident'
+      children:
+        resident:
+          title: 'Resident'
+          class: App\Entity\Resident
+        resident_allergen:
+          title: 'ResidentAllergen'
+          class: App\Entity\ResidentAllergen
+        resident_diagnosis:
+          title: 'ResidentDiagnosis'
+          class: App\Entity\ResidentDiagnosis
+        resident_diet:
+          title: 'ResidentDiet'
+          class: App\Entity\ResidentDiet
+        resident_event:
+          title: 'ResidentEvent'
+          class: App\Entity\ResidentEvent
+        resident_medical_history_condition:
+          title: 'ResidentMedicalHistoryCondition'
+          class: App\Entity\ResidentMedicalHistoryCondition
+        resident_medication:
+          title: 'ResidentMedication'
+          class: App\Entity\ResidentMedication
+        resident_medication_allergy:
+          title: 'ResidentMedicationAllergy'
+          class: App\Entity\ResidentMedicationAllergy
+        resident_phone:
+          title: 'ResidentPhone'
+          class: App\Entity\ResidentPhone
+        resident_physician:
+          title: 'ResidentPhysician'
+          class: App\Entity\ResidentPhysician
+        resident_rent:
+          title: 'ResidentRent'
+          class: App\Entity\ResidentRent
+        resident_responsible_person:
+          title: 'ResidentResponsiblePerson'
+          class: App\Entity\ResidentResponsiblePerson
+
+        contract:
+          title: 'Contract'
+          children:
+            contract:
+              title: 'Contract'
+              class: App\Entity\Contract
+            contract_action:
+              title: 'ContractAction'
+              class: App\Entity\ContractAction
+            contract_apartment_option:
+              title: 'ContractApartmentOption'
+              class: App\Entity\ContractApartmentOption
+            contract_facility_option:
+              title: 'ContractFacilityOption'
+              class: App\Entity\ContractFacilityOption
+            contract_region_option:
+              title: 'ContractRegionOption'
+              class: App\Entity\ContractRegionOption
+
+        assessment:
+          title: 'Assessment'
+          children:
+            assessment:
+              title: 'Assessment'
+              class: App\Entity\Assessment\Assessment
+            assessment_row:
+              title: 'AssessmentRow'
+              class: App\Entity\Assessment\AssessmentRow
+
+activity:
+  title: "Activity"
+  fields: ['enabled']
+  children:
+    resident:
+      title: "Resident"
+      children:
+        change-physician:
+          title: "Change the resident's physician"
+
+report:
+  title: "Report"
+  fields: ['enabled']
+  children:
+    resident:
+      title: "Resident Reports"
+      children:
+        profile:
+          title: "Profile : Profile for selected resident / all residents"
+        face-sheet:
+          title: "FACE Sheet : FACE Sheet for selected resident / all residents"
+        detailed-roster:
+          title: "Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
+        simple-roster:
+          title: "Simple Roster : Simple list of Residents, sorted by Room Number"
+        dietary-restrictions:
+          title: "Dietary Restrictions : Dietary Restrictions Report"
+        sixty-days-roster:
+          title: "60 Days Roster : 60 Days Roster Report"
+        event-list:
+          title: "Events : List of Residents Events"
+    form:
+      title: "Forms Reports"
+      children:
+        birthday-list:
+          title: "Birthday list : List of all residents birthdays, Monthly"
+        blood-pressure:
+          title: "Blood Pressure : Blood pressure charting"
+        bowel-movement:
+          title: "Bowel movement : Bowel Movement tracking form, Weekly"
+        changeover-notes:
+          title: "Changeover notes : Shift Changeover Notes, Daily"
+        manicure:
+          title: "Manicure : Manicure Tracking Form, Monthly"
+        meal-monitor:
+          title: "Meal Monitor : Meal Consumption Tracking Form, Weekly"
+        medication-chart:
+          title: "Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly"
+        medication-list-resident:
+          title: "Medications List Selected Resident : Medications list for selected resident"
+        medication-list-all:
+          title: "Medications List All Residents : Medications list for all residents."
+        night-activity:
+          title: "Night activity : Night Activity Tracking Form, Daily"
+        room-audit:
+          title: "Room Audit : Resident Room Audit form"
+        shower-skin-inspection:
+          title: "Shower Skin Inspection Selected Resident : Shower Skin Inspection for current selected resident"
+        shower-skin-list:
+          title: "Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number."
+    room:
+      title: "Room Reports"
+      children:
+        payor:
+          title: "Payor Report : Monthly Payor Report."
+        room-list:
+          title: "Room : List of Rooms, with occupants and room rent rates."
+        room-rent:
+          title: "Room Rent : Monthly Rent Report."
+        room-rent-master:
+          title: "Room Rent Master : Historical Rent Graphs, Data - for Finance Use only."
+        room-rent-master-new:
+          title: "Room Rent Master: New! : Monthly Rent Master Report."
+        room-vacancy:
+          title: "Room Vacancy List : List of Vacant Rooms, by Facility. Calculated as of today"
+        room-occupancy:
+          title: "Room Occupancy Rates : Facility Occupancy Rate Summary (calculated as of today)"
+    physician:
+      title: "Physicians Reports"
+      children:
+        simple:
+          title: "Physician Roster Simple : List of physicians, with contact information and resident count"
+        full:
+          title: "Physician Roster Full : List of physicians, with contact information and resident count"
+    assessment:
+      title: "Assessment Reports"
+      children:
+        blank:
+          title: "Assessment Report (Blank)"
+        filled:
+          title: "Assessment Report (Filled)"

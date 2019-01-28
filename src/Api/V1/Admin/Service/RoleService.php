@@ -5,8 +5,8 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
+use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\SpaceUserRole;
@@ -37,9 +37,16 @@ class RoleService extends BaseService implements IGridService
      * @param $id
      * @return Role|null|object
      */
-    public function getById($id)
+    public function getById($id, GrantService $grantService)
     {
-        return $this->em->getRepository(Role::class)->find($id);
+        /** @var Role $role */
+        $role = $this->em->getRepository(Role::class)->find($id);
+
+        if ($role) {
+            $role->setGrants($grantService->getGrants($role->getGrants()));
+        }
+
+        return $role;
     }
 
     /**
@@ -66,19 +73,12 @@ class RoleService extends BaseService implements IGridService
             // save role
             $role = new Role();
             $role->setName($params['name'] ?? '');
+            $role->setGrants($params['grants'] ?? []);
             $role->setSpace($space);
             $role->setDefault((bool) $params['default']);
             $role->setSpaceDefault((bool) $params['space_default']);
 
             $this->validate($role, null, ["api_admin_role_add"]);
-
-            // add permissions
-            $permissionIds = array_unique($params['permissions']);
-            $permissions   = $this->em->getRepository(Permission::class)->findById($permissionIds);
-
-            if (!empty($permissions)) {
-                $role->setPermissions($permissions);
-            }
 
             $this->em->persist($role);
             $this->em->flush();
@@ -100,7 +100,6 @@ class RoleService extends BaseService implements IGridService
         try {
             /**
              * @var Role $role
-             * @var Permission $permission
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -122,23 +121,10 @@ class RoleService extends BaseService implements IGridService
             }
 
             $role->setName($params['name'] ?? '');
+            $role->setGrants($params['grants'] ?? []);
             $role->setSpace($space);
             $role->setDefault((bool) $params['default']);
             $role->setSpaceDefault((bool) $params['space_default']);
-
-            // remove all role permissions
-            $permissions = $role->getPermissions();
-            foreach ($permissions as $permission) {
-                $role->removePermission($permission);
-            }
-
-            // add permissions
-            $permissionIds = array_unique($params['permissions']);
-            $permissions   = $this->em->getRepository(Permission::class)->findById($permissionIds);
-
-            if (!empty($permissions)) {
-                $role->setPermissions($permissions);
-            }
 
             $this->validate($role, null, ["api_admin_role_edit"]);
 
@@ -177,12 +163,6 @@ class RoleService extends BaseService implements IGridService
 
             if ($spaceUserRoles->count()) {
                 throw new UserWithoutRoleException();
-            }
-
-            // remove role permissions
-            $permissions = $role->getPermissions();
-            foreach ($permissions as $permission) {
-                $role->removePermission($permission);
             }
 
             $this->em->remove($role);
@@ -225,12 +205,6 @@ class RoleService extends BaseService implements IGridService
 
                 if ($spaceUserRoles->count()) {
                     throw new UserWithoutRoleException();
-                }
-
-                // remove role permissions
-                $permissions = $role->getPermissions();
-                foreach ($permissions as $permission) {
-                    $role->removePermission($permission);
                 }
 
                 $this->em->remove($role);

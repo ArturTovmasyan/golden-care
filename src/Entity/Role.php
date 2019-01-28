@@ -128,16 +128,6 @@ class Role
     private $space;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Permission", mappedBy="roles", cascade={"persist", "remove"})
-     * @Groups({
-     *     "api_dashboard_space_user_get",
-     *     "api_profile_me",
-     *     "api_admin_role_get"
-     * })
-     */
-    protected $permissions;
-
-    /**
      * @var bool
      * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
      * @Groups({
@@ -173,11 +163,20 @@ class Role
     protected $spaceUserRoles;
 
     /**
-     * Permission constructor.
+     * @var array $grants
+     * @ORM\Column(name="grants", type="json_array", nullable=false)
+     * @Groups({
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     * })
+     */
+    private $grants = [];
+
+    /**
+     * Role constructor.
      */
     public function __construct()
     {
-        $this->permissions    = new ArrayCollection();
         $this->spaceUserRoles = new ArrayCollection();
     }
 
@@ -230,44 +229,6 @@ class Role
     }
 
     /**
-     * @return mixed
-     */
-    public function getPermissions()
-    {
-        return $this->permissions;
-    }
-
-    /**
-     * @param Permission[] $permissions
-     */
-    public function setPermissions($permissions): void
-    {
-        $this->permissions = $permissions;
-
-        foreach ($permissions as $permission) {
-            $permission->addRole($this);
-        }
-    }
-
-    /**
-     * @param Permission $permission
-     */
-    public function addPermission($permission)
-    {
-        $permission->addRole($this);
-        $this->permissions[] = $permission;
-    }
-
-    /**
-     * @param Permission $permission
-     */
-    public function removePermission(Permission $permission)
-    {
-        $this->permissions->removeElement($permission);
-        $permission->removeRole($this);
-    }
-
-    /**
      * @return bool
      */
     public function isDefault(): bool
@@ -305,5 +266,21 @@ class Role
     public function getSpaceUserRoles()
     {
         return $this->spaceUserRoles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGrants(): ?array
+    {
+        return $this->grants;
+    }
+
+    /**
+     * @param array $grants
+     */
+    public function setGrants(?array $grants): void
+    {
+        $this->grants = $grants;
     }
 }
