@@ -93,13 +93,13 @@ class ResidentEventRepository extends EntityRepository
     }
 
     /**
-     * @param $startDate
-     * @param $endDate
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
      * @param $type
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getByPeriodAndType(\DateTime $startDate, \DateTime $endDate, $type, $typeId = false)
+    public function getByPeriodAndType(\DateTime $startDate, \DateTime $endDate, $type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('re');
 

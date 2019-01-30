@@ -3,7 +3,7 @@ resident:
   show_in_list: true
   reports:
     profile:
-      service: App\Api\V1\Admin\Service\ResidentService::getProfileReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
       title: 'Profile : Profile for selected resident / all residents'
       show_in_list: true
       formats: ['pdf']
@@ -11,7 +11,7 @@ resident:
         resident:
           select_all: true
     face-sheet:
-      service: App\Api\V1\Admin\Service\ResidentService::getFaceSheetReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
       title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
       show_in_list: true
       formats: ['pdf']
@@ -19,7 +19,7 @@ resident:
         resident:
           select_all: true
     detailed-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::getDetailedRosterReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
       title: 'Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
       show_in_list: true
       formats: ['pdf']
@@ -27,7 +27,7 @@ resident:
         group:
           select_all: true
     simple-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::getSimpleRosterReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSimpleRosterReport
       title: 'Simple Roster : Simple list of Residents, sorted by Room Number'
       show_in_list: true
       formats: ['pdf']
@@ -35,7 +35,7 @@ resident:
         group:
           select_all: true
     dietary-restrictions:
-      service: App\Api\V1\Admin\Service\ResidentService::getDietaryRestrictionsReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDietaryRestrictionsReport
       title: 'Dietary Restrictions : Dietary Restrictions Report'
       show_in_list: true
       formats: ['pdf']
@@ -43,7 +43,7 @@ resident:
         group:
           select_all: true
     sixty-days-roster:
-      service: App\Api\V1\Admin\Service\ResidentService::getSixtyDaysReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
       title: '60 Days Roster : 60 Days Roster Report'
       show_in_list: true
       formats: ['csv']
@@ -52,7 +52,7 @@ resident:
           select_all: true
         date: "m/d/Y"
     event-list:
-      service: App\Api\V1\Admin\Service\ResidentService::getEventReport
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getEventReport
       title: 'Events : List of Residents Events'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -66,7 +66,7 @@ form:
   show_in_list: true
   reports:
     birthday-list:
-      service: App\Api\V1\Admin\Service\ResidentService::getBirthdayListReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getBirthdayListReport
       title: 'Birthday list : List of all residents birthdays, Monthly'
       show_in_list: true
       formats: ['pdf']
@@ -74,7 +74,7 @@ form:
         group:
           select_all: true
     blood-pressure:
-      service: App\Api\V1\Admin\Service\ResidentService::getBloodPressureChartingReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getBloodPressureChartingReport
       title: 'Blood Pressure : Blood pressure charting'
       show_in_list: true
       formats: ['pdf']
@@ -82,7 +82,7 @@ form:
         group:
           select_all: true
     bowel-movement:
-      service: App\Api\V1\Admin\Service\ResidentService::getBowelMovementReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getBowelMovementReport
       title: 'Bowel movement : Bowel Movement tracking form, Weekly'
       show_in_list: true
       formats: ['pdf']
@@ -90,7 +90,7 @@ form:
         group:
           select_all: true
     changeover-notes:
-      service: App\Api\V1\Admin\Service\ResidentService::getChangeoverNotesReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getChangeoverNotesReport
       title: 'Changeover notes : Shift Changeover Notes, Daily'
       show_in_list: true
       formats: ['pdf']
@@ -98,7 +98,7 @@ form:
         group:
           select_all: true
     manicure:
-      service: App\Api\V1\Admin\Service\ResidentService::getManicureReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getManicureReport
       title: 'Manicure : Manicure Tracking Form, Monthly'
       show_in_list: true
       formats: ['pdf']
@@ -106,7 +106,7 @@ form:
         group:
           select_all: true
     meal-monitor:
-      service: App\Api\V1\Admin\Service\ResidentService::getMealMonitorReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMealMonitorReport
       title: 'Meal Monitor : Meal Consumption Tracking Form, Weekly'
       show_in_list: true
       formats: ['pdf']
@@ -114,7 +114,7 @@ form:
         group:
           select_all: true
     medication-chart:
-      service: App\Api\V1\Admin\Service\ResidentService::getMedicationChartReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
       title: 'Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
       show_in_list: true
       formats: ['pdf']
@@ -123,7 +123,7 @@ form:
         resident:
           select_all: true
     medication-list-resident:
-      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
       title: 'Medications List Selected Resident : Medications list for selected resident'
       show_in_list: true
       formats: ['pdf']
@@ -132,7 +132,7 @@ form:
           resident:
               select_all: true
     medication-list-all:
-      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
       title: 'Medications List All Residents : Medications list for all residents.'
       show_in_list: true
       formats: ['pdf']
@@ -141,7 +141,7 @@ form:
           group:
               select_all: true
     night-activity:
-      service: App\Api\V1\Admin\Service\ResidentService::getNightActivityReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getNightActivityReport
       title: 'Night activity : Night Activity Tracking Form, Daily'
       show_in_list: true
       formats: ['pdf']
@@ -149,7 +149,7 @@ form:
         group:
           select_all: true
     room-audit:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomAuditReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getRoomAuditReport
       title: 'Room Audit : Resident Room Audit form'
       show_in_list: true
       formats: ['pdf']
@@ -157,7 +157,7 @@ form:
         group:
           select_all: true
     shower-skin-inspection:
-      service: App\Api\V1\Admin\Service\ResidentService::getShowerSkinInspectionReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection Selected Resident : Shower Skin Inspection for current selected resident'
       show_in_list: true
       formats: ['pdf']
@@ -165,7 +165,7 @@ form:
         resident:
           select_all: true
     shower-skin-list:
-      service: App\Api\V1\Admin\Service\ResidentService::getShowerSkinInspectionReport
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number.'
       show_in_list: true
       formats: ['pdf']
@@ -178,7 +178,7 @@ room:
   show_in_list: true
   reports:
     payor:
-      service: App\Api\V1\Admin\Service\ResidentService::getPayorReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getPayorReport
       title: 'Payor Report : Monthly Payor Report.'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -187,7 +187,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-list:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomListReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomListReport
       title: 'Room : List of Rooms, with occupants and room rent rates.'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -196,7 +196,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-rent:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomRentReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentReport
       title: 'Room Rent : Monthly Rent Report.'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -205,7 +205,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-rent-master:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomRentMasterReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
       title: 'Room Rent Master : Historical Rent Graphs, Data - for Finance Use only.'
       show_in_list: true
       formats: ['pdf']
@@ -214,7 +214,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-rent-master-new:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomRentMasterNewReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterNewReport
       title: 'Room Rent Master: New! : Monthly Rent Master Report.'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -223,7 +223,7 @@ room:
           select_all: true
         date: "m/d/Y"
     room-vacancy:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomVacancyListReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomVacancyListReport
       title: 'Room Vacancy List : List of Vacant Rooms, by Facility. Calculated as of today'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -231,7 +231,7 @@ room:
         group:
           select_all: true
     room-occupancy:
-      service: App\Api\V1\Admin\Service\ResidentService::getRoomOccupancyRateReport
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomOccupancyRateReport
       title: 'Room Occupancy Rates : Facility Occupancy Rate Summary (calculated as of today)'
       show_in_list: true
       formats: ['pdf', 'csv']

@@ -103,11 +103,11 @@ class ReportService
 
         $report = $this->config[$group]['reports'][$alias];
 
-        if (is_null($report)) {
+        if ($report === null) {
             throw new ReportNotFoundException();
         }
 
-        if (!in_array($request->get('format'), $report['formats'])) {
+        if (!\in_array($request->get('format'), $report['formats'], false)) {
             throw new ReportFormatNotFoundException();
         }
 
@@ -138,9 +138,28 @@ class ReportService
             $this->reader
         );
 
-        // TODO: add call to function with checked parameters
+        $request_group = $request->get('type') ? (int) $request->get('type') : null;
+        $request_groupAll = $request->get('type_all') ? (bool)$request->get('type_all') : null;
+        $request_groupId = $request->get('type_id') ? (int) $request->get('type_id') : null;
 
-        return $service->$action($request);
+        $request_residentAll = $request->get('resident_all') ? (bool)$request->get('resident_all') : null;
+        $request_residentId = $request->get('resident_id') ? (int) $request->get('resident_id') : null;
+
+        $request_date = $request->get('date') ?? null;
+        $request_dateFrom = $request->get('date_from') ?? null;
+        $request_dateTo = $request->get('date_to') ?? null;
+
+
+        return $service->$action(
+            $request_group,
+            $request_groupAll,
+            $request_groupId,
+            $request_residentAll,
+            $request_residentId,
+            $request_date,
+            $request_dateFrom,
+            $request_dateTo
+        );
     }
 
     private function checkParameters(Request $request, string $group, string $alias)
@@ -168,73 +187,80 @@ class ReportService
         $residentId = $request->get('resident_id') ?? null;
 
         $date = $request->get('date') ?? null;
-        $date_from = $request->get('date_from') ?? null;
-        $date_to = $request->get('date_to') ?? null;
+        $dateFrom = $request->get('date_from') ?? null;
+        $dateTo = $request->get('date_to') ?? null;
 
-        $parameter['group'] = array_key_exists('group', $parameters);
-        $parameter['group_id'] = $parameter['group'];
-        $parameter['group_all'] = $parameter['group'] ? $parameters['group']['select_all'] : false;
+        $configParameter = [];
+        $configParameter['group'] = array_key_exists('group', $parameters);
+        $configParameter['group_id'] = $configParameter['group'];
+        $configParameter['group_all'] = $configParameter['group'] ? $parameters['group']['select_all'] : false;
 
-        $parameter['resident_id'] = array_key_exists('resident', $parameters);
-        $parameter['resident_all'] = $parameter['resident_id'] ? $parameters['resident']['select_all'] : false;
+        $configParameter['resident'] = array_key_exists('resident', $parameters);
+        $configParameter['resident_all'] = $configParameter['resident'] ? $parameters['resident']['select_all'] : false;
 
-        $parameter['date'] = array_key_exists('date', $parameters);
-        $parameter['date_to'] = array_key_exists('date_to', $parameters);
-        $parameter['date_from'] = array_key_exists('date_from', $parameters);
+        $configParameter['date'] = array_key_exists('date', $parameters);
+        $configParameter['date_to'] = array_key_exists('date_to', $parameters);
+        $configParameter['date_from'] = array_key_exists('date_from', $parameters);
 
-        if ($parameter['resident_id'] == true && $parameter['group'] == false) {
-            $this->checkResidentParameters($parameter, $residentId, $residentAll, $request_param_map);
-        }
-
-        if ($parameter['resident_id'] == false && $parameter['group'] == true) {
-            $this->checkGroupParameters($parameter, $group, $groupId, $groupAll, $request_param_map);
-        }
-
-        if ($parameter['date'] == true && $date == null) {
-            throw new IncorrectReportParameterException([$request_param_map['date']]);
-        }
-        if ($parameter['date_from'] == true && $date_from == null) {
-            throw new IncorrectReportParameterException([$request_param_map['date_from']]);
-        }
-        if ($parameter['date_to'] == true && $date_to == null) {
-            throw new IncorrectReportParameterException([$request_param_map['date_to']]);
-        }
-
-    }
-
-    private function checkResidentParameters($parameter, $residentId, $residentAll, $request_param_map)
-    {
-        if ($residentId == null && $residentAll == null) {
-            throw new IncorrectReportParameterException([$request_param_map['resident_id']]);
-        }
-
-        if ($residentId == null) {
-            if ($parameter['resident_all'] == true && $residentAll == null) {
-                throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
-            }
-            if ($parameter['resident_all'] == false && $residentAll != null) {
-                throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
-            }
-        }
-    }
-
-    private function checkGroupParameters($parameter, $group, $groupId, $groupAll, $request_param_map)
-    {
-        if ($group == null) {
+        if ($group === null) {
             throw new IncorrectReportParameterException([$request_param_map['group']]);
         }
 
-        if ($groupId == null && $groupAll == null) {
-            throw new IncorrectReportParameterException([$request_param_map['group_id']]);
+        if ($configParameter['resident'] === true && $configParameter['group'] === false) {
+            if (($residentId === null && $residentAll === null) || ($residentId !== null && $residentAll !== null)) {
+                throw new IncorrectReportParameterException([
+                    $request_param_map['resident_id'],
+                    $request_param_map['resident_all']
+                ]);
+            }
+
+            if ($residentId === null) {
+                if ($residentAll === null && $configParameter['resident_all'] === true) {
+                    throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
+                }
+                if ($residentAll !== null && $configParameter['resident_all'] === false) {
+                    throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
+                }
+            }
         }
 
-        if ($groupId == null) {
-            if ($parameter['group_all'] == true && $groupAll == null) {
-                throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+        if ($configParameter['resident'] === false && $configParameter['group'] === true) {
+            if (($groupId === null && $groupAll === null) || ($groupId !== null && $groupAll !== null)) {
+                throw new IncorrectReportParameterException([
+                    $request_param_map['group_id'],
+                    $request_param_map['group_all']
+                ]);
             }
-            if ($parameter['group_all'] == false && $groupAll != null) {
-                throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+
+            if ($groupId === null) {
+                if ($groupAll === null && $configParameter['group_all'] === true) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+                }
+                if ($groupAll !== null && $configParameter['group_all'] === false) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+                }
             }
+        }
+
+        if ($configParameter['resident'] === true && $configParameter['group'] === true) {
+            throw new IncorrectReportParameterException([
+                $request_param_map['group_id'],
+                $request_param_map['group_all'],
+                $request_param_map['resident_id'],
+                $request_param_map['resident_all']
+            ]);
+        }
+
+        if ($date === null && $configParameter['date'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date']]);
+        }
+
+        if ($dateFrom === null && $configParameter['date_from'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date_from']]);
+        }
+
+        if ($dateTo === null && $configParameter['date_to'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date_to']]);
         }
     }
 }

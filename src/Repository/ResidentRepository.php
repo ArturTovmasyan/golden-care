@@ -81,10 +81,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getByType($type, $typeId = false)
+    public function getByType($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -232,10 +232,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getContractInfoByType($type, $typeId = false)
+    public function getContractInfoByType($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -349,10 +349,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getBowelMovementInfoByType($type, $typeId = false)
+    public function getBowelMovementInfoByType($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -470,10 +470,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getManicureInfoByType($type, $typeId = false)
+    public function getManicureInfoByType($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -590,10 +590,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getChangeoverNotesInfo($type, $typeId = false)
+    public function getChangeoverNotesInfo($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -713,10 +713,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getMealMonitorInfo($type, $typeId = false)
+    public function getMealMonitorInfo($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -836,10 +836,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getDietaryRestrictionsInfo($type, $typeId = false)
+    public function getDietaryRestrictionsInfo($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -1010,10 +1010,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getNightActivityInfo($type, $typeId = false)
+    public function getNightActivityInfo($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -1133,10 +1133,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getRoomAuditInfo($type, $typeId = false)
+    public function getRoomAuditInfo($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -1270,11 +1270,11 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @param bool $residentId
+     * @param null $typeId
+     * @param null $residentId
      * @return mixed
      */
-    public function getShowerSkinInspectionInfo($type, $typeId = false, $residentId = false)
+    public function getShowerSkinInspectionInfo($type, $typeId = null, $residentId = null)
     {
         /**
          * @var Resident $resident
@@ -1427,11 +1427,11 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @param bool $residentId
+     * @param null $typeId
+     * @param null $residentId
      * @return mixed
      */
-    public function getResidentsInfoByTypeOrId($type, $typeId = false, $residentId = false)
+    public function getResidentsInfoByTypeOrId($type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -1589,10 +1589,10 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getResidentDetailedInfo($type, $typeId = false)
+    public function getResidentDetailedInfo($type, $typeId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -1851,10 +1851,10 @@ class ResidentRepository extends EntityRepository
      * @param \DateTime $startDate
      * @param \DateTime $endDate
      * @param $type
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getResidentContracts(\DateTime $startDate, \DateTime $endDate, $type, $typeId = false)
+    public function getResidentContracts(\DateTime $startDate, \DateTime $endDate, $type, $typeId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -1994,11 +1994,11 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @param bool $residentId
+     * @param null $typeId
+     * @param null $residentId
      * @return mixed
      */
-    public function getResidentsFullInfoByTypeOrId($type, $typeId = false, $residentId = false)
+    public function getResidentsFullInfoByTypeOrId($type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction

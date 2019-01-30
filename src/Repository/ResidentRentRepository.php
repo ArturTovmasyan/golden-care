@@ -90,10 +90,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return QueryBuilder
      */
-    public function getContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    public function getContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         /** @var QueryBuilder $qb */
         $qb = $this
@@ -250,10 +250,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getRentsWithSources($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    public function getRentsWithSources($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -313,10 +313,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterNewData($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    public function getRoomRentMasterNewData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         return $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -339,10 +339,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentData($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    public function getRoomRentData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         return $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -365,10 +365,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return QueryBuilder
      */
-    public function getRoomListContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = false)
+    public function getRoomListContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null)
     {
         /** @var QueryBuilder $qb */
         $qb = $this
@@ -544,10 +544,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getRoomListData($type, ImtDateTimeInterval $reportInterval, $typeId = false)
+    public function getRoomListData($type, ImtDateTimeInterval $reportInterval, $typeId = null)
     {
         return $this
             ->getRoomListContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -579,10 +579,10 @@ class ResidentRentRepository extends EntityRepository
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
-     * @param bool $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = false)
+    public function getRoomRentMasterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         return $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
