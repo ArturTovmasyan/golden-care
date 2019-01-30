@@ -123,23 +123,23 @@ form:
         resident:
           select_all: true
     medication-list-resident:
-        service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
-        title: 'Medications List Selected Resident : Medications list for selected resident'
-        show_in_list: true
-        formats: ['pdf']
-        template: 'medication-list'
-        parameters:
-            resident:
-                select_all: true
+      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      title: 'Medications List Selected Resident : Medications list for selected resident'
+      show_in_list: true
+      formats: ['pdf']
+      template: 'medication-list'
+      parameters:
+          resident:
+              select_all: true
     medication-list-all:
-        service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
-        title: 'Medications List All Residents : Medications list for all residents.'
-        show_in_list: true
-        formats: ['pdf']
-        template: 'medication-list'
-        parameters:
-            group:
-                select_all: true
+      service: App\Api\V1\Admin\Service\ResidentService::getMedicationListReport
+      title: 'Medications List All Residents : Medications list for all residents.'
+      show_in_list: true
+      formats: ['pdf']
+      template: 'medication-list'
+      parameters:
+          group:
+              select_all: true
     night-activity:
       service: App\Api\V1\Admin\Service\ResidentService::getNightActivityReport
       title: 'Night activity : Night Activity Tracking Form, Daily'

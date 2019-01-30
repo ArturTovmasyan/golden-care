@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Admin\Service;
 
+use App\Api\V1\Common\Service\Exception\IncorrectReportParameterException;
 use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
 use App\Api\V1\Common\Service\Exception\ReportMisconfigurationException;
 use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
@@ -122,9 +123,11 @@ class ReportService
 
         $rc = new ReflectionMethod($service, $action);
 
-        if(!$rc->isPublic()) {
+        if (!$rc->isPublic()) {
             throw new ReportMisconfigurationException();
         }
+
+        $this->checkParameters($request, $group, $alias);
 
         $service = new $service (
             $this->em,
@@ -135,6 +138,103 @@ class ReportService
             $this->reader
         );
 
+        // TODO: add call to function with checked parameters
+
         return $service->$action($request);
+    }
+
+    private function checkParameters(Request $request, string $group, string $alias)
+    {
+        $request_param_map = [
+            'group' => 'type',
+            'group_all' => 'type_all',
+            'group_id' => 'type_id',
+
+            'resident_id' => 'resident_id',
+            'resident_all' => 'resident_all',
+
+            'date' => 'date',
+            'date_from' => 'date_from',
+            'date_to' => 'date_to'
+        ];
+
+        $parameters = $this->config[$group]['reports'][$alias]['parameters'];
+
+        $group = $request->get('type') ?? null;
+        $groupAll = $request->get('type_all') ?? null;
+        $groupId = $request->get('type_id') ?? null;
+
+        $residentAll = $request->get('resident_all') ?? null;
+        $residentId = $request->get('resident_id') ?? null;
+
+        $date = $request->get('date') ?? null;
+        $date_from = $request->get('date_from') ?? null;
+        $date_to = $request->get('date_to') ?? null;
+
+        $parameter['group'] = array_key_exists('group', $parameters);
+        $parameter['group_id'] = $parameter['group'];
+        $parameter['group_all'] = $parameter['group'] ? $parameters['group']['select_all'] : false;
+
+        $parameter['resident_id'] = array_key_exists('resident', $parameters);
+        $parameter['resident_all'] = $parameter['resident_id'] ? $parameters['resident']['select_all'] : false;
+
+        $parameter['date'] = array_key_exists('date', $parameters);
+        $parameter['date_to'] = array_key_exists('date_to', $parameters);
+        $parameter['date_from'] = array_key_exists('date_from', $parameters);
+
+        if ($parameter['resident_id'] == true && $parameter['group'] == false) {
+            $this->checkResidentParameters($parameter, $residentId, $residentAll, $request_param_map);
+        }
+
+        if ($parameter['resident_id'] == false && $parameter['group'] == true) {
+            $this->checkGroupParameters($parameter, $group, $groupId, $groupAll, $request_param_map);
+        }
+
+        if ($parameter['date'] == true && $date == null) {
+            throw new IncorrectReportParameterException([$request_param_map['date']]);
+        }
+        if ($parameter['date_from'] == true && $date_from == null) {
+            throw new IncorrectReportParameterException([$request_param_map['date_from']]);
+        }
+        if ($parameter['date_to'] == true && $date_to == null) {
+            throw new IncorrectReportParameterException([$request_param_map['date_to']]);
+        }
+
+    }
+
+    private function checkResidentParameters($parameter, $residentId, $residentAll, $request_param_map)
+    {
+        if ($residentId == null && $residentAll == null) {
+            throw new IncorrectReportParameterException([$request_param_map['resident_id']]);
+        }
+
+        if ($residentId == null) {
+            if ($parameter['resident_all'] == true && $residentAll == null) {
+                throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
+            }
+            if ($parameter['resident_all'] == false && $residentAll != null) {
+                throw new IncorrectReportParameterException([$request_param_map['resident_all']]);
+            }
+        }
+    }
+
+    private function checkGroupParameters($parameter, $group, $groupId, $groupAll, $request_param_map)
+    {
+        if ($group == null) {
+            throw new IncorrectReportParameterException([$request_param_map['group']]);
+        }
+
+        if ($groupId == null && $groupAll == null) {
+            throw new IncorrectReportParameterException([$request_param_map['group_id']]);
+        }
+
+        if ($groupId == null) {
+            if ($parameter['group_all'] == true && $groupAll == null) {
+                throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+            }
+            if ($parameter['group_all'] == false && $groupAll != null) {
+                throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+            }
+        }
     }
 }

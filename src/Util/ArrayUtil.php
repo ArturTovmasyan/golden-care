@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Util;
 
 
@@ -31,5 +32,23 @@ class ArrayUtil
         }
 
         return array_diff_key($array, $assocKeys);
+    }
+
+    public static function flatten($array, $keySeparator = '-')
+    {
+        if (is_array($array)) {
+            foreach ($array as $name => $value) {
+                $f = self::flatten($value, $keySeparator);
+                if (is_array($f)) {
+                    foreach ($f as $key => $val) {
+                        $array[$name . $keySeparator . $key] = $val;
+                    }
+
+                    unset($array[$name]);
+                }
+            }
+        }
+
+        return $array;
     }
 }
