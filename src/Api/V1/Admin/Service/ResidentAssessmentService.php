@@ -16,7 +16,6 @@ use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
 use App\Entity\Resident;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ResidentAssessmentService
@@ -66,64 +65,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
     public function getById(int $id)
     {
         return $this->em->getRepository(Assessment::class)->find($id);
-    }
-
-    public function getBlankReport(Request $request)
-    {
-        return $this->getReportByType($request, \App\Model\Assessment::TYPE_BLANK);
-    }
-
-    public function getFilledReport(Request $request)
-    {
-        return $this->getReportByType($request, \App\Model\Assessment::TYPE_FILLED);
-    }
-
-    /**
-     * @param Request $request
-     * @param integer $type
-     * @return \App\Model\Report\Assessment
-     */
-    private function getReportByType(Request $request, $type)
-    {
-        /**
-         * @var Assessment $assessment
-         * @var Resident $resident
-         */
-        $id         = $request->get('id');
-        $assessment = $this->em->getRepository(Assessment::class)->find($id);
-
-        if (is_null($assessment)) {
-            throw new AssessmentNotFoundException();
-        }
-
-        $form            = $assessment->getForm();
-        $careLevelGroups = $form->getCareLevelGroups();
-        $resident        = $assessment->getResident();
-
-        // create report
-        $report = new \App\Model\Report\Assessment();
-        $report->setType($type);
-        $report->setTitle('Level of Care Assessment');
-        $report->setGroups($careLevelGroups);
-        $report->setAllGroups($careLevelGroups);
-
-        if ($type == \App\Model\Assessment::TYPE_FILLED) {
-            $report->setResidentFullName($resident->getFirstName() . ' ' . $resident->getLastName());
-            $report->setDate($assessment->getDate());
-            $report->setPerformedBy($assessment->getPerformedBy());
-            $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
-        } else {
-            $report->setResidentFullName('_________________________');
-            $report->setDate('_________________________');
-            $report->setPerformedBy('_________________________');
-            $report->setBlankTable($assessment->getForm()->getFormCategories());
-        }
-
-        unset($form);
-        unset($careLevelGroups);
-        unset($assessment);
-
-        return $report;
     }
 
     /**

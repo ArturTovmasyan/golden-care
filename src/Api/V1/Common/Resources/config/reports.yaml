@@ -244,7 +244,7 @@ physician:
   show_in_list: true
   reports:
     simple:
-      service: App\Api\V1\Admin\Service\PhysicianService::getSimpleReport
+      service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getSimpleReport
       title: 'Physician Roster Simple : List of physicians, with contact information and resident count'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -252,7 +252,7 @@ physician:
         group:
           select_all: true
     full:
-      service: App\Api\V1\Admin\Service\PhysicianService::getFullReport
+      service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getFullReport
       title: 'Physician Roster Full : List of physicians, with contact information and resident count'
       show_in_list: true
       formats: ['pdf', 'csv']
@@ -265,7 +265,7 @@ assessment:
   show_in_list: false
   reports:
     blank:
-      service: App\Api\V1\Admin\Service\ResidentAssessmentService::getBlankReport
+      service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getBlankReport
       title: 'Assessment Report (Blank)'
       show_in_list: false
       formats: ['pdf']
@@ -273,7 +273,7 @@ assessment:
         resident:
           select_all: false
     filled:
-      service: App\Api\V1\Admin\Service\ResidentAssessmentService::getFilledReport
+      service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getFilledReport
       title: 'Assessment Report (Filled)'
       show_in_list: false
       formats: ['pdf']

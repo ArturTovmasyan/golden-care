@@ -14,14 +14,7 @@ use App\Entity\Physician;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
-use App\Model\ContractType;
-use App\Model\Report\PhysicianFull;
-use App\Model\Report\PhysicianSimple;
-use App\Model\Resident;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Class PhysicianService
@@ -309,80 +302,5 @@ class PhysicianService extends BaseService implements IGridService
 
             throw $e;
         }
-    }
-
-    /**
-     * @param Request $request
-     * @return PhysicianSimple
-     */
-    public function getSimpleReport(Request $request)
-    {
-        $all    = (bool) $request->get('all') ?? false;
-        $type   = $request->get('type');
-        $typeId = $request->get('type_id') ?? false;
-
-        if (!$type) {
-            throw new ParameterNotFoundException('type');
-        }
-
-        if ($type && !in_array($type, Resident::getTypeValues())) {
-            throw new InvalidParameterException('type');
-        }
-
-        if (!$all && !$typeId) {
-            throw new ParameterNotFoundException('type_id, all');
-        }
-
-        $physicians = $this->em->getRepository(Physician::class)->getPhysicianSimpleReport($type, $typeId);
-
-        $physiciansByTypeId = [];
-        foreach ($physicians as $physician) {
-            $physiciansByTypeId[$physician['typeId']][] = $physician;
-        }
-
-        // create report
-        $report = new PhysicianSimple();
-        $report->setTitle('PHYSICIAN, ROSTER SIMPLE');
-        $report->setType($type);
-        $report->setPhysicianData($physiciansByTypeId);
-
-        return $report;
-    }
-
-    /**
-     * @param Request $request
-     * @return PhysicianFull
-     */
-    public function getFullReport(Request $request)
-    {
-        $all    = (bool) $request->get('all') ?? false;
-        $type   = $request->get('type');
-        $typeId = $request->get('type_id') ?? false;
-
-        if (!$type) {
-            throw new ParameterNotFoundException('type');
-        }
-
-        if ($type && !in_array($type, Resident::getTypeValues())) {
-            throw new InvalidParameterException('type');
-        }
-
-        if (!$all && !$typeId) {
-            throw new ParameterNotFoundException('type_id, all');
-        }
-
-        try {
-            $physicians = $this->em->getRepository(Physician::class)->getPhysicianFullReport($type, $typeId);
-        } catch (\Exception $e) {
-            $physicians = [];
-        }
-
-        // create report
-        $report = new PhysicianFull();
-        $report->setTitle('PHYSICIAN ROSTER, FULL');
-        $report->setType(ContractType::getTypes()[$type]);
-        $report->setPhysicians($physicians);
-
-        return $report;
     }
 }

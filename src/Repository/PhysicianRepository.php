@@ -178,10 +178,10 @@ class PhysicianRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param $typeId
+     * @param null $typeId
      * @return mixed
      */
-    public function getPhysicianSimpleReport($type, $typeId = false)
+    public function getPhysicianSimpleReport($type, $typeId = null)
     {
         $physicianTable               = $this->getClassMetadata()->getTableName();
         $residentPhysicianTable       = $this->_em->getClassMetadata(ResidentPhysician::class)->getTableName();
@@ -293,10 +293,10 @@ class PhysicianRepository extends EntityRepository
 
     /**
      * @param $type
-     * @param bool $typeId
-     * @return array
+     * @param null $typeId
+     * @return mixed
      */
-    public function getPhysicianFullReport($type, $typeId = false)
+    public function getPhysicianFullReport($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('p');
 

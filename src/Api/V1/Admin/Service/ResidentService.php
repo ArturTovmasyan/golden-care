@@ -62,14 +62,14 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $this->em->getRepository(Resident::class)->find($id);
 
-        if (is_null($resident)) {
-            throw new ResidentNotFoundException();
-        } else {
+        if ($resident !== null) {
             $photo = $this->residentPhotoHelper->get($resident->getId());
 
             if (!empty($photo)) {
                 $resident->setPhoto($photo);
             }
+        } else {
+            throw new ResidentNotFoundException();
         }
 
         return $resident;
@@ -85,7 +85,7 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params) : void
     {
@@ -105,7 +105,7 @@ class ResidentService extends BaseService implements IGridService
             if ($spaceId && $spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if (is_null($space)) {
+                if ($space === null) {
                     throw new SpaceNotFoundException();
                 }
             }
@@ -113,7 +113,7 @@ class ResidentService extends BaseService implements IGridService
             if ($salutationId && $salutationId > 0) {
                 $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if (is_null($salutation)) {
+                if ($salutation === null) {
                     throw new SalutationNotFoundException();
                 }
             }
@@ -149,7 +149,7 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params) : void
     {
@@ -164,18 +164,18 @@ class ResidentService extends BaseService implements IGridService
 
             $resident = $this->em->getRepository(Resident::class)->find($id);
 
-            if (is_null($resident)) {
+            if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $spaceId      = $params['space_id'] ?? 0;
+            $spaceId = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
-            $space        = null;
+            $space = null;
 
             if ($spaceId && $spaceId > 0) {
                 $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if (is_null($space)) {
+                if ($space === null) {
                     throw new SpaceNotFoundException();
                 }
             }
@@ -183,7 +183,7 @@ class ResidentService extends BaseService implements IGridService
             if ($salutationId && $salutationId > 0) {
                 $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if (is_null($salutation)) {
+                if ($salutation === null) {
                     throw new SalutationNotFoundException();
                 }
             }
@@ -236,13 +236,16 @@ class ResidentService extends BaseService implements IGridService
         $residentPhones = [];
 
         foreach($phones as $phone) {
+            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+
             $residentPhone = new ResidentPhone();
             $residentPhone->setResident($resident);
             $residentPhone->setCompatibility($phone['compatibility'] ?? null);
             $residentPhone->setType($phone['type']);
             $residentPhone->setNumber($phone['number']);
-            $residentPhone->setPrimary((bool) $phone['primary'] ?? false);
-            $residentPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
+            $residentPhone->setPrimary($primary);
+            $residentPhone->setSmsEnabled($smsEnabled);
 
             if ($residentPhone->isPrimary()) {
                 if ($hasPrimary) {
@@ -262,7 +265,6 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -273,7 +275,7 @@ class ResidentService extends BaseService implements IGridService
             /** @var Resident $resident */
             $resident = $this->em->getRepository(Resident::class)->find($id);
 
-            if (is_null($resident)) {
+            if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
@@ -292,7 +294,6 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -330,7 +331,7 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function photo($id, array $params) : void
     {
@@ -342,7 +343,7 @@ class ResidentService extends BaseService implements IGridService
 
             $resident = $this->em->getRepository(Resident::class)->find($id);
 
-            if (is_null($resident)) {
+            if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
