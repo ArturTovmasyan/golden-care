@@ -4,139 +4,144 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByTypeAndGroup in data.residents %}
-        {% for typeId, residentsByGroup in residentsByTypeAndGroup %}
-            {% for group, resident in residentsByGroup %}
-
-                <div class="page"></div>
-                <div style="text-align: left; margin-bottom: 15px;">
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.careGroup %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.careGroup %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
+            <div class="page">
+            </div>
+            <div>
+                <div style="float: left">
                     <div style="height: 8px;"></div>
                     <b style="font-size: 20px !important">Meal&nbsp;Monitor</b>
-                    <p style="font-size: 14px !important; margin: 15px 0; padding-bottom: 0;">{{ resident['name'] }}</p>
+                    <p style="margin-bottom: 5px;"></p>
+                    <p style="font-size: 14px !important; margin-bottom: 3px; padding-bottom: 0;">{{ resident.typeName }}</p>
                 </div>
+                <div style="clear: both"></div>
+            </div>
+        {% endif %}
+        <table class="report-table bordered" style="margin: 0; padding: 0;">
+            {% if newGroup %}
+                <thead style="margin: 0; padding: 0;">
+                <tr style="">
+                    <td colspan="9" style="text-align: left; border: none;"><b style="font-size: 16px !important; line-height: 1px;">Group {{ resident.careGroup }}</b></td>
+                </tr>
+                <tr style="margin: 0; padding: 0;">
+                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;text-align: left; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">Date:</b></td>
+                    <td style="width: 105px !important; margin: 0 !important; padding: 0 !important;text-align: left; border-top: solid 1px black; border-bottom: solid 1px black; border-right: solid 1px black; border-left: none"></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Sunday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Monday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Tuesday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Wednesday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Thursday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Friday</b></td>
+                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray;border: solid 1px black"><b>Saturday</b></td>
+                </tr>
+                <tr style="margin: 0; padding: 0;">
+                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;height: 60px; text-align: center; vertical-align: bottom; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">{% if resident.roomNumber is defined and resident.bedNumber is defined %}Room{% endif %}</b></td>
+                    <td style="width: 105px !important; margin: 0 !important; padding: 0 !important;height: 60px;text-align: center; vertical-align: bottom; border-bottom: solid 1px black; border-right: solid 1px black; border-left: none"><b style="font-size: 12px;">Resident</b></td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
+                    </td>
+                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
+                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
+                    </td>
+                </tr>
+                </thead>
+            {% endif %}
+            <tbody style="border: solid 1px black; margin: 0; padding: 0;">
+            <tr style="margin: 0; padding: 0;">
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px !important; height: 38px; font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}{% endif %}</div></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 105px !important; height: 38px;font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
+            </tr>
 
-                {% set i = 0 %}
-                {% for data in resident['data'] %}
-                    <table class="report-table bordered" style="margin: 0; padding: 0;">
-                        {% if i == 0 %}
-                            <thead style="margin: 0; padding: 0;">
-                                <tr style="">
-                                    <td colspan="9" style="text-align: left; border: none; padding-bottom: 10px"><b style="font-size: 16px !important; line-height: 1px;">Group {{ group }}</b></td>
-                                </tr>
-                                <tr style="margin: 0; padding: 0;">
-                                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;text-align: left; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">Date:</b></td>
-                                    <td style="width: 105px !important; margin: 0 !important; padding: 0 !important;text-align: left; border-top: solid 1px black; border-bottom: solid 1px black; border-right: solid 1px black; border-left: none"></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Sunday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Monday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Tuesday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Wednesday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray; border: solid 1px black"><b>Thursday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; border: solid 1px black"><b>Friday</b></td>
-                                    <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray;border: solid 1px black"><b>Saturday</b></td>
-                                </tr>
-                                <tr style="margin: 0; padding: 0;">
-                                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;height: 60px; text-align: center; vertical-align: bottom; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">Room</b></td>
-                                    <td style="width: 105px !important; margin: 0 !important; padding: 0 !important;height: 60px;text-align: center; vertical-align: bottom; border-bottom: solid 1px black; border-right: solid 1px black; border-left: none"><b style="font-size: 12px;">Resident</b></td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Launch</b></div>
-                                    </td>
-                                    <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
-                                        <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Dinner</b></div>
-                                    </td>
-                                </tr>
-                            </thead>
-                        {% endif %}
-                        <tbody style="border: solid 1px black; margin: 0; padding: 0;">
-                            <tr style="margin: 0; padding: 0;">
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px !important; height: 38px; font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}</div></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 105px !important; height: 38px;font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</div></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                                <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    {% set i = 1 %}
-                {% endfor %}
+            </tbody>
+        </table>
 
-
-            {% endfor %}
-        {% endfor %}
     {% endfor %}
 
 {% endblock %}
