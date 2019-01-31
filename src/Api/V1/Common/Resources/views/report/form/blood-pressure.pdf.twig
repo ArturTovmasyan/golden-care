@@ -41,7 +41,7 @@
 
         <tr>
             <td style="height: 50px; text-align: left; vertical-align: middle">
-                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}<br/>{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}<br/>{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
             </td>
             <td style="height: 50px"></td>
             <td style="height: 50px"></td>
