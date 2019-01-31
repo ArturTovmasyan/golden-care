@@ -4,68 +4,68 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByTypeAndGroup in data.residents %}
-        {% for typeId, residentsByGroup in residentsByTypeAndGroup %}
-            {% for group, resident in residentsByGroup %}
-
-                <div class="page"></div>
-                <div style="margin-bottom: 5px;">
-                    <div style="float: left">
-                        <div style="height: 5px;"></div>
-                        <b style="font-size: 18px !important">NIGHT&nbsp;ACTIVITY&nbsp;REPORT</b>
-                        <p style="margin-bottom: 8px;"></p>
-                        <b style="font-size: 16px !important">{{ resident['name'] }}</b>
-                        <p style="margin-bottom: 8px;"></p>
-                        <b style="font-size: 14px !important">Care Group {{ group }}</b>
-                        <p style="margin-bottom: 16px;"></p>
-                    </div>
-                    <div style="float: right">
-                        <div>___________________________________</div>
-                        <div style="text-align: left">DATE</div>
-                    </div>
-                    <div style="clear: both"></div>
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.careGroup %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.careGroup %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
+            <div class="page">
+            </div>
+            <div style="margin-bottom: 5px;">
+                <div style="float: left">
+                    <div style="height: 5px;"></div>
+                    <b style="font-size: 18px !important">NIGHT&nbsp;ACTIVITY&nbsp;REPORT</b>
+                    <p style="margin-bottom: 8px;"></p>
+                    <b style="font-size: 16px !important">{{ resident.typeName }}</b>
+                    <p style="margin-bottom: 8px;"></p>
+                    <b style="font-size: 14px !important">Care Group {{ resident.careGroup }}</b>
+                    <p style="margin-bottom: 16px;"></p>
                 </div>
+                <div style="float: right">
+                    <div>___________________________________</div>
+                    <div style="text-align: left">DATE</div>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+        {% endif %}
+        <table class="report-table main-table bordered" style="margin: 0 !important; ">
+            {% if newGroup %}
+                <thead>
+                <tr>
+                    <td style="width: 200px"></td>
+                    <td><b>11:00</b></td>
+                    <td><b>12:00</b></td>
+                    <td><b>01:00</b></td>
+                    <td><b>02:00</b></td>
+                    <td><b>03:00</b></td>
+                    <td><b>04:00</b></td>
+                    <td><b>05:00</b></td>
+                    <td><b>06:00</b></td>
+                </tr>
+                </thead>
+            {% endif %}
+            <tbody>
+            <tr>
+                <td style="height: 45px; width: 200px; text-align: left;">
+                    {% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}<br/>{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                </td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+                <td style="height: 45px"></td>
+            </tr>
+            </tbody>
+        </table>
 
-                {% set i = 0 %}
-                {% for data in resident['data'] %}
-                    <table class="report-table main-table bordered" style="margin: 0 !important; ">
-                        {% if i == 0 %}
-                            <thead>
-                            <tr>
-                                <td style="width: 200px"></td>
-                                <td><b>11:00</b></td>
-                                <td><b>12:00</b></td>
-                                <td><b>01:00</b></td>
-                                <td><b>02:00</b></td>
-                                <td><b>03:00</b></td>
-                                <td><b>04:00</b></td>
-                                <td><b>05:00</b></td>
-                                <td><b>06:00</b></td>
-                            </tr>
-                            </thead>
-                        {% endif %}
-                        <tbody>
-                            <tr>
-                                <td style="height: 45px; width: 200px; text-align: left;">
-                                    {{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}<br/>{{  data['firstName'] ~ ' ' ~ data['lastName'] }}
-                                </td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                                <td style="height: 45px"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    {% set i = 1 %}
-                {% endfor %}
-
-
-            {% endfor %}
-        {% endfor %}
     {% endfor %}
 
 {% endblock %}

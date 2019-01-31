@@ -24,30 +24,19 @@ A = AWAKE      B = TO BATHROOM      DC = DIAPER CHANGE      S = SLEEPING      M 
     }
 
     /**
-     * @return mixed
+     * @param $residents
      */
-    public function getResidents()
+    public function setResidents($residents): void
     {
-        return $this->residents;
+        $this->residents = $residents;
     }
 
     /**
-     * @param $residents
+     * @return array
      */
-    public function setResidents($residents)
+    public function getResidents(): ?array
     {
-        $residentsByTypeAndGroup = [];
-
-        foreach ($residents as $resident) {
-            if (!isset($residentsByTypeAndGroup[$resident['type']][$resident['typeId']][$resident['careGroup']]['name'])) {
-                $residentsByTypeAndGroup[$resident['type']][$resident['typeId']][$resident['careGroup']]['name']      = $resident['name'];
-                $residentsByTypeAndGroup[$resident['type']][$resident['typeId']][$resident['careGroup']]['groupName'] = $resident['careGroup'];
-            }
-
-            $residentsByTypeAndGroup[$resident['type']][$resident['typeId']][$resident['careGroup']]['data'][] = $resident;
-        }
-
-        $this->residents = $residentsByTypeAndGroup;
+        return $this->residents;
     }
 }
 

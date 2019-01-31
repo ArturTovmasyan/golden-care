@@ -287,7 +287,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getNightActivityInfo($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
 
         $report = new NightActivity();
         $report->setResidents($residents);
