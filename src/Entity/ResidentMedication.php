@@ -171,14 +171,14 @@ class ResidentMedication
 
     /**
      * @var string $dosageUnit
-     * @ORM\Column(name="dosage_unit", type="string", length=20)
+     * @ORM\Column(name="dosage_unit", type="string", length=100)
      * @Assert\NotBlank(groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
      * @Assert\Regex(pattern= "/[a-zA-Z0-9\%\+\/]+/",
      *     message="The value {{ value }} is not a valid type. Available symbols are: '%, +, /'",
      *     groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
      * )
      * @Assert\Length(
-     *      max = 20,
+     *      max = 100,
      *      maxMessage = "Dosage unit cannot be longer than {{ limit }} characters",
      *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"},
      * )

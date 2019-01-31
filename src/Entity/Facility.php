@@ -99,7 +99,8 @@ class Facility
      *     "api_admin_dining_room_list",
      *     "api_admin_dining_room_get",
      *     "api_admin_facility_room_list",
-     *     "api_admin_facility_room_get"
+     *     "api_admin_facility_room_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $id;

@@ -83,7 +83,8 @@ class ApartmentRoom
      * @Groups({
      *     "api_admin_apartment_room_grid",
      *     "api_admin_apartment_room_list",
-     *     "api_admin_apartment_room_get"
+     *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_get_active"
      * })
      */
     private $apartment;

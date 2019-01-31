@@ -81,7 +81,12 @@ class FacilityRoom
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
+     * @Groups({
+     *     "api_admin_facility_room_grid",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get",
+     *     "api_admin_contract_get_active"
+     * })
      */
     private $facility;
 
