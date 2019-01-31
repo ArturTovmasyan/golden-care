@@ -155,7 +155,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getManicureInfoByType($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
