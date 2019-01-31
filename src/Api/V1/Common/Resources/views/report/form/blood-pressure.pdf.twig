@@ -4,51 +4,61 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByType in data.residents %}
-        {% for typeId, resident in residentsByType %}
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
 
+
+        {% if newGroup %}
             <span class="divider"></span>
             <span class="divider"></span>
             <table class="report-table main-table bordered">
-                <tr class="divider"></tr>
-                <thead>
-                <tr>
-                    <th colspan="8">
-                        <div style="float: left">
-                            <h3>{{ resident['name'] }}</h3>
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><b>DATE</b></td>
-                    <td><b>WEIGHT</b></td>
-                    <td><b>BLOOD PRESSURE</b></td>
-                    <td><b>CAREGIVER</b></td>
-                </tr>
-                </thead>
-                <tbody>
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="8">
+                    <div style="float: left">
+                        <h3>{{ resident.typeName }}</h3>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <td><b>DATE</b></td>
+                <td><b>WEIGHT</b></td>
+                <td><b>BLOOD PRESSURE</b></td>
+                <td><b>CAREGIVER</b></td>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
 
-            {% for data in resident['data'] %}
-                <tr>
-                    <td style="height: 50px; text-align: left; vertical-align: middle">
-                        {{ data['roomNumber'] }} {{ data['bedNumber'] }}<br/>{{ data['firstName'] ~ ' ' ~ data['lastName'] }}
-                    </td>
-                    <td style="height: 50px"></td>
-                    <td style="height: 50px"></td>
-                    <td style="height: 50px; width: 150px; padding: 0; background: #ffffff url({{ app.request.getSchemeAndHttpHost() ~ asset('cdn/images/line.png') }}) no-repeat center center"></td>
-                    <td style="height: 50px"></td>
-                </tr>
-            {% endfor %}
+        <tr>
+            <td style="height: 50px; text-align: left; vertical-align: middle">
+                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}<br/>{{ resident.firstName ~ ' ' ~ resident.lastName }}
+            </td>
+            <td style="height: 50px"></td>
+            <td style="height: 50px"></td>
+            <td style="height: 50px; width: 150px; padding: 0; background: #ffffff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHYAAAAxCAMAAAA4JK33AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABd1BMVEUAAAADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAAAA0vTVrAAAAfHRSTlMAAUWv7I8PbtjQZQstmO2nPAVWweR9GBqA5r5UBD+plSoMadPVaw4okq1BA1G8gxwXeuLEWQY5pO6aMAljztpxECSMskcCS7bpiCATdd7JXwg0nqA1B112FIfouE1GsI0lcNnPZAovmaY6WMLjfBuCvVKrlA07jt+lqldmr3m0gAAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAGCSURBVFjDvdbpVkFhGIZh8mXIlEh2yDy0ZSjUJmWOxDZmCglFhormOvk6iuc9gWs9a70/bg4Hfdw1HllHo3yBULQhBqMSqUy+CTYVW0rVthqM7mioXa0OjOr3ZAYj2DSZLVabHYw6nGSf5mJN14Gb8njBQ32HR/5AEIwenzChMNg8jZydR2NgNJ4gyRT4jdIXmexlDjz0Kl9giyUwWq4w1RrYvK6zhUYTjOZa7ZtOGmtyuz1y2wcP5d8NhqN7MPowZiaPYFMxnc0XPjD69Ey9LNHJQK/IqxFsvpmtVvMbGDW+khUNNnXLF+r5CYz6FvPZVAFG3yfM+AFs3o+Ggzs+GO1/kF4XnQydm3YLnQzNxidbvwajtSpTKYPNUpEt5K/AaO4ym7lAJ0MqSRJx8NBY9Pwsgk6GcIj5OgabwYD/6NAHRr0eyr10YU0uvS9zOsBD7TarxWwCo0aD7FsPNnXaXUqzA0bV2yrlDzoZNuWMVAI2xb8ioQCdDJx1wlsDJ8P//QHBLz0qH3YCCwAAAABJRU5ErkJggg==') no-repeat center center"></td>
+            <td style="height: 50px"></td>
+        </tr>
 
-                </tbody>
-            </table>
-
-            <table class="report-table main-table">
-                <tr class="divider"></tr>
-            </table>
-        {% endfor %}
     {% endfor %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    <table class="report-table main-table">
+        <tr class="divider"></tr>
+    </table>
 
 {% endblock %}
 {% block pageFooter %}

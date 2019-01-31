@@ -2,8 +2,6 @@
 
 namespace App\Model\Report;
 
-use App\Entity\Resident;
-
 class BloodPressureCharting extends Base
 {
     /**
@@ -12,30 +10,19 @@ class BloodPressureCharting extends Base
     private $residents = [];
 
     /**
-     * @return mixed
+     * @param $residents
      */
-    public function getResidents()
+    public function setResidents($residents): void
     {
-        return $this->residents;
+        $this->residents = $residents;
     }
 
     /**
-     * @param array $residents
-     * @return bool
+     * @return array
      */
-    public function setResidents($residents)
+    public function getResidents(): ?array
     {
-        $residentsByType = [];
-
-        foreach ($residents as $resident) {
-            if (!isset($residentsByType[$resident['type']][$resident['typeId']]['name'])) {
-                $residentsByType[$resident['type']][$resident['typeId']]['name'] = $resident['name'];
-            }
-
-            $residentsByType[$resident['type']][$resident['typeId']]['data'][] = $resident;
-        }
-
-        $this->residents = $residentsByType;
+        return $this->residents;
     }
 }
 
