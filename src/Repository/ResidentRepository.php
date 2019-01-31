@@ -84,157 +84,6 @@ class ResidentRepository extends EntityRepository
      * @param null $typeId
      * @return mixed
      */
-    public function getByType($type, $typeId = null)
-    {
-        $queryBuilder = $this->createQueryBuilder('r');
-
-        switch ($type) {
-            case \App\Model\Resident::TYPE_APARTMENT:
-                $queryBuilder
-                    ->select('
-                        r.id as id, 
-                        r.firstName as firstName, 
-                        r.lastName as lastName,
-                        r.birthday as birthday,
-                        c.type as type,
-                        a.id as typeId,
-                        a.name as name
-                    ')
-                    ->leftJoin(
-                        Contract::class,
-                        'c',
-                        Join::WITH,
-                        'c.resident = r'
-                    )
-                    ->leftJoin(
-                        ContractAction::class,
-                        'ca',
-                        Join::WITH,
-                        'ca.contract = c'
-                    )
-                    ->leftJoin(
-                        ApartmentBed::class,
-                        'ab',
-                        Join::WITH,
-                        'ca.apartmentBed = ab'
-                    )
-                    ->leftJoin(
-                        ApartmentRoom::class,
-                        'ar',
-                        Join::WITH,
-                        'ab.room = ar'
-                    )
-                    ->leftJoin(
-                        Apartment::class,
-                        'a',
-                        Join::WITH,
-                        'ar.apartment = a'
-                    );
-
-                if ($typeId) {
-                    $queryBuilder
-                        ->where('a.id = :id')
-                        ->setParameter('id', $typeId);
-                }
-                break;
-            case \App\Model\Resident::TYPE_REGION:
-                $queryBuilder
-                    ->select('
-                        r.id as id, 
-                        r.firstName as firstName, 
-                        r.lastName as lastName,
-                        r.birthday as birthday,
-                        c.type as type,
-                        reg.id as typeId,
-                        reg.name as name
-                    ')
-                    ->leftJoin(
-                        Contract::class,
-                        'c',
-                        Join::WITH,
-                        'c.resident = r'
-                    )
-                    ->leftJoin(
-                        ContractAction::class,
-                        'ca',
-                        Join::WITH,
-                        'ca.contract = c'
-                    )
-                    ->leftJoin(
-                        Region::class,
-                        'reg',
-                        Join::WITH,
-                        'ca.region = reg'
-                    );
-
-                if ($typeId) {
-                    $queryBuilder
-                        ->where('reg.id = :id')
-                        ->setParameter('id', $typeId);
-                }
-                break;
-            default:
-                $queryBuilder
-                    ->select('
-                        r.id as id, 
-                        r.firstName as firstName, 
-                        r.lastName as lastName,
-                        r.birthday as birthday,
-                        c.type as type,
-                        f.id as typeId,
-                        f.name as name
-                    ')
-                    ->leftJoin(
-                        Contract::class,
-                        'c',
-                        Join::WITH,
-                        'c.resident = r'
-                    )
-                    ->leftJoin(
-                        ContractAction::class,
-                        'ca',
-                        Join::WITH,
-                        'ca.contract = c'
-                    )
-                    ->leftJoin(
-                        FacilityBed::class,
-                        'fb',
-                        Join::WITH,
-                        'ca.facilityBed = fb'
-                    )
-                    ->leftJoin(
-                        FacilityRoom::class,
-                        'fr',
-                        Join::WITH,
-                        'fb.room = fr'
-                    )
-                    ->leftJoin(
-                        Facility::class,
-                        'f',
-                        Join::WITH,
-                        'fr.facility = f'
-                    );
-                if ($typeId) {
-                    $queryBuilder
-                        ->where('f.id = :id')
-                        ->setParameter('id', $typeId);
-                }
-        }
-
-        return $queryBuilder
-            ->andWhere('c.type = :type AND ca.state=:state AND ca.end IS NULL')
-            ->setParameter("type", $type)
-            ->setParameter("state", ContractState::ACTIVE)
-            ->groupBy('r.id')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param $type
-     * @param null $typeId
-     * @return mixed
-     */
     public function getContractInfoByType($type, $typeId = null)
     {
         $queryBuilder = $this->createQueryBuilder('r');
@@ -1526,6 +1375,11 @@ class ResidentRepository extends EntityRepository
                         'fr.facility = f'
                     );
 
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
                 if ($typeId) {
                     $qb
                         ->andWhere('f.id = :typeId')
@@ -1560,6 +1414,9 @@ class ResidentRepository extends EntityRepository
                         Join::WITH,
                         'cro.csz = csz'
                     );
+
+                $qb
+                    ->orderBy('reg.name');
 
                 if ($typeId) {
                     $qb
@@ -2108,6 +1965,11 @@ class ResidentRepository extends EntityRepository
                         'fr.facility = f'
                     );
 
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
                 if ($typeId) {
                     $qb
                         ->andWhere('f.id = :typeId')
@@ -2144,6 +2006,9 @@ class ResidentRepository extends EntityRepository
                         Join::WITH,
                         'cro.csz = csz'
                     );
+
+                $qb
+                    ->orderBy('reg.name');
 
                 if ($typeId) {
                     $qb

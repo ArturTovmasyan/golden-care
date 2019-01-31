@@ -1,55 +1,207 @@
 {% extends '@api_report/base.twig' %}
 {% block pageTitle %}{% endblock %}
 {% block pageContent %}
-    {% for type in data.types %}
 
-        <div class="page"></div>
-        <table class="report-table main-table">
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
+
+        {% if newGroup %}
+            <div class="page"></div>
+            <table class="report-table main-table">
             <tbody>
-                <tr style="page-break-inside: initial !important;">
-                    <th colspan="3">
-                        <div style="margin-bottom: 5px;">
-                            <div style="float: left">
-                                <div style="height: 5px;"></div>
-                                <b style="font-size: 18px !important">BIRTHDAY&nbsp;LIST</b>
-                                <p style="margin-bottom: 5px;"></p>
-                                <b style="font-size: 16px !important">{{ type['name'] }}</b>
-                            </div>
-                            <div style="clear: both"></div>
+            <tr style="page-break-inside: initial !important;">
+                <th colspan="3">
+                    <div style="margin-bottom: 5px;">
+                        <div style="float: left">
+                            <div style="height: 5px;"></div>
+                            <b style="font-size: 18px !important">BIRTHDAY&nbsp;LIST</b>
+                            <p style="margin-bottom: 5px;"></p>
+                            <b style="font-size: 16px !important">{{ resident.typeName }}</b>
                         </div>
-                    </th>
-                </tr>
-                <tr style="page-break-inside: initial !important;">
-                    <td style="border-bottom: solid 1px darkgray !important; text-align: center;"><b style="font-size: 13px !important;">Birthday</b></td>
-                    <td style="border-bottom: solid 1px darkgray !important; text-align: left; padding-left: 80px; width: 250px !important;"><b style="font-size: 13px !important;">Resident</b></td>
-                    <td style="border-bottom: solid 1px darkgray !important; text-align: left;"><b style="font-size: 13px !important;">Age on Next Birthday</b></td>
-                </tr>
+                        <div style="clear: both"></div>
+                    </div>
+                </th>
+            </tr>
+            <tr style="page-break-inside: initial !important;">
+                <td style="border-bottom: solid 1px darkgray !important; text-align: center;"><b style="font-size: 13px !important;">Birthday</b></td>
+                <td style="border-bottom: solid 1px darkgray !important; text-align: left; padding-left: 80px; width: 250px !important;"><b style="font-size: 13px !important;">Resident</b></td>
+                <td style="border-bottom: solid 1px darkgray !important; text-align: left;"><b style="font-size: 13px !important;">Age on Next Birthday</b></td>
+            </tr>
+            <tr style="page-break-inside: initial !important;">
+                <td colspan="3">
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">January</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '01' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">February</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '02' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">March</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '03' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">April</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '04' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">May</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '05' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">June</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '06' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">July</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '07' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">August</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '08' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">September</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '09' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">October</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '10' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">November</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '11' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 13px !important; margin-bottom: 10px;">December</div>
+                        {% for resident in data.residents %}
+                            {% if resident.birthday|date("m") == '12' and renderedGroup == resident.typeId %}
+                                <div style="font-size: 13px !important; margin-bottom: 10px;">
+                                    <div style="float: left; margin-left: 40px;">{{ resident.birthday|date("m/d/Y") }}</div>
+                                    <div style="float: left; width: 250px !important; margin-left: 100px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div>
+                                    <div style="float: left; margin-left: 70px; text-align: left">{{ age(resident.birthday|date("m/d/Y")) }}</div>
+                                    <div style="clear: both"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        {% endif %}
 
-                {% if type.dates is not empty %}
-                    <tr>
-                        <td colspan="3">
-                            {% for monthData in type.dates %}
-
-                                <div style="font-size: 13px !important; margin-bottom: 10px;">{{ monthData['name'] }}</div>
-
-                                {% if monthData.birthdays is defined and monthData['birthdays'] is not empty %}
-                                    {% for birthdayData in monthData.birthdays %}
-                                        <div style="font-size: 13px !important; margin-bottom: 10px;">
-                                            <div style="float: left; margin-left: 40px;">{{ birthdayData['day'] }}</div>
-                                            <div style="float: left; width: 250px !important; margin-left: 100px;">{{ birthdayData['name'] }}</div>
-                                            <div style="float: left; margin-left: 70px; text-align: left">{{ birthdayData['age'] }}</div>
-                                            <div style="clear: both"></div>
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-
-                            {% endfor %}
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
     {% endfor %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
 
 {% endblock %}
 {% block pageFooter %}
