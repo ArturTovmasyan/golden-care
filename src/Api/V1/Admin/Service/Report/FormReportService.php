@@ -315,7 +315,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getRoomAuditInfo($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
