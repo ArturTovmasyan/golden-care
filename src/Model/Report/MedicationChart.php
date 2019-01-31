@@ -30,17 +30,9 @@ class MedicationChart extends Base
     }
 
     /**
-     * @return array
-     */
-    public function getResidents()
-    {
-        return $this->residents;
-    }
-
-    /**
      * @param $residents
      */
-    public function setResidents($residents)
+    public function setResidents($residents): void
     {
         $this->residents = $residents;
     }
@@ -48,7 +40,15 @@ class MedicationChart extends Base
     /**
      * @return array
      */
-    public function getMedications()
+    public function getResidents(): ?array
+    {
+        return $this->residents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMedications(): ?array
     {
         return $this->medications;
     }
@@ -56,7 +56,7 @@ class MedicationChart extends Base
     /**
      * @return array
      */
-    public function getAllergens()
+    public function getAllergens(): ?array
     {
         return $this->allergens;
     }
@@ -64,7 +64,7 @@ class MedicationChart extends Base
     /**
      * @param $medications
      */
-    public function setMedications($medications)
+    public function setMedications($medications): void
     {
         foreach ($medications as $medication) {
             $this->medications[$medication['residentId']][] = $medication;
@@ -74,7 +74,7 @@ class MedicationChart extends Base
     /**
      * @param $allergens
      */
-    public function setAllergens($allergens)
+    public function setAllergens($allergens): void
     {
         foreach ($allergens as $allergen) {
             $this->allergens[$allergen['residentId']][] = $allergen;

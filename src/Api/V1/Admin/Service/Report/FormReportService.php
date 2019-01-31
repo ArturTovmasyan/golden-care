@@ -211,13 +211,11 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, false, $residentId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, null, $residentId);
         $residentIds = [];
-        $residentsById = [];
 
         foreach ($residents as $resident) {
             $residentIds[] = $resident['id'];
-            $residentsById[$resident['id']] = $resident;
         }
 
         $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);

@@ -4,19 +4,19 @@
 
     {% for resident in data.residents %}
 
-        {% if data.medications[resident['id']] is not empty %}
+        {% if data.medications[resident.id] is not empty %}
             <div class="page"></div>
             <table class="report-table main-table bordered" style="margin: 0;">
                 <thead>
                     <tr>
                         <th colspan="34">
                             <div style="float: right">
-                                <p style="font-size: 13px !important">Monthly Medication Chart for ___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                <p style="font-size: 13px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                             </div>
                             <div style="float: left">
                                 <div style="height: 5px;"></div>
-                                <p style="font-size: 14px !important">{{ resident['typeName'] }}</p>
-                                {% if resident['address'] is defined and resident['address'] %}<p>{{ resident['address'] }}</p>{% endif %}
+                                <p style="font-size: 14px !important">{{ resident.typeName }}</p>
+                                {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
                             </div>
                             <div style="clear: both"></div>
                         </th>
@@ -24,7 +24,7 @@
                     <tr>
                         <td colspan="34">
                             <div style="float: left;">
-                                <b style="font-size: 14px !important">{{ resident['roomNumber'] }} {{ resident['bedNumber'] }}&nbsp;{{ resident['firstName'] }} {{ resident['lastName'] }}</b>
+                                <b style="font-size: 14px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                             </div>
                             <div style="clear: both"></div>
                         </td>
@@ -69,21 +69,21 @@
                 </thead>
                 <tbody>
                     {% set key = 1 %}
-                    {% set medCount = data.medications[resident['id']] | length %}
-                    {% for  medication in data.medications[resident['id']] %}
+                    {% set medCount = data.medications[resident.id] | length %}
+                    {% for  medication in data.medications[resident.id] %}
                         <tr style="margin: 0 !important;">
                             <td rowspan="6" style="height: 150px !important; border: solid 1px black;">
-                                <b>{{ medication['medication'] }}</b><br>
+                                <b>{{ medication.medication }}</b><br>
                                 <div style="width: 150px; font-size: 10px;">
-                                    {% if medication['dosage'] %}{{ medication['dosage'] }} {{ medication['dosageUnit'] }}{% endif %}<br>
-                                    {{ medication['notes'] }}
+                                    {% if medication.dosage %}{{ medication.dosage }} {{ medication.dosageUnit }}{% endif %}<br>
+                                    {{ medication.notes }}
                                 </div>
                             </td>
                             <td style="height: 25px !important; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationAm'] %}AM{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationAm %}AM{% endif %}</div>
                             </td>
                             <td style="height: 25px !important; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationAm'] %}{{ medication['medicationAm'] }}{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationAm %}{{ medication.medicationAm }}{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -96,10 +96,10 @@
                         </tr>
                         <tr style="margin: 0 !important;">
                             <td style="height: 25px; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationNn'] %}NN{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationNn %}NN{% endif %}</div>
                             </td>
                             <td style="height: 25px !important; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationNn'] %}{{ medication['medicationNn'] }}{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationNn %}{{ medication.medicationNn }}{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -112,10 +112,10 @@
                         </tr>
                         <tr style="margin: 0 !important;">
                             <td style="height: 25px; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationPm'] %}PM{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationPm %}PM{% endif %}</div>
                             </td>
                             <td style="height: 25px !important; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationPm'] %}{{ medication['medicationPm'] }}{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -128,10 +128,10 @@
                         </tr>
                         <tr style="margin: 0 !important;">
                             <td style="height: 25px; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationHs'] %}HS{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationHs %}HS{% endif %}</div>
                             </td>
                             <td style="height: 25px !important; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationHs'] %}{{ medication['medicationHs'] }}{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -147,7 +147,7 @@
                                 <div style="width: 30px;">PRN</div>
                             </td>
                             <td style="height: 25px; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationPrn'] %}Yes{% else %}No{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -163,7 +163,7 @@
                                 <div style="width: 30px;">TR</div>
                             </td>
                             <td style="height: 25px; border: solid 1px black;">
-                                <div style="width: 30px;">{% if medication['medicationTreatment'] %}Yes{% else %}No{% endif %}</div>
+                                <div style="width: 30px;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</div>
                             </td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
                             <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 10px;">&nbsp;</div></td>
@@ -179,14 +179,14 @@
                             <tr style="border: none; margin: 0 !important;">
                                 <td colspan="34" style="border: none; font-size: 12px !important;">
                                     <div style="float:left; width: 400px;">
-                                        <p>Physician: Dr. {{ medication['physicianFirstName'] }}&nbsp;{{ medication['physicianOfficePhone'] }}</p>
+                                        <p>Physician: Dr. {{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}&nbsp;{{ medication.physicianOfficePhone }}</p>
                                         <div style="margin-top: 10px !important;">
-                                            {% if data.allergens[resident['id']] is defined %}
+                                            {% if data.allergens[resident.id] is defined %}
                                                 {% set i = 0 %}
-                                                {% for allergy in data.allergens[resident['id']] %}
+                                                {% for allergy in data.allergens[resident.id] %}
                                                     {% set i = i + 1 %}
                                                     <div style="float: left; margin-right: 15px;">
-                                                        {% if i == 1 %}Allergies:&nbsp;{% endif %}/&nbsp;{{ allergy['title'] }}
+                                                        {% if i == 1 %}Allergies:&nbsp;{% endif %}/&nbsp;{{ allergy.title }}
                                                     </div>
                                                 {% endfor %}
                                                 {% if i == 0 %}
@@ -201,7 +201,7 @@
                                         <p>Comments: ____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
-                                        <p style="text-align: center">DNR Form on File: {% if resident['dnr'] == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
+                                        <p style="text-align: center">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
                                     </div>
                                     <div style="float: right; line-height: 1px;">
                                         <div style="float: left; border-right: solid 1px darkgray;">
@@ -233,12 +233,12 @@
                                 <tr>
                                     <th colspan="34">
                                         <div style="float: right">
-                                            <p style="font-size: 13px !important">Monthly Medication Chart for ___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                            <p style="font-size: 13px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                                         </div>
                                         <div style="float: left">
                                             <div style="height: 5px;"></div>
-                                            <p style="font-size: 14px !important">{{ resident['typeName'] }}</p>
-                                            {% if resident['address'] is defined and resident['address'] %}<p>{{ resident['address'] }}</p>{% endif %}
+                                            <p style="font-size: 14px !important">{{ resident.typeName }}</p>
+                                            {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
                                         </div>
                                         <div style="clear: both"></div>
                                     </th>
@@ -246,7 +246,7 @@
                                 <tr>
                                     <td colspan="34">
                                         <div style="float: left; margin-right: 250px !important;">
-                                            <b style="font-size: 14px !important">{{ resident['roomNumber'] }} {{ resident['bedNumber'] }}&nbsp;{{ resident['firstName'] }} {{ resident['lastName'] }}</b>
+                                            <b style="font-size: 14px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                                         </div>
                                         <div style="clear: both"></div>
                                     </td>
@@ -300,8 +300,6 @@
                 </tbody>
             </table>
         {% endif %}
-
-
 
     {% endfor %}
 
