@@ -22,7 +22,7 @@ class MedicationList extends Base
     /**
      * @param $residents
      */
-    public function setResidents($residents)
+    public function setResidents($residents): void
     {
         $this->residents = $residents;
     }
@@ -30,7 +30,7 @@ class MedicationList extends Base
     /**
      * @return array
      */
-    public function getResidents()
+    public function getResidents(): ?array
     {
         return $this->residents;
     }
@@ -38,7 +38,7 @@ class MedicationList extends Base
     /**
      * @param $medications
      */
-    public function setMedications($medications)
+    public function setMedications($medications): void
     {
         foreach ($medications as $medication) {
             $this->residents[$medication['residentId']]['medications'][] = $medication;

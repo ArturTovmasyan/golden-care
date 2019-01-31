@@ -3,7 +3,7 @@
 {% block pageContent %}
 
     {% for residentId, resident in data.residents %}
-        {% if resident['medications'] is defined %}
+        {% if resident.medications is defined %}
 
             <div class="page"></div>
             <span class="divider"></span>
@@ -16,13 +16,13 @@
                         <th colspan="11">
                             <div style="float: left">
                                 <p style="font-size: 20px !important; text-align: left;">Medication List Report</p>
-                                <p style="font-size: 16px !important; text-align: left;">{{ resident['lastName'] }},&nbsp;{{ resident['firstName'] }}</p>
-                                <p style="text-align: left;">DOB: {{ resident['birthday'].format("m/d/Y") }}</p>
+                                <p style="font-size: 16px !important; text-align: left;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</p>
+                                <p style="text-align: left;">DOB: {{ resident.birthday|date("m/d/Y") }}</p>
                             </div>
                             <div style="float: right">
-                                <p style="font-size: 16px !important; text-align: right;">{{ resident['typeName'] }}</p>
-                                <p style="text-align: right;">{{ resident['address'] }} </p>
-                                <p style="text-align: right;">{% if resident['license'] is defined and resident['license'] %}#{{ resident['license'] }}{% endif %}</p>
+                                <p style="font-size: 16px !important; text-align: right;">{{ resident.typeName }}</p>
+                                <p style="text-align: right;">{% if resident.address is defined and resident.address %}{{ resident.address }}{% endif %}</p>
+                                <p style="text-align: right;">{% if residentlicense is defined and residentlicense %}#{{ residentlicense }}{% endif %}</p>
                             </div>
                             <div style="clear: both"></div>
                         </th>
@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for medication in resident['medications'] %}
+                    {% for medication in resident.medications %}
 
                         <tr>
                             <td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>
