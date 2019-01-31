@@ -4,62 +4,71 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByTypeAndGroup in data.residents %}
-        {% for typeId, residentsByGroup in residentsByTypeAndGroup %}
-            {% for group, resident in residentsByGroup %}
-
-                <div class="page"></div>
-                <div style="margin-bottom: 5px;">
-                    <div style="float: left">
-                        <div style="height: 5px;"></div>
-                        <b style="font-size: 18px !important">CHANGEOVER&nbsp;NOTES</b>
-                        <p style="margin-bottom: 8px;"></p>
-                        <b style="font-size: 16px !important">{{ resident['name'] }}</b>
-                        <p style="margin-bottom: 16px;"></p>
-                    </div>
-                    <div style="clear: both"></div>
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.careGroup %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.careGroup %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
+            <div class="page">
+            </div>
+            <div style="margin-bottom: 5px;">
+                <div style="float: left">
+                    <div style="height: 5px;"></div>
+                    <b style="font-size: 18px !important">CHANGEOVER&nbsp;NOTES</b>
+                    <p style="margin-bottom: 8px;"></p>
+                    <b style="font-size: 16px !important">{{ resident.typeName }}</b>
+                    <p style="margin-bottom: 16px;"></p>
                 </div>
-                <div style="margin-bottom: 15px;">
-                    <div style="float: left; margin-right: 15px;">
-                        <div>_________________________________________</div>
-                        <div style="text-align: left">A.M. Caregivers </div>
-                    </div>
-                    <div style="float: left; margin-right: 15px;">
-                        <div>_________________________________________</div>
-                        <div style="text-align: left">P.M. Caregivers</div>
-                    </div>
-                    <div style="float: right">
-                        <div>_____________________________</div>
-                        <div style="text-align: left">Date</div>
-                    </div>
-                    <div style="clear: both; margin-bottom: 15px;"></div>
+                <div style="clear: both"></div>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <div style="float: left; margin-right: 15px;">
+                    <div>_________________________________________</div>
+                    <div style="text-align: left">A.M. Caregivers </div>
                 </div>
+                <div style="float: left; margin-right: 15px;">
+                    <div>_________________________________________</div>
+                    <div style="text-align: left">P.M. Caregivers</div>
+                </div>
+                <div style="float: right">
+                    <div>_____________________________</div>
+                    <div style="text-align: left">Date</div>
+                </div>
+                <div style="clear: both; margin-bottom: 15px;"></div>
+            </div>
 
-                <span class="divider"></span>
-                <span class="divider"></span>
-                <table class="report-table bordered" style="margin: 0 !important; ">
-                    <tr class="divider"></tr>
-                    <thead>
-                    <tr>
-                        <td style="width: 70px"><b>Group {{ group }}</b></td>
-                        <td style="width: 250px"></td>
-                        <td><b>Comments</b></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for data in resident['data'] %}
-                            <td style="height: 100px; width: 70px; font-size: 13px !important; border-right: none">
-                                <p>{{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}</p>
-                                <p class="square" style="margin-left: 4px;"></p>
-                            </td>
-                            <td style="height: 100px; width: 250px; font-size: 13px !important; border-right: none; border-left: none">{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</td>
-                            <td style="height: 100px; border-left: none"></td>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <span class="divider"></span>
+            <span class="divider"></span>
+        {% endif %}
+        <table class="report-table bordered" style="margin: 0 !important; ">
+            {% if newGroup %}
+                <tr class="divider"></tr>
+                <thead>
+                <tr>
+                    <td style="width: 70px"><b>Group {{ resident.careGroup }}</b></td>
+                    <td style="width: 250px"></td>
+                    <td><b>Comments</b></td>
+                </tr>
+                </thead>
+            {% endif %}
+            <tbody>
+            <tr>
+                <td style="height: 100px; width: 70px; font-size: 13px !important; border-right: none">
+                    {% if resident.roomNumber is defined and resident.bedNumber is defined %}<p>{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</p>{% endif %}
+                    <p class="square" style="margin-left: 4px;"></p>
+                </td>
+                <td style="height: 100px; width: 250px; font-size: 13px !important; border-right: none; border-left: none">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
+                <td style="height: 100px; border-left: none"></td>
+            </tr>
 
-            {% endfor %}
-        {% endfor %}
+            </tbody>
+        </table>
+
     {% endfor %}
 
 {% endblock %}

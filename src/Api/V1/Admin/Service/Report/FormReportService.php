@@ -99,7 +99,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getBowelMovementInfoByType($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
 
         $report = new BowelMovement();
         $report->setResidents($residents);
@@ -127,7 +127,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getChangeoverNotesInfo($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
 
         $report = new ChangeoverNotes();
         $report->setResidents($residents);
