@@ -2337,13 +2337,13 @@ UPDATE `db_seniorcare_migration`.`tbl_contract_action` AS `ca`
 
 ### Resident Photo
 SELECT
-    `cc_old`.`residents`.`Resident_ID`                                                       AS 'id',
-    CONCAT('https://ccdb.ciminocare.com/uploads/documents/', `cc_old`.`residents`.`Photo`)   AS 'photo' 
+    `cc_old`.`residents`.`Resident_ID`                                                     COLLATE utf8_general_ci AS 'id',
+    CONCAT('https://ccdb.ciminocare.com/uploads/documents/', `cc_old`.`residents`.`Photo`) COLLATE utf8_general_ci AS 'photo'
 FROM `cc_old`.`residents` WHERE `cc_old`.`residents`.`Photo`!=''
 UNION
 SELECT
-    (`alms`.`base_resident`.`id` + 10000)                                                    AS 'id',
-    CONCAT('https://alms.ciminocare.com/uploads/documents/', `alms`.`base_resident`.`photo`) AS 'photo' 
+    (`alms`.`base_resident`.`id` + 10000)                                                    COLLATE utf8_general_ci AS 'id',
+    CONCAT('https://alms.ciminocare.com/uploads/documents/', `alms`.`base_resident`.`photo`) COLLATE utf8_general_ci AS 'photo'
 FROM `alms`.`base_resident` WHERE `alms`.`base_resident`.`photo`!='';
 
 # Use app:migrate:photos command to import these photos to SeniorCare.
