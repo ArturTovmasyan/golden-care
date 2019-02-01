@@ -2,51 +2,100 @@
 
 namespace App\Model\Report;
 
-use App\Model\ContractType;
-
 class ResidentEvent extends Base
 {
     /**
      * @var array
      */
-    private $events = [];
+    private $residents = [];
 
     /**
-     * @return mixed
+     * @var string
      */
-    public function getEvents()
+    private $strategy;
+
+    /**
+     * @var string
+     */
+    private $startDate;
+
+    /**
+     * @var string
+     */
+    private $endDate;
+
+    /**
+     * @param $residents
+     */
+    public function setResidents($residents): void
     {
-        return $this->events;
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResidents(): ?array
+    {
+        return $this->residents;
     }
 
     /**
      * @param $events
      */
-    public function setEvents($events)
+    public function setEvents($events): void
     {
-        $eventsByType = [];
-
         foreach ($events as $event) {
-            $start = $eventsByType[$event['type']][$event['typeId']]['start'] ?? null;
-            $end   = $eventsByType[$event['type']][$event['typeId']]['end'] ?? null;
-
-            if (is_null($start) || $start->diff($event['startDate']) > 0) {
-                $eventsByType[$event['type']][$event['typeId']]['start'] = $event['startDate'];
-            }
-
-            if (is_null($end) || ($event['endDate'] instanceof \DateTime && $event['endDate']->diff($end) > 0)) {
-                $eventsByType[$event['type']][$event['typeId']]['end'] = $event['endDate'];
-            }
-
-            if (!isset($eventsByType[$event['type']][$event['typeId']]['name'])) {
-                $eventsByType[$event['type']][$event['typeId']]['name']      = ContractType::getTypes()[$event['type']] ;
-                $eventsByType[$event['type']][$event['typeId']]['shorthand'] = $event['shorthand'];
-            }
-
-            $eventsByType[$event['type']][$event['typeId']]['data'][$event['residentId']][] = $event;
+            $this->residents[$event['residentId']]['events'][] = $event;
         }
+    }
 
-        $this->events = $eventsByType;
+    /**
+     * @param $strategy
+     */
+    public function setStrategy($strategy): void
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategy()
+    {
+        return $this->strategy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStartDate(): string
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param string $startDate
+     */
+    public function setStartDate(string $startDate): void
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndDate(): string
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @param string $endDate
+     */
+    public function setEndDate(string $endDate): void
+    {
+        $this->endDate = $endDate;
     }
 }
 

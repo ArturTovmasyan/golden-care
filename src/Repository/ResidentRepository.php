@@ -166,6 +166,7 @@ class ResidentRepository extends EntityRepository
                     ->addSelect(
                         'f.id as typeId,
                         f.name as typeName,
+                        f.shorthand as typeShorthand,
                         f.address as address,
                         f.license as license,
                         fr.number as roomNumber,
@@ -219,6 +220,7 @@ class ResidentRepository extends EntityRepository
                     ->addSelect(
                         'a.id as typeId,
                         a.name as typeName,
+                        a.shorthand as typeShorthand,
                         a.address as address,
                         a.license as license,
                         ar.number as roomNumber,
@@ -269,6 +271,7 @@ class ResidentRepository extends EntityRepository
                         csz.stateAbbr as state,
                         csz.zipMain as zip,
                         reg.id as typeId,
+                        reg.shorthand as typeShorthand,
                         reg.name as typeName'
                     )
                     ->innerJoin(

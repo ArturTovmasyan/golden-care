@@ -1,18 +1,6 @@
-{% for type, residentsByType in data.events %}
-{% for typeId, residentData in residentsByType %}
-{% spaceless %}{{ residentData['name'] }} Events Report: {{ residentData['start'].format("m/d/Y") }}{% if residentData['end'] is not null %} through {{ residentData['end'].format("m/d/Y") }}{% endif %}{% endspaceless %}
+{{ data.strategy }} Events Report: {{ data.startDate|date("m/d/Y") }} through {{ data.endDate|date("m/d/Y") }}
 
-
-{% spaceless %}{{ residentData['name'] }} Short Name,Resident Full Name,Date,Event,Value,Note{% endspaceless %}
-        {% for residentId, residentEvents in residentData['data'] %}
-            {% set m = 0 %}
-            {% for event in residentEvents %}
-                {% if m == 0  %}
-
-{% spaceless %}{{ residentData['shorthand'] }},"{{ event['firstName'] ~ ' ' ~ event['lastName'] }}",{% endspaceless %}{% endif %}
-{% spaceless %}{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %},{% if event['definitionTitle'] %}{{ event['definitionTitle'] }}{% else %}N/A{% endif %},{% if event['startDate'] is not null %}{{ event['startDate'].format('m/d/Y') }}{% else %}N/A{% endif %}{% if event['endDate'] is not null %} - {{ event['endDate'].format('m/d/Y') }}{% endif %},{% if event['notes'] is not null %}{{ event['notes'] }}{% else %}N/A{% endif %},{% endspaceless %}
-                {% set m = m + 1 %}
-            {% endfor %}
-        {% endfor %}
-    {% endfor %}
-{% endfor %}
+{{ data.strategy }} Short Name, Resident Full Name,Date,Event,Value,Note
+{% for resident in data.residents %}{% if resident['events'] is defined %}{% for event in resident.events %}
+{{ resident.typeShorthand }},"{{ resident.firstName ~ ' ' ~ resident.lastName }}",{% if event.date %}{{ event.date|date('m/d/Y') }}{% else %}N/A{% endif %},{% if event.title %}"{{ event.title }}"{% else %}N/A{% endif %},{% if event.physicianFirstName and event.physicianLastName %}"Physician : {% if event.physicianSalutation %}{{ event.physicianSalutation }} {% endif %}{{ event.physicianFirstName }} {{ event.physicianLastName }}"{% endif %}{% if event.responsiblePersonFirstName and event.responsiblePersonLastName %}"RP person : {% if event.responsiblePersonSalutation %}{{ event.responsiblePersonSalutation }} {% endif %}{{ event.responsiblePersonFirstName }} {{ event.responsiblePersonLastName }}"{% endif %}{% if event.additionalDate %}"Discharge Date : {{ event.additionalDate|date('m/d/Y') }}"{% endif %}{% if not event.physicianFirstName and not event.responsiblePersonFirstName and not event.additionalDate %}N/A{% endif %},{% if event.notes %}"{{ event.notes|raw }}"{% else %}N/A{% endif %},
+{% endfor %}{% endif %}{% endfor %}

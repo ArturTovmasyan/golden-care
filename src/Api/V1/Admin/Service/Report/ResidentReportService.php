@@ -202,12 +202,13 @@ class ResidentReportService extends BaseService
     public function getSimpleRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
     {
         $type = $group;
+        $typeId = $groupId;
 
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, false, $residentId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
         $typeIds = [];
 
         if (!empty($residents)) {
@@ -325,20 +326,37 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        list($m1, $d1, $y1) = explode('/', $dateFrom);
-        list($m2, $d2, $y2) = explode('/', $dateTo);
+        $dateStart = $dateEnd = new \DateTime('now');
+        $dateStartFormatted = $dateStart->format('m/d/Y');
+        $dateEndFormatted = $dateEnd->format('m/d/Y');
 
-        if (!checkdate($m1, $d1, $y1) || !checkdate($m2, $d2, $y2)) {
-            throw new InvalidParameterException('start_date, end_date');
+        if (!empty($dateFrom)) {
+            $dateStart = new \DateTime($dateFrom);
+            $dateStartFormatted = $dateStart->format('m/d/Y');
         }
 
-        $dateFrom = \DateTime::createFromFormat('m/d/Y', $dateFrom);
-        $dateTo   = \DateTime::createFromFormat('m/d/Y', $dateTo);
+        if (!empty($dateTo)) {
+            $dateEnd = new \DateTime($dateTo);
+            $dateEndFormatted = $dateEnd->format('m/d/Y');
+        }
 
-        $events = $this->em->getRepository(ResidentEvent::class)->getByPeriodAndType($dateFrom, $dateTo, $type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residentIds = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIdsAndDate($dateStart, $dateEnd, $residentIds);
 
         $report = new \App\Model\Report\ResidentEvent();
+        $report->setResidents($residentsById);
         $report->setEvents($events);
+        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStartDate($dateStartFormatted);
+        $report->setEndDate($dateEndFormatted);
 
         return $report;
     }
