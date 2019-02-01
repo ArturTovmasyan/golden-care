@@ -4,80 +4,98 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByType in data.residents %}
-        {% for typeId, resident in residentsByType %}
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
 
-            <div class="page"></div>
+        {% if resident.diningRoom is defined and resident.diningRoom %}
+            {% if renderedGroup == resident.diningRoom %}
+                {% set newGroup = false %}
+            {% else %}
+                {% set renderedGroup = resident.diningRoom %}
+                {% set newGroup = true %}
+            {% endif %}
+        {% else %}
+            {% if renderedGroup == resident.typeId %}
+                {% set newGroup = false %}
+            {% else %}
+                {% set renderedGroup = resident.typeId %}
+                {% set newGroup = true %}
+            {% endif %}
+        {% endif %}
 
-            {% set i = 0 %}
-
-            {% for data in resident['data'] %}
-                <table class="report-table bordered" style="margin: 0;">
-
-                {% if i == 0 %}
-                    <thead>
-                        <tr>
-                            <th colspan="3">
-                                <div>
-                                    <div style="float: left; margin-right: 130px;">
-                                        <div style="height: 5px;"></div>
-                                        <b style="font-size: 18px !important">Dining&nbsp;Restrictions</b><br/>
-                                        <b style="font-size: 16px !important;">{{ data['name'] }}</b><br/>
-                                        {% if data['diningRoom'] is defined and data['diningRoom'] %}
-                                            <b style="font-size: 14px !important">{{ data['diningRoom'] }}</b><br/>
-                                        {% endif %}
-                                        <b style="font-size: 14px !important">Printed&nbsp;{{ "now"|date("M d, Y") }}</b>
-                                        <p style="margin-bottom: 5px;"></p>
-                                    </div>
+        {% if newGroup %}
+            <div class="page">
+            </div>
+        {% endif %}
+        <table class="report-table bordered" style="margin: 0;">
+            <thead>
+            {% if newGroup %}
+                <tr>
+                    <th colspan="3">
+                        <div>
+                            <div style="float: left; margin-right: 130px;">
+                                <div style="height: 5px;"></div>
+                                <b style="font-size: 18px !important">Dining&nbsp;Restrictions</b><br/>
+                                <b style="font-size: 16px !important;">{{ resident.typeName }}</b><br/>
+                                {% if resident.diningRoom is defined and resident.diningRoom %}<b style="font-size: 14px !important">{{ resident.diningRoom }}</b><br/>{% endif %}
+                                <b style="font-size: 14px !important">Printed&nbsp;{{ "now"|date("M d, Y") }}</b>
+                                <p style="margin-bottom: 5px;"></p>
+                            </div>
+                            <div style="float: left">
+                                <div style="float: left; margin-right: 60px;">
                                     <div style="float: left">
-                                        <div style="float: left; margin-right: 60px;">
-                                            <div style="float: left">
-                                                <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #ffff00; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px;">Mechanical&nbsp;Soft</span></div>
-                                                <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #ff0000; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; color: white">Puree</span></div>
-                                                <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #ff00ff; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; color: white">Diabetic</span></div>
-                                            </div>
-                                        </div>
-                                        <div style="float: right">
-                                            <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #00ff00; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px;">No&nbsp;Dairy</span></div>
-                                            <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #00ccff; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px;">Special&nbsp;Request</span></div>
-                                            <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: #333399; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; color: white">No&nbsp;Salt&nbsp;Diet</span></div>
-                                        </div>
-                                        <div style="clear: both"></div>
+                                        {% for datum in data.data %}
+                                            {% if (loop.index is odd) %}
+                                                <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
-                                    <div style="clear: both"></div>
                                 </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <td style="margin: 0 !important;"><b style="width: 60px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Room</b></td>
-                            <td style="margin: 0 !important;"><b style="width: 180px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Resident</b></td>
-                            <td style="margin: 0 !important;"><b style="width: 400px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Restrictions</b></td>
-                        </tr>
-                    </thead>
-                {% endif %}
-
-                    <tbody>
-
-                        <tr style="margin: 0 !important;">
-                            <td style="width: 60px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{{ data['roomNumber'] ~ ' ' ~ data['bedNumber'] }}</td>
-                            <td style="width: 180px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{{ data['salutation'] }}&nbsp;{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</td>
-                            <td style="width: 400px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px 5px 0 5px !important; font-size: 13px !important;">
-                                <div>
-                                    {% for diet in data['diets'] %}
-                                        <div style="font-size: 12px; margin-bottom: 5px; background-color: {{ diet['color'] }}">
-                                            <span style="{% if diet['color'] == '#ff0000' or diet['color'] == '#ff00ff' or diet['color'] == '#333399' %}color: white;{% endif %}">{{ diet['title'] }}/{{ diet['description'] }}</span>
-                                        </div>
+                                <div style="float: right">
+                                    {% for datum in data.data %}
+                                        {% if (loop.index is even) %}
+                                            <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                        <td style="margin: 0 !important;"><b style="width: 60px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Room</b></td>
+                    {% endif %}
+                    <td style="margin: 0 !important;"><b style="width: 180px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Resident</b></td>
+                    <td style="margin: 0 !important;"><b style="width: 400px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Restrictions</b></td>
+                </tr>
+            {% endif %}
+            </thead>
+            <tbody>
 
-                {% set i = 1 %}
-            {% endfor %}
+            <tr style="margin: 0 !important;">
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                    <td style="width: 60px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</td>
+                {% endif %}
+                <td style="width: 180px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{% if resident.salutation is defined and resident.salutation %}{{ resident.salutation }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
+                <td style="width: 400px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px 5px 0 5px !important; font-size: 13px !important;">
+                    <div>
+                        {% if resident['diets'] is defined %}
+                            {% for diet in resident.diets %}
+                                <div style="font-size: 12px; margin-bottom: 5px; background-color: {{ diet.color }}">
+                                    <span style="{% if diet.color == '#ff0000' or diet.color == '#ff00ff' or diet.color == '#333399' or diet.color == '#000000' %}color: white;{% endif %}">{{ diet.title }}/{{ diet.description }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
 
-        {% endfor %}
+            </tbody>
+        </table>
     {% endfor %}
 
 {% endblock %}

@@ -10,37 +10,50 @@ class DietaryRestriction extends Base
     private $residents = [];
 
     /**
-     * @return mixed
+     * @var array
      */
-    public function getResidents()
+    private $data = [];
+
+    /**
+     * @param $residents
+     */
+    public function setResidents($residents): void
+    {
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResidents(): ?array
     {
         return $this->residents;
     }
 
     /**
-     * @param $residents
+     * @param $diets
      */
-    public function setResidents($residents)
+    public function setDiets($diets): void
     {
-        $residentsByType = [];
-
-        foreach ($residents as $resident) {
-            if (!isset($residentsByType[$resident['type']][$resident['typeId']]['name'])) {
-                $residentsByType[$resident['type']][$resident['typeId']]['name'] = $resident['name'];
-            }
-
-            if (!isset($residentsByType[$resident['type']][$resident['typeId']]['data'][$resident['id']])) {
-                $residentsByType[$resident['type']][$resident['typeId']]['data'][$resident['id']] = $resident;
-            }
-
-            $residentsByType[$resident['type']][$resident['typeId']]['data'][$resident['id']]['diets'][] = [
-                'color'       => $resident['dietColor'],
-                'title'       => $resident['dietTitle'],
-                'description' => $resident['dietDescription']
-            ];
+        foreach ($diets as $diet) {
+            $this->residents[$diet['residentId']]['diets'][] = $diet;
         }
+    }
 
-        $this->residents = $residentsByType;
+    /**
+     * @param $data
+     */
+    public function setData($data): void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): ?array
+    {
+        return $this->data;
     }
 }
 

@@ -5,6 +5,7 @@ namespace App\Api\V1\Admin\Service\Report;
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Allergen;
 use App\Entity\Diagnosis;
+use App\Entity\Diet;
 use App\Entity\Medication;
 use App\Entity\Physician;
 use App\Entity\Resident;
@@ -242,10 +243,22 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($type, $typeId, $residentId);
+        $residentIds = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        $diets = $this->em->getRepository(Diet::class)->getByResidentIds($residentIds);
+        $data = $this->em->getRepository(Diet::class)->findAll();
 
         $report = new DietaryRestriction();
-        $report->setResidents($residents);
+        $report->setResidents($residentsById);
+        $report->setDiets($diets);
+        $report->setData($data);
 
         return $report;
     }
