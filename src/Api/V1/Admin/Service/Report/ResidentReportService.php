@@ -202,21 +202,22 @@ class ResidentReportService extends BaseService
     {
         $type = $group;
 
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
         $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, false, $residentId);
-        $residentIds = [];
-        $residentsById = [];
+        $typeIds = [];
 
-        foreach ($residents as $resident) {
-            $residentIds[] = $resident['id'];
-            $residentsById[$resident['id']] = $resident;
+        if (!empty($residents)) {
+            $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
+            $typeIds = array_unique($typeIds);
         }
 
         $report = new ResidentSimpleRoster();
         $report->setResidents($residents);
+        $report->setTypeIds($typeIds);
+        $report->setStrategyId($type);
 
         return $report;
     }

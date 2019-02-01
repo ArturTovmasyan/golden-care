@@ -10,6 +10,16 @@ class ResidentSimpleRoster extends Base
     private $residents = [];
 
     /**
+     * @var array
+     */
+    private $typeIds = [];
+
+    /**
+     * @var int
+     */
+    private $strategyId;
+
+    /**
      * @return mixed
      */
     public function getResidents()
@@ -20,17 +30,41 @@ class ResidentSimpleRoster extends Base
     /**
      * @param $residents
      */
-    public function setResidents($residents)
+    public function setResidents($residents): void
     {
-        foreach ($residents as $resident) {
-            if (!isset($this->residents[$resident['type']][$resident['typeId']]['data'])) {
-                $this->residents[$resident['type']][$resident['typeId']]['data'] = [
-                    'name' => $resident['typeName']
-                ];
-            }
+        $this->residents = $residents;
+    }
 
-            $this->residents[$resident['type']][$resident['typeId']]['floors'][$resident['floor']][] = $resident;
-        }
+    /**
+     * @return mixed
+     */
+    public function getTypeIds()
+    {
+        return $this->typeIds;
+    }
+
+    /**
+     * @param $typeIds
+     */
+    public function setTypeIds($typeIds): void
+    {
+        $this->typeIds = $typeIds;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 }
 
