@@ -157,7 +157,7 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentDetailedInfo($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
 
         $residentIds   = [];
         $residentsById = [];
@@ -167,11 +167,22 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
+        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
         $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
 
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($responsiblePersonIds);
+        }
+
         $report = new ResidentDetailedRoster();
-        $report->setResidents($residents);
+        $report->setResidents($residentsById);
+        $report->setPhysicians($physicians);
         $report->setResponsiblePersons($responsiblePersons);
+        $report->setResponsiblePersonPhones($responsiblePersonPhones);
 
         return $report;
     }

@@ -2,8 +2,6 @@
 
 namespace App\Model\Report;
 
-use App\Model\Phone;
-
 class ResidentDetailedRoster extends Base
 {
     /**
@@ -14,7 +12,7 @@ class ResidentDetailedRoster extends Base
     /**
      * @var array
      */
-    private $responsiblePersons = [];
+    private $responsiblePersonPhones = [];
 
     /**
      * ResidentDetailedRoster constructor.
@@ -27,60 +25,55 @@ class ResidentDetailedRoster extends Base
     }
 
     /**
-     * @return mixed
+     * @param $residents
      */
-    public function getResidents()
+    public function setResidents($residents): void
+    {
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResidents(): ?array
     {
         return $this->residents;
     }
 
     /**
-     * @return mixed
-     */
-    public function getResponsiblePersons()
-    {
-        return $this->responsiblePersons;
-    }
-
-    /**
-     * @param $residents
-     */
-    public function setResidents($residents)
-    {
-        $residentsByType = [];
-
-        foreach ($residents as $resident) {
-            if (!isset($residentsByType[$resident['type']][$resident['typeId']]['name'])) {
-                $residentsByType[$resident['type']][$resident['typeId']]['name'] = $resident['typeName'];
-            }
-
-            $residentsByType[$resident['type']][$resident['typeId']]['data'][] = $resident;
-        }
-
-        $this->residents = $residentsByType;
-    }
-
-    /**
      * @param $responsiblePersons
      */
-    public function setResponsiblePersons($responsiblePersons)
+    public function setResponsiblePersons($responsiblePersons): void
     {
-        $responsiblePersonsByResidentId = [];
-
         foreach ($responsiblePersons as $responsiblePerson) {
-            if (!isset($responsiblePersonsByResidentId[$responsiblePerson['residentId']][$responsiblePerson['id']])) {
-                $responsiblePersonsByResidentId[$responsiblePerson['residentId']][$responsiblePerson['id']] = $responsiblePerson;
-            }
-
-            $responsiblePersonsByResidentId[$responsiblePerson['residentId']][$responsiblePerson['id']]['phones'][] = [
-                'type'      => $responsiblePerson['phoneType'],
-                'typeName'  => Phone::$typeNames[$responsiblePerson['phoneType']],
-                'extension' => $responsiblePerson['phoneExtension'],
-                'number'    => $responsiblePerson['phoneNumber'],
-            ];
+            $this->residents[$responsiblePerson['residentId']]['responsiblePersons'][] = $responsiblePerson;
         }
+    }
 
-        $this->responsiblePersons = $responsiblePersonsByResidentId;
+    /**
+     * @param $physicians
+     */
+    public function setPhysicians($physicians): void
+    {
+        foreach ($physicians as $physician) {
+            $this->residents[$physician['residentId']]['physicians'][] = $physician;
+        }
+    }
+
+    /**
+     * @param $responsiblePersonPhones
+     */
+    public function setResponsiblePersonPhones($responsiblePersonPhones): void
+    {
+        $this->responsiblePersonPhones = $responsiblePersonPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResponsiblePersonPhones(): ?array
+    {
+        return $this->responsiblePersonPhones;
     }
 }
 

@@ -4,6 +4,7 @@ parameters:
     core.repository.user.class: App\Repository\UserRepository
     count.age.extension.class: App\Util\Twig\Extension\CountAgeExtension
     rent.period.extension.class: App\Util\Twig\Extension\RentPeriodExtension
+    phone.type.extension.class: App\Util\Twig\Extension\PhoneTypeExtension
 
 services:
     core.model.user.provider:
@@ -23,5 +24,9 @@ services:
           - { name: twig.extension }
     rent.period.extension:
         class: %rent.period.extension.class%
+        tags:
+          - { name: twig.extension }
+    phone.type.extension:
+        class: %phone.type.extension.class%
         tags:
           - { name: twig.extension }

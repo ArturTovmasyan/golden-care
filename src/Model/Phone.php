@@ -78,5 +78,13 @@ class Phone
     {
         return self::$typeValues;
     }
+
+    /**
+     * @return array
+     */
+    public static function getTypeNames()
+    {
+        return self::$typeNames;
+    }
 }
 

@@ -2,98 +2,107 @@
 {% block pageTitle %}{% endblock %}
 {% block pageContent %}
 
-    {% for type, residentsByType in data.residents %}
-        {% for typeId, residentData in residentsByType %}
-
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for residentId, resident in data.residents %}
+        {% if renderedGroup == resident.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
             <span class="divider"></span>
             <table class="report-table main-table bordered">
-                <tr class="divider"></tr>
-                <thead>
-                    <tr>
-                        <th colspan="5">
-                            <div style="margin-bottom: 5px;">
-                                <div style="float: left">
-                                    <div style="height: 5px;"></div>
-                                    <b style="font-size: 18px !important">ROSTER&nbsp;DETAILED</b>
-                                    <p style="margin-bottom: 5px;"></p>
-                                    <b style="font-size: 14px !important">{{ residentData['name'] }}</b>
-                                </div>
-                                <div style="clear: both"></div>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr style="font-size: 13px; border: none; margin-bottom: 0">
-                        <td style="width: 30px !important"><b style="text-align: left">Room</b></td>
-                        <td style="width: 250px !important"><b>Resident</b></td>
-                        {% if type != constant("App\\Model\\Resident::TYPE_APARTMENT") %}<td style="width: 30px"><b>amb*</b></td>{% endif %}
-                        <td style="width: 250px !important"><b>Physician</b></td>
-                        <td style="width: 250px !important"><b>Emergency Contacts</b></td>
-                        <td style="width: 250px !important"><b>Billing Persons</b></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for resident in residentData['data'] %}
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="5">
+                    <div style="margin-bottom: 5px;">
+                        <div style="float: left">
+                            <div style="height: 5px;"></div>
+                            <b style="font-size: 18px !important">ROSTER&nbsp;DETAILED</b>
+                            <p style="margin-bottom: 5px;"></p>
+                            <b style="font-size: 14px !important">{{ resident.typeName }}</b>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </th>
+            </tr>
+            <tr style="font-size: 13px; border: none; margin-bottom: 0">
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important"><b style="text-align: left">Room</b></td>{% endif %}
+                <td style="width: 250px !important"><b>Resident</b></td>
+                {% if resident.ambulatory is defined and resident.ambulatory %}<td style="width: 30px"><b>amb*</b></td>{% endif %}
+                <td style="width: 250px !important"><b>Physicians</b></td>
+                <td style="width: 250px !important"><b>Emergency Contacts</b></td>
+                <td style="width: 250px !important"><b>Billing Persons</b></td>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
 
-                        <tr>
-                            <td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident['roomNumber'] ~ ' ' ~ resident['bedNumber'] }}</td>
-                            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident['firstName'] ~ ' ' ~ resident['lastName'] }}</td>
-                            {% if type != constant("App\\Model\\Resident::TYPE_APARTMENT") %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident['ambulatory'] == true %}Yes{% else %}No{% endif %}</td>{% endif %}
-                            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
-                                {% if resident['physicianId'] is defined and resident['physicianId'] %}
-                                    {{ resident['physicianFirstName'] ~ ' ' ~ resident['physicianLastName'] }}<br/>{{ resident['physicianAddress'] }}<br/>
-                                    {{ resident['physicianCity'] }},&nbsp;{{ resident['physicianState'] }}&nbsp;{{ resident['physicianZip'] }}<br/>
-                                    {% if resident['physicianEmergencyPhone'] is defined and resident['physicianEmergencyPhone'] %}<b>E: {{ resident['physicianEmergencyPhone'] }}</b><br/>{% endif %}
-                                    {% if resident['physicianOfficePhone'] is defined and resident['physicianOfficePhone'] %}O: {{ resident['physicianOfficePhone'] }}<br/>{% endif %}
-                                    {% if resident['physicianFax'] is defined and resident['physicianFax'] %}Fax: {{ resident['physicianFax'] }}{% endif %}
-                                {% endif %}
-                            </td>
-                            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
-                                {% if data.responsiblePersons[resident['id']] is defined %}
-                                    {% for responsiblePerson in data.responsiblePersons[resident['id']] %}
-                                        {% if responsiblePerson['emergency'] %}
-                                            <div style="margin-bottom: 10px;">
-                                                {{ responsiblePerson['firstName'] ~ ' ' ~ responsiblePerson['lastName'] }}<br/>
-                                                {{ responsiblePerson['address'] }}<br/>
-                                                {{ responsiblePerson['city'] }},&nbsp;{{ responsiblePerson['state'] }}&nbsp;{{ responsiblePerson['zip'] }}<br/>
-
-                                                {% if responsiblePerson['phones'] is defined %}
-                                                    {% for responsiblePersonPhone in responsiblePerson['phones'] %}
-                                                        {{ responsiblePersonPhone['typeName'] }}:&nbsp;{{ responsiblePersonPhone['number'] }}
-                                                        <br/>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
-                                {% if data.responsiblePersons[resident['id']] is defined %}
-                                    {% for responsiblePerson in data.responsiblePersons[resident['id']] %}
-                                        {% if responsiblePerson['financially'] %}
-                                            <div style="margin-bottom: 10px;">
-                                                {{ responsiblePerson['firstName'] ~ ' ' ~ responsiblePerson['lastName'] }}<br/>
-                                                {{ responsiblePerson['address'] }}<br/>
-                                                {{ responsiblePerson['city'] }},&nbsp;{{ responsiblePerson['state'] }}&nbsp;{{ responsiblePerson['zip'] }}<br/>
-
-                                                {% if responsiblePerson['phones'] is defined %}
-                                                    {% for responsiblePersonPhone in responsiblePerson['phones'] %}
-                                                        {{ responsiblePersonPhone['typeName'] }}:&nbsp;{{ responsiblePersonPhone['number'] }}
-                                                        <br/>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                        </tr>
-
+        <tr>
+            {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</td>{% endif %}
+            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
+            {% if resident.ambulatory is defined and resident.ambulatory %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
+            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
+                {% if resident['physicians'] is defined %}
+                    {% for physician in resident['physicians'] %}
+                        <div style="margin-bottom: 10px;">
+                            {% if physician.firstName and physician.lastName %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}<br/>{% endif %}
+                            {% if physician.address %}{{ physician.address }}<br/>{% endif %}
+                            {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}<br/>{% endif %}
+                            {% if physician.emergencyPhone is defined and physician.emergencyPhone %}<b>E: {{ physician.emergencyPhone }}</b><br/>{% endif %}
+                            {% if physician.officePhone is defined and physician.officePhone %}O: {{ physician.officePhone }}<br/>{% endif %}
+                            {% if physician.fax is defined and physician.fax %}Fax: {{ physician.fax}}{% endif %}
+                        </div>
                     {% endfor %}
-                </tbody>
-            </table>
-        {% endfor %}
+                {% endif %}
+            </td>
+            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
+                {% if resident['responsiblePersons'] is defined %}
+                    {% for responsiblePerson in resident['responsiblePersons'] %}
+                        {% if responsiblePerson.emergency %}
+                            <div style="margin-bottom: 10px;">
+                                {% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName ~ ' ' ~ responsiblePerson.lastName }}<br/>{% endif %}
+                                {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
+                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
+                                {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                    {% if responsiblePersonPhone.rpId == responsiblePerson.id %}
+                                        {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}
+                                        <br/>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
+                {% if resident['responsiblePersons'] is defined %}
+                    {% for responsiblePerson in resident['responsiblePersons'] %}
+                        {% if responsiblePerson.financially %}
+                            <div style="margin-bottom: 10px;">
+                                {% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName ~ ' ' ~ responsiblePerson.lastName }}<br/>{% endif %}
+                                {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
+                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
+                                {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                    {% if responsiblePersonPhone.rpId == responsiblePerson.id %}
+                                        {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}
+                                        <br/>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
     {% endfor %}
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
 
 {% endblock %}
 {% block pageFooter %}
