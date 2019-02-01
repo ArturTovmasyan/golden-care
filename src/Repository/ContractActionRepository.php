@@ -3,11 +3,21 @@
 namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Entity\Apartment;
+use App\Entity\ApartmentBed;
+use App\Entity\ApartmentRoom;
+use App\Entity\CareLevel;
 use App\Entity\Contract;
 use App\Entity\ContractAction;
+use App\Entity\Facility;
+use App\Entity\FacilityBed;
+use App\Entity\FacilityRoom;
+use App\Entity\Region;
+use App\Entity\Resident;
 use App\Model\ContractState;
 use App\Model\ContractType;
 use App\Util\Common\ImtDateTimeInterval;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -512,5 +522,180 @@ class ContractActionRepository extends EntityRepository
                 ->setParameter('end', $dateTimeInterval->getEnd());
         }
         return $qb;
+    }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @return QueryBuilder
+     */
+    public function getContractActionReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this
+            ->getEntityManager()
+            ->getRepository(ContractAction::class)
+            ->getContractActionIntervalQb($reportInterval);
+
+        $qb
+            ->from(Resident::class, 'r')
+            ->andWhere('r.id = car.id')
+            ->andWhere('cac.type=:type')
+            ->setParameter('type', $type)
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'ca.id as actionId',
+                'ca.start as admitted',
+                'ca.end as discharged'
+            );
+
+        switch ($type) {
+            case ContractType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        fr.number as roomNumber,
+                        fb.number as bedNumber,
+                        fb.id as bedId,
+                        ca.careGroup as careGroup,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ca.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ca.careLevel = cl'
+                    );
+
+                $qb
+                    ->orderBy('f.shorthand')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case ContractType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ab.number as bedNumber
+                        ab.id as bedId'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ca.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                $qb
+                    ->orderBy('a.shorthand')
+                    ->addOrderBy('ar.number')
+                    ->addOrderBy('ab.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case ContractType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand,
+                        ca.careGroup as careGroup,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ca.region = reg'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ca.careLevel = cl'
+                    );
+
+                $qb
+                    ->orderBy('reg.shorthand');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getResidents60DaysRosterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    {
+        return $this
+            ->getContractActionReportQb($type, $reportInterval, $typeId)
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ContractAction aca 
+                        JOIN aca.contract ac 
+                        JOIN ac.resident ar 
+                        WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
+            )
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 }

@@ -2,15 +2,22 @@
 
 namespace App\Model\Report;
 
-use App\Model\ContractType;
-use App\Model\Phone;
-
 class SixtyDays extends Base
 {
     /**
      * @var array
      */
-    private $contracts = [];
+    private $data = [];
+
+    /**
+     * @var string
+     */
+    private $strategy;
+
+    /**
+     * @var int
+     */
+    private $strategyId;
 
     /**
      * @var string
@@ -18,25 +25,51 @@ class SixtyDays extends Base
     private $date;
 
     /**
-     * @return array
+     * @param $data
      */
-    public function getContracts()
+    public function setData($data): void
     {
-        return $this->contracts;
+        $this->data = $data;
     }
 
     /**
-     * @param $contracts
+     * @return array
      */
-    public function setContracts($contracts)
+    public function getData(): ?array
     {
-        foreach ($contracts as $key => $contract) {
-            $contract['responsiblePersonPhoneType'] = Phone::$typeNames[$contract['responsiblePersonPhoneType']];
+        return $this->data;
+    }
 
-            $this->contracts[$contract['type']]['data'][] = $contract;
-            $this->contracts[$contract['type']]['name']   = ContractType::getTypes()[$contract['type']];
-            $this->contracts[$contract['type']]['type']   = $contract['type'];
-        }
+    /**
+     * @param $strategy
+     */
+    public function setStrategy($strategy): void
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategy()
+    {
+        return $this->strategy;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 
     /**

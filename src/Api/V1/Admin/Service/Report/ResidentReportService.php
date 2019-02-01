@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Allergen;
+use App\Entity\ContractAction;
 use App\Entity\Diagnosis;
 use App\Entity\Diet;
 use App\Entity\Medication;
@@ -11,6 +12,7 @@ use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
+use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
 use App\Model\ContractType;
@@ -20,6 +22,7 @@ use App\Model\Report\Profile;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\SixtyDays;
+use App\Util\Common\ImtDateTimeInterval;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class ResidentReportService extends BaseService
@@ -284,24 +287,122 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        list($m1, $d1, $y1) = explode('/', $date);
+        $endDate = new \DateTime('now');
+        $endDateFormatted = $endDate->format('m/d/Y');
 
-        if (!checkdate($m1, $d1, $y1)) {
-            throw new InvalidParameterException('start_date');
+        if (!empty($date)) {
+            $endDate = new \DateTime($date);
+            $endDateFormatted = $endDate->format('m/d/Y');
         }
 
-        $endDate   = \DateTime::createFromFormat('m/d/Y', $date);
         $startDate = clone $endDate;
         $startDate->sub(new \DateInterval('P2M'));
-        $startDate->setTime(0, 0);
-        $endDate->setTime(23, 59);
+        $interval = ImtDateTimeInterval::getWithDateTimes($startDate, $endDate);
 
-        $data = $this->em->getRepository(Resident::class)->getResidentContracts($startDate, $endDate, $type, $typeId);
+        $actions = $this->em->getRepository(ContractAction::class)->getResidents60DaysRosterData($type, $interval, $typeId);
+
+        $residentIds = [];
+
+        if (!empty($actions)) {
+            $residentIds = array_map(function($item){return $item['id'];} , $actions);
+            $residentIds = array_unique($residentIds);
+        }
+
+        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($residentIds);
+
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($responsiblePersonIds);
+        }
+
+        $data = [];
+        if (!empty($actions)) {
+            foreach ($actions as $action) {
+                if ($type !== ContractType::TYPE_APARTMENT) {
+                    $actionArray = [
+                        'id' => $action['id'],
+                        'actionId' => $action['actionId'],
+                        'typeId' => $action['typeId'],
+                        'typeName' => $action['typeName'],
+                        'firstName' => $action['firstName'],
+                        'lastName' => $action['lastName'],
+                        'admitted' => $action['admitted'],
+                        'discharged' => $action['discharged'],
+                        'careGroup' => $action['careGroup'],
+                        'careLevel' => $action['careLevel'],
+                        'rpId' => 'N/A',
+                        'rpFullName' => 'N/A',
+                        'rpTitle' => 'N/A',
+                        'rpPhoneTitle' => 'N/A',
+                        'rpPhoneNumber' => 'N/A',
+                    ];
+                } else {
+                    $actionArray = [
+                        'id' => $action['id'],
+                        'actionId' => $action['actionId'],
+                        'typeId' => $action['typeId'],
+                        'typeName' => $action['typeName'],
+                        'firstName' => $action['firstName'],
+                        'lastName' => $action['lastName'],
+                        'admitted' => $action['admitted'],
+                        'discharged' => $action['discharged'],
+                        'rpId' => 'N/A',
+                        'rpFullName' => 'N/A',
+                        'rpTitle' => 'N/A',
+                        'rpPhoneTitle' => 'N/A',
+                        'rpPhoneNumber' => 'N/A',
+                    ];
+                }
+
+                $rpArray = [];
+                if (!empty($responsiblePersons)) {
+                    foreach ($responsiblePersons as $rp) {
+                        if ($rp['residentId'] === $action['id'] && $rp['emergency'] === true) {
+
+                            $rpArray = [
+                                'rpId' => $rp['rpId'],
+                                'rpFullName' => $rp['firstName'] . ' ' . $rp['lastName'],
+                                'rpTitle' => $rp['relationshipTitle'],
+                                'rpPhoneTitle' => 'N/A',
+                                'rpPhoneNumber' => 'N/A',
+                            ];
+
+                            $rpPhone = [];
+                            if (!empty($responsiblePersonPhones)) {
+                                foreach ($responsiblePersonPhones as $phone) {
+                                    if ($phone['rpId'] === $rp['rpId']) {
+                                        $rpPhone = [
+                                            'rpPhoneTitle' => $phone['type'],
+                                            'rpPhoneNumber' => $phone['number'],
+                                        ];
+
+                                        if ($phone['type'] == constant('App\\Model\\Phone::TYPE_EMERGENCY')) {
+                                            $rpPhone = [
+                                                'rpPhoneTitle' => $phone['type'],
+                                                'rpPhoneNumber' => $phone['number'],
+                                            ];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            $rpArray = array_merge($rpArray, $rpPhone);
+                        }
+                    }
+                }
+                $data[] = array_merge($actionArray, $rpArray);
+            }
+        }
 
         $report = new SixtyDays();
         $report->setTitle('60 Days Roster Report');
-        $report->setDate($date);
-        $report->setContracts($data);
+        $report->setData($data);
+        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDate($endDateFormatted);
 
         return $report;
     }

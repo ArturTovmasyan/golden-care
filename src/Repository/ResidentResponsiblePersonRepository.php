@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\CityStateZip;
 use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
@@ -60,6 +61,60 @@ class ResidentResponsiblePersonRepository extends EntityRepository
         $qb = $this->createQueryBuilder('rrp');
 
         return $qb->where($qb->expr()->in('rrp.id', $ids))
+            ->groupBy('rrp.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rrp');
+
+        return $qb
+            ->select('
+                    rrp.id as id,
+                    r.id as residentId,
+                    rp.firstName as firstName,
+                    rp.lastName as lastName,
+                    rp.address_1 as address,
+                    rp.financially as financially,
+                    rp.emergency as emergency,
+                    csz.stateFull as state,
+                    csz.zipMain as zip,
+                    csz.city as city,
+                    rp.id as rpId,
+                    rel.title as relationshipTitle
+            ')
+            ->innerJoin(
+                ResponsiblePerson::class,
+                'rp',
+                Join::WITH,
+                'rrp.responsiblePerson = rp'
+            )
+            ->innerJoin(
+                Relationship::class,
+                'rel',
+                Join::WITH,
+                'rrp.relationship = rel'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rrp.resident = r'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'rp.csz = csz'
+            )
+
+            ->where($qb->expr()->in('r.id', $residentIds))
             ->groupBy('rrp.id')
             ->getQuery()
             ->getResult();
