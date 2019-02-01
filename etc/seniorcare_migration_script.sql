@@ -2324,11 +2324,15 @@ FROM
 INNER JOIN `alms`.`base_resident` ON `alms`.`base_resident`.`id` = `alms`.`hosting`.`id_resident`
 WHERE `alms`.`base_resident`.`discriminator` = 'IHC' AND `alms`.`base_resident`.`id_csz` >= 2817;
 
-UPDATE `db_name`.`tbl_contract_action` AS `ca`
+UPDATE `db_seniorcare_migration`.`tbl_contract_action` AS `ca`
     SET   `ca`.`state` = 3
     WHERE `ca`.`end` IS NOT NULL AND
           `ca`.`id` =
-    (SELECT `mm`.`max_id` FROM (SELECT MAX(`cam`.`id`) AS `max_id` FROM `db_name`.`tbl_contract_action` AS `cam` WHERE `cam`.`id_contract` = `ca`.`id_contract`) AS `mm`);
+    (SELECT `mm`.`max_id` FROM (
+            SELECT MAX(`cam`.`id`) AS `max_id`
+            FROM `db_seniorcare_migration`.`tbl_contract_action` AS `cam`
+            WHERE `cam`.`id_contract` = `ca`.`id_contract`)
+    AS `mm`);
 
 
 ### Resident Photo
