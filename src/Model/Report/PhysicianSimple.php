@@ -2,49 +2,90 @@
 
 namespace App\Model\Report;
 
-
 class PhysicianSimple extends Base
 {
     /**
      * @var array
      */
-    private $physicianData;
+    private $data = [];
+
+    /**
+     * @var array
+     */
+    private $typeIds = [];
+
+    /**
+     * @var array
+     */
+    private $count = [];
 
     /**
      * @var string
      */
-    private $type;
+    private $strategy;
+
+    /**
+     * @param $data
+     */
+    public function setData($data): void
+    {
+        $this->data = $data;
+    }
 
     /**
      * @return array
      */
-    public function getPhysicianData()
+    public function getData(): ?array
     {
-        return $this->physicianData;
+        return $this->data;
     }
 
     /**
-     * @param $physicianData
+     * @param $typeIds
      */
-    public function setPhysicianData($physicianData)
+    public function setTypeIds($typeIds): void
     {
-        $this->physicianData = $physicianData;
+        $this->typeIds = $typeIds;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getType(): string
+    public function getTypeIds(): ?array
     {
-        return $this->type;
+        return $this->typeIds;
     }
 
     /**
-     * @param string $type
+     * @param $count
      */
-    public function setType(string $type): void
+    public function setCount($count): void
     {
-        $this->type = $type;
+        $this->count = $count;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCount(): ?array
+    {
+        return $this->count;
+    }
+
+    /**
+     * @param $strategy
+     */
+    public function setStrategy($strategy): void
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategy()
+    {
+        return $this->strategy;
     }
 }
 

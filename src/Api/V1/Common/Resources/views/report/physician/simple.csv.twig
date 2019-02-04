@@ -1,12 +1,5 @@
-{{ data.type }},Physician Name, Residents Count
-{% spaceless %}
-    {% set typeName = null %}
-    {% for physicianData in data.physicianData %}
-        {% for physician in physicianData %}
-            {% if typeName != physician.typeName %}
-                {% set typeName = physician.typeName %}
-            {% endif %}
-            {{ physician.typeName }}, {{ physician[0].firstName ~ ' ' ~ physician[0].lastName }}, {{ physician.residentCount }}
-        {% endfor %}
-    {% endfor %}
-{% endspaceless %}
+{{ data.strategy }},Physician Name, Residents Count
+{% set groupName = null %}
+{% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}
+    {{ datum.typeName }}, {% if datum.salutation == true %}{{ datum.salutation }}{% endif %} {{ datum.firstName }} {{ datum.lastName }}, {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}{% else %}0{% endif %},
+{% endfor %}

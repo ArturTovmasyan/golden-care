@@ -4,6 +4,8 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Physician;
+use App\Entity\Resident;
+use App\Entity\ResidentPhysician;
 use App\Model\ContractType;
 use App\Model\Report\PhysicianFull;
 use App\Model\Report\PhysicianSimple;
@@ -31,17 +33,44 @@ class PhysicianReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $physicians = $this->em->getRepository(Physician::class)->getPhysicianSimpleReport($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residentIds = [];
 
-        $physiciansByTypeId = [];
-        foreach ($physicians as $physician) {
-            $physiciansByTypeId[$physician['typeId']][] = $physician;
+        if (!empty($residents)) {
+            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_unique($residentIds);
+        }
+
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
+
+        $data = [];
+        $count = [];
+        $typeIds = [];
+        if (!empty($physicians)) {
+            foreach ($physicians as $physician) {
+                foreach ($residents as $resident) {
+                    if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
+                        $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? \count($count[$physician['typeId']][$physician['pId']]) + \count($resident['id']) : \count($resident['id']);
+                    }
+                }
+
+                $k = $physician['typeId'] . $physician['pId'];
+                if (!isset($data[$k])) {
+                    $data[$k] = $physician;
+                }
+            }
+
+            $data = array_values($data);
+
+            $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+            $typeIds = array_unique($typeIds);
         }
 
         $report = new PhysicianSimple();
-        $report->setTitle('PHYSICIAN, ROSTER SIMPLE');
-        $report->setType($type);
-        $report->setPhysicianData($physiciansByTypeId);
+        $report->setData($data);
+        $report->setTypeIds($typeIds);
+        $report->setCount($count);
+        $report->setStrategy(ContractType::getTypes()[$type]);
 
         return $report;
     }

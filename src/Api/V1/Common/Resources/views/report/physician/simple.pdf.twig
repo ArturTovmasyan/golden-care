@@ -3,81 +3,139 @@
 {% block pageTitle %}{% endblock %}
 {% block pageContent %}
 
-    {% set latest = 0 %}
-    {% for typeId, physicianData in data.physicianData %}
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% set z = 0 %}
+    {% for typeId in data.typeIds %}
+        {% if typeId is defined and typeId %}
+            {% set z = z + 1 %}
+            {% if renderedGroup == typeId %}
+                {% set newGroup = false %}
+            {% else %}
+                {% set renderedGroup = typeId %}
+                {% set newGroup = true %}
+            {% endif %}
+        {% endif %}
 
         <table style="margin: 0; padding: 0; page-break-inside: avoid !important;">
             <tr style="width:100%; clear: both; margin: 0; padding: 0; page-break-inside: avoid !important;"></tr>
         </table>
-
-        {% if  typeId == latest %}
+        {% if newGroup and z > 1 %}
             <div class="page"></div>
-            {% set latest = typeId %}
         {% endif %}
-
         <table class="report-table main-table">
-            <thead></thead>
-            <tbody>
-                <tr>
-                    <th colspan="3">
-                        <div style="margin-bottom: 5px;">
-                            <div style="float: left">
-                                <div style="height: 5px;"></div>
-                                <b style="font-size: 20px !important">{{ data.title }}</b>
-                                <p style="margin-bottom: 5px;"></p>
-                                <b style="font-size: 14px !important">
-                                    {% for key, physician in physicianData %}
-                                        {% if key == 0 %}
-                                            {{ data.type }}:&nbsp;{{ physician.typeName }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </b>
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+            <th colspan="3">
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left">
+                        <div style="height: 5px;"></div>
+                        <b style="font-size: 20px !important">PHYSICIAN&nbsp;ROSTER,&nbsp;SIMPLE</b>
+                        <p style="margin-bottom: 5px;"></p>
+                        <b style="font-size: 14px !important">
+                            {% set k = 0 %}
+                            {% for datum in data.data %}
+                                {% if renderedGroup == datum.typeId %}
+                                    {% set k = k + 1 %}
+                                    {% if k == 1 %}
+                                        {{ data.strategy }}:&nbsp;{{ datum.typeName }}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </b>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                    <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                    <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                </div>
+            </td>
+            <td style="padding-left: 50px;">
+                <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                    <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                    <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                </div>
+            </td>
+            <td style="padding-left: 50px;">
+                <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
+                    <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
+                    <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
+                </div>
+            </td>
+        </tr>
+        {% set itemCount = 29 %}
+        <tr>
+            <td style="font-size: 13px !important;">
+                {% set m = 0 %}
+                {% for datum in data.data %}
+                    {% if renderedGroup == datum.typeId %}
+                        {% set m = m + 1 %}
+                        {% if (m >= 1 and m <= itemCount) or (m >= (itemCount * 3) + 1 and m <= itemCount * 4) or (m >= (itemCount * 7) + 1 and m <= itemCount * 8) or (m >= (itemCount * 10) + 1 and m <= itemCount * 11) %}
+                            <div style="line-height: 20px; width: 280px;">
+                                <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
+                                    {% if datum.firstName and datum.lastName %}
+                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                    {% endif %}
+                                </span>
+                                <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
+                                    {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}<br/>{% else %}0{% endif %}
+                                </span><br/>
                             </div>
-                            <div style="clear: both"></div>
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
-                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
-                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
-                        </div>
-                    </td>
-                    <td style="padding-left: 50px;">
-                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
-                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
-                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
-                        </div>
-                    </td>
-                    <td style="padding-left: 50px;">
-                        <div style="width: 280px; height: 20px; border-bottom: solid 1px darkgray">
-                            <b style="float: left; text-align: left; font-size: 13px !important;">Physician&nbsp;Name</b>
-                            <b style=" float:right; text-align: right; font-size: 13px !important;">Residents&nbsp;Count</b>
-                        </div>
-                    </td>
-                </tr>
-                {% set itemCount = 29 %}
-                <tr>
-                    {% for key, physician in physicianData %}
-                        {% if (key == 0) or (key == 29) or (key==58) %}
-                            <td style="font-size: 13px !important;">
                         {% endif %}
-
-                        <div style="line-height: 20px; width: 280px;">
-                            <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">{{ physician[0].firstName ~ ' ' ~ physician[0].lastName }}</span>
-                            <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">{{ physician.residentCount }}</span><br/>
-                        </div>
-
-                        {% if (key == 0) or (key == 29) or (key==58) %}
-                            </td>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td style="padding-left: 50px; font-size: 13px !important;">
+                {% set n = 0 %}
+                {% for datum in data.data %}
+                    {% if renderedGroup == datum.typeId %}
+                        {% set n = n + 1 %}
+                        {% if (n >= itemCount + 1 and n <= itemCount * 2) or (n >= (itemCount * 4) + 1 and n <= itemCount * 5) or (n >= (itemCount * 8) + 1 and n <= itemCount * 9) or (n >= (itemCount * 11) + 1 and n <= itemCount * 12) %}
+                            <div style="line-height: 20px; width: 280px;">
+                                <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
+                                    {% if datum.firstName and datum.lastName %}
+                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                    {% endif %}
+                                </span>
+                                <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
+                                    {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}<br/>{% else %}0{% endif %}
+                                </span><br/>
+                            </div>
                         {% endif %}
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td style="padding-left: 50px; font-size: 13px !important;">
+                {% set l = 0 %}
+                {% for datum in data.data %}
+                    {% if renderedGroup == datum.typeId %}
+                        {% set l = l + 1 %}
+                        {% if (l >= (itemCount * 2) + 1 and l <= itemCount * 3) or (l >= (itemCount * 6) + 1 and l <= itemCount * 7) or (l >= (itemCount * 9) + 1 and l <= itemCount * 10) or (l >= (itemCount * 12) + 1 and l <= itemCount * 13) %}
+                            <div style="line-height: 20px; width: 280px;">
+                                <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
+                                    {% if datum.firstName and datum.lastName %}
+                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                    {% endif %}
+                                </span>
+                                <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
+                                    {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}<br/>{% else %}0{% endif %}
+                                </span><br/>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
     {% endfor %}
+    </tbody>
+    </table>
 
 {% endblock %}
 {% block pageFooter %}{% endblock %}
