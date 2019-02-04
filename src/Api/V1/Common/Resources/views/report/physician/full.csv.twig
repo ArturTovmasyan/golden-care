@@ -1,12 +1,8 @@
-{{ data.type }}, Physician Name, Count, Address/Csz, Office Phone, Emergency Phone, Fax, Email, Website Url
-{% spaceless %}
-    {% for type, physiciansByType in data.physicians %}
-        {% for typeId, physician in physiciansByType %}
-            {% for data in physician['data'] %}
-                {{ physician['name'] }}, {{ data['firstName'] ~ ' ' ~ data['lastName'] }}, {{ data['residentCount'] }}, {{ data['address'] }} - {{ data['city'] }} {{ data['state'] }} {{ data['zip'] }}, {{ data['officePhone'] }}, {{ data['emergencyPhone'] }}, {{ data['fax'] }}, {{ data['email'] }}, {{ data['websiteUrl'] }}
-            {% endfor %}
-        {% endfor %}
-    {% endfor %}
-{% endspaceless %}
+{{ data.strategy }},Physician Name, Count, Address/CSZ, Office Phone, Emergency Phone, Fax, Email, Website Url
+{% set groupName = null %}
+{% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}
+    {{ datum.typeName }}, {% if datum.salutation == true %}{{ datum.salutation }}{% endif %} {{ datum.firstName }} {{ datum.lastName }}, {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}{% else %}0{% endif %}, {{ datum.address }} - {{ datum.city }} {{ datum.state }} {{ datum.zip }}, {{ datum.officePhone }}, {{ datum.emergencyPhone }}, {{ datum.fax }}, {{ datum.email }}, {{ datum.websiteUrl }}
+{% endfor %}
+
 
 

@@ -4,58 +4,95 @@
 {% endblock %}
 {% block pageContent %}
 
-    {% for type, physiciansByType in data.physicians %}
-        {% for typeId, physician in physiciansByType %}
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for datum in data.data %}
+        {% if renderedGroup == datum.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = datum.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
 
+
+        {% if newGroup %}
             <span class="divider"></span>
             <span class="divider"></span>
             <table class="report-table main-table bordered">
-                <tr class="divider"></tr>
-                <thead>
-                    <tr>
-                        <th colspan="8">
-                            <h3>{{ physician['name'] }}</h3>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td><b>Physician Name</b></td>
-                        <td><b>Count</b></td>
-                        <td><b>Address, Csz</b></td>
-                        <td><b>Office Phone</b></td>
-                        <td><b>Emergency Phone</b></td>
-                        <td><b>Fax</b></td>
-                        <td><b>Email</b></td>
-                        <td><b>Website Url</b></td>
-                    </tr>
-                </thead>
-                <tbody>
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="8">
+                    <h3>{{ datum.typeName }}</h3>
+                </th>
+            </tr>
+            <tr>
+                <td><b>Physician Name</b></td>
+                <td><b>Count</b></td>
+                <td><b>Address, CSZ</b></td>
+                <td><b>Office Phone</b></td>
+                <td><b>Emergency Phone</b></td>
+                <td><b>Email</b></td>
+                <td><b>Fax</b></td>
+                <td><b>Website Url</b></td>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
 
-                {% for data in physician['data'] %}
-
-                    <tr>
-                        <td>{{ data['firstName'] ~ ' ' ~ data['lastName'] }}</td>
-                        <td>{{ data['residentCount'] }}</td>
-                        <td>
-                            {{ data['address'] }},
-                            <br/> {{ data['city'] }} {{ data['state'] }} {{ data['zip'] }}
-                        </td>
-                        <td>{{ data['officePhone'] }}</td>
-                        <td>{{ data['emergencyPhone'] }}</td>
-                        <td>{{ data['fax'] }}</td>
-                        <td>{{ data['email'] }}</td>
-                        <td>{{ data['websiteUrl'] }}</td>
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-            </table>
-            <table class="report-table main-table">
-                <tr class="divider"></tr>
-            </table>
-
-        {% endfor %}
+        <tr>
+            <td>
+                {% if datum.firstName and datum.lastName %}
+                    {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                {% endif %}
+            </td>
+            <td>
+                {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}
+                    {{ data.count[datum.typeId][datum.pId] }}
+                {% else %}
+                    0
+                {% endif %}
+            </td>
+            <td>
+                {{ datum.address }},
+                <br/> {{ datum.city }} {{ datum.state }} {{ datum.zip }}
+            </td>
+            <td>
+                {% if datum.officePhone is defined and datum.officePhone %}
+                    {{ datum.officePhone }}
+                {% endif %}
+            </td>
+            <td>
+                {% if datum.emergencyPhone is defined and datum.emergencyPhone %}
+                    {{ datum.emergencyPhone }}
+                {% endif %}
+            </td>
+            <td>
+                {% if datum.email is defined and datum.email %}
+                    {{ datum.email }}
+                {% endif %}
+            </td>
+            <td>
+                {% if datum.fax is defined and datum.fax %}
+                    {{ datum.fax }}
+                {% endif %}
+            </td>
+            <td>
+                {% if datum.websiteUrl is defined and datum.websiteUrl %}
+                    {{ datum.websiteUrl }}
+                {% endif %}
+            </td>
+        </tr>
     {% endfor %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    <table class="report-table main-table">
+        <tr class="divider"></tr>
+    </table>
 
 {% endblock %}
 {% block pageFooter %}
