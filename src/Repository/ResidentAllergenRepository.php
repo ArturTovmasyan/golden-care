@@ -51,4 +51,38 @@ class ResidentAllergenRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        return $qb
+            ->select('
+                    a.id as id,
+                    a.title as title,
+                    a.description as description,
+                    r.id as residentId
+            ')
+            ->innerJoin(
+                Allergen::class,
+                'a',
+                Join::WITH,
+                'ra.allergen = a'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('a.title')
+            ->groupBy('ra.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

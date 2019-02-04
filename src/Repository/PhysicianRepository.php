@@ -3,29 +3,13 @@
 namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
-use App\Entity\Apartment;
-use App\Entity\ApartmentBed;
-use App\Entity\ApartmentRoom;
 use App\Entity\CityStateZip;
-use App\Entity\Contract;
-use App\Entity\ContractAction;
-use App\Entity\ContractApartmentOption;
-use App\Entity\ContractFacilityOption;
-use App\Entity\ContractRegionOption;
-use App\Entity\Facility;
-use App\Entity\FacilityBed;
-use App\Entity\FacilityRoom;
 use App\Entity\Physician;
-use App\Entity\Region;
-use App\Entity\Resident;
-use App\Entity\ResidentPhysician;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
-use App\Model\ContractState;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -172,61 +156,6 @@ class PhysicianRepository extends EntityRepository
             ->andWhere('p.space = :space')
             ->setParameter('space', $space)
             ->groupBy('p.id')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param array $residentIds
-     * @return mixed
-     */
-    public function getByResidentIds(array $residentIds)
-    {
-        $qb = $this->createQueryBuilder('p');
-
-        return $qb
-            ->select(
-                'p.id as id,
-                    r.id as residentId,
-                    p.firstName as firstName,
-                    p.lastName as lastName,
-                    sal.title as salutation,
-                    p.address_1 as address,
-                    rp.primary as primary,
-                    csz.stateFull as state,
-                    csz.zipMain as zip,
-                    csz.city as city,
-                    p.officePhone as officePhone,
-                    p.emergencyPhone as emergencyPhone,
-                    p.fax as fax'
-            )
-            ->innerJoin(
-                ResidentPhysician::class,
-                'rp',
-                Join::WITH,
-                'rp.physician = p'
-            )
-            ->innerJoin(
-                Salutation::class,
-                'sal',
-                Join::WITH,
-                'p.salutation = sal'
-            )
-            ->innerJoin(
-                Resident::class,
-                'r',
-                Join::WITH,
-                'rp.resident = r'
-            )
-            ->innerJoin(
-                CityStateZip::class,
-                'csz',
-                Join::WITH,
-                'p.csz = csz'
-            )
-            ->where($qb->expr()->in('r.id', $residentIds))
-            ->orderBy('rp.primary', 'DESC')
-            ->groupBy('rp.id')
             ->getQuery()
             ->getResult();
     }

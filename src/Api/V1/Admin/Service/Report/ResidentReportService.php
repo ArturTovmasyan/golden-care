@@ -3,17 +3,17 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Entity\Allergen;
 use App\Entity\ContractAction;
-use App\Entity\Diagnosis;
 use App\Entity\Diet;
-use App\Entity\Medication;
-use App\Entity\Physician;
 use App\Entity\Resident;
+use App\Entity\ResidentAllergen;
+use App\Entity\ResidentDiagnosis;
+use App\Entity\ResidentDiet;
 use App\Entity\ResidentEvent;
+use App\Entity\ResidentMedication;
+use App\Entity\ResidentPhysician;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
-use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
 use App\Model\ContractType;
 use App\Model\Report\DietaryRestriction;
@@ -56,11 +56,11 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
-        $allergens = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
-        $diagnosis = $this->em->getRepository(Diagnosis::class)->getByResidentIds($residentIds);
-        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
-        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
+        $allergens = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($residentIds);
+        $diagnosis = $this->em->getRepository(ResidentDiagnosis::class)->getByResidentIds($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($residentIds);
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
         $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIds($residentIds);
         $rents = $this->em->getRepository(ResidentRent::class)->getByResidentIds($residentIds);
 
@@ -115,11 +115,11 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
-        $allergens = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
-        $diagnosis = $this->em->getRepository(Diagnosis::class)->getByResidentIds($residentIds);
-        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
-        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
+        $allergens = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($residentIds);
+        $diagnosis = $this->em->getRepository(ResidentDiagnosis::class)->getByResidentIds($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($residentIds);
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -171,8 +171,8 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $physicians = $this->em->getRepository(Physician::class)->getByResidentIds($residentIds);
-        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
+        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -256,7 +256,7 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $diets = $this->em->getRepository(Diet::class)->getByResidentIds($residentIds);
+        $diets = $this->em->getRepository(ResidentDiet::class)->getByResidentIds($residentIds);
         $data = $this->em->getRepository(Diet::class)->findAll();
 
         $report = new DietaryRestriction();

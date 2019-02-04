@@ -15,7 +15,7 @@ use App\Entity\FacilityRoom;
 use App\Entity\PaymentSource;
 use App\Entity\Region;
 use App\Entity\ResidentRent;
-use App\Entity\ResponsiblePerson;
+use App\Entity\ResidentResponsiblePerson;
 use App\Model\ContractType;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
@@ -221,7 +221,7 @@ class RoomReportService extends BaseService
 
         $residentIds = array_map(function($item){return $item['id'];} , $data);
         $residentIds = array_unique($residentIds);
-        $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->getByResidentIds($residentIds);
+        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($residentIds);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
         $countTypeIds = array_count_values($typeIds);

@@ -3,11 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CityStateZip;
-use App\Entity\Relationship;
-use App\Entity\Resident;
-use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
-use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
@@ -59,68 +55,6 @@ class ResponsiblePersonRepository extends EntityRepository
 
         return $qb->where($qb->expr()->in('rp.id', $ids))
             ->groupBy('rp.id')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param array $residentIds
-     * @return mixed
-     */
-    public function getByResidentIds(array $residentIds)
-    {
-        $qb = $this->createQueryBuilder('rp');
-
-        return $qb
-            ->select('
-                    rp.id as id,
-                    r.id as residentId,
-                    rp.firstName as firstName,
-                    rp.lastName as lastName,
-                    rp.address_1 as address,
-                    rp.financially as financially,
-                    rp.emergency as emergency,
-                    csz.stateFull as state,
-                    csz.zipMain as zip,
-                    csz.city as city,
-                    rpp.id as rpId,
-                    rpp.type as phoneType,
-                    rpp.extension as phoneExtension,
-                    rpp.number as phoneNumber,
-                    rel.title as relationshipTitle
-            ')
-            ->innerJoin(
-                ResidentResponsiblePerson::class,
-                'rrp',
-                Join::WITH,
-                'rrp.responsiblePerson = rp'
-            )
-            ->innerJoin(
-                Relationship::class,
-                'rel',
-                Join::WITH,
-                'rrp.relationship = rel'
-            )
-            ->innerJoin(
-                Resident::class,
-                'r',
-                Join::WITH,
-                'rrp.resident = r'
-            )
-            ->leftJoin(
-                CityStateZip::class,
-                'csz',
-                Join::WITH,
-                'rp.csz = csz'
-            )
-            ->leftJoin(
-                ResponsiblePersonPhone::class,
-                'rpp',
-                Join::WITH,
-                'rpp.responsiblePerson = rp'
-            )
-            ->where($qb->expr()->in('r.id', $residentIds))
-            ->groupBy('rrp.id')
             ->getQuery()
             ->getResult();
     }

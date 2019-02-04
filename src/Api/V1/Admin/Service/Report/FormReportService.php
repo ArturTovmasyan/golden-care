@@ -3,9 +3,9 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Entity\Allergen;
-use App\Entity\Medication;
 use App\Entity\Resident;
+use App\Entity\ResidentAllergen;
+use App\Entity\ResidentMedication;
 use App\Model\ContractType;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
@@ -218,8 +218,8 @@ class FormReportService extends BaseService
             $residentIds[] = $resident['id'];
         }
 
-        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
-        $allergens   = $this->em->getRepository(Allergen::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
+        $allergens   = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($residentIds);
 
         $report = new MedicationChart();
         $report->setResidents($residents);
@@ -258,7 +258,7 @@ class FormReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(Medication::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
 
         $report = new MedicationList();
         $report->setResidents($residentsById);

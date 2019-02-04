@@ -171,6 +171,7 @@ class ResidentPhysicianRepository extends EntityRepository
 
                     $qb
                         ->orderBy('f.name')
+                        ->addOrderBy('rp.primary', 'DESC')
                         ->addOrderBy('p.lastName');
 
                     break;
@@ -196,6 +197,7 @@ class ResidentPhysicianRepository extends EntityRepository
 
                     $qb
                         ->orderBy('reg.name')
+                        ->addOrderBy('rp.primary', 'DESC')
                         ->addOrderBy('p.lastName');
 
                     break;

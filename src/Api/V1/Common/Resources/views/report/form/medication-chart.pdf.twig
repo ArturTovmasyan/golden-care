@@ -4,7 +4,7 @@
 
     {% for resident in data.residents %}
 
-        {% if data.medications[resident.id] is not empty %}
+        {% if data.medications[resident.id] is defined %}
             <div class="page"></div>
             <table class="report-table main-table bordered" style="margin: 0;">
                 <thead>

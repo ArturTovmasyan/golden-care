@@ -68,7 +68,7 @@
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
                                 {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}
-                                    {% if responsiblePersonPhone.rpId == responsiblePerson.id %}
+                                    {% if responsiblePersonPhone.rpId == responsiblePerson.rpId %}
                                         {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}
                                         <br/>
                                     {% endif %}
@@ -87,7 +87,7 @@
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
                                 {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}
-                                    {% if responsiblePersonPhone.rpId == responsiblePerson.id %}
+                                    {% if responsiblePersonPhone.rpId == responsiblePerson.rpId %}
                                         {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}
                                         <br/>
                                     {% endif %}

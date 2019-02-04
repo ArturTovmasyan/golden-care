@@ -51,4 +51,39 @@ class ResidentDiagnosisRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rd');
+
+        return $qb
+            ->select('
+                    r.id as residentId,
+                    rd.id as diagnosisId,
+                    rd.type as diagnosisType,
+                    d.title as diagnosisTitle
+            ')
+            ->innerJoin(
+                Diagnosis::class,
+                'd',
+                Join::WITH,
+                'rd.diagnosis = d'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rd.resident = r'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('rd.type', 'ASC')
+            ->addOrderBy('d.title')
+            ->groupBy('rd.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

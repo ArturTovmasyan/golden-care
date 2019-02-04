@@ -51,4 +51,39 @@ class ResidentDietRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rd');
+
+        return $qb
+            ->select('
+                    d.id as id,
+                    d.title as title,
+                    d.color as color,
+                    rd.description as description,
+                    r.id as residentId
+            ')
+            ->innerJoin(
+                Diet::class,
+                'd',
+                Join::WITH,
+                'rd.diet = d'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rd.resident = r'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('d.title')
+            ->groupBy('rd.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

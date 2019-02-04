@@ -65,4 +65,62 @@ class ResidentMedicationRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rm');
+
+        return $qb
+            ->select('
+                    r.id as residentId,
+                    p.firstName as physicianFirstName,
+                    p.lastName as physicianLastName,
+                    p.officePhone as physicianOfficePhone,
+                    rm.prescriptionNumber as prescriptionNumber,
+                    rm.treatment as medicationTreatment,
+                    rm.discontinued as medicationDiscont,
+                    rm.prn as medicationPrn,
+                    rm.hs as medicationHs,
+                    rm.pm as medicationPm,
+                    rm.nn as medicationNn,
+                    rm.am as medicationAm,
+                    rm.notes as notes,
+                    rm.dosage as dosage,
+                    rm.dosageUnit as dosageUnit,
+                    m.title as medication
+            ')
+            ->innerJoin(
+                Medication::class,
+                'm',
+                Join::WITH,
+                'rm.medication = m'
+            )
+            ->innerJoin(
+                Physician::class,
+                'p',
+                Join::WITH,
+                'rm.physician = p'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rm.resident = r'
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->orderBy('rm.treatment', 'ASC')
+            ->addOrderBy('rm.am', 'DESC')
+            ->addOrderBy('rm.nn', 'DESC')
+            ->addOrderBy('rm.pm', 'DESC')
+            ->addOrderBy('rm.hs', 'DESC')
+            ->addOrderBy('rm.prn', 'DESC')
+            ->addOrderBy('m.title')
+            ->groupBy('rm.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
