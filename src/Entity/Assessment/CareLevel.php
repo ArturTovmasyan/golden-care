@@ -194,7 +194,7 @@ class CareLevel
     /**
      * @return int
      */
-    public function getLevelHigh(): int
+    public function getLevelHigh(): ?int
     {
         return $this->levelHigh;
     }

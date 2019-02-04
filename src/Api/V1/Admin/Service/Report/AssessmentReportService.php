@@ -25,7 +25,7 @@ class AssessmentReportService extends BaseService
      */
     public function getBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo): ReportAssessment
     {
-        return $this->getReportByType($groupId, AssessmentReportType::TYPE_BLANK);
+        return $this->getReportByType($residentId, AssessmentReportType::TYPE_BLANK);
     }
 
     /**
@@ -41,18 +41,17 @@ class AssessmentReportService extends BaseService
      */
     public function getFilledReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo): ReportAssessment
     {
-        return $this->getReportByType($groupId, AssessmentReportType::TYPE_FILLED);
+        return $this->getReportByType($residentId, AssessmentReportType::TYPE_FILLED);
     }
 
     /**
-     * @param $groupId
+     * @param $residentId
      * @param $group
      * @return ReportAssessment
      */
-    private function getReportByType($groupId, $group): ReportAssessment
+    private function getReportByType($residentId, $group): ReportAssessment
     {
         $type = $group;
-        $typeId = $groupId;
 
         if (!\in_array($type, [AssessmentReportType::TYPE_FILLED, AssessmentReportType::TYPE_BLANK], false)) {
             throw new InvalidParameterException('group');
@@ -62,7 +61,7 @@ class AssessmentReportService extends BaseService
          * @var Assessment $assessment
          * @var Resident $resident
          */
-        $assessment = $this->em->getRepository(Assessment::class)->find($typeId);
+        $assessment = $this->em->getRepository(Assessment::class)->find($residentId);
 
         if ($assessment === null) {
             throw new AssessmentNotFoundException();
@@ -75,7 +74,6 @@ class AssessmentReportService extends BaseService
         $report = new ReportAssessment();
         $report->setType($type);
         $report->setTitle('Level of Care Assessment');
-        $report->setGroups($careLevelGroups);
         $report->setAllGroups($careLevelGroups);
 
         if ($type === AssessmentReportType::TYPE_FILLED) {
@@ -89,6 +87,8 @@ class AssessmentReportService extends BaseService
             $report->setPerformedBy('_________________________');
             $report->setBlankTable($assessment->getForm()->getFormCategories());
         }
+
+        $report->setGroups($careLevelGroups);
 
         unset($form, $careLevelGroups, $assessment);
 

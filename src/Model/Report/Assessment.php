@@ -2,6 +2,7 @@
 
 namespace  App\Model\Report;
 
+use App\Model\Assessment as AssessmentReportType;
 use App\Entity\Assessment\AssessmentRow;
 use App\Entity\Assessment\CareLevel;
 use App\Entity\Assessment\CareLevelGroup;
@@ -140,19 +141,32 @@ class Assessment extends Base
      */
     public function setGroups($groups): void
     {
-        /**
-         * @var CareLevelGroup $careLevelGroup
-         * @var CareLevel $careLevel
-         */
-        foreach ($groups as $careLevelGroup) {
-            foreach ($careLevelGroup->getCareLevels() as $careLevel) {
-                if ($this->totalScore >= $careLevel->getLevelLow() && ($this->totalScore <= $careLevel->getLevelHigh() || $careLevel->getLevelHigh() == null)) {
-                    $this->groups[] = [
-                        'group'   => $careLevelGroup->getTitle(),
-                        'level'   => $careLevel->getTitle(),
-                        'levelId' => $careLevel->getId(),
-                    ];
+        if ($this->type === AssessmentReportType::TYPE_FILLED) {
+            /**
+             * @var CareLevelGroup $careLevelGroup
+             * @var CareLevel $careLevel
+             */
+            foreach ($groups as $careLevelGroup) {
+                foreach ($careLevelGroup->getCareLevels() as $careLevel) {
+                    if ($this->totalScore >= $careLevel->getLevelLow() && ($this->totalScore <= $careLevel->getLevelHigh() || $careLevel->getLevelHigh() == null)) {
+                        $this->groups[] = [
+                            'group'   => $careLevelGroup->getTitle(),
+                            'level'   => $careLevel->getTitle(),
+                            'levelId' => $careLevel->getId(),
+                        ];
+                    }
                 }
+            }
+        } else {
+            /**
+             * @var CareLevelGroup $careLevelGroup
+             */
+            foreach ($groups as $careLevelGroup) {
+                $this->groups[] = [
+                    'group'   => $careLevelGroup->getTitle(),
+                    'level'   => 0,
+                    'levelId' => 0,
+                ];
             }
         }
     }
