@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="tbl_space_user")
@@ -23,13 +20,17 @@ class SpaceUser
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $space;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $user;
 

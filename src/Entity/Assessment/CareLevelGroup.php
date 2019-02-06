@@ -65,7 +65,7 @@ class CareLevelGroup
      * )
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *      "api_admin_assessment_care_level_group_list",

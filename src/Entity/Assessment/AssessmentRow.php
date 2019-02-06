@@ -7,7 +7,6 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\AssessmentRowRepository")
@@ -35,7 +34,7 @@ class AssessmentRow
      * @var Assessment
      * @ORM\ManyToOne(targetEntity="Assessment", inversedBy="assessmentRows", cascade={"persist"})
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_assessment", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_assessment", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a Assessment",
@@ -51,7 +50,7 @@ class AssessmentRow
      * @var Row
      * @ORM\ManyToOne(targetEntity="Row", cascade={"persist"})
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_row", referencedColumnName="id", nullable=false)
+     *      @ORM\JoinColumn(name="id_row", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a Row",

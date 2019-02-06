@@ -118,7 +118,9 @@ class Role
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Groups({
      *     "api_admin_role_grid",
      *     "api_admin_role_list",

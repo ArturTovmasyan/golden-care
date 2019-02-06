@@ -4,10 +4,6 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\LogAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="tbl_user_log")
@@ -36,13 +32,17 @@ class UserLog
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $space;
 

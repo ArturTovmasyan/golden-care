@@ -3,15 +3,8 @@
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
-use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="tbl_user_attempt")
@@ -36,7 +29,9 @@ class UserAttempt
 
     /**
      * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $user;
 

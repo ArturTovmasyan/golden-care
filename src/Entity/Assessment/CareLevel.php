@@ -2,7 +2,6 @@
 
 namespace App\Entity\Assessment;
 
-use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -68,7 +67,7 @@ class CareLevel
      * @var CareLevelGroup
      * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\CareLevelGroup", inversedBy="careLevels", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_care_level_group", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_care_level_group", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a CareLevelGroup",

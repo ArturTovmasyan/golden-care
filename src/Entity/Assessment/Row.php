@@ -2,11 +2,9 @@
 namespace App\Entity\Assessment;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid;
 
 /**
  * @ORM\Table(name="tbl_assessment_row")
@@ -37,7 +35,7 @@ class Row
      * @var Category
      * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Category", inversedBy="rows", cascade={"persist"})
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_category", referencedColumnName="id", nullable=false)
+     *      @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *     groups={

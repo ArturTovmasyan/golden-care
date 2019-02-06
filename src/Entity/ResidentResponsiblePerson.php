@@ -105,7 +105,9 @@ class ResidentResponsiblePerson
 
     /**
      * @ORM\ManyToOne(targetEntity="Relationship", inversedBy="relationshipResidentResponsiblePersons", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_relationship", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_relationship", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_responsible_person_add",
      *     "api_admin_resident_responsible_person_edit"

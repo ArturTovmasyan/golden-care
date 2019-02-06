@@ -109,7 +109,7 @@ class EventDefinition
      * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_event_definition_add", "api_admin_event_definition_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_event_definition_grid",

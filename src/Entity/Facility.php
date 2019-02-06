@@ -216,7 +216,7 @@ class Facility
      * @Assert\NotNull(message = "Please select a City State & Zip", groups={"api_admin_facility_add", "api_admin_facility_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
      */
@@ -253,7 +253,7 @@ class Facility
      * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_facility_add", "api_admin_facility_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({"api_admin_facility_grid", "api_admin_facility_list", "api_admin_facility_get"})
      */

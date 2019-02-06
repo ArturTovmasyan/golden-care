@@ -161,7 +161,7 @@ class Region
      * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_region_add", "api_admin_region_edit"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
      */

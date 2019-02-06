@@ -54,7 +54,7 @@ class ContractFacilityOption
      * @var DiningRoom
      * @ORM\ManyToOne(targetEntity="App\Entity\DiningRoom")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_dining_room", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_dining_room", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_contract_add",

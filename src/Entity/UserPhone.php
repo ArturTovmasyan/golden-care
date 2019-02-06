@@ -2,7 +2,6 @@
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\PhoneTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Annotation\Grid as Grid;
@@ -32,7 +31,9 @@ class UserPhone
     /**
      * @var User
      * @ORM\ManyToOne(targetEntity="User", inversedBy="phones", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
      *     "api_admin_user_edit",

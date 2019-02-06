@@ -219,7 +219,7 @@ class ResponsiblePerson
      * @var CityStateZip
      * @ORM\ManyToOne(targetEntity="CityStateZip")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *      "api_admin_responsible_person_edit",
@@ -237,7 +237,7 @@ class ResponsiblePerson
      * @var Space
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *     message = "Please select a Space",
@@ -257,7 +257,7 @@ class ResponsiblePerson
     /**
      * @ORM\ManyToOne(targetEntity="Salutation", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_responsible_person_add",

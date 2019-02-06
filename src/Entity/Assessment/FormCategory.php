@@ -2,13 +2,9 @@
 
 namespace App\Entity\Assessment;
 
-use App\Model\Persistence\Entity\TimeAwareTrait;
-use App\Model\Persistence\Entity\UserAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid;
 
 /**
  * Class FormCategory
@@ -54,7 +50,7 @@ class FormCategory
      * @var Category
      * @ORM\ManyToOne(targetEntity="Category", cascade={"persist"})
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_category", referencedColumnName="id", nullable=false)
+     *      @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *      "api_admin_assessment_form_list",
@@ -70,7 +66,7 @@ class FormCategory
      * @var Form
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="formCategories", cascade={"persist"})
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", nullable=false)
+     *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $form;

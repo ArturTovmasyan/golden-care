@@ -2,10 +2,7 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 
 /**
@@ -24,20 +21,26 @@ class SpaceUserRole
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
      */
     private $space;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="spaceUserRoles", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_role", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
      */
     private $role;

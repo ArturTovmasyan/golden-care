@@ -120,7 +120,7 @@ class ResidentEvent
      * @var Physician
      * @ORM\ManyToOne(targetEntity="App\Entity\Physician")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
      */
@@ -130,7 +130,7 @@ class ResidentEvent
      * @var ResponsiblePerson
      * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
      */

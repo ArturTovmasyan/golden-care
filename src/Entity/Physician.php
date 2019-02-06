@@ -193,7 +193,9 @@ class Physician
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", inversedBy="spacePhysicians", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",
      *     "api_dashboard_physician_edit",
@@ -211,7 +213,7 @@ class Physician
      * @var Salutation
      * @ORM\ManyToOne(targetEntity="Salutation")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_physician_add",
@@ -230,7 +232,7 @@ class Physician
      * @var CityStateZip
      * @ORM\ManyToOne(targetEntity="CityStateZip")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_dashboard_physician_add",

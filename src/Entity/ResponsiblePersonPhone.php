@@ -29,7 +29,9 @@ class ResponsiblePersonPhone
 
     /**
      * @ORM\ManyToOne(targetEntity="ResponsiblePerson", inversedBy="phones", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_responsible_person_add",
      *     "api_admin_responsible_person_edit"

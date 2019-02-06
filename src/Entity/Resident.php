@@ -89,7 +89,9 @@ class Resident
 
     /**
      * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_space", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit"
@@ -104,7 +106,7 @@ class Resident
     /**
      * @ORM\ManyToOne(targetEntity="Salutation", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",

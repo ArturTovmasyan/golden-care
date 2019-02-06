@@ -92,7 +92,7 @@ trait ResidentCareTrait
      * @var CareLevel
      * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",

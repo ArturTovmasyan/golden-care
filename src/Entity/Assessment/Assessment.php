@@ -3,7 +3,6 @@
 namespace App\Entity\Assessment;
 
 use App\Entity\Resident;
-use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -92,7 +91,7 @@ class Assessment
      * @var Form
      * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Form")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a Form",

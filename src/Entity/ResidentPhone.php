@@ -30,7 +30,9 @@ class ResidentPhone
 
     /**
      * @ORM\ManyToOne(targetEntity="Resident", inversedBy="phones", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_resident", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
+     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit"
