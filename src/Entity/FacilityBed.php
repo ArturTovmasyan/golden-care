@@ -124,7 +124,8 @@ class FacilityBed
      *     "api_admin_facility_bed_grid",
      *     "api_admin_facility_bed_list",
      *     "api_admin_facility_bed_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_contract_get"
      * })
      */
     private $room;
