@@ -90,6 +90,7 @@ class Role
      *     "api_admin_role_grid",
      *     "api_admin_role_list",
      *     "api_admin_role_get",
+     *     "api_admin_user_get",
      *     "api_dashboard_space_role_grid",
      *     "api_dashboard_space_role_list",
      *     "api_dashboard_space_role_get",
@@ -173,6 +174,11 @@ class Role
      * })
      */
     private $grants = [];
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"persist", "remove"})
+     */
+    private $users;
 
     /**
      * Role constructor.
@@ -285,4 +291,21 @@ class Role
     {
         $this->grants = $grants;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param mixed $users
+     */
+    public function setUsers($users): void
+    {
+        $this->users = $users;
+    }
+
 }

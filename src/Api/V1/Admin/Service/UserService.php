@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\UserPhone;
 use Doctrine\ORM\QueryBuilder;
@@ -61,6 +62,20 @@ class UserService extends BaseService implements IGridService
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
+            $user->setGrants($params['grants']);
+
+            if(count($params['roles']) > 0) {
+                $roles = [];
+                foreach ($params['roles'] as $role_id) {
+                    /** @var Role $role */
+                    $role = $this->em->getRepository(Role::class)->find($role_id);
+                    if($role) {
+                        $roles[] = $role;
+                    }
+                }
+                $user->setRoles($roles);
+            }
+
             $user->setLastActivityAt(new \DateTime());
 
             $user->setCompleted(true);
@@ -106,6 +121,19 @@ class UserService extends BaseService implements IGridService
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
+            $user->setGrants($params['grants']);
+
+            if(count($params['roles']) > 0) {
+                $roles = [];
+                foreach ($params['roles'] as $role_id) {
+                    /** @var Role $role */
+                    $role = $this->em->getRepository(Role::class)->find($role_id);
+                    if($role) {
+                        $roles[] = $role;
+                    }
+                }
+                $user->setRoles($roles);
+            }
 
             if(!empty($params['password'])) {
                 $user->setPlainPassword($params['password']);

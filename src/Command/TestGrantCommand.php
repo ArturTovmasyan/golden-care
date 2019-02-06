@@ -22,21 +22,7 @@ class TestGrantCommand extends ContainerAwareCommand
     {
         $grant_service = new GrantService($this->getContainer());
 
-//        dump($this->getGridConfig($grant_config, '', []));
-        $values = [
-            'persistence-security-access_token' => [
-                'enabled' => false,
-                'level' => 1,
-                'identity' => 2
-            ],
-            'persistence-security-auth_code' => [
-                'enabled' => false,
-                'level' => 3,
-                'identity' => 2
-            ]
-        ];
-
-        echo json_encode($grant_service->getGrants($values), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        echo json_encode($grant_service->getGrantsOfRoles([1, 2, 3]), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     }
 
 }

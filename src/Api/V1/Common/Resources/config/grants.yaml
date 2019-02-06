@@ -54,58 +54,75 @@ persistence:
         care_level:
           title: 'CareLevel'
           class: App\Entity\CareLevel
+          route: api_admin_care_level_list
         city_state_zip:
           title: 'CityStateZip'
           class: App\Entity\CityStateZip
+          route: api_admin_city_state_zip_list
 
         event_definition:
           title: 'EventDefinition'
           class: App\Entity\EventDefinition
+          route: api_admin_event_definition_list
         payment_source:
           title: 'PaymentSource'
           class: App\Entity\PaymentSource
-        report:
-          title: 'Report'
-          class: App\Entity\Report
+          route: api_admin_payment_source_list
+#        report:
+#          title: 'ReportNotification'
+#          class: App\Entity\ReportNotification
+#          route: api_admin_report_notification_list
 
         relationship:
           title: 'Relationship'
           class: App\Entity\Relationship
+          route: api_admin_relationship_list
         salutation:
           title: 'Salutation'
           class: App\Entity\Salutation
+          route: api_admin_salutation_list
         speciality:
           title: 'Speciality'
           class: App\Entity\Speciality
+          route: api_admin_speciality_list
 
         allergen:
           title: 'Allergen'
           class: App\Entity\Allergen
+          route: api_admin_allergen_list
         diagnosis:
           title: 'Diagnosis'
           class: App\Entity\Diagnosis
+          route: api_admin_diagnosis_list
         diet:
           title: 'Diet'
           class: App\Entity\Diet
+          route: api_admin_diet_list
         medical_history_condition:
           title: 'MedicalHistoryCondition'
           class: App\Entity\MedicalHistoryCondition
+          route: api_admin_medical_history_condition_list
         medication:
           title: 'Medication'
           class: App\Entity\Medication
+          route: api_admin_medication_list
         medication_form_factor:
           title: 'MedicationFormFactor'
           class: App\Entity\MedicationFormFactor
+          route: api_admin_medication_form_factor_list
 
         physician:
           title: 'Physician'
           class: App\Entity\Physician
+          route: api_admin_physician_list
         responsible_person:
           title: 'ResponsiblePerson'
           class: App\Entity\ResponsiblePerson
+          route: api_admin_responsible_person_list
         responsible_person_phone:
           title: 'ResponsiblePersonPhone'
           class: App\Entity\ResponsiblePersonPhone
+          route: api_admin_responsible_person_phone_list
 
     assessment:
       title: 'Assessment'
@@ -113,48 +130,62 @@ persistence:
         care_level:
           title: 'CareLevel'
           class: App\Entity\Assessment\CareLevel
+          route: api_admin_care_level_list
         care_level_group:
           title: 'CareLevelGroup'
           class: App\Entity\Assessment\CareLevelGroup
+          route: api_admin_care_level_group_list
         category:
           title: 'Category'
           class: App\Entity\Assessment\Category
+          route: api_admin_category_list
         form:
           title: 'Form'
           class: App\Entity\Assessment\Form
+          route: api_admin_form_list
         form_category:
           title: 'FormCategory'
           class: App\Entity\Assessment\FormCategory
+          route: api_admin_form_category_list
         row:
           title: 'Row'
           class: App\Entity\Assessment\Row
+          route: api_admin_row_list
 
     apartment:
       title: 'Apartment'
       class: App\Entity\Apartment
+      route: api_admin_apartment_list
     apartment_room:
       title: 'ApartmentRoom'
       class: App\Entity\ApartmentRoom
+      route: api_admin_apartment_room_list
     apartment_bed:
       title: 'ApartmentBed'
       class: App\Entity\ApartmentBed
+      route: api_admin_apartment_bed_list
 
     facility:
       title: 'Facility'
       class: App\Entity\Facility
+      route: api_admin_facility_list
     facility_room:
       title: 'FacilityRoom'
       class: App\Entity\FacilityRoom
+      route: api_admin_facility_room_list
     facility_bed:
       title: 'FacilityBed'
       class: App\Entity\FacilityBed
+      route: api_admin_facility_bed_list
     dining_room:
       title: 'DiningRoom'
       class: App\Entity\DiningRoom
+      route: api_admin_dining_room_list
 
     region:
       title: 'Region'
       class: App\Entity\Region
+      route: api_admin_region_list
 
     resident:
       title: 'Resident'
@@ -162,39 +193,51 @@ persistence:
         resident:
           title: 'Resident'
           class: App\Entity\Resident
+          route: api_admin_resident_list
         resident_allergen:
           title: 'ResidentAllergen'
           class: App\Entity\ResidentAllergen
+          route: api_admin_resident_allergen_list
         resident_diagnosis:
           title: 'ResidentDiagnosis'
           class: App\Entity\ResidentDiagnosis
+          route: api_admin_resident_diagnosis_list
         resident_diet:
           title: 'ResidentDiet'
           class: App\Entity\ResidentDiet
+          route: api_admin_resident_diet_list
         resident_event:
           title: 'ResidentEvent'
           class: App\Entity\ResidentEvent
+          route: api_admin_resident_event_list
         resident_medical_history_condition:
           title: 'ResidentMedicalHistoryCondition'
           class: App\Entity\ResidentMedicalHistoryCondition
+          route: api_admin_resident_medical_history_condition_list
         resident_medication:
           title: 'ResidentMedication'
           class: App\Entity\ResidentMedication
+          route: api_admin_resident_medication_list
         resident_medication_allergy:
           title: 'ResidentMedicationAllergy'
           class: App\Entity\ResidentMedicationAllergy
+          route: api_admin_resident_medication_allergy_list
         resident_phone:
           title: 'ResidentPhone'
           class: App\Entity\ResidentPhone
+          route: api_admin_resident_phone_list
         resident_physician:
           title: 'ResidentPhysician'
           class: App\Entity\ResidentPhysician
+          route: api_admin_resident_physician_list
         resident_rent:
           title: 'ResidentRent'
           class: App\Entity\ResidentRent
+          route: api_admin_resident_rent_list
         resident_responsible_person:
           title: 'ResidentResponsiblePerson'
           class: App\Entity\ResidentResponsiblePerson
+          route: api_admin_resident_responsible_person_list
 
         contract:
           title: 'Contract'
@@ -202,18 +245,23 @@ persistence:
             contract:
               title: 'Contract'
               class: App\Entity\Contract
+              route: api_admin_contract_list
             contract_action:
               title: 'ContractAction'
               class: App\Entity\ContractAction
+              route: api_admin_contract_action_list
             contract_apartment_option:
               title: 'ContractApartmentOption'
               class: App\Entity\ContractApartmentOption
+              route: api_admin_contract_apartment_option_list
             contract_facility_option:
               title: 'ContractFacilityOption'
               class: App\Entity\ContractFacilityOption
+              route: api_admin_contract_facility_option_list
             contract_region_option:
               title: 'ContractRegionOption'
               class: App\Entity\ContractRegionOption
+              route: api_admin_contract_region_option_list
 
         assessment:
           title: 'Assessment'
@@ -221,9 +269,11 @@ persistence:
             assessment:
               title: 'Assessment'
               class: App\Entity\Assessment\Assessment
+              route: api_admin_assessment_list
             assessment_row:
               title: 'AssessmentRow'
               class: App\Entity\Assessment\AssessmentRow
+              route: api_admin_assessment_row_list
 
 activity:
   title: "Activity"

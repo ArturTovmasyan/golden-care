@@ -2,7 +2,10 @@
 
 namespace App\Api\V1\Common\Service;
 
+use App\Entity\Role;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -13,15 +16,30 @@ class GrantService
 {
     private static $GRANT_CONFIG_PATH = '/../src/Api/V1/Common/Resources/config/grants.yaml';
 
+    /** @var ContainerInterface */
+    private $container;
+
     /** @var array */
     private $config;
+    /** @var array */
+    private $config_flat; // TODO: review
+    /** @var array */
+    private $config_titles;
+
+    /** @var EntityManagerInterface */
+    private $em;
 
     /**
      * GrantService constructor.
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->config = Yaml::parseFile($container->get('kernel')->getRootDir() . self::$GRANT_CONFIG_PATH);
+        $this->container = $container;
+
+        $this->em = $this->container->get('doctrine')->getManager();
+
+        $this->load();
     }
 
     /**
@@ -38,6 +56,46 @@ class GrantService
     public function setConfig(array $config): void
     {
         $this->config = $config;
+    }
+
+
+    public function getGrantsOfRoles(array $ids)
+    {
+        $role_grants = [];
+
+        foreach ($ids as $id) {
+            $grants = $this->getGrantsOfRole($id);
+
+            if(is_array($grants)) {
+                $role_grants = array_merge($role_grants, $grants);
+            }
+        }
+
+        return $role_grants;
+    }
+
+    public function getGrantsOfRole($id)
+    {
+        /** @var Role $role */
+        $role = $this->em->getRepository(Role::class)->find($id);
+
+        $grants = [];
+
+        if ($role) {
+            $grants = $role->getGrants() ?? [];
+        }
+
+        $identity_grants = array_filter($grants, function ($value) {
+            return array_key_exists('enabled', $value) && $value['enabled'] == true
+                && array_key_exists('identity', $value) && $value['identity'] == 1;
+        });
+
+        foreach ($identity_grants as $key => &$identity_grant) {
+            $identity_grant['title'] = $this->config_flat[$key]['title'];
+            $identity_grant['url'] = $this->config_flat[$key]['url'];
+        }
+
+        return $identity_grants;
     }
 
     public function getGrants($values, $tree = null, $parent_key = '', $parent_fields = [])
@@ -93,5 +151,47 @@ class GrantService
         }
 
         return $grid_config;
+    }
+
+
+    private function load()
+    {
+        $this->config = Yaml::parseFile(
+            $this->container->get('kernel')->getRootDir() . self::$GRANT_CONFIG_PATH
+        );
+
+        /** @var RouterInterface $router */
+        $router = $this->container->get('router');
+
+        self::update_url_info($router, $this->config);
+
+        self::flatten(['children' => $this->config], $this->config_flat);
+    }
+
+    private function update_url_info(RouterInterface $router, &$tree)
+    {
+        foreach ($tree as $key => &$node) {
+            if (array_key_exists('children', $node)) {
+                self::update_url_info($router, $node['children']);
+            } else {
+                if (array_key_exists('route', $node)) {
+                    if($router->getRouteCollection()->get($node['route']) !== null) {
+                        $node['url'] = $router->generate($node['route']/*, array('slug' => 'my-blog-post')*/);
+                    }
+                }
+            }
+        }
+    }
+
+    private static function flatten($array, &$flat = [], $keySeparator = '-', $parent_key = '')
+    {
+        if (array_key_exists('children', $array)) {
+            foreach ($array['children'] as $name => $value) {
+                $key_path = $parent_key != '' ? $parent_key . '-' . $name : $name;
+                self::flatten($value, $flat, $keySeparator, $key_path);
+            }
+        } else {
+            $flat[$parent_key] = $array;
+        }
     }
 }

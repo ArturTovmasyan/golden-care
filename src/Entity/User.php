@@ -335,11 +335,30 @@ class User implements UserInterface
     private $avatar;
 
     /**
-     * @todo remove after investigate jms listener
-     * @deprecated
-     * @var array
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"persist", "remove"})
+     * @ORM\JoinTable(
+     *      name="tbl_user_role",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     * @Groups({
+     *     "api_admin_user_get",
+     * })
      */
-    private $roles = [];
+    private $roles;
+
+    /**
+     * @var array $grants
+     * @ORM\Column(name="grants", type="json_array", nullable=false)
+     * @Groups({
+     *     "api_admin_user_get",
+     * })
+     */
+    private $grants = [];
 
     /**
      * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="user", cascade={"persist", "remove"})
@@ -711,6 +730,30 @@ class User implements UserInterface
     public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles($roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGrants(): ?array
+    {
+        return $this->grants;
+    }
+
+    /**
+     * @param array $grants
+     */
+    public function setGrants(?array $grants): void
+    {
+        $this->grants = $grants;
     }
 
 }
