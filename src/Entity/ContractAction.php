@@ -109,7 +109,7 @@ class ContractAction
      * @var FacilityBed
      * @ORM\ManyToOne(targetEntity="App\Entity\FacilityBed")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_facility_bed", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_facility_bed", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_contract_action_grid",
@@ -124,7 +124,7 @@ class ContractAction
      * @var ApartmentBed
      * @ORM\ManyToOne(targetEntity="App\Entity\ApartmentBed")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_apartment_bed", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_apartment_bed", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_contract_action_grid",
@@ -139,7 +139,7 @@ class ContractAction
      * @var Region
      * @ORM\ManyToOne(targetEntity="App\Entity\Region")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_region", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_region", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_contract_action_grid",
@@ -154,7 +154,7 @@ class ContractAction
      * @var CityStateZip
      * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_contract_action_grid",
@@ -229,7 +229,7 @@ class ContractAction
      * @var CareLevel
      * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel")
      * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="SET NULL")
+     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_contract_action_grid",
