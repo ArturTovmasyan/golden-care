@@ -69,15 +69,11 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $medicationId = $params['medication_id'];
@@ -144,15 +140,11 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $medicationId = $params['medication_id'];

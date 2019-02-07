@@ -83,22 +83,16 @@ class ResidentAssessmentService extends BaseService implements IGridService
             $rows       = $params['rows'] ?? [];
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
-            $form       = null;
-            $resident   = null;
 
-            if ($formId > 0) {
-                $form = $this->em->getRepository(Form::class)->find($formId);
-            }
+            $form = $this->em->getRepository(Form::class)->find($formId);
 
-            if (is_null($form)) {
+            if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 
-            if ($residentId > 0) {
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-            }
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if (is_null($resident)) {
+            if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
@@ -146,28 +140,22 @@ class ResidentAssessmentService extends BaseService implements IGridService
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
             $rows       = $params['rows'] ?? [];
-            $form       = null;
-            $resident   = null;
 
-            if ($formId > 0) {
-                $form = $this->em->getRepository(Form::class)->find($formId);
+            $form = $this->em->getRepository(Form::class)->find($formId);
 
-                if (is_null($form)) {
-                    throw new AssessmentFormNotFoundException();
-                }
+            if ($form ===  null) {
+                throw new AssessmentFormNotFoundException();
             }
 
-            if ($residentId > 0) {
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-                if (is_null($resident)) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident ===  null) {
+                throw new ResidentNotFoundException();
             }
 
             $assessment = $this->em->getRepository(Assessment::class)->find($id);
 
-            if (is_null($assessment)) {
+            if ($assessment ===  null) {
                 throw new AssessmentNotFoundException();
             }
 
@@ -225,17 +213,16 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 $rowsById[$row->getId()]           = $row;
             }
 
-            unset($category);
-            unset($rows);
+            unset($category, $rows);
         }
 
         // remove old relations
         $oldAssessmentRows = $assessment->getAssessmentRows();
-        if (!empty($oldAssessmentRows)) {
+        if ($oldAssessmentRows !== null) {
             foreach ($oldAssessmentRows as $assessmentRow) {
                 $this->em->remove($assessmentRow);
-                $this->em->flush();
             }
+            $this->em->flush();
         }
 
         // add new relations
@@ -251,7 +238,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 $category   = $categoriesById[$categoryId];
 
                 if (!$category->isMultiItem()) {
-                    if (in_array($categoryId, $categoryIdsWithUniqueRow)) {
+                    if (\in_array($categoryId, $categoryIdsWithUniqueRow, false)) {
                         throw new AssessmentCategoryMultipleException();
                     }
 
@@ -293,7 +280,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
             /** @var Assessment $assessment */
             $assessment = $this->em->getRepository(Assessment::class)->find($id);
 
-            if (is_null($assessment)) {
+            if ($assessment === null) {
                 throw new AssessmentNotFoundException();
             }
 

@@ -51,7 +51,7 @@ class RoleService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params): void
     {
@@ -59,15 +59,11 @@ class RoleService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             // save role
@@ -78,7 +74,7 @@ class RoleService extends BaseService implements IGridService
             $role->setDefault((bool) $params['default']);
             $role->setSpaceDefault((bool) $params['space_default']);
 
-            $this->validate($role, null, ["api_admin_role_add"]);
+            $this->validate($role, null, ['api_admin_role_add']);
 
             $this->em->persist($role);
             $this->em->flush();
@@ -93,7 +89,7 @@ class RoleService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params): void
     {
@@ -105,19 +101,16 @@ class RoleService extends BaseService implements IGridService
 
             $role = $this->em->getRepository(Role::class)->find($id);
 
-            if (is_null($role)) {
+            if ($role === null) {
                 throw new RoleNotFoundException();
             }
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $role->setName($params['name'] ?? '');
@@ -126,7 +119,7 @@ class RoleService extends BaseService implements IGridService
             $role->setDefault((bool) $params['default']);
             $role->setSpaceDefault((bool) $params['space_default']);
 
-            $this->validate($role, null, ["api_admin_role_edit"]);
+            $this->validate($role, null, ['api_admin_role_edit']);
 
             $this->em->persist($role);
             $this->em->flush();
@@ -154,7 +147,7 @@ class RoleService extends BaseService implements IGridService
 
             $role = $this->em->getRepository(Role::class)->find($id);
 
-            if (is_null($role)) {
+            if ($role === null) {
                 throw new RoleNotFoundException();
             }
 

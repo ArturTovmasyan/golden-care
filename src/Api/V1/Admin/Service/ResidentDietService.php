@@ -69,27 +69,18 @@ class ResidentDietService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
             $dietId = $params['diet_id'] ?? 0;
 
-            $resident = null;
-            $diet = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($dietId && $dietId > 0) {
-                /** @var Diet $diet */
-                $diet = $this->em->getRepository(Diet::class)->find($dietId);
+            /** @var Diet $diet */
+            $diet = $this->em->getRepository(Diet::class)->find($dietId);
 
-
-                if ($diet === null) {
-                    throw new DietNotFoundException();
-                }
+            if ($diet === null) {
+                throw new DietNotFoundException();
             }
 
             $residentDiet = new ResidentDiet();
@@ -130,27 +121,18 @@ class ResidentDietService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
             $dietId = $params['diet_id'] ?? 0;
 
-            $resident = null;
-            $diet = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($dietId && $dietId > 0) {
-                /** @var Diet $diet */
-                $diet = $this->em->getRepository(Diet::class)->find($dietId);
+            /** @var Diet $diet */
+            $diet = $this->em->getRepository(Diet::class)->find($dietId);
 
-
-                if ($diet === null) {
-                    throw new DietNotFoundException();
-                }
+            if ($diet === null) {
+                throw new DietNotFoundException();
             }
 
             $entity->setResident($resident);

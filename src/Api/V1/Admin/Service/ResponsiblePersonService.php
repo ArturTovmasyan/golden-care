@@ -66,7 +66,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params) : void
     {
@@ -82,32 +82,22 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $cszId        = $params['csz_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $space      = null;
-            $csz        = null;
-            $salutation = null;
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($cszId && $cszId > 0) {
-                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+            $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-                if (is_null($csz)) {
-                    throw new CityStateZipNotFoundException();
-                }
+            if ($csz === null) {
+                throw new CityStateZipNotFoundException();
             }
 
-            if ($salutationId && $salutationId > 0) {
-                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+            $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if (is_null($salutation)) {
-                    throw new SalutationNotFoundException();
-                }
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
             }
 
             $responsiblePerson = new ResponsiblePerson();
@@ -155,38 +145,28 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $cszId        = $params['csz_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $space      = null;
-            $csz        = null;
-            $salutation = null;
-
             $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->find($id);
 
-            if (is_null($responsiblePerson)) {
+            if ($responsiblePerson === null) {
                 throw new ResponsiblePersonNotFoundException();
             }
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if (is_null($space)) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($cszId && $cszId > 0) {
-                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+            $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-                if (is_null($csz)) {
-                    throw new CityStateZipNotFoundException();
-                }
+            if ($csz === null) {
+                throw new CityStateZipNotFoundException();
             }
 
-            if ($salutationId && $salutationId > 0) {
-                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+            $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if (is_null($salutation)) {
-                    throw new SalutationNotFoundException();
-                }
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
             }
 
             $responsiblePerson->setSpace($space);

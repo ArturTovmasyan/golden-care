@@ -56,16 +56,11 @@ class DiningRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
-            $facility = null;
+            /** @var Facility $facility */
+            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
 
-            if ($facilityId && $facilityId > 0) {
-                /** @var Facility $facility */
-                $facility = $this->em->getRepository(Facility::class)->find($facilityId);
-
-
-                if ($facility === null) {
-                    throw new FacilityNotFoundException();
-                }
+            if ($facility === null) {
+                throw new FacilityNotFoundException();
             }
 
             $diningRoom = new DiningRoom();
@@ -104,16 +99,11 @@ class DiningRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
-            $facility = null;
+            /** @var Facility $facility */
+            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
 
-            if ($facilityId && $facilityId > 0) {
-                /** @var Facility $facility */
-                $facility = $this->em->getRepository(Facility::class)->find($facilityId);
-
-
-                if ($facility === null) {
-                    throw new FacilityNotFoundException();
-                }
+            if ($facility === null) {
+                throw new FacilityNotFoundException();
             }
 
             $entity->setTitle($params['title']);

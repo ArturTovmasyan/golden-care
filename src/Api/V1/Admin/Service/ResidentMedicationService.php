@@ -75,49 +75,32 @@ class ResidentMedicationService extends BaseService implements IGridService
             $medicationId = $params['medication_id'] ?? 0;
             $formFactorId = $params['form_factor_id'] ?? 0;
 
-            $resident = null;
-            $physician = null;
-            $medication = null;
-            $formFactor = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($physicianId && $physicianId > 0) {
-                /** @var Physician $physician */
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            /** @var Physician $physician */
+            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
-
-                if ($physician === null) {
-                    throw new PhysicianNotFoundException();
-                }
+            if ($physician === null) {
+                throw new PhysicianNotFoundException();
             }
 
-            if ($medicationId && $medicationId > 0) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+            /** @var Medication $medication */
+            $medication = $this->em->getRepository(Medication::class)->find($medicationId);
 
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
-                }
+            if ($medication === null) {
+                throw new MedicationNotFoundException();
             }
 
-            if ($formFactorId && $formFactorId > 0) {
-                /** @var MedicationFormFactor $formFactor */
-                $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
+            /** @var MedicationFormFactor $formFactor */
+            $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
 
-
-                if ($formFactor === null) {
-                    throw new MedicationFormFactorNotFoundException();
-                }
+            if ($formFactor === null) {
+                throw new MedicationFormFactorNotFoundException();
             }
 
             $residentMedication = new ResidentMedication();
@@ -172,49 +155,32 @@ class ResidentMedicationService extends BaseService implements IGridService
             $medicationId = $params['medication_id'] ?? 0;
             $formFactorId = $params['form_factor_id'] ?? 0;
 
-            $resident = null;
-            $physician = null;
-            $medication = null;
-            $formFactor = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($physicianId && $physicianId > 0) {
-                /** @var Physician $physician */
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            /** @var Physician $physician */
+            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
-
-                if ($physician === null) {
-                    throw new PhysicianNotFoundException();
-                }
+            if ($physician === null) {
+                throw new PhysicianNotFoundException();
             }
 
-            if ($medicationId && $medicationId > 0) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+            /** @var Medication $medication */
+            $medication = $this->em->getRepository(Medication::class)->find($medicationId);
 
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
-                }
+            if ($medication === null) {
+                throw new MedicationNotFoundException();
             }
 
-            if ($formFactorId && $formFactorId > 0) {
-                /** @var MedicationFormFactor $formFactor */
-                $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
+            /** @var MedicationFormFactor $formFactor */
+            $formFactor = $this->em->getRepository(MedicationFormFactor::class)->find($formFactorId);
 
-
-                if ($formFactor === null) {
-                    throw new MedicationFormFactorNotFoundException();
-                }
+            if ($formFactor === null) {
+                throw new MedicationFormFactorNotFoundException();
             }
 
             $entity->setResident($resident);

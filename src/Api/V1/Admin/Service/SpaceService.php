@@ -41,7 +41,7 @@ class SpaceService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params): void
     {
@@ -54,12 +54,12 @@ class SpaceService extends BaseService implements IGridService
 
             $space = $this->em->getRepository(Space::class)->find($id);
 
-            if (is_null($space)) {
+            if ($space === null) {
                 throw new SpaceNotFoundException();
             }
 
             $space->setName($params['name'] ?? null);
-            $this->validate($space, null, ["api_admin_space_edit"]);
+            $this->validate($space, null, ['api_admin_space_edit']);
 
             $this->em->persist($space);
             $this->em->flush();

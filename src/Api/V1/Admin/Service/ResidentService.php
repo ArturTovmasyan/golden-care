@@ -10,7 +10,6 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Facility;
-use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
@@ -92,30 +91,23 @@ class ResidentService extends BaseService implements IGridService
         try {
             /**
              * @var Space $space
-             * @var Physician $physician
              * @var Salutation $salutation
              */
             $this->em->getConnection()->beginTransaction();
 
             $spaceId      = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
-            $space        = null;
-            $physician    = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($salutationId && $salutationId > 0) {
-                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+            $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if ($salutation === null) {
-                    throw new SalutationNotFoundException();
-                }
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
             }
 
             $resident = new Resident();
@@ -158,7 +150,6 @@ class ResidentService extends BaseService implements IGridService
              * @var Resident $resident
              * @var Space $space
              * @var Salutation $salutation
-             * @var Physician $physician
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -170,22 +161,17 @@ class ResidentService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
-            $space = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($salutationId && $salutationId > 0) {
-                $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
+            $salutation = $this->em->getRepository(Salutation::class)->find($salutationId);
 
-                if ($salutation === null) {
-                    throw new SalutationNotFoundException();
-                }
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
             }
 
             $resident->setFirstName($params['first_name'] ?? '');

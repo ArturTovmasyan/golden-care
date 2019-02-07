@@ -50,16 +50,11 @@ class RegionService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $region = new Region();
@@ -102,16 +97,11 @@ class RegionService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $entity->setName($params['name']);

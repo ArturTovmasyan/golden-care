@@ -56,14 +56,11 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $category = new Category();
@@ -101,19 +98,16 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $category = $this->em->getRepository(Category::class)->find($id);
 
-            if (is_null($category)) {
+            if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
             }
 
@@ -149,7 +143,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
         $oldRowsByIds = [];
         $rowIds       = [];
 
-        if (!empty($oldRows)) {
+        if ($oldRows !== null) {
             foreach ($oldRows as $oldRow) {
                 $oldRowsByIds[$oldRow->getId()] = $oldRow;
             }
@@ -158,7 +152,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
         // create and update row
         if (!empty($rows)) {
             foreach ($rows as $key => $row) {
-                if (isset($row['id']) && isset($oldRowsByIds[$row['id']])) {
+                if (isset($row['id'], $oldRowsByIds[$row['id']])) {
                     $entity   = $oldRowsByIds[$row['id']];
                     $rowIds[] = $row['id'];
                 } else {
@@ -176,9 +170,9 @@ class AssessmentCategoryService extends BaseService implements IGridService
         }
 
         // remove old rows
-        if (!empty($oldRows)) {
+        if ($oldRows !== null) {
             foreach ($oldRows as $oldRow) {
-                if (!in_array($oldRow->getId(), $rowIds)) {
+                if (!\in_array($oldRow->getId(), $rowIds, false)) {
                     $this->em->remove($oldRow);
                     $this->em->flush();
                 }
@@ -197,13 +191,13 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Category $category */
-            $Category = $this->em->getRepository(Category::class)->find($id);
+            $category = $this->em->getRepository(Category::class)->find($id);
 
-            if (is_null($Category)) {
+            if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
             }
 
-            $this->em->remove($Category);
+            $this->em->remove($category);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {

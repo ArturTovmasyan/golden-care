@@ -69,15 +69,11 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $medicalHistoryConditionId = $params['condition_id'];
@@ -155,15 +151,11 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $medicalHistoryConditionId = $params['condition_id'];

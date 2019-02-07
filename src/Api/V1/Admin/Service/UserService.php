@@ -38,7 +38,7 @@ class UserService extends BaseService implements IGridService
     {
         $user = $this->em->getRepository(User::class)->find($id);
 
-        if (is_null($user)) {
+        if ($user === null) {
             throw new UserNotFoundException();
         }
 
@@ -47,7 +47,7 @@ class UserService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params): void
     {
@@ -69,7 +69,7 @@ class UserService extends BaseService implements IGridService
             $user->setConfirmPassword($params['re_password']);
             $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
-            $this->validate($user, null, ["api_admin_user_add"]);
+            $this->validate($user, null, ['api_admin_user_add']);
 
             $encoded = $this->encoder->encodePassword($user, $params['password']);
             $user->setPassword($encoded);
@@ -87,7 +87,7 @@ class UserService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params): void
     {
@@ -97,7 +97,7 @@ class UserService extends BaseService implements IGridService
             /** @var User $user */
             $user = $this->em->getRepository(User::class)->find($id);
 
-            if (is_null($user)) {
+            if ($user === null) {
                 throw new UserNotFoundException();
             }
 
@@ -114,7 +114,7 @@ class UserService extends BaseService implements IGridService
 
             $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
-            $this->validate($user, null, ["api_admin_user_edit"]);
+            $this->validate($user, null, ['api_admin_user_edit']);
 
             if(!empty($params['password'])) {
                 $encoded = $this->encoder->encodePassword($user, $params['password']);
@@ -144,7 +144,7 @@ class UserService extends BaseService implements IGridService
             /** @var User $user **/
             $user = $this->em->getRepository(User::class)->find($id);
 
-            if (is_null($user)) {
+            if ($user === null) {
                 return;
             }
 
@@ -157,7 +157,7 @@ class UserService extends BaseService implements IGridService
             $user->setPassword($encoded);
             $this->em->persist($user);
 
-            $this->validate($user, null, ["api_admin_user_reset_password"]);
+            $this->validate($user, null, ['api_admin_user_reset_password']);
 
             $this->em->flush();
 

@@ -152,16 +152,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $apartmentId = $params['apartment_id'] ?? 0;
 
-            $apartment = null;
+            /** @var Apartment $apartment */
+            $apartment = $this->em->getRepository(Apartment::class)->find($apartmentId);
 
-            if ($apartmentId && $apartmentId > 0) {
-                /** @var Apartment $apartment */
-                $apartment = $this->em->getRepository(Apartment::class)->find($apartmentId);
-
-
-                if ($apartment === null) {
-                    throw new ApartmentNotFoundException();
-                }
+            if ($apartment === null) {
+                throw new ApartmentNotFoundException();
             }
 
             $apartmentRoom = new ApartmentRoom();
@@ -214,16 +209,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $apartmentId = $params['apartment_id'] ?? 0;
 
-            $apartment = null;
+            /** @var Apartment $apartment */
+            $apartment = $this->em->getRepository(Apartment::class)->find($apartmentId);
 
-            if ($apartmentId && $apartmentId > 0) {
-                /** @var Apartment $apartment */
-                $apartment = $this->em->getRepository(Apartment::class)->find($apartmentId);
-
-
-                if ($apartment === null) {
-                    throw new ApartmentNotFoundException();
-                }
+            if ($apartment === null) {
+                throw new ApartmentNotFoundException();
             }
 
             $entity->setApartment($apartment);

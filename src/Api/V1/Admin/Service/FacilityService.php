@@ -53,27 +53,18 @@ class FacilityService extends BaseService implements IGridService
             $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
 
-            $space = null;
-            $csz = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($cszId && $cszId > 0) {
-                /** @var CityStateZip $csz */
-                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+            /** @var CityStateZip $csz */
+            $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-
-                if ($csz === null) {
-                    throw new CityStateZipNotFoundException();
-                }
+            if ($csz === null) {
+                throw new CityStateZipNotFoundException();
             }
 
             $facility = new Facility();
@@ -122,27 +113,18 @@ class FacilityService extends BaseService implements IGridService
             $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
 
-            $space = null;
-            $csz = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
-            if ($cszId && $cszId > 0) {
-                /** @var CityStateZip $csz */
-                $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
+            /** @var CityStateZip $csz */
+            $csz = $this->em->getRepository(CityStateZip::class)->find($cszId);
 
-
-                if ($csz === null) {
-                    throw new CityStateZipNotFoundException();
-                }
+            if ($csz === null) {
+                throw new CityStateZipNotFoundException();
             }
 
             $entity->setName($params['name']);

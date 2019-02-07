@@ -41,7 +41,7 @@ class RelationshipService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params): void
     {
@@ -50,16 +50,11 @@ class RelationshipService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             // save Relationship
@@ -67,7 +62,7 @@ class RelationshipService extends BaseService implements IGridService
             $relationship->setTitle($params['title'] ?? null);
             $relationship->setSpace($space);
 
-            $this->validate($relationship, null, ["api_admin_relationship_add"]);
+            $this->validate($relationship, null, ['api_admin_relationship_add']);
 
             $this->em->persist($relationship);
             $this->em->flush();
@@ -82,7 +77,7 @@ class RelationshipService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params): void
     {
@@ -94,28 +89,23 @@ class RelationshipService extends BaseService implements IGridService
 
             $relationship = $this->em->getRepository(Relationship::class)->find($id);
 
-            if (is_null($relationship)) {
+            if ($relationship === null) {
                 throw new RelationshipNotFoundException();
             }
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $relationship->setTitle($params['title'] ?? null);
             $relationship->setSpace($space);
 
-            $this->validate($relationship, null, ["api_admin_relationship_edit"]);
+            $this->validate($relationship, null, ['api_admin_relationship_edit']);
 
             $this->em->persist($relationship);
             $this->em->flush();
@@ -142,7 +132,7 @@ class RelationshipService extends BaseService implements IGridService
 
             $relationship = $this->em->getRepository(Relationship::class)->find($id);
 
-            if (is_null($relationship)) {
+            if ($relationship === null) {
                 throw new RelationshipNotFoundException();
             }
 

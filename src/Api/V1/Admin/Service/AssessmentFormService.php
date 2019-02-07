@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\AssessmentCareLevelGroupNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
@@ -12,10 +11,8 @@ use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
-use App\Entity\Assessment\Row;
 use App\Entity\Space;
 use App\Repository\Assessment\CategoryRepository;
-use App\Repository\Assessment\FormCategoryRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -61,14 +58,11 @@ class AssessmentFormService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $form = new Form();
@@ -114,19 +108,16 @@ class AssessmentFormService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $form = $this->em->getRepository(Form::class)->find($id);
 
-            if (is_null($form)) {
+            if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 
@@ -177,22 +168,21 @@ class AssessmentFormService extends BaseService implements IGridService
         $existingCategories = $form->getFormCategories();
         $categoryIds        = array_unique($categoryIds);
 
-        if (empty($categoryIds) && !empty($existingCategories)) {
+        if (empty($categoryIds) && $existingCategories !== null) {
             foreach ($existingCategories as $existingCategory) {
                 $this->em->remove($existingCategory);
-                $this->em->flush();
             }
-
+            $this->em->flush();
             return true;
         }
 
         $existingCategoriesById = [];
-        if (!empty($existingCategories)) {
+        if ($existingCategories !== null) {
             foreach ($existingCategories as $existingCategory) {
                 $categoryId = $existingCategory->getCategory()->getId();
                 $existingCategoriesById[$categoryId] = $existingCategory;
 
-                if (!in_array($categoryId, $categoryIds)) {
+                if (!\in_array($categoryId, $categoryIds, false)) {
                     $this->em->remove($existingCategory);
                     $this->em->flush();
                 }
@@ -240,7 +230,7 @@ class AssessmentFormService extends BaseService implements IGridService
             /** @var CareLevelGroup $careLevelGroup */
             $form = $this->em->getRepository(Form::class)->find($id);
 
-            if (is_null($form)) {
+            if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 

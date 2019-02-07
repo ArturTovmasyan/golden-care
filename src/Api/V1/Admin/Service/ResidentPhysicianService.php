@@ -72,25 +72,19 @@ class ResidentPhysicianService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $residentId  = $params['resident_id'] ?? 0;
-            $physicianId = $params['physician_id'];
-            $resident    = null;
-            $physician   = null;
-            $primary     = (bool) $params['primary'] ?? false;
+            $physicianId = $params['physician_id'] ?? 0;
+            $primary     = $params['primary'] ? (bool) $params['primary'] : false;
 
-            if ($residentId && $residentId > 0) {
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($physicianId && $physicianId > 0) {
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
-                if (is_null($physician)) {
-                    throw new PhysicianNotFoundException();
-                }
+            if ($physician === null) {
+                throw new PhysicianNotFoundException();
             }
 
             // check unique primary
@@ -138,30 +132,24 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             $entity = $this->em->getRepository(ResidentPhysician::class)->find($id);
 
-            if (is_null($entity)) {
+            if ($entity === null) {
                 throw new ResidentPhysicianNotFoundException();
             }
 
             $residentId  = $params['resident_id'] ?? 0;
-            $physicianId = $params['physician_id'];
-            $resident    = null;
-            $physician   = null;
-            $primary     = (bool) $params['primary'] ?? false;
+            $physicianId = $params['physician_id'] ?? 0;
+            $primary     = $params['primary'] ? (bool) $params['primary'] : false;
 
-            if ($residentId && $residentId > 0) {
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            if ($physicianId && $physicianId > 0) {
-                $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
 
-                if (is_null($physician)) {
-                    throw new PhysicianNotFoundException();
-                }
+            if ($physician === null) {
+                throw new PhysicianNotFoundException();
             }
 
             // check unique primary
@@ -171,7 +159,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
                     'primary'  => true,
                 ]);
 
-                if ($primaryEntity->getId() != $id) {
+                if ($primaryEntity && $primaryEntity->getId() !== $id) {
                     throw new ResidentHavePrimaryPhysicianException();
                 }
             }
@@ -205,7 +193,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
             /** @var ResidentPhysician $entity */
             $entity = $this->em->getRepository(ResidentPhysician::class)->find($id);
 
-            if (is_null($entity)) {
+            if ($entity === null) {
                 throw new ResidentPhysicianNotFoundException();
             }
 

@@ -41,7 +41,7 @@ class MedicationService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function add(array $params): void
     {
@@ -50,16 +50,11 @@ class MedicationService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             // save Medication
@@ -67,7 +62,7 @@ class MedicationService extends BaseService implements IGridService
             $medication->setTitle($params['title'] ?? null);
             $medication->setSpace($space);
 
-            $this->validate($medication, null, ["api_admin_medication_add"]);
+            $this->validate($medication, null, ['api_admin_medication_add']);
 
             $this->em->persist($medication);
             $this->em->flush();
@@ -82,7 +77,7 @@ class MedicationService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit($id, array $params): void
     {
@@ -94,28 +89,23 @@ class MedicationService extends BaseService implements IGridService
 
             $medication = $this->em->getRepository(Medication::class)->find($id);
 
-            if (is_null($medication)) {
+            if ($medication === null) {
                 throw new MedicationNotFoundException();
             }
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            /** @var Space $space */
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                /** @var Space $space */
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $medication->setTitle($params['title'] ?? null);
             $medication->setSpace($space);
 
-            $this->validate($medication, null, ["api_admin_medication_edit"]);
+            $this->validate($medication, null, ['api_admin_medication_edit']);
 
             $this->em->persist($medication);
             $this->em->flush();
@@ -142,7 +132,7 @@ class MedicationService extends BaseService implements IGridService
 
             $medication = $this->em->getRepository(Medication::class)->find($id);
 
-            if (is_null($medication)) {
+            if ($medication === null) {
                 throw new MedicationNotFoundException();
             }
 

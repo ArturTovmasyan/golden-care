@@ -75,28 +75,20 @@ class ResidentEventService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $definitionId = $params['definition_id'] ?? 0;
 
-            $definition = null;
+            /** @var EventDefinition $definition */
+            $definition = $this->em->getRepository(EventDefinition::class)->find($definitionId);
 
-            if ($definitionId && $definitionId > 0) {
-                /** @var EventDefinition $definition */
-                $definition = $this->em->getRepository(EventDefinition::class)->find($definitionId);
-
-                if ($definition === null) {
-                    throw new EventDefinitionNotFoundException();
-                }
+            if ($definition === null) {
+                throw new EventDefinitionNotFoundException();
             }
 
             $physician = null;
@@ -115,7 +107,6 @@ class ResidentEventService extends BaseService implements IGridService
                     throw new PhysicianNotBeBlankException();
                 }
             }
-
 
             $responsiblePerson = null;
 
@@ -193,15 +184,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
-            $resident = null;
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            if ($residentId && $residentId > 0) {
-                /** @var Resident $resident */
-                $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-                if ($resident === null) {
-                    throw new ResidentNotFoundException();
-                }
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $definition = $entity->getDefinition();
@@ -222,7 +209,6 @@ class ResidentEventService extends BaseService implements IGridService
                     throw new PhysicianNotBeBlankException();
                 }
             }
-
 
             $responsiblePerson = null;
 

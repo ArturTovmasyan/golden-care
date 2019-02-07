@@ -53,14 +53,10 @@ class SpecialityService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = null;
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $speciality = new Speciality();
@@ -100,14 +96,11 @@ class SpecialityService extends BaseService implements IGridService
             }
 
             $spaceId = $params['space_id'] ?? 0;
-            $space   = null;
 
-            if ($spaceId && $spaceId > 0) {
-                $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
 
-                if ($space === null) {
-                    throw new SpaceNotFoundException();
-                }
+            if ($space === null) {
+                throw new SpaceNotFoundException();
             }
 
             $entity->setTitle($params['title']);
@@ -138,7 +131,7 @@ class SpecialityService extends BaseService implements IGridService
             /** @var Speciality $entity */
             $entity = $this->em->getRepository(Speciality::class)->find($id);
 
-            if (is_null($entity)) {
+            if ($entity === null) {
                 throw new SpecialityNotFoundException();
             }
 
