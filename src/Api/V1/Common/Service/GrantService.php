@@ -3,6 +3,7 @@
 namespace App\Api\V1\Common\Service;
 
 use App\Entity\Role;
+use App\Entity\Space;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -40,6 +41,14 @@ class GrantService
         $this->em = $this->container->get('doctrine')->getManager();
 
         $this->load();
+    }
+
+    /**
+     * @return Space|null
+     */
+    public function getCurrentSpace(): ?Space
+    {
+        return null;
     }
 
     /**

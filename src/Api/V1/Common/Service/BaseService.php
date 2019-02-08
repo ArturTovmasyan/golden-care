@@ -3,6 +3,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Annotation\ValidationSerializedName;
 use App\Api\V1\Common\Service\Exception\ValidationException;
+use App\Entity\Space;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,6 +45,11 @@ class BaseService
     protected $reader;
 
     /**
+     * @var GrantService
+     */
+    protected $grantService;
+
+    /**
      * BaseService constructor.
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
@@ -51,6 +57,7 @@ class BaseService
      * @param ValidatorInterface $validator
      * @param Security $security
      * @param Reader $reader
+     * @param GrantService $grantService
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -58,14 +65,16 @@ class BaseService
         Mailer $mailer,
         ValidatorInterface $validator,
         Security $security,
-        Reader $reader
+        Reader $reader,
+        GrantService $grantService
     ) {
-        $this->em        = $em;
-        $this->encoder   = $encoder;
-        $this->mailer    = $mailer;
-        $this->validator = $validator;
-        $this->security  = $security;
-        $this->reader    = $reader;
+        $this->em           = $em;
+        $this->encoder      = $encoder;
+        $this->mailer       = $mailer;
+        $this->validator    = $validator;
+        $this->security     = $security;
+        $this->reader       = $reader;
+        $this->grantService = $grantService;
     }
 
     /**
