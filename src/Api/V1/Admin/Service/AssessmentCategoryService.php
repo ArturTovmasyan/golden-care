@@ -24,12 +24,12 @@ class AssessmentCategoryService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Category::class)->search($queryBuilder);
+        $this->em->getRepository(Category::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Category::class)->findAll();
+        return $this->em->getRepository(Category::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -38,7 +38,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Category::class)->find($id);
+        return $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -105,7 +105,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $category = $this->em->getRepository(Category::class)->find($id);
+            $category = $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
@@ -191,7 +191,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Category $category */
-            $category = $this->em->getRepository(Category::class)->find($id);
+            $category = $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
@@ -219,7 +219,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 throw new AssessmentCategoryNotFoundException();
             }
 
-            $categories = $this->em->getRepository(Category::class)->findByIds($ids);
+            $categories = $this->em->getRepository(Category::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($categories)) {
                 throw new AssessmentCategoryNotFoundException();

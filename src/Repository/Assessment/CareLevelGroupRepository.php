@@ -115,7 +115,6 @@ class CareLevelGroupRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-
         return $qb->where($qb->expr()->in('aclg.id', $ids))
             ->groupBy('aclg.id')
             ->getQuery()
