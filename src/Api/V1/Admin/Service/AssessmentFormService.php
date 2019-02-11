@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\Exception\AssessmentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Allergen;
 use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
@@ -28,21 +27,21 @@ class AssessmentFormService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Form::class)->search($queryBuilder);
+        $this->em->getRepository(Form::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Form::class)->findAll();
+        return $this->em->getRepository(Form::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
      * @param $id
-     * @return Allergen|null|object
+     * @return Form|null|object
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Form::class)->find($id);
+        return $this->em->getRepository(Form::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -73,7 +72,7 @@ class AssessmentFormService extends BaseService implements IGridService
 
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
-            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($groupIds);
+            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($this->grantService->getCurrentSpace(), $groupIds);
 
             if (!empty($groups)) {
                 $form->setCareLevelGroups($groups);
@@ -107,6 +106,8 @@ class AssessmentFormService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $spaceId = $params['space_id'] ?? 0;
 
             $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -115,7 +116,7 @@ class AssessmentFormService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $form = $this->em->getRepository(Form::class)->find($id);
+            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $id);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
@@ -134,7 +135,7 @@ class AssessmentFormService extends BaseService implements IGridService
 
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
-            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($groupIds);
+            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($currentSpace, $groupIds);
 
             if (!empty($groups)) {
                 $form->setCareLevelGroups($groups);
@@ -190,7 +191,7 @@ class AssessmentFormService extends BaseService implements IGridService
         }
 
         $categoryRepository = $this->em->getRepository(Category::class);
-        $categories         = $categoryRepository->findByIds($categoryIds);
+        $categories         = $categoryRepository->findByIds($this->grantService->getCurrentSpace(), $categoryIds);
         $categoriesById     = [];
 
         foreach ($categories as $category) {
@@ -227,8 +228,8 @@ class AssessmentFormService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var CareLevelGroup $careLevelGroup */
-            $form = $this->em->getRepository(Form::class)->find($id);
+            /** @var Form $form */
+            $form = $this->em->getRepository(Form::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
@@ -265,7 +266,7 @@ class AssessmentFormService extends BaseService implements IGridService
                 throw new AssessmentFormNotFoundException();
             }
 
-            $forms = $this->em->getRepository(Form::class)->findByIds($ids);
+            $forms = $this->em->getRepository(Form::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($forms)) {
                 throw new AssessmentFormNotFoundException();

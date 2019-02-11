@@ -5,7 +5,6 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCareLevelGroupNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Allergen;
 use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Row;
@@ -35,7 +34,7 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
 
     /**
      * @param $id
-     * @return Allergen|null|object
+     * @return CareLevelGroup|null|object
      */
     public function getById($id)
     {

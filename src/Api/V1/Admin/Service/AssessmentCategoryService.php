@@ -5,7 +5,6 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Allergen;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Row;
 use App\Entity\Space;
@@ -34,7 +33,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @return Allergen|null|object
+     * @return Category|null|object
      */
     public function getById($id)
     {
