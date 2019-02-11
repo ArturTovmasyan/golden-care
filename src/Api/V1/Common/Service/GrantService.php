@@ -4,6 +4,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Entity\Role;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -30,6 +31,9 @@ class GrantService
     /** @var EntityManagerInterface */
     private $em;
 
+    /** @var User */
+    private $current_user;
+
     /**
      * GrantService constructor.
      * @param ContainerInterface $container
@@ -44,10 +48,36 @@ class GrantService
     }
 
     /**
+     * @return User
+     */
+    public function getCurrentUser(): ?User
+    {
+        return $this->current_user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCurrentUser(?User $user): void
+    {
+        $this->current_user = $user;
+    }
+
+    /**
      * @return Space|null
      */
     public function getCurrentSpace(): ?Space
     {
+        return $this->current_user->getSpace();
+    }
+
+    public function checkUserGrant(User $user, string $entityName) : bool {
+        $user_grants = $user->getGrants();
+//        $user_roles = $user->getRoles();
+
+        dump($this->config);
+        dump($this->config_flat);
+
         return null;
     }
 

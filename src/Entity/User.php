@@ -361,6 +361,19 @@ class User implements UserInterface
     private $grants = [];
 
     /**
+     * @var Space
+     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_space_add", "api_admin_space_edit"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_user_get",
+     * })
+     */
+    private $space;
+
+    /**
      * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="user", cascade={"persist", "remove"})
      * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
      */
@@ -754,6 +767,22 @@ class User implements UserInterface
     public function setGrants(?array $grants): void
     {
         $this->grants = $grants;
+    }
+
+    /**
+     * @return Space
+     */
+    public function getSpace(): ?Space
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param Space $space
+     */
+    public function setSpace(?Space $space): void
+    {
+        $this->space = $space;
     }
 
 }

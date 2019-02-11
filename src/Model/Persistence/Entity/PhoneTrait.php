@@ -19,6 +19,7 @@ trait PhoneTrait
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me"
      * })
      */
@@ -44,6 +45,7 @@ trait PhoneTrait
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me"
      * })
      */
@@ -69,6 +71,7 @@ trait PhoneTrait
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me"
      * })
      */
@@ -92,6 +95,7 @@ trait PhoneTrait
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me"
      * })
      */
@@ -106,6 +110,7 @@ trait PhoneTrait
      *      "api_admin_resident_get",
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me"
      * })
      */

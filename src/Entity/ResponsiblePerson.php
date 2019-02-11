@@ -140,7 +140,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $middleName;
@@ -155,7 +156,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $address_1;
@@ -167,7 +169,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $address_2;
@@ -178,7 +181,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      * @Assert\Email(
      *     groups={
@@ -194,12 +198,14 @@ class ResponsiblePerson
      * @ORM\Column(name="is_financially", type="boolean", nullable=false)
      * @Assert\NotNull(groups={
      *      "api_admin_responsible_person_edit",
-     *      "api_admin_responsible_person_add"
+     *      "api_admin_responsible_person_add",
+     *      "api_admin_resident_responsible_person_list"
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $financially = false;
@@ -210,7 +216,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $emergency = false;
@@ -228,7 +235,8 @@ class ResponsiblePerson
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get"
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $csz;
@@ -267,6 +275,7 @@ class ResponsiblePerson
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get"
      * })
@@ -282,7 +291,8 @@ class ResponsiblePerson
      * @Groups({
      *      "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_list_by_space",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $phones;

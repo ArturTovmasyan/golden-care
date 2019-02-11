@@ -81,7 +81,8 @@ class CityStateZip
      *     "api_admin_responsible_person_get",
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $id;
@@ -99,7 +100,8 @@ class CityStateZip
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $stateFull;
@@ -124,7 +126,8 @@ class CityStateZip
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $stateAbbr;
@@ -149,7 +152,8 @@ class CityStateZip
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $zipMain;
@@ -168,7 +172,8 @@ class CityStateZip
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get"
+     *     "api_dashboard_physician_get",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $zipSub;
@@ -193,7 +198,8 @@ class CityStateZip
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_responsible_person_list"
      * })
      */
     private $city;

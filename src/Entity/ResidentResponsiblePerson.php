@@ -23,12 +23,7 @@ use App\Annotation\Grid;
  *              "field"      = "rrp.id"
  *          },
  *          {
- *              "id"         = "resident",
- *              "type"       = "string",
- *              "field"      = "CONCAT(r.firstName, ' ', r.lastName)"
- *          },
- *          {
- *              "id"         = "responsible_person",
+ *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(rp.firstName, ' ', rp.lastName)"
  *          },
@@ -36,6 +31,11 @@ use App\Annotation\Grid;
  *              "id"         = "relationship",
  *              "type"       = "string",
  *              "field"      = "rel.title"
+ *          },
+ *          {
+ *              "id"         = "address",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(rp.address1, ' ', rp.address2)"
  *          }
  *     }
  * )

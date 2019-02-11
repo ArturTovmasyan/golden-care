@@ -22,7 +22,8 @@ class ResponsiblePersonPhone
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Groups({
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list"
      * })
      */
     private $id;
@@ -43,7 +44,8 @@ class ResponsiblePersonPhone
      * @ORM\Column(name="extension", type="integer", nullable=true)
      * @Groups({
      *      "api_admin_responsible_person_list",
-     *      "api_admin_responsible_person_get"
+     *      "api_admin_responsible_person_get",
+     *      "api_admin_resident_responsible_person_list"
      * })
      */
     private $extension;

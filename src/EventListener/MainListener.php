@@ -5,6 +5,7 @@ namespace App\EventListener;
 use App\Annotation\Permission;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\ValidationException;
+use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Space;
 use App\Entity\User;
 use Doctrine\Common\Annotations\Reader;
@@ -35,16 +36,22 @@ class MainListener
     private $reader;
 
     /**
+     * @var GrantService
+     */
+    private $grantService;
+
+    /**
      * ActivityListener constructor.
      * @param EntityManagerInterface $em
      * @param Security $security
      * @param Reader $reader
      */
-    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader)
+    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService)
     {
-        $this->em       = $em;
-        $this->security = $security;
-        $this->reader   = $reader;
+        $this->em           = $em;
+        $this->security     = $security;
+        $this->reader       = $reader;
+        $this->grantService = $grantService;
     }
 
     /**
@@ -113,6 +120,7 @@ class MainListener
     /**
      * @param FilterControllerEvent $event
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function onCoreController(FilterControllerEvent $event)
     {
@@ -138,6 +146,8 @@ class MainListener
             $user = $this->security->getToken()->getUser();
 
             if (($user instanceof User) && !($user->isActiveNow())) {
+                $this->grantService->setCurrentUser($user);
+
                 $this->checkPermission($event, $user);
 
                 $user->setLastActivityAt(new \DateTime());

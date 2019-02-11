@@ -160,6 +160,12 @@ class Space
     private $name;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="User", mappedBy="space", cascade={"persist", "remove"})
+     */
+    protected $users;
+
+    /**
      * @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
      */
     protected $spaceUserRoles;
@@ -174,6 +180,7 @@ class Space
      */
     public function __construct()
     {
+        $this->users  = new ArrayCollection();
         $this->spaceUserRoles  = new ArrayCollection();
         $this->spacePhysicians = new ArrayCollection();
     }
@@ -224,5 +231,20 @@ class Space
     public function getSpacePhysicians()
     {
         return $this->spaceUserRoles;
+    }
+    /**
+     * @return ArrayCollection
+     */
+    public function getUsers(): ?ArrayCollection
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param ArrayCollection $users
+     */
+    public function setUsers(?ArrayCollection $users): void
+    {
+        $this->users = $users;
     }
 }
