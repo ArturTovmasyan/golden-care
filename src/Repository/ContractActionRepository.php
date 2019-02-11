@@ -37,7 +37,7 @@ class ContractActionRepository extends EntityRepository
     {
         $queryBuilder
             ->from(ContractAction::class, 'ca')
-            ->leftJoin(
+            ->innerJoin(
                 Contract::class,
                 'c',
                 Join::WITH,

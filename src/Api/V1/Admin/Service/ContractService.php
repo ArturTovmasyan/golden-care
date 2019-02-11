@@ -110,17 +110,6 @@ class ContractService extends BaseService implements IGridService
     }
 
     /**
-     * @param $type
-     * @param $id
-     * @param $state
-     * @return mixed
-     */
-    public function getByTypeAndState($type, $id, $state)
-    {
-        return $this->em->getRepository(Contract::class)->getByTypeAndState($type, $id, $state);
-    }
-
-    /**
      * @param array $params
      * @throws \Exception
      */

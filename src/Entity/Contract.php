@@ -201,7 +201,6 @@ class Contract
 
     /**
      * @param Resident|null $resident
-     * @return Contract
      */
     public function setResident(?Resident $resident): void
     {
