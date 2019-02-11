@@ -22,12 +22,12 @@ class CareLevelService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(CareLevel::class)->search($queryBuilder);
+        $this->em->getRepository(CareLevel::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(CareLevel::class)->findAll();
+        return $this->em->getRepository(CareLevel::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class CareLevelService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(CareLevel::class)->find($id);
+        return $this->em->getRepository(CareLevel::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -86,7 +86,7 @@ class CareLevelService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var CareLevel $entity */
-            $entity = $this->em->getRepository(CareLevel::class)->find($id);
+            $entity = $this->em->getRepository(CareLevel::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new CareLevelNotFoundException();
@@ -128,7 +128,7 @@ class CareLevelService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var CareLevel $entity */
-            $entity = $this->em->getRepository(CareLevel::class)->find($id);
+            $entity = $this->em->getRepository(CareLevel::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new CareLevelNotFoundException();
@@ -156,7 +156,7 @@ class CareLevelService extends BaseService implements IGridService
                 throw new CareLevelNotFoundException();
             }
 
-            $careLevels = $this->em->getRepository(CareLevel::class)->findByIds($ids);
+            $careLevels = $this->em->getRepository(CareLevel::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($careLevels)) {
                 throw new CareLevelNotFoundException();
