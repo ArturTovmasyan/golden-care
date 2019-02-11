@@ -14,6 +14,7 @@ use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Region;
 use App\Entity\Resident;
+use App\Entity\Space;
 use App\Model\ContractState;
 use App\Model\ContractType;
 use App\Util\Common\ImtDateTimeInterval;
@@ -145,11 +146,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param $id
      * @return mixed
      */
-    public function getResidentByBed($type, $id)
+    public function getResidentByBed(Space $space = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -168,18 +170,78 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.facilityBed', 'fb')
                     ->andWhere('fb.id=:id')
                     ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_APARTMENT:
                 $qb
                     ->join('ca.apartmentBed', 'ab')
                     ->andWhere('ab.id=:id')
                     ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_REGION:
                 $qb
-                    ->join('ca.region', 'r')
-                    ->andWhere('r.id=:id')
+                    ->join('ca.region', 'reg')
+                    ->andWhere('reg.id=:id')
                     ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
@@ -191,11 +253,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getResidentsByBeds($type, $ids)
+    public function getResidentsByBeds(Space $space = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -219,6 +282,30 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.facilityBed', 'fb')
                     ->andWhere('fb.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_APARTMENT:
                 $qb
@@ -226,13 +313,49 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.apartmentBed', 'ab')
                     ->andWhere('ab.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_REGION:
                 $qb
-                    ->addSelect('r.id AS regionId')
-                    ->join('ca.region', 'r')
-                    ->andWhere('r.id IN (:ids)')
+                    ->addSelect('reg.id AS regionId')
+                    ->join('ca.region', 'reg')
+                    ->andWhere('reg.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
@@ -244,11 +367,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getBeds($type, $ids)
+    public function getBeds(Space $space = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -267,6 +391,30 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.facilityBed', 'fb')
                     ->andWhere('fb.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_APARTMENT:
                 $qb
@@ -274,13 +422,49 @@ class ContractActionRepository extends EntityRepository
                     ->join('ca.apartmentBed', 'ab')
                     ->andWhere('ab.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             case ContractType::TYPE_REGION:
                 $qb
-                    ->select('r.id AS regionId')
-                    ->join('ca.region', 'r')
-                    ->andWhere('r.id IN (:ids)')
+                    ->select('reg.id AS regionId')
+                    ->join('ca.region', 'reg')
+                    ->andWhere('reg.id IN (:ids)')
                     ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
                 break;
             default:
                 throw new IncorrectStrategyTypeException();

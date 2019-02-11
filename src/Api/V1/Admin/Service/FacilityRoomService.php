@@ -32,6 +32,8 @@ class FacilityRoomService extends BaseService implements IGridService
 
     public function list($params)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $vacant = false;
         if (!empty($params) && !empty($params[0]['vacant']) && $params[0]['vacant'] === 1) {
             $vacant = true;
@@ -56,7 +58,7 @@ class FacilityRoomService extends BaseService implements IGridService
             }
 
             if ($vacant) {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getBeds(ContractType::TYPE_FACILITY, $bedIds);
+                $contractActions = $this->em->getRepository(ContractAction::class)->getBeds($currentSpace, ContractType::TYPE_FACILITY, $bedIds);
 
                 $occupancyBedIds = [];
                 if (!empty($contractActions)) {
@@ -77,7 +79,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     }
                 }
             } else {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_FACILITY, $bedIds);
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_FACILITY, $bedIds);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -112,6 +114,8 @@ class FacilityRoomService extends BaseService implements IGridService
      */
     public function getById($id)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $room = $this->em->getRepository(FacilityRoom::class)->find($id);
 
         if ($room !== null) {
@@ -121,7 +125,7 @@ class FacilityRoomService extends BaseService implements IGridService
             if ($beds !== null) {
                 $ids = array_map(function(FacilityBed $item){return $item->getId();} , $beds->toArray());
 
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds(ContractType::TYPE_FACILITY, $ids);
+                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_FACILITY, $ids);
 
                 $actions = [];
                 if (!empty($contractActions)) {

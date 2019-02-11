@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -15,29 +17,75 @@ use Doctrine\ORM\QueryBuilder;
 class ApartmentBedRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
      * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(ApartmentBed::class, 'ab')
-            ->leftJoin(
+            ->innerJoin(
                 ApartmentRoom::class,
                 'ar',
                 Join::WITH,
                 'ar = ab.room'
-            )
+            );
+
+            if ($space !== null) {
+                $queryBuilder
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'a = ar.apartment'
+                    )
+                    ->innerJoin(
+                        Space::class,
+                        's',
+                        Join::WITH,
+                        's = a.space'
+                    )
+                    ->andWhere('s = :space')
+                    ->setParameter('space', $space);
+            }
+
+        $queryBuilder
             ->groupBy('ab.id');
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('ab');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ApartmentRoom::class,
+                    'ar',
+                    Join::WITH,
+                    'ar = ab.room'
+                )
+                ->innerJoin(
+                    Apartment::class,
+                    'a',
+                    Join::WITH,
+                    'a = ar.apartment'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('ab.id', $ids))
             ->groupBy('ab.id')
@@ -46,20 +94,40 @@ class ApartmentBedRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function getBedIdsByRooms($ids)
+    public function getBedIdsByRooms(Space $space = null, $ids)
     {
-        $qb = $this->createQueryBuilder('ab');
-
-        return $qb
+        $qb = $this
+            ->createQueryBuilder('ab')
             ->select(
                 'ab.id AS id'
             )
             ->join('ab.room', 'r')
             ->where('r.id IN (:ids)')
-            ->setParameter('ids', $ids)
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Apartment::class,
+                    'a',
+                    Join::WITH,
+                    'a = r.apartment'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

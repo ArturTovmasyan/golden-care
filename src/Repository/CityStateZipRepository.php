@@ -32,6 +32,35 @@ class CityStateZipRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('csz')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = csz.space'
+            )
+            ->where('csz.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $ids
      * @return mixed
      */
