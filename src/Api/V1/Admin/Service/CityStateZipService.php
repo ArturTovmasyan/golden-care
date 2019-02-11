@@ -22,12 +22,12 @@ class CityStateZipService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(CityStateZip::class)->search($queryBuilder);
+        $this->em->getRepository(CityStateZip::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(CityStateZip::class)->findAll();
+        return $this->em->getRepository(CityStateZip::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class CityStateZipService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(CityStateZip::class)->find($id);
+        return $this->em->getRepository(CityStateZip::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -89,7 +89,7 @@ class CityStateZipService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var CityStateZip $entity */
-            $entity = $this->em->getRepository(CityStateZip::class)->find($id);
+            $entity = $this->em->getRepository(CityStateZip::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new CityStateZipNotFoundException();
@@ -134,7 +134,7 @@ class CityStateZipService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var CityStateZip $entity */
-            $entity = $this->em->getRepository(CityStateZip::class)->find($id);
+            $entity = $this->em->getRepository(CityStateZip::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new CityStateZipNotFoundException();
@@ -162,7 +162,7 @@ class CityStateZipService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
-            $cszs = $this->em->getRepository(CityStateZip::class)->findByIds($ids);
+            $cszs = $this->em->getRepository(CityStateZip::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($cszs)) {
                 throw new CityStateZipNotFoundException();

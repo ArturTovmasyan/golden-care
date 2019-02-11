@@ -15,20 +15,55 @@ use Doctrine\ORM\QueryBuilder;
 class CityStateZipRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(CityStateZip::class, 'csz')
-            ->leftJoin(
+            ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = csz.space'
-            )
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
             ->groupBy('csz.id');
+    }
+
+
+    /**
+     * @param Space|null $space
+     * @return mixed
+     */
+    public function list(Space $space = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('csz')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = csz.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -61,12 +96,25 @@ class CityStateZipRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('csz');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = csz.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('csz.id', $ids))
             ->groupBy('csz.id')
