@@ -45,6 +45,7 @@ class MainListener
      * @param EntityManagerInterface $em
      * @param Security $security
      * @param Reader $reader
+     * @param GrantService $grantService
      */
     public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService)
     {
@@ -131,7 +132,7 @@ class MainListener
         }
 
         // normalize json
-        if ($event->getRequest()->getMethod() != 'GET' &&
+        if ($event->getRequest()->getMethod() !== 'GET' &&
             ($event->getRequest()->getContentType() === 'application/json' || $event->getRequest()->getContentType() === 'json') &&
             !empty($event->getRequest()->getContent())
         ) {
@@ -145,7 +146,7 @@ class MainListener
             /** @var User $user **/
             $user = $this->security->getToken()->getUser();
 
-            if (($user instanceof User) && !($user->isActiveNow())) {
+            if ($user instanceof User) {
                 $this->grantService->setCurrentUser($user);
 
                 $this->checkPermission($event, $user);

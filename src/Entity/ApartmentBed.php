@@ -200,7 +200,6 @@ class ApartmentBed
 
     /**
      * @param ApartmentRoom|null $room
-     * @return ApartmentBed
      */
     public function setRoom(?ApartmentRoom $room): void
     {

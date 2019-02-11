@@ -27,7 +27,7 @@ class FacilityRoomService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(FacilityRoom::class)->search($queryBuilder);
+        $this->em->getRepository(FacilityRoom::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
@@ -42,16 +42,16 @@ class FacilityRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            $rooms = $this->em->getRepository(FacilityRoom::class)->findBy(['facility' => $facilityId]);
+            $rooms = $this->em->getRepository(FacilityRoom::class)->getBy($currentSpace, $facilityId);
         } else {
-            $rooms = $this->em->getRepository(FacilityRoom::class)->findAll();
+            $rooms = $this->em->getRepository(FacilityRoom::class)->list($currentSpace);
         }
 
         if (!empty($rooms)) {
 
             $roomIds = array_map(function(FacilityRoom $item){return $item->getId();} , $rooms);
 
-            $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdsByRooms($roomIds);
+            $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdsByRooms($currentSpace, $roomIds);
             $bedIds = [];
             if (\count($facilityBeds)) {
                 $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
@@ -116,7 +116,7 @@ class FacilityRoomService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        $room = $this->em->getRepository(FacilityRoom::class)->find($id);
+        $room = $this->em->getRepository(FacilityRoom::class)->getOne($currentSpace, $id);
 
         if ($room !== null) {
             /** @var ArrayCollection $beds */
@@ -158,7 +158,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
+            $facility = $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -205,8 +205,10 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var FacilityRoom $entity */
-            $entity = $this->em->getRepository(FacilityRoom::class)->find($id);
+            $entity = $this->em->getRepository(FacilityRoom::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -215,7 +217,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
+            $facility = $this->em->getRepository(Facility::class)->getOne($currentSpace, $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -249,7 +251,7 @@ class FacilityRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
-                        $action = $this->em->getRepository(ContractAction::class)->getResidentByBed(ContractType::TYPE_FACILITY, $existingBed->getId());
+                        $action = $this->em->getRepository(ContractAction::class)->getResidentByBed($currentSpace, ContractType::TYPE_FACILITY, $existingBed->getId());
 
                         if ($action !== null) {
                             throw new CanNotRemoveBadException();
@@ -296,7 +298,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var FacilityRoom $entity */
-            $entity = $this->em->getRepository(FacilityRoom::class)->find($id);
+            $entity = $this->em->getRepository(FacilityRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -324,7 +326,7 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityRoomNotFoundException();
             }
 
-            $facilityRooms = $this->em->getRepository(FacilityRoom::class)->findByIds($ids);
+            $facilityRooms = $this->em->getRepository(FacilityRoom::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($facilityRooms)) {
                 throw new FacilityRoomNotFoundException();

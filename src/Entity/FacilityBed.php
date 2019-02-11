@@ -201,7 +201,6 @@ class FacilityBed
 
     /**
      * @param FacilityRoom|null $room
-     * @return FacilityBed
      */
     public function setRoom(?FacilityRoom $room): void
     {
