@@ -26,12 +26,12 @@ class AssessmentCareLevelService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(CareLevel::class)->search($queryBuilder);
+        $this->em->getRepository(CareLevel::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(CareLevel::class)->findAll();
+        return $this->em->getRepository(CareLevel::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -40,7 +40,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(CareLevel::class)->find($id);
+        return $this->em->getRepository(CareLevel::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -65,7 +65,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->find($careLevelGroupId);
+            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->getOne($this->grantService->getCurrentSpace(), $careLevelGroupId);
 
             if ($careLevelGroup === null) {
                 throw new AssessmentCareLevelGroupNotFoundException();
@@ -105,6 +105,8 @@ class AssessmentCareLevelService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $spaceId          = $params['space_id'] ?? 0;
             $careLevelGroupId = $params['care_level_group_id'] ?? 0;
 
@@ -114,13 +116,13 @@ class AssessmentCareLevelService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->find($careLevelGroupId);
+            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->getOne($currentSpace, $careLevelGroupId);
 
             if ($careLevelGroup === null) {
                 throw new AssessmentCareLevelGroupNotFoundException();
             }
 
-            $careLevel = $this->em->getRepository(CareLevel::class)->find($id);
+            $careLevel = $this->em->getRepository(CareLevel::class)->getOne($currentSpace, $id);
 
             if ($careLevel === null) {
                 throw new AssessmentCareLevelNotFoundException();
@@ -154,7 +156,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var CareLevel $careLevel */
-            $careLevel = $this->em->getRepository(CareLevel::class)->find($id);
+            $careLevel = $this->em->getRepository(CareLevel::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($careLevel === null) {
                 throw new AssessmentCareLevelNotFoundException();
@@ -182,7 +184,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
                 throw new AssessmentCareLevelNotFoundException();
             }
 
-            $careLevels = $this->em->getRepository(CareLevel::class)->findByIds($ids);
+            $careLevels = $this->em->getRepository(CareLevel::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($careLevels)) {
                 throw new AssessmentCareLevelNotFoundException();

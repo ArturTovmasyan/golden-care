@@ -39,7 +39,6 @@ class CareLevelGroupRepository extends EntityRepository
             ->groupBy('aclg.id');
     }
 
-
     /**
      * @param Space|null $space
      * @return mixed
