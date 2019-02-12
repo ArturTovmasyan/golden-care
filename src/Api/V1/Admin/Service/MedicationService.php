@@ -22,12 +22,12 @@ class MedicationService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Medication::class)->search($queryBuilder);
+        $this->em->getRepository(Medication::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Medication::class)->findAll();
+        return $this->em->getRepository(Medication::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class MedicationService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Medication::class)->find($id);
+        return $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -87,7 +87,7 @@ class MedicationService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->find($id);
+            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
@@ -130,7 +130,7 @@ class MedicationService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->find($id);
+            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
@@ -158,7 +158,7 @@ class MedicationService extends BaseService implements IGridService
                 throw new MedicationNotFoundException();
             }
 
-            $medications = $this->em->getRepository(Medication::class)->findByIds($ids);
+            $medications = $this->em->getRepository(Medication::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($medications)) {
                 throw new MedicationNotFoundException();
