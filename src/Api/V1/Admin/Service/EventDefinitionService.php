@@ -22,12 +22,12 @@ class EventDefinitionService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(EventDefinition::class)->search($queryBuilder);
+        $this->em->getRepository(EventDefinition::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(EventDefinition::class)->findAll();
+        return $this->em->getRepository(EventDefinition::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class EventDefinitionService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(EventDefinition::class)->find($id);
+        return $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -91,7 +91,7 @@ class EventDefinitionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var EventDefinition $entity */
-            $entity = $this->em->getRepository(EventDefinition::class)->find($id);
+            $entity = $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new EventDefinitionNotFoundException();
@@ -138,7 +138,7 @@ class EventDefinitionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var EventDefinition $entity */
-            $entity = $this->em->getRepository(EventDefinition::class)->find($id);
+            $entity = $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new EventDefinitionNotFoundException();
@@ -166,7 +166,7 @@ class EventDefinitionService extends BaseService implements IGridService
                 throw new EventDefinitionNotFoundException();
             }
 
-            $eventDefinitions = $this->em->getRepository(EventDefinition::class)->findByIds($ids);
+            $eventDefinitions = $this->em->getRepository(EventDefinition::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($eventDefinitions)) {
                 throw new EventDefinitionNotFoundException();
