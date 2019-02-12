@@ -39,7 +39,6 @@ class CityStateZipRepository extends EntityRepository
             ->groupBy('csz.id');
     }
 
-
     /**
      * @param Space|null $space
      * @return mixed
