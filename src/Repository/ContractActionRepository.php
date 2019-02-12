@@ -30,10 +30,10 @@ use Doctrine\ORM\QueryBuilder;
 class ContractActionRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(ContractAction::class, 'ca')
@@ -42,17 +42,62 @@ class ContractActionRepository extends EntityRepository
                 'c',
                 Join::WITH,
                 'c = ca.contract'
-            )
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = c.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
             ->groupBy('ca.id');
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Contract::class,
+                    'c',
+                    Join::WITH,
+                    'c = ca.contract'
+                )
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = c.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('ca.id', $ids))
             ->groupBy('ca.id')
@@ -61,17 +106,37 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $id
      * @return mixed
      */
-    public function getContractLastAction($id)
+    public function getContractLastAction(Space $space = null, $id)
     {
-        $qb = $this->createQueryBuilder('ca');
-
-        return $qb
+        $qb = $this
+            ->createQueryBuilder('ca')
             ->join('ca.contract', 'c')
             ->where('c.id=:id')
-            ->setParameter('id', $id)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = c.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->orderBy('ca.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -79,10 +144,11 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $id
      * @return mixed
      */
-    public function getActiveByResident($id)
+    public function getActiveByResident(Space $space = null, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -95,17 +161,30 @@ class ContractActionRepository extends EntityRepository
             ->setParameter('id', $id)
             ->setParameter('state', ContractState::ACTIVE);
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param $id
      * @return mixed
      */
-    public function getDataByResident($type, $id)
+    public function getDataByResident(Space $space = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -119,6 +198,18 @@ class ContractActionRepository extends EntityRepository
             ->setParameter('type', $type)
             ->setParameter('id', $id)
             ->setParameter('state', ContractState::ACTIVE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         switch ($type) {
             case ContractType::TYPE_FACILITY:
@@ -476,11 +567,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param id
      * @return mixed
      */
-    public function getActiveResidentsByStrategy($type, $id)
+    public function getActiveResidentsByStrategy(Space $space = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -498,6 +590,18 @@ class ContractActionRepository extends EntityRepository
             ->andWhere('c.type=:type')
             ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         switch ($type) {
             case ContractType::TYPE_FACILITY:
@@ -540,11 +644,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param id
      * @return mixed
      */
-    public function getInactiveResidentsByStrategy($type, $id)
+    public function getInactiveResidentsByStrategy(Space $space = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -562,6 +667,18 @@ class ContractActionRepository extends EntityRepository
             ->where('ca.end IS NOT NULL')
             ->andWhere('c.type=:type')
             ->setParameter('type', $type);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         switch ($type) {
             case ContractType::TYPE_FACILITY:

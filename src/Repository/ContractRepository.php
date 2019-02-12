@@ -2,23 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\Apartment;
-use App\Entity\ApartmentBed;
-use App\Entity\ContractAction;
-use App\Entity\ContractApartmentOption;
-use App\Entity\ContractFacilityOption;
-use App\Entity\ContractRegionOption;
-use App\Entity\Facility;
-use App\Entity\FacilityBed;
-use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\Contract;
-use App\Model\ContractState;
-use App\Model\ContractType;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\UnexpectedResultException;
 
 /**
  * Class ContractRepository
@@ -27,29 +16,167 @@ use Doctrine\ORM\UnexpectedResultException;
 class ContractRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Contract::class, 'c')
-            ->leftJoin(
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = c.resident'
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
+            ->groupBy('c.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getBy(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('c')
+            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
                 'r = c.resident'
             )
-            ->groupBy('c.id');
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('c')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = c.resident'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('c.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOneBy(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('c')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = c.resident'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :id AND c.end IS NULL')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('c');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = c.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('c.id', $ids))
             ->groupBy('c.id')

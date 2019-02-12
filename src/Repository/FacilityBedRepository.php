@@ -56,6 +56,47 @@ class FacilityBedRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('fb')
+            ->innerJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'fr = fb.room'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = f.space'
+            )
+            ->where('fb.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */

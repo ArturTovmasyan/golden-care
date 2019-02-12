@@ -56,6 +56,47 @@ class ApartmentBedRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('ab')
+            ->innerJoin(
+                ApartmentRoom::class,
+                'ar',
+                Join::WITH,
+                'ar = ab.room'
+            )
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = a.space'
+            )
+            ->where('ab.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */

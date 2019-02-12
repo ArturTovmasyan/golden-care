@@ -32,6 +32,35 @@ class RegionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $ids
      * @return mixed
      */

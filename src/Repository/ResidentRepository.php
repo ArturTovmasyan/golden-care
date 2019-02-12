@@ -58,6 +58,35 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $ids
      * @return mixed
      */
@@ -107,7 +136,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -328,7 +357,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -502,7 +531,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -691,7 +720,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();

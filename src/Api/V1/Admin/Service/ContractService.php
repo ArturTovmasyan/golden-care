@@ -56,7 +56,7 @@ class ContractService extends BaseService implements IGridService
             ->where('c.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(Contract::class)->search($queryBuilder);
+        $this->em->getRepository(Contract::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
@@ -64,7 +64,7 @@ class ContractService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(Contract::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(Contract::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -76,7 +76,7 @@ class ContractService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Contract::class)->find($id);
+        return $this->em->getRepository(Contract::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -85,7 +85,7 @@ class ContractService extends BaseService implements IGridService
      */
     public function getActiveById($id)
     {
-        $action = $this->em->getRepository(ContractAction::class)->getActiveByResident($id);
+        $action = $this->em->getRepository(ContractAction::class)->getActiveByResident($this->grantService->getCurrentSpace(), $id);
         return $action ? $action->getContract() : null;
     }
 
@@ -96,7 +96,7 @@ class ContractService extends BaseService implements IGridService
      */
     public function getActiveResidentsByStrategy($type, $id)
     {
-        return $this->em->getRepository(ContractAction::class)->getActiveResidentsByStrategy($type, $id);
+        return $this->em->getRepository(ContractAction::class)->getActiveResidentsByStrategy($this->grantService->getCurrentSpace(), $type, $id);
     }
 
     /**
@@ -106,7 +106,7 @@ class ContractService extends BaseService implements IGridService
      */
     public function getInactiveResidentsByStrategy($type, $id)
     {
-        return $this->em->getRepository(ContractAction::class)->getInactiveResidentsByStrategy($type, $id);
+        return $this->em->getRepository(ContractAction::class)->getInactiveResidentsByStrategy($this->grantService->getCurrentSpace(), $type, $id);
     }
 
     /**
@@ -118,17 +118,19 @@ class ContractService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
             /** @var Contract $activeContract */
-            $activeContract = $this->em->getRepository(Contract::class)->findOneBy(['resident' => $residentId, 'end' => null]);
+            $activeContract = $this->em->getRepository(Contract::class)->getOneBy($currentSpace, $residentId);
 
             if ($activeContract !== null) {
                 throw new ContractAlreadyExistException();
@@ -221,8 +223,10 @@ class ContractService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var Contract $entity */
-            $entity = $this->em->getRepository(Contract::class)->find($id);
+            $entity = $this->em->getRepository(Contract::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ContractNotFoundException();
@@ -231,7 +235,7 @@ class ContractService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -327,7 +331,9 @@ class ContractService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
-            $resident = $this->em->getRepository(Resident::class)->find($id);
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $id);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -342,7 +348,7 @@ class ContractService extends BaseService implements IGridService
             //assignment mode
             if (!empty($params['move_id'])) {
                 /** @var ContractAction $action */
-                $action = $this->em->getRepository(ContractAction::class)->getDataByResident($type, $id);
+                $action = $this->em->getRepository(ContractAction::class)->getDataByResident($currentSpace, $type, $id);
 
                 if ($action === null) {
                     throw new ContractActionNotFoundException();
@@ -354,7 +360,7 @@ class ContractService extends BaseService implements IGridService
                 switch ($type) {
                     case ContractType::TYPE_FACILITY:
                         /** @var FacilityBed $entity */
-                        $entity = $this->em->getRepository(FacilityBed::class)->find($moveId);
+                        $entity = $this->em->getRepository(FacilityBed::class)->getOne($currentSpace, $moveId);
 
                         if ($entity === null) {
                             throw new FacilityBedNotFoundException();
@@ -379,7 +385,7 @@ class ContractService extends BaseService implements IGridService
                         break;
                     case ContractType::TYPE_APARTMENT:
                         /** @var ApartmentBed $entity */
-                        $entity = $this->em->getRepository(ApartmentBed::class)->find($moveId);
+                        $entity = $this->em->getRepository(ApartmentBed::class)->getOne($currentSpace, $moveId);
 
                         if ($entity === null) {
                             throw new ApartmentBedNotFoundException();
@@ -414,7 +420,7 @@ class ContractService extends BaseService implements IGridService
             //transfer mode
             if (!empty($params['option'])) {
                 /** @var ContractAction $action */
-                $action = $this->em->getRepository(ContractAction::class)->getActiveByResident($id);
+                $action = $this->em->getRepository(ContractAction::class)->getActiveByResident($currentSpace, $id);
 
                 if ($action === null) {
                     throw new ContractActionNotFoundException();
@@ -503,13 +509,15 @@ class ContractService extends BaseService implements IGridService
      */
     private function saveFacilityOption(Contract $contract, array $params, bool $editMode)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         /**
          * @var ContractFacilityOption $option
          * @var DiningRoom $diningRoom
          * @var FacilityBed $facilityBed
          * @var CareLevel $careLevel
          */
-        $option = $this->em->getRepository(ContractFacilityOption::class)->findOneBy(['contract' => $contract]);
+        $option = $this->em->getRepository(ContractFacilityOption::class)->getOneBy($currentSpace, $contract);
 
         if (!isset($params['dining_room_id']) || !$params['dining_room_id']) {
             throw new DiningRoomNotFoundException();
@@ -523,9 +531,9 @@ class ContractService extends BaseService implements IGridService
             throw new CareLevelNotFoundException();
         }
 
-        $diningRoom = $this->em->getRepository(DiningRoom::class)->find($params['dining_room_id']);
-        $facilityBed = $this->em->getRepository(FacilityBed::class)->find($params['bed_id']);
-        $careLevel = $this->em->getRepository(CareLevel::class)->find($params['care_level_id']);
+        $diningRoom = $this->em->getRepository(DiningRoom::class)->getOne($currentSpace, $params['dining_room_id']);
+        $facilityBed = $this->em->getRepository(FacilityBed::class)->getOne($currentSpace, $params['bed_id']);
+        $careLevel = $this->em->getRepository(CareLevel::class)->getOne($currentSpace, $params['care_level_id']);
 
         if ($diningRoom === null) {
             throw new DiningRoomNotFoundException();
@@ -575,17 +583,19 @@ class ContractService extends BaseService implements IGridService
      */
     private function saveApartmentOption(Contract $contract, array $params, bool $editMode)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         /**
          * @var ContractApartmentOption $option
          * @var ApartmentBed $apartmentBed
          */
-        $option = $this->em->getRepository(ContractApartmentOption::class)->findOneBy(['contract' => $contract]);
+        $option = $this->em->getRepository(ContractApartmentOption::class)->getOneBy($currentSpace, $contract);
 
         if (!isset($params['bed_id']) || !$params['bed_id']) {
             throw new ApartmentBedNotFoundException();
         }
 
-        $apartmentBed = $this->em->getRepository(ApartmentBed::class)->find($params['bed_id']);
+        $apartmentBed = $this->em->getRepository(ApartmentBed::class)->getOne($currentSpace, $params['bed_id']);
 
         if ($apartmentBed === null) {
             throw new ApartmentBedNotFoundException();
@@ -621,13 +631,15 @@ class ContractService extends BaseService implements IGridService
      */
     private function saveRegionOption(Contract $contract, array $params, bool $editMode)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         /**
          * @var ContractRegionOption $option
          * @var Region $region
          * @var CityStateZip $csz
          * @var CareLevel $careLevel
          */
-        $option = $this->em->getRepository(ContractRegionOption::class)->findOneBy(['contract' => $contract]);
+        $option = $this->em->getRepository(ContractRegionOption::class)->getOneBy($currentSpace, $contract);
 
         if (!isset($params['region_id']) || !$params['region_id']) {
             throw new RegionNotFoundException();
@@ -641,9 +653,9 @@ class ContractService extends BaseService implements IGridService
             throw new CareLevelNotFoundException();
         }
 
-        $region = $this->em->getRepository(Region::class)->find($params['region_id']);
-        $csz = $this->em->getRepository(CityStateZip::class)->find($params['csz_id']);
-        $careLevel = $this->em->getRepository(CareLevel::class)->find($params['care_level_id']);
+        $region = $this->em->getRepository(Region::class)->getOne($currentSpace, $params['region_id']);
+        $csz = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
+        $careLevel = $this->em->getRepository(CareLevel::class)->getOne($currentSpace, $params['care_level_id']);
 
         if ($region === null) {
             throw new RegionNotFoundException();
@@ -716,7 +728,7 @@ class ContractService extends BaseService implements IGridService
 
         if ($editMode) {
             /** @var ContractAction $lastAction */
-            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($this->grantService->getCurrentSpace(), $contract->getId());
 
             if ($lastAction !== null) {
                 $lastAction->setEnd($newDateTime);
@@ -753,7 +765,7 @@ class ContractService extends BaseService implements IGridService
 
         if ($editMode) {
             /** @var ContractAction $lastAction */
-            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($this->grantService->getCurrentSpace(), $contract->getId());
 
             if ($lastAction !== null) {
                 $lastAction->setEnd($newDateTime);
@@ -797,7 +809,7 @@ class ContractService extends BaseService implements IGridService
 
         if ($editMode) {
             /** @var ContractAction $lastAction */
-            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($contract->getId());
+            $lastAction = $this->em->getRepository(ContractAction::class)->getContractLastAction($this->grantService->getCurrentSpace(), $contract->getId());
 
             if ($lastAction !== null) {
                 $lastAction->setEnd($newDateTime);
@@ -820,7 +832,7 @@ class ContractService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Contract $entity */
-            $entity = $this->em->getRepository(Contract::class)->find($id);
+            $entity = $this->em->getRepository(Contract::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ContractNotFoundException();
@@ -848,7 +860,7 @@ class ContractService extends BaseService implements IGridService
                 throw new ContractNotFoundException();
             }
 
-            $contracts = $this->em->getRepository(Contract::class)->findByIds($ids);
+            $contracts = $this->em->getRepository(Contract::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($contracts)) {
                 throw new ContractNotFoundException();

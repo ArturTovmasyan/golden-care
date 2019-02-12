@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\DiningRoom;
 use App\Entity\Facility;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -22,13 +23,48 @@ class DiningRoomRepository extends EntityRepository
     {
         $queryBuilder
             ->from(DiningRoom::class, 'dr')
-            ->leftJoin(
+            ->innerJoin(
                 Facility::class,
                 'f',
                 Join::WITH,
                 'f = dr.facility'
             )
             ->groupBy('dr.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('dr')
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = dr.facility'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = f.space'
+            )
+            ->where('dr.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
