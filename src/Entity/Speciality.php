@@ -20,17 +20,17 @@ use App\Annotation\Grid;
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "s.id"
+ *              "field"      = "sp.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "s.title"
+ *              "field"      = "sp.title"
  *          },
  *          {
  *              "id"         = "space",
  *              "type"       = "string",
- *              "field"      = "sp.name"
+ *              "field"      = "s.name"
  *          }
  *     }
  * )

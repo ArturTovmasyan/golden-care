@@ -15,29 +15,105 @@ use Doctrine\ORM\QueryBuilder;
 class SalutationRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Salutation::class, 'sa')
-            ->leftJoin(
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = sa.space'
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
+            ->groupBy('sa.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @return mixed
+     */
+    public function list(Space $space = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('sa')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = sa.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('sa')
+            ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = sa.space'
             )
-            ->groupBy('sa.id');
+            ->where('sa.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('sa');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = sa.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('sa.id', $ids))
             ->groupBy('sa.id')
