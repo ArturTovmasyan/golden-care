@@ -22,12 +22,12 @@ class MedicationFormFactorService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(MedicationFormFactor::class)->search($queryBuilder);
+        $this->em->getRepository(MedicationFormFactor::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(MedicationFormFactor::class)->findAll();
+        return $this->em->getRepository(MedicationFormFactor::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class MedicationFormFactorService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(MedicationFormFactor::class)->find($id);
+        return $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -85,7 +85,7 @@ class MedicationFormFactorService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var MedicationFormFactor $entity */
-            $entity = $this->em->getRepository(MedicationFormFactor::class)->find($id);
+            $entity = $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -126,7 +126,7 @@ class MedicationFormFactorService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var MedicationFormFactor $entity */
-            $entity = $this->em->getRepository(MedicationFormFactor::class)->find($id);
+            $entity = $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -154,7 +154,7 @@ class MedicationFormFactorService extends BaseService implements IGridService
                 throw new MedicationFormFactorNotFoundException();
             }
 
-            $factors = $this->em->getRepository(MedicationFormFactor::class)->findByIds($ids);
+            $factors = $this->em->getRepository(MedicationFormFactor::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($factors)) {
                 throw new MedicationFormFactorNotFoundException();

@@ -22,12 +22,12 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(MedicalHistoryCondition::class)->search($queryBuilder);
+        $this->em->getRepository(MedicalHistoryCondition::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(MedicalHistoryCondition::class)->findAll();
+        return $this->em->getRepository(MedicalHistoryCondition::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(MedicalHistoryCondition::class)->find($id);
+        return $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -86,7 +86,7 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var MedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->find($id);
+            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new MedicalHistoryConditionNotFoundException();
@@ -128,7 +128,7 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var MedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->find($id);
+            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new MedicalHistoryConditionNotFoundException();
@@ -156,7 +156,7 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
                 throw new MedicalHistoryConditionNotFoundException();
             }
 
-            $conditions = $this->em->getRepository(MedicalHistoryCondition::class)->findByIds($ids);
+            $conditions = $this->em->getRepository(MedicalHistoryCondition::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($conditions)) {
                 throw new MedicalHistoryConditionNotFoundException();
