@@ -22,12 +22,12 @@ class DietService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Diet::class)->search($queryBuilder);
+        $this->em->getRepository(Diet::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Diet::class)->findAll();
+        return $this->em->getRepository(Diet::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class DietService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Diet::class)->find($id);
+        return $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -86,7 +86,7 @@ class DietService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Diet $entity */
-            $entity = $this->em->getRepository(Diet::class)->find($id);
+            $entity = $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new DietNotFoundException();
@@ -128,7 +128,7 @@ class DietService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Diet $entity */
-            $entity = $this->em->getRepository(Diet::class)->find($id);
+            $entity = $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new DietNotFoundException();
@@ -156,7 +156,7 @@ class DietService extends BaseService implements IGridService
                 throw new DietNotFoundException();
             }
 
-            $diets = $this->em->getRepository(Diet::class)->findByIds($ids);
+            $diets = $this->em->getRepository(Diet::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($diets)) {
                 throw new DietNotFoundException();
