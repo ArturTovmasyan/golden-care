@@ -22,18 +22,20 @@ class DiningRoomService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(DiningRoom::class)->search($queryBuilder);
+        $this->em->getRepository(DiningRoom::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            return $this->em->getRepository(DiningRoom::class)->findBy(['facility' => $facilityId]);
+            return $this->em->getRepository(DiningRoom::class)->getBy($currentSpace, $facilityId);
         }
 
-        return $this->em->getRepository(DiningRoom::class)->findAll();
+        return $this->em->getRepository(DiningRoom::class)->list($currentSpace);
     }
 
     /**
@@ -42,7 +44,7 @@ class DiningRoomService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(DiningRoom::class)->find($id);
+        return $this->em->getRepository(DiningRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -57,7 +59,7 @@ class DiningRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
+            $facility = $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -90,8 +92,10 @@ class DiningRoomService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var DiningRoom $entity */
-            $entity = $this->em->getRepository(DiningRoom::class)->find($id);
+            $entity = $this->em->getRepository(DiningRoom::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -100,7 +104,7 @@ class DiningRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->find($facilityId);
+            $facility = $this->em->getRepository(Facility::class)->getOne($currentSpace, $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -132,7 +136,7 @@ class DiningRoomService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var DiningRoom $entity */
-            $entity = $this->em->getRepository(DiningRoom::class)->find($id);
+            $entity = $this->em->getRepository(DiningRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -160,7 +164,7 @@ class DiningRoomService extends BaseService implements IGridService
                 throw new DiningRoomNotFoundException();
             }
 
-            $diningRooms = $this->em->getRepository(DiningRoom::class)->findByIds($ids);
+            $diningRooms = $this->em->getRepository(DiningRoom::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($diningRooms)) {
                 throw new DiningRoomNotFoundException();
