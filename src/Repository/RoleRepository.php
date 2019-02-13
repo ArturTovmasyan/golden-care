@@ -36,4 +36,19 @@ class RoleRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Role
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getDefaultRole()
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb
+            ->where('r.default = :default')
+            ->setParameter('default', true)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

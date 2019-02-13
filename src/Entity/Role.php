@@ -33,6 +33,11 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "name",
  *              "type"       = "string",
  *              "field"      = "r.name"
+ *          },
+ *          {
+ *              "id"         = "default",
+ *              "type"       = "boolean",
+ *              "field"      = "r.default"
  *          }
  *     }
  * )
@@ -69,6 +74,24 @@ class Role
      * })
      */
     private $name;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="is_default", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_role_grid",
+     *     "api_admin_role_list",
+     *     "api_admin_role_get",
+     *     "api_dashboard_space_role_grid",
+     *     "api_dashboard_space_role_list",
+     *     "api_dashboard_space_role_get"
+     * })
+     * @Assert\GreaterThanOrEqual(value=0, groups={
+     *     "api_admin_role_add",
+     *     "api_admin_role_edit"
+     * })
+     */
+    protected $default;
 
     /**
      * @var array $grants
@@ -155,6 +178,22 @@ class Role
     public function setUsers($users): void
     {
         $this->users = $users;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault(): ?bool
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param bool $default
+     */
+    public function setDefault(?bool $default): void
+    {
+        $this->default = $default;
     }
 
 }

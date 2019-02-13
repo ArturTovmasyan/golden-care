@@ -57,8 +57,9 @@ class UserService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            // TODO: check role if exists this should be taken account when admin
             /** @var Space $space */
-            $space = $this->em->getRepository(User::class)->find($params['space_id']);
+            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -75,15 +76,15 @@ class UserService extends BaseService implements IGridService
             $user->setSpace($space);
 
             if(\count($params['roles']) > 0) {
-                $roles = [];
+                $user->getRoleObjects()->clear();
+
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($role_id);
                     if($role) {
-                        $roles[] = $role;
+                        $user->getRoleObjects()->add($role);
                     }
                 }
-                $user->setRoles($roles);
             }
 
             $user->setLastActivityAt(new \DateTime());
@@ -126,8 +127,9 @@ class UserService extends BaseService implements IGridService
                 throw new UserNotFoundException();
             }
 
+            // TODO: check role if exists this should be taken account when admin
             /** @var Space $space */
-            $space = $this->em->getRepository(User::class)->find($params['space_id']);
+            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -142,15 +144,15 @@ class UserService extends BaseService implements IGridService
             $user->setSpace($space);
 
             if(\count($params['roles']) > 0) {
-                $roles = [];
+                $user->getRoleObjects()->clear();
+
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($role_id);
                     if($role) {
-                        $roles[] = $role;
+                        $user->getRoleObjects()->add($role);
                     }
                 }
-                $user->setRoles($roles);
             }
 
             if(!empty($params['password'])) {
