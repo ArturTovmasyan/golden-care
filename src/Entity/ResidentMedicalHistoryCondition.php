@@ -60,7 +60,10 @@ class ResidentMedicalHistoryCondition
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_medical_history_condition_add",
+     *     "api_admin_resident_medical_history_condition_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -71,8 +74,14 @@ class ResidentMedicalHistoryCondition
 
     /**
      * @var MedicalHistoryCondition
-     * @Assert\NotNull(message = "Please select a MedicalHistoryCondition", groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
-     * @Assert\Valid(groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
+     * @Assert\NotNull(message = "Please select a MedicalHistoryCondition", groups={
+     *     "api_admin_resident_medical_history_condition_add",
+     *     "api_admin_resident_medical_history_condition_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_medical_history_condition_add",
+     *     "api_admin_resident_medical_history_condition_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\MedicalHistoryCondition", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medical_history_condition", referencedColumnName="id", onDelete="CASCADE")
@@ -87,16 +96,24 @@ class ResidentMedicalHistoryCondition
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medical_history_condition_add",
+     *          "api_admin_resident_medical_history_condition_edit"
+     * })
      * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
      */
     private $notes;
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank(groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
-     * @Assert\DateTime(groups={"api_admin_resident_medical_history_condition_add", "api_admin_resident_medical_history_condition_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_medical_history_condition_add",
+     *     "api_admin_resident_medical_history_condition_edit"
+     * })
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_medical_history_condition_add",
+     *     "api_admin_resident_medical_history_condition_edit"
+     * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
      */

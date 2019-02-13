@@ -77,12 +77,17 @@ class CareLevel
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_care_level_add",
+     *     "api_admin_care_level_edit"
+     * })
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
-     * )
+     *      groups={
+     *           "api_admin_care_level_add",
+     *           "api_admin_care_level_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_care_level_grid",
@@ -102,15 +107,20 @@ class CareLevel
      * @Assert\Length(
      *      max = 500,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_care_level_add", "api_admin_care_level_edit"}
-     * )
+     *      groups={
+     *          "api_admin_care_level_add",
+     *          "api_admin_care_level_edit"
+     * })
      * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
      */
     private $description;
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_care_level_add",
+     *     "api_admin_care_level_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

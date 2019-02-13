@@ -74,12 +74,17 @@ class Salutation
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_salutation_add",
+     *     "api_admin_salutation_edit"
+     * })
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_salutation_add", "api_admin_salutation_edit"}
-     * )
+     *      groups={
+     *          "api_admin_salutation_add",
+     *          "api_admin_salutation_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_salutation_grid",
@@ -99,7 +104,10 @@ class Salutation
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_salutation_add", "api_admin_salutation_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_salutation_add",
+     *     "api_admin_salutation_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

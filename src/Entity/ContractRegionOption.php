@@ -35,11 +35,16 @@ class ContractRegionOption
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
      * @Assert\Choice(
      *     callback={"App\Model\ContractState","getTypeValues"},
-     *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
-     * )
+     *     groups={
+     *         "api_admin_contract_add",
+     *         "api_admin_contract_edit"
+     * })
      * @ORM\Column(name="state", type="integer", length=1)
      * @Groups({
      *     "api_admin_contract_grid",
@@ -97,8 +102,10 @@ class ContractRegionOption
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Address cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_contract_add", "api_admin_contract_edit"}
-     * )
+     *      groups={
+     *          "api_admin_contract_add",
+     *          "api_admin_contract_edit"
+     * })
      * @ORM\Column(name="address", type="string", length=200)
      * @Groups({
      *     "api_admin_contract_grid",

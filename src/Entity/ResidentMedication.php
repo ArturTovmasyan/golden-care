@@ -110,7 +110,10 @@ class ResidentMedication
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -121,7 +124,10 @@ class ResidentMedication
 
     /**
      * @var Physician
-     * @Assert\NotNull(message = "Please select a Physician", groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotNull(message = "Please select a Physician", groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Physician")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
@@ -132,7 +138,10 @@ class ResidentMedication
 
     /**
      * @var Medication
-     * @Assert\NotNull(message = "Please select a Medication", groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotNull(message = "Please select a Medication", groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Medication")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
@@ -143,7 +152,10 @@ class ResidentMedication
 
     /**
      * @var MedicationFormFactor
-     * @Assert\NotNull(message = "Please select a MedicationFormFactor", groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotNull(message = "Please select a MedicationFormFactor", groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\MedicationFormFactor")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_form_factor", referencedColumnName="id", onDelete="CASCADE")
@@ -155,16 +167,23 @@ class ResidentMedication
     /**
      * @var string $dosage
      * @ORM\Column(name="dosage", type="string", length=10)
-     * @Assert\NotBlank(groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @Assert\Regex(pattern= "/[0-9\.\-\/]+/",
      *     message="The value {{ value }} is not a valid type. Try to add something like '2, 0.5, 10/15, 0.4-4'",
-     *     groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *     groups={
+     *         "api_admin_resident_medication_add",
+     *         "api_admin_resident_medication_edit"
+     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Dosage cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $dosage;
@@ -172,15 +191,23 @@ class ResidentMedication
     /**
      * @var string $dosageUnit
      * @ORM\Column(name="dosage_unit", type="string", length=100)
-     * @Assert\NotBlank(groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_medication_add",
+     *     "api_admin_resident_medication_edit"
+     * })
      * @Assert\Regex(pattern= "/[a-zA-Z0-9\%\+\/]+/",
      *     message="The value {{ value }} is not a valid type. Available symbols are: '%, +, /'",
-     *     groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *     groups={
+     *         "api_admin_resident_medication_add",
+     *         "api_admin_resident_medication_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Dosage unit cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"},
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     *},
      * )
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
@@ -192,8 +219,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 40,
      *      maxMessage = "Prescription number cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $prescriptionNumber;
@@ -204,8 +233,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $notes;
@@ -216,8 +247,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Am cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $am = 0;
@@ -228,8 +261,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Nn cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $nn = 0;
@@ -240,8 +275,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Pm cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $pm = 0;
@@ -252,8 +289,10 @@ class ResidentMedication
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Hs cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_add", "api_admin_resident_medication_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_add",
+     *          "api_admin_resident_medication_edit"
+     * })
      * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
      */
     private $hs = 0;

@@ -55,12 +55,17 @@ class PaymentSource
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_payment_source_add", "api_admin_payment_source_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_payment_source_add",
+     *     "api_admin_payment_source_edit"
+     * })
      * @Assert\Length(
      *      max = 50,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_payment_source_add", "api_admin_payment_source_edit"}
-     * )
+     *      groups={
+     *          "api_admin_payment_source_add",
+     *          "api_admin_payment_source_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=50)
      * @Groups({
      *     "api_admin_payment_source_grid",
@@ -72,7 +77,10 @@ class PaymentSource
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_payment_source_add", "api_admin_payment_source_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_payment_source_add",
+     *     "api_admin_payment_source_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

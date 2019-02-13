@@ -94,7 +94,10 @@ class CareLevel
      *      }
      * )
      * @ORM\Column(name="title", type="string", length=255)
-     * @Assert\NotBlank(groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_care_level_add",
+     *     "api_admin_care_level_edit"
+     * })
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",

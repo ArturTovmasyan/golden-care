@@ -55,7 +55,10 @@ class ResidentMedicationAllergy
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_medication_allergy_add", "api_admin_resident_medication_allergy_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_medication_allergy_add",
+     *     "api_admin_resident_medication_allergy_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -66,8 +69,14 @@ class ResidentMedicationAllergy
 
     /**
      * @var Medication
-     * @Assert\NotNull(message = "Please select a Medication", groups={"api_admin_resident_medication_allergy_add", "api_admin_resident_medication_allergy_edit"})
-     * @Assert\Valid(groups={"api_admin_resident_medication_allergy_add", "api_admin_resident_medication_allergy_edit"})
+     * @Assert\NotNull(message = "Please select a Medication", groups={
+     *     "api_admin_resident_medication_allergy_add",
+     *     "api_admin_resident_medication_allergy_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_medication_allergy_add",
+     *     "api_admin_resident_medication_allergy_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Medication", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
@@ -82,8 +91,10 @@ class ResidentMedicationAllergy
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_medication_allergy_add", "api_admin_resident_medication_allergy_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_medication_allergy_add",
+     *          "api_admin_resident_medication_allergy_edit"
+     * })
      * @Groups({"api_admin_resident_medication_allergy_grid", "api_admin_resident_medication_allergy_list", "api_admin_resident_medication_allergy_get"})
      */
     private $notes;

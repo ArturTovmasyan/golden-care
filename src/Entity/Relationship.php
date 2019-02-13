@@ -62,7 +62,10 @@ class Relationship
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_relationship_add",
+     *     "api_admin_relationship_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_relationship_grid",
@@ -76,7 +79,10 @@ class Relationship
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_relationship_add", "api_admin_relationship_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_relationship_add",
+     *     "api_admin_relationship_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

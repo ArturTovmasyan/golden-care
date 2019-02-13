@@ -16,8 +16,14 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 /**
  * @ORM\Table(name="tbl_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="This email address was already in use.", groups={"api_admin_user_add", "api_account_signup"})
- * @UniqueEntity(fields="username", message="This username was already taken.", groups={"api_admin_user_add", "api_account_signup"})
+ * @UniqueEntity(fields="email", message="This email address was already in use.", groups={
+ *     "api_admin_user_add",
+ *     "api_account_signup"
+ * })
+ * @UniqueEntity(fields="username", message="This username was already taken.", groups={
+ *     "api_admin_user_add",
+ *     "api_account_signup"
+ * })
  * @Grid(
  *     api_admin_user_grid={
  *          {
@@ -176,7 +182,9 @@ class User implements UserInterface
      * @Assert\Regex(
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
      *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
-     *     groups={"api_account_signup"})
+     *     groups={
+     *         "api_account_signup"
+     * })
      */
     private $phone;
 
@@ -234,8 +242,12 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @SecurityAssert\UserPassword(groups={"api_profile_change_password"})
-     * @Assert\NotBlank(groups={"api_profile_change_password"})
+     * @SecurityAssert\UserPassword(groups={
+     *     "api_profile_change_password"
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_profile_change_password"
+     * })
      * @ValidationSerializedName(
      *     api_profile_change_password="password"
      * )
@@ -244,7 +256,12 @@ class User implements UserInterface
 
     /**
      * @var string $plainPassword
-     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_account_signup", "api_account_reset_password"})
+     * @Assert\NotBlank(groups={
+     *     "api_profile_change_password",
+     *     "api_admin_user_add",
+     *     "api_account_signup",
+     *     "api_account_reset_password"
+     * })
      * @Assert\NotEqualTo(
      *     propertyPath="oldPassword",
      *     groups={
@@ -363,7 +380,10 @@ class User implements UserInterface
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_space_add", "api_admin_space_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_space_add",
+     *     "api_admin_space_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

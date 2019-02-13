@@ -60,7 +60,10 @@ class ResidentDiet
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_diet_add", "api_admin_resident_diet_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_diet_add",
+     *     "api_admin_resident_diet_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -71,7 +74,10 @@ class ResidentDiet
 
     /**
      * @var Diet
-     * @Assert\NotNull(message = "Please select a Diet", groups={"api_admin_resident_diet_add", "api_admin_resident_diet_edit"})
+     * @Assert\NotNull(message = "Please select a Diet", groups={
+     *     "api_admin_resident_diet_add",
+     *     "api_admin_resident_diet_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Diet")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diet", referencedColumnName="id", onDelete="CASCADE")
@@ -83,12 +89,17 @@ class ResidentDiet
     /**
      * @var string $description
      * @ORM\Column(name="description", type="text", length=512)
-     * @Assert\NotBlank(groups={"api_admin_resident_diet_add", "api_admin_resident_diet_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_diet_add",
+     *     "api_admin_resident_diet_edit"
+     * })
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_diet_add", "api_admin_resident_diet_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_diet_add",
+     *          "api_admin_resident_diet_edit"
+     * })
      * @Groups({"api_admin_resident_diet_grid", "api_admin_resident_diet_list", "api_admin_resident_diet_get"})
      */
     private $description;

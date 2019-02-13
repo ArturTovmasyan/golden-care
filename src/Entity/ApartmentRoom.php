@@ -20,8 +20,10 @@ use App\Annotation\Grid;
  *     fields={"apartment", "number"},
  *     errorPath="number",
  *     message="This number is already in use on that apartment",
- *     groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
- * )
+ *     groups={
+ *         "api_admin_apartment_room_add",
+ *         "api_admin_apartment_room_edit"
+ * })
  * @ORM\Table(name="tbl_apartment_room")
  * @Grid(
  *     api_admin_apartment_room_grid={
@@ -75,7 +77,10 @@ class ApartmentRoom
 
     /**
      * @var Apartment
-     * @Assert\NotNull(message = "Please select a Apartment", groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     * @Assert\NotNull(message = "Please select a Apartment", groups={
+     *     "api_admin_apartment_room_add",
+     *     "api_admin_apartment_room_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Apartment", inversedBy="rooms", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_apartment", referencedColumnName="id", onDelete="CASCADE")
@@ -92,12 +97,17 @@ class ApartmentRoom
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_room_add",
+     *     "api_admin_apartment_room_edit"
+     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Number cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_room_add",
+     *          "api_admin_apartment_room_edit"
+     * })
      * @ORM\Column(name="number", type="string", length=10)
      * @Groups({
      *     "api_admin_apartment_room_grid",
@@ -110,12 +120,17 @@ class ApartmentRoom
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_room_add",
+     *     "api_admin_apartment_room_edit"
+     * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]?$)/",
      *      message="The value should be numeric and more than zero and no longer than 2 characters.",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="floor", type="integer", length=2)
      * @Groups({
      *     "api_admin_apartment_room_grid",
@@ -132,8 +147,10 @@ class ApartmentRoom
      * @Assert\Length(
      *      max = 1000,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_room_add",
+     *          "api_admin_apartment_room_edit"
+     * })
      * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
      */
     private $notes;
@@ -143,9 +160,14 @@ class ApartmentRoom
      * @Assert\Count(
      *      min = 1,
      *      minMessage = "You must specify at least one bed.",
-     *      groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"}
-     * )
-     * @Assert\Valid(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     *      groups={
+     *          "api_admin_apartment_room_add",
+     *          "api_admin_apartment_room_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_apartment_room_add",
+     *     "api_admin_apartment_room_edit"
+     * })
      * @ORM\OneToMany(targetEntity="App\Entity\ApartmentBed", mappedBy="room", cascade={"remove", "persist"})
      * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
      */
@@ -260,7 +282,10 @@ class ApartmentRoom
 
     /**
      * @param ExecutionContextInterface $context
-     * @Assert\Callback(groups={"api_admin_apartment_room_add", "api_admin_apartment_room_edit"})
+     * @Assert\Callback(groups={
+     *     "api_admin_apartment_room_add",
+     *     "api_admin_apartment_room_edit"
+     * })
      */
     public function areBedsNumberValid(ExecutionContextInterface $context): void
     {

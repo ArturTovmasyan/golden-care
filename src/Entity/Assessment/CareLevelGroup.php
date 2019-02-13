@@ -76,7 +76,10 @@ class CareLevelGroup
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_care_level_add", "api_admin_care_level_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_care_level_add",
+     *     "api_admin_care_level_edit"
+     * })
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",

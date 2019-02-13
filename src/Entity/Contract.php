@@ -68,15 +68,24 @@ class Contract
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
      * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
      */
     private $resident;
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
-     * @Assert\DateTime(groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
+     * @Assert\DateTime(groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
      *     "api_admin_contract_grid",
@@ -89,7 +98,10 @@ class Contract
 
     /**
      * @var \DateTime
-     * @Assert\DateTime(groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @Assert\DateTime(groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
      * @Groups({
      *     "api_admin_contract_grid",

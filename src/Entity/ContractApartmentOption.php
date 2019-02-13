@@ -33,11 +33,16 @@ class ContractApartmentOption
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_contract_add", "api_admin_contract_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_contract_add",
+     *     "api_admin_contract_edit"
+     * })
      * @Assert\Choice(
      *     callback={"App\Model\ContractState","getTypeValues"},
-     *     groups={"api_admin_contract_add", "api_admin_contract_edit"}
-     * )
+     *     groups={
+     *         "api_admin_contract_add",
+     *         "api_admin_contract_edit"
+     * })
      * @ORM\Column(name="state", type="integer", length=1)
      * @Groups({
      *     "api_admin_contract_grid",

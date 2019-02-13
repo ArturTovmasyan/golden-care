@@ -87,12 +87,17 @@ class CityStateZip
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_city_state_zip_add",
+     *     "api_admin_city_state_zip_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "State Full cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
-     * )
+     *      groups={
+     *          "api_admin_city_state_zip_add",
+     *          "api_admin_city_state_zip_edit"
+     * })
      * @ORM\Column(name="state_full", type="string", length=100)
      * @Groups({
      *     "api_admin_city_state_zip_list",
@@ -104,12 +109,17 @@ class CityStateZip
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_city_state_zip_add",
+     *     "api_admin_city_state_zip_edit"
+     * })
      * @Assert\Regex(
      *     pattern="/\b([A-Z]{2})\b/",
      *     message="Invalid State abbreviation.",
-     *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
-     * )
+     *     groups={
+     *         "api_admin_city_state_zip_add",
+     *         "api_admin_city_state_zip_edit"
+     * })
      * @ORM\Column(name="state_abbr", type="string", length=2)
      * @Groups({
      *     "api_admin_city_state_zip_list",
@@ -128,12 +138,17 @@ class CityStateZip
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_city_state_zip_add",
+     *     "api_admin_city_state_zip_edit"
+     * })
      * @Assert\Regex(
      *     pattern="/^[0-9]{5}([- ]?[0-9]{4})?$/",
      *     message="Invalid ZIP code.",
-     *     groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
-     * )
+     *     groups={
+     *         "api_admin_city_state_zip_add",
+     *         "api_admin_city_state_zip_edit"
+     * })
      * @ORM\Column(name="zip_main", type="string", length=10)
      * @Groups({
      *     "api_admin_city_state_zip_list",
@@ -156,8 +171,10 @@ class CityStateZip
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "ZIP Sub cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
-     * )
+     *      groups={
+     *          "api_admin_city_state_zip_add",
+     *          "api_admin_city_state_zip_edit"
+     * })
      * @Groups({
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
@@ -170,12 +187,17 @@ class CityStateZip
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_city_state_zip_add",
+     *     "api_admin_city_state_zip_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "City cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"}
-     * )
+     *      groups={
+     *          "api_admin_city_state_zip_add",
+     *          "api_admin_city_state_zip_edit"
+     * })
      * @ORM\Column(name="city", type="string", length=100)
      * @Groups({
      *     "api_admin_city_state_zip_list",
@@ -194,7 +216,10 @@ class CityStateZip
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_city_state_zip_add", "api_admin_city_state_zip_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_city_state_zip_add",
+     *     "api_admin_city_state_zip_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

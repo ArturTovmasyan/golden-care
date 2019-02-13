@@ -13,7 +13,9 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_space_edit"})
+ * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={
+ *     "api_admin_space_edit"
+ * })
  *     api_admin_space_grid={
  *          {
  *              "id"         = "id",
@@ -149,7 +151,10 @@ class Space
      *     "api_admin_allergen_get",
      *     "api_admin_allergen_list"
      * })
-     * @Assert\NotBlank(groups={"api_admin_space_edit", "api_account_signup"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_space_edit",
+     *     "api_account_signup"
+     * })
      */
     private $name;
 

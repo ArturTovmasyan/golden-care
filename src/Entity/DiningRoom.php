@@ -61,12 +61,17 @@ class DiningRoom
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_dining_room_add",
+     *     "api_admin_dining_room_edit"
+     * })
      * @Assert\Length(
      *      max = 50,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"}
-     * )
+     *      groups={
+     *          "api_admin_dining_room_add",
+     *          "api_admin_dining_room_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=50)
      * @Groups({
      *     "api_admin_dining_room_grid",
@@ -82,7 +87,10 @@ class DiningRoom
 
     /**
      * @var Facility
-     * @Assert\NotNull(message = "Please select a Facility", groups={"api_admin_dining_room_add", "api_admin_dining_room_edit"})
+     * @Assert\NotNull(message = "Please select a Facility", groups={
+     *     "api_admin_dining_room_add",
+     *     "api_admin_dining_room_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Facility")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")

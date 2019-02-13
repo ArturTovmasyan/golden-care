@@ -77,12 +77,17 @@ class Region
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_region_add", "api_admin_region_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_region_add",
+     *     "api_admin_region_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Name cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_region_add", "api_admin_region_edit"}
-     * )
+     *      groups={
+     *          "api_admin_region_add",
+     *          "api_admin_region_edit"
+     * })
      * @ORM\Column(name="name", type="string", length=100)
      * @Groups({
      *     "api_admin_region_grid",
@@ -101,20 +106,27 @@ class Region
      * @Assert\Length(
      *      max = 1000,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_region_add", "api_admin_region_edit"}
-     * )
+     *      groups={
+     *         "api_admin_region_add",
+     *         "api_admin_region_edit"
+     * })
      * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
      */
     private $description;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_region_add", "api_admin_region_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_region_add",
+     *     "api_admin_region_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Shorthand cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_region_add", "api_admin_region_edit"}
-     * )
+     *      groups={
+     *          "api_admin_region_add",
+     *          "api_admin_region_edit"
+     * })
      * @ORM\Column(name="shorthand", type="string", length=100)
      * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
      */
@@ -158,7 +170,10 @@ class Region
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_region_add", "api_admin_region_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_region_add",
+     *     "api_admin_region_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

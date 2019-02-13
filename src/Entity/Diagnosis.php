@@ -66,7 +66,10 @@ class Diagnosis
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_diagnosis_add", "api_admin_diagnosis_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_diagnosis_add",
+     *     "api_admin_diagnosis_edit"
+     * })
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
@@ -124,7 +127,10 @@ class Diagnosis
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_diagnosis_add", "api_admin_diagnosis_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_diagnosis_add",
+     *     "api_admin_diagnosis_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

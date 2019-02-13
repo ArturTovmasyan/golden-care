@@ -62,7 +62,10 @@ class ResidentDiagnosis
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_diagnosis_add",
+     *     "api_admin_resident_diagnosis_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -73,8 +76,14 @@ class ResidentDiagnosis
 
     /**
      * @var Diagnosis
-     * @Assert\NotNull(message = "Please select a Diagnosis", groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"})
-     * @Assert\Valid(groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"})
+     * @Assert\NotNull(message = "Please select a Diagnosis", groups={
+     *     "api_admin_resident_diagnosis_add",
+     *     "api_admin_resident_diagnosis_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_diagnosis_add",
+     *     "api_admin_resident_diagnosis_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Diagnosis", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diagnosis", referencedColumnName="id", onDelete="CASCADE")
@@ -85,11 +94,16 @@ class ResidentDiagnosis
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_diagnosis_add",
+     *     "api_admin_resident_diagnosis_edit"
+     * })
      * @Assert\Choice(
      *     callback={"App\Model\DiagnosisType","getTypeValues"},
-     *     groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"}
-     * )
+     *     groups={
+     *         "api_admin_resident_diagnosis_add",
+     *         "api_admin_resident_diagnosis_edit"
+     * })
      * @ORM\Column(name="type", type="integer", length=1)
      * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
      */
@@ -101,8 +115,10 @@ class ResidentDiagnosis
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_diagnosis_add", "api_admin_resident_diagnosis_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_diagnosis_add",
+     *          "api_admin_resident_diagnosis_edit"
+     * })
      * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
      */
     private $notes;

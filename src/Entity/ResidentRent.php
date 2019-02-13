@@ -77,7 +77,10 @@ class ResidentRent
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -88,8 +91,14 @@ class ResidentRent
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank(groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
-     * @Assert\DateTime(groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
@@ -97,7 +106,10 @@ class ResidentRent
 
     /**
      * @var \DateTime
-     * @Assert\DateTime(groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
      * @Groups({
      *     "api_admin_resident_rent_grid",
@@ -109,11 +121,16 @@ class ResidentRent
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
      * @Assert\Choice(
      *     callback={"App\Model\RentPeriod","getTypeValues"},
-     *     groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
-     * )
+     *     groups={
+     *         "api_admin_resident_rent_add",
+     *         "api_admin_resident_rent_edit"
+     * })
      * @ORM\Column(name="rent_period", type="integer", length=1)
      * @Groups({
      *     "api_admin_resident_rent_grid",
@@ -126,17 +143,24 @@ class ResidentRent
     /**
      * @var int $amount
      * @ORM\Column(name="amount", type="float", length=10)
-     * @Assert\NotBlank(groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_rent_add",
+     *     "api_admin_resident_rent_edit"
+     * })
      * @Assert\Regex(
      *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value {{ value }} is not a valid type. Try to add something like '2000, 0.55, 100.34'",
-     *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_rent_add",
+     *          "api_admin_resident_rent_edit"
+     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_rent_add",
+     *          "api_admin_resident_rent_edit"
+     * })
      * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
     private $amount;
@@ -147,8 +171,10 @@ class ResidentRent
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_rent_add",
+     *          "api_admin_resident_rent_edit"
+     * })
      * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
     private $notes;
@@ -159,8 +185,10 @@ class ResidentRent
      * @Assert\Count(
      *      max = 10,
      *      maxMessage = "You cannot specify more than {{ limit }} sources",
-     *      groups={"api_admin_resident_rent_add", "api_admin_resident_rent_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_rent_add",
+     *          "api_admin_resident_rent_edit"
+     * })
      * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
      */
     private $source = [];

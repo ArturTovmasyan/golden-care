@@ -63,7 +63,10 @@ class Role
      *     "api_admin_role_get",
      *     "api_profile_me"
      * })
-     * @Assert\NotBlank(groups={"api_admin_role_add", "api_admin_role_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_role_add",
+     *     "api_admin_role_edit"
+     * })
      */
     private $name;
 

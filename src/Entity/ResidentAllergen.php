@@ -55,7 +55,10 @@ class ResidentAllergen
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_allergen_add", "api_admin_resident_allergen_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_allergen_add",
+     *     "api_admin_resident_allergen_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -66,8 +69,14 @@ class ResidentAllergen
 
     /**
      * @var Allergen
-     * @Assert\NotNull(message = "Please select a Allergen", groups={"api_admin_resident_allergen_add", "api_admin_resident_allergen_edit"})
-     * @Assert\Valid(groups={"api_admin_resident_allergen_add", "api_admin_resident_allergen_edit"})
+     * @Assert\NotNull(message = "Please select a Allergen", groups={
+     *     "api_admin_resident_allergen_add",
+     *     "api_admin_resident_allergen_edit"
+     * })
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_allergen_add",
+     *     "api_admin_resident_allergen_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Allergen", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_allergen", referencedColumnName="id", onDelete="CASCADE")
@@ -82,8 +91,10 @@ class ResidentAllergen
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_allergen_add", "api_admin_resident_allergen_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_allergen_add",
+     *          "api_admin_resident_allergen_edit"
+     * })
      * @Groups({"api_admin_resident_allergen_grid", "api_admin_resident_allergen_list", "api_admin_resident_allergen_get"})
      */
     private $notes;

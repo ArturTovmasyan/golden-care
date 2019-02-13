@@ -75,7 +75,9 @@ class ResidentEvent
 
     /**
      * @var EventDefinition
-     * @Assert\NotNull(message = "Please select a Definition", groups={"api_admin_resident_event_add"})
+     * @Assert\NotNull(message = "Please select a Definition", groups={
+     *     "api_admin_resident_event_add"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\EventDefinition")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_definition", referencedColumnName="id", onDelete="CASCADE")
@@ -86,7 +88,10 @@ class ResidentEvent
 
     /**
      * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={"api_admin_resident_event_add", "api_admin_resident_event_edit"})
+     * @Assert\NotNull(message = "Please select a Resident", groups={
+     *     "api_admin_resident_event_add",
+     *     "api_admin_resident_event_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
@@ -97,8 +102,14 @@ class ResidentEvent
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank(groups={"api_admin_resident_event_add", "api_admin_resident_event_edit"})
-     * @Assert\DateTime(groups={"api_admin_resident_event_add", "api_admin_resident_event_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_event_add",
+     *     "api_admin_resident_event_edit"
+     * })
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_event_add",
+     *     "api_admin_resident_event_edit"
+     * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
      */
@@ -110,8 +121,10 @@ class ResidentEvent
      * @Assert\Length(
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_resident_event_add", "api_admin_resident_event_edit"}
-     * )
+     *      groups={
+     *          "api_admin_resident_event_add",
+     *          "api_admin_resident_event_edit"
+     * })
      * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
      */
     private $notes;
@@ -138,7 +151,10 @@ class ResidentEvent
 
     /**
      * @var \DateTime
-     * @Assert\DateTime(groups={"api_admin_resident_event_add", "api_admin_resident_event_edit"})
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_event_add",
+     *     "api_admin_resident_event_edit"
+     * })
      * @ORM\Column(name="additional_date", type="datetime", nullable=true)
      * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
      */

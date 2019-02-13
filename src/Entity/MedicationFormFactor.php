@@ -56,12 +56,17 @@ class MedicationFormFactor
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_medication_form_factor_add", "api_admin_medication_form_factor_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_medication_form_factor_add",
+     *     "api_admin_medication_form_factor_edit"
+     * })
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_medication_form_factor_add", "api_admin_medication_form_factor_edit"}
-     * )
+     *      groups={
+     *          "api_admin_medication_form_factor_add",
+     *          "api_admin_medication_form_factor_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=200)
      * @Groups({
      *     "api_admin_medication_form_factor_grid",
@@ -75,7 +80,10 @@ class MedicationFormFactor
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_medication_form_factor_add", "api_admin_medication_form_factor_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_medication_form_factor_add",
+     *     "api_admin_medication_form_factor_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

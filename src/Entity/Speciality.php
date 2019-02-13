@@ -61,8 +61,10 @@ class Speciality
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_speciality_add", "api_admin_speciality_edit"}
-     * )
+     *      groups={
+     *          "api_admin_speciality_add",
+     *          "api_admin_speciality_edit"
+     * })
      * @ORM\Column(name="title", type="string", length=255)
      * @Assert\NotBlank(groups={
      *     "api_admin_speciality_add",

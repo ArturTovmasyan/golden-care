@@ -109,7 +109,10 @@ class Allergen
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_allergen_add", "api_admin_allergen_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_allergen_add",
+     *     "api_admin_allergen_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")

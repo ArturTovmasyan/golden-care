@@ -106,12 +106,17 @@ class Apartment
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Name cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="name", type="string", length=100)
      * @Groups({
      *     "api_admin_apartment_list",
@@ -128,20 +133,27 @@ class Apartment
      * @Assert\Length(
      *      max = 1000,
      *      maxMessage = "Description cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
     private $description;
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Shorthand cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="shorthand", type="string", length=100)
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
@@ -184,12 +196,17 @@ class Apartment
     private $fax;
     /**
      * @var string
-     * @Assert\NotBlank(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @Assert\Length(
      *      max = 100,
      *      maxMessage = "Address cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="address", type="string", length=100)
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
@@ -201,15 +218,20 @@ class Apartment
      * @Assert\Length(
      *      max = 20,
      *      maxMessage = "License cannot be longer than {{ limit }} characters",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *           "api_admin_apartment_add",
+     *           "api_admin_apartment_edit"
+     * })
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
     private $license;
 
     /**
      * @var CityStateZip
-     * @Assert\NotNull(message = "Please select a City State & Zip", groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotNull(message = "Please select a City State & Zip", groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
@@ -220,12 +242,17 @@ class Apartment
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)/",
      *      message="The value should be numeric",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="license_capacity", type="integer")
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
@@ -233,12 +260,17 @@ class Apartment
 
     /**
      * @var int
-     * @Assert\NotBlank(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)/",
      *      message="The value should be numeric",
-     *      groups={"api_admin_apartment_add", "api_admin_apartment_edit"}
-     * )
+     *      groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit"
+     * })
      * @ORM\Column(name="capacity", type="integer")
      * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
      */
@@ -246,7 +278,10 @@ class Apartment
 
     /**
      * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\NotNull(message = "Please select a Space", groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
@@ -424,7 +459,10 @@ class Apartment
 
     /**
      * @param ExecutionContextInterface $context
-     * @Assert\Callback(groups={"api_admin_apartment_add", "api_admin_apartment_edit"})
+     * @Assert\Callback(groups={
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit"
+     * })
      */
     public function areCapacityValid(ExecutionContextInterface $context): void
     {
