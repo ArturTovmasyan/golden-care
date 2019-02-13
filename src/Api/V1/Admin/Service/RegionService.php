@@ -22,12 +22,12 @@ class RegionService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Region::class)->search($queryBuilder);
+        $this->em->getRepository(Region::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Region::class)->findAll();
+        return $this->em->getRepository(Region::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class RegionService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Region::class)->find($id);
+        return $this->em->getRepository(Region::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -89,7 +89,7 @@ class RegionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Region $entity */
-            $entity = $this->em->getRepository(Region::class)->find($id);
+            $entity = $this->em->getRepository(Region::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new RegionNotFoundException();
@@ -134,7 +134,7 @@ class RegionService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var Region $entity */
-            $entity = $this->em->getRepository(Region::class)->find($id);
+            $entity = $this->em->getRepository(Region::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new RegionNotFoundException();
@@ -162,7 +162,7 @@ class RegionService extends BaseService implements IGridService
                 throw new RegionNotFoundException();
             }
 
-            $regions = $this->em->getRepository(Region::class)->findByIds($ids);
+            $regions = $this->em->getRepository(Region::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($regions)) {
                 throw new RegionNotFoundException();

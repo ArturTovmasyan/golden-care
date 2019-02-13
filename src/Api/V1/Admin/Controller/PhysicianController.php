@@ -5,7 +5,6 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\PhysicianService;
 use App\Entity\Physician;
-use App\Entity\Space;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,8 +99,7 @@ class PhysicianController extends BaseController
             $request,
             Physician::class,
             'api_admin_physician_grid',
-            $physicianService,
-            ['space_id' => $request->get('space_id')]
+            $physicianService
         );
     }
 
@@ -225,8 +223,7 @@ class PhysicianController extends BaseController
             $request,
             Physician::class,
             'api_admin_physician_list',
-            $physicianService,
-            ['space_id' => $request->get('space_id')]
+            $physicianService
         );
     }
 

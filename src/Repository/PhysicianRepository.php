@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
 use App\Entity\Salutation;
@@ -19,142 +18,126 @@ use Doctrine\ORM\QueryBuilder;
 class PhysicianRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @param int|bool $spaceId
      */
-    public function search(QueryBuilder $queryBuilder, $spaceId = false)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Physician::class, 'p')
-            ->leftJoin(
-                Speciality::class,
-                'sp',
-                Join::WITH,
-                'sp = p.speciality'
-            )
-            ->leftJoin(
-                Salutation::class,
-                'sal',
-                Join::WITH,
-                'sal = p.salutation'
-            )
-            ->leftJoin(
+            ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = p.space'
             )
-            ->leftJoin(
-                CityStateZip::class,
-                'csz',
-                Join::WITH,
-                'csz = p.csz'
-            )
-            ->groupBy('p.id');
-
-        if ($spaceId) {
-            $queryBuilder
-                ->where('p.space = :spaceId')
-                ->setParameter('spaceId', $spaceId);
-        }
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param Space $space
-     */
-    public function searchBySpace(QueryBuilder $queryBuilder, Space $space)
-    {
-        $queryBuilder
-            ->from(Physician::class, 'p')
-            ->leftJoin(
-                Speciality::class,
-                'sp',
-                Join::WITH,
-                'sp = p.speciality'
-            )
-            ->leftJoin(
+            ->innerJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,
                 'sal = p.salutation'
             )
-            ->leftJoin(
+
+            ->innerJoin(
                 CityStateZip::class,
-                'csz',
+                'p',
                 Join::WITH,
                 'csz = p.csz'
             )
-            ->where('p.space = :space')
-            ->setParameter('space', $space)
+            ->leftJoin(
+                Speciality::class,
+                'sp',
+                Join::WITH,
+                'sp = p.speciality'
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
             ->groupBy('p.id');
     }
 
     /**
-     * @param Space $space
-     * @param $id
+     * @param Space|null $space
      * @return mixed
      */
-    public function findBySpaceAndId(Space $space, $id)
+    public function list(Space $space = null)
     {
-        try {
-            return $this->createQueryBuilder('p')
-                ->where('p.space = :space AND p.id=:id')
-                ->setParameter('space', $space)
-                ->setParameter('id', $id)
-                ->groupBy('p.id')
-                ->getQuery()
-                ->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
-            throw new PhysicianNotFoundException();
+        $qb = $this
+            ->createQueryBuilder('p')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = p.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
         }
-    }
 
-    /**
-     * @param Space $space
-     * @param $id
-     * @return mixed
-     */
-    public function findBySpace(Space $space)
-    {
-        try {
-            return $this->createQueryBuilder('p')
-                ->where('p.space = :space')
-                ->setParameter('space', $space)
-                ->groupBy('p.id')
-                ->getQuery()
-                ->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException | \Doctrine\ORM\NonUniqueResultException $e) {
-            throw new PhysicianNotFoundException();
-        }
-    }
-
-    /**
-     * @param $ids
-     * @return mixed
-     */
-    public function findByIds($ids)
-    {
-        $qb = $this->createQueryBuilder('p');
-
-        return $qb->where($qb->expr()->in('p.id', $ids))
-            ->groupBy('p.id')
+        return $qb
             ->getQuery()
             ->getResult();
     }
 
     /**
-     * @param $ids
-     * @param Space $space
+     * @param Space|null $space
+     * @param $id
      * @return mixed
      */
-    public function findByIdsAndSpace($ids, Space $space)
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('p')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = p.space'
+            )
+            ->where('p.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('p');
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = p.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         return $qb->where($qb->expr()->in('p.id', $ids))
-            ->andWhere('p.space = :space')
-            ->setParameter('space', $space)
             ->groupBy('p.id')
             ->getQuery()
             ->getResult();

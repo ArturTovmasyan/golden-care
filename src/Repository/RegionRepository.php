@@ -18,17 +18,51 @@ class RegionRepository extends EntityRepository
      * @param QueryBuilder $queryBuilder
      * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Region::class, 'r')
-            ->leftJoin(
+            ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = r.space'
-            )
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
             ->groupBy('r.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @return mixed
+     */
+    public function list(Space $space = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -61,12 +95,25 @@ class RegionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('r');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('r.id', $ids))
             ->groupBy('r.id')
