@@ -35,7 +35,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             ->where('rma.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentMedicationAllergy::class)->search($queryBuilder);
+        $this->em->getRepository(ResidentMedicationAllergy::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
@@ -43,7 +43,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentMedicationAllergy::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(ResidentMedicationAllergy::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -55,7 +55,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentMedicationAllergy::class)->find($id);
+        return $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -67,10 +67,12 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -95,7 +97,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             if (!empty($medicationId)) {
                 /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+                $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
 
                 if ($medication === null) {
                     throw new MedicationNotFoundException();
@@ -131,8 +133,10 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentMedicationAllergy $entity */
-            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->find($id);
+            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationAllergyNotFoundException();
@@ -141,7 +145,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -166,7 +170,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             if (!empty($medicationId)) {
                 /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->find($medicationId);
+                $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
 
                 if ($medication === null) {
                     throw new MedicationNotFoundException();
@@ -201,7 +205,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             $this->em->getConnection()->beginTransaction();
 
             /** @var ResidentMedicationAllergy $entity */
-            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->find($id);
+            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationAllergyNotFoundException();
@@ -229,7 +233,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
                 throw new ResidentMedicationAllergyNotFoundException();
             }
 
-            $residentMedicationAllergies = $this->em->getRepository(ResidentMedicationAllergy::class)->findByIds($ids);
+            $residentMedicationAllergies = $this->em->getRepository(ResidentMedicationAllergy::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($residentMedicationAllergies)) {
                 throw new ResidentMedicationAllergyNotFoundException();
