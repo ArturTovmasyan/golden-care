@@ -7,6 +7,7 @@ use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -18,47 +19,144 @@ use Doctrine\ORM\QueryBuilder;
 class ResidentResponsiblePersonRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @param bool $residentId
      */
-    public function search(QueryBuilder $queryBuilder, $residentId = false)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(ResidentResponsiblePerson::class, 'rrp')
-            ->leftJoin(
+            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
                 'r = rrp.resident'
             )
-            ->leftJoin(
+            ->innerJoin(
                 ResponsiblePerson::class,
                 'rp',
                 Join::WITH,
                 'rp = rrp.responsiblePerson'
             )
-            ->leftJoin(
+            ->innerJoin(
                 Relationship::class,
                 'rel',
                 Join::WITH,
                 'rel = rrp.relationship'
-            )
-            ->groupBy('rrp.id');
+            );
 
-        if ($residentId) {
+        if ($space !== null) {
             $queryBuilder
-                ->where('rrp.resident = :residentId')
-                ->setParameter('residentId', $residentId);
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
         }
+
+        $queryBuilder
+            ->groupBy('rrp.id');
     }
 
     /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getBy(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('rrp')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rrp.resident'
+            )
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOne(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('rrp')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rrp.resident'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('rrp.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('rrp');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = rrp.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('rrp.id', $ids))
             ->groupBy('rrp.id')

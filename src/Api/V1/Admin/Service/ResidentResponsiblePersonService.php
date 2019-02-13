@@ -9,7 +9,6 @@ use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Relationship;
 use App\Entity\Resident;
-use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use Doctrine\ORM\QueryBuilder;
@@ -27,28 +26,28 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $residentId = false;
-
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
 
-        $this->em->getRepository(ResidentResponsiblePerson::class)->search($queryBuilder, $residentId);
+        $residentId = $params[0]['resident_id'];
+
+        $queryBuilder
+            ->where('rrp.resident = :residentId')
+            ->setParameter('residentId', $residentId);
+
+        $this->em->getRepository(ResidentResponsiblePerson::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
-    /**
-     * @param $params
-     * @return array|object[]
-     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentResponsiblePerson::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(ResidentResponsiblePerson::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
-        return $this->em->getRepository(ResidentResponsiblePerson::class)->findAll();
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -57,7 +56,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentResponsiblePerson::class)->find($id);
+        return $this->em->getRepository(ResidentResponsiblePerson::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -74,23 +73,25 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId          = $params['resident_id'] ?? 0;
             $responsiblePersonId = $params['responsible_person_id'] ?? 0;
             $relationshipId      = $params['relationship_id'] ?? 0;
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->find($responsiblePersonId);
+            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->getOne($currentSpace, $responsiblePersonId);
 
             if ($responsiblePerson === null) {
                 throw new ResponsiblePersonNotFoundException();
             }
 
-            $relationship = $this->em->getRepository(Relationship::class)->find($relationshipId);
+            $relationship = $this->em->getRepository(Relationship::class)->getOne($currentSpace, $relationshipId);
 
             if ($relationship === null) {
                 throw new RelationshipNotFoundException();
@@ -129,7 +130,9 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
              */
             $this->em->getConnection()->beginTransaction();
 
-            $entity = $this->em->getRepository(ResidentResponsiblePerson::class)->find($id);
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $entity = $this->em->getRepository(ResidentResponsiblePerson::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ResidentResponsiblePersonNotFoundException();
@@ -139,19 +142,19 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $responsiblePersonId = $params['responsible_person_id'] ?? 0;
             $relationshipId      = $params['relationship_id'] ?? 0;
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->find($responsiblePersonId);
+            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->getOne($currentSpace, $responsiblePersonId);
 
             if ($responsiblePerson === null) {
                 throw new ResponsiblePersonNotFoundException();
             }
 
-            $relationship = $this->em->getRepository(Relationship::class)->find($relationshipId);
+            $relationship = $this->em->getRepository(Relationship::class)->getOne($currentSpace, $relationshipId);
 
             if ($relationship === null) {
                 throw new RelationshipNotFoundException();
@@ -184,7 +187,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $this->em->getConnection()->beginTransaction();
 
             /** @var ResidentResponsiblePerson $entity */
-            $entity = $this->em->getRepository(ResidentResponsiblePerson::class)->find($id);
+            $entity = $this->em->getRepository(ResidentResponsiblePerson::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ResidentResponsiblePersonNotFoundException();
@@ -212,7 +215,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                 throw new ResidentResponsiblePersonNotFoundException();
             }
 
-            $residentResponsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->findByIds($ids);
+            $residentResponsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($residentResponsiblePersons)) {
                 throw new ResidentResponsiblePersonNotFoundException();

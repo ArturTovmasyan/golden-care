@@ -25,28 +25,28 @@ class ResidentPhysicianService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $residentId = false;
-
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
 
-        $this->em->getRepository(ResidentPhysician::class)->search($queryBuilder, $residentId);
+        $residentId = $params[0]['resident_id'];
+
+        $queryBuilder
+            ->where('rp.resident = :residentId')
+            ->setParameter('residentId', $residentId);
+
+        $this->em->getRepository(ResidentPhysician::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
-    /**
-     * @param $params
-     * @return array|object[]
-     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentPhysician::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(ResidentPhysician::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
-        return $this->em->getRepository(ResidentPhysician::class)->findAll();
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -55,7 +55,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentPhysician::class)->find($id);
+        return $this->em->getRepository(ResidentPhysician::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -71,29 +71,26 @@ class ResidentPhysicianService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId  = $params['resident_id'] ?? 0;
             $physicianId = $params['physician_id'] ?? 0;
             $primary     = $params['primary'] ? (bool) $params['primary'] : false;
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
             }
 
             // check unique primary
-            if ($primary &&
-                $this->em->getRepository(ResidentPhysician::class)->findOneBy([
-                    'resident' => $resident,
-                    'primary'  => true,
-                ])
-            ) {
+            if ($primary && $this->em->getRepository(ResidentPhysician::class)->getOneBy($currentSpace, $resident)) {
                 throw new ResidentHavePrimaryPhysicianException();
             }
 
@@ -130,7 +127,9 @@ class ResidentPhysicianService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $entity = $this->em->getRepository(ResidentPhysician::class)->find($id);
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $entity = $this->em->getRepository(ResidentPhysician::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ResidentPhysicianNotFoundException();
@@ -140,13 +139,13 @@ class ResidentPhysicianService extends BaseService implements IGridService
             $physicianId = $params['physician_id'] ?? 0;
             $primary     = $params['primary'] ? (bool) $params['primary'] : false;
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $physician = $this->em->getRepository(Physician::class)->find($physicianId);
+            $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
@@ -154,10 +153,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             // check unique primary
             if ($primary) {
-                $primaryEntity = $this->em->getRepository(ResidentPhysician::class)->findOneBy([
-                    'resident' => $resident,
-                    'primary'  => true,
-                ]);
+                $primaryEntity = $this->em->getRepository(ResidentPhysician::class)->getOneBy($currentSpace, $resident);
 
                 if ($primaryEntity && $primaryEntity->getId() !== $id) {
                     throw new ResidentHavePrimaryPhysicianException();
@@ -191,7 +187,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var ResidentPhysician $entity */
-            $entity = $this->em->getRepository(ResidentPhysician::class)->find($id);
+            $entity = $this->em->getRepository(ResidentPhysician::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ResidentPhysicianNotFoundException();
@@ -219,7 +215,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
                 throw new ResidentPhysicianNotFoundException();
             }
 
-            $residentPhysicians = $this->em->getRepository(ResidentPhysician::class)->findByIds($ids);
+            $residentPhysicians = $this->em->getRepository(ResidentPhysician::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($residentPhysicians)) {
                 throw new ResidentPhysicianNotFoundException();
