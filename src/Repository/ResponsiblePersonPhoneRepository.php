@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ResponsiblePerson;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -12,6 +13,41 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class ResponsiblePersonPhoneRepository extends EntityRepository
 {
+    /**
+     * @param Space|null $space
+     * @param ResponsiblePerson $responsiblePerson
+     * @return mixed
+     */
+    public function getBy(Space $space = null, ResponsiblePerson $responsiblePerson)
+    {
+        $qb = $this
+            ->createQueryBuilder('rrp')
+            ->innerJoin(
+                ResponsiblePerson::class,
+                'rp',
+                Join::WITH,
+                'rp = rrp.responsiblePerson'
+            )
+            ->where('rp = :responsiblePerson')
+            ->setParameter('responsiblePerson', $responsiblePerson);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rp.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param array $responsiblePersonIds
      * @return mixed

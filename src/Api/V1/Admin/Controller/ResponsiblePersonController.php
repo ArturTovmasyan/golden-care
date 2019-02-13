@@ -201,8 +201,7 @@ class ResponsiblePersonController extends BaseController
             $request,
             ResponsiblePerson::class,
             'api_admin_responsible_person_list',
-            $responsiblePersonService,
-            ['space_id' => $request->get('space_id')]
+            $responsiblePersonService
         );
     }
 

@@ -22,12 +22,12 @@ class RelationshipService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Relationship::class)->search($queryBuilder);
+        $this->em->getRepository(Relationship::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Relationship::class)->findAll();
+        return $this->em->getRepository(Relationship::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -36,7 +36,7 @@ class RelationshipService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Relationship::class)->find($id);
+        return $this->em->getRepository(Relationship::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -87,7 +87,7 @@ class RelationshipService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $relationship = $this->em->getRepository(Relationship::class)->find($id);
+            $relationship = $this->em->getRepository(Relationship::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($relationship === null) {
                 throw new RelationshipNotFoundException();
@@ -130,7 +130,7 @@ class RelationshipService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $relationship = $this->em->getRepository(Relationship::class)->find($id);
+            $relationship = $this->em->getRepository(Relationship::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($relationship === null) {
                 throw new RelationshipNotFoundException();
@@ -158,7 +158,7 @@ class RelationshipService extends BaseService implements IGridService
                 throw new RelationshipNotFoundException();
             }
 
-            $relationships = $this->em->getRepository(Relationship::class)->findByIds($ids);
+            $relationships = $this->em->getRepository(Relationship::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($relationships)) {
                 throw new RelationshipNotFoundException();
