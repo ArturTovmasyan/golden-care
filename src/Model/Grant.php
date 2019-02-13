@@ -16,4 +16,38 @@ class Grant
     public static $LEVEL_DELETE = 4;
     public static $LEVEL_UNDELETE = 5;
 
+
+    public static function str2identity(?string $identity) : int
+    {
+        switch ($identity) {
+            case "ALL":
+                return self::$IDENTITY_ALL;
+            case "SEVERAL":
+                return self::$IDENTITY_SEVERAL;
+            case "OWN":
+                return self::$IDENTITY_OWN;
+            default:
+                return self::$IDENTITY_ALL;
+        }
+    }
+
+    public static function str2level(?string $level) : int
+    {
+        switch ($level) {
+            case "NONE":
+                return self::$LEVEL_NONE;
+            case "VIEW":
+                return self::$LEVEL_VIEW;
+            case "EDIT":
+                return self::$LEVEL_EDIT;
+            case "CREATE":
+                return self::$LEVEL_CREATE;
+            case "DELETE":
+                return self::$LEVEL_DELETE;
+            case "UNDELETE":
+                return self::$LEVEL_UNDELETE;
+            default:
+                return self::$LEVEL_NONE;
+        }
+    }
 }
