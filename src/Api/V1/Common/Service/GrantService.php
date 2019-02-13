@@ -2,9 +2,12 @@
 
 namespace App\Api\V1\Common\Service;
 
+use App\Api\V1\Common\Service\Exception\InvalidGrantConfigException;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Model\Grant;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -25,8 +28,6 @@ class GrantService
     private $config;
     /** @var array */
     private $config_flat; // TODO: review
-    /** @var array */
-    private $config_titles;
 
     /** @var EntityManagerInterface */
     private $em;
@@ -41,7 +42,6 @@ class GrantService
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-
         $this->em = $this->container->get('doctrine')->getManager();
 
         $this->load();
@@ -68,17 +68,60 @@ class GrantService
      */
     public function getCurrentSpace(): ?Space
     {
-        return $this->current_user->getSpace();
+        return $this->current_user ? $this->current_user->getSpace() : null;
     }
 
-    public function checkUserGrant(User $user, string $entityName) : bool {
+    /**
+     * @param string $entity_name
+     * @return array|null
+     */
+    public function getCurrentUserEntityGrants(string $entity_name): ?array
+    {
+        return $this->getEntityGrants($this->current_user, $entity_name);
+    }
+
+    /**
+     * @param User $user
+     * @param string $entity_name
+     * @return array|null
+     */
+    public function getEntityGrants(?User $user, string $entity_name): ?array
+    {
+        if($user === null) {
+            return null;
+        }
+
         $user_grants = $user->getGrants();
-//        $user_roles = $user->getRoles();
+        $role_grants = $this->getEffectiveGrants($user->getRoleObjects());
 
-        dump($this->config);
-        dump($this->config_flat);
+        $required_grants = array_filter($this->config_flat, function ($value) use ($entity_name) {
+            return array_key_exists('class', $value) && $value['class'] === $entity_name;
+        });
 
-        return null;
+        if (count($required_grants) > 1) {
+            throw new InvalidGrantConfigException();
+        }
+
+        /** @var array|null $allowed */
+        $allowed = null;
+
+        foreach ($required_grants as $key => $required_grant) {
+            if (array_key_exists($key, $role_grants)) {
+                switch ($role_grants[$key]['identity']) {
+                    case Grant::$IDENTITY_ALL:
+                        $allowed = null;
+                        break;
+                    case Grant::$IDENTITY_OWN:
+                        $allowed = null; // TODO: review
+                        break;
+                    case Grant::$IDENTITY_SEVERAL:
+                        $allowed = array_key_exists($key, $user_grants) ? $user_grants[$key] : [];
+                        break;
+                }
+            }
+        }
+
+        return $allowed;
     }
 
     /**
@@ -97,15 +140,67 @@ class GrantService
         $this->config = $config;
     }
 
+    /**
+     * @param array|Collection $roles
+     * @return array
+     */
+    public function getEffectiveGrants($roles)
+    {
+        $effective_role_grants = [];
 
-    public function getGrantsOfRoles(array $ids)
+        /** Role $role */
+        foreach ($roles as $role) {
+            $role_grants = $role->getGrants();
+
+            foreach ($role_grants as $key => $grant) {
+                if (!array_key_exists($key, $effective_role_grants)) {
+                    $effective_role_grants[$key] = [];
+                }
+
+                if (array_key_exists('enabled', $grant)) {
+                    if (array_key_exists('enabled', $effective_role_grants[$key])) {
+                        if ($grant['enabled']) {
+                            $effective_role_grants[$key]['enabled'] = $grant['enabled'];
+                        }
+                    } else {
+                        $effective_role_grants[$key]['enabled'] = $grant['enabled'];
+                    }
+                }
+
+                if (array_key_exists('identity', $grant)) {
+                    if (array_key_exists('identity', $effective_role_grants[$key])) {
+                        if ($grant['identity'] < $effective_role_grants[$key]['identity']) {
+                            $effective_role_grants[$key]['identity'] = $grant['identity'];
+                        }
+                    } else {
+                        $effective_role_grants[$key]['identity'] = $grant['identity'];
+                    }
+                }
+
+                if (array_key_exists('level', $grant)) {
+                    if (array_key_exists('level', $effective_role_grants[$key])) {
+                        if ($grant['level'] > $effective_role_grants[$key]['level']) {
+                            $effective_role_grants[$key]['level'] = $grant['level'];
+                        }
+                    } else {
+                        $effective_role_grants[$key]['level'] = $grant['level'];
+                    }
+                }
+            }
+        }
+
+        return $effective_role_grants;
+    }
+
+
+    public function getGrantsByRoleIds(array $ids)
     {
         $role_grants = [];
 
         foreach ($ids as $id) {
             $grants = $this->getGrantsOfRole($id);
 
-            if(is_array($grants)) {
+            if (is_array($grants)) {
                 $role_grants = array_merge($role_grants, $grants);
             }
         }
@@ -214,7 +309,7 @@ class GrantService
                 self::update_url_info($router, $node['children']);
             } else {
                 if (array_key_exists('route', $node)) {
-                    if($router->getRouteCollection()->get($node['route']) !== null) {
+                    if ($router->getRouteCollection()->get($node['route']) !== null) {
                         $node['url'] = $router->generate($node['route']/*, array('slug' => 'my-blog-post')*/);
                     }
                 }

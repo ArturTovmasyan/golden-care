@@ -16,8 +16,8 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 /**
  * @ORM\Table(name="tbl_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="This email address was already in use.", groups={"api_admin_user_add", "api_dashboard_account_signup"})
- * @UniqueEntity(fields="username", message="This username was already taken.", groups={"api_admin_user_add", "api_dashboard_account_signup"})
+ * @UniqueEntity(fields="email", message="This email address was already in use.", groups={"api_admin_user_add", "api_account_signup"})
+ * @UniqueEntity(fields="username", message="This username was already taken.", groups={"api_admin_user_add", "api_account_signup"})
  * @Grid(
  *     api_admin_user_grid={
  *          {
@@ -84,10 +84,7 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
      *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
@@ -100,13 +97,15 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
      *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me"
      * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
+     *     "api_account_signup"
+     * })
      */
     private $firstName;
 
@@ -116,13 +115,15 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
      *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me"
      * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_admin_user_edit", "api_profile_edit", "api_dashboard_space_user_complete", "api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
+     *     "api_account_signup"
+     * })
      */
     private $lastName;
 
@@ -132,13 +133,13 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
      *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me"
      * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_account_signup"
+     * })
      */
     private $username;
 
@@ -148,27 +149,34 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
      *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me"
      * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
-     * @Assert\Email(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_account_signup",
+     *     "api_user_invite"
+     * })
+     * @Assert\Email(groups={
+     *     "api_admin_user_add",
+     *     "api_account_signup",
+     *     "api_user_invite"
+     * })
      */
     private $email;
 
     /**
      * @var string
      * @Groups({
-     *     "api_dashboard_account_signup"
+     *     "api_account_signup"
      * })
-     * @Assert\NotBlank(groups={"api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={
+     *     "api_account_signup"
+     * })
      * @Assert\Regex(
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
      *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
-     *     groups={"api_dashboard_account_signup"})
+     *     groups={"api_account_signup"})
      */
     private $phone;
 
@@ -190,14 +198,14 @@ class User implements UserInterface
     /**
      * @var bool
      * @ORM\Column(name="enabled", type="boolean")
-     * @Assert\NotNull(groups={"api_admin_user_add", "api_admin_user_edit", "api_dashboard_space_user_complete"})
+     * @Assert\NotNull(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit"
+     * })
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
-     *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get"
+     *     "api_admin_user_get"
      * })
      */
     private $enabled;
@@ -208,10 +216,7 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
-     *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get"
+     *     "api_admin_user_get"
      * })
      */
     private $completed;
@@ -222,12 +227,8 @@ class User implements UserInterface
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
-     *     "api_dashboard_space_user_grid",
-     *     "api_dashboard_space_user_list",
-     *     "api_admin_user_get",
-     *     "api_dashboard_space_user_get"
+     *     "api_admin_user_get"
      * })
-     * @Assert\NotBlank(groups={"api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_user_invite"})
      */
     protected $lastActivityAt;
 
@@ -243,7 +244,7 @@ class User implements UserInterface
 
     /**
      * @var string $plainPassword
-     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_dashboard_account_signup", "api_dashboard_account_reset_password"})
+     * @Assert\NotBlank(groups={"api_profile_change_password", "api_admin_user_add", "api_account_signup", "api_account_reset_password"})
      * @Assert\NotEqualTo(
      *     propertyPath="oldPassword",
      *     groups={
@@ -258,15 +259,15 @@ class User implements UserInterface
      *         "api_profile_change_password",
      *         "api_admin_user_add",
      *         "api_admin_user_edit",
-     *         "api_dashboard_account_signup",
-     *         "api_dashboard_account_reset_password"
+     *         "api_account_signup",
+     *         "api_account_reset_password"
      *     }
      * )
      * @ValidationSerializedName(
      *     api_profile_change_password="new_password",
      *     api_admin_user_add="password",
-     *     api_dashboard_account_reset_password="password",
-     *     api_dashboard_account_signup="password"
+     *     api_account_reset_password="password",
+     *     api_account_signup="password"
      * )
      */
     private $plainPassword;
@@ -277,8 +278,8 @@ class User implements UserInterface
      *     groups={
      *         "api_profile_change_password",
      *         "api_admin_user_add",
-     *         "api_dashboard_account_signup",
-     *         "api_dashboard_account_reset_password"
+     *         "api_account_signup",
+     *         "api_account_reset_password"
      * })
      * @Assert\EqualTo(
      *     propertyPath="plainPassword",
@@ -286,8 +287,8 @@ class User implements UserInterface
      *         "api_profile_change_password",
      *         "api_admin_user_add",
      *         "api_admin_user_edit",
-     *         "api_dashboard_account_signup",
-     *         "api_dashboard_account_reset_password"
+     *         "api_account_signup",
+     *         "api_account_reset_password"
      *     },
      *     message="This value should match new password."
      * )
@@ -295,8 +296,8 @@ class User implements UserInterface
      *     api_profile_change_password="re_new_password",
      *     api_admin_user_add="re_password",
      *     api_admin_user_edit="re_password",
-     *     api_dashboard_account_reset_password="re_password",
-     *     api_dashboard_account_signup="re_password"
+     *     api_account_reset_password="re_password",
+     *     api_account_signup="re_password"
      * )
      */
     private $confirmPassword;
@@ -374,17 +375,11 @@ class User implements UserInterface
     private $space;
 
     /**
-     * @var @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="user", cascade={"persist", "remove"})
-     * @Groups({"api_dashboard_space_user_get", "api_profile_me"})
-     */
-    private $spaceUserRoles;
-
-    /**
      * Space constructor.
      */
     public function __construct()
     {
-        $this->spaceUserRoles = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -722,14 +717,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return mixed
-     */
-    public function getSpaceUserRoles()
-    {
-        return $this->spaceUserRoles;
-    }
-
-    /**
      * @return string
      */
     public function getAvatar()
@@ -748,9 +735,14 @@ class User implements UserInterface
     /**
      * @param array $roles
      */
-    public function setRoles($roles): void
+    public function setRoles($roles)
     {
         $this->roles = $roles;
+    }
+
+    public function getRoleObjects()
+    {
+        return $this->roles;
     }
 
     /**

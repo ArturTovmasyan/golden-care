@@ -18,6 +18,9 @@ persistence:
           title: 'RefreshToken'
           class: App\Entity\RefreshToken
 
+        space:
+          title: 'Space'
+          class: App\Entity\Space
         role:
           title: 'Role'
           class: App\Entity\Role
@@ -33,20 +36,6 @@ persistence:
         user_phone:
           title: 'UserPhone'
           class: App\Entity\UserPhone
-
-        space:
-          title: 'Space'
-          class: App\Entity\Space
-        space_user:
-          title: 'SpaceUser'
-          class: App\Entity\SpaceUser
-        space_user_role:
-          title: 'SpaceUserRole'
-          class: App\Entity\SpaceUserRole
-
-        permission:
-          title: 'Permission'
-          class: App\Entity\Permission
 
     common:
       title: 'Common'

@@ -13,7 +13,7 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_dashboard_space_edit"})
+ * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={"api_admin_space_edit"})
  *     api_admin_space_grid={
  *          {
  *              "id"         = "id",
@@ -50,9 +50,7 @@ class Space
      *     "api_admin_space_grid",
      *     "api_admin_space_list",
      *     "api_admin_space_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me",
-     *     "api_dashboard_space_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_facility_list",
@@ -114,11 +112,7 @@ class Space
      *     "api_admin_space_grid",
      *     "api_admin_space_list",
      *     "api_admin_space_get",
-     *     "api_dashboard_space_user_get",
      *     "api_profile_me",
-     *     "api_dashboard_space_get",
-     *     "api_dashboard_physician_grid",
-     *     "api_dashboard_physician_list",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_facility_list",
@@ -155,7 +149,7 @@ class Space
      *     "api_admin_allergen_get",
      *     "api_admin_allergen_list"
      * })
-     * @Assert\NotBlank(groups={"api_dashboard_space_edit", "api_admin_space_edit", "api_dashboard_account_signup"})
+     * @Assert\NotBlank(groups={"api_admin_space_edit", "api_account_signup"})
      */
     private $name;
 
@@ -166,23 +160,11 @@ class Space
     protected $users;
 
     /**
-     * @ORM\OneToMany(targetEntity="SpaceUserRole", mappedBy="space", cascade={"persist", "remove"})
-     */
-    protected $spaceUserRoles;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Physician", mappedBy="space", cascade={"persist", "remove"})
-     */
-    protected $spacePhysicians;
-
-    /**
      * Space constructor.
      */
     public function __construct()
     {
-        $this->users  = new ArrayCollection();
-        $this->spaceUserRoles  = new ArrayCollection();
-        $this->spacePhysicians = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -217,21 +199,6 @@ class Space
         $this->name = $name;
     }
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getSpaceUserRoles()
-    {
-        return $this->spaceUserRoles;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getSpacePhysicians()
-    {
-        return $this->spaceUserRoles;
-    }
     /**
      * @return ArrayCollection
      */

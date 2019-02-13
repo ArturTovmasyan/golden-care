@@ -70,8 +70,6 @@ class CityStateZip
      *     "api_admin_city_state_zip_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
@@ -99,8 +97,6 @@ class CityStateZip
      * @Groups({
      *     "api_admin_city_state_zip_list",
      *     "api_admin_city_state_zip_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_resident_responsible_person_list"
      * })
      */
@@ -120,8 +116,6 @@ class CityStateZip
      *     "api_admin_city_state_zip_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
@@ -146,8 +140,6 @@ class CityStateZip
      *     "api_admin_city_state_zip_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",
@@ -171,8 +163,6 @@ class CityStateZip
      *     "api_admin_city_state_zip_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_resident_responsible_person_list"
      * })
      */
@@ -192,8 +182,6 @@ class CityStateZip
      *     "api_admin_city_state_zip_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_apartment_list",

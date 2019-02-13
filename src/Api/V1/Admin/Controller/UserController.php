@@ -164,6 +164,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function listAction(Request $request, UserService $userService)
     {
@@ -274,6 +275,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, UserService $userService)
     {
@@ -289,6 +291,7 @@ class UserController extends BaseController
                 'enabled'     => $request->get('enabled'),
                 'roles'       => $request->get('roles'),
                 'grants'      => $request->get('grants'),
+                'space_id'    => $request->get('space_id'),
             ]
         );
 
@@ -340,6 +343,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, UserService $userService)
     {
@@ -356,6 +360,7 @@ class UserController extends BaseController
                 'enabled'     => $request->get('enabled'),
                 'roles'       => $request->get('roles'),
                 'grants'      => $request->get('grants'),
+                'space_id'    => $request->get('space_id'),
             ]
         );
 

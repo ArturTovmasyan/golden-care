@@ -18,7 +18,7 @@ use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class PhysicianService
- * @package App\Api\V1\Dashboard\Service
+ * @package App\Api\V1\Admin\Service
  */
 class PhysicianService extends BaseService implements IGridService
 {

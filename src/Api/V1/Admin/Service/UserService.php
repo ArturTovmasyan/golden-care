@@ -3,9 +3,11 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
+use App\Entity\Space;
 use App\Entity\User;
 use App\Entity\UserPhone;
 use Doctrine\ORM\QueryBuilder;
@@ -55,6 +57,13 @@ class UserService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var Space $space */
+            $space = $this->em->getRepository(User::class)->find($params['space_id']);
+
+            if ($space === null) {
+                throw new SpaceNotFoundException();
+            }
+
             // create user
             $user = new User();
             $user->setFirstName($params['first_name']);
@@ -63,6 +72,7 @@ class UserService extends BaseService implements IGridService
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
             $user->setGrants($params['grants']);
+            $user->setSpace($space);
 
             if(\count($params['roles']) > 0) {
                 $roles = [];
@@ -116,12 +126,20 @@ class UserService extends BaseService implements IGridService
                 throw new UserNotFoundException();
             }
 
+            /** @var Space $space */
+            $space = $this->em->getRepository(User::class)->find($params['space_id']);
+
+            if ($space === null) {
+                throw new SpaceNotFoundException();
+            }
+
             $user->setFirstName($params['first_name']);
             $user->setLastName($params['last_name']);
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
             $user->setGrants($params['grants']);
+            $user->setSpace($space);
 
             if(\count($params['roles']) > 0) {
                 $roles = [];

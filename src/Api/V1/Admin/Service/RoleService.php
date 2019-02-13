@@ -1,15 +1,13 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
-use App\Entity\Space;
-use App\Entity\SpaceUserRole;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -58,21 +56,10 @@ class RoleService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
-
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
-
-            // save role
             $role = new Role();
             $role->setName($params['name'] ?? '');
             $role->setGrants($params['grants'] ?? []);
-            $role->setSpace($space);
             $role->setDefault((bool) $params['default']);
-            $role->setSpaceDefault((bool) $params['space_default']);
 
             $this->validate($role, null, ['api_admin_role_add']);
 
@@ -94,30 +81,18 @@ class RoleService extends BaseService implements IGridService
     public function edit($id, array $params): void
     {
         try {
-            /**
-             * @var Role $role
-             */
             $this->em->getConnection()->beginTransaction();
 
+            /** @var Role $role */
             $role = $this->em->getRepository(Role::class)->find($id);
 
             if ($role === null) {
                 throw new RoleNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
-
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
-
             $role->setName($params['name'] ?? '');
             $role->setGrants($params['grants'] ?? []);
-            $role->setSpace($space);
             $role->setDefault((bool) $params['default']);
-            $role->setSpaceDefault((bool) $params['space_default']);
 
             $this->validate($role, null, ['api_admin_role_edit']);
 
@@ -139,12 +114,11 @@ class RoleService extends BaseService implements IGridService
     public function remove($id): void
     {
         try {
-            /**
-             * @var Role $role
-             * @var SpaceUserRole $spaceUserRoles
-             */
             $this->em->getConnection()->beginTransaction();
 
+            /**
+             * @var Role $role
+             */
             $role = $this->em->getRepository(Role::class)->find($id);
 
             if ($role === null) {
@@ -152,9 +126,9 @@ class RoleService extends BaseService implements IGridService
             }
 
             // check related users
-            $spaceUserRoles = $role->getSpaceUserRoles();
+            $users = $role->getUsers();
 
-            if ($spaceUserRoles->count()) {
+            if ($users->count()) {
                 throw new UserWithoutRoleException();
             }
 
@@ -186,17 +160,15 @@ class RoleService extends BaseService implements IGridService
                 throw new RoleNotFoundException();
             }
 
-            /**
-             * @var Role $role
-             * @var SpaceUserRole $spaceUserRoles
-             */
             $this->em->getConnection()->beginTransaction();
 
+            /**
+             * @var Role $role
+             */
             foreach ($roles as $role) {
-                // check related users
-                $spaceUserRoles = $role->getSpaceUserRoles();
+                $users = $role->getUsers();
 
-                if ($spaceUserRoles->count()) {
+                if ($users->count()) {
                     throw new UserWithoutRoleException();
                 }
 
@@ -205,8 +177,6 @@ class RoleService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (RoleNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

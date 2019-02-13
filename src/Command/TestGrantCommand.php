@@ -28,7 +28,7 @@ class TestGrantCommand extends ContainerAwareCommand
 
 //        echo json_encode($grant_service->getGrantsOfRoles([1, 2, 3]), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
-        dump($grant_service->checkUserGrant($users[0], Facility::class));
+        dump($grant_service->getEntityGrants($users[0], Facility::class));
     }
 
 }

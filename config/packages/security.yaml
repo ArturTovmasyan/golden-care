@@ -18,7 +18,7 @@ security:
             stateless: true
 
         api_account:
-            pattern:   ^/api/v1.0/dashboard/account
+            pattern:   ^/api/v1.0/account
             fos_oauth: false
             security:  false
             stateless: true

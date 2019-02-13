@@ -1,5 +1,5 @@
 <?php
-namespace App\Api\V1\Dashboard\Service;
+namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\InvalidConfirmationTokenException;
@@ -14,18 +14,16 @@ use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\Exception\DuplicateUserException;
 use App\Entity\Role;
 use App\Entity\Space;
-use App\Entity\SpaceUser;
-use App\Entity\SpaceUserRole;
 use App\Entity\User;
 use App\Entity\UserLog;
 use App\Entity\UserPhone;
 use App\Model\Log;
 
 /**
- * Class UserService
+ * Class AccountService
  * @package App\Api\V1\Service
  */
-class UserService extends BaseService
+class AccountService extends BaseService
 {
     /**
      * Register User
@@ -61,7 +59,7 @@ class UserService extends BaseService
             $user->setPhone($params['phone']);
 
             // validate user
-            $this->validate($user, null, ["api_dashboard_account_signup"]);
+            $this->validate($user, null, ["api_account_signup"]);
 
             if($params['phone']) { // TODO: review
                 $userPhone = new UserPhone();
@@ -79,7 +77,7 @@ class UserService extends BaseService
             // create space
             $space = new Space();
             $space->setName($params['organization']);
-            $this->validate($space, null, ["api_dashboard_account_signup"]);
+            $this->validate($space, null, ["api_account_signup"]);
             $this->em->persist($space);
 
             // connect user to space
@@ -207,7 +205,7 @@ class UserService extends BaseService
             $user->setPasswordRecoveryHash();
             $this->em->persist($user);
 
-            $this->validate($user, null, ["api_dashboard_account_reset_password"]);
+            $this->validate($user, null, ["api_account_reset_password"]);
 
             $this->em->flush();
 
@@ -545,7 +543,7 @@ class UserService extends BaseService
                 $user->setPassword($encoded);
 
                 // validate user
-                $this->validate($user, null, ["api_dashboard_space_user_complete"]);
+                $this->validate($user, null, ["api_space_user_complete"]);
 
                 $this->em->persist($user);
             }

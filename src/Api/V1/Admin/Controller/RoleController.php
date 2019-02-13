@@ -155,6 +155,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function listAction(Request $request, RoleService $roleService)
     {
@@ -248,6 +249,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, RoleService $roleService)
     {
@@ -255,9 +257,7 @@ class RoleController extends BaseController
             [
                 'name'          => $request->get('name'),
                 'grants'        => $request->get('grants'),
-                'space_id'      => $request->get('space_id'),
-                'default'       => $request->get('default'),
-                'space_default' => $request->get('space_default')
+                'default'       => $request->get('default')
             ]
         );
 
@@ -309,6 +309,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function editAction(Request $request, $id, RoleService $roleService)
     {
@@ -317,9 +318,7 @@ class RoleController extends BaseController
             [
                 'name'          => $request->get('name'),
                 'grants'        => $request->get('grants'),
-                'space_id'      => $request->get('space_id'),
-                'default'       => $request->get('default'),
-                'space_default' => $request->get('space_default')
+                'default'       => $request->get('default')
             ]
         );
 

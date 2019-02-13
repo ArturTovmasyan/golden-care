@@ -88,79 +88,6 @@ use JMS\Serializer\Annotation\Groups;
  *              "type"       = "string",
  *              "field"      = "s.name"
  *          }
- *     },
- *     api_dashboard_physician_grid={
- *          {
- *              "id"         = "id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "p.id"
- *          },
- *          {
- *              "id"         = "speciality",
- *              "type"       = "string",
- *              "field"      = "sp.title"
- *          },
- *          {
- *              "id"         = "salutation",
- *              "type"       = "string",
- *              "field"      = "sal.title"
- *          },
- *          {
- *              "id"         = "first_name",
- *              "type"       = "string",
- *              "field"      = "p.firstName"
- *          },
- *          {
- *              "id"         = "middle_name",
- *              "type"       = "string",
- *              "field"      = "p.middleName"
- *          },
- *          {
- *              "id"         = "last_name",
- *              "type"       = "string",
- *              "field"      = "p.lastName"
- *          },
- *          {
- *              "id"         = "address_1",
- *              "type"       = "string",
- *              "field"      = "p.address_1"
- *          },
- *          {
- *              "id"         = "address_2",
- *              "type"       = "string",
- *              "field"      = "p.address_2"
- *          },
- *          {
- *              "id"         = "office_phone",
- *              "type"       = "string",
- *              "field"      = "p.officePhone"
- *          },
- *          {
- *              "id"         = "fax",
- *              "type"       = "string",
- *              "field"      = "p.fax"
- *          },
- *          {
- *              "id"         = "emergency_phone",
- *              "type"       = "string",
- *              "field"      = "p.emergencyPhone"
- *          },
- *          {
- *              "id"         = "email",
- *              "type"       = "string",
- *              "field"      = "p.email"
- *          },
- *          {
- *              "id"         = "website_url",
- *              "type"       = "string",
- *              "field"      = "p.websiteUrl"
- *          },
- *          {
- *              "id"         = "csz_str",
- *              "type"       = "string",
- *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
- *          }
  *     }
  * )
  */
@@ -172,8 +99,6 @@ class Physician
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_resident_grid",
@@ -197,8 +122,6 @@ class Physician
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
@@ -235,14 +158,10 @@ class Physician
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -274,14 +193,10 @@ class Physician
      * @var string
      * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_resident_physician_list",
@@ -298,14 +213,10 @@ class Physician
      * @var string
      * @ORM\Column(name="last_name", type="string", length=40, nullable=false)
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_resident_physician_list",
@@ -322,8 +233,6 @@ class Physician
      * @var string
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -333,15 +242,11 @@ class Physician
     /**
      * @var string
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -353,8 +258,6 @@ class Physician
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -364,8 +267,6 @@ class Physician
     /**
      * @var string
      * @Assert\NotBlank(groups={
-     *     "api_dashboard_physician_add",
-     *     "api_dashboard_physician_edit",
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
@@ -373,15 +274,11 @@ class Physician
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
      *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
      *     groups={
-     *          "api_dashboard_physician_add",
-     *          "api_dashboard_physician_edit",
      *          "api_admin_physician_add",
      *          "api_admin_physician_edit"
      * })
      * @ORM\Column(name="office_phone", type="string", length=20, nullable=false)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -392,8 +289,6 @@ class Physician
      * @var string
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -401,8 +296,6 @@ class Physician
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
      *     message="Invalid fax number format. Valid format is (XXX) XXX-XXXX.",
      *     groups={
-     *          "api_dashboard_physician_add",
-     *          "api_dashboard_physician_edit",
      *          "api_admin_physician_add",
      *          "api_admin_physician_edit"
      * })
@@ -413,8 +306,6 @@ class Physician
      * @var string
      * @ORM\Column(name="emergency_phone", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
@@ -422,8 +313,6 @@ class Physician
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
      *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
      *     groups={
-     *          "api_dashboard_physician_add",
-     *          "api_dashboard_physician_edit",
      *          "api_admin_physician_add",
      *          "api_admin_physician_edit"
      * })
@@ -434,15 +323,11 @@ class Physician
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })
      * @Assert\Email(
      *     groups={
-     *          "api_dashboard_physician_add",
-     *          "api_dashboard_physician_edit",
      *          "api_admin_physician_add",
      *          "api_admin_physician_edit"
      *     }
@@ -454,8 +339,6 @@ class Physician
      * @var string
      * @ORM\Column(name="website_url", type="string", length=255, nullable=true)
      * @Groups({
-     *     "api_dashboard_physician_list",
-     *     "api_dashboard_physician_get",
      *     "api_admin_physician_list",
      *     "api_admin_physician_get"
      * })

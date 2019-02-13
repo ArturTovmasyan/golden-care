@@ -4,7 +4,6 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Permission;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
@@ -48,7 +47,6 @@ class SpaceService extends BaseService implements IGridService
         try {
             /**
              * @var Space $space
-             * @var Permission $permission
              */
             $this->em->getConnection()->beginTransaction();
 

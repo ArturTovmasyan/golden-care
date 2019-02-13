@@ -42,24 +42,6 @@ use JMS\Serializer\Annotation\Groups;
  *              "type"       = "string",
  *              "field"      = "s.name"
  *          }
- *     },
- *     api_dashboard_medication_grid={
- *          {
- *              "id"         = "id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "m.id"
- *          },
- *          {
- *              "id"         = "title",
- *              "type"       = "string",
- *              "field"      = "m.title"
- *          },
- *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
- *          }
  *     }
  * )
  */
@@ -74,8 +56,6 @@ class Medication
      *     "api_admin_medication_grid",
      *     "api_admin_medication_list",
      *     "api_admin_medication_get",
-     *     "api_dashboard_medication_grid",
-     *     "api_dashboard_medication_list",
      *     "api_admin_resident_medication_list",
      *     "api_admin_resident_medication_get",
      *     "api_admin_resident_medication_allergy_list",
@@ -91,8 +71,6 @@ class Medication
      *     "api_admin_medication_grid",
      *     "api_admin_medication_list",
      *     "api_admin_medication_get",
-     *     "api_dashboard_medication_grid",
-     *     "api_dashboard_medication_list",
      *     "api_admin_resident_medication_list",
      *     "api_admin_resident_medication_get",
      *     "api_admin_resident_medication_allergy_list",

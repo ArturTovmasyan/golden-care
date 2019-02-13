@@ -35,10 +35,6 @@ services:
         resource: '../src/Api/V1/Admin/Controller'
         tags: ['controller.api_service_arguments']
 
-    App\Api\V1\Dashboard\Controller\:
-        resource: '../src/Api/V1/Dashboard/Controller'
-        tags: ['controller.api_service_arguments']
-
     fos_oauth_server.controller.token:
         class: App\Api\V1\Common\Controller\TokenController
         arguments: ['@fos_oauth_server.server', '@doctrine.orm.entity_manager']

@@ -149,7 +149,7 @@ class MainListener
             if ($user instanceof User) {
                 $this->grantService->setCurrentUser($user);
 
-                $this->checkPermission($event, $user);
+//                $this->checkPermission($event, $user);
 
                 $user->setLastActivityAt(new \DateTime());
 
@@ -158,82 +158,82 @@ class MainListener
             }
         }
     }
-
-    /**
-     * @param FilterControllerEvent $event
-     * @param User $user
-     * @throws \ReflectionException
-     */
-    private function checkPermission(FilterControllerEvent $event, User $user)
-    {
-        $spaceId = $event->getRequest()->attributes->get('_route_params')['spaceId'] ?? 0;
-
-        $controllerName   = $event->getController()[0];
-        $reflectionClass  = new \ReflectionClass($controllerName);
-        $classAnnotations = $this->reader->getClassAnnotations($reflectionClass);
-
-        $methodName       = $event->getController()[1];
-        $reflectionMethod = new \ReflectionMethod($controllerName, $methodName);
-        $methodAnnotations = $this->reader->getMethodAnnotations($reflectionMethod);
-
-        $needPermissions       = [];
-        $userPermissionsByName = [];
-
-        foreach ($classAnnotations as $classAnnotation) {
-            if (!$classAnnotation instanceof Permission) {
-                continue;
-            }
-
-            $needPermissions = $classAnnotation->getPermissions();
-        }
-
-        foreach ($methodAnnotations as $methodAnnotation) {
-            if (!$methodAnnotation instanceof Permission) {
-                continue;
-            }
-
-            $needPermissions = array_merge($needPermissions, $methodAnnotation->getPermissions());
-        }
-
-        $needPermissions = array_unique($needPermissions);
-
-        if (!empty($needPermissions)) {
-            try {
-                if ($spaceId) {
-                    $space       = $this->em->getRepository(Space::class)->find($spaceId);
-                    $permissions = $this->em->getRepository(\App\Entity\Permission::class)->getUserPermissions($user, $space);
-                    $event->getRequest()->attributes->set('space', $space);
-                } else {
-                    $permissions = $this->em->getRepository(\App\Entity\Permission::class)->getUserPermissions($user);
-                }
-
-                $event->getRequest()->attributes->set('userPermissions', $permissions);
-
-                foreach ($permissions as $permission) {
-                    /** @var \App\Entity\Permission $permission **/
-                    $userPermissionsByName[$permission->getName()] = $permission;
-                }
-
-                foreach ($needPermissions as $needPermissionName) {
-                    if (isset($userPermissionsByName[$needPermissionName])) {
-                        continue;
-                    }
-
-                    throw new \Exception();
-                }
-            } catch (\Throwable $e) {
-                $response = new JsonResponse(
-                    [
-                        'code'  => Response::HTTP_FORBIDDEN,
-                        'error' => 'Permission denied for this resource'
-                    ],
-                    Response::HTTP_FORBIDDEN
-                );
-
-                $event->setController(function() use ($response) {
-                    return $response;
-                });
-            }
-        }
-    }
+//
+//    /**
+//     * @param FilterControllerEvent $event
+//     * @param User $user
+//     * @throws \ReflectionException
+//     */
+//    private function checkPermission(FilterControllerEvent $event, User $user)
+//    {
+//        $spaceId = $event->getRequest()->attributes->get('_route_params')['spaceId'] ?? 0;
+//
+//        $controllerName   = $event->getController()[0];
+//        $reflectionClass  = new \ReflectionClass($controllerName);
+//        $classAnnotations = $this->reader->getClassAnnotations($reflectionClass);
+//
+//        $methodName       = $event->getController()[1];
+//        $reflectionMethod = new \ReflectionMethod($controllerName, $methodName);
+//        $methodAnnotations = $this->reader->getMethodAnnotations($reflectionMethod);
+//
+//        $needPermissions       = [];
+//        $userPermissionsByName = [];
+//
+//        foreach ($classAnnotations as $classAnnotation) {
+//            if (!$classAnnotation instanceof Permission) {
+//                continue;
+//            }
+//
+//            $needPermissions = $classAnnotation->getPermissions();
+//        }
+//
+//        foreach ($methodAnnotations as $methodAnnotation) {
+//            if (!$methodAnnotation instanceof Permission) {
+//                continue;
+//            }
+//
+//            $needPermissions = array_merge($needPermissions, $methodAnnotation->getPermissions());
+//        }
+//
+//        $needPermissions = array_unique($needPermissions);
+//
+//        if (!empty($needPermissions)) {
+//            try {
+//                if ($spaceId) {
+//                    $space       = $this->em->getRepository(Space::class)->find($spaceId);
+//                    $permissions = $this->em->getRepository(\App\Entity\Permission::class)->getUserPermissions($user, $space);
+//                    $event->getRequest()->attributes->set('space', $space);
+//                } else {
+//                    $permissions = $this->em->getRepository(\App\Entity\Permission::class)->getUserPermissions($user);
+//                }
+//
+//                $event->getRequest()->attributes->set('userPermissions', $permissions);
+//
+//                foreach ($permissions as $permission) {
+//                    /** @var \App\Entity\Permission $permission **/
+//                    $userPermissionsByName[$permission->getName()] = $permission;
+//                }
+//
+//                foreach ($needPermissions as $needPermissionName) {
+//                    if (isset($userPermissionsByName[$needPermissionName])) {
+//                        continue;
+//                    }
+//
+//                    throw new \Exception();
+//                }
+//            } catch (\Throwable $e) {
+//                $response = new JsonResponse(
+//                    [
+//                        'code'  => Response::HTTP_FORBIDDEN,
+//                        'error' => 'Permission denied for this resource'
+//                    ],
+//                    Response::HTTP_FORBIDDEN
+//                );
+//
+//                $event->setController(function() use ($response) {
+//                    return $response;
+//                });
+//            }
+//        }
+//    }
 }

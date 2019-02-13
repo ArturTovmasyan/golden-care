@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GrantController extends BaseController
 {
     /**
-     * @Route("all", name="api_admin_grant_all", methods={"GET"})
+     * @Route("/all", name="api_admin_grant_all", methods={"GET"})
      *
      * @param Request $request
      * @param GrantService $grantService
@@ -46,7 +46,7 @@ class GrantController extends BaseController
         return $this->respondSuccess(
             JsonResponse::HTTP_OK,
             '',
-            $grantService->getGrantsOfRoles($request->get('ids')),
+            $grantService->getGrantsByRoleIds($request->get('ids')),
             'api_admin_grant_role'
         );
     }

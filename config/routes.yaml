@@ -8,11 +8,6 @@ admin_annotations:
     type:     annotation
     defaults: {_format: json}
 
-dashboard_annotations:
-    resource: '../src/Api/V1/Dashboard/Controller/'
-    type:     annotation
-    defaults: {_format: json}
-
 fos_oauth_server_token:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
 

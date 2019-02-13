@@ -101,6 +101,7 @@ class ResponseCode
     const REGION_CAN_NOT_HAVE_BED_EXCEPTION                      = 702;
     const UNHANDLED_RENT_PERIOD_EXCEPTION                        = 703;
     const INCORRECT_REPORT_PARAMETER                             = 800;
+    const INVALID_GRANT_CONFIG                                   = 900;
 
     /**
      * @var array
@@ -197,5 +198,6 @@ class ResponseCode
         self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region can not hav bed.'],
         self::UNHANDLED_RENT_PERIOD_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Unhandled rent period.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
+        self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
     ];
 }

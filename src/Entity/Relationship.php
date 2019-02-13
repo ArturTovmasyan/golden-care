@@ -40,24 +40,6 @@ use JMS\Serializer\Annotation\Groups;
  *              "type"       = "string",
  *              "field"      = "s.name"
  *          }
- *     },
- *     api_dashboard_relationship_grid={
- *          {
- *              "id"         = "id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "r.id"
- *          },
- *          {
- *              "id"         = "title",
- *              "type"       = "string",
- *              "field"      = "r.title"
- *          },
- *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
- *          }
  *     }
  * )
  */
@@ -72,8 +54,6 @@ class Relationship
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
-     *     "api_dashboard_relationship_grid",
-     *     "api_dashboard_relationship_list",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
      * })
@@ -88,8 +68,6 @@ class Relationship
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
      *     "api_admin_relationship_get",
-     *     "api_dashboard_relationship_grid",
-     *     "api_dashboard_relationship_list",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
      * })
