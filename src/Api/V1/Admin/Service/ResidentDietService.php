@@ -34,7 +34,7 @@ class ResidentDietService extends BaseService implements IGridService
             ->where('rd.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentDiet::class)->search($queryBuilder);
+        $this->em->getRepository(ResidentDiet::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
@@ -42,7 +42,7 @@ class ResidentDietService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentDiet::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(ResidentDiet::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -54,7 +54,7 @@ class ResidentDietService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentDiet::class)->find($id);
+        return $this->em->getRepository(ResidentDiet::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -66,18 +66,20 @@ class ResidentDietService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId = $params['resident_id'] ?? 0;
             $dietId = $params['diet_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
             /** @var Diet $diet */
-            $diet = $this->em->getRepository(Diet::class)->find($dietId);
+            $diet = $this->em->getRepository(Diet::class)->getOne($currentSpace, $dietId);
 
             if ($diet === null) {
                 throw new DietNotFoundException();
@@ -111,8 +113,10 @@ class ResidentDietService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentDiet $entity */
-            $entity = $this->em->getRepository(ResidentDiet::class)->find($id);
+            $entity = $this->em->getRepository(ResidentDiet::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ResidentDietNotFoundException();
@@ -122,14 +126,14 @@ class ResidentDietService extends BaseService implements IGridService
             $dietId = $params['diet_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
             /** @var Diet $diet */
-            $diet = $this->em->getRepository(Diet::class)->find($dietId);
+            $diet = $this->em->getRepository(Diet::class)->getOne($currentSpace, $dietId);
 
             if ($diet === null) {
                 throw new DietNotFoundException();
@@ -162,7 +166,7 @@ class ResidentDietService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var ResidentDiet $entity */
-            $entity = $this->em->getRepository(ResidentDiet::class)->find($id);
+            $entity = $this->em->getRepository(ResidentDiet::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ResidentDietNotFoundException();
@@ -190,7 +194,7 @@ class ResidentDietService extends BaseService implements IGridService
                 throw new ResidentDietNotFoundException();
             }
 
-            $residentDiets = $this->em->getRepository(ResidentDiet::class)->findByIds($ids);
+            $residentDiets = $this->em->getRepository(ResidentDiet::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($residentDiets)) {
                 throw new ResidentDietNotFoundException();
