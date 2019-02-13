@@ -35,26 +35,61 @@ use Doctrine\ORM\QueryBuilder;
 class ResidentRepository extends EntityRepository
 {
     /**
+     * @param Space|null $space
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
             ->from(Resident::class, 'r')
-            ->leftJoin(
-                Salutation::class,
-                'sal',
-                Join::WITH,
-                'sal = r.salutation'
-            )
-            ->leftJoin(
+            ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = r.space'
             )
+            ->innerJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'sal = r.salutation'
+            );
+
+        if ($space !== null) {
+            $queryBuilder
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        $queryBuilder
+
             ->groupBy('r.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @return mixed
+     */
+    public function list(Space $space = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -87,12 +122,25 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function findByIds($ids)
+    public function findByIds(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('r');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->where($qb->expr()->in('r.id', $ids))
             ->groupBy('r.id')
@@ -101,9 +149,10 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @return mixed
      */
-    public function getNoContractResidents()
+    public function getNoContractResidents(Space $space = null)
     {
         $qb = $this->createQueryBuilder('r');
 
@@ -114,8 +163,20 @@ class ResidentRepository extends EntityRepository
                 'r.lastName AS last_name',
                 'rs.title AS salutation'
             )
-            ->leftJoin('r.salutation', 'rs')
+            ->innerJoin('r.salutation', 'rs')
             ->where('r.id NOT IN (SELECT cr.id FROM App:Contract c JOIN c.resident cr)');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb
             ->getQuery()

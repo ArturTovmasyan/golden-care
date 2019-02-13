@@ -23,12 +23,12 @@ class UserService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(User::class)->search($queryBuilder);
+        $this->em->getRepository(User::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(User::class)->findAll();
+        return $this->em->getRepository(User::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
@@ -37,7 +37,7 @@ class UserService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        $user = $this->em->getRepository(User::class)->find($id);
+        $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
         if ($user === null) {
             throw new UserNotFoundException();
@@ -64,7 +64,7 @@ class UserService extends BaseService implements IGridService
             $user->setEnabled((bool) $params['enabled']);
             $user->setGrants($params['grants']);
 
-            if(count($params['roles']) > 0) {
+            if(\count($params['roles']) > 0) {
                 $roles = [];
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
@@ -110,7 +110,7 @@ class UserService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var User $user */
-            $user = $this->em->getRepository(User::class)->find($id);
+            $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($user === null) {
                 throw new UserNotFoundException();
@@ -123,7 +123,7 @@ class UserService extends BaseService implements IGridService
             $user->setEnabled((bool) $params['enabled']);
             $user->setGrants($params['grants']);
 
-            if(count($params['roles']) > 0) {
+            if(\count($params['roles']) > 0) {
                 $roles = [];
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
@@ -170,7 +170,7 @@ class UserService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var User $user **/
-            $user = $this->em->getRepository(User::class)->find($id);
+            $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($user === null) {
                 return;
@@ -200,8 +200,6 @@ class UserService extends BaseService implements IGridService
         }
     }
 
-
-
     /**
      * @param User $user
      * @param array $phones
@@ -212,7 +210,7 @@ class UserService extends BaseService implements IGridService
         /**
          * @var UserPhone[] $oldPhones
          */
-        $oldPhones = $this->em->getRepository(UserPhone::class)->findBy(['user' => $user]);
+        $oldPhones = $this->em->getRepository(UserPhone::class)->getBy($this->grantService->getCurrentSpace(), $user);
 
         foreach ($oldPhones as $phone) {
             $this->em->remove($phone);
@@ -223,13 +221,16 @@ class UserService extends BaseService implements IGridService
         $userPhones = [];
 
         foreach($phones as $phone) {
+            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+
             $userPhone = new UserPhone();
             $userPhone->setUser($user);
             $userPhone->setCompatibility($phone['compatibility'] ?? null);
             $userPhone->setType($phone['type']);
             $userPhone->setNumber($phone['number']);
-            $userPhone->setPrimary((bool) $phone['primary'] ?? false);
-            $userPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
+            $userPhone->setPrimary($primary);
+            $userPhone->setSmsEnabled($smsEnabled);
 
             if ($userPhone->isPrimary()) {
                 if ($hasPrimary) {
