@@ -35,7 +35,7 @@ class ResidentAllergenService extends BaseService implements IGridService
             ->where('ra.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentAllergen::class)->search($queryBuilder);
+        $this->em->getRepository(ResidentAllergen::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
@@ -43,7 +43,7 @@ class ResidentAllergenService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentAllergen::class)->findBy(['resident' => $residentId]);
+            return $this->em->getRepository(ResidentAllergen::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -55,7 +55,7 @@ class ResidentAllergenService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentAllergen::class)->find($id);
+        return $this->em->getRepository(ResidentAllergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -67,10 +67,12 @@ class ResidentAllergenService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -97,7 +99,7 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             if (!empty($allergenId)) {
                 /** @var Allergen $allergen */
-                $allergen = $this->em->getRepository(Allergen::class)->find($allergenId);
+                $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $allergenId);
 
                 if ($allergen === null) {
                     throw new AllergenNotFoundException();
@@ -133,8 +135,10 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentAllergen $entity */
-            $entity = $this->em->getRepository(ResidentAllergen::class)->find($id);
+            $entity = $this->em->getRepository(ResidentAllergen::class)->getOne($currentSpace, $id);
 
             if ($entity === null) {
                 throw new ResidentAllergenNotFoundException();
@@ -143,7 +147,7 @@ class ResidentAllergenService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -170,7 +174,7 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             if (!empty($allergenId)) {
                 /** @var Allergen $allergen */
-                $allergen = $this->em->getRepository(Allergen::class)->find($allergenId);
+                $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $allergenId);
 
                 if ($allergen === null) {
                     throw new AllergenNotFoundException();
@@ -205,7 +209,7 @@ class ResidentAllergenService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             /** @var ResidentAllergen $entity */
-            $entity = $this->em->getRepository(ResidentAllergen::class)->find($id);
+            $entity = $this->em->getRepository(ResidentAllergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
             if ($entity === null) {
                 throw new ResidentAllergenNotFoundException();
@@ -233,7 +237,7 @@ class ResidentAllergenService extends BaseService implements IGridService
                 throw new ResidentAllergenNotFoundException();
             }
 
-            $residentAllergens = $this->em->getRepository(ResidentAllergen::class)->findByIds($ids);
+            $residentAllergens = $this->em->getRepository(ResidentAllergen::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
             if (empty($residentAllergens)) {
                 throw new ResidentAllergenNotFoundException();

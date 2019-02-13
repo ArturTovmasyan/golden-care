@@ -40,7 +40,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 ->where('a.resident = :residentId')
                 ->setParameter('residentId', $residentId);
 
-            $this->em->getRepository(Assessment::class)->search($queryBuilder);
+            $this->em->getRepository(Assessment::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     /**
@@ -52,7 +52,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(Assessment::class)->findByResident($residentId);
+            return $this->em->getRepository(Assessment::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -64,7 +64,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      */
     public function getById(int $id)
     {
-        return $this->em->getRepository(Assessment::class)->find($id);
+        return $this->em->getRepository(Assessment::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
@@ -80,17 +80,19 @@ class ResidentAssessmentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $rows       = $params['rows'] ?? [];
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
 
-            $form = $this->em->getRepository(Form::class)->find($formId);
+            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $formId);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -137,23 +139,25 @@ class ResidentAssessmentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $formId     = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
             $rows       = $params['rows'] ?? [];
 
-            $form = $this->em->getRepository(Form::class)->find($formId);
+            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $formId);
 
             if ($form ===  null) {
                 throw new AssessmentFormNotFoundException();
             }
 
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
             if ($resident ===  null) {
                 throw new ResidentNotFoundException();
             }
 
-            $assessment = $this->em->getRepository(Assessment::class)->find($id);
+            $assessment = $this->em->getRepository(Assessment::class)->getOne($currentSpace, $id);
 
             if ($assessment ===  null) {
                 throw new AssessmentNotFoundException();
@@ -277,15 +281,17 @@ class ResidentAssessmentService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var Assessment $assessment */
-            $assessment = $this->em->getRepository(Assessment::class)->find($id);
+            $assessment = $this->em->getRepository(Assessment::class)->getOne($currentSpace, $id);
 
             if ($assessment === null) {
                 throw new AssessmentNotFoundException();
             }
 
             // remove related rows
-            $assessmentRows = $this->em->getRepository(AssessmentRow::class)->findBy(['assessment' => $assessment]);
+            $assessmentRows = $this->em->getRepository(AssessmentRow::class)->getBy($currentSpace, $assessment);
 
             if (!empty($assessmentRows)) {
                 foreach ($assessmentRows as $assessmentRow) {
@@ -318,7 +324,9 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 throw new AssessmentNotFoundException();
             }
 
-            $assessments = $this->em->getRepository(Assessment::class)->findByIds($ids);
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $assessments = $this->em->getRepository(Assessment::class)->findByIds($currentSpace, $ids);
 
             if (empty($assessments)) {
                 throw new AssessmentNotFoundException();
@@ -327,7 +335,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             foreach ($assessments as $assessment) {
-                $assessmentRows = $this->em->getRepository(AssessmentRow::class)->findBy(['assessment' => $assessment]);
+                $assessmentRows = $this->em->getRepository(AssessmentRow::class)->getBy($currentSpace, $assessment);
 
                 if (!empty($assessmentRows)) {
                     foreach ($assessmentRows as $assessmentRow) {
@@ -336,8 +344,9 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 }
 
                 $this->em->remove($assessment);
-                $this->em->flush();
             }
+
+            $this->em->flush();
 
             $this->em->getConnection()->commit();
         } catch(AssessmentFormNotFoundException $e) {
