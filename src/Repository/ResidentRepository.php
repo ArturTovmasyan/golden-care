@@ -184,12 +184,13 @@ class ResidentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getResidentsInfoByTypeOrId($type, $typeId = null, $residentId = null)
+    public function getResidentsInfoByTypeOrId(Space $space = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -197,7 +198,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -240,6 +241,8 @@ class ResidentRepository extends EntityRepository
                 'r.salutation = sal'
             )
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type = :type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -388,29 +391,38 @@ class ResidentRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         if ($residentId) {
-            return $qb
+            $qb
                 ->andWhere('r.id = :id')
-                ->setParameter('id', $residentId)
-                ->getQuery()
-                ->getResult();
+                ->setParameter('id', $residentId);
         }
 
         return $qb
-            ->andWhere('c.type = :type')
-            ->setParameter('type', $type)
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getResidentsInfoWithCareGroupByTypeOrId($type, $typeId = null, $residentId = null)
+    public function getResidentsInfoWithCareGroupByTypeOrId(Space $space = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -418,7 +430,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -460,6 +472,8 @@ class ResidentRepository extends EntityRepository
                 'r.salutation = sal'
             )
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type = :type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -562,29 +576,38 @@ class ResidentRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         if ($residentId) {
-            return $qb
+            $qb
                 ->andWhere('r.id = :id')
-                ->setParameter('id', $residentId)
-                ->getQuery()
-                ->getResult();
+                ->setParameter('id', $residentId);
         }
 
         return $qb
-            ->andWhere('c.type = :type')
-            ->setParameter('type', $type)
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getDietaryRestrictionsInfo($type, $typeId = null, $residentId = null)
+    public function getDietaryRestrictionsInfo(Space $space = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -592,7 +615,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -647,6 +670,8 @@ class ResidentRepository extends EntityRepository
                 'ca.careLevel = cl'
             )
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type = :type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -751,29 +776,38 @@ class ResidentRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         if ($residentId) {
-            return $qb
+            $qb
                 ->andWhere('r.id = :id')
-                ->setParameter('id', $residentId)
-                ->getQuery()
-                ->getResult();
+                ->setParameter('id', $residentId);
         }
 
         return $qb
-            ->andWhere('c.type = :type')
-            ->setParameter('type', $type)
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getResidentsFullInfoByTypeOrId($type, $typeId = null, $residentId = null)
+    public function getResidentsFullInfoByTypeOrId(Space $space = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -781,7 +815,7 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident(null, $residentId);
+            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -836,6 +870,8 @@ class ResidentRepository extends EntityRepository
                 'ca.careLevel = cl'
             )
             ->where('ca.state=:state AND ca.end IS NULL')
+            ->andWhere('c.type = :type')
+            ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
 
         switch ($type) {
@@ -939,17 +975,25 @@ class ResidentRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
         if ($residentId) {
-            return $qb
+            $qb
                 ->andWhere('r.id = :id')
-                ->setParameter('id', $residentId)
-                ->getQuery()
-                ->getResult();
+                ->setParameter('id', $residentId);
         }
 
         return $qb
-            ->andWhere('c.type = :type')
-            ->setParameter('type', $type)
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();

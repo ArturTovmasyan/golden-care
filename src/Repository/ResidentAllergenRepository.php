@@ -157,14 +157,15 @@ class ResidentAllergenRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(array $residentIds)
+    public function getByResidentIds(Space $space = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('ra');
 
-        return $qb
+        $qb
             ->select('
                     a.id as id,
                     a.title as title,
@@ -182,7 +183,21 @@ class ResidentAllergenRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'ra.resident = r'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('a.title')
             ->groupBy('ra.id')

@@ -283,11 +283,12 @@ class ResidentPhysicianRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds($type, array $residentIds)
+    public function getByResidentIds(Space $space = null, $type, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rp');
 
@@ -411,6 +412,18 @@ class ResidentPhysicianRepository extends EntityRepository
                 default:
                     throw new IncorrectStrategyTypeException();
             }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb
             ->where($qb->expr()->in('r.id', $residentIds))

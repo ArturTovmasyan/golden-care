@@ -165,14 +165,15 @@ class ResidentResponsiblePersonRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(array $residentIds)
+    public function getByResidentIds(Space $space = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rrp');
 
-        return $qb
+        $qb
             ->select('
                     rrp.id as id,
                     r.id as residentId,
@@ -210,8 +211,21 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'rp.csz = csz'
-            )
+            );
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('r.id', $residentIds))
             ->groupBy('rrp.id')
             ->getQuery()

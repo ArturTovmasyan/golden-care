@@ -42,7 +42,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new ResidentBirthdayList();
         $report->setResidents($residents);
@@ -70,7 +70,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
@@ -99,7 +99,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new BowelMovement();
         $report->setResidents($residents);
@@ -127,7 +127,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new ChangeoverNotes();
         $report->setResidents($residents);
@@ -155,7 +155,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
@@ -184,7 +184,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new MealMonitor();
         $report->setResidents($residents);
@@ -205,21 +205,23 @@ class FormReportService extends BaseService
      */
     public function getMedicationChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $type = $group;
 
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, null, $residentId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, null, $residentId);
         $residentIds = [];
 
         foreach ($residents as $resident) {
             $residentIds[] = $resident['id'];
         }
 
-        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
-        $allergens   = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($currentSpace, $residentIds);
+        $allergens   = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($currentSpace, $residentIds);
 
         $report = new MedicationChart();
         $report->setResidents($residents);
@@ -242,6 +244,8 @@ class FormReportService extends BaseService
      */
     public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $type = $group;
         $typeId = $groupId;
 
@@ -249,7 +253,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId, $residentId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId, $residentId);
         $residentIds = [];
         $residentsById = [];
 
@@ -258,7 +262,7 @@ class FormReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($residentIds);
+        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($currentSpace, $residentIds);
 
         $report = new MedicationList();
         $report->setResidents($residentsById);
@@ -287,7 +291,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new NightActivity();
         $report->setResidents($residents);
@@ -315,7 +319,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
@@ -344,7 +348,7 @@ class FormReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId, $residentId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId, $residentId);
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);

@@ -25,6 +25,8 @@ class PhysicianReportService extends BaseService
      */
     public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $type = $group;
         $typeId = $groupId;
 
@@ -32,7 +34,7 @@ class PhysicianReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
         $residentIds = [];
 
         if (!empty($residents)) {
@@ -40,7 +42,7 @@ class PhysicianReportService extends BaseService
             $residentIds = array_unique($residentIds);
         }
 
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
 
         $data = [];
         $count = [];
@@ -87,6 +89,8 @@ class PhysicianReportService extends BaseService
      */
     public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $type = $group;
         $typeId = $groupId;
 
@@ -94,7 +98,7 @@ class PhysicianReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($type, $typeId);
+        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
         $residentIds = [];
 
         if (!empty($residents)) {
@@ -102,7 +106,7 @@ class PhysicianReportService extends BaseService
             $residentIds = array_unique($residentIds);
         }
 
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($type, $residentIds);
+        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
 
         $data = [];
         $count = [];

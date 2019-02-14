@@ -981,21 +981,36 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getResidents60DaysRosterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getResidents60DaysRosterData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
-        return $this
+        $qb = $this
             ->getContractActionReportQb($type, $reportInterval, $typeId)
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ContractAction aca 
                         JOIN aca.contract ac 
                         JOIN ac.resident ar 
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }

@@ -157,14 +157,15 @@ class ResidentDiagnosisRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(array $residentIds)
+    public function getByResidentIds(Space $space = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rd');
 
-        return $qb
+        $qb
             ->select('
                     r.id as residentId,
                     rd.id as diagnosisId,
@@ -182,7 +183,21 @@ class ResidentDiagnosisRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'rd.resident = r'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('rd.type', 'ASC')
             ->addOrderBy('d.title')

@@ -49,14 +49,15 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $responsiblePersonIds
      * @return mixed
      */
-    public function getByResponsiblePersonIds(array $responsiblePersonIds)
+    public function getByResponsiblePersonIds(Space $space = null, array $responsiblePersonIds)
     {
         $qb = $this->createQueryBuilder('rpp');
 
-        return $qb
+        $qb
             ->select('
                     rpp.id as id,
                     rp.id as rpId,
@@ -70,8 +71,21 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
                 'rp',
                 Join::WITH,
                 'rpp.responsiblePerson = rp'
-            )
+            );
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rp.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('rp.id', $responsiblePersonIds))
             ->groupBy('rpp.id')
             ->getQuery()

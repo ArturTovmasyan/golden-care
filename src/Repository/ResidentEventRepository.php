@@ -184,14 +184,15 @@ class ResidentEventRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(array $residentIds)
+    public function getByResidentIds(Space $space = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('re');
 
-        return $qb
+        $qb
             ->select(
                 're.id as id,
                     r.id as residentId,
@@ -241,7 +242,21 @@ class ResidentEventRepository extends EntityRepository
                 'rpsal',
                 Join::WITH,
                 'rp.salutation = rpsal'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('re.date', 'DESC')
             ->groupBy('re.id')
@@ -250,16 +265,17 @@ class ResidentEventRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $startDate
      * @param $endDate
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIdsAndDate($startDate, $endDate, array $residentIds)
+    public function getByResidentIdsAndDate(Space $space = null, $startDate, $endDate, array $residentIds)
     {
         $qb = $this->createQueryBuilder('re');
 
-        return $qb
+        $qb
             ->select(
                 're.id as id,
                     r.id as residentId,
@@ -314,7 +330,21 @@ class ResidentEventRepository extends EntityRepository
             ->andWhere('re.date>=:startDate')
             ->andWhere('re.date<=:endDate')
             ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->orderBy('re.date', 'DESC')
             ->groupBy('re.id')
             ->getQuery()

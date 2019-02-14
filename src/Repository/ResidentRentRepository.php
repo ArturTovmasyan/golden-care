@@ -165,14 +165,15 @@ class ResidentRentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(array $residentIds)
+    public function getByResidentIds(Space $space = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rr');
 
-        return $qb
+        $qb
             ->select('
                     rr.id as id,
                     rr.start as start,
@@ -184,7 +185,21 @@ class ResidentRentRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'rr.resident = r'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->where($qb->expr()->in('r.id', $residentIds))
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
             ->getQuery()
