@@ -98,7 +98,7 @@ class GrantService
             return array_key_exists('class', $value) && $value['class'] === $entity_name;
         });
 
-        if (count($required_grants) > 1) {
+        if (\count($required_grants) > 1) {
             throw new InvalidGrantConfigException();
         }
 
@@ -200,7 +200,7 @@ class GrantService
         foreach ($ids as $id) {
             $grants = $this->getGrantsOfRole($id);
 
-            if (is_array($grants)) {
+            if (\is_array($grants)) {
                 $role_grants = array_merge($role_grants, $grants);
             }
         }
@@ -220,8 +220,8 @@ class GrantService
         }
 
         $identity_grants = array_filter($grants, function ($value) {
-            return array_key_exists('enabled', $value) && $value['enabled'] == true
-                && array_key_exists('identity', $value) && $value['identity'] == 1;
+            return array_key_exists('enabled', $value) && $value['enabled'] === true
+                && array_key_exists('identity', $value) && $value['identity'] === 1;
         });
 
         foreach ($identity_grants as $key => &$identity_grant) {
@@ -247,7 +247,7 @@ class GrantService
                 $fields = $parent_fields;
             }
 
-            $key_path = $parent_key != '' ? $parent_key . '-' . $key : $key;
+            $key_path = $parent_key !== '' ? $parent_key . '-' . $key : $key;
             $children = array_key_exists('children', $grant_node) ? $this->getGrants($values, $grant_node['children'], $key_path, $fields) : [];
 
             $node = [
@@ -255,27 +255,27 @@ class GrantService
                 'title' => $grant_node['title'] ?? ''
             ];
 
-            if (count($children) > 0) {
+            if (\count($children) > 0) {
                 $node['children'] = $children;
             } else {
                 if (array_key_exists($key_path, $values)) {
-                    if (in_array('enabled', $fields)) {
+                    if (\in_array('enabled', $fields, false)) {
                         $node['enabled'] = $values[$key_path]['enabled'] ?? false;
                     }
-                    if (in_array('level', $fields)) {
+                    if (\in_array('level', $fields, false)) {
                         $node['level'] = $values[$key_path]['level'] ?? 0;
                     }
-                    if (in_array('identity', $fields)) {
+                    if (\in_array('identity', $fields, false)) {
                         $node['identity'] = $values[$key_path]['identity'] ?? 0;
                     }
                 } else {
-                    if (in_array('enabled', $fields)) {
+                    if (\in_array('enabled', $fields, false)) {
                         $node['enabled'] = false;
                     }
-                    if (in_array('level', $fields)) {
+                    if (\in_array('level', $fields, false)) {
                         $node['level'] = 0;
                     }
-                    if (in_array('identity', $fields)) {
+                    if (\in_array('identity', $fields, false)) {
                         $node['identity'] = 0;
                     }
                 }
@@ -321,7 +321,7 @@ class GrantService
     {
         if (array_key_exists('children', $array)) {
             foreach ($array['children'] as $name => $value) {
-                $key_path = $parent_key != '' ? $parent_key . '-' . $name : $name;
+                $key_path = $parent_key !== '' ? $parent_key . '-' . $name : $name;
                 self::flatten($value, $flat, $keySeparator, $key_path);
             }
         } else {

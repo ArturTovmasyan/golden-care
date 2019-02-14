@@ -93,7 +93,7 @@ class BaseService
             foreach ($validationErrors as $error) {
                 $propertyPath = ValidationSerializedName::convert(
                     $this->reader,
-                    $this->em->getClassMetadata(get_class($entity))->getName(),
+                    $this->em->getClassMetadata(\get_class($entity))->getName(),
                     $groups[0],
                     $error->getPropertyPath()
                 );

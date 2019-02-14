@@ -61,7 +61,7 @@ class AssessmentReportService extends BaseService
          * @var Assessment $assessment
          * @var Resident $resident
          */
-        $assessment = $this->em->getRepository(Assessment::class)->find($residentId);
+        $assessment = $this->em->getRepository(Assessment::class)->getOne($this->grantService->getCurrentSpace(), $residentId);
 
         if ($assessment === null) {
             throw new AssessmentNotFoundException();
