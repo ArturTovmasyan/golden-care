@@ -107,6 +107,10 @@ class Grant
             }
         }
 
+        if($grant === "" && $level === \App\Model\Grant::$LEVEL_NONE) {
+            return;
+        }
+
         $effectiveGrants = $grantService->getEffectiveGrants($user->getRoleObjects());
 
         if (!(array_key_exists($grant, $effectiveGrants) && $effectiveGrants[$grant]['level'] >= $level)) {
