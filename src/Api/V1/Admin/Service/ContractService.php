@@ -130,7 +130,7 @@ class ContractService extends BaseService implements IGridService
             }
 
             /** @var Contract $activeContract */
-            $activeContract = $this->em->getRepository(Contract::class)->getOneBy($currentSpace, $residentId);
+            $activeContract = $this->em->getRepository(Contract::class)->getOneByEndDateNull($currentSpace, $residentId);
 
             if ($activeContract !== null) {
                 throw new ContractAlreadyExistException();

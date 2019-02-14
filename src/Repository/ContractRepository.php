@@ -121,7 +121,7 @@ class ContractRepository extends EntityRepository
      * @param $id
      * @return mixed
      */
-    public function getOneBy(Space $space = null, $id)
+    public function getOneByEndDateNull(Space $space = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('c')
