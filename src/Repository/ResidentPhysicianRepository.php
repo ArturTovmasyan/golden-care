@@ -142,7 +142,7 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
-     * @param $id
+     * @param $resident_id
      * @return mixed
      */
     public function getOnePrimaryByResidentId(Space $space = null, $resident_id)
@@ -179,7 +179,7 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
-     * @param $id
+     * @param $resident_id
      * @return mixed
      */
     public function getPrimariesByResidentId(Space $space = null, $resident_id)

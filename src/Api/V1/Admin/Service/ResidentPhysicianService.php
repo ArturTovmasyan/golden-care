@@ -100,7 +100,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             // check unique primary
             if ($primary) {
-                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $resident);
+                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $residentId);
 
                 /** @var ResidentPhysician $primary_physician */
                 foreach ($primary_physicians as $primary_physician) {
@@ -168,7 +168,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             // check unique primary
             if ($primary) {
-                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $resident);
+                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $residentId);
 
                 /** @var ResidentPhysician $primary_physician */
                 foreach ($primary_physicians as $primary_physician) {
