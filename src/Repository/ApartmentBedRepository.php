@@ -174,14 +174,15 @@ class ApartmentBedRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
-    public function getBedIdAndTypeIdByRooms($ids)
+    public function getBedIdAndTypeIdByRooms(Space $space = null, $ids)
     {
         $qb = $this->createQueryBuilder('ab');
 
-        return $qb
+        $qb
             ->select(
                 'ab.id AS id,
                 type.id AS typeId,
@@ -193,7 +194,21 @@ class ApartmentBedRepository extends EntityRepository
             ->join('ab.room', 'r')
             ->join('r.apartment', 'type')
             ->where('r.id IN (:ids)')
-            ->setParameter('ids', $ids)
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = type.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->orderBy('type.name')
             ->addOrderBy('r.number')
             ->addOrderBy('ab.number')

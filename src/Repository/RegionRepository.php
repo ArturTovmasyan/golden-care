@@ -96,6 +96,35 @@ class RegionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getBy(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
@@ -122,11 +151,24 @@ class RegionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @return mixed
      */
-    public function orderedFindAll()
+    public function orderedFindAll(Space $space = null)
     {
         $qb = $this->createQueryBuilder('r');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->orderBy('r.name', 'ASC')
             ->getQuery()

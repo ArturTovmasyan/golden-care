@@ -104,6 +104,35 @@ class ApartmentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getBy(Space $space = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = a.space'
+            )
+            ->where('a.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param $ids
      * @return mixed
      */
@@ -130,11 +159,24 @@ class ApartmentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @return mixed
      */
-    public function orderedFindAll()
+    public function orderedFindAll(Space $space = null)
     {
         $qb = $this->createQueryBuilder('a');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         return $qb->orderBy('a.name', 'ASC')
             ->getQuery()

@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\Exception\IncorrectReportParameterException;
 use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
 use App\Api\V1\Common\Service\Exception\ReportMisconfigurationException;
 use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
+use App\Api\V1\Common\Service\GrantService;
 use App\Model\Report;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
@@ -51,6 +52,9 @@ class ReportService
     /** @var Reader */
     protected $reader;
 
+    /** @var GrantService */
+    protected $grantService;
+
     /**
      * ReportService constructor.
      * @param ContainerInterface $container
@@ -60,6 +64,7 @@ class ReportService
      * @param Reader $reader
      * @param Mailer $mailer
      * @param Security $security
+     * @param GrantService $grantService
      */
     public function __construct(
         ContainerInterface $container,
@@ -68,7 +73,8 @@ class ReportService
         UserPasswordEncoderInterface $encoder,
         Reader $reader,
         Mailer $mailer,
-        Security $security
+        Security $security,
+        GrantService $grantService
     )
     {
         $this->container = $container;
@@ -78,6 +84,7 @@ class ReportService
         $this->reader = $reader;
         $this->mailer = $mailer;
         $this->security = $security;
+        $this->grantService = $grantService;
         $this->config = Yaml::parseFile($this->container->get('kernel')->getRootDir() . self::$REPORT_CONFIG_PATH);
     }
 
@@ -135,7 +142,8 @@ class ReportService
             $this->mailer,
             $this->validator,
             $this->security,
-            $this->reader
+            $this->reader,
+            $this->grantService
         );
 
         $request_group = $request->get('type') ? (int) $request->get('type') : null;

@@ -123,15 +123,31 @@ class PaymentSourceRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @return mixed
      */
-    public function getPaymentSources()
+    public function getPaymentSources(Space $space = null)
     {
-        return $this->createQueryBuilder('ps')
+        $qb = $this
+            ->createQueryBuilder('ps')
             ->select(
                 'ps.id as id',
                 'ps.title as title'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ps.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->orderBy('ps.title', 'ASC')
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);

@@ -367,12 +367,13 @@ class ResidentRentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRentsWithSources($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRentsWithSources(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -424,20 +425,33 @@ class ResidentRentRepository extends EntityRepository
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
             );
 
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
             return $qb
                 ->getQuery()
                 ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterNewData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentMasterNewData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
-        return $this
+        $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
                         FROM App:ResidentRent mrr 
@@ -450,20 +464,35 @@ class ResidentRentRepository extends EntityRepository
                         JOIN aca.contract ac 
                         JOIN ac.resident ar 
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
-        return $this
+        $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
                         FROM App:ResidentRent mrr 
@@ -476,7 +505,21 @@ class ResidentRentRepository extends EntityRepository
                         JOIN aca.contract ac 
                         JOIN ac.resident ar 
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
@@ -661,14 +704,15 @@ class ResidentRentRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomListData($type, ImtDateTimeInterval $reportInterval, $typeId = null)
+    public function getRoomListData(Space $space = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null)
     {
-        return $this
+        $qb = $this
             ->getRoomListContractActionWithRentQb($type, $reportInterval, $typeId)
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
                         FROM App:ResidentRent mrr 
@@ -690,20 +734,35 @@ class ResidentRentRepository extends EntityRepository
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
             )
             ->setParameter('startDate', $reportInterval->getStart())
-            ->setParameter('endDate', $reportInterval->getEnd())
+            ->setParameter('endDate', $reportInterval->getEnd());
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterData($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentMasterData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
-        return $this
+        $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
                         FROM App:ResidentRent mrr 
@@ -716,7 +775,21 @@ class ResidentRentRepository extends EntityRepository
                         JOIN aca.contract ac 
                         JOIN ac.resident ar 
                         WHERE aca.state='. ContractState::ACTIVE .' AND aca.end IS NULL)'
-            )
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }

@@ -735,11 +735,12 @@ class ContractActionRepository extends EntityRepository
     }
 
     /**
+     * @param Space|null $space
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getBedIdAndTypeId($type, $ids)
+    public function getBedIdAndTypeId(Space $space = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -750,6 +751,18 @@ class ContractActionRepository extends EntityRepository
             ->andWhere('c.type=:type')
             ->setParameter('type', $type)
             ->setParameter('state', ContractState::ACTIVE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
 
         switch ($type) {
             case ContractType::TYPE_FACILITY:
