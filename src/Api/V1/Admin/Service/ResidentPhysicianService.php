@@ -59,6 +59,15 @@ class ResidentPhysicianService extends BaseService implements IGridService
     }
 
     /**
+     * @param $resident_id
+     * @return ResidentPhysician|null|object
+     */
+    public function getPrimaryByResidentId($resident_id)
+    {
+        return $this->em->getRepository(ResidentPhysician::class)->getOnePrimaryByResidentId($this->grantService->getCurrentSpace(), $resident_id);
+    }
+
+    /**
      * @param array $params
      * @throws \Exception
      */
@@ -90,8 +99,14 @@ class ResidentPhysicianService extends BaseService implements IGridService
             }
 
             // check unique primary
-            if ($primary && $this->em->getRepository(ResidentPhysician::class)->getOneBy($currentSpace, $resident)) {
-                throw new ResidentHavePrimaryPhysicianException();
+            if ($primary) {
+                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $resident);
+
+                /** @var ResidentPhysician $primary_physician */
+                foreach ($primary_physicians as $primary_physician) {
+                    $primary_physician->setPrimary(false);
+                    $this->em->persist($primary_physician);
+                }
             }
 
             $residentPhysician = new ResidentPhysician();
@@ -153,10 +168,12 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             // check unique primary
             if ($primary) {
-                $primaryEntity = $this->em->getRepository(ResidentPhysician::class)->getOneBy($currentSpace, $resident);
+                $primary_physicians = $this->em->getRepository(ResidentPhysician::class)->getPrimariesByResidentId($currentSpace, $resident);
 
-                if ($primaryEntity && $primaryEntity->getId() !== $id) {
-                    throw new ResidentHavePrimaryPhysicianException();
+                /** @var ResidentPhysician $primary_physician */
+                foreach ($primary_physicians as $primary_physician) {
+                    $primary_physician->setPrimary(false);
+                    $this->em->persist($primary_physician);
                 }
             }
 

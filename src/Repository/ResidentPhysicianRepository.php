@@ -142,6 +142,80 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getOnePrimaryByResidentId(Space $space = null, $resident_id)
+    {
+        $qb = $this
+            ->createQueryBuilder('rp')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rp.resident'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :resident_id')
+            ->andWhere('rp.primary = :primary')
+            ->setParameter('resident_id', $resident_id)
+            ->setParameter('primary', true);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param $id
+     * @return mixed
+     */
+    public function getPrimariesByResidentId(Space $space = null, $resident_id)
+    {
+        $qb = $this
+            ->createQueryBuilder('rp')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rp.resident'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.id = :resident_id')
+            ->andWhere('rp.primary = :primary')
+            ->setParameter('resident_id', $resident_id)
+            ->setParameter('primary', true);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
      * @param Resident $resident
      * @return mixed
      */

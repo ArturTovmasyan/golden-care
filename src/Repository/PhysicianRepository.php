@@ -37,10 +37,9 @@ class PhysicianRepository extends EntityRepository
                 Join::WITH,
                 'sal = p.salutation'
             )
-
             ->innerJoin(
                 CityStateZip::class,
-                'p',
+                'csz',
                 Join::WITH,
                 'csz = p.csz'
             )

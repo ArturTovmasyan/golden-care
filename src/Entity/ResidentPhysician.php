@@ -29,7 +29,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "primary",
- *              "type"       = "number",
+ *              "type"       = "boolean",
  *              "field"      = "rp.primary"
  *          }
  *     }

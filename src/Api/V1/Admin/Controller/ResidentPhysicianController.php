@@ -406,4 +406,21 @@ class ResidentPhysicianController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @Route("/{resident_id}/primary", requirements={"resident_id"="\d+"}, name="api_admin_resident_physician_get_primary", methods={"GET"})
+     *
+     * @param ResidentPhysicianService $residentPhysicianService
+     * @param $resident_id
+     * @return JsonResponse
+     */
+    public function getPrimaryAction(Request $request, $resident_id, ResidentPhysicianService $residentPhysicianService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentPhysicianService->getPrimaryByResidentId($resident_id),
+            ['api_admin_resident_physician_get']
+        );
+    }
 }

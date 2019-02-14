@@ -51,12 +51,12 @@ use App\Annotation\Grid as Grid;
  *          },
  *          {
  *              "id"         = "financially",
- *              "type"       = "number",
+ *              "type"       = "boolean",
  *              "field"      = "rp.financially"
  *          },
  *          {
  *              "id"         = "emergency",
- *              "type"       = "number",
+ *              "type"       = "boolean",
  *              "field"      = "rp.emergency"
  *          },
  *          {
