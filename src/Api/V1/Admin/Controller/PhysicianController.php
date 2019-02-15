@@ -359,10 +359,11 @@ class PhysicianController extends BaseController
      * @param PhysicianService $physicianService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function addAction(Request $request, PhysicianService $physicianService)
     {
-        $physicianService->add(
+        $id = $physicianService->add(
             [
                 'first_name'        => $request->get('first_name'),
                 'middle_name'       => $request->get('middle_name'),
@@ -383,7 +384,9 @@ class PhysicianController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

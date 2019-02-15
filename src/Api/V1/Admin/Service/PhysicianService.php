@@ -49,8 +49,9 @@ class PhysicianService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params): void
+    public function add(array $params): ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Physician $physician
@@ -63,6 +64,7 @@ class PhysicianService extends BaseService implements IGridService
             $currentSpace = $this->grantService->getCurrentSpace();
 
             $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
+
             $csz        = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $params['salutation_id']);
 
@@ -115,7 +117,6 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setSpace($space);
             $physician->setCsz($csz);
-            $physician->setSpace($space);
             $physician->setSpeciality($speciality);
             $physician->setSalutation($salutation);
             $physician->setSpeciality($speciality);
@@ -125,11 +126,15 @@ class PhysicianService extends BaseService implements IGridService
             $this->em->persist($physician);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $physician->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

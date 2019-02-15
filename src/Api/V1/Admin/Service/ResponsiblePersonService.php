@@ -49,8 +49,9 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Space $space
@@ -102,11 +103,15 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $responsiblePerson->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**
@@ -187,23 +192,25 @@ class ResponsiblePersonService extends BaseService implements IGridService
      */
     private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = [])
     {
-        /**
-         * @var ResponsiblePerson $phone
-         */
-        $oldPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getBy($this->grantService->getCurrentSpace(), $responsiblePerson);
+        if($responsiblePerson->getId() !== null) {
+            /**
+             * @var ResponsiblePerson $phone
+             */
+            $oldPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getBy($this->grantService->getCurrentSpace(), $responsiblePerson);
 
-        foreach ($oldPhones as $phone) {
-            $this->em->remove($phone);
+            foreach ($oldPhones as $phone) {
+                $this->em->remove($phone);
+            }
         }
 
         $hasPrimary = false;
 
         $responsiblePersonPhones = [];
 
-        $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-        $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
-
         foreach($phones as $phone) {
+            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+
             $responsiblePersonPhone = new ResponsiblePersonPhone();
             $responsiblePersonPhone->setResponsiblePerson($responsiblePerson);
             $responsiblePersonPhone->setCompatibility($phone['compatibility'] ?? null);

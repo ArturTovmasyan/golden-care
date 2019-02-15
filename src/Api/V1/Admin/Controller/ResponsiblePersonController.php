@@ -333,7 +333,7 @@ class ResponsiblePersonController extends BaseController
      */
     public function addAction(Request $request, ResponsiblePersonService $responsiblePersonService)
     {
-        $responsiblePersonService->add(
+        $id = $responsiblePersonService->add(
             [
                 'first_name'        => $request->get('first_name'),
                 'middle_name'       => $request->get('middle_name'),
@@ -351,7 +351,9 @@ class ResponsiblePersonController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 
