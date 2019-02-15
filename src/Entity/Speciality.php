@@ -51,7 +51,9 @@ class Speciality
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $id;
@@ -76,7 +78,9 @@ class Speciality
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $title;

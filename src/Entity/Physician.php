@@ -146,7 +146,9 @@ class Physician
      *      "api_admin_physician_list",
      *      "api_admin_physician_get",
      *      "api_admin_resident_event_list",
-     *      "api_admin_resident_event_get"
+     *      "api_admin_resident_event_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $salutation;
@@ -163,7 +165,9 @@ class Physician
      * })
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $csz;
@@ -184,7 +188,9 @@ class Physician
      * })
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $speciality;
@@ -204,7 +210,9 @@ class Physician
      *     "api_admin_physician_speciality_list",
      *     "api_admin_physician_speciality_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $firstName;
@@ -224,7 +232,9 @@ class Physician
      *     "api_admin_physician_speciality_list",
      *     "api_admin_physician_speciality_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $lastName;
@@ -234,7 +244,9 @@ class Physician
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $middleName;
@@ -248,7 +260,9 @@ class Physician
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $address_1;
@@ -259,7 +273,9 @@ class Physician
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $address_2;
@@ -280,7 +296,9 @@ class Physician
      * @ORM\Column(name="office_phone", type="string", length=20, nullable=false)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $officePhone;
@@ -290,7 +308,9 @@ class Physician
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      * @Assert\Regex(
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
@@ -307,7 +327,9 @@ class Physician
      * @ORM\Column(name="emergency_phone", type="string", length=20, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      * @Assert\Regex(
      *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
@@ -324,7 +346,9 @@ class Physician
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      * @Assert\Email(
      *     groups={
@@ -340,7 +364,9 @@ class Physician
      * @ORM\Column(name="website_url", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
-     *     "api_admin_physician_get"
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
      * })
      */
     private $websiteUrl;
