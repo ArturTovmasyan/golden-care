@@ -32,7 +32,8 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "field"      = "r.name"
+ *              "field"      = "r.name",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "default",

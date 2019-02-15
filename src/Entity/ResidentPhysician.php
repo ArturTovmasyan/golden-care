@@ -23,9 +23,10 @@ use App\Annotation\Grid;
  *              "field"      = "rp.id"
  *          },
  *          {
- *              "id"         = "physician",
+ *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"
+ *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "primary",

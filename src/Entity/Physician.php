@@ -24,24 +24,10 @@ use JMS\Serializer\Annotation\Groups;
  *              "field"      = "sp.title"
  *          },
  *          {
- *              "id"         = "salutation",
+ *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "sal.title"
- *          },
- *          {
- *              "id"         = "first_name",
- *              "type"       = "string",
- *              "field"      = "p.firstName"
- *          },
- *          {
- *              "id"         = "middle_name",
- *              "type"       = "string",
- *              "field"      = "p.middleName"
- *          },
- *          {
- *              "id"         = "last_name",
- *              "type"       = "string",
- *              "field"      = "p.lastName"
+ *              "field"      = "CONCAT(sal.title, ' ', p.firstName, ' ', p.middleName, ' ', p.lastName)",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "address_1",

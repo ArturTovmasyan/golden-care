@@ -25,7 +25,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "allergen",
  *              "type"       = "string",
- *              "field"      = "a.title"
+ *              "field"      = "a.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "notes",

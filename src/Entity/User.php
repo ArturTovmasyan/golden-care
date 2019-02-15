@@ -33,14 +33,10 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *              "field"      = "u.id"
  *          },
  *          {
- *              "id"         = "first_name",
+ *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "u.firstName"
- *          },
- *          {
- *              "id"         = "last_name",
- *              "type"       = "string",
- *              "field"      = "u.lastName"
+ *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "username",

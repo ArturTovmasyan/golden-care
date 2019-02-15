@@ -27,7 +27,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "aclg.title"
+ *              "field"      = "aclg.title",
+ *              "link"       = ":edit"
  *          }
  *     }
  * )

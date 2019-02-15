@@ -35,7 +35,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "sa.title"
+ *              "field"      = "sa.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "space",

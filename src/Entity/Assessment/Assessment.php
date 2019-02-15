@@ -28,7 +28,8 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "form",
  *              "type"       = "string",
- *              "field"      = "f.title"
+ *              "field"      = "f.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "date",

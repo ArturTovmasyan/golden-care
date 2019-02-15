@@ -33,7 +33,8 @@ use JMS\Serializer\Annotation\Groups;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "r.title"
+ *              "field"      = "r.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "space",

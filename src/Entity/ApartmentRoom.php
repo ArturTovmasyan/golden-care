@@ -36,7 +36,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "number",
  *              "type"       = "string",
- *              "field"      = "ar.number"
+ *              "field"      = "ar.number",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "floor",

@@ -36,7 +36,8 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "number",
  *              "type"       = "string",
- *              "field"      = "fb.number"
+ *              "field"      = "fb.number",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "room",

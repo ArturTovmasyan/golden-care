@@ -25,7 +25,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "condition",
  *              "type"       = "string",
- *              "field"      = "mhc.title"
+ *              "field"      = "mhc.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "date",

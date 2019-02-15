@@ -26,12 +26,14 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "start",
  *              "type"       = "date",
- *              "field"      = "rr.start"
+ *              "field"      = "rr.start",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "end",
  *              "type"       = "date",
- *              "field"      = "rr.end"
+ *              "field"      = "rr.end",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "period",

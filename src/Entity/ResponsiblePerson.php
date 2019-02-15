@@ -20,24 +20,10 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "rp.id"
  *          },
  *          {
- *              "id"         = "salutation",
+ *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "sal.title"
- *          },
- *          {
- *              "id"         = "first_name",
- *              "type"       = "string",
- *              "field"      = "rp.firstName"
- *          },
- *          {
- *              "id"         = "middle_name",
- *              "type"       = "string",
- *              "field"      = "rp.middleName"
- *          },
- *          {
- *              "id"         = "last_name",
- *              "type"       = "string",
- *              "field"      = "rp.lastName"
+ *              "field"      = "CONCAT(sal.title, ' ', rp.firstName, ' ', rp.middleName, ' ', rp.lastName)",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "address_1",

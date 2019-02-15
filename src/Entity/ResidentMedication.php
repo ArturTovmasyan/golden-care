@@ -25,7 +25,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "medication",
  *              "type"       = "string",
- *              "field"      = "m.title"
+ *              "field"      = "m.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "form_factor",

@@ -25,7 +25,8 @@ use App\Model\Persistence\Entity\UserAwareTrait;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "ac.title"
+ *              "field"      = "ac.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "multi_item",

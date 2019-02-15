@@ -25,7 +25,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "ps.title"
+ *              "field"      = "ps.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "space",
