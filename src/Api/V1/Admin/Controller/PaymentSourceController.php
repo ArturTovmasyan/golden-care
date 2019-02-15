@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/payment/source")
+ *
+ * @Grant(grant="persistence-common-payment_source", level="VIEW")
  *
  * Class PaymentSourceController
  * @package App\Api\V1\Admin\Controller
@@ -240,6 +243,8 @@ class PaymentSourceController extends BaseController
      *
      * @Route("", name="api_admin_payment_source_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-payment_source", level="ADD")
+     *
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
@@ -292,6 +297,8 @@ class PaymentSourceController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-payment_source", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param PaymentSourceService $paymentSourceService
@@ -335,6 +342,8 @@ class PaymentSourceController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-payment_source", level="DELETE")
+     *
      * @param $id
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
@@ -376,6 +385,8 @@ class PaymentSourceController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_payment_source_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-payment_source", level="DELETE")
      *
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService

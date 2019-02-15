@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/diet")
+ *
+ * @Grant(grant="persistence-common-diet", level="VIEW")
  *
  * Class DietController
  * @package App\Api\V1\Admin\Controller
@@ -248,6 +251,8 @@ class DietController extends BaseController
      *
      * @Route("", name="api_admin_diet_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-diet", level="ADD")
+     *
      * @param Request $request
      * @param DietService $dietService
      * @return JsonResponse
@@ -303,6 +308,8 @@ class DietController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-diet", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param DietService $dietService
@@ -347,6 +354,8 @@ class DietController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-diet", level="DELETE")
+     *
      * @param $id
      * @param DietService $dietService
      * @return JsonResponse
@@ -388,6 +397,8 @@ class DietController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_diet_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-diet", level="DELETE")
      *
      * @param Request $request
      * @param DietService $dietService

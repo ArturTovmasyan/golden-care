@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/apartment/room")
+ *
+ * @Grant(grant="persistence-apartment_room", level="VIEW")
  *
  * Class ApartmentRoomController
  * @package App\Api\V1\Admin\Controller
@@ -309,6 +312,8 @@ class ApartmentRoomController extends BaseController
      *
      * @Route("", name="api_admin_apartment_room_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-apartment_room", level="ADD")
+     *
      * @param Request $request
      * @param ApartmentRoomService $apartmentRoomService
      * @return JsonResponse
@@ -387,6 +392,8 @@ class ApartmentRoomController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_room_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-apartment_room", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ApartmentRoomService $apartmentRoomService
@@ -433,6 +440,8 @@ class ApartmentRoomController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_room_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-apartment_room", level="DELETE")
+     *
      * @param $id
      * @param ApartmentRoomService $apartmentRoomService
      * @return JsonResponse
@@ -474,6 +483,8 @@ class ApartmentRoomController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_apartment_room_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-apartment_room", level="DELETE")
      *
      * @param Request $request
      * @param ApartmentRoomService $apartmentRoomService

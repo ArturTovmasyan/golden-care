@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/relationship")
+ *
+ * @Grant(grant="persistence-common-relationship", level="VIEW")
  *
  * Class RelationshipController
  * @package App\Api\V1\Admin\Controller
@@ -234,6 +237,8 @@ class RelationshipController extends BaseController
      *
      * @Route("", name="api_admin_relationship_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-relationship", level="ADD")
+     *
      * @param Request $request
      * @param RelationshipService $relationshipService
      * @return JsonResponse
@@ -287,6 +292,8 @@ class RelationshipController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-relationship", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param RelationshipService $relationshipService
@@ -332,6 +339,8 @@ class RelationshipController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-relationship", level="DELETE")
+     *
      * @param Request $request
      * @param $id
      * @param RelationshipService $relationshipService
@@ -371,6 +380,8 @@ class RelationshipController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_relationship_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-relationship", level="DELETE")
      *
      * @param Request $request
      * @param RelationshipService $relationshipService

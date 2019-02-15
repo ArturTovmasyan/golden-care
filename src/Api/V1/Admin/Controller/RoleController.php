@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -26,6 +27,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/role")
+ *
+ * @Grant(grant="persistence-security-role", level="VIEW")
  *
  * Class RoleController
  * @package App\Api\V1\Admin\Controller
@@ -245,6 +248,8 @@ class RoleController extends BaseController
      *
      * @Route("", name="api_admin_role_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-security-role", level="ADD")
+     *
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
@@ -304,6 +309,8 @@ class RoleController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-security-role", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param RoleService $roleService
@@ -351,6 +358,8 @@ class RoleController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-security-role", level="DELETE")
+     *
      * @param Request $request
      * @param $id
      * @param RoleService $roleService
@@ -390,6 +399,8 @@ class RoleController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_role_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-role", level="DELETE")
      *
      * @param Request $request
      * @param RoleService $roleService

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/assessment/care/level/group")
+ *
+ * @Grant(grant="persistence-assessment-care_level_group", level="VIEW")
  *
  * Class AssessmentCareLevelGroupController
  * @package App\Api\V1\Admin\Controller
@@ -225,6 +228,8 @@ class AssessmentCareLevelGroupController extends BaseController
      *
      * @Route("", name="api_admin_assessment_care_level_group_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-assessment-care_level_group", level="ADD")
+     *
      * @param Request $request
      * @param AssessmentCareLevelGroupService $careLevelGroupService
      * @return JsonResponse
@@ -275,6 +280,8 @@ class AssessmentCareLevelGroupController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_care_level_group_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-assessment-care_level_group", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param AssessmentCareLevelGroupService $careLevelGroupService
@@ -318,6 +325,8 @@ class AssessmentCareLevelGroupController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_care_level_group_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-assessment-care_level_group", level="DELETE")
+     *
      * @param $id
      * @param AssessmentCareLevelGroupService $careLevelGroupService
      * @return JsonResponse
@@ -359,6 +368,8 @@ class AssessmentCareLevelGroupController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_assessment_care_level_group_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-assessment-care_level_group", level="DELETE")
      *
      * @param Request $request
      * @param AssessmentCareLevelGroupService $careLevelGroupService

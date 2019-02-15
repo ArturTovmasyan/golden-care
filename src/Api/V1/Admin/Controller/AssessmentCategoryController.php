@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/assessment/category")
+ *
+ * @Grant(grant="persistence-assessment-category", level="VIEW")
  *
  * Class AssessmentCategoryController
  * @package App\Api\V1\Admin\Controller
@@ -239,6 +242,8 @@ class AssessmentCategoryController extends BaseController
      *
      * @Route("", name="api_admin_assessment_category_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-assessment-category", level="ADD")
+     *
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
@@ -304,6 +309,8 @@ class AssessmentCategoryController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_category_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-assessment-category", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param AssessmentCategoryService $assessmentCategoryService
@@ -349,6 +356,8 @@ class AssessmentCategoryController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_category_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-assessment-category", level="DELETE")
+     *
      * @param $id
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
@@ -390,6 +399,8 @@ class AssessmentCategoryController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_assessment_category_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-assessment-category", level="DELETE")
      *
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService

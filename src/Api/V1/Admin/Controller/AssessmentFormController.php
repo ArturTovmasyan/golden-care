@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -26,6 +27,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/assessment/form")
+ *
+ * @Grant(grant="persistence-assessment-form", level="VIEW")
  *
  * Class AssessmentFormController
  * @package App\Api\V1\Admin\Controller
@@ -270,6 +273,8 @@ class AssessmentFormController extends BaseController
      *
      * @Route("", name="api_admin_assessment_form_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-assessment-form", level="ADD")
+     *
      * @param Request $request
      * @param AssessmentFormService $formService
      * @return JsonResponse
@@ -326,6 +331,8 @@ class AssessmentFormController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-assessment-form", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param AssessmentFormService $formService
@@ -371,6 +378,8 @@ class AssessmentFormController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-assessment-form", level="DELETE")
+     *
      * @param $id
      * @param AssessmentFormService $formService
      * @return JsonResponse
@@ -412,6 +421,8 @@ class AssessmentFormController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_assessment_form_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-assessment-form", level="DELETE")
      *
      * @param Request $request
      * @param AssessmentFormService $formService

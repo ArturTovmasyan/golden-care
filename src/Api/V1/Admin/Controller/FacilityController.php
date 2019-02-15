@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/facility")
+ *
+ * @Grant(grant="persistence-facility", level="VIEW")
  *
  * Class FacilityController
  * @package App\Api\V1\Admin\Controller
@@ -322,6 +325,8 @@ class FacilityController extends BaseController
      *
      * @Route("", name="api_admin_facility_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-facility", level="ADD")
+     *
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
@@ -401,6 +406,8 @@ class FacilityController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-facility", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param FacilityService $facilityService
@@ -453,6 +460,8 @@ class FacilityController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-facility", level="DELETE")
+     *
      * @param $id
      * @param FacilityService $facilityService
      * @return JsonResponse
@@ -494,6 +503,8 @@ class FacilityController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_facility_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-facility", level="DELETE")
      *
      * @param Request $request
      * @param FacilityService $facilityService

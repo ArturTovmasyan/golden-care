@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -27,6 +28,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/assessment")
+ *
+ * @Grant(grant="persistence-resident-assessment-assessment", level="VIEW")
  *
  * Class AssessmentController
  * @package App\Api\V1\Admin\Controller
@@ -326,6 +329,8 @@ class ResidentAssessmentController extends BaseController
      *
      * @Route("", name="api_admin_resident_assessment_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-assessment-assessment", level="ADD")
+     *
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
@@ -392,6 +397,8 @@ class ResidentAssessmentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_assessment_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-assessment-assessment", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentAssessmentService $residentAssessmentService
@@ -440,6 +447,8 @@ class ResidentAssessmentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_assessment_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-assessment-assessment", level="DELETE")
+     *
      * @param $id
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
@@ -481,6 +490,8 @@ class ResidentAssessmentController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_assessment_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-assessment-assessment", level="DELETE")
      *
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService

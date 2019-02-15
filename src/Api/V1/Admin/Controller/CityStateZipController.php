@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/city/state/zip")
+ *
+ * @Grant(grant="persistence-common-city_state_zip", level="VIEW")
  *
  * Class CityStateZipController
  * @package App\Api\V1\Admin\Controller
@@ -292,6 +295,8 @@ class CityStateZipController extends BaseController
      *
      * @Route("", name="api_admin_city_state_zip_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-city_state_zip", level="ADD")
+     *
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
@@ -356,6 +361,8 @@ class CityStateZipController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-city_state_zip", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param CityStateZipService $cityStateZipService
@@ -403,6 +410,8 @@ class CityStateZipController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-city_state_zip", level="DELETE")
+     *
      * @param $id
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
@@ -444,6 +453,8 @@ class CityStateZipController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_city_state_zip_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-city_state_zip", level="DELETE")
      *
      * @param Request $request
      * @param CityStateZipService $cityStateZipService

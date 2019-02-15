@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/apartment")
+ *
+ * @Grant(grant="persistence-apartment", level="VIEW")
  *
  * Class ApartmentController
  * @package App\Api\V1\Admin\Controller
@@ -322,6 +325,8 @@ class ApartmentController extends BaseController
      *
      * @Route("", name="api_admin_apartment_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-apartment", level="ADD")
+     *
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
@@ -401,6 +406,8 @@ class ApartmentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-apartment", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ApartmentService $apartmentService
@@ -453,6 +460,8 @@ class ApartmentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-apartment", level="DELETE")
+     *
      * @param $id
      * @param ApartmentService $apartmentService
      * @return JsonResponse
@@ -494,6 +503,8 @@ class ApartmentController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_apartment_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-apartment", level="DELETE")
      *
      * @param Request $request
      * @param ApartmentService $apartmentService

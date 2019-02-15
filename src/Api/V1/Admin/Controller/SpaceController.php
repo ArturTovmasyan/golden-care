@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/space")
+ *
+ * @Grant(grant="persistence-security-space", level="VIEW")
  *
  * Class SpaceController
  * @package App\Api\V1\Admin\Controller
@@ -225,6 +228,8 @@ class SpaceController extends BaseController
      *     }
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_edit", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-security-space", level="EDIT")
      *
      * @param Request $request
      * @param $id

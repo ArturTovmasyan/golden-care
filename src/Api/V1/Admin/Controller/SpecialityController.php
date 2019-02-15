@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/speciality")
+ *
+ * @Grant(grant="persistence-common-speciality", level="VIEW")
  *
  * Class SpecialityController
  * @package App\Api\V1\Admin\Controller
@@ -241,6 +244,8 @@ class SpecialityController extends BaseController
      *
      * @Route("", name="api_admin_speciality_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-speciality", level="ADD")
+     *
      * @param Request $request
      * @param SpecialityService $specialityService
      * @return JsonResponse
@@ -293,6 +298,8 @@ class SpecialityController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-speciality", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param SpecialityService $specialityService
@@ -336,6 +343,8 @@ class SpecialityController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-speciality", level="DELETE")
+     *
      * @param $id
      * @param SpecialityService $specialityService
      * @return JsonResponse
@@ -377,6 +386,8 @@ class SpecialityController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_speciality_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-speciality", level="DELETE")
      *
      * @param Request $request
      * @param SpecialityService $specialityService

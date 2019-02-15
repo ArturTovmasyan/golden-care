@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/responsible/person")
+ *
+ * @Grant(grant="persistence-common-responsible_person", level="VIEW")
  *
  * Class ResponsiblePersonController
  * @package App\Api\V1\Admin\Controller
@@ -326,6 +329,8 @@ class ResponsiblePersonController extends BaseController
      *
      * @Route("", name="api_admin_responsible_person_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-responsible_person", level="ADD")
+     *
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
@@ -408,6 +413,8 @@ class ResponsiblePersonController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-responsible_person", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResponsiblePersonService $responsiblePersonService
@@ -461,6 +468,8 @@ class ResponsiblePersonController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-responsible_person", level="DELETE")
+     *
      * @param $id
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
@@ -502,6 +511,8 @@ class ResponsiblePersonController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_responsible_person_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-responsible_person", level="DELETE")
      *
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/medication/form/factor")
+ *
+ * @Grant(grant="persistence-common-medication_form_factor", level="VIEW")
  *
  * Class MedicationFormFactorController
  * @package App\Api\V1\Admin\Controller
@@ -240,6 +243,8 @@ class MedicationFormFactorController extends BaseController
      *
      * @Route("", name="api_admin_medication_form_factor_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-medication_form_factor", level="ADD")
+     *
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
@@ -292,6 +297,8 @@ class MedicationFormFactorController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-medication_form_factor", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
@@ -335,6 +342,8 @@ class MedicationFormFactorController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-medication_form_factor", level="DELETE")
+     *
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
@@ -376,6 +385,8 @@ class MedicationFormFactorController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_medication_form_factor_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-medication_form_factor", level="DELETE")
      *
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService

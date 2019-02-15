@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -27,6 +28,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident")
+ *
+ * @Grant(grant="persistence-resident-resident", level="VIEW")
  *
  * Class ResidentController
  * @package App\Api\V1\Admin\Controller
@@ -274,6 +277,8 @@ class ResidentController extends BaseController
      *
      * @Route("", name="api_admin_resident_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident", level="ADD")
+     *
      * @param Request $request
      * @param ResidentService $residentService
      * @param ResidentPhotoHelper $residentPhotoHelper
@@ -351,6 +356,8 @@ class ResidentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentService $residentService
@@ -407,6 +414,8 @@ class ResidentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident", level="DELETE")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentService $residentService
@@ -448,6 +457,8 @@ class ResidentController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident", level="DELETE")
      *
      * @param Request $request
      * @param ResidentService $residentService
@@ -500,6 +511,8 @@ class ResidentController extends BaseController
      *     }
      *
      * @Route("/{id}/photo", requirements={"id"="\d+"}, name="api_admin_resident_edit_photo", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-resident", level="EDIT")
      *
      * @param Request $request
      * @param $id
@@ -590,6 +603,8 @@ class ResidentController extends BaseController
      *     }
      *
      * @Route("/{id}/move", requirements={"id"="\d+"}, name="api_admin_resident_edit_move", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-resident", level="EDIT")
      *
      * @param Request $request
      * @param $id

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/diet")
+ *
+ * @Grant(grant="persistence-resident-resident_diet", level="VIEW")
  *
  * Class ResidentDietController
  * @package App\Api\V1\Admin\Controller
@@ -256,6 +259,8 @@ class ResidentDietController extends BaseController
      *
      * @Route("", name="api_admin_resident_diet_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_diet", level="ADD")
+     *
      * @param Request $request
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
@@ -311,6 +316,8 @@ class ResidentDietController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_diet", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentDietService $residentDietService
@@ -355,6 +362,8 @@ class ResidentDietController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_diet", level="DELETE")
+     *
      * @param $id
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
@@ -396,6 +405,8 @@ class ResidentDietController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_diet_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_diet", level="DELETE")
      *
      * @param Request $request
      * @param ResidentDietService $residentDietService

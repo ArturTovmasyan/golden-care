@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/physician")
+ *
+ * @Grant(grant="persistence-resident-resident_physician", level="VIEW")
  *
  * Class ResidentPhysicianController
  * @package App\Api\V1\Admin\Controller
@@ -251,6 +254,8 @@ class ResidentPhysicianController extends BaseController
      *
      * @Route("", name="api_admin_resident_physician_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_physician", level="ADD")
+     *
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
@@ -306,6 +311,8 @@ class ResidentPhysicianController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_physician", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
@@ -350,6 +357,8 @@ class ResidentPhysicianController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_physician", level="DELETE")
+     *
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
@@ -391,6 +400,8 @@ class ResidentPhysicianController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_physician_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_physician", level="DELETE")
      *
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService

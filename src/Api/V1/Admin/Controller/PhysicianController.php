@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -26,6 +27,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/physician")
+ *
+ * @Grant(grant="persistence-common-physician", level="VIEW")
  *
  * Class PhysicianController
  * @package App\Api\V1\Admin\Controller
@@ -355,6 +358,8 @@ class PhysicianController extends BaseController
      *
      * @Route("", name="api_admin_physician_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-physician", level="ADD")
+     *
      * @param Request $request
      * @param PhysicianService $physicianService
      * @return JsonResponse
@@ -446,6 +451,8 @@ class PhysicianController extends BaseController
      *
      * @Route("/{id}", name="api_admin_physician_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-physician", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param PhysicianService $physicianService
@@ -505,6 +512,8 @@ class PhysicianController extends BaseController
      *
      * @Route("/{id}", name="api_admin_physician_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-physician", level="DELETE")
+     *
      * @param Request $request
      * @param $id
      * @param PhysicianService $physicianService
@@ -544,6 +553,8 @@ class PhysicianController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_physician_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-physician", level="DELETE")
      *
      * @param Request $request
      * @param PhysicianService $physicianService

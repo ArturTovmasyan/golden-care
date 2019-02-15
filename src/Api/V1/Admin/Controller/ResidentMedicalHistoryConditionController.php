@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/history/medical/history")
+ *
+ * @Grant(grant="persistence-resident-resident_medical_history_condition", level="VIEW")
  *
  * Class ResidentMedicalHistoryConditionController
  * @package App\Api\V1\Admin\Controller
@@ -266,6 +269,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @Route("", name="api_admin_resident_medical_history_condition_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_medical_history_condition", level="ADD")
+     *
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
@@ -330,6 +335,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medical_history_condition_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_medical_history_condition", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
@@ -376,6 +383,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medical_history_condition_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_medical_history_condition", level="DELETE")
+     *
      * @param $id
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
@@ -417,6 +426,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_medical_history_condition_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_medical_history_condition", level="DELETE")
      *
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService

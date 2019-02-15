@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/region")
+ *
+ * @Grant(grant="persistence-region", level="VIEW")
  *
  * Class RegionController
  * @package App\Api\V1\Admin\Controller
@@ -272,6 +275,8 @@ class RegionController extends BaseController
      *
      * @Route("", name="api_admin_region_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-region", level="ADD")
+     *
      * @param Request $request
      * @param RegionService $regionService
      * @return JsonResponse
@@ -336,6 +341,8 @@ class RegionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_region_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-region", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param RegionService $regionService
@@ -383,6 +390,8 @@ class RegionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_region_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-region", level="DELETE")
+     *
      * @param $id
      * @param RegionService $regionService
      * @return JsonResponse
@@ -424,6 +433,8 @@ class RegionController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_region_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-region", level="DELETE")
      *
      * @param Request $request
      * @param RegionService $regionService

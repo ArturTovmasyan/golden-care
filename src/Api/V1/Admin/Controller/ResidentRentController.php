@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/rent")
+ *
+ * @Grant(grant="persistence-resident-resident_rent", level="VIEW")
  *
  * Class ResidentRentController
  * @package App\Api\V1\Admin\Controller
@@ -315,6 +318,8 @@ class ResidentRentController extends BaseController
      *
      * @Route("", name="api_admin_resident_rent_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_rent", level="ADD")
+     *
      * @param Request $request
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
@@ -391,6 +396,8 @@ class ResidentRentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_rent_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_rent", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentRentService $residentRentService
@@ -439,6 +446,8 @@ class ResidentRentController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_rent_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_rent", level="DELETE")
+     *
      * @param $id
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
@@ -480,6 +489,8 @@ class ResidentRentController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_rent_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_rent", level="DELETE")
      *
      * @param Request $request
      * @param ResidentRentService $residentRentService

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -26,6 +27,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/user")
+ *
+ * @Grant(grant="persistence-security-user", level="VIEW")
  *
  * Class UserController
  * @package App\Api\V1\Admin\Controller
@@ -271,6 +274,8 @@ class UserController extends BaseController
      *
      * @Route("", name="api_admin_user_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-security-user", level="ADD")
+     *
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
@@ -338,6 +343,8 @@ class UserController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-security-user", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param UserService $userService
@@ -389,6 +396,8 @@ class UserController extends BaseController
      *     }
      *
      * @Route("/{id}/reset-password", requirements={"id"="\d+"}, name="api_admin_user_reset_password", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-security-user", level="EDIT")
      *
      * @param Request $request
      * @param $id

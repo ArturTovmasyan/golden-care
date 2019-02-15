@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/facility/dining/room")
+ *
+ * @Grant(grant="persistence-dining_room", level="VIEW")
  *
  * Class DiningRoomController
  * @package App\Api\V1\Admin\Controller
@@ -241,6 +244,8 @@ class DiningRoomController extends BaseController
      *
      * @Route("", name="api_admin_dining_room_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-dining_room", level="ADD")
+     *
      * @param Request $request
      * @param DiningRoomService $diningRoomService
      * @return JsonResponse
@@ -293,6 +298,8 @@ class DiningRoomController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_dining_room_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-dining_room", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param DiningRoomService $diningRoomService
@@ -336,6 +343,8 @@ class DiningRoomController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_dining_room_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-dining_room", level="DELETE")
+     *
      * @param $id
      * @param DiningRoomService $diningRoomService
      * @return JsonResponse
@@ -377,6 +386,8 @@ class DiningRoomController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_dining_room_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-dining_room", level="DELETE")
      *
      * @param Request $request
      * @param DiningRoomService $diningRoomService

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/care/level")
+ *
+ * @Grant(grant="persistence-common-care_level", level="VIEW")
  *
  * Class CareLevelController
  * @package App\Api\V1\Admin\Controller
@@ -268,6 +271,8 @@ class CareLevelController extends BaseController
      *
      * @Route("", name="api_admin_care_level_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-care_level", level="ADD")
+     *
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
@@ -323,6 +328,8 @@ class CareLevelController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-care_level", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param CareLevelService $careLevelService
@@ -367,6 +374,8 @@ class CareLevelController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-care_level", level="DELETE")
+     *
      * @param $id
      * @param CareLevelService $careLevelService
      * @return JsonResponse
@@ -408,6 +417,8 @@ class CareLevelController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_care_level_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-care_level", level="DELETE")
      *
      * @param Request $request
      * @param CareLevelService $careLevelService

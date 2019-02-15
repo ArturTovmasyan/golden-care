@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/salutation")
+ *
+ * @Grant(grant="persistence-common-salutation", level="VIEW")
  *
  * Class SalutationController
  * @package App\Api\V1\Admin\Controller
@@ -263,6 +266,8 @@ class SalutationController extends BaseController
      *
      * @Route("", name="api_admin_salutation_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-salutation", level="ADD")
+     *
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
@@ -314,6 +319,8 @@ class SalutationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-salutation", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param SalutationService $salutationService
@@ -357,6 +364,8 @@ class SalutationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-salutation", level="DELETE")
+     *
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
@@ -398,6 +407,8 @@ class SalutationController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_salutation_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-salutation", level="DELETE")
      *
      * @param Request $request
      * @param SalutationService $salutationService

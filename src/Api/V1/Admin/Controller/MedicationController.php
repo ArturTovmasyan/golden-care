@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/medication")
+ *
+ * @Grant(grant="persistence-common-medication", level="VIEW")
  *
  * Class MedicationController
  * @package App\Api\V1\Admin\Controller
@@ -234,6 +237,8 @@ class MedicationController extends BaseController
      *
      * @Route("", name="api_admin_medication_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-medication", level="ADD")
+     *
      * @param Request $request
      * @param MedicationService $medicationService
      * @return JsonResponse
@@ -287,6 +292,8 @@ class MedicationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-medication", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param MedicationService $medicationService
@@ -332,6 +339,8 @@ class MedicationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-medication", level="DELETE")
+     *
      * @param Request $request
      * @param $id
      * @param MedicationService $medicationService
@@ -371,6 +380,8 @@ class MedicationController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_medication_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-medication", level="DELETE")
      *
      * @param Request $request
      * @param MedicationService $medicationService

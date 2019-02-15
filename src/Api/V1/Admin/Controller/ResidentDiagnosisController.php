@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/history/diagnose")
+ *
+ * @Grant(grant="persistence-resident-resident_diagnosis", level="VIEW")
  *
  * Class ResidentDiagnosisController
  * @package App\Api\V1\Admin\Controller
@@ -269,6 +272,8 @@ class ResidentDiagnosisController extends BaseController
      *
      * @Route("", name="api_admin_resident_diagnosis_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_diagnosis", level="ADD")
+     *
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
@@ -334,6 +339,8 @@ class ResidentDiagnosisController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diagnosis_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_diagnosis", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentDiagnosisService $residentDiagnosisService
@@ -380,6 +387,8 @@ class ResidentDiagnosisController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diagnosis_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_diagnosis", level="DELETE")
+     *
      * @param $id
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
@@ -421,6 +430,8 @@ class ResidentDiagnosisController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_diagnosis_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_diagnosis", level="DELETE")
      *
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService

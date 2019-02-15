@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/diagnosis")
+ *
+ * @Grant(grant="persistence-common-diagnosis", level="VIEW")
  *
  * Class DiagnosisController
  * @package App\Api\V1\Admin\Controller
@@ -256,6 +259,8 @@ class DiagnosisController extends BaseController
      *
      * @Route("", name="api_admin_diagnosis_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-common-diagnosis", level="ADD")
+     *
      * @param Request $request
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
@@ -314,6 +319,8 @@ class DiagnosisController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-common-diagnosis", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param DiagnosisService $diagnosisService
@@ -359,6 +366,8 @@ class DiagnosisController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-common-diagnosis", level="DELETE")
+     *
      * @param $id
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
@@ -400,6 +409,8 @@ class DiagnosisController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_diagnosis_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-common-diagnosis", level="DELETE")
      *
      * @param Request $request
      * @param DiagnosisService $diagnosisService

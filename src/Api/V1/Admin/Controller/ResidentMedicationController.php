@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use App\Annotation\Grant as Grant;
 
 /**
  * @IgnoreAnnotation("api")
@@ -25,6 +26,8 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
  * @IgnoreAnnotation("apiPermission")
  *
  * @Route("/api/v1.0/admin/resident/medication")
+ *
+ * @Grant(grant="persistence-resident-resident_medication", level="VIEW")
  *
  * Class ResidentMedicationController
  * @package App\Api\V1\Admin\Controller
@@ -358,6 +361,8 @@ class ResidentMedicationController extends BaseController
      *
      * @Route("", name="api_admin_resident_medication_add", methods={"POST"})
      *
+     * @Grant(grant="persistence-resident-resident_medication", level="ADD")
+     *
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
@@ -449,6 +454,8 @@ class ResidentMedicationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_edit", methods={"PUT"})
      *
+     * @Grant(grant="persistence-resident-resident_medication", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param ResidentMedicationService $residentMedicationService
@@ -505,6 +512,8 @@ class ResidentMedicationController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_delete", methods={"DELETE"})
      *
+     * @Grant(grant="persistence-resident-resident_medication", level="DELETE")
+     *
      * @param $id
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
@@ -546,6 +555,8 @@ class ResidentMedicationController extends BaseController
      *     }
      *
      * @Route("", name="api_admin_resident_medication_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-resident-resident_medication", level="DELETE")
      *
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
