@@ -500,4 +500,23 @@ class FacilityRoomController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     *
+     * @Route("/{facility_id}/last", requirements={"facility_id"="\d+"}, name="api_admin_facility_room_get_last", methods={"GET"})
+     *
+     * @Grant(grant="persistence-facility_room", level="VIEW")
+     *
+     * @param FacilityRoomService $facilityRoomService
+     * @return JsonResponse
+     */
+    public function getLastAction(Request $request, $facility_id, FacilityRoomService $facilityRoomService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$facilityRoomService->getLastNumber($facility_id)],
+            ['api_admin_apartment_room_get_last']
+        );
+    }
 }

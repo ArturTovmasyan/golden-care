@@ -500,4 +500,23 @@ class ApartmentRoomController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     *
+     * @Route("/{apartment_id}/last", requirements={"apartment_id"="\d+"}, name="api_admin_apartment_room_get_last", methods={"GET"})
+     *
+     * @Grant(grant="persistence-apartment_room", level="VIEW")
+     *
+     * @param ApartmentRoomService $apartmentRoomService
+     * @return JsonResponse
+     */
+    public function getLastAction(Request $request, $apartment_id, ApartmentRoomService $apartmentRoomService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$apartmentRoomService->getLastNumber($apartment_id)],
+            ['api_admin_apartment_room_get_last']
+        );
+    }
 }

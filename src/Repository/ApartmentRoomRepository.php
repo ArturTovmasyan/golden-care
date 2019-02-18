@@ -179,4 +179,34 @@ class ApartmentRoomRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getLastNumber(Space $space = null, $apartmentId) {
+        $qb = $this
+            ->createQueryBuilder('ar')
+            ->select("MAX(ar.number) as max_room_number")
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = a.space'
+            )
+            ->where('a.id = :apartment_id')
+            ->setParameter('apartment_id', $apartmentId);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

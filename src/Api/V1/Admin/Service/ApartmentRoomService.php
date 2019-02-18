@@ -51,10 +51,10 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $roomIds = array_map(function(ApartmentRoom $item){return $item->getId();} , $rooms);
 
-            $facilityBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdsByRooms($currentSpace, $roomIds);
+            $apartmentBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdsByRooms($currentSpace, $roomIds);
             $bedIds = [];
-            if (\count($facilityBeds)) {
-                $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
+            if (\count($apartmentBeds)) {
+                $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
             }
 
             if ($vacant) {
@@ -349,5 +349,16 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param int $apartmentId
+     * @return mixed
+     */
+    public function getLastNumber($apartmentId) {
+        $max_number = $this->em->getRepository(ApartmentRoom::class)
+            ->getLastNumber($this->grantService->getCurrentSpace(), $apartmentId);
+
+        return $max_number ? $max_number['max_room_number'] : null;
     }
 }

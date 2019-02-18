@@ -351,4 +351,15 @@ class FacilityRoomService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param int $facilityId
+     * @return mixed
+     */
+    public function getLastNumber($facilityId) {
+        $max_number = $this->em->getRepository(FacilityRoom::class)
+            ->getLastNumber($this->grantService->getCurrentSpace(), $facilityId);
+
+        return $max_number ? $max_number['max_room_number'] : null;
+    }
 }
