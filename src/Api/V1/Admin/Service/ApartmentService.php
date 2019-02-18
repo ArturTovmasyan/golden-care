@@ -188,6 +188,8 @@ class ApartmentService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ApartmentNotFoundException();
             }
@@ -201,16 +203,12 @@ class ApartmentService extends BaseService implements IGridService
             /**
              * @var Apartment $apartment
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($apartments as $apartment) {
                 $this->em->remove($apartment);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ApartmentNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

@@ -103,6 +103,8 @@ class EventDefinitionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ed');
 
+        $qb->where($qb->expr()->in('ed.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class EventDefinitionRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('ed.id', $ids))
-            ->groupBy('ed.id')
+        return $qb->groupBy('ed.id')
             ->getQuery()
             ->getResult();
     }

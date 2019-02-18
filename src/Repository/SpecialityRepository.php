@@ -36,7 +36,7 @@ class SpecialityRepository extends EntityRepository
         }
 
         $queryBuilder
-            ->groupBy('s.id');
+            ->groupBy('sp.id');
     }
 
     /**
@@ -103,6 +103,8 @@ class SpecialityRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('sp');
 
+        $qb->where($qb->expr()->in('sp.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,7 +117,7 @@ class SpecialityRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('sp.id', $ids))
+        return $qb
             ->groupBy('sp.id')
             ->getQuery()
             ->getResult();

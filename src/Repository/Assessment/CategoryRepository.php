@@ -103,6 +103,8 @@ class CategoryRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ac');
 
+        $qb->where($qb->expr()->in('ac.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class CategoryRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('ac.id', $ids))
-            ->groupBy('ac.id')
+        return $qb->groupBy('ac.id')
             ->getQuery()
             ->getResult();
     }

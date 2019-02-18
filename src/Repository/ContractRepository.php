@@ -160,6 +160,8 @@ class ContractRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('c');
 
+        $qb->where($qb->expr()->in('c.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -178,8 +180,7 @@ class ContractRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('c.id', $ids))
-            ->groupBy('c.id')
+        return $qb->groupBy('c.id')
             ->getQuery()
             ->getResult();
     }

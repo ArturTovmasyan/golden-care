@@ -6,11 +6,13 @@ use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResponsiblePersonRoleNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
+use App\Entity\ResponsiblePersonRole;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -78,6 +80,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $residentId          = $params['resident_id'] ?? 0;
             $responsiblePersonId = $params['responsible_person_id'] ?? 0;
             $relationshipId      = $params['relationship_id'] ?? 0;
+            $roleId              = $params['role_id'] ?? 0;
 
             $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
@@ -97,10 +100,17 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                 throw new RelationshipNotFoundException();
             }
 
+            $role = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($currentSpace, $roleId);
+
+            if ($role === null) {
+                throw new ResponsiblePersonRoleNotFoundException();
+            }
+
             $residentResponsiblePerson = new ResidentResponsiblePerson();
             $residentResponsiblePerson->setResident($resident);
             $residentResponsiblePerson->setResponsiblePerson($responsiblePerson);
             $residentResponsiblePerson->setRelationship($relationship);
+            $residentResponsiblePerson->setRole($role);
 
             $this->validate($residentResponsiblePerson, null, ['api_admin_resident_responsible_person_add']);
 
@@ -141,6 +151,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $residentId          = $params['resident_id'] ?? 0;
             $responsiblePersonId = $params['responsible_person_id'] ?? 0;
             $relationshipId      = $params['relationship_id'] ?? 0;
+            $roleId              = $params['role_id'] ?? 0;
 
             $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
 
@@ -160,9 +171,16 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                 throw new RelationshipNotFoundException();
             }
 
+            $role = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($currentSpace, $roleId);
+
+            if ($role === null) {
+                throw new ResponsiblePersonRoleNotFoundException();
+            }
+
             $entity->setResident($resident);
             $entity->setResponsiblePerson($responsiblePerson);
             $entity->setRelationship($relationship);
+            $entity->setRole($role);
 
             $this->validate($entity, null, ['api_admin_resident_responsible_person_edit']);
 
@@ -211,6 +229,8 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResidentResponsiblePersonNotFoundException();
             }
@@ -224,16 +244,12 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             /**
              * @var $residentResponsiblePerson $residentResponsiblePerson
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($residentResponsiblePersons as $residentResponsiblePerson) {
                 $this->em->remove($residentResponsiblePerson);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentResponsiblePersonNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

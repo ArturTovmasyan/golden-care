@@ -153,6 +153,8 @@ class SpecialityService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new SpecialityNotFoundException();
             }
@@ -166,16 +168,12 @@ class SpecialityService extends BaseService implements IGridService
             /**
              * @var Speciality $speciality
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($specialities as $speciality) {
                 $this->em->remove($speciality);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (SpecialityNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

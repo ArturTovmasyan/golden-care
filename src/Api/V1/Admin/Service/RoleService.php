@@ -150,6 +150,8 @@ class RoleService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new RoleNotFoundException();
             }
@@ -159,8 +161,6 @@ class RoleService extends BaseService implements IGridService
             if (empty($roles)) {
                 throw new RoleNotFoundException();
             }
-
-            $this->em->getConnection()->beginTransaction();
 
             /**
              * @var Role $role

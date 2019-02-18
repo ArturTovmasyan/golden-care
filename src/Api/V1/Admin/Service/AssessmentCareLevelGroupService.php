@@ -158,6 +158,8 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
     public function removeBulk(array $ids)
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new AssessmentCareLevelGroupNotFoundException();
             }
@@ -171,16 +173,12 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
             /**
              * @var CareLevelGroup $careLevelGroup
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($careLevelGroups as $careLevelGroup) {
                 $this->em->remove($careLevelGroup);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch(AssessmentCareLevelGroupNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

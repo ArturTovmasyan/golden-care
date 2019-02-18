@@ -83,10 +83,12 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param array $params
+     * @return integer|null
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Space $space
@@ -130,11 +132,15 @@ class ResidentService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $resident->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**
@@ -203,19 +209,21 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
-     * @param $resident
+     * @param Resident $resident
      * @param array $phones
      * @return array
      */
     private function savePhones($resident, array $phones = [])
     {
-        /**
-         * @var ResidentPhone[] $oldPhones
-         */
-        $oldPhones = $this->em->getRepository(ResidentPhone::class)->getBy($this->grantService->getCurrentSpace(), $resident);
+        if($resident->getId() !== null) {
+            /**
+             * @var ResidentPhone[] $oldPhones
+             */
+            $oldPhones = $this->em->getRepository(ResidentPhone::class)->getBy($this->grantService->getCurrentSpace(), $resident);
 
-        foreach ($oldPhones as $phone) {
-            $this->em->remove($phone);
+            foreach ($oldPhones as $phone) {
+                $this->em->remove($phone);
+            }
         }
 
         $hasPrimary = false;
@@ -286,6 +294,8 @@ class ResidentService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResidentNotFoundException();
             }
@@ -297,8 +307,6 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($residents as $resident) {
                 $this->residentPhotoHelper->remove($resident->getId());
                 $this->em->remove($resident);
@@ -306,8 +314,6 @@ class ResidentService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

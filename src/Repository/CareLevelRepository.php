@@ -103,6 +103,8 @@ class CareLevelRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('cl');
 
+        $qb->where($qb->expr()->in('cl.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class CareLevelRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('cl.id', $ids))
-            ->groupBy('cl.id')
+        return $qb->groupBy('cl.id')
             ->getQuery()
             ->getResult();
     }

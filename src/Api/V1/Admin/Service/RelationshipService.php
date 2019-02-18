@@ -154,6 +154,8 @@ class RelationshipService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new RelationshipNotFoundException();
             }
@@ -167,16 +169,12 @@ class RelationshipService extends BaseService implements IGridService
             /**
              * @var Relationship $relationship
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($relationships as $relationship) {
                 $this->em->remove($relationship);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (RelationshipNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

@@ -74,6 +74,10 @@ persistence:
           title: 'Speciality'
           class: App\Entity\Speciality
           route: api_admin_speciality_list
+        responsible-person-role:
+          title: 'ResponsiblePersonRole'
+          class: App\Entity\ResponsiblePersonRole
+          route: api_admin_responsible_person_role_list
 
         allergen:
           title: 'Allergen'

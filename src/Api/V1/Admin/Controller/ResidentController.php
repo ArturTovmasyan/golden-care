@@ -289,7 +289,7 @@ class ResidentController extends BaseController
     {
         $residentService->setResidentPhotoHelper($residentPhotoHelper);
 
-        $residentService->add(
+        $id = $residentService->add(
             [
                 'first_name'    => $request->get('first_name'),
                 'last_name'     => $request->get('last_name'),
@@ -305,7 +305,9 @@ class ResidentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

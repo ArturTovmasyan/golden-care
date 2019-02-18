@@ -140,6 +140,8 @@ class ResidentRentRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rr');
 
+        $qb->where($qb->expr()->in('rr.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -158,8 +160,7 @@ class ResidentRentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rr.id', $ids))
-            ->groupBy('rr.id')
+        return $qb->groupBy('rr.id')
             ->getQuery()
             ->getResult();
     }

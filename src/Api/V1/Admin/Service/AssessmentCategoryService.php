@@ -214,6 +214,8 @@ class AssessmentCategoryService extends BaseService implements IGridService
     public function removeBulk(array $ids)
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new AssessmentCategoryNotFoundException();
             }
@@ -227,8 +229,6 @@ class AssessmentCategoryService extends BaseService implements IGridService
             /**
              * @var Category $category
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($categories as $category) {
                 $rows = $category->getRows();
 
@@ -241,8 +241,6 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch(AssessmentCategoryNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

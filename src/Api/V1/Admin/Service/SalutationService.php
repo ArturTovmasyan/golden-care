@@ -150,6 +150,8 @@ class SalutationService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new SalutationNotFoundException();
             }
@@ -163,16 +165,12 @@ class SalutationService extends BaseService implements IGridService
             /**
              * @var Salutation $salutation
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($salutations as $salutation) {
                 $this->em->remove($salutation);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (SalutationNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

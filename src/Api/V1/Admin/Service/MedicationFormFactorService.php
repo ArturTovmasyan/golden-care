@@ -150,6 +150,8 @@ class MedicationFormFactorService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new MedicationFormFactorNotFoundException();
             }
@@ -163,16 +165,12 @@ class MedicationFormFactorService extends BaseService implements IGridService
             /**
              * @var MedicationFormFactorNotFoundException $factor
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($factors as $factor) {
                 $this->em->remove($factor);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (MedicationFormFactorNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

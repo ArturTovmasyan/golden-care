@@ -856,6 +856,8 @@ class ContractService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ContractNotFoundException();
             }
@@ -869,16 +871,12 @@ class ContractService extends BaseService implements IGridService
             /**
              * @var Contract $contract
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($contracts as $contract) {
                 $this->em->remove($contract);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ContractNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

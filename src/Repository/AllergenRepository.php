@@ -104,6 +104,8 @@ class AllergenRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('a');
 
+        $qb->where($qb->expr()->in('a.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -117,7 +119,6 @@ class AllergenRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('a.id', $ids))
             ->groupBy('a.id')
             ->getQuery()
             ->getResult();

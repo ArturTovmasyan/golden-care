@@ -10,22 +10,22 @@ use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
 /**
- * Class Speciality
+ * Class ResponsiblePersonRole
  *
- * @ORM\Entity(repositoryClass="App\Repository\SpecialityRepository")
- * @ORM\Table(name="tbl_speciality")
+ * @ORM\Entity(repositoryClass="App\Repository\ResponsiblePersonRoleRepository")
+ * @ORM\Table(name="tbl_responsible_person_role")
  * @Grid(
- *     api_admin_speciality_grid={
+ *     api_admin_responsible_person_role_grid={
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "sp.id"
+ *              "field"      = "rpr.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "sp.title",
+ *              "field"      = "rpr.title",
  *              "link"       = ":edit"
  *          },
  *          {
@@ -36,7 +36,7 @@ use App\Annotation\Grid;
  *     }
  * )
  */
-class Speciality
+class ResponsiblePersonRole
 {
     use TimeAwareTrait;
     use UserAwareTrait;
@@ -47,14 +47,14 @@ class Speciality
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_speciality_list",
-     *     "api_admin_speciality_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get",
+     *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      */
     private $id;
@@ -65,23 +65,23 @@ class Speciality
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_speciality_add",
-     *          "api_admin_speciality_edit"
+     *          "api_admin_responsible_person_role_add",
+     *          "api_admin_responsible_person_role_edit"
      * })
      * @ORM\Column(name="title", type="string", length=255)
      * @Assert\NotBlank(groups={
-     *     "api_admin_speciality_add",
-     *     "api_admin_speciality_edit"
+     *     "api_admin_responsible_person_role_add",
+     *     "api_admin_responsible_person_role_edit"
      * })
      * @Groups({
-     *     "api_admin_speciality_list",
-     *     "api_admin_speciality_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get",
+     *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_responsible_person_list",
+     *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
      * })
      */
     private $title;
@@ -89,19 +89,24 @@ class Speciality
     /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
-     *     "api_admin_speciality_add",
-     *     "api_admin_speciality_edit"
+     *     "api_admin_responsible_person_role_add",
+     *     "api_admin_responsible_person_role_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_speciality_list",
-     *     "api_admin_speciality_get",
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get",
      * })
      */
     private $space;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ResidentResponsiblePerson", mappedBy="role", cascade={"persist", "remove"})
+     */
+    protected $residentResponsiblePersons;
 
     public function getId()
     {
@@ -133,4 +138,22 @@ class Speciality
     {
         $this->space = $space;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentResponsiblePersons()
+    {
+        return $this->residentResponsiblePersons;
+    }
+
+    /**
+     * @param mixed $residentResponsiblePersons
+     */
+    public function setResidentResponsiblePersons($residentResponsiblePersons): void
+    {
+        $this->residentResponsiblePersons = $residentResponsiblePersons;
+    }
+
+
 }

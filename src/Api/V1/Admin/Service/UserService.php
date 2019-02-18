@@ -227,13 +227,15 @@ class UserService extends BaseService implements IGridService
      */
     private function savePhones($user, array $phones = [])
     {
-        /**
-         * @var UserPhone[] $oldPhones
-         */
-        $oldPhones = $this->em->getRepository(UserPhone::class)->getBy($this->grantService->getCurrentSpace(), $user);
+        if($user->getId()) {
+            /**
+             * @var UserPhone[] $oldPhones
+             */
+            $oldPhones = $this->em->getRepository(UserPhone::class)->getBy($this->grantService->getCurrentSpace(), $user);
 
-        foreach ($oldPhones as $phone) {
-            $this->em->remove($phone);
+            foreach ($oldPhones as $phone) {
+                $this->em->remove($phone);
+            }
         }
 
         $hasPrimary = false;

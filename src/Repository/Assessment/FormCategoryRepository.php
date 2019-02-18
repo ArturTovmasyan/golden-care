@@ -23,6 +23,8 @@ class FormCategoryRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('afc');
 
+        $qb->where($qb->expr()->in('afc.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -47,8 +49,7 @@ class FormCategoryRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('afc.id', $ids))
-            ->groupBy('afc.id')
+        return $qb->groupBy('afc.id')
             ->getQuery()
             ->getResult();
     }

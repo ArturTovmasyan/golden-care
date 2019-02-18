@@ -152,6 +152,8 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new MedicalHistoryConditionNotFoundException();
             }
@@ -165,16 +167,12 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
             /**
              * @var MedicalHistoryCondition $condition
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($conditions as $condition) {
                 $this->em->remove($condition);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (MedicalHistoryConditionNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

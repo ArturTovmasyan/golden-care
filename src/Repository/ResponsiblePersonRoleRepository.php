@@ -2,17 +2,17 @@
 
 namespace App\Repository;
 
-use App\Entity\Diet;
 use App\Entity\Space;
+use App\Entity\ResponsiblePersonRole;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class DietRepository
+ * Class ResponsiblePersonRoleRepository
  * @package App\Repository
  */
-class DietRepository extends EntityRepository
+class ResponsiblePersonRoleRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
@@ -21,12 +21,12 @@ class DietRepository extends EntityRepository
     public function search(Space $space = null, QueryBuilder $queryBuilder)
     {
         $queryBuilder
-            ->from(Diet::class, 'd')
+            ->from(ResponsiblePersonRole::class, 'rpr')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = d.space'
+                's = rpr.space'
             );
 
         if ($space !== null) {
@@ -36,7 +36,7 @@ class DietRepository extends EntityRepository
         }
 
         $queryBuilder
-            ->groupBy('d.id');
+            ->groupBy('rpr.id');
     }
 
     /**
@@ -46,12 +46,12 @@ class DietRepository extends EntityRepository
     public function list(Space $space = null)
     {
         $qb = $this
-            ->createQueryBuilder('d')
+            ->createQueryBuilder('rpr')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = d.space'
+                's = rpr.space'
             );
 
         if ($space !== null) {
@@ -73,14 +73,14 @@ class DietRepository extends EntityRepository
     public function getOne(Space $space = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('d')
+            ->createQueryBuilder('rpr')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = d.space'
+                's = rpr.space'
             )
-            ->where('d.id = :id')
+            ->where('rpr.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -101,9 +101,9 @@ class DietRepository extends EntityRepository
      */
     public function findByIds(Space $space = null, $ids)
     {
-        $qb = $this->createQueryBuilder('d');
+        $qb = $this->createQueryBuilder('rpr');
 
-        $qb->where($qb->expr()->in('d.id', $ids));
+        $qb->where($qb->expr()->in('rpr.id', $ids));
 
         if ($space !== null) {
             $qb
@@ -111,13 +111,13 @@ class DietRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = d.space'
+                    's = rpr.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
-        return $qb->groupBy('d.id')
+        return $qb->groupBy('rpr.id')
             ->getQuery()
             ->getResult();
     }

@@ -34,6 +34,11 @@ use App\Annotation\Grid;
  *              "field"      = "rel.title"
  *          },
  *          {
+ *              "id"         = "role",
+ *              "type"       = "string",
+ *              "field"      = "role.title"
+ *          },
+ *          {
  *              "id"         = "address",
  *              "type"       = "string",
  *              "field"      = "CONCAT(rp.address1, ' ', rp.address2)"
@@ -105,7 +110,8 @@ class ResidentResponsiblePerson
     private $responsiblePerson;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Relationship", inversedBy="relationshipResidentResponsiblePersons", cascade={"persist"})
+     * @var Relationship
+     * @ORM\ManyToOne(targetEntity="Relationship", inversedBy="residentResponsiblePersons", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_relationship", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -121,9 +127,26 @@ class ResidentResponsiblePerson
     private $relationship;
 
     /**
+     * @var ResponsiblePersonRole
+     * @ORM\ManyToOne(targetEntity="ResponsiblePersonRole", inversedBy="residentResponsiblePersons", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_responsible_person_add",
+     *     "api_admin_resident_responsible_person_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
+     * })
+     */
+    private $role;
+
+    /**
      * @return int
      */
-    public function getId()
+    public function getId() : ?int
     {
         return $this->id;
     }
@@ -131,56 +154,73 @@ class ResidentResponsiblePerson
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return Resident
+     * @return Resident|null
      */
-    public function getResident(): Resident
+    public function getResident(): ?Resident
     {
         return $this->resident;
     }
 
     /**
-     * @param Resident $resident
+     * @param Resident|null $resident
      */
-    public function setResident(Resident $resident): void
+    public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
     }
 
     /**
-     * @return ResponsiblePerson
+     * @return ResponsiblePerson|null
      */
-    public function getResponsiblePerson(): ResponsiblePerson
+    public function getResponsiblePerson(): ?ResponsiblePerson
     {
         return $this->responsiblePerson;
     }
 
     /**
-     * @param ResponsiblePerson $responsiblePerson
+     * @param ResponsiblePerson|null $responsiblePerson
      */
-    public function setResponsiblePerson(ResponsiblePerson $responsiblePerson): void
+    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
     {
         $this->responsiblePerson = $responsiblePerson;
     }
 
     /**
-     * @return mixed
+     * @return Relationship|null
      */
-    public function getRelationship()
+    public function getRelationship(): ?Relationship
     {
         return $this->relationship;
     }
 
     /**
-     * @param mixed $relationship
+     * @param Relationship|null $relationship
      */
-    public function setRelationship($relationship): void
+    public function setRelationship(?Relationship $relationship): void
     {
         $this->relationship = $relationship;
     }
+
+    /**
+     * @return ResponsiblePersonRole|null
+     */
+    public function getRole(): ?ResponsiblePersonRole
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param ResponsiblePersonRole|null $role
+     */
+    public function setRole(?ResponsiblePersonRole $role): void
+    {
+        $this->role = $role;
+    }
+
 }

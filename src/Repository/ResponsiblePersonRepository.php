@@ -117,6 +117,8 @@ class ResponsiblePersonRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rp');
 
+        $qb->where($qb->expr()->in('rp.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -129,8 +131,7 @@ class ResponsiblePersonRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rp.id', $ids))
-            ->groupBy('rp.id')
+        return $qb->groupBy('rp.id')
             ->getQuery()
             ->getResult();
     }

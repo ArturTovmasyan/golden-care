@@ -150,6 +150,8 @@ class PaymentSourceService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new PaymentSourceNotFoundException();
             }
@@ -163,16 +165,12 @@ class PaymentSourceService extends BaseService implements IGridService
             /**
              * @var PaymentSource $paymentSource
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($paymentSources as $paymentSource) {
                 $this->em->remove($paymentSource);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (PaymentSourceNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

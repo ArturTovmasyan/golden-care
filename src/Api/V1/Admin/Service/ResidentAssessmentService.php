@@ -317,6 +317,8 @@ class ResidentAssessmentService extends BaseService implements IGridService
     public function removeBulk(array $ids)
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             /**
              * @var Form $form
              */
@@ -331,8 +333,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
             if (empty($assessments)) {
                 throw new AssessmentNotFoundException();
             }
-
-            $this->em->getConnection()->beginTransaction();
 
             foreach ($assessments as $assessment) {
                 $assessmentRows = $this->em->getRepository(AssessmentRow::class)->getBy($currentSpace, $assessment);
@@ -349,8 +349,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
             $this->em->flush();
 
             $this->em->getConnection()->commit();
-        } catch(AssessmentFormNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

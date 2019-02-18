@@ -162,6 +162,8 @@ class EventDefinitionService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new EventDefinitionNotFoundException();
             }
@@ -175,16 +177,12 @@ class EventDefinitionService extends BaseService implements IGridService
             /**
              * @var EventDefinition $eventDefinition
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($eventDefinitions as $eventDefinition) {
                 $this->em->remove($eventDefinition);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (EventDefinitionNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

@@ -103,6 +103,8 @@ class CityStateZipRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('csz');
 
+        $qb->where($qb->expr()->in('csz.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class CityStateZipRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('csz.id', $ids))
-            ->groupBy('csz.id')
+        return $qb->groupBy('csz.id')
             ->getQuery()
             ->getResult();
     }

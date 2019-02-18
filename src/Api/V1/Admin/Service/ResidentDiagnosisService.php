@@ -239,6 +239,8 @@ class ResidentDiagnosisService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResidentDiagnosisNotFoundException();
             }
@@ -252,16 +254,12 @@ class ResidentDiagnosisService extends BaseService implements IGridService
             /**
              * @var ResidentDiagnosis $residentDiagnosis
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ( $residentDiagnoses as $residentDiagnosis) {
                 $this->em->remove($residentDiagnosis);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentDiagnosisNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

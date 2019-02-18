@@ -188,6 +188,8 @@ class FacilityService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new FacilityNotFoundException();
             }
@@ -201,16 +203,12 @@ class FacilityService extends BaseService implements IGridService
             /**
              * @var Facility $facility
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($facilities as $facility) {
                 $this->em->remove($facility);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (FacilityNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

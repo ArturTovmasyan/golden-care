@@ -103,6 +103,8 @@ class MedicationFormFactorRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('mff');
 
+        $qb->where($qb->expr()->in('mff.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class MedicationFormFactorRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('mff.id', $ids))
-            ->groupBy('mff.id')
+        return $qb->groupBy('mff.id')
             ->getQuery()
             ->getResult();
     }

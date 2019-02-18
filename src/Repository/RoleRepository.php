@@ -31,8 +31,11 @@ class RoleRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r');
 
-        return $qb->where($qb->expr()->in('r.id', $ids))
-            ->groupBy('r.id')
+        $qb->where($qb->expr()->in('r.id', $ids));
+
+        // TODO: add check
+
+        return $qb->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }

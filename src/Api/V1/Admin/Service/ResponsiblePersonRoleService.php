@@ -2,18 +2,18 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\MedicationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResponsiblePersonRoleNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Medication;
+use App\Entity\ResponsiblePersonRole;
 use App\Entity\Space;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class MedicationService
+ * Class ResponsiblePersonRoleService
  * @package App\Api\V1\Admin\Service
  */
-class MedicationService extends BaseService implements IGridService
+class ResponsiblePersonRoleService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -22,49 +22,50 @@ class MedicationService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params)
     {
-        $this->em->getRepository(Medication::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        $this->em->getRepository(ResponsiblePersonRole::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Medication::class)->list($this->grantService->getCurrentSpace());
+        return $this->em->getRepository(ResponsiblePersonRole::class)->list($this->grantService->getCurrentSpace());
     }
 
     /**
      * @param $id
-     * @return Medication|null|object
+     * @return ResponsiblePersonRole|null|object
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        return $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
     }
 
     /**
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params): void
+    public function add(array $params) : void
     {
         try {
+            /**
+             * @var Space $space
+             */
             $this->em->getConnection()->beginTransaction();
 
             $spaceId = $params['space_id'] ?? 0;
 
-            /** @var Space $space */
             $space = $this->em->getRepository(Space::class)->find($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
             }
 
-            // save Medication
-            $medication = new Medication();
-            $medication->setTitle($params['title'] ?? null);
-            $medication->setSpace($space);
+            $responsiblePersonRole = new ResponsiblePersonRole();
+            $responsiblePersonRole->setTitle($params['title']);
+            $responsiblePersonRole->setSpace($space);
 
-            $this->validate($medication, null, ['api_admin_medication_add']);
+            $this->validate($responsiblePersonRole, null, ['api_admin_responsible_person_role_add']);
 
-            $this->em->persist($medication);
+            $this->em->persist($responsiblePersonRole);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -79,35 +80,35 @@ class MedicationService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params): void
+    public function edit($id, array $params) : void
     {
         try {
             /**
-             * @var Medication $medication
+             * @var ResponsiblePersonRole $entity
+             * @var Space $space
              */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
-            if ($medication === null) {
-                throw new MedicationNotFoundException();
+            if ($entity === null) {
+                throw new ResponsiblePersonRoleNotFoundException();
             }
 
             $spaceId = $params['space_id'] ?? 0;
 
-            /** @var Space $space */
             $space = $this->em->getRepository(Space::class)->find($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
             }
 
-            $medication->setTitle($params['title'] ?? null);
-            $medication->setSpace($space);
+            $entity->setTitle($params['title']);
+            $entity->setSpace($space);
 
-            $this->validate($medication, null, ['api_admin_medication_edit']);
+            $this->validate($entity, null, ['api_admin_responsible_person_role_edit']);
 
-            $this->em->persist($medication);
+            $this->em->persist($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -122,21 +123,19 @@ class MedicationService extends BaseService implements IGridService
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function remove($id): void
+    public function remove($id)
     {
         try {
-            /**
-             * @var Medication $medication
-             */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var ResponsiblePersonRole $entity */
+            $entity = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
 
-            if ($medication === null) {
-                throw new MedicationNotFoundException();
+            if ($entity === null) {
+                throw new ResponsiblePersonRoleNotFoundException();
             }
 
-            $this->em->remove($medication);
+            $this->em->remove($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
@@ -157,20 +156,20 @@ class MedicationService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             if (empty($ids)) {
-                throw new MedicationNotFoundException();
+                throw new ResponsiblePersonRoleNotFoundException();
             }
 
-            $medications = $this->em->getRepository(Medication::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            $responsiblePersonRoles = $this->em->getRepository(ResponsiblePersonRole::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
 
-            if (empty($medications)) {
-                throw new MedicationNotFoundException();
+            if (empty($responsiblePersonRoles)) {
+                throw new ResponsiblePersonRoleNotFoundException();
             }
 
             /**
-             * @var Medication $medication
+             * @var ResponsiblePersonRole $responsiblePersonRole
              */
-            foreach ($medications as $medication) {
-                $this->em->remove($medication);
+            foreach ($responsiblePersonRoles as $responsiblePersonRole) {
+                $this->em->remove($responsiblePersonRole);
             }
 
             $this->em->flush();

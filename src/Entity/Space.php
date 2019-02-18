@@ -99,7 +99,11 @@ class Space
      *     "api_admin_diagnosis_get",
      *     "api_admin_allergen_grid",
      *     "api_admin_allergen_get",
-     *     "api_admin_allergen_list"
+     *     "api_admin_allergen_list",
+     *     "api_admin_speciality_list",
+     *     "api_admin_speciality_get",
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get"
      * })
      */
     private $id;

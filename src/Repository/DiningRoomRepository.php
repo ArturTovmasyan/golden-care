@@ -156,6 +156,8 @@ class DiningRoomRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('dr');
 
+        $qb->where($qb->expr()->in('dr.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -174,8 +176,7 @@ class DiningRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('dr.id', $ids))
-            ->groupBy('dr.id')
+        return $qb->groupBy('dr.id')
             ->getQuery()
             ->getResult();
     }

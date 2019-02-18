@@ -258,6 +258,8 @@ class ResidentPhysicianRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rp');
 
+        $qb->where($qb->expr()->in('rp.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -276,8 +278,7 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rp.id', $ids))
-            ->groupBy('rp.id')
+        return $qb->groupBy('rp.id')
             ->getQuery()
             ->getResult();
     }

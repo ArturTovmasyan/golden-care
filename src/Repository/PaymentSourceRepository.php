@@ -104,6 +104,8 @@ class PaymentSourceRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ps');
 
+        $qb->where($qb->expr()->in('ps.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -116,8 +118,7 @@ class PaymentSourceRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('ps.id', $ids))
-            ->groupBy('ps.id')
+        return $qb->groupBy('ps.id')
             ->getQuery()
             ->getResult();
     }

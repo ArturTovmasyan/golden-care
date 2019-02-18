@@ -98,13 +98,15 @@ class ProfileService extends BaseService
      */
     private function savePhones($user, array $phones = [])
     {
-        /**
-         * @var UserPhone[] $oldPhones
-         */
-        $oldPhones = $this->em->getRepository(UserPhone::class)->findBy(['user' => $user]);
+        if($user->getId()) {
+            /**
+             * @var UserPhone[] $oldPhones
+             */
+            $oldPhones = $this->em->getRepository(UserPhone::class)->findBy(['user' => $user]);
 
-        foreach ($oldPhones as $phone) {
-            $this->em->remove($phone);
+            foreach ($oldPhones as $phone) {
+                $this->em->remove($phone);
+            }
         }
 
         $hasPrimary = false;

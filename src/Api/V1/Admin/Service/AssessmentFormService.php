@@ -259,9 +259,8 @@ class AssessmentFormService extends BaseService implements IGridService
     public function removeBulk(array $ids)
     {
         try {
-            /**
-             * @var Form $form
-             */
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new AssessmentFormNotFoundException();
             }
@@ -271,8 +270,10 @@ class AssessmentFormService extends BaseService implements IGridService
             if (empty($forms)) {
                 throw new AssessmentFormNotFoundException();
             }
-            $this->em->getConnection()->beginTransaction();
 
+            /**
+             * @var Form $form
+             */
             foreach ($forms as $form) {
                 // remove care level groups
                 $groups = $form->getCareLevelGroups();
@@ -285,8 +286,6 @@ class AssessmentFormService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch(AssessmentFormNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

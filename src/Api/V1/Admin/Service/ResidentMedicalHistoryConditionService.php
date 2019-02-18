@@ -247,6 +247,8 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResidentMedicalHistoryConditionNotFoundException();
             }
@@ -260,16 +262,12 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
             /**
              * @var ResidentMedicalHistoryCondition $residentMedicalHistoryCondition
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($residentMedicalHistoryConditions as $residentMedicalHistoryCondition) {
                 $this->em->remove($residentMedicalHistoryCondition);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentMedicalHistoryConditionNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

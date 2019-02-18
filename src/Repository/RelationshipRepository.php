@@ -103,6 +103,8 @@ class RelationshipRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r');
 
+        $qb->where($qb->expr()->in('r.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class RelationshipRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('r.id', $ids))
-            ->groupBy('r.id')
+        return $qb->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }

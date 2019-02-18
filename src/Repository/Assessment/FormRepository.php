@@ -103,6 +103,8 @@ class FormRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('af');
 
+        $qb->where($qb->expr()->in('af.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class FormRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('af.id', $ids))
-            ->groupBy('af.id')
+        return $qb->groupBy('af.id')
             ->getQuery()
             ->getResult();
     }

@@ -303,6 +303,8 @@ class ResidentEventService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResidentEventNotFoundException();
             }
@@ -316,16 +318,12 @@ class ResidentEventService extends BaseService implements IGridService
             /**
              * @var ResidentEvent $residentEvent
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($residentEvents as $residentEvent) {
                 $this->em->remove($residentEvent);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResidentEventNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

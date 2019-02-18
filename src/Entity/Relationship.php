@@ -99,7 +99,7 @@ class Relationship
     /**
      * @ORM\OneToMany(targetEntity="ResidentResponsiblePerson", mappedBy="relationship", cascade={"persist", "remove"})
      */
-    protected $relationshipResidentResponsiblePersons;
+    protected $residentResponsiblePersons;
 
     /**
      * @return int
@@ -153,16 +153,16 @@ class Relationship
     /**
      * @return mixed
      */
-    public function getRelationshipResidentResponsiblePersons()
+    public function getResidentResponsiblePersons()
     {
-        return $this->relationshipResidentResponsiblePersons;
+        return $this->residentResponsiblePersons;
     }
 
     /**
-     * @param mixed $relationshipResidentResponsiblePersons
+     * @param mixed $residentResponsiblePersons
      */
-    public function setRelationshipResidentResponsiblePersons($relationshipResidentResponsiblePersons): void
+    public function setResidentResponsiblePersons($residentResponsiblePersons): void
     {
-        $this->relationshipResidentResponsiblePersons = $relationshipResidentResponsiblePersons;
+        $this->residentResponsiblePersons = $residentResponsiblePersons;
     }
 }

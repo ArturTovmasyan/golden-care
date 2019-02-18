@@ -158,6 +158,8 @@ class RegionService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new RegionNotFoundException();
             }
@@ -171,16 +173,12 @@ class RegionService extends BaseService implements IGridService
             /**
              * @var Region $region
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($regions as $region) {
                 $this->em->remove($region);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (RegionNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

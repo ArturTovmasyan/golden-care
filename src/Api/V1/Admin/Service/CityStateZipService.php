@@ -158,6 +158,8 @@ class CityStateZipService extends BaseService implements IGridService
     public function removeBulk(array $ids)
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new CityStateZipNotFoundException();
             }
@@ -168,8 +170,6 @@ class CityStateZipService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
-            $this->em->getConnection()->beginTransaction();
-
             /**
              * @var CityStateZip $csz
              */
@@ -179,8 +179,6 @@ class CityStateZipService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (CityStateZipNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

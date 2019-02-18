@@ -140,6 +140,8 @@ class FacilityRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('f');
 
+        $qb->where($qb->expr()->in('f.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -152,8 +154,7 @@ class FacilityRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('f.id', $ids))
-            ->groupBy('f.id')
+        return $qb->groupBy('f.id')
             ->getQuery()
             ->getResult();
     }

@@ -132,6 +132,8 @@ class ResidentMedicationAllergyRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rma');
 
+        $qb->where($qb->expr()->in('rma.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -150,8 +152,7 @@ class ResidentMedicationAllergyRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rma.id', $ids))
-            ->groupBy('rma.id')
+        return $qb->groupBy('rma.id')
             ->getQuery()
             ->getResult();
     }

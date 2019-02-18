@@ -7,6 +7,7 @@ use App\Entity\Relationship;
 use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
+use App\Entity\ResponsiblePersonRole;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -43,6 +44,12 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                 'rel',
                 Join::WITH,
                 'rel = rrp.relationship'
+            )
+            ->innerJoin(
+                ResponsiblePersonRole::class,
+                'role',
+                Join::WITH,
+                'role = rrp.role'
             );
 
         if ($space !== null) {
@@ -140,6 +147,8 @@ class ResidentResponsiblePersonRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rrp');
 
+        $qb->where($qb->expr()->in('rrp.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -158,8 +167,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rrp.id', $ids))
-            ->groupBy('rrp.id')
+        return $qb->groupBy('rrp.id')
             ->getQuery()
             ->getResult();
     }

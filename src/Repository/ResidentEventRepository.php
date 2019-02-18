@@ -159,6 +159,8 @@ class ResidentEventRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('re');
 
+        $qb->where($qb->expr()->in('re.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -177,8 +179,7 @@ class ResidentEventRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('re.id', $ids))
-            ->groupBy('re.id')
+        return $qb->groupBy('re.id')
             ->getQuery()
             ->getResult();
     }

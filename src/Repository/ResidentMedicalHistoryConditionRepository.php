@@ -132,6 +132,8 @@ class ResidentMedicalHistoryConditionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('rmhc');
 
+        $qb->where($qb->expr()->in('rmhc.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -150,8 +152,7 @@ class ResidentMedicalHistoryConditionRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('rmhc.id', $ids))
-            ->groupBy('rmhc.id')
+        return $qb->groupBy('rmhc.id')
             ->getQuery()
             ->getResult();
     }

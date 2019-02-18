@@ -271,6 +271,8 @@ class ResponsiblePersonService extends BaseService implements IGridService
     public function removeBulk(array $ids): void
     {
         try {
+            $this->em->getConnection()->beginTransaction();
+
             if (empty($ids)) {
                 throw new ResponsiblePersonNotFoundException();
             }
@@ -284,16 +286,12 @@ class ResponsiblePersonService extends BaseService implements IGridService
             /**
              * @var ResponsiblePerson $responsiblePerson
              */
-            $this->em->getConnection()->beginTransaction();
-
             foreach ($responsiblePersons as $responsiblePerson) {
                 $this->em->remove($responsiblePerson);
             }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (ResponsiblePersonNotFoundException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 

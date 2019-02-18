@@ -103,6 +103,8 @@ class SalutationRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('sa');
 
+        $qb->where($qb->expr()->in('sa.id', $ids));
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
@@ -115,8 +117,7 @@ class SalutationRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-        return $qb->where($qb->expr()->in('sa.id', $ids))
-            ->groupBy('sa.id')
+        return $qb->groupBy('sa.id')
             ->getQuery()
             ->getResult();
     }
