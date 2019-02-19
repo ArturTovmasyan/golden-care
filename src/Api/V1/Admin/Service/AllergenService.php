@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Allergen;
 use App\Entity\Space;
+use App\Repository\AllergenRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -19,9 +20,12 @@ class AllergenService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Allergen::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var AllergenRepository $repo */
+        $repo = $this->em->getRepository(Allergen::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $queryBuilder);
     }
 
     /**
@@ -30,7 +34,10 @@ class AllergenService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        return $this->em->getRepository(Allergen::class)->list($this->grantService->getCurrentSpace());
+        /** @var AllergenRepository $repo */
+        $repo = $this->em->getRepository(Allergen::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class));
     }
 
     /**
@@ -39,7 +46,10 @@ class AllergenService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Allergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var AllergenRepository $repo */
+        $repo = $this->em->getRepository(Allergen::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $id);
     }
 
     /**
@@ -88,8 +98,11 @@ class AllergenService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var AllergenRepository $repo */
+            $repo = $this->em->getRepository(Allergen::class);
+
             /** @var Allergen $entity */
-            $entity = $this->em->getRepository(Allergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $id);
 
             if ($entity === null) {
                 throw new AllergenNotFoundException();
@@ -130,8 +143,11 @@ class AllergenService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var AllergenRepository $repo */
+            $repo = $this->em->getRepository(Allergen::class);
+
             /** @var Allergen $entity */
-            $entity = $this->em->getRepository(Allergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $id);
 
             if ($entity === null) {
                 throw new AllergenNotFoundException();
@@ -161,7 +177,10 @@ class AllergenService extends BaseService implements IGridService
                 throw new AllergenNotFoundException();
             }
 
-            $allergens = $this->em->getRepository(Allergen::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var AllergenRepository $repo */
+            $repo = $this->em->getRepository(Allergen::class);
+
+            $allergens = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $ids);
 
             if (empty($allergens)) {
                 throw new AllergenNotFoundException();
