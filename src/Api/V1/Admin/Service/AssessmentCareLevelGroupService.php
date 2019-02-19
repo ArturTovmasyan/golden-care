@@ -9,6 +9,7 @@ use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Row;
 use App\Entity\Space;
+use App\Repository\Assessment\CareLevelGroupRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,16 +21,25 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(CareLevelGroup::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var CareLevelGroupRepository $repo */
+        $repo = $this->em->getRepository(CareLevelGroup::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(CareLevelGroup::class)->list($this->grantService->getCurrentSpace());
+        /** @var CareLevelGroupRepository $repo */
+        $repo = $this->em->getRepository(CareLevelGroup::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class));
     }
 
     /**
@@ -38,7 +48,10 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
      */
     public function getById($id)
     {
-        return $this->em->getRepository(CareLevelGroup::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var CareLevelGroupRepository $repo */
+        $repo = $this->em->getRepository(CareLevelGroup::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $id);
     }
 
     /**
@@ -102,7 +115,10 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
                 throw new SpaceNotFoundException();
             }
 
-            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var CareLevelGroupRepository $repo */
+            $repo = $this->em->getRepository(CareLevelGroup::class);
+
+            $careLevelGroup = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $id);
 
             if ($careLevelGroup === null) {
                 throw new AssessmentCareLevelGroupNotFoundException();
@@ -125,7 +141,6 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -133,8 +148,11 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var CareLevelGroupRepository $repo */
+            $repo = $this->em->getRepository(CareLevelGroup::class);
+
             /** @var CareLevelGroup $careLevelGroup */
-            $careLevelGroup = $this->em->getRepository(CareLevelGroup::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $careLevelGroup = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $id);
 
             if ($careLevelGroup === null) {
                 throw new AssessmentCareLevelGroupNotFoundException();
@@ -152,7 +170,6 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids)
@@ -164,7 +181,10 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
                 throw new AssessmentCareLevelGroupNotFoundException();
             }
 
-            $careLevelGroups = $this->em->getRepository(CareLevelGroup::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var CareLevelGroupRepository $repo */
+            $repo = $this->em->getRepository(CareLevelGroup::class);
+
+            $careLevelGroups = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $ids);
 
             if (empty($careLevelGroups)) {
                 throw new AssessmentCareLevelGroupNotFoundException();
