@@ -45,7 +45,8 @@ class FacilityRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere($queryBuilder->expr()->in('f.id', $entityGrants));
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         $queryBuilder
@@ -76,7 +77,8 @@ class FacilityRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('f.id', $entityGrants));
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -111,7 +113,8 @@ class FacilityRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('f.id', $entityGrants));
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -156,9 +159,10 @@ class FacilityRepository extends EntityRepository
      */
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('f');
-
-        $qb->where($qb->expr()->in('f.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('f')
+            ->where('f.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -174,7 +178,8 @@ class FacilityRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('f.id', $entityGrants));
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('f.id')

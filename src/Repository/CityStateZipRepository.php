@@ -38,7 +38,8 @@ class CityStateZipRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere($queryBuilder->expr()->in('csz.id', $entityGrants));
+                ->andWhere('csz.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         $queryBuilder
@@ -69,7 +70,8 @@ class CityStateZipRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
+                ->andWhere('csz.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -104,7 +106,8 @@ class CityStateZipRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
+                ->andWhere('csz.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -120,9 +123,10 @@ class CityStateZipRepository extends EntityRepository
      */
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('csz');
-
-        $qb->where($qb->expr()->in('csz.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('csz')
+            ->where('csz.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -138,7 +142,8 @@ class CityStateZipRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
+                ->andWhere('csz.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('csz.id')
