@@ -16,9 +16,10 @@ class FormRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(Form::class, 'af')
@@ -35,15 +36,22 @@ class FormRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('af.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         $queryBuilder
             ->groupBy('af.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function list(Space $space = null)
+    public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('af')
@@ -60,6 +68,12 @@ class FormRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('af.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -68,9 +82,10 @@ class FormRepository extends EntityRepository
     /**
      * @param Space|null $space
      * @param $id
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function getOne(Space $space = null, $id)
+    public function getOne(Space $space = null, $id, array $entityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('af')
@@ -89,6 +104,12 @@ class FormRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('af.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -97,13 +118,15 @@ class FormRepository extends EntityRepository
     /**
      * @param Space|null $space
      * @param $ids
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, $ids, array $entityGrants = null)
     {
-        $qb = $this->createQueryBuilder('af');
-
-        $qb->where($qb->expr()->in('af.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('af')
+            ->where('af.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -115,6 +138,12 @@ class FormRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('af.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('af.id')

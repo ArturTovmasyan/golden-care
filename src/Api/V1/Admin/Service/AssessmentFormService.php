@@ -11,7 +11,9 @@ use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Space;
+use App\Repository\Assessment\CareLevelGroupRepository;
 use App\Repository\Assessment\CategoryRepository;
+use App\Repository\Assessment\FormRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -23,16 +25,25 @@ class AssessmentFormService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Form::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var FormRepository $repo */
+        $repo = $this->em->getRepository(Form::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Form::class)->list($this->grantService->getCurrentSpace());
+        /** @var FormRepository $repo */
+        $repo = $this->em->getRepository(Form::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class));
     }
 
     /**
@@ -41,7 +52,10 @@ class AssessmentFormService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Form::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var FormRepository $repo */
+        $repo = $this->em->getRepository(Form::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class), $id);
     }
 
     /**
@@ -70,9 +84,12 @@ class AssessmentFormService extends BaseService implements IGridService
 
             $this->validate($form, null, ['api_admin_assessment_form_add']);
 
+            /** @var CareLevelGroupRepository $careLevelGroupRepo */
+            $careLevelGroupRepo = $this->em->getRepository(Form::class);
+
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
-            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($this->grantService->getCurrentSpace(), $groupIds);
+            $groups = $careLevelGroupRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $groupIds);
 
             if (!empty($groups)) {
                 $form->setCareLevelGroups($groups);
@@ -116,7 +133,10 @@ class AssessmentFormService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $id);
+            /** @var FormRepository $repo */
+            $repo = $this->em->getRepository(Form::class);
+
+            $form = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Form::class), $id);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
@@ -133,9 +153,12 @@ class AssessmentFormService extends BaseService implements IGridService
                 $form->removeCareLevelGroup($group);
             }
 
+            /** @var CareLevelGroupRepository $careLevelGroupRepo */
+            $careLevelGroupRepo = $this->em->getRepository(Form::class);
+
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
-            $groups   = $this->em->getRepository(CareLevelGroup::class)->findByIds($currentSpace, $groupIds);
+            $groups = $careLevelGroupRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $groupIds);
 
             if (!empty($groups)) {
                 $form->setCareLevelGroups($groups);
@@ -220,7 +243,6 @@ class AssessmentFormService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -228,8 +250,11 @@ class AssessmentFormService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var FormRepository $repo */
+            $repo = $this->em->getRepository(Form::class);
+
             /** @var Form $form */
-            $form = $this->em->getRepository(Form::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $form = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class), $id);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
@@ -265,7 +290,10 @@ class AssessmentFormService extends BaseService implements IGridService
                 throw new AssessmentFormNotFoundException();
             }
 
-            $forms = $this->em->getRepository(Form::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var FormRepository $repo */
+            $repo = $this->em->getRepository(Form::class);
+
+            $forms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class), $ids);
 
             if (empty($forms)) {
                 throw new AssessmentFormNotFoundException();

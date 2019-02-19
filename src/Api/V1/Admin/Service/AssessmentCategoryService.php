@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Row;
 use App\Entity\Space;
+use App\Repository\Assessment\CategoryRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -19,16 +20,25 @@ class AssessmentCategoryService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Category::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var CategoryRepository $repo */
+        $repo = $this->em->getRepository(Category::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Category::class)->list($this->grantService->getCurrentSpace());
+        /** @var CategoryRepository $repo */
+        $repo = $this->em->getRepository(Category::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class));
     }
 
     /**
@@ -37,7 +47,10 @@ class AssessmentCategoryService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var CategoryRepository $repo */
+        $repo = $this->em->getRepository(Category::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $id);
     }
 
     /**
@@ -104,7 +117,10 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $category = $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var CategoryRepository $repo */
+            $repo = $this->em->getRepository(Category::class);
+
+            $category = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $id);
 
             if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
@@ -181,7 +197,6 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -189,8 +204,11 @@ class AssessmentCategoryService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var CategoryRepository $repo */
+            $repo = $this->em->getRepository(Category::class);
+
             /** @var Category $category */
-            $category = $this->em->getRepository(Category::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $category = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $id);
 
             if ($category === null) {
                 throw new AssessmentCategoryNotFoundException();
@@ -208,7 +226,6 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids)
@@ -220,7 +237,10 @@ class AssessmentCategoryService extends BaseService implements IGridService
                 throw new AssessmentCategoryNotFoundException();
             }
 
-            $categories = $this->em->getRepository(Category::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var CategoryRepository $repo */
+            $repo = $this->em->getRepository(Category::class);
+
+            $categories = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $ids);
 
             if (empty($categories)) {
                 throw new AssessmentCategoryNotFoundException();
