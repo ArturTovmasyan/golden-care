@@ -9,6 +9,8 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\Space;
+use App\Repository\CityStateZipRepository;
+use App\Repository\FacilityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -22,14 +24,20 @@ class FacilityService extends BaseService implements IGridService
      * @param $params
      * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Facility::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var FacilityRepository $repo */
+        $repo = $this->em->getRepository(Facility::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
     }
 
     public function list($params)
     {
-        return $this->em->getRepository(Facility::class)->list($this->grantService->getCurrentSpace());
+        /** @var FacilityRepository $repo */
+        $repo = $this->em->getRepository(Facility::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
     }
 
     /**
@@ -38,7 +46,10 @@ class FacilityService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var FacilityRepository $repo */
+        $repo = $this->em->getRepository(Facility::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
     }
 
     /**
@@ -60,8 +71,11 @@ class FacilityService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
             /** @var CityStateZip $csz */
-            $csz = $this->em->getRepository(CityStateZip::class)->getOne($this->grantService->getCurrentSpace(), $cszId);
+            $csz = $cszRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
@@ -105,8 +119,11 @@ class FacilityService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var FacilityRepository $repo */
+            $repo = $this->em->getRepository(Facility::class);
+
             /** @var Facility $entity */
-            $entity = $this->em->getRepository(Facility::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new FacilityNotFoundException();
@@ -122,8 +139,11 @@ class FacilityService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
             /** @var CityStateZip $csz */
-            $csz = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $cszId);
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
@@ -163,8 +183,11 @@ class FacilityService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var FacilityRepository $repo */
+            $repo = $this->em->getRepository(Facility::class);
+
             /** @var Facility $entity */
-            $entity = $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new FacilityNotFoundException();
@@ -194,7 +217,10 @@ class FacilityService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $facilities = $this->em->getRepository(Facility::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var FacilityRepository $repo */
+            $repo = $this->em->getRepository(Facility::class);
+
+            $facilities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
             if (empty($facilities)) {
                 throw new FacilityNotFoundException();

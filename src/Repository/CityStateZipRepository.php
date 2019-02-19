@@ -16,9 +16,10 @@ class CityStateZipRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(CityStateZip::class, 'csz')
@@ -35,15 +36,21 @@ class CityStateZipRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->in('csz.id', $entityGrants));
+        }
+
         $queryBuilder
             ->groupBy('csz.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function list(Space $space = null)
+    public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('csz')
@@ -60,6 +67,11 @@ class CityStateZipRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -67,10 +79,11 @@ class CityStateZipRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('csz')
@@ -89,6 +102,11 @@ class CityStateZipRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -96,10 +114,11 @@ class CityStateZipRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this->createQueryBuilder('csz');
 
@@ -115,6 +134,11 @@ class CityStateZipRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere($qb->expr()->in('csz.id', $entityGrants));
         }
 
         return $qb->groupBy('csz.id')
