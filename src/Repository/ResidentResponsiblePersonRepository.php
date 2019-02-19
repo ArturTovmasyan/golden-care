@@ -219,7 +219,8 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'rp.csz = csz'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds));
 
         if ($space !== null) {
             $qb
@@ -234,7 +235,6 @@ class ResidentResponsiblePersonRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
             ->groupBy('rrp.id')
             ->getQuery()
             ->getResult();

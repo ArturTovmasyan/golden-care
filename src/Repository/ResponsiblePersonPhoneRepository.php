@@ -71,7 +71,8 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
                 'rp',
                 Join::WITH,
                 'rpp.responsiblePerson = rp'
-            );
+            )
+            ->where($qb->expr()->in('rp.id', $responsiblePersonIds));
 
         if ($space !== null) {
             $qb
@@ -86,7 +87,6 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('rp.id', $responsiblePersonIds))
             ->groupBy('rpp.id')
             ->getQuery()
             ->getResult();

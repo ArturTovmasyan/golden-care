@@ -216,7 +216,8 @@ class ResidentMedicationRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'rm.resident = r'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds));
 
         if ($space !== null) {
             $qb
@@ -231,7 +232,6 @@ class ResidentMedicationRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('rm.treatment', 'ASC')
             ->addOrderBy('rm.am', 'DESC')
             ->addOrderBy('rm.nn', 'DESC')

@@ -243,7 +243,8 @@ class ResidentEventRepository extends EntityRepository
                 'rpsal',
                 Join::WITH,
                 'rp.salutation = rpsal'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds));
 
         if ($space !== null) {
             $qb
@@ -258,7 +259,6 @@ class ResidentEventRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('re.date', 'DESC')
             ->groupBy('re.id')
             ->getQuery()

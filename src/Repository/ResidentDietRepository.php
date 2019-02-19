@@ -185,7 +185,8 @@ class ResidentDietRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'rd.resident = r'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds));
 
         if ($space !== null) {
             $qb
@@ -200,7 +201,6 @@ class ResidentDietRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
             ->orderBy('d.title')
             ->groupBy('rd.id')
             ->getQuery()

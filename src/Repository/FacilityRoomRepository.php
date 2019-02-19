@@ -184,7 +184,7 @@ class FacilityRoomRepository extends EntityRepository
     public function getLastNumber(Space $space = null, $facilityId) {
         $qb = $this
             ->createQueryBuilder('fr')
-            ->select("MAX(fr.number) as max_room_number")
+            ->select('MAX(fr.number) as max_room_number')
             ->innerJoin(
                 Facility::class,
                 'f',

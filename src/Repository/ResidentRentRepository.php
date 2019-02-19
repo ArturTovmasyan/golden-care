@@ -186,7 +186,9 @@ class ResidentRentRepository extends EntityRepository
                 'r',
                 Join::WITH,
                 'rr.resident = r'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds))
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)');
 
         if ($space !== null) {
             $qb
@@ -201,8 +203,6 @@ class ResidentRentRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
             ->getQuery()
             ->getResult();
     }

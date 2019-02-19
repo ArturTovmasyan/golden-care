@@ -341,7 +341,8 @@ class ResidentPhysicianRepository extends EntityRepository
                 'csz',
                 Join::WITH,
                 'p.csz = csz'
-            );
+            )
+            ->where($qb->expr()->in('r.id', $residentIds));
 
             switch ($type) {
                 case ContractType::TYPE_FACILITY:
@@ -427,7 +428,6 @@ class ResidentPhysicianRepository extends EntityRepository
         }
 
         return $qb
-            ->where($qb->expr()->in('r.id', $residentIds))
             ->groupBy('rp.id')
             ->getQuery()
             ->getResult();
