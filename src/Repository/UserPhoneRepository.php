@@ -15,10 +15,11 @@ class UserPhoneRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param User $user
      * @return mixed
      */
-    public function getBy(Space $space = null, User $user)
+    public function getBy(Space $space = null, array $entityGrants = null, User $user)
     {
         $qb = $this
             ->createQueryBuilder('up')
@@ -41,6 +42,12 @@ class UserPhoneRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('up.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

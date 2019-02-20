@@ -10,6 +10,8 @@ use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
 use App\Entity\UserPhone;
+use App\Repository\UserPhoneRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -21,16 +23,25 @@ class UserService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(User::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var UserRepository $repo */
+        $repo = $this->em->getRepository(User::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(User::class)->list($this->grantService->getCurrentSpace());
+        /** @var UserRepository $repo */
+        $repo = $this->em->getRepository(User::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class));
     }
 
     /**
@@ -39,7 +50,10 @@ class UserService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var UserRepository $repo */
+        $repo = $this->em->getRepository(User::class);
+
+        $user = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $id);
 
         if ($user === null) {
             throw new UserNotFoundException();
@@ -120,8 +134,11 @@ class UserService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var UserRepository $repo */
+            $repo = $this->em->getRepository(User::class);
+
             /** @var User $user */
-            $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $user = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $id);
 
             if ($user === null) {
                 throw new UserNotFoundException();
@@ -189,8 +206,11 @@ class UserService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var UserRepository $repo */
+            $repo = $this->em->getRepository(User::class);
+
             /** @var User $user **/
-            $user = $this->em->getRepository(User::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $user = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $id);
 
             if ($user === null) {
                 return;
@@ -225,13 +245,16 @@ class UserService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones($user, array $phones = [])
+    private function savePhones($user, array $phones = []) : ?array
     {
         if($user->getId()) {
+            /** @var UserPhoneRepository $userPhoneRepo */
+            $userPhoneRepo = $this->em->getRepository(UserPhone::class);
+
             /**
              * @var UserPhone[] $oldPhones
              */
-            $oldPhones = $this->em->getRepository(UserPhone::class)->getBy($this->grantService->getCurrentSpace(), $user);
+            $oldPhones = $userPhoneRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(UserPhone::class), $user);
 
             foreach ($oldPhones as $phone) {
                 $this->em->remove($phone);

@@ -5,6 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Space;
+use App\Repository\SpaceRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -16,11 +17,13 @@ class SpaceService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Space::class)->search($queryBuilder);
+        /** @var SpaceRepository $repo */
+        $repo = $this->em->getRepository(Space::class);
+
+        $repo->search($queryBuilder);
     }
 
     public function list($params)

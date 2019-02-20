@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\Exception\UserWithoutRoleException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -19,11 +20,13 @@ class RoleService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Role::class)->search($queryBuilder);
+        /** @var RoleRepository $repo */
+        $repo = $this->em->getRepository(Role::class);
+
+        $repo->search($queryBuilder);
     }
 
     public function list($params)
@@ -33,9 +36,10 @@ class RoleService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @return Role|null|object
+     * @param GrantService $grantService
+     * @return Role
      */
-    public function getById($id, GrantService $grantService)
+    public function getById($id, GrantService $grantService) : ?Role
     {
         /** @var Role $role */
         $role = $this->em->getRepository(Role::class)->find($id);
@@ -108,7 +112,6 @@ class RoleService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id): void
@@ -144,7 +147,6 @@ class RoleService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -156,7 +158,10 @@ class RoleService extends BaseService implements IGridService
                 throw new RoleNotFoundException();
             }
 
-            $roles = $this->em->getRepository(Role::class)->findByIds($ids);
+            /** @var RoleRepository $repo */
+            $repo = $this->em->getRepository(Role::class);
+
+            $roles = $repo->findByIds($ids);
 
             if (empty($roles)) {
                 throw new RoleNotFoundException();
