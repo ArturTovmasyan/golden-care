@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\MedicationFormFactor;
 use App\Entity\Space;
+use App\Repository\MedicationFormFactorRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class MedicationFormFactorService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(MedicationFormFactor::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var MedicationFormFactorRepository $repo */
+        $repo = $this->em->getRepository(MedicationFormFactor::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(MedicationFormFactor::class)->list($this->grantService->getCurrentSpace());
+        /** @var MedicationFormFactorRepository $repo */
+        $repo = $this->em->getRepository(MedicationFormFactor::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class MedicationFormFactorService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var MedicationFormFactorRepository $repo */
+        $repo = $this->em->getRepository(MedicationFormFactor::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $id);
     }
 
     /**
@@ -84,8 +97,11 @@ class MedicationFormFactorService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var MedicationFormFactorRepository $repo */
+            $repo = $this->em->getRepository(MedicationFormFactor::class);
+
             /** @var MedicationFormFactor $entity */
-            $entity = $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $id);
 
             if ($entity === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -117,7 +133,6 @@ class MedicationFormFactorService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -125,8 +140,11 @@ class MedicationFormFactorService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var MedicationFormFactorRepository $repo */
+            $repo = $this->em->getRepository(MedicationFormFactor::class);
+
             /** @var MedicationFormFactor $entity */
-            $entity = $this->em->getRepository(MedicationFormFactor::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $id);
 
             if ($entity === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -144,7 +162,6 @@ class MedicationFormFactorService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -156,7 +173,10 @@ class MedicationFormFactorService extends BaseService implements IGridService
                 throw new MedicationFormFactorNotFoundException();
             }
 
-            $factors = $this->em->getRepository(MedicationFormFactor::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var MedicationFormFactorRepository $repo */
+            $repo = $this->em->getRepository(MedicationFormFactor::class);
+
+            $factors = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $ids);
 
             if (empty($factors)) {
                 throw new MedicationFormFactorNotFoundException();

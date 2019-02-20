@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Medication;
 use App\Entity\Space;
+use App\Repository\MedicationRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class MedicationService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Medication::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var MedicationRepository $repo */
+        $repo = $this->em->getRepository(Medication::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Medication::class)->list($this->grantService->getCurrentSpace());
+        /** @var MedicationRepository $repo */
+        $repo = $this->em->getRepository(Medication::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class MedicationService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var MedicationRepository $repo */
+        $repo = $this->em->getRepository(Medication::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $id);
     }
 
     /**
@@ -87,7 +100,10 @@ class MedicationService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var MedicationRepository $repo */
+            $repo = $this->em->getRepository(Medication::class);
+
+            $medication = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $id);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
@@ -119,7 +135,6 @@ class MedicationService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id): void
@@ -130,7 +145,10 @@ class MedicationService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $medication = $this->em->getRepository(Medication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var MedicationRepository $repo */
+            $repo = $this->em->getRepository(Medication::class);
+
+            $medication = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $id);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
@@ -148,7 +166,6 @@ class MedicationService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -160,7 +177,10 @@ class MedicationService extends BaseService implements IGridService
                 throw new MedicationNotFoundException();
             }
 
-            $medications = $this->em->getRepository(Medication::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var MedicationRepository $repo */
+            $repo = $this->em->getRepository(Medication::class);
+
+            $medications = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $ids);
 
             if (empty($medications)) {
                 throw new MedicationNotFoundException();

@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\MedicalHistoryCondition;
 use App\Entity\Space;
+use App\Repository\MedicalHistoryConditionRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(MedicalHistoryCondition::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var MedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(MedicalHistoryCondition::class)->list($this->grantService->getCurrentSpace());
+        /** @var MedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var MedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $id);
     }
 
     /**
@@ -85,8 +98,11 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var MedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
             /** @var MedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $id);
 
             if ($entity === null) {
                 throw new MedicalHistoryConditionNotFoundException();
@@ -119,7 +135,6 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -127,8 +142,11 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var MedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
             /** @var MedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $id);
 
             if ($entity === null) {
                 throw new MedicalHistoryConditionNotFoundException();
@@ -146,7 +164,6 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -158,7 +175,10 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
                 throw new MedicalHistoryConditionNotFoundException();
             }
 
-            $conditions = $this->em->getRepository(MedicalHistoryCondition::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var MedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
+            $conditions = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $ids);
 
             if (empty($conditions)) {
                 throw new MedicalHistoryConditionNotFoundException();
