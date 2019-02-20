@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
 use App\Entity\Space;
+use App\Repository\EventDefinitionRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class EventDefinitionService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(EventDefinition::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var EventDefinitionRepository $repo */
+        $repo = $this->em->getRepository(EventDefinition::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(EventDefinition::class)->list($this->grantService->getCurrentSpace());
+        /** @var EventDefinitionRepository $repo */
+        $repo = $this->em->getRepository(EventDefinition::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class EventDefinitionService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var EventDefinitionRepository $repo */
+        $repo = $this->em->getRepository(EventDefinition::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $id);
     }
 
     /**
@@ -90,8 +103,11 @@ class EventDefinitionService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var EventDefinitionRepository $repo */
+            $repo = $this->em->getRepository(EventDefinition::class);
+
             /** @var EventDefinition $entity */
-            $entity = $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $id);
 
             if ($entity === null) {
                 throw new EventDefinitionNotFoundException();
@@ -129,7 +145,6 @@ class EventDefinitionService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -137,8 +152,11 @@ class EventDefinitionService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var EventDefinitionRepository $repo */
+            $repo = $this->em->getRepository(EventDefinition::class);
+
             /** @var EventDefinition $entity */
-            $entity = $this->em->getRepository(EventDefinition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $id);
 
             if ($entity === null) {
                 throw new EventDefinitionNotFoundException();
@@ -156,7 +174,6 @@ class EventDefinitionService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -168,7 +185,10 @@ class EventDefinitionService extends BaseService implements IGridService
                 throw new EventDefinitionNotFoundException();
             }
 
-            $eventDefinitions = $this->em->getRepository(EventDefinition::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var EventDefinitionRepository $repo */
+            $repo = $this->em->getRepository(EventDefinition::class);
+
+            $eventDefinitions = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $ids);
 
             if (empty($eventDefinitions)) {
                 throw new EventDefinitionNotFoundException();

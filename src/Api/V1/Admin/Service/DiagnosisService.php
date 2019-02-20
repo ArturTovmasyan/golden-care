@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Diagnosis;
 use App\Entity\Space;
+use App\Repository\DiagnosisRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class DiagnosisService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Diagnosis::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var DiagnosisRepository $repo */
+        $repo = $this->em->getRepository(Diagnosis::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Diagnosis::class)->list($this->grantService->getCurrentSpace());
+        /** @var DiagnosisRepository $repo */
+        $repo = $this->em->getRepository(Diagnosis::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class DiagnosisService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Diagnosis::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var DiagnosisRepository $repo */
+        $repo = $this->em->getRepository(Diagnosis::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class), $id);
     }
 
     /**
@@ -86,8 +99,11 @@ class DiagnosisService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var DiagnosisRepository $repo */
+            $repo = $this->em->getRepository(Diagnosis::class);
+
             /** @var Diagnosis $entity */
-            $entity = $this->em->getRepository(Diagnosis::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class), $id);
 
             if ($entity === null) {
                 throw new DiagnosisNotFoundException();
@@ -121,7 +137,6 @@ class DiagnosisService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -129,8 +144,11 @@ class DiagnosisService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var DiagnosisRepository $repo */
+            $repo = $this->em->getRepository(Diagnosis::class);
+
             /** @var Diagnosis $entity */
-            $entity = $this->em->getRepository(Diagnosis::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class), $id);
 
             if ($entity === null) {
                 throw new DiagnosisNotFoundException();
@@ -148,7 +166,6 @@ class DiagnosisService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids)
@@ -160,7 +177,10 @@ class DiagnosisService extends BaseService implements IGridService
                 throw new DiagnosisNotFoundException();
             }
 
-            $diagnoses = $this->em->getRepository(Diagnosis::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var DiagnosisRepository $repo */
+            $repo = $this->em->getRepository(Diagnosis::class);
+
+            $diagnoses = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diagnosis::class), $ids);
 
             if (empty($diagnoses)) {
                 throw new DiagnosisNotFoundException();

@@ -7,6 +7,8 @@ use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\DiningRoom;
 use App\Entity\Facility;
+use App\Repository\DiningRoomRepository;
+use App\Repository\FacilityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,24 +20,34 @@ class DiningRoomService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(DiningRoom::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var DiningRoomRepository $repo */
+        $repo = $this->em->getRepository(DiningRoom::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
+        $entityGrants = $this->grantService->getCurrentUserEntityGrants(DiningRoom::class);
+
+        /** @var DiningRoomRepository $repo */
+        $repo = $this->em->getRepository(DiningRoom::class);
 
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            return $this->em->getRepository(DiningRoom::class)->getBy($currentSpace, $facilityId);
+            return $repo->getBy($currentSpace, $entityGrants, $facilityId);
         }
 
-        return $this->em->getRepository(DiningRoom::class)->list($currentSpace);
+        return $repo->list($currentSpace, $entityGrants);
     }
 
     /**
@@ -44,7 +56,10 @@ class DiningRoomService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(DiningRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var DiningRoomRepository $repo */
+        $repo = $this->em->getRepository(DiningRoom::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
     }
 
     /**
@@ -58,8 +73,11 @@ class DiningRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(DiningRoom::class);
+
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $facilityId);
+            $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -94,8 +112,11 @@ class DiningRoomService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var DiningRoomRepository $repo */
+            $repo = $this->em->getRepository(DiningRoom::class);
+
             /** @var DiningRoom $entity */
-            $entity = $this->em->getRepository(DiningRoom::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -103,8 +124,11 @@ class DiningRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(DiningRoom::class);
+
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->getOne($currentSpace, $facilityId);
+            $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -127,7 +151,6 @@ class DiningRoomService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -135,8 +158,11 @@ class DiningRoomService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var DiningRoomRepository $repo */
+            $repo = $this->em->getRepository(DiningRoom::class);
+
             /** @var DiningRoom $entity */
-            $entity = $this->em->getRepository(DiningRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -154,7 +180,6 @@ class DiningRoomService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -166,7 +191,10 @@ class DiningRoomService extends BaseService implements IGridService
                 throw new DiningRoomNotFoundException();
             }
 
-            $diningRooms = $this->em->getRepository(DiningRoom::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var DiningRoomRepository $repo */
+            $repo = $this->em->getRepository(DiningRoom::class);
+
+            $diningRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $ids);
 
             if (empty($diningRooms)) {
                 throw new DiningRoomNotFoundException();

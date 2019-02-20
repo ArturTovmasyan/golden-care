@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Diet;
 use App\Entity\Space;
+use App\Repository\DietRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class DietService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Diet::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var DietRepository $repo */
+        $repo = $this->em->getRepository(Diet::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Diet::class)->list($this->grantService->getCurrentSpace());
+        /** @var DietRepository $repo */
+        $repo = $this->em->getRepository(Diet::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class DietService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var DietRepository $repo */
+        $repo = $this->em->getRepository(Diet::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $id);
     }
 
     /**
@@ -85,8 +98,11 @@ class DietService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var DietRepository $repo */
+            $repo = $this->em->getRepository(Diet::class);
+
             /** @var Diet $entity */
-            $entity = $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $id);
 
             if ($entity === null) {
                 throw new DietNotFoundException();
@@ -119,7 +135,6 @@ class DietService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -127,8 +142,11 @@ class DietService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var DietRepository $repo */
+            $repo = $this->em->getRepository(Diet::class);
+
             /** @var Diet $entity */
-            $entity = $this->em->getRepository(Diet::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $id);
 
             if ($entity === null) {
                 throw new DietNotFoundException();
@@ -146,7 +164,6 @@ class DietService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -158,7 +175,10 @@ class DietService extends BaseService implements IGridService
                 throw new DietNotFoundException();
             }
 
-            $diets = $this->em->getRepository(Diet::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var DietRepository $repo */
+            $repo = $this->em->getRepository(Diet::class);
+
+            $diets = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $ids);
 
             if (empty($diets)) {
                 throw new DietNotFoundException();
