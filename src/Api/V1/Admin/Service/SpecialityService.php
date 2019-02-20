@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpecialityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Speciality;
 use App\Entity\Space;
+use App\Repository\SpecialityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class SpecialityService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Speciality::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var SpecialityRepository $repo */
+        $repo = $this->em->getRepository(Speciality::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Speciality::class)->list($this->grantService->getCurrentSpace());
+        /** @var SpecialityRepository $repo */
+        $repo = $this->em->getRepository(Speciality::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class SpecialityService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Speciality::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var SpecialityRepository $repo */
+        $repo = $this->em->getRepository(Speciality::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class), $id);
     }
 
     /**
@@ -89,7 +102,10 @@ class SpecialityService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $entity = $this->em->getRepository(Speciality::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var SpecialityRepository $repo */
+            $repo = $this->em->getRepository(Speciality::class);
+
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class), $id);
 
             if ($entity === null) {
                 throw new SpecialityNotFoundException();
@@ -120,7 +136,6 @@ class SpecialityService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -128,8 +143,11 @@ class SpecialityService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var SpecialityRepository $repo */
+            $repo = $this->em->getRepository(Speciality::class);
+
             /** @var Speciality $entity */
-            $entity = $this->em->getRepository(Speciality::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class), $id);
 
             if ($entity === null) {
                 throw new SpecialityNotFoundException();
@@ -147,7 +165,6 @@ class SpecialityService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -159,7 +176,10 @@ class SpecialityService extends BaseService implements IGridService
                 throw new SpecialityNotFoundException();
             }
 
-            $specialities = $this->em->getRepository(Speciality::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var SpecialityRepository $repo */
+            $repo = $this->em->getRepository(Speciality::class);
+
+            $specialities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Speciality::class), $ids);
 
             if (empty($specialities)) {
                 throw new SpecialityNotFoundException();

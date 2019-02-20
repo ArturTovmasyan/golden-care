@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class SalutationService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Salutation::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var SalutationRepository $repo */
+        $repo = $this->em->getRepository(Salutation::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Salutation::class)->list($this->grantService->getCurrentSpace());
+        /** @var SalutationRepository $repo */
+        $repo = $this->em->getRepository(Salutation::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class SalutationService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Salutation::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var SalutationRepository $repo */
+        $repo = $this->em->getRepository(Salutation::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $id);
     }
 
     /**
@@ -84,8 +97,11 @@ class SalutationService extends BaseService implements IGridService
 
             $this->em->getConnection()->beginTransaction();
 
+            /** @var SalutationRepository $repo */
+            $repo = $this->em->getRepository(Salutation::class);
+
             /** @var Salutation $entity */
-            $entity = $this->em->getRepository(Salutation::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $id);
 
             if ($entity === null) {
                 throw new SalutationNotFoundException();
@@ -117,7 +133,6 @@ class SalutationService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -125,8 +140,11 @@ class SalutationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var SalutationRepository $repo */
+            $repo = $this->em->getRepository(Salutation::class);
+
             /** @var Salutation $entity */
-            $entity = $this->em->getRepository(Salutation::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $id);
 
             if ($entity === null) {
                 throw new SalutationNotFoundException();
@@ -144,7 +162,6 @@ class SalutationService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -156,7 +173,10 @@ class SalutationService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
-            $salutations = $this->em->getRepository(Salutation::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var SalutationRepository $repo */
+            $repo = $this->em->getRepository(Salutation::class);
+
+            $salutations = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $ids);
 
             if (empty($salutations)) {
                 throw new SalutationNotFoundException();

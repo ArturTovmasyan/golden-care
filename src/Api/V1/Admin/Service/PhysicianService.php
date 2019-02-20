@@ -3,7 +3,6 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
-use App\Api\V1\Common\Service\Exception\DuplicateSpecialityRequestException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
@@ -14,6 +13,10 @@ use App\Entity\Physician;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
+use App\Repository\CityStateZipRepository;
+use App\Repository\PhysicianRepository;
+use App\Repository\SalutationRepository;
+use App\Repository\SpecialityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -26,14 +29,24 @@ class PhysicianService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Physician::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var PhysicianRepository $repo */
+        $repo = $this->em->getRepository(Physician::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Physician::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Physician::class)->list($this->grantService->getCurrentSpace());
+        /** @var PhysicianRepository $repo */
+        $repo = $this->em->getRepository(Physician::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Physician::class));
     }
 
     /**
@@ -42,11 +55,15 @@ class PhysicianService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(Physician::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var PhysicianRepository $repo */
+        $repo = $this->em->getRepository(Physician::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Physician::class), $id);
     }
 
     /**
      * @param array $params
+     * @return int|null
      * @throws \Exception
      */
     public function add(array $params): ?int
@@ -58,16 +75,29 @@ class PhysicianService extends BaseService implements IGridService
              * @var Salutation $salutation
              * @var CityStateZip $csz
              * @var Speciality $speciality
+             * @var Space $space
              */
             $this->em->getConnection()->beginTransaction();
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
 
-            $csz        = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $params['salutation_id']);
-            $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $params['speciality_id']);
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+            /** @var CityStateZip $csz */
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['csz_id']);
+
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $params['salutation_id']);
+
+            /** @var SpecialityRepository $specialityRepo */
+            $specialityRepo = $this->em->getRepository(Speciality::class);
+
+            $speciality = $specialityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Speciality::class), $params['speciality_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -99,7 +129,6 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setSpace($space);
             $physician->setCsz($csz);
-            $physician->setSpeciality($speciality);
             $physician->setSalutation($salutation);
             $physician->setSpeciality($speciality);
 
@@ -138,11 +167,28 @@ class PhysicianService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $space      = $this->em->getRepository(Space::class)->find($params['space_id']);
-            $physician  = $this->em->getRepository(Physician::class)->getOne($currentSpace, $id);
-            $csz        = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $params['salutation_id']);
-            $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $params['speciality_id']);
+            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+
+            /** @var PhysicianRepository $repo */
+            $repo = $this->em->getRepository(Physician::class);
+
+            $physician = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Physician::class), $id);
+
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+            /** @var CityStateZip $csz */
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['csz_id']);
+
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $params['salutation_id']);
+
+            /** @var SpecialityRepository $specialityRepo */
+            $specialityRepo = $this->em->getRepository(Speciality::class);
+
+            $speciality = $specialityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Speciality::class), $params['speciality_id']);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
@@ -175,10 +221,10 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setEmergencyPhone($params['emergency_phone'] ?? '');
             $physician->setEmail($params['email'] ?? '');
             $physician->setWebsiteUrl($params['website_url'] ?? '');
-            $physician->setCsz($csz);
             $physician->setSpace($space);
-            $physician->setSpeciality($speciality);
+            $physician->setCsz($csz);
             $physician->setSalutation($salutation);
+            $physician->setSpeciality($speciality);
 
             $this->validate($physician, null, ['api_admin_physician_edit']);
 
@@ -195,7 +241,6 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id): void
@@ -206,7 +251,10 @@ class PhysicianService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $physician = $this->em->getRepository(Physician::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var PhysicianRepository $repo */
+            $repo = $this->em->getRepository(Physician::class);
+
+            $physician = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Physician::class), $id);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
@@ -224,7 +272,6 @@ class PhysicianService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -236,7 +283,10 @@ class PhysicianService extends BaseService implements IGridService
                 throw new PhysicianNotFoundException();
             }
 
-            $physicians = $this->em->getRepository(Physician::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var PhysicianRepository $repo */
+            $repo = $this->em->getRepository(Physician::class);
+
+            $physicians = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Physician::class), $ids);
 
             if (empty($physicians)) {
                 throw new PhysicianNotFoundException();
