@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\ResponsiblePersonRoleNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ResponsiblePersonRole;
 use App\Entity\Space;
+use App\Repository\ResponsiblePersonRoleRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -18,16 +19,25 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(ResponsiblePersonRole::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResponsiblePersonRoleRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(ResponsiblePersonRole::class)->list($this->grantService->getCurrentSpace());
+        /** @var ResponsiblePersonRoleRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class));
     }
 
     /**
@@ -36,7 +46,10 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResponsiblePersonRoleRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $id);
     }
 
     /**
@@ -89,7 +102,10 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $entity = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var ResponsiblePersonRoleRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $id);
 
             if ($entity === null) {
                 throw new ResponsiblePersonRoleNotFoundException();
@@ -120,7 +136,6 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -128,8 +143,11 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResponsiblePersonRoleRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
             /** @var ResponsiblePersonRole $entity */
-            $entity = $this->em->getRepository(ResponsiblePersonRole::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $id);
 
             if ($entity === null) {
                 throw new ResponsiblePersonRoleNotFoundException();
@@ -147,7 +165,6 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -159,7 +176,10 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
                 throw new ResponsiblePersonRoleNotFoundException();
             }
 
-            $responsiblePersonRoles = $this->em->getRepository(ResponsiblePersonRole::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResponsiblePersonRoleRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+            $responsiblePersonRoles = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $ids);
 
             if (empty($responsiblePersonRoles)) {
                 throw new ResponsiblePersonRoleNotFoundException();

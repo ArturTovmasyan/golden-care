@@ -13,6 +13,10 @@ use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Repository\CityStateZipRepository;
+use App\Repository\ResponsiblePersonPhoneRepository;
+use App\Repository\ResponsiblePersonRepository;
+use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -24,16 +28,25 @@ class ResponsiblePersonService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(ResponsiblePerson::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResponsiblePersonRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(ResponsiblePerson::class)->list($this->grantService->getCurrentSpace());
+        /** @var ResponsiblePersonRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class));
     }
 
     /**
@@ -42,11 +55,15 @@ class ResponsiblePersonService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResponsiblePerson::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResponsiblePersonRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $id);
     }
 
     /**
      * @param array $params
+     * @return int|null
      * @throws \Exception
      */
     public function add(array $params) : ?int
@@ -62,8 +79,10 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $spaceId      = $params['space_id'] ?? 0;
-            $cszId        = $params['csz_id'] ?? 0;
+            $spaceId = $params['space_id'] ?? 0;
+
+
+            $cszId = $params['csz_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
             $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -72,13 +91,20 @@ class ResponsiblePersonService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $csz = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $cszId);
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+            /** @var CityStateZip $csz */
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
             }
 
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $salutationId);
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
 
             if ($salutation === null) {
                 throw new SalutationNotFoundException();
@@ -131,11 +157,14 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $spaceId      = $params['space_id'] ?? 0;
-            $cszId        = $params['csz_id'] ?? 0;
+            $spaceId = $params['space_id'] ?? 0;
+            $cszId = $params['csz_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->getOne($currentSpace, $id);
+            /** @var ResponsiblePersonRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+            $responsiblePerson = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $id);
 
             if ($responsiblePerson === null) {
                 throw new ResponsiblePersonNotFoundException();
@@ -147,13 +176,20 @@ class ResponsiblePersonService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $csz = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $cszId);
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+            /** @var CityStateZip $csz */
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
             }
 
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $salutationId);
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
 
             if ($salutation === null) {
                 throw new SalutationNotFoundException();
@@ -190,13 +226,13 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = [])
+    private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = []) : ?array
     {
         if($responsiblePerson->getId() !== null) {
-            /**
-             * @var ResponsiblePerson $phone
-             */
-            $oldPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getBy($this->grantService->getCurrentSpace(), $responsiblePerson);
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $oldPhones = $responsiblePersonPhoneRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePerson);
 
             foreach ($oldPhones as $phone) {
                 $this->em->remove($phone);
@@ -238,7 +274,6 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -246,8 +281,11 @@ class ResponsiblePersonService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResponsiblePersonRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePerson::class);
+
             /** @var ResponsiblePerson $entity */
-            $entity = $this->em->getRepository(ResponsiblePerson::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $id);
 
             if ($entity === null) {
                 throw new ResponsiblePersonNotFoundException();
@@ -265,7 +303,6 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -277,7 +314,10 @@ class ResponsiblePersonService extends BaseService implements IGridService
                 throw new ResponsiblePersonNotFoundException();
             }
 
-            $responsiblePersons = $this->em->getRepository(ResponsiblePerson::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResponsiblePersonRepository $repo */
+            $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+            $responsiblePersons = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $ids);
 
             if (empty($responsiblePersons)) {
                 throw new ResponsiblePersonNotFoundException();
