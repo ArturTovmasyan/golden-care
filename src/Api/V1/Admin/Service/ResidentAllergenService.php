@@ -69,41 +69,18 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Allergen $allergen */
+            $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $params['allergen_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $allergenId = $params['allergen_id'];
-            $newAllergen = $params['allergen'];
-
-            if ((empty($allergenId) && empty($newAllergen)) || (!empty($allergenId) && !empty($newAllergen))) {
-                throw new AllergenNotSingleException();
-            }
-
-            $allergen = null;
-
-            if (!empty($newAllergen)) {
-                $newAllergenTitle = $newAllergen['title'] ?? '';
-                $newAllergenDescription = $newAllergen['description'] ?? '';
-
-                $allergen = new Allergen();
-                $allergen->setTitle($newAllergenTitle);
-                $allergen->setDescription($newAllergenDescription);
-                $allergen->setSpace($resident->getSpace());
-            }
-
-            if (!empty($allergenId)) {
-                /** @var Allergen $allergen */
-                $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $allergenId);
-
-                if ($allergen === null) {
-                    throw new AllergenNotFoundException();
-                }
+            if ($allergen === null) {
+                throw new AllergenNotFoundException();
             }
 
             $residentAllergen = new ResidentAllergen();
@@ -144,41 +121,18 @@ class ResidentAllergenService extends BaseService implements IGridService
                 throw new ResidentAllergenNotFoundException();
             }
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Allergen $allergen */
+            $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $params['allergen_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $allergenId = $params['allergen_id'];
-            $newAllergen = $params['allergen'];
-
-            if ((empty($allergenId) && empty($newAllergen)) || (!empty($allergenId) && !empty($newAllergen))) {
-                throw new AllergenNotSingleException();
-            }
-
-            $allergen = null;
-
-            if (!empty($newAllergen)) {
-                $newAllergenTitle = $newAllergen['title'] ?? '';
-                $newAllergenDescription = $newAllergen['description'] ?? '';
-
-                $allergen = new Allergen();
-                $allergen->setTitle($newAllergenTitle);
-                $allergen->setDescription($newAllergenDescription);
-                $allergen->setSpace($resident->getSpace());
-            }
-
-            if (!empty($allergenId)) {
-                /** @var Allergen $allergen */
-                $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $allergenId);
-
-                if ($allergen === null) {
-                    throw new AllergenNotFoundException();
-                }
+            if ($allergen === null) {
+                throw new AllergenNotFoundException();
             }
 
             $entity->setResident($resident);

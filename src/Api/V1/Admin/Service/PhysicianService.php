@@ -67,6 +67,7 @@ class PhysicianService extends BaseService implements IGridService
 
             $csz        = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $params['salutation_id']);
+            $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $params['speciality_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -80,27 +81,8 @@ class PhysicianService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
-            $specialityId  = $params['speciality_id'];
-            $newSpeciality = $params['speciality'];
-            $speciality    = null;
-
-            if ((empty($specialityId) && empty($newSpeciality)) || (!empty($specialityId) && !empty($newSpeciality))) {
-                throw new DuplicateSpecialityRequestException();
-            }
-
-            if (!empty($newSpeciality)) {
-                $speciality = new Speciality();
-                $speciality->setTitle($newSpeciality['title'] ?? '');
-                $speciality->setSpace($space);
-
-                $this->validate($speciality, null, ['api_admin_speciality_add']);
-                $this->em->persist($speciality);
-            } elseif (!empty($specialityId)) {
-                $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $specialityId);
-
-                if ($speciality === null) {
-                    throw new SpecialityNotFoundException();
-                }
+            if ($speciality === null) {
+                throw new SpecialityNotFoundException();
             }
 
             // save physician
@@ -160,6 +142,7 @@ class PhysicianService extends BaseService implements IGridService
             $physician  = $this->em->getRepository(Physician::class)->getOne($currentSpace, $id);
             $csz        = $this->em->getRepository(CityStateZip::class)->getOne($currentSpace, $params['csz_id']);
             $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $params['salutation_id']);
+            $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $params['speciality_id']);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
@@ -177,27 +160,8 @@ class PhysicianService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
-            $specialityId  = $params['speciality_id'];
-            $newSpeciality = $params['speciality'];
-            $speciality    = null;
-
-            if ((empty($specialityId) && empty($newSpeciality)) || (!empty($specialityId) && !empty($newSpeciality))) {
-                throw new DuplicateSpecialityRequestException();
-            }
-
-            if (!empty($newSpeciality)) {
-                $speciality = new Speciality();
-                $speciality->setTitle($newSpeciality['title'] ?? '');
-                $speciality->setSpace($space);
-
-                $this->validate($speciality, null, ['api_admin_speciality_add']);
-                $this->em->persist($speciality);
-            } elseif (!empty($specialityId)) {
-                $speciality = $this->em->getRepository(Speciality::class)->getOne($currentSpace, $specialityId);
-
-                if ($speciality === null) {
-                    throw new SpecialityNotFoundException();
-                }
+            if ($speciality === null) {
+                throw new SpecialityNotFoundException();
             }
 
             // edit physician

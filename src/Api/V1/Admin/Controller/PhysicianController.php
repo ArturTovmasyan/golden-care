@@ -383,8 +383,7 @@ class PhysicianController extends BaseController
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id'),
-                'speciality'        => $request->get('speciality')
+                'speciality_id'     => $request->get('speciality_id')
             ]
         );
 
@@ -477,8 +476,7 @@ class PhysicianController extends BaseController
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id'),
-                'speciality'        => $request->get('speciality')
+                'speciality_id'     => $request->get('speciality_id')
             ]
         );
 

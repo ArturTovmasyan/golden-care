@@ -274,7 +274,6 @@ class ResidentAllergenController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'allergen_id' => $request->get('allergen_id'),
-                'allergen' => $request->get('allergen'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );
@@ -339,7 +338,6 @@ class ResidentAllergenController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'allergen_id' => $request->get('allergen_id'),
-                'allergen' => $request->get('allergen'),
                 'notes' => $request->get('notes') ?? ''
             ]
         );

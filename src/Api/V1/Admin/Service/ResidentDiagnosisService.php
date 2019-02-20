@@ -69,43 +69,18 @@ class ResidentDiagnosisService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Diagnosis $diagnosis */
+            $diagnosis = $this->em->getRepository(Diagnosis::class)->getOne($currentSpace, $params['diagnosis_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $diagnosisId = $params['diagnosis_id'];
-            $newDiagnosis = $params['diagnosis'];
-
-            if ((empty($diagnosisId) && empty($newDiagnosis)) || (!empty($diagnosisId) && !empty($newDiagnosis))) {
-                throw new DiagnosisNotSingleException();
-            }
-
-            $diagnosis = null;
-
-            if (!empty($newDiagnosis)) {
-                $newDiagnosisTitle = $newDiagnosis['title'] ?? '';
-                $newDiagnosisAcronym = $newDiagnosis['acronym'] ?? '';
-                $newDiagnosisDescription = $newDiagnosis['description'] ?? '';
-
-                $diagnosis = new Diagnosis();
-                $diagnosis->setTitle($newDiagnosisTitle);
-                $diagnosis->setAcronym($newDiagnosisAcronym);
-                $diagnosis->setDescription($newDiagnosisDescription);
-                $diagnosis->setSpace($resident->getSpace());
-            }
-
-            if (!empty($diagnosisId)) {
-                /** @var Diagnosis $diagnosis */
-                $diagnosis = $this->em->getRepository(Diagnosis::class)->getOne($currentSpace, $diagnosisId);
-
-                if ($diagnosis === null) {
-                    throw new DiagnosisNotFoundException();
-                }
+            if ($diagnosis === null) {
+                throw new DiagnosisNotFoundException();
             }
 
             $residentDiagnosis = new ResidentDiagnosis();
@@ -147,43 +122,18 @@ class ResidentDiagnosisService extends BaseService implements IGridService
                 throw new ResidentDiagnosisNotFoundException();
             }
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Diagnosis $diagnosis */
+            $diagnosis = $this->em->getRepository(Diagnosis::class)->getOne($currentSpace, $params['diagnosis_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $diagnosisId = $params['diagnosis_id'];
-            $newDiagnosis = $params['diagnosis'];
-
-            if ((empty($diagnosisId) && empty($newDiagnosis)) || (!empty($diagnosisId) && !empty($newDiagnosis))) {
-                throw new DiagnosisNotSingleException();
-            }
-
-            $diagnosis = null;
-
-            if (!empty($newDiagnosis)) {
-                $newDiagnosisTitle = $newDiagnosis['title'] ?? '';
-                $newDiagnosisAcronym = $newDiagnosis['acronym'] ?? '';
-                $newDiagnosisDescription = $newDiagnosis['description'] ?? '';
-
-                $diagnosis = new Diagnosis();
-                $diagnosis->setTitle($newDiagnosisTitle);
-                $diagnosis->setAcronym($newDiagnosisAcronym);
-                $diagnosis->setDescription($newDiagnosisDescription);
-                $diagnosis->setSpace($resident->getSpace());
-            }
-
-            if (!empty($diagnosisId)) {
-                /** @var Diagnosis $diagnosis */
-                $diagnosis = $this->em->getRepository(Diagnosis::class)->getOne($currentSpace, $diagnosisId);
-
-                if ($diagnosis === null) {
-                    throw new DiagnosisNotFoundException();
-                }
+            if ($diagnosis === null) {
+                throw new DiagnosisNotFoundException();
             }
 
             $entity->setResident($resident);

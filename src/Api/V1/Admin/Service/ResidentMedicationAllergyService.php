@@ -69,39 +69,18 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Medication $medication */
+            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $params['medication_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $medicationId = $params['medication_id'];
-            $newMedication = $params['medication'];
-
-            if ((empty($medicationId) && empty($newMedication)) || (!empty($medicationId) && !empty($newMedication))) {
-                throw new MedicationNotSingleException();
-            }
-
-            $medication = null;
-
-            if (!empty($newMedication)) {
-                $newMedicationTitle = $newMedication['title'] ?? '';
-
-                $medication = new Medication();
-                $medication->setTitle($newMedicationTitle);
-                $medication->setSpace($resident->getSpace());
-            }
-
-            if (!empty($medicationId)) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
-                }
+            if ($medication === null) {
+                throw new MedicationNotFoundException();
             }
 
             $residentMedicationAllergy = new ResidentMedicationAllergy();
@@ -142,39 +121,18 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
                 throw new ResidentMedicationAllergyNotFoundException();
             }
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var Medication $medication */
+            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $params['medication_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $medicationId = $params['medication_id'];
-            $newMedication = $params['medication'];
-
-            if ((empty($medicationId) && empty($newMedication)) || (!empty($medicationId) && !empty($newMedication))) {
-                throw new MedicationNotSingleException();
-            }
-
-            $medication = null;
-
-            if (!empty($newMedication)) {
-                $newMedicationTitle = $newMedication['title'] ?? '';
-
-                $medication = new Medication();
-                $medication->setTitle($newMedicationTitle);
-                $medication->setSpace($resident->getSpace());
-            }
-
-            if (!empty($medicationId)) {
-                /** @var Medication $medication */
-                $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
-
-                if ($medication === null) {
-                    throw new MedicationNotFoundException();
-                }
+            if ($medication === null) {
+                throw new MedicationNotFoundException();
             }
 
             $entity->setResident($resident);

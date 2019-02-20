@@ -285,7 +285,6 @@ class ResidentDiagnosisController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'diagnosis_id' => $request->get('diagnosis_id'),
-                'diagnosis' => $request->get('diagnosis'),
                 'type' => $request->get('type'),
                 'notes' => $request->get('notes') ?? ''
             ]
@@ -354,7 +353,6 @@ class ResidentDiagnosisController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'diagnosis_id' => $request->get('diagnosis_id'),
-                'diagnosis' => $request->get('diagnosis'),
                 'type' => $request->get('type'),
                 'notes' => $request->get('notes') ?? ''
             ]

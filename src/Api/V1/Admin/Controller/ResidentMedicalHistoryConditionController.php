@@ -282,7 +282,6 @@ class ResidentMedicalHistoryConditionController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'condition_id' => $request->get('condition_id'),
-                'condition' => $request->get('condition'),
                 'date' => $request->get('date'),
                 'notes' => $request->get('notes') ?? ''
             ]
@@ -350,7 +349,6 @@ class ResidentMedicalHistoryConditionController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'condition_id' => $request->get('condition_id'),
-                'condition' => $request->get('condition'),
                 'date' => $request->get('date'),
                 'notes' => $request->get('notes') ?? ''
             ]

@@ -69,41 +69,18 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var MedicalHistoryCondition $medicalHistoryCondition */
+            $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $params['condition_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $medicalHistoryConditionId = $params['condition_id'];
-            $newMedicalHistoryCondition = $params['condition'];
-
-            if ((empty($medicalHistoryConditionId) && empty($newMedicalHistoryCondition)) || (!empty($medicalHistoryConditionId) && !empty($newMedicalHistoryCondition))) {
-                throw new MedicalHistoryConditionNotSingleException();
-            }
-
-            $medicalHistoryCondition = null;
-
-            if (!empty($newMedicalHistoryCondition)) {
-                $newMedicalHistoryConditionTitle = $newMedicalHistoryCondition['title'] ?? '';
-                $newMedicalHistoryConditionDescription = $newMedicalHistoryCondition['description'] ?? '';
-
-                $medicalHistoryCondition = new MedicalHistoryCondition();
-                $medicalHistoryCondition->setTitle($newMedicalHistoryConditionTitle);
-                $medicalHistoryCondition->setDescription($newMedicalHistoryConditionDescription);
-                $medicalHistoryCondition->setSpace($resident->getSpace());
-            }
-
-            if (!empty($medicalHistoryConditionId)) {
-                /** @var MedicalHistoryCondition $medicalHistoryCondition */
-                $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $medicalHistoryConditionId);
-
-                if ($medicalHistoryCondition === null) {
-                    throw new MedicalHistoryConditionNotFoundException();
-                }
+            if ($medicalHistoryCondition === null) {
+                throw new MedicalHistoryConditionNotFoundException();
             }
 
             $residentMedicalHistoryCondition = new ResidentMedicalHistoryCondition();
@@ -153,41 +130,18 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
                 throw new ResidentMedicalHistoryConditionNotFoundException();
             }
 
-            $residentId = $params['resident_id'] ?? 0;
-
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+
+            /** @var MedicalHistoryCondition $medicalHistoryCondition */
+            $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $params['condition_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $medicalHistoryConditionId = $params['condition_id'];
-            $newMedicalHistoryCondition = $params['condition'];
-
-            if ((empty($medicalHistoryConditionId) && empty($newMedicalHistoryCondition)) || (!empty($medicalHistoryConditionId) && !empty($newMedicalHistoryCondition))) {
-                throw new MedicalHistoryConditionNotSingleException();
-            }
-
-            $medicalHistoryCondition = null;
-
-            if (!empty($newMedicalHistoryCondition)) {
-                $newMedicalHistoryConditionTitle = $newMedicalHistoryCondition['title'] ?? '';
-                $newMedicalHistoryConditionDescription = $newMedicalHistoryCondition['description'] ?? '';
-
-                $medicalHistoryCondition = new MedicalHistoryCondition();
-                $medicalHistoryCondition->setTitle($newMedicalHistoryConditionTitle);
-                $medicalHistoryCondition->setDescription($newMedicalHistoryConditionDescription);
-                $medicalHistoryCondition->setSpace($resident->getSpace());
-            }
-
-            if (!empty($medicalHistoryConditionId)) {
-                /** @var MedicalHistoryCondition $medicalHistoryCondition */
-                $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $medicalHistoryConditionId);
-
-                if ($medicalHistoryCondition === null) {
-                    throw new MedicalHistoryConditionNotFoundException();
-                }
+            if ($medicalHistoryCondition === null) {
+                throw new MedicalHistoryConditionNotFoundException();
             }
 
             $entity->setResident($resident);
