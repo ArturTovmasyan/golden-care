@@ -18,9 +18,10 @@ class ResidentMedicationAllergyRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ResidentMedicationAllergy::class, 'rma')
@@ -49,16 +50,23 @@ class ResidentMedicationAllergyRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('rma.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         $queryBuilder
             ->groupBy('rma.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('rma')
@@ -83,6 +91,12 @@ class ResidentMedicationAllergyRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rma.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -90,10 +104,11 @@ class ResidentMedicationAllergyRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('rma')
@@ -118,21 +133,29 @@ class ResidentMedicationAllergyRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rma.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    /***
+    /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('rma');
-
-        $qb->where($qb->expr()->in('rma.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('rma')
+            ->where('rma.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -150,6 +173,12 @@ class ResidentMedicationAllergyRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rma.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('rma.id')

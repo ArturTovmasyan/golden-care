@@ -9,6 +9,8 @@ use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Resident;
 use App\Entity\ResidentRent;
+use App\Repository\ResidentRentRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,9 +22,8 @@ class ResidentRentService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -34,15 +35,25 @@ class ResidentRentService extends BaseService implements IGridService
             ->where('rr.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentRent::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentRentRepository $repo */
+        $repo = $this->em->getRepository(ResidentRent::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentRent::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentRentRepository $repo */
+            $repo = $this->em->getRepository(ResidentRent::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -54,7 +65,10 @@ class ResidentRentService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentRent::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentRentRepository $repo */
+        $repo = $this->em->getRepository(ResidentRent::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $id);
     }
 
     /**
@@ -68,8 +82,11 @@ class ResidentRentService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($this->grantService->getCurrentSpace(), $residentId);
+            $resident = $residentRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -147,8 +164,11 @@ class ResidentRentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentRentRepository $repo */
+            $repo = $this->em->getRepository(ResidentRent::class);
+
             /** @var ResidentRent $entity */
-            $entity = $this->em->getRepository(ResidentRent::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $id);
 
             if ($entity === null) {
                 throw new ResidentRentNotFoundException();
@@ -156,8 +176,11 @@ class ResidentRentService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -223,7 +246,6 @@ class ResidentRentService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -231,8 +253,11 @@ class ResidentRentService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentRentRepository $repo */
+            $repo = $this->em->getRepository(ResidentRent::class);
+
             /** @var ResidentRent $entity */
-            $entity = $this->em->getRepository(ResidentRent::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $id);
 
             if ($entity === null) {
                 throw new ResidentRentNotFoundException();
@@ -250,7 +275,6 @@ class ResidentRentService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -262,7 +286,10 @@ class ResidentRentService extends BaseService implements IGridService
                 throw new ResidentRentNotFoundException();
             }
 
-            $residentRents = $this->em->getRepository(ResidentRent::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentRentRepository $repo */
+            $repo = $this->em->getRepository(ResidentRent::class);
+
+            $residentRents = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $ids);
 
             if (empty($residentRents)) {
                 throw new ResidentRentNotFoundException();

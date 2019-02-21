@@ -13,6 +13,11 @@ use App\Entity\MedicationFormFactor;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentMedication;
+use App\Repository\MedicationFormFactorRepository;
+use App\Repository\MedicationRepository;
+use App\Repository\PhysicianRepository;
+use App\Repository\ResidentMedicationRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -24,9 +29,8 @@ class ResidentMedicationService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -38,15 +42,25 @@ class ResidentMedicationService extends BaseService implements IGridService
             ->where('rm.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentMedication::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentMedicationRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedication::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentMedication::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentMedicationRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedication::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -58,7 +72,10 @@ class ResidentMedicationService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentMedication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentMedicationRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedication::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $id);
     }
 
     /**
@@ -77,29 +94,41 @@ class ResidentMedicationService extends BaseService implements IGridService
             $medicationId = $params['medication_id'] ?? 0;
             $formFactorId = $params['form_factor_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
+            /** @var PhysicianRepository $physicianRepo */
+            $physicianRepo = $this->em->getRepository(Physician::class);
+
             /** @var Physician $physician */
-            $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
+            $physician = $physicianRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Physician::class), $physicianId);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
             }
 
+            /** @var MedicationRepository $medicationRepo */
+            $medicationRepo = $this->em->getRepository(Medication::class);
+
             /** @var Medication $medication */
-            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
+            $medication = $medicationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Medication::class), $medicationId);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
             }
 
+            /** @var MedicationFormFactorRepository $medicationFormFactorRepo */
+            $medicationFormFactorRepo = $this->em->getRepository(MedicationFormFactor::class);
+
             /** @var MedicationFormFactor $formFactor */
-            $formFactor = $this->em->getRepository(MedicationFormFactor::class)->getOne($currentSpace, $formFactorId);
+            $formFactor = $medicationFormFactorRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $formFactorId);
 
             if ($formFactor === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -147,8 +176,11 @@ class ResidentMedicationService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentMedicationRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedication::class);
+
             /** @var ResidentMedication $entity */
-            $entity = $this->em->getRepository(ResidentMedication::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationNotFoundException();
@@ -159,29 +191,41 @@ class ResidentMedicationService extends BaseService implements IGridService
             $medicationId = $params['medication_id'] ?? 0;
             $formFactorId = $params['form_factor_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
+            /** @var PhysicianRepository $physicianRepo */
+            $physicianRepo = $this->em->getRepository(Physician::class);
+
             /** @var Physician $physician */
-            $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
+            $physician = $physicianRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Physician::class), $physicianId);
 
             if ($physician === null) {
                 throw new PhysicianNotFoundException();
             }
 
+            /** @var MedicationRepository $medicationRepo */
+            $medicationRepo = $this->em->getRepository(Medication::class);
+
             /** @var Medication $medication */
-            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $medicationId);
+            $medication = $medicationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Medication::class), $medicationId);
 
             if ($medication === null) {
                 throw new MedicationNotFoundException();
             }
 
+            /** @var MedicationFormFactorRepository $medicationFormFactorRepo */
+            $medicationFormFactorRepo = $this->em->getRepository(MedicationFormFactor::class);
+
             /** @var MedicationFormFactor $formFactor */
-            $formFactor = $this->em->getRepository(MedicationFormFactor::class)->getOne($currentSpace, $formFactorId);
+            $formFactor = $medicationFormFactorRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $formFactorId);
 
             if ($formFactor === null) {
                 throw new MedicationFormFactorNotFoundException();
@@ -217,7 +261,6 @@ class ResidentMedicationService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -225,8 +268,11 @@ class ResidentMedicationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentMedicationRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedication::class);
+
             /** @var ResidentMedication $entity */
-            $entity = $this->em->getRepository(ResidentMedication::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationNotFoundException();
@@ -244,7 +290,6 @@ class ResidentMedicationService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -256,7 +301,10 @@ class ResidentMedicationService extends BaseService implements IGridService
                 throw new ResidentMedicationNotFoundException();
             }
 
-            $residentMedications = $this->em->getRepository(ResidentMedication::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentMedicationRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedication::class);
+
+            $residentMedications = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $ids);
 
             if (empty($residentMedications)) {
                 throw new ResidentMedicationNotFoundException();

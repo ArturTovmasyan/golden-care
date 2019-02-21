@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\MedicationNotSingleException;
 use App\Api\V1\Common\Service\Exception\MedicationNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentMedicationAllergyNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -10,6 +9,9 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Medication;
 use App\Entity\Resident;
 use App\Entity\ResidentMedicationAllergy;
+use App\Repository\MedicationRepository;
+use App\Repository\ResidentMedicationAllergyRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -21,9 +23,8 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -35,15 +36,25 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             ->where('rma.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentMedicationAllergy::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentMedicationAllergyRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentMedicationAllergy::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentMedicationAllergyRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -55,7 +66,10 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentMedicationAllergyRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $id);
     }
 
     /**
@@ -69,11 +83,17 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var MedicationRepository $medicationRepo */
+            $medicationRepo = $this->em->getRepository(Medication::class);
 
             /** @var Medication $medication */
-            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $params['medication_id']);
+            $medication = $medicationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Medication::class), $params['medication_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -114,18 +134,27 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentMedicationAllergyRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
             /** @var ResidentMedicationAllergy $entity */
-            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationAllergyNotFoundException();
             }
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var MedicationRepository $medicationRepo */
+            $medicationRepo = $this->em->getRepository(Medication::class);
 
             /** @var Medication $medication */
-            $medication = $this->em->getRepository(Medication::class)->getOne($currentSpace, $params['medication_id']);
+            $medication = $medicationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Medication::class), $params['medication_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -154,7 +183,6 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -162,8 +190,11 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentMedicationAllergyRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
             /** @var ResidentMedicationAllergy $entity */
-            $entity = $this->em->getRepository(ResidentMedicationAllergy::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicationAllergyNotFoundException();
@@ -181,7 +212,6 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -193,7 +223,10 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
                 throw new ResidentMedicationAllergyNotFoundException();
             }
 
-            $residentMedicationAllergies = $this->em->getRepository(ResidentMedicationAllergy::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentMedicationAllergyRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
+            $residentMedicationAllergies = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $ids);
 
             if (empty($residentMedicationAllergies)) {
                 throw new ResidentMedicationAllergyNotFoundException();
