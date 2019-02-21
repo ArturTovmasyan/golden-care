@@ -341,6 +341,7 @@ class ResidentService extends BaseService implements IGridService
             }
 
             if (!empty($params['photo'])) {
+                $this->residentPhotoHelper->remove($resident->getId());
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
