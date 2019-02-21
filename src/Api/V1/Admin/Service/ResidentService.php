@@ -144,6 +144,7 @@ class ResidentService extends BaseService implements IGridService
 
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
+            $this->em->flush();
 
             // save photo
             if (!empty($params['photo'])) {
@@ -151,7 +152,6 @@ class ResidentService extends BaseService implements IGridService
                 $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
-            $this->em->flush();
             $this->em->getConnection()->commit();
 
             $insert_id = $resident->getId();
