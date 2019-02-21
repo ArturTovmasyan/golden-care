@@ -29,9 +29,10 @@ class ResidentPhysicianRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ResidentPhysician::class, 'rp')
@@ -66,16 +67,23 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         $queryBuilder
             ->groupBy('rp.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('rp')
@@ -100,6 +108,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -107,10 +121,11 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('rp')
@@ -135,6 +150,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -142,10 +163,11 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $resident_id
      * @return mixed
      */
-    public function getOnePrimaryByResidentId(Space $space = null, $resident_id)
+    public function getOnePrimaryByResidentId(Space $space = null, array $entityGrants = null, $resident_id)
     {
         $qb = $this
             ->createQueryBuilder('rp')
@@ -172,6 +194,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -179,10 +207,11 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $resident_id
      * @return mixed
      */
-    public function getPrimariesByResidentId(Space $space = null, $resident_id)
+    public function getPrimariesByResidentId(Space $space = null, array $entityGrants = null, $resident_id)
     {
         $qb = $this
             ->createQueryBuilder('rp')
@@ -207,6 +236,12 @@ class ResidentPhysicianRepository extends EntityRepository
             $qb
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -216,10 +251,11 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param Resident $resident
      * @return mixed
      */
-    public function getOneBy(Space $space = null, Resident $resident)
+    public function getOneBy(Space $space = null, array $entityGrants = null, Resident $resident)
     {
         $qb = $this
             ->createQueryBuilder('rp')
@@ -244,6 +280,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -251,14 +293,16 @@ class ResidentPhysicianRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('rp');
-
-        $qb->where($qb->expr()->in('rp.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('rp')
+            ->where('rp.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -276,6 +320,12 @@ class ResidentPhysicianRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('rp.id')
