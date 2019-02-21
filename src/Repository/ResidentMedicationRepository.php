@@ -202,10 +202,11 @@ class ResidentMedicationRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(Space $space = null, array $residentIds)
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rm');
 
@@ -258,6 +259,12 @@ class ResidentMedicationRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rm.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

@@ -8,6 +8,7 @@ use App\Entity\Assessment\Assessment;
 use App\Model\Report\Assessment as ReportAssessment;
 use App\Model\Assessment as AssessmentReportType;
 use App\Entity\Resident;
+use App\Repository\Assessment\AssessmentRepository;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class AssessmentReportService extends BaseService
@@ -57,11 +58,14 @@ class AssessmentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
+        /** @var AssessmentRepository $repo */
+        $repo = $this->em->getRepository(Assessment::class);
+
         /**
          * @var Assessment $assessment
          * @var Resident $resident
          */
-        $assessment = $this->em->getRepository(Assessment::class)->getOne($this->grantService->getCurrentSpace(), $residentId);
+        $assessment = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $residentId);
 
         if ($assessment === null) {
             throw new AssessmentNotFoundException();

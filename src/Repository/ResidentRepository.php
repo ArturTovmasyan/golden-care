@@ -222,12 +222,13 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getResidentsInfoByTypeOrId(Space $space = null, $type, $typeId = null, $residentId = null)
+    public function getResidentsInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -235,7 +236,10 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
+            /** @var ContractActionRepository $actionRepo */
+            $actionRepo = $this->_em->getRepository(ContractAction::class);
+
+            $contractAction = $actionRepo->getActiveByResident($space, $entityGrants, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -440,6 +444,12 @@ class ResidentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         if ($residentId) {
             $qb
                 ->andWhere('r.id = :id')
@@ -454,12 +464,13 @@ class ResidentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param null $typeId
      * @param null $residentId
      * @return mixed
      */
-    public function getResidentsInfoWithCareGroupByTypeOrId(Space $space = null, $type, $typeId = null, $residentId = null)
+    public function getResidentsInfoWithCareGroupByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
     {
         /**
          * @var ContractAction $contractAction
@@ -467,7 +478,10 @@ class ResidentRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
 
         if ($residentId) {
-            $contractAction = $this->_em->getRepository(ContractAction::class)->getActiveByResident($space, $residentId);
+            /** @var ContractActionRepository $actionRepo */
+            $actionRepo = $this->_em->getRepository(ContractAction::class);
+
+            $contractAction = $actionRepo->getActiveByResident($space, $entityGrants, $residentId);
 
             if ($contractAction === null) {
                 throw new ResidentNotFoundException();
@@ -623,6 +637,12 @@ class ResidentRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         if ($residentId) {
