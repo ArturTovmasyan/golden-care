@@ -384,7 +384,7 @@ class ResidentReportService extends BaseService
         /** @var ContractActionRepository $actionRepo */
         $actionRepo = $this->em->getRepository(ContractAction::class);
 
-        $actions = $actionRepo->getResidents60DaysRosterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), $type, $interval, $typeId);
+        $actions = $actionRepo->getResidents60DaysRosterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
 
         $residentIds = [];
 

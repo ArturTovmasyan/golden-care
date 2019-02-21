@@ -808,11 +808,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getBedIdAndTypeId(Space $space = null, $type, $ids)
+    public function getBedIdAndTypeId(Space $space = null, array $entityGrants = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -834,6 +835,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         switch ($type) {
@@ -1101,7 +1108,7 @@ class ContractActionRepository extends EntityRepository
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('ca.id IN (:grantIds)')
+                ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

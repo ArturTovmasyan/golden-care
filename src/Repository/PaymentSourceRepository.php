@@ -154,9 +154,10 @@ class PaymentSourceRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function getPaymentSources(Space $space = null)
+    public function getPaymentSources(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('ps')
@@ -175,6 +176,12 @@ class PaymentSourceRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ps.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

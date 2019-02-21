@@ -408,12 +408,13 @@ class ResidentRentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRentsWithSources(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRentsWithSources(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -477,19 +478,26 @@ class ResidentRentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
-            return $qb
-                ->getQuery()
-                ->getResult(AbstractQuery::HYDRATE_ARRAY);
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterNewData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentMasterNewData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -518,6 +526,12 @@ class ResidentRentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
@@ -525,12 +539,13 @@ class ResidentRentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -557,6 +572,12 @@ class ResidentRentRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -748,12 +769,13 @@ class ResidentRentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomListData(Space $space = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null)
+    public function getRoomListData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null)
     {
         $qb = $this
             ->getRoomListContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -791,6 +813,12 @@ class ResidentRentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
@@ -798,12 +826,13 @@ class ResidentRentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getRoomRentMasterData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getRoomRentMasterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionWithRentQb($type, $reportInterval, $typeId)
@@ -830,6 +859,12 @@ class ResidentRentRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
