@@ -11,6 +11,10 @@ use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use App\Model\ContractType;
+use App\Repository\ContractActionRepository;
+use App\Repository\FacilityBedRepository;
+use App\Repository\FacilityRepository;
+use App\Repository\FacilityRoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 
@@ -23,13 +27,19 @@ class FacilityRoomService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(FacilityRoom::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var FacilityRoomRepository $repo */
+        $repo = $this->em->getRepository(FacilityRoom::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
@@ -39,26 +49,35 @@ class FacilityRoomService extends BaseService implements IGridService
             $vacant = true;
         }
 
+        /** @var FacilityRoomRepository $repo */
+        $repo = $this->em->getRepository(FacilityRoom::class);
+
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            $rooms = $this->em->getRepository(FacilityRoom::class)->getBy($currentSpace, $facilityId);
+            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $facilityId);
         } else {
-            $rooms = $this->em->getRepository(FacilityRoom::class)->list($currentSpace);
+            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class));
         }
 
         if (!empty($rooms)) {
 
             $roomIds = array_map(function(FacilityRoom $item){return $item->getId();} , $rooms);
 
-            $facilityBeds = $this->em->getRepository(FacilityBed::class)->getBedIdsByRooms($currentSpace, $roomIds);
+            /** @var ContractActionRepository $actionRepo */
+            $actionRepo = $this->em->getRepository(ContractAction::class);
+
+            /** @var FacilityBedRepository $bedRepo */
+            $bedRepo = $this->em->getRepository(FacilityBed::class);
+
+            $facilityBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
             $bedIds = [];
             if (\count($facilityBeds)) {
                 $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
             }
 
             if ($vacant) {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getBeds($currentSpace, ContractType::TYPE_FACILITY, $bedIds);
+                $contractActions = $actionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
 
                 $occupancyBedIds = [];
                 if (!empty($contractActions)) {
@@ -79,7 +98,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     }
                 }
             } else {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_FACILITY, $bedIds);
+                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -116,7 +135,10 @@ class FacilityRoomService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        $room = $this->em->getRepository(FacilityRoom::class)->getOne($currentSpace, $id);
+        /** @var FacilityRoomRepository $repo */
+        $repo = $this->em->getRepository(FacilityRoom::class);
+
+        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
 
         if ($room !== null) {
             /** @var ArrayCollection $beds */
@@ -125,7 +147,10 @@ class FacilityRoomService extends BaseService implements IGridService
             if ($beds !== null) {
                 $ids = array_map(function(FacilityBed $item){return $item->getId();} , $beds->toArray());
 
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_FACILITY, $ids);
+                /** @var ContractActionRepository $actionRepo */
+                $actionRepo = $this->em->getRepository(ContractAction::class);
+
+                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -157,8 +182,11 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(Facility::class);
+
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->getOne($this->grantService->getCurrentSpace(), $facilityId);
+            $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -207,8 +235,11 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var FacilityRoomRepository $repo */
+            $repo = $this->em->getRepository(FacilityRoom::class);
+
             /** @var FacilityRoom $entity */
-            $entity = $this->em->getRepository(FacilityRoom::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -216,8 +247,11 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $facilityId = $params['facility_id'] ?? 0;
 
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(Facility::class);
+
             /** @var Facility $facility */
-            $facility = $this->em->getRepository(Facility::class)->getOne($currentSpace, $facilityId);
+            $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -251,7 +285,10 @@ class FacilityRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
-                        $action = $this->em->getRepository(ContractAction::class)->getResidentByBed($currentSpace, ContractType::TYPE_FACILITY, $existingBed->getId());
+                        /** @var ContractActionRepository $actionRepo */
+                        $actionRepo = $this->em->getRepository(ContractAction::class);
+
+                        $action = $actionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $existingBed->getId());
 
                         if ($action !== null) {
                             throw new CanNotRemoveBadException();
@@ -289,7 +326,6 @@ class FacilityRoomService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -297,8 +333,11 @@ class FacilityRoomService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var FacilityRoomRepository $repo */
+            $repo = $this->em->getRepository(FacilityRoom::class);
+
             /** @var FacilityRoom $entity */
-            $entity = $this->em->getRepository(FacilityRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -316,7 +355,6 @@ class FacilityRoomService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -328,7 +366,10 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityRoomNotFoundException();
             }
 
-            $facilityRooms = $this->em->getRepository(FacilityRoom::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var FacilityRoomRepository $repo */
+            $repo = $this->em->getRepository(FacilityRoom::class);
+
+            $facilityRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $ids);
 
             if (empty($facilityRooms)) {
                 throw new FacilityRoomNotFoundException();
@@ -355,8 +396,10 @@ class FacilityRoomService extends BaseService implements IGridService
      * @return mixed
      */
     public function getLastNumber($facilityId) {
-        $max_number = $this->em->getRepository(FacilityRoom::class)
-            ->getLastNumber($this->grantService->getCurrentSpace(), $facilityId);
+        /** @var FacilityRoomRepository $repo */
+        $repo = $this->em->getRepository(FacilityRoom::class);
+
+        $max_number = $repo->getLastNumber($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $facilityId);
 
         return $max_number ? $max_number['max_room_number'] : null;
     }

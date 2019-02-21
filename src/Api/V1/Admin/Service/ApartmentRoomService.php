@@ -11,6 +11,10 @@ use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
 use App\Entity\ContractAction;
 use App\Model\ContractType;
+use App\Repository\ApartmentBedRepository;
+use App\Repository\ApartmentRepository;
+use App\Repository\ApartmentRoomRepository;
+use App\Repository\ContractActionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 
@@ -23,11 +27,13 @@ class ApartmentRoomService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(ApartmentRoom::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ApartmentRoomRepository $repo */
+        $repo = $this->em->getRepository(ApartmentRoom::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $queryBuilder);
     }
 
     public function list($params)
@@ -39,26 +45,35 @@ class ApartmentRoomService extends BaseService implements IGridService
             $vacant = true;
         }
 
+        /** @var ApartmentRoomRepository $repo */
+        $repo = $this->em->getRepository(ApartmentRoom::class);
+
         if (!empty($params) && !empty($params[0]['apartment_id'])) {
             $apartmentId = $params[0]['apartment_id'];
 
-            $this->em->getRepository(ApartmentRoom::class)->getBy($currentSpace, $apartmentId);
+            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $apartmentId);
         } else {
-            $rooms = $this->em->getRepository(ApartmentRoom::class)->list($currentSpace);
+            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class));
         }
 
         if (!empty($rooms)) {
 
             $roomIds = array_map(function(ApartmentRoom $item){return $item->getId();} , $rooms);
 
-            $apartmentBeds = $this->em->getRepository(ApartmentBed::class)->getBedIdsByRooms($currentSpace, $roomIds);
+            /** @var ContractActionRepository $actionRepo */
+            $actionRepo = $this->em->getRepository(ContractAction::class);
+
+            /** @var ApartmentBedRepository $bedRepo */
+            $bedRepo = $this->em->getRepository(ApartmentBed::class);
+
+            $apartmentBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
             $bedIds = [];
             if (\count($apartmentBeds)) {
                 $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
             }
 
             if ($vacant) {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getBeds($currentSpace, ContractType::TYPE_APARTMENT, $bedIds);
+                $contractActions = $actionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
 
                 $occupancyBedIds = [];
                 if (!empty($contractActions)) {
@@ -79,7 +94,7 @@ class ApartmentRoomService extends BaseService implements IGridService
                     }
                 }
             } else {
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_APARTMENT, $bedIds);
+                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -115,7 +130,10 @@ class ApartmentRoomService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        $room = $this->em->getRepository(ApartmentRoom::class)->getOne($currentSpace, $id);
+        /** @var ApartmentRoomRepository $repo */
+        $repo = $this->em->getRepository(ApartmentRoom::class);
+
+        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
 
         if ($room !== null) {
             /** @var ArrayCollection $beds */
@@ -124,7 +142,10 @@ class ApartmentRoomService extends BaseService implements IGridService
             if ($beds !== null) {
                 $ids = array_map(function(ApartmentBed $item){return $item->getId();} , $beds->toArray());
 
-                $contractActions = $this->em->getRepository(ContractAction::class)->getResidentsByBeds($currentSpace, ContractType::TYPE_APARTMENT, $ids);
+                /** @var ContractActionRepository $actionRepo */
+                $actionRepo = $this->em->getRepository(ContractAction::class);
+
+                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $ids);
 
                 $actions = [];
                 if (!empty($contractActions)) {
@@ -156,8 +177,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $apartmentId = $params['apartment_id'] ?? 0;
 
+            /** @var ApartmentRepository $apartmentRepo */
+            $apartmentRepo = $this->em->getRepository(Apartment::class);
+
             /** @var Apartment $apartment */
-            $apartment = $this->em->getRepository(Apartment::class)->getOne($this->grantService->getCurrentSpace(), $apartmentId);
+            $apartment = $apartmentRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $apartmentId);
 
             if ($apartment === null) {
                 throw new ApartmentNotFoundException();
@@ -206,8 +230,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ApartmentRoomRepository $repo */
+            $repo = $this->em->getRepository(ApartmentRoom::class);
+
             /** @var ApartmentRoom $entity */
-            $entity = $this->em->getRepository(ApartmentRoom::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
 
             if ($entity === null) {
                 throw new ApartmentRoomNotFoundException();
@@ -215,8 +242,11 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $apartmentId = $params['apartment_id'] ?? 0;
 
+            /** @var ApartmentRepository $apartmentRepo */
+            $apartmentRepo = $this->em->getRepository(Apartment::class);
+
             /** @var Apartment $apartment */
-            $apartment = $this->em->getRepository(Apartment::class)->getOne($currentSpace, $apartmentId);
+            $apartment = $apartmentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Apartment::class), $apartmentId);
 
             if ($apartment === null) {
                 throw new ApartmentNotFoundException();
@@ -250,7 +280,10 @@ class ApartmentRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
-                        $action = $this->em->getRepository(ContractAction::class)->getResidentByBed($currentSpace, ContractType::TYPE_APARTMENT, $existingBed->getId());
+                        /** @var ContractActionRepository $actionRepo */
+                        $actionRepo = $this->em->getRepository(ContractAction::class);
+
+                        $action = $actionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $existingBed->getId());
 
                         if ($action !== null) {
                             throw new CanNotRemoveBadException();
@@ -288,7 +321,6 @@ class ApartmentRoomService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -296,8 +328,11 @@ class ApartmentRoomService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ApartmentRoomRepository $repo */
+            $repo = $this->em->getRepository(ApartmentRoom::class);
+
             /** @var ApartmentRoom $entity */
-            $entity = $this->em->getRepository(ApartmentRoom::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
 
             if ($entity === null) {
                 throw new ApartmentRoomNotFoundException();
@@ -315,7 +350,6 @@ class ApartmentRoomService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -327,7 +361,10 @@ class ApartmentRoomService extends BaseService implements IGridService
                 throw new ApartmentRoomNotFoundException();
             }
 
-            $apartmentRooms = $this->em->getRepository(ApartmentRoom::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ApartmentRoomRepository $repo */
+            $repo = $this->em->getRepository(ApartmentRoom::class);
+
+            $apartmentRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $ids);
 
             if (empty($apartmentRooms)) {
                 throw new ApartmentRoomNotFoundException();
@@ -354,8 +391,10 @@ class ApartmentRoomService extends BaseService implements IGridService
      * @return mixed
      */
     public function getLastNumber($apartmentId) {
-        $max_number = $this->em->getRepository(ApartmentRoom::class)
-            ->getLastNumber($this->grantService->getCurrentSpace(), $apartmentId);
+        /** @var ApartmentRoomRepository $repo */
+        $repo = $this->em->getRepository(ApartmentRoom::class);
+
+        $max_number = $repo->getLastNumber($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $apartmentId);
 
         return $max_number ? $max_number['max_room_number'] : null;
     }

@@ -31,9 +31,10 @@ class ContractActionRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ContractAction::class, 'ca')
@@ -62,20 +63,28 @@ class ContractActionRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         $queryBuilder
             ->groupBy('ca.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('ca');
-
-        $qb->where($qb->expr()->in('ca.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('ca')
+            ->where('ca.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -99,6 +108,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('ca.id')
@@ -260,11 +275,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param $id
      * @return mixed
      */
-    public function getResidentByBed(Space $space = null, $type, $id)
+    public function getResidentByBed(Space $space = null, array $entityGrants = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -360,6 +376,12 @@ class ContractActionRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -367,11 +389,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getResidentsByBeds(Space $space = null, $type, $ids)
+    public function getResidentsByBeds(Space $space = null, array $entityGrants = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -474,6 +497,12 @@ class ContractActionRepository extends EntityRepository
                 throw new IncorrectStrategyTypeException();
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -481,11 +510,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param $ids
      * @return mixed
      */
-    public function getBeds(Space $space = null, $type, $ids)
+    public function getBeds(Space $space = null, array $entityGrants = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -581,6 +611,12 @@ class ContractActionRepository extends EntityRepository
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -880,12 +916,15 @@ class ContractActionRepository extends EntityRepository
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getContractActionReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getContractActionReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this
+        /** @var ContractActionRepository $actionRepo */
+        $actionRepo = $this
             ->getEntityManager()
-            ->getRepository(ContractAction::class)
+            ->getRepository(ContractAction::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $actionRepo
             ->getContractActionIntervalQb($reportInterval);
 
         $qb

@@ -18,10 +18,10 @@ class ApartmentBedRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ApartmentBed::class, 'ab')
@@ -32,23 +32,29 @@ class ApartmentBedRepository extends EntityRepository
                 'ar = ab.room'
             );
 
-            if ($space !== null) {
-                $queryBuilder
-                    ->innerJoin(
-                        Apartment::class,
-                        'a',
-                        Join::WITH,
-                        'a = ar.apartment'
-                    )
-                    ->innerJoin(
-                        Space::class,
-                        's',
-                        Join::WITH,
-                        's = a.space'
-                    )
-                    ->andWhere('s = :space')
-                    ->setParameter('space', $space);
-            }
+        if ($space !== null) {
+            $queryBuilder
+                ->innerJoin(
+                    Apartment::class,
+                    'a',
+                    Join::WITH,
+                    'a = ar.apartment'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
 
         $queryBuilder
             ->groupBy('ab.id');
@@ -104,14 +110,16 @@ class ApartmentBedRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('ab');
-
-        $qb->where($qb->expr()->in('ab.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('ab')
+            ->where('ab.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -137,6 +145,12 @@ class ApartmentBedRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb->groupBy('ab.id')
             ->getQuery()
             ->getResult();
@@ -144,10 +158,11 @@ class ApartmentBedRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function getBedIdsByRooms(Space $space = null, $ids)
+    public function getBedIdsByRooms(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
             ->createQueryBuilder('ab')
@@ -176,6 +191,12 @@ class ApartmentBedRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -183,10 +204,11 @@ class ApartmentBedRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function getBedIdAndTypeIdByRooms(Space $space = null, $ids)
+    public function getBedIdAndTypeIdByRooms(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this->createQueryBuilder('ab');
 
@@ -214,6 +236,12 @@ class ApartmentBedRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

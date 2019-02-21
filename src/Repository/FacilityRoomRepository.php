@@ -17,9 +17,10 @@ class FacilityRoomRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(FacilityRoom::class, 'fr')
@@ -42,15 +43,22 @@ class FacilityRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $queryBuilder
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         $queryBuilder
             ->groupBy('fr.id');
     }
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @return mixed
      */
-    public function list(Space $space = null)
+    public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this->createQueryBuilder('fr');
 
@@ -72,6 +80,12 @@ class FacilityRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -79,10 +93,11 @@ class FacilityRoomRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('fr')
@@ -107,6 +122,12 @@ class FacilityRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -114,10 +135,11 @@ class FacilityRoomRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('fr')
@@ -142,6 +164,12 @@ class FacilityRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -149,14 +177,16 @@ class FacilityRoomRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
-        $qb = $this->createQueryBuilder('fr');
-
-        $qb->where($qb->expr()->in('fr.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('fr')
+            ->where('fr.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
@@ -176,12 +206,24 @@ class FacilityRoomRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb->groupBy('fr.id')
             ->getQuery()
             ->getResult();
     }
 
-    public function getLastNumber(Space $space = null, $facilityId) {
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $facilityId
+     * @return mixed
+     */
+    public function getLastNumber(Space $space = null, array $entityGrants = null, $facilityId) {
         $qb = $this
             ->createQueryBuilder('fr')
             ->select('MAX(fr.number) as max_room_number')
@@ -204,6 +246,12 @@ class FacilityRoomRepository extends EntityRepository
             $qb
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
