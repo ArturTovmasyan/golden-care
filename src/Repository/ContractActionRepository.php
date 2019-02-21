@@ -33,7 +33,7 @@ class ContractActionRepository extends EntityRepository
      * @param Space|null $space
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, QueryBuilder $queryBuilder)
+    public function search(Space $space = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ContractAction::class, 'ca')
@@ -108,10 +108,11 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getContractLastAction(Space $space = null, $id)
+    public function getContractLastAction(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('ca')
@@ -137,6 +138,12 @@ class ContractActionRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->orderBy('ca.id', 'DESC')
             ->setMaxResults(1)
@@ -146,10 +153,11 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
-    public function getActiveByResident(Space $space = null, $id)
+    public function getActiveByResident(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -174,6 +182,12 @@ class ContractActionRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -181,11 +195,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param $id
      * @return mixed
      */
-    public function getDataByResident(Space $space = null, $type, $id)
+    public function getDataByResident(Space $space = null, array $entityGrants = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -210,6 +225,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         switch ($type) {
@@ -569,11 +590,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
-     * @param id
+     * @param $id
      * @return mixed
      */
-    public function getActiveResidentsByStrategy(Space $space = null, $type, $id)
+    public function getActiveResidentsByStrategy(Space $space = null, array $entityGrants = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -602,6 +624,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         switch ($type) {
@@ -646,11 +674,12 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
-     * @param id
+     * @param $id
      * @return mixed
      */
-    public function getInactiveResidentsByStrategy(Space $space = null, $type, $id)
+    public function getInactiveResidentsByStrategy(Space $space = null, array $entityGrants = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ca');
 
@@ -679,6 +708,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         switch ($type) {

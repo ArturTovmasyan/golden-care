@@ -16,10 +16,11 @@ class ContractRegionOptionRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param Contract $contract
      * @return mixed
      */
-    public function getOneBy(Space $space = null, Contract $contract)
+    public function getOneBy(Space $space = null, array $entityGrants = null, Contract $contract)
     {
         $qb = $this
             ->createQueryBuilder('o')
@@ -48,6 +49,12 @@ class ContractRegionOptionRepository extends EntityRepository
             $qb
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('o.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
