@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\AllergenNotSingleException;
 use App\Api\V1\Common\Service\Exception\AllergenNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAllergenNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -10,6 +9,9 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Allergen;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
+use App\Repository\AllergenRepository;
+use App\Repository\ResidentAllergenRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -21,9 +23,8 @@ class ResidentAllergenService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -35,7 +36,10 @@ class ResidentAllergenService extends BaseService implements IGridService
             ->where('ra.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentAllergen::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentAllergenRepository $repo */
+        $repo = $this->em->getRepository(ResidentAllergen::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $queryBuilder);
     }
 
     public function list($params)
@@ -43,7 +47,10 @@ class ResidentAllergenService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentAllergen::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentAllergenRepository $repo */
+            $repo = $this->em->getRepository(ResidentAllergen::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -55,7 +62,10 @@ class ResidentAllergenService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentAllergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentAllergenRepository $repo */
+        $repo = $this->em->getRepository(ResidentAllergen::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $id);
     }
 
     /**
@@ -69,11 +79,17 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var AllergenRepository $allergenRepo */
+            $allergenRepo = $this->em->getRepository(Allergen::class);
 
             /** @var Allergen $allergen */
-            $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $params['allergen_id']);
+            $allergen = $allergenRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Allergen::class), $params['allergen_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -114,18 +130,27 @@ class ResidentAllergenService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentAllergenRepository $repo */
+            $repo = $this->em->getRepository(ResidentAllergen::class);
+
             /** @var ResidentAllergen $entity */
-            $entity = $this->em->getRepository(ResidentAllergen::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $id);
 
             if ($entity === null) {
                 throw new ResidentAllergenNotFoundException();
             }
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var AllergenRepository $allergenRepo */
+            $allergenRepo = $this->em->getRepository(Allergen::class);
 
             /** @var Allergen $allergen */
-            $allergen = $this->em->getRepository(Allergen::class)->getOne($currentSpace, $params['allergen_id']);
+            $allergen = $allergenRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Allergen::class), $params['allergen_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -154,7 +179,6 @@ class ResidentAllergenService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -162,8 +186,11 @@ class ResidentAllergenService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentAllergenRepository $repo */
+            $repo = $this->em->getRepository(ResidentAllergen::class);
+
             /** @var ResidentAllergen $entity */
-            $entity = $this->em->getRepository(ResidentAllergen::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $id);
 
             if ($entity === null) {
                 throw new ResidentAllergenNotFoundException();
@@ -181,7 +208,6 @@ class ResidentAllergenService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -193,7 +219,10 @@ class ResidentAllergenService extends BaseService implements IGridService
                 throw new ResidentAllergenNotFoundException();
             }
 
-            $residentAllergens = $this->em->getRepository(ResidentAllergen::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentAllergenRepository $repo */
+            $repo = $this->em->getRepository(ResidentAllergen::class);
+
+            $residentAllergens = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $ids);
 
             if (empty($residentAllergens)) {
                 throw new ResidentAllergenNotFoundException();

@@ -65,7 +65,7 @@ class ResidentPhone
     }
 
     /**
-     * @param ResidentPhone $resident
+     * @param $resident
      */
     public function setResident($resident): void
     {

@@ -16,10 +16,11 @@ class AssessmentRowRepository extends EntityRepository
 {
     /**
      * @param Space|null $space
-     * @param Assessment $assessment
+     * @param array|null $entityGrants
+     * @param $assessment
      * @return mixed
      */
-    public function getBy(Space $space = null, $assessment)
+    public function getBy(Space $space = null, array $entityGrants = null, $assessment)
     {
         $qb = $this
             ->createQueryBuilder('ar')
@@ -48,6 +49,12 @@ class AssessmentRowRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ar.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

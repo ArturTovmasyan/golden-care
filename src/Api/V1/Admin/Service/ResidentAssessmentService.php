@@ -15,6 +15,10 @@ use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
 use App\Entity\Resident;
+use App\Repository\Assessment\AssessmentRepository;
+use App\Repository\Assessment\AssessmentRowRepository;
+use App\Repository\Assessment\FormRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -26,33 +30,38 @@ class ResidentAssessmentService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return bool|void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
         }
 
-            $residentId = $params[0]['resident_id'];
+        $residentId = $params[0]['resident_id'];
 
-            $queryBuilder
-                ->where('a.resident = :residentId')
-                ->setParameter('residentId', $residentId);
+        $queryBuilder
+            ->where('a.resident = :residentId')
+            ->setParameter('residentId', $residentId);
 
-            $this->em->getRepository(Assessment::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var AssessmentRepository $repo */
+        $repo = $this->em->getRepository(Assessment::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $queryBuilder);
     }
 
     /**
      * @param $params
-     * @return array|object[]
+     * @return mixed
      */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(Assessment::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var AssessmentRepository $repo */
+            $repo = $this->em->getRepository(Assessment::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -64,7 +73,10 @@ class ResidentAssessmentService extends BaseService implements IGridService
      */
     public function getById(int $id)
     {
-        return $this->em->getRepository(Assessment::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var AssessmentRepository $repo */
+        $repo = $this->em->getRepository(Assessment::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $id);
     }
 
     /**
@@ -82,17 +94,24 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $rows       = $params['rows'] ?? [];
-            $formId     = $params['form_id'] ?? 0;
+            $rows = $params['rows'] ?? [];
+            $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
 
-            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $formId);
+            /** @var FormRepository $formRepo */
+            $formRepo = $this->em->getRepository(Form::class);
+
+            $form = $formRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Form::class), $formId);
 
             if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -141,23 +160,33 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $formId     = $params['form_id'] ?? 0;
+            $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
-            $rows       = $params['rows'] ?? [];
+            $rows = $params['rows'] ?? [];
 
-            $form = $this->em->getRepository(Form::class)->getOne($currentSpace, $formId);
+            /** @var FormRepository $formRepo */
+            $formRepo = $this->em->getRepository(Form::class);
+
+            $form = $formRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Form::class), $formId);
 
             if ($form ===  null) {
                 throw new AssessmentFormNotFoundException();
             }
 
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident ===  null) {
                 throw new ResidentNotFoundException();
             }
 
-            $assessment = $this->em->getRepository(Assessment::class)->getOne($currentSpace, $id);
+            /** @var AssessmentRepository $repo */
+            $repo = $this->em->getRepository(Assessment::class);
+
+            $assessment = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Assessment::class), $id);
 
             if ($assessment ===  null) {
                 throw new AssessmentNotFoundException();
@@ -262,7 +291,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      * @param Assessment $assessment
      * @return int
      */
-    private function calculateTotalScore(Assessment $assessment)
+    private function calculateTotalScore(Assessment $assessment) : ?int
     {
         // create report
         $report = new \App\Model\Report\Assessment();
@@ -273,7 +302,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -283,15 +311,21 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var AssessmentRepository $repo */
+            $repo = $this->em->getRepository(Assessment::class);
+
             /** @var Assessment $assessment */
-            $assessment = $this->em->getRepository(Assessment::class)->getOne($currentSpace, $id);
+            $assessment = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Assessment::class), $id);
 
             if ($assessment === null) {
                 throw new AssessmentNotFoundException();
             }
 
+            /** @var AssessmentRowRepository $rowRepo */
+            $rowRepo = $this->em->getRepository(AssessmentRow::class);
+
             // remove related rows
-            $assessmentRows = $this->em->getRepository(AssessmentRow::class)->getBy($currentSpace, $assessment);
+            $assessmentRows = $rowRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(AssessmentRow::class), $assessment);
 
             if (!empty($assessmentRows)) {
                 foreach ($assessmentRows as $assessmentRow) {
@@ -311,7 +345,6 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids)
@@ -328,14 +361,20 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $assessments = $this->em->getRepository(Assessment::class)->findByIds($currentSpace, $ids);
+            /** @var AssessmentRepository $repo */
+            $repo = $this->em->getRepository(Assessment::class);
+
+            $assessments = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Assessment::class), $ids);
 
             if (empty($assessments)) {
                 throw new AssessmentNotFoundException();
             }
 
+            /** @var AssessmentRowRepository $rowRepo */
+            $rowRepo = $this->em->getRepository(AssessmentRow::class);
+
             foreach ($assessments as $assessment) {
-                $assessmentRows = $this->em->getRepository(AssessmentRow::class)->getBy($currentSpace, $assessment);
+                $assessmentRows = $rowRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(AssessmentRow::class), $assessment);
 
                 if (!empty($assessmentRows)) {
                     foreach ($assessmentRows as $assessmentRow) {

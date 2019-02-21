@@ -13,6 +13,9 @@ use App\Entity\Resident;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Repository\ResidentPhoneRepository;
+use App\Repository\ResidentRepository;
+use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -37,16 +40,25 @@ class ResidentService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        $this->em->getRepository(Resident::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
-        return $this->em->getRepository(Resident::class)->list($this->grantService->getCurrentSpace());
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class));
     }
 
     /**
@@ -55,10 +67,13 @@ class ResidentService extends BaseService implements IGridService
      */
     public function getById($id)
     {
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
         /**
          * @var Resident $resident
          */
-        $resident = $this->em->getRepository(Resident::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
         if ($resident !== null) {
             $photo = $this->residentPhotoHelper->get($resident->getId());
@@ -78,7 +93,10 @@ class ResidentService extends BaseService implements IGridService
      */
     public function getNoContractResidents()
     {
-        return $this->em->getRepository(Resident::class)->getNoContractResidents($this->grantService->getCurrentSpace());
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        return $repo->getNoContractResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class));
     }
 
     /**
@@ -96,7 +114,7 @@ class ResidentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId      = $params['space_id'] ?? 0;
+            $spaceId = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
             $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -105,7 +123,10 @@ class ResidentService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($this->grantService->getCurrentSpace(), $salutationId);
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
 
             if ($salutation === null) {
                 throw new SalutationNotFoundException();
@@ -160,7 +181,10 @@ class ResidentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $id);
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
+            $resident = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -175,7 +199,10 @@ class ResidentService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $salutation = $this->em->getRepository(Salutation::class)->getOne($currentSpace, $salutationId);
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
 
             if ($salutation === null) {
                 throw new SalutationNotFoundException();
@@ -213,13 +240,14 @@ class ResidentService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones($resident, array $phones = [])
+    private function savePhones(Resident $resident, array $phones = []) : ?array
     {
         if($resident->getId() !== null) {
-            /**
-             * @var ResidentPhone[] $oldPhones
-             */
-            $oldPhones = $this->em->getRepository(ResidentPhone::class)->getBy($this->grantService->getCurrentSpace(), $resident);
+
+            /** @var ResidentPhoneRepository $residentPhoneRepo */
+            $residentPhoneRepo = $this->em->getRepository(ResidentPhone::class);
+
+            $oldPhones = $residentPhoneRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentPhone::class), $resident);
 
             foreach ($oldPhones as $phone) {
                 $this->em->remove($phone);
@@ -267,8 +295,11 @@ class ResidentService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -300,8 +331,11 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $residents = $this->em->getRepository(Resident::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            $residents = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $ids);
 
             if (empty($residents)) {
                 throw new ResidentNotFoundException();
@@ -334,7 +368,10 @@ class ResidentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $resident = $this->em->getRepository(Resident::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
+            $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
