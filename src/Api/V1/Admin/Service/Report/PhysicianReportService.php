@@ -8,6 +8,8 @@ use App\Entity\ResidentPhysician;
 use App\Model\ContractType;
 use App\Model\Report\PhysicianFull;
 use App\Model\Report\PhysicianSimple;
+use App\Repository\ResidentPhysicianRepository;
+use App\Repository\ResidentRepository;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class PhysicianReportService extends BaseService
@@ -34,7 +36,10 @@ class PhysicianReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residentIds = [];
 
         if (!empty($residents)) {
@@ -42,7 +47,10 @@ class PhysicianReportService extends BaseService
             $residentIds = array_unique($residentIds);
         }
 
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $data = [];
         $count = [];
@@ -98,7 +106,10 @@ class PhysicianReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residentIds = [];
 
         if (!empty($residents)) {
@@ -106,7 +117,10 @@ class PhysicianReportService extends BaseService
             $residentIds = array_unique($residentIds);
         }
 
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $data = [];
         $count = [];
