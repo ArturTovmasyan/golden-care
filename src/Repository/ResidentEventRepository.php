@@ -215,10 +215,11 @@ class ResidentEventRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(Space $space = null, array $residentIds)
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('re');
 
@@ -287,6 +288,12 @@ class ResidentEventRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->orderBy('re.date', 'DESC')
             ->groupBy('re.id')
@@ -296,12 +303,13 @@ class ResidentEventRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $startDate
      * @param $endDate
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIdsAndDate(Space $space = null, $startDate, $endDate, array $residentIds)
+    public function getByResidentIdsAndDate(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $residentIds)
     {
         $qb = $this->createQueryBuilder('re');
 
@@ -372,6 +380,12 @@ class ResidentEventRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

@@ -196,10 +196,11 @@ class ResidentRentRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array $residentIds
      * @return mixed
      */
-    public function getByResidentIds(Space $space = null, array $residentIds)
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rr');
 
@@ -231,6 +232,12 @@ class ResidentRentRepository extends EntityRepository
                 ->setParameter('space', $space);
         }
 
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -242,12 +249,15 @@ class ResidentRentRepository extends EntityRepository
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this
+        /** @var ContractActionRepository $actionRepo */
+        $actionRepo = $this
             ->getEntityManager()
-            ->getRepository(ContractAction::class)
+            ->getRepository(ContractAction::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $actionRepo
             ->getContractActionIntervalQb($reportInterval);
 
         $qb
@@ -560,12 +570,15 @@ class ResidentRentRepository extends EntityRepository
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getRoomListContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null)
+    public function getRoomListContractActionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null) : QueryBuilder
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this
+        /** @var ContractActionRepository $actionRepo */
+        $actionRepo = $this
             ->getEntityManager()
-            ->getRepository(ContractAction::class)
+            ->getRepository(ContractAction::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $actionRepo
             ->getRoomListContractActionIntervalQb($reportInterval);
 
         $qb

@@ -57,10 +57,11 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array $responsiblePersonIds
      * @return mixed
      */
-    public function getByResponsiblePersonIds(Space $space = null, array $responsiblePersonIds)
+    public function getByResponsiblePersonIds(Space $space = null, array $entityGrants = null, array $responsiblePersonIds)
     {
         $qb = $this->createQueryBuilder('rpp');
 
@@ -91,6 +92,12 @@ class ResponsiblePersonPhoneRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rrp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb

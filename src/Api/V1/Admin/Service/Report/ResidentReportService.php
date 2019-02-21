@@ -22,6 +22,18 @@ use App\Model\Report\Profile;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\SixtyDays;
+use App\Repository\ContractActionRepository;
+use App\Repository\DietRepository;
+use App\Repository\ResidentAllergenRepository;
+use App\Repository\ResidentDiagnosisRepository;
+use App\Repository\ResidentDietRepository;
+use App\Repository\ResidentEventRepository;
+use App\Repository\ResidentMedicationRepository;
+use App\Repository\ResidentPhysicianRepository;
+use App\Repository\ResidentRentRepository;
+use App\Repository\ResidentRepository;
+use App\Repository\ResidentResponsiblePersonRepository;
+use App\Repository\ResponsiblePersonPhoneRepository;
 use App\Util\Common\ImtDateTimeInterval;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
@@ -49,7 +61,10 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsFullInfoByTypeOrId($currentSpace, $type, $typeId, $residentId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
         $residentIds = [];
         $residentsById = [];
 
@@ -58,20 +73,38 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($currentSpace, $residentIds);
-        $allergens = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($currentSpace, $residentIds);
-        $diagnosis = $this->em->getRepository(ResidentDiagnosis::class)->getByResidentIds($currentSpace, $residentIds);
-        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($currentSpace, $residentIds);
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
-        $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIds($currentSpace, $residentIds);
-        $rents = $this->em->getRepository(ResidentRent::class)->getByResidentIds($currentSpace, $residentIds);
+        /** @var ResidentMedicationRepository $medicationRepo */
+        $medicationRepo = $this->em->getRepository(ResidentMedication::class);
+        /** @var ResidentAllergenRepository $allergenRepo */
+        $allergenRepo = $this->em->getRepository(ResidentAllergen::class);
+        /** @var ResidentDiagnosisRepository $diagnosisRepo */
+        $diagnosisRepo = $this->em->getRepository(ResidentDiagnosis::class);
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+        $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
+        $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+        $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
+        $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
             $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
-            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($currentSpace, $responsiblePersonIds);
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
         }
 
         $report = new Profile();
@@ -110,7 +143,10 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsFullInfoByTypeOrId($currentSpace, $type, $typeId, $residentId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
         $residentIds = [];
         $residentsById = [];
 
@@ -119,18 +155,32 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $medications = $this->em->getRepository(ResidentMedication::class)->getByResidentIds($currentSpace, $residentIds);
-        $allergens = $this->em->getRepository(ResidentAllergen::class)->getByResidentIds($currentSpace, $residentIds);
-        $diagnosis = $this->em->getRepository(ResidentDiagnosis::class)->getByResidentIds($currentSpace, $residentIds);
-        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($currentSpace, $residentIds);
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
+        /** @var ResidentMedicationRepository $medicationRepo */
+        $medicationRepo = $this->em->getRepository(ResidentMedication::class);
+        /** @var ResidentAllergenRepository $allergenRepo */
+        $allergenRepo = $this->em->getRepository(ResidentAllergen::class);
+        /** @var ResidentDiagnosisRepository $diagnosisRepo */
+        $diagnosisRepo = $this->em->getRepository(ResidentDiagnosis::class);
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+        $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
+        $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
             $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
-            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($currentSpace, $responsiblePersonIds);
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
         }
 
         $report = new FaceSheet();
@@ -167,7 +217,10 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $residentIds   = [];
         $residentsById = [];
@@ -177,15 +230,23 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $physicians = $this->em->getRepository(ResidentPhysician::class)->getByResidentIds($currentSpace, $type, $residentIds);
-        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($currentSpace, $residentIds);
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
             $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
-            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($currentSpace, $responsiblePersonIds);
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
         }
 
         $report = new ResidentDetailedRoster();
@@ -217,7 +278,10 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $type, $typeId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $typeIds = [];
 
         if (!empty($residents)) {
@@ -255,7 +319,10 @@ class ResidentReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getDietaryRestrictionsInfo($currentSpace, $type, $typeId, $residentId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getDietaryRestrictionsInfo($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
         $residentIds = [];
         $residentsById = [];
 
@@ -264,8 +331,13 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $diets = $this->em->getRepository(ResidentDiet::class)->getByResidentIds($currentSpace, $residentIds);
-        $data = $this->em->getRepository(Diet::class)->list($currentSpace);
+        /** @var ResidentDietRepository $residentDietRepo */
+        $residentDietRepo = $this->em->getRepository(ResidentDiet::class);
+        /** @var DietRepository $dietRepo */
+        $dietRepo = $this->em->getRepository(Diet::class);
+
+        $diets = $residentDietRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $residentIds);
+        $data = $dietRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Diet::class));
 
         $report = new DietaryRestriction();
         $report->setResidents($residentsById);
@@ -309,7 +381,10 @@ class ResidentReportService extends BaseService
         $startDate->sub(new \DateInterval('P2M'));
         $interval = ImtDateTimeInterval::getWithDateTimes($startDate, $endDate);
 
-        $actions = $this->em->getRepository(ContractAction::class)->getResidents60DaysRosterData($currentSpace, $type, $interval, $typeId);
+        /** @var ContractActionRepository $actionRepo */
+        $actionRepo = $this->em->getRepository(ContractAction::class);
+
+        $actions = $actionRepo->getResidents60DaysRosterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), $type, $interval, $typeId);
 
         $residentIds = [];
 
@@ -318,14 +393,20 @@ class ResidentReportService extends BaseService
             $residentIds = array_unique($residentIds);
         }
 
-        $responsiblePersons = $this->em->getRepository(ResidentResponsiblePerson::class)->getByResidentIds($currentSpace, $residentIds);
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
             $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
-            $responsiblePersonPhones = $this->em->getRepository(ResponsiblePersonPhone::class)->getByResponsiblePersonIds($currentSpace, $responsiblePersonIds);
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
         }
 
         $data = [];
@@ -453,7 +534,10 @@ class ResidentReportService extends BaseService
             $dateEndFormatted = $dateEnd->format('m/d/Y');
         }
 
-        $residents = $this->em->getRepository(Resident::class)->getResidentsInfoByTypeOrId($currentSpace, $type, $typeId);
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residentIds = [];
         $residentsById = [];
 
@@ -462,7 +546,10 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        $events = $this->em->getRepository(ResidentEvent::class)->getByResidentIdsAndDate($currentSpace, $dateStart, $dateEnd, $residentIds);
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+
+        $events = $eventRepo->getByResidentIdsAndDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $dateStart, $dateEnd, $residentIds);
 
         $report = new \App\Model\Report\ResidentEvent();
         $report->setResidents($residentsById);

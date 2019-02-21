@@ -1070,12 +1070,13 @@ class ContractActionRepository extends EntityRepository
 
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return mixed
      */
-    public function getResidents60DaysRosterData(Space $space = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getResidents60DaysRosterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getContractActionReportQb($type, $reportInterval, $typeId)
@@ -1096,6 +1097,12 @@ class ContractActionRepository extends EntityRepository
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ca.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
