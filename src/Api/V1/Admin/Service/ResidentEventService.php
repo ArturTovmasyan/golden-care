@@ -16,6 +16,11 @@ use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResponsiblePerson;
+use App\Repository\EventDefinitionRepository;
+use App\Repository\PhysicianRepository;
+use App\Repository\ResidentEventRepository;
+use App\Repository\ResidentRepository;
+use App\Repository\ResponsiblePersonRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -27,9 +32,8 @@ class ResidentEventService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -41,15 +45,25 @@ class ResidentEventService extends BaseService implements IGridService
             ->where('re.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentEvent::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentEventRepository $repo */
+        $repo = $this->em->getRepository(ResidentEvent::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentEvent::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentEventRepository $repo */
+            $repo = $this->em->getRepository(ResidentEvent::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -61,7 +75,10 @@ class ResidentEventService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentEvent::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentEventRepository $repo */
+        $repo = $this->em->getRepository(ResidentEvent::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id);
     }
 
     /**
@@ -77,8 +94,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -86,8 +106,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $definitionId = $params['definition_id'] ?? 0;
 
+            /** @var EventDefinitionRepository $definitionRepo */
+            $definitionRepo = $this->em->getRepository(EventDefinition::class);
+
             /** @var EventDefinition $definition */
-            $definition = $this->em->getRepository(EventDefinition::class)->getOne($currentSpace, $definitionId);
+            $definition = $definitionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $definitionId);
 
             if ($definition === null) {
                 throw new EventDefinitionNotFoundException();
@@ -99,8 +122,11 @@ class ResidentEventService extends BaseService implements IGridService
                 $physicianId = $params['physician_id'];
 
                 if ($physicianId && is_numeric($physicianId)) {
+                    /** @var PhysicianRepository $physicianRepo */
+                    $physicianRepo = $this->em->getRepository(Physician::class);
+
                     /** @var Physician $physician */
-                    $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
+                    $physician = $physicianRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Physician::class), $physicianId);
 
                     if ($physician === null) {
                         throw new PhysicianNotFoundException();
@@ -116,8 +142,11 @@ class ResidentEventService extends BaseService implements IGridService
                 $responsiblePersonId = $params['responsible_person_id'];
 
                 if ($responsiblePersonId && is_numeric($responsiblePersonId)) {
+                    /** @var ResponsiblePersonRepository $responsiblePersonRepo */
+                    $responsiblePersonRepo = $this->em->getRepository(ResponsiblePerson::class);
+
                     /** @var ResponsiblePerson $responsiblePerson */
-                    $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->getOne($currentSpace, $responsiblePersonId);
+                    $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $responsiblePersonId);
 
                     if ($responsiblePerson === null) {
                         throw new ResponsiblePersonNotFoundException();
@@ -179,8 +208,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentEventRepository $repo */
+            $repo = $this->em->getRepository(ResidentEvent::class);
+
             /** @var ResidentEvent $entity */
-            $entity = $this->em->getRepository(ResidentEvent::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id);
 
             if ($entity === null) {
                 throw new ResidentEventNotFoundException();
@@ -188,8 +220,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $residentId = $params['resident_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -203,8 +238,11 @@ class ResidentEventService extends BaseService implements IGridService
                 $physicianId = $params['physician_id'];
 
                 if ($physicianId && is_numeric($physicianId)) {
+                    /** @var PhysicianRepository $physicianRepo */
+                    $physicianRepo = $this->em->getRepository(Physician::class);
+
                     /** @var Physician $physician */
-                    $physician = $this->em->getRepository(Physician::class)->getOne($currentSpace, $physicianId);
+                    $physician = $physicianRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Physician::class), $physicianId);
 
                     if ($physician === null) {
                         throw new PhysicianNotFoundException();
@@ -220,8 +258,11 @@ class ResidentEventService extends BaseService implements IGridService
                 $responsiblePersonId = $params['responsible_person_id'];
 
                 if ($responsiblePersonId && is_numeric($responsiblePersonId)) {
+                    /** @var ResponsiblePersonRepository $responsiblePersonRepo */
+                    $responsiblePersonRepo = $this->em->getRepository(ResponsiblePerson::class);
+
                     /** @var ResponsiblePerson $responsiblePerson */
-                    $responsiblePerson = $this->em->getRepository(ResponsiblePerson::class)->getOne($currentSpace, $responsiblePersonId);
+                    $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $responsiblePersonId);
 
                     if ($responsiblePerson === null) {
                         throw new ResponsiblePersonNotFoundException();
@@ -270,7 +311,6 @@ class ResidentEventService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -278,8 +318,11 @@ class ResidentEventService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentEventRepository $repo */
+            $repo = $this->em->getRepository(ResidentEvent::class);
+
             /** @var ResidentEvent $entity */
-            $entity = $this->em->getRepository(ResidentEvent::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id);
 
             if ($entity === null) {
                 throw new ResidentEventNotFoundException();
@@ -297,7 +340,6 @@ class ResidentEventService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -309,7 +351,10 @@ class ResidentEventService extends BaseService implements IGridService
                 throw new ResidentEventNotFoundException();
             }
 
-            $residentEvents = $this->em->getRepository(ResidentEvent::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentEventRepository $repo */
+            $repo = $this->em->getRepository(ResidentEvent::class);
+
+            $residentEvents = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $ids);
 
             if (empty($residentEvents)) {
                 throw new ResidentEventNotFoundException();

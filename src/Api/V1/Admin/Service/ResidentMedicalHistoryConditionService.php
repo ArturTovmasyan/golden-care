@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\MedicalHistoryConditionNotSingleException;
 use App\Api\V1\Common\Service\Exception\MedicalHistoryConditionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentMedicalHistoryConditionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -10,6 +9,9 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\MedicalHistoryCondition;
 use App\Entity\Resident;
 use App\Entity\ResidentMedicalHistoryCondition;
+use App\Repository\MedicalHistoryConditionRepository;
+use App\Repository\ResidentMedicalHistoryConditionRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -21,9 +23,8 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -35,15 +36,25 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
             ->where('rmhc.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentMedicalHistoryCondition::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentMedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentMedicalHistoryCondition::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentMedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -55,7 +66,10 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentMedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentMedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $id);
     }
 
     /**
@@ -69,11 +83,17 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var MedicalHistoryConditionRepository $medicalHistoryConditionRepo */
+            $medicalHistoryConditionRepo = $this->em->getRepository(MedicalHistoryCondition::class);
 
             /** @var MedicalHistoryCondition $medicalHistoryCondition */
-            $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $params['condition_id']);
+            $medicalHistoryCondition = $medicalHistoryConditionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $params['condition_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -123,18 +143,27 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentMedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
             /** @var ResidentMedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(ResidentMedicalHistoryCondition::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicalHistoryConditionNotFoundException();
             }
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $params['resident_id']);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $params['resident_id']);
+
+            /** @var MedicalHistoryConditionRepository $medicalHistoryConditionRepo */
+            $medicalHistoryConditionRepo = $this->em->getRepository(MedicalHistoryCondition::class);
 
             /** @var MedicalHistoryCondition $medicalHistoryCondition */
-            $medicalHistoryCondition = $this->em->getRepository(MedicalHistoryCondition::class)->getOne($currentSpace, $params['condition_id']);
+            $medicalHistoryCondition = $medicalHistoryConditionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $params['condition_id']);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
@@ -168,7 +197,6 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -176,8 +204,11 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentMedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
             /** @var ResidentMedicalHistoryCondition $entity */
-            $entity = $this->em->getRepository(ResidentMedicalHistoryCondition::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $id);
 
             if ($entity === null) {
                 throw new ResidentMedicalHistoryConditionNotFoundException();
@@ -195,7 +226,6 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -207,7 +237,10 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
                 throw new ResidentMedicalHistoryConditionNotFoundException();
             }
 
-            $residentMedicalHistoryConditions = $this->em->getRepository(ResidentMedicalHistoryCondition::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentMedicalHistoryConditionRepository $repo */
+            $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+            $residentMedicalHistoryConditions = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $ids);
 
             if (empty($residentMedicalHistoryConditions)) {
                 throw new ResidentMedicalHistoryConditionNotFoundException();

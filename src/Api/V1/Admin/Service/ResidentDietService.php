@@ -9,6 +9,9 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Diet;
 use App\Entity\Resident;
 use App\Entity\ResidentDiet;
+use App\Repository\DietRepository;
+use App\Repository\ResidentDietRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -20,9 +23,8 @@ class ResidentDietService extends BaseService implements IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params)
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -34,15 +36,25 @@ class ResidentDietService extends BaseService implements IGridService
             ->where('rd.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        $this->em->getRepository(ResidentDiet::class)->search($this->grantService->getCurrentSpace(), $queryBuilder);
+        /** @var ResidentDietRepository $repo */
+        $repo = $this->em->getRepository(ResidentDiet::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $queryBuilder);
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params)
     {
         if (!empty($params) && !empty($params[0]['resident_id'])) {
             $residentId = $params[0]['resident_id'];
 
-            return $this->em->getRepository(ResidentDiet::class)->getBy($this->grantService->getCurrentSpace(), $residentId);
+            /** @var ResidentDietRepository $repo */
+            $repo = $this->em->getRepository(ResidentDiet::class);
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $residentId);
         }
 
         throw new ResidentNotFoundException();
@@ -54,7 +66,10 @@ class ResidentDietService extends BaseService implements IGridService
      */
     public function getById($id)
     {
-        return $this->em->getRepository(ResidentDiet::class)->getOne($this->grantService->getCurrentSpace(), $id);
+        /** @var ResidentDietRepository $repo */
+        $repo = $this->em->getRepository(ResidentDiet::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $id);
     }
 
     /**
@@ -71,15 +86,21 @@ class ResidentDietService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
             $dietId = $params['diet_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
+            /** @var DietRepository $dietRepo */
+            $dietRepo = $this->em->getRepository(Diet::class);
+
             /** @var Diet $diet */
-            $diet = $this->em->getRepository(Diet::class)->getOne($currentSpace, $dietId);
+            $diet = $dietRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Diet::class), $dietId);
 
             if ($diet === null) {
                 throw new DietNotFoundException();
@@ -115,8 +136,11 @@ class ResidentDietService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            /** @var ResidentDietRepository $repo */
+            $repo = $this->em->getRepository(ResidentDiet::class);
+
             /** @var ResidentDiet $entity */
-            $entity = $this->em->getRepository(ResidentDiet::class)->getOne($currentSpace, $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $id);
 
             if ($entity === null) {
                 throw new ResidentDietNotFoundException();
@@ -125,15 +149,21 @@ class ResidentDietService extends BaseService implements IGridService
             $residentId = $params['resident_id'] ?? 0;
             $dietId = $params['diet_id'] ?? 0;
 
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
             /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->getOne($currentSpace, $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
+            /** @var DietRepository $dietRepo */
+            $dietRepo = $this->em->getRepository(Diet::class);
+
             /** @var Diet $diet */
-            $diet = $this->em->getRepository(Diet::class)->getOne($currentSpace, $dietId);
+            $diet = $dietRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Diet::class), $dietId);
 
             if ($diet === null) {
                 throw new DietNotFoundException();
@@ -157,7 +187,6 @@ class ResidentDietService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function remove($id)
@@ -165,8 +194,11 @@ class ResidentDietService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            /** @var ResidentDietRepository $repo */
+            $repo = $this->em->getRepository(ResidentDiet::class);
+
             /** @var ResidentDiet $entity */
-            $entity = $this->em->getRepository(ResidentDiet::class)->getOne($this->grantService->getCurrentSpace(), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $id);
 
             if ($entity === null) {
                 throw new ResidentDietNotFoundException();
@@ -184,7 +216,6 @@ class ResidentDietService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function removeBulk(array $ids): void
@@ -196,7 +227,10 @@ class ResidentDietService extends BaseService implements IGridService
                 throw new ResidentDietNotFoundException();
             }
 
-            $residentDiets = $this->em->getRepository(ResidentDiet::class)->findByIds($this->grantService->getCurrentSpace(), $ids);
+            /** @var ResidentDietRepository $repo */
+            $repo = $this->em->getRepository(ResidentDiet::class);
+
+            $residentDiets = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $ids);
 
             if (empty($residentDiets)) {
                 throw new ResidentDietNotFoundException();
