@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ReflectionMethod;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -92,6 +93,19 @@ class ReportService
     {
         $config_filtered = $this->config;
 
+        foreach ( $config_filtered as $group => $config) {
+            foreach ($config['reports'] as $alias => $report) {
+                $grant = sprintf("report-%s-%s", $group, $alias);
+                if ($this->grantService->getCurrentUserHasGrant($grant) === false) {
+                    unset($config_filtered[$group]['reports'][$alias]);
+                }
+            }
+
+            if(count($config_filtered[$group]['reports']) === 0) {
+                unset($config_filtered[$group]);
+            }
+        }
+
         return ArrayUtil::remove_keys($config_filtered, ['service', 'template']);
     }
 
@@ -116,6 +130,11 @@ class ReportService
 
         if (!\in_array($request->get('format'), $report['formats'], false)) {
             throw new ReportFormatNotFoundException();
+        }
+
+        $grant = sprintf("report-%s-%s", $group, $alias);
+        if ($this->grantService->getCurrentUserHasGrant($grant) === false) {
+            throw new AccessDeniedHttpException();
         }
 
         if (!empty($report['template'])) {

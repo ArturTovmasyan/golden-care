@@ -114,10 +114,11 @@ class Grant
         $effectiveGrants = $grantService->getEffectiveGrants($user->getRoleObjects());
 
         if (!(array_key_exists($grant, $effectiveGrants) && $effectiveGrants[$grant]['level'] >= $level)) {
+            // TODO: Access Denied Exception
             $response = new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_FORBIDDEN,
-                    'error' => 'Access denied for this resource'
+                    'error' => 'Access denied to this resource.'
                 ],
                 JsonResponse::HTTP_FORBIDDEN
             );

@@ -81,6 +81,24 @@ class GrantService
     }
 
     /**
+     * @return array
+     */
+    public function getCurrentUserGrants(): array
+    {
+        return $this->current_user ? $this->getEffectiveGrants($this->current_user->getRoleObjects()) : [];
+    }
+
+    /**
+     * @param string $grant
+     * @return bool
+     */
+    public function getCurrentUserHasGrant(string $grant): bool
+    {
+        $grants = $this->getCurrentUserGrants();
+        return array_key_exists($grant, $grants) && $grants[$grant]['enabled'] === true;
+    }
+
+    /**
      * @param User $user
      * @param string $entity_name
      * @return array|null
@@ -144,7 +162,7 @@ class GrantService
      * @param array|Collection $roles
      * @return array
      */
-    public function getEffectiveGrants($roles)
+    public function getEffectiveGrants($roles) : array
     {
         $effective_role_grants = [];
 

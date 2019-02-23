@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Security;
@@ -70,6 +71,11 @@ class MainListener
         } else if ($exception instanceof UnauthorizedHttpException) {
             $response = $this->respondError(
                 $exception->getMessage(),
+                $exception->getStatusCode()
+            );
+        }  else if ($exception instanceof AccessDeniedHttpException) {
+            $response = $this->respondError(
+                "Access denied to resource.",
                 $exception->getStatusCode()
             );
         } else if ($exception instanceof \ErrorException) {
