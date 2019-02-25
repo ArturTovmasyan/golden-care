@@ -123,7 +123,9 @@ class Apartment
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
      *     "api_admin_apartment_room_list",
-     *     "api_admin_apartment_room_get"
+     *     "api_admin_apartment_room_get",
+     *     "api_admin_contract_get_active",
+     *     "api_admin_contract_get"
      * })
      */
     private $name;
@@ -156,7 +158,9 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @ORM\Column(name="shorthand", type="string", length=100)
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get",
+     *     "api_admin_contract_get_active",
+     *     "api_admin_contract_get"})
      */
     private $shorthand;
 
