@@ -125,7 +125,12 @@ class BaseService
     protected function getSpace($spaceId) : ?Space
     {
         /** @var Space $space */
-        $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+        if($this->grantService->getCurrentUserHasGrant('persistence-security-space')) {
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
+        } else {
+            $space = $this->grantService->getCurrentSpace();
+        }
 
         return $space;
     }
