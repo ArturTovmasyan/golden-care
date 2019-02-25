@@ -61,10 +61,8 @@ class PaymentSourceService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
-
             /** @var Space $space */
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -107,10 +105,8 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new PaymentSourceNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
-
             /** @var Space $space */
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

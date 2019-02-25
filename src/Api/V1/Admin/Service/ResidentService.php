@@ -114,10 +114,9 @@ class ResidentService extends BaseService implements IGridService
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -190,10 +189,9 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

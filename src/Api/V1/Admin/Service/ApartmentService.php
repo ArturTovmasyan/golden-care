@@ -64,11 +64,10 @@ class ApartmentService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
 
             /** @var Space $space */
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -132,11 +131,10 @@ class ApartmentService extends BaseService implements IGridService
                 throw new ApartmentNotFoundException();
             }
 
-            $spaceId = $params['space_id'] ?? 0;
             $cszId = $params['csz_id'] ?? 0;
 
             /** @var Space $space */
-            $space = $this->getSpace($spaceId);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

@@ -68,9 +68,8 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
-
-            $space = $this->getSpace($spaceId);
+            /** @var Space $space */
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -107,9 +106,8 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
              */
             $this->em->getConnection()->beginTransaction();
 
-            $spaceId = $params['space_id'] ?? 0;
-
-            $space = $this->getSpace($spaceId);
+            /** @var Space $space */
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
