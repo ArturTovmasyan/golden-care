@@ -41,6 +41,30 @@ class SpaceService extends BaseService implements IGridService
     }
 
     /**
+     * @param array $params
+     * @throws \Exception
+     */
+    public function add(array $params) : void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $space = new Space();
+            $space->setName($params['name'] ?? null);
+
+            $this->validate($space, null, ['api_admin_space_add']);
+
+            $this->em->persist($space);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param $id
      * @param array $params
      * @throws \Exception
@@ -60,12 +84,77 @@ class SpaceService extends BaseService implements IGridService
             }
 
             $space->setName($params['name'] ?? null);
+
             $this->validate($space, null, ['api_admin_space_edit']);
 
             $this->em->persist($space);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @throws \Throwable
+     */
+    public function remove($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var Space $entity */
+            $entity = $this->em->getRepository(Space::class)->find($id);
+
+            if ($entity === null) {
+                throw new SpaceNotFoundException();
+            }
+
+            $this->em->remove($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $ids
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (empty($ids)) {
+                throw new SpaceNotFoundException();
+            }
+
+            /** @var SpaceRepository $repo */
+            $repo = $this->em->getRepository(Space::class);
+
+            $spaces = $repo->findByIds($ids);
+
+            if (empty($spaces)) {
+                throw new SpaceNotFoundException();
+            }
+
+            /**
+             * @var Space $space
+             */
+            foreach ($spaces as $space) {
+                $this->em->remove($space);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;

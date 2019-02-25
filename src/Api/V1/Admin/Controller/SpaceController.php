@@ -46,7 +46,6 @@ class SpaceController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the space
      * @apiSuccess {String}  name          The Name of the space
-     * @apiSuccess {Boolean} created_at    The creation date of the space
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -57,8 +56,7 @@ class SpaceController extends BaseController
      *          "data": [
      *              {
      *                  "id": 1,
-     *                  "name": "ALMS",
-     *                  "created_at": "2018-11-13T08:59:02+04:00"
+     *                  "name": "ALMS"
      *              }
      *          ]
      *     }
@@ -128,7 +126,6 @@ class SpaceController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the space
      * @apiSuccess {String}  name          The Name of the space
-     * @apiSuccess {Boolean} created_at    The creation date of the space
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
@@ -136,8 +133,7 @@ class SpaceController extends BaseController
      *          [
      *              {
      *                  "id": 1,
-     *                  "name": "ALMS",
-     *                  "created_at": "2018-11-13T08:59:02+04:00"
+     *                  "name": "ALMS"
      *              }
      *          ]
      *     }
@@ -171,14 +167,12 @@ class SpaceController extends BaseController
      *
      * @apiSuccess {Int}     id            The unique identifier of the space
      * @apiSuccess {String}  name          The Name of the space
-     * @apiSuccess {Boolean} created_at    The creation date of the space
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 200 OK
      *     {
      *          "id": 1,
-     *          "name": "ALMS",
-     *          "created_at": "2018-11-13T08:59:02+04:00"
+     *          "name": "ALMS"
      *     }
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_get", methods={"GET"})
@@ -195,6 +189,57 @@ class SpaceController extends BaseController
             '',
             $spaceService->getById($id),
             ['api_admin_space_get']
+        );
+    }
+
+    /**
+     * @api {post} /api/v1.0/admin/space Add Space
+     * @apiVersion 1.0.0
+     * @apiName Add Space
+     * @apiGroup Admin Space
+     * @apiDescription This function is used to add Space
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {String}  name      The name of the Space
+     *
+     * @apiParamExample {json} Request-Example:
+     *     {
+     *          "name": "ALMS"
+     *     }
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 201 Created
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 610,
+     *          "error": "Validation error",
+     *          "details": {
+     *              "name": "Sorry, this value not be blank."
+     *          }
+     *     }
+     *
+     * @Route("", name="api_admin_space_add", methods={"POST"})
+     *
+     * @Grant(grant="persistence-security-space", level="ADD")
+     *
+     * @param Request $request
+     * @param SpaceService $spaceService
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function addAction(Request $request, SpaceService $spaceService)
+    {
+        $spaceService->add(
+            [
+                'name' => $request->get('name')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
         );
     }
 
@@ -248,6 +293,89 @@ class SpaceController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @api {delete} /api/v1.0/admin/space/{id} Delete Space
+     * @apiVersion 1.0.0
+     * @apiName Delete Space
+     * @apiGroup Admin Space
+     * @apiDescription This function is used to remove Space
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 612,
+     *          "error": "Space not found"
+     *     }
+     *
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_delete", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-space", level="DELETE")
+     *
+     * @param $id
+     * @param SpaceService $spaceService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteAction(Request $request, $id, SpaceService $spaceService)
+    {
+        $spaceService->remove($id);
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {delete} /api/v1.0/admin/space Bulk Delete Spaces
+     * @apiVersion 1.0.0
+     * @apiName Bulk Delete Spaces
+     * @apiGroup Admin Space
+     * @apiDescription This function is used to bulk remove spaces
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the spaces
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["1", "4", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 612,
+     *          "error": "Space not found"
+     *     }
+     *
+     * @Route("", name="api_admin_space_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-space", level="DELETE")
+     *
+     * @param Request $request
+     * @param SpaceService $spaceService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, SpaceService $spaceService)
+    {
+        $spaceService->removeBulk($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
         );
     }
 }
