@@ -117,4 +117,16 @@ class BaseService
 
         return substr(str_shuffle($chars), 0, $length);
     }
+
+    /**
+     * @param $spaceId
+     * @return Space|null
+     */
+    protected function getSpace($spaceId) : ?Space
+    {
+        /** @var Space $space */
+        $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+        return $space;
+    }
 }
