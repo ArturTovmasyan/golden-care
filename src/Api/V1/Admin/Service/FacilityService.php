@@ -69,7 +69,7 @@ class FacilityService extends BaseService implements IGridService
             $cszId = $params['csz_id'] ?? 0;
 
             /** @var Space $space */
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -137,7 +137,7 @@ class FacilityService extends BaseService implements IGridService
             $cszId = $params['csz_id'] ?? 0;
 
             /** @var Space $space */
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

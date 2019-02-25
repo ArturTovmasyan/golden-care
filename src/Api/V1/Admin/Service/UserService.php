@@ -73,7 +73,7 @@ class UserService extends BaseService implements IGridService
 
             // TODO: check role if exists this should be taken account when admin
             /** @var Space $space */
-            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -146,7 +146,7 @@ class UserService extends BaseService implements IGridService
 
             // TODO: check role if exists this should be taken account when admin
             /** @var Space $space */
-            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $space = $this->getSpace($params['space_id']);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

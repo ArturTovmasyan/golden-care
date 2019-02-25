@@ -81,7 +81,7 @@ class PhysicianService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $space = $this->getSpace($params['space_id']);
 
             /** @var CityStateZipRepository $cszRepo */
             $cszRepo = $this->em->getRepository(CityStateZip::class);
@@ -167,7 +167,7 @@ class PhysicianService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $space = $this->em->getRepository(Space::class)->find($params['space_id']);
+            $space = $this->getSpace($params['space_id']);
 
             /** @var PhysicianRepository $repo */
             $repo = $this->em->getRepository(Physician::class);

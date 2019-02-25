@@ -85,7 +85,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $cszId = $params['csz_id'] ?? 0;
             $salutationId = $params['salutation_id'] ?? 0;
 
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -170,7 +170,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
                 throw new ResponsiblePersonNotFoundException();
             }
 
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();

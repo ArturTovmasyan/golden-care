@@ -69,7 +69,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
@@ -111,7 +111,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
             $spaceId = $params['space_id'] ?? 0;
 
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $space = $this->getSpace($spaceId);
 
             if ($space === null) {
                 throw new SpaceNotFoundException();
