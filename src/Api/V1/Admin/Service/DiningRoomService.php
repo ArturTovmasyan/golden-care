@@ -74,7 +74,7 @@ class DiningRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var FacilityRepository $facilityRepo */
-            $facilityRepo = $this->em->getRepository(DiningRoom::class);
+            $facilityRepo = $this->em->getRepository(Facility::class);
 
             /** @var Facility $facility */
             $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
@@ -125,7 +125,7 @@ class DiningRoomService extends BaseService implements IGridService
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var FacilityRepository $facilityRepo */
-            $facilityRepo = $this->em->getRepository(DiningRoom::class);
+            $facilityRepo = $this->em->getRepository(Facility::class);
 
             /** @var Facility $facility */
             $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);

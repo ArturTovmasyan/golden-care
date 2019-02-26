@@ -65,18 +65,10 @@ class AssessmentCareLevelService extends BaseService implements IGridService
         try {
             /**
              * @var CareLevelGroup $careLevelGroup
-             * @var Space $space
              */
             $this->em->getConnection()->beginTransaction();
 
             $careLevelGroupId = $params['care_level_group_id'] ?? 0;
-
-            /** @var Space $space */
-            $space = $this->getSpace($params['space_id']);
-
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
 
             /** @var CareLevelGroupRepository $careLevelGroupRepo */
             $careLevelGroupRepo = $this->em->getRepository(CareLevelGroup::class);
@@ -117,20 +109,10 @@ class AssessmentCareLevelService extends BaseService implements IGridService
              * @var CareLevel $careLevel
              * @var CareLevelGroup $careLevelGroup
              * @var Row $row
-             * @var Space $space
              */
             $this->em->getConnection()->beginTransaction();
 
-            $currentSpace = $this->grantService->getCurrentSpace();
-
             $careLevelGroupId = $params['care_level_group_id'] ?? 0;
-
-            /** @var Space $space */
-            $space = $this->getSpace($params['space_id']);
-
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
 
             /** @var CareLevelGroupRepository $careLevelGroupRepo */
             $careLevelGroupRepo = $this->em->getRepository(CareLevelGroup::class);
@@ -144,7 +126,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
             /** @var CareLevelRepository $repo */
             $repo = $this->em->getRepository(CareLevel::class);
 
-            $careLevel = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $id);
+            $careLevel = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $id);
 
             if ($careLevel === null) {
                 throw new AssessmentCareLevelNotFoundException();
