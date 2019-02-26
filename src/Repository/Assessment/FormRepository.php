@@ -81,11 +81,11 @@ class FormRepository extends EntityRepository
 
     /**
      * @param Space|null $space
-     * @param $id
      * @param array|null $entityGrants
+     * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, $id, array $entityGrants = null)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('af')
@@ -117,11 +117,11 @@ class FormRepository extends EntityRepository
 
     /**
      * @param Space|null $space
-     * @param $ids
      * @param array|null $entityGrants
+     * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids, array $entityGrants = null)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
             ->createQueryBuilder('af')
