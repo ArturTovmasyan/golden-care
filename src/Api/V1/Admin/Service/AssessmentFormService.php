@@ -212,7 +212,7 @@ class AssessmentFormService extends BaseService implements IGridService
         }
 
         $categoryRepository = $this->em->getRepository(Category::class);
-        $categories         = $categoryRepository->findByIds($this->grantService->getCurrentSpace(), $categoryIds);
+        $categories         = $categoryRepository->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $categoryIds);
         $categoriesById     = [];
 
         foreach ($categories as $category) {
