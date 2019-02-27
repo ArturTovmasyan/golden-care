@@ -64,7 +64,11 @@ class ResidentAllergen
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_allergen_grid", "api_admin_resident_allergen_list", "api_admin_resident_allergen_get"})
+     * @Groups({
+     *     "api_admin_resident_allergen_grid",
+     *     "api_admin_resident_allergen_list",
+     *     "api_admin_resident_allergen_get"
+     * })
      */
     private $resident;
 
@@ -82,7 +86,11 @@ class ResidentAllergen
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_allergen", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_allergen_grid", "api_admin_resident_allergen_list", "api_admin_resident_allergen_get"})
+     * @Groups({
+     *     "api_admin_resident_allergen_grid",
+     *     "api_admin_resident_allergen_list",
+     *     "api_admin_resident_allergen_get"
+     * })
      */
     private $allergen;
 
@@ -96,7 +104,11 @@ class ResidentAllergen
      *          "api_admin_resident_allergen_add",
      *          "api_admin_resident_allergen_edit"
      * })
-     * @Groups({"api_admin_resident_allergen_grid", "api_admin_resident_allergen_list", "api_admin_resident_allergen_get"})
+     * @Groups({
+     *     "api_admin_resident_allergen_grid",
+     *     "api_admin_resident_allergen_list",
+     *     "api_admin_resident_allergen_get"
+     * })
      */
     private $notes;
 

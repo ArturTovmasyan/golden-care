@@ -69,7 +69,11 @@ class ResidentMedicalHistoryCondition
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_resident_medical_history_condition_grid",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_medical_history_condition_get"
+     * })
      */
     private $resident;
 
@@ -87,7 +91,11 @@ class ResidentMedicalHistoryCondition
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medical_history_condition", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_resident_medical_history_condition_grid",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_medical_history_condition_get"
+     * })
      */
     private $condition;
 
@@ -101,7 +109,11 @@ class ResidentMedicalHistoryCondition
      *          "api_admin_resident_medical_history_condition_add",
      *          "api_admin_resident_medical_history_condition_edit"
      * })
-     * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_resident_medical_history_condition_grid",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_medical_history_condition_get"
+     * })
      */
     private $notes;
 
@@ -116,7 +128,11 @@ class ResidentMedicalHistoryCondition
      *     "api_admin_resident_medical_history_condition_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
-     * @Groups({"api_admin_resident_medical_history_condition_grid", "api_admin_resident_medical_history_condition_list", "api_admin_resident_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_resident_medical_history_condition_grid",
+     *     "api_admin_resident_medical_history_condition_list",
+     *     "api_admin_resident_medical_history_condition_get"
+     * })
      */
     private $date;
 

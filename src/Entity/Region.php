@@ -111,7 +111,11 @@ class Region
      *         "api_admin_region_add",
      *         "api_admin_region_edit"
      * })
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
+     * })
      */
     private $description;
 
@@ -129,7 +133,11 @@ class Region
      *          "api_admin_region_edit"
      * })
      * @ORM\Column(name="shorthand", type="string", length=100)
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
+     * })
      */
     private $shorthand;
 
@@ -179,7 +187,11 @@ class Region
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_region_grid", "api_admin_region_list", "api_admin_region_get"})
+     * @Groups({
+     *     "api_admin_region_grid",
+     *     "api_admin_region_list",
+     *     "api_admin_region_get"
+     * })
      */
     private $space;
 

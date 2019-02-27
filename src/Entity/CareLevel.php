@@ -112,7 +112,11 @@ class CareLevel
      *          "api_admin_care_level_add",
      *          "api_admin_care_level_edit"
      * })
-     * @Groups({"api_admin_care_level_grid", "api_admin_care_level_list", "api_admin_care_level_get"})
+     * @Groups({
+     *     "api_admin_care_level_grid",
+     *     "api_admin_care_level_list",
+     *     "api_admin_care_level_get"
+     * })
      */
     private $description;
 

@@ -140,7 +140,11 @@ class Apartment
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit"
      * })
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $description;
 
@@ -158,7 +162,10 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @ORM\Column(name="shorthand", type="string", length=100)
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get",
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"})
      */
@@ -213,7 +220,11 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @ORM\Column(name="address", type="string", length=100)
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $address;
 
@@ -227,7 +238,11 @@ class Apartment
      *           "api_admin_apartment_add",
      *           "api_admin_apartment_edit"
      * })
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $license;
 
@@ -241,7 +256,11 @@ class Apartment
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $csz;
 
@@ -259,7 +278,11 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @ORM\Column(name="license_capacity", type="integer")
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $licenseCapacity;
 
@@ -277,7 +300,11 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @ORM\Column(name="capacity", type="integer")
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $capacity;
 
@@ -291,14 +318,22 @@ class Apartment
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $space;
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ApartmentRoom", mappedBy="apartment", cascade={"remove", "persist"})
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     private $rooms;
 
@@ -447,7 +482,11 @@ class Apartment
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("occupation")
-     * @Groups({"api_admin_apartment_grid", "api_admin_apartment_list", "api_admin_apartment_get"})
+     * @Groups({
+     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
      */
     public function getOccupation()
     {

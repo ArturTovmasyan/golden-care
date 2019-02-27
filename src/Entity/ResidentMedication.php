@@ -119,7 +119,11 @@ class ResidentMedication
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $resident;
 
@@ -133,7 +137,11 @@ class ResidentMedication
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $physician;
 
@@ -147,7 +155,11 @@ class ResidentMedication
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $medication;
 
@@ -161,7 +173,11 @@ class ResidentMedication
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_form_factor", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $formFactor;
 
@@ -185,7 +201,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $dosage;
 
@@ -210,7 +230,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_edit"
      *},
      * )
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $dosageUnit;
 
@@ -224,7 +248,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $prescriptionNumber;
 
@@ -238,7 +266,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $notes;
 
@@ -252,7 +284,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $am = 0;
 
@@ -266,7 +302,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $nn = 0;
 
@@ -280,7 +320,11 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $pm = 0;
 
@@ -294,28 +338,44 @@ class ResidentMedication
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
      * })
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     private $hs = 0;
 
     /**
      * @var bool
      * @ORM\Column(name="medication_prn", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     protected $prn;
 
     /**
      * @var bool
      * @ORM\Column(name="medication_discontinued", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     protected $discontinued;
 
     /**
      * @var bool
      * @ORM\Column(name="medication_treatment", type="boolean", options={"default" = 0})
-     * @Groups({"api_admin_resident_medication_grid", "api_admin_resident_medication_list", "api_admin_resident_medication_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_grid",
+     *     "api_admin_resident_medication_list",
+     *     "api_admin_resident_medication_get"
+     * })
      */
     protected $treatment;
 

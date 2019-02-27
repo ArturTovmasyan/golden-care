@@ -87,7 +87,11 @@ class ResidentRent
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     * @Groups({
+     *     "api_admin_resident_rent_grid",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
      */
     private $resident;
 
@@ -102,7 +106,11 @@ class ResidentRent
      *     "api_admin_resident_rent_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     * @Groups({
+     *     "api_admin_resident_rent_grid",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
      */
     private $start;
 
@@ -163,7 +171,11 @@ class ResidentRent
      *          "api_admin_resident_rent_add",
      *          "api_admin_resident_rent_edit"
      * })
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     * @Groups({
+     *     "api_admin_resident_rent_grid",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
      */
     private $amount;
 
@@ -177,7 +189,11 @@ class ResidentRent
      *          "api_admin_resident_rent_add",
      *          "api_admin_resident_rent_edit"
      * })
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     * @Groups({
+     *     "api_admin_resident_rent_grid",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
      */
     private $notes;
 
@@ -191,7 +207,11 @@ class ResidentRent
      *          "api_admin_resident_rent_add",
      *          "api_admin_resident_rent_edit"
      * })
-     * @Groups({"api_admin_resident_rent_grid", "api_admin_resident_rent_list", "api_admin_resident_rent_get"})
+     * @Groups({
+     *     "api_admin_resident_rent_grid",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
      */
     private $source = [];
 

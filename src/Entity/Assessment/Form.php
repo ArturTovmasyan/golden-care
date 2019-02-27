@@ -77,6 +77,13 @@ class Form
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
+     * @Groups({
+     *     "api_admin_assessment_form_list",
+     *     "api_admin_assessment_form_get",
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_get",
+     *     "api_admin_resident_assessment_report"
+     * })
      */
     private $space;
 

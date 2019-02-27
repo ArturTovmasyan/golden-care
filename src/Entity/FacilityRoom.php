@@ -176,7 +176,11 @@ class FacilityRoom
      *     "api_admin_facility_room_edit"
      * })
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityBed", mappedBy="room", cascade={"remove", "persist"})
-     * @Groups({"api_admin_facility_room_grid", "api_admin_facility_room_list", "api_admin_facility_room_get"})
+     * @Groups({
+     *     "api_admin_facility_room_grid",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
      */
     private $beds;
 

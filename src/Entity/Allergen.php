@@ -114,7 +114,11 @@ class Allergen
      *          "api_admin_resident_allergen_edit"
      *      }
      * )
-     * @Groups({"api_admin_allergen_grid", "api_admin_allergen_list", "api_admin_allergen_get"})
+     * @Groups({
+     *     "api_admin_allergen_grid",
+     *     "api_admin_allergen_list",
+     *     "api_admin_allergen_get"
+     * })
      */
     private $description;
 

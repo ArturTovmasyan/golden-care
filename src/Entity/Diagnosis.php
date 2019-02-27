@@ -115,7 +115,11 @@ class Diagnosis
      *      }
      * )
      * @ORM\Column(name="acronym", type="string", length=20, nullable=true)
-     * @Groups({"api_admin_diagnosis_grid", "api_admin_diagnosis_list", "api_admin_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_diagnosis_grid",
+     *     "api_admin_diagnosis_list",
+     *     "api_admin_diagnosis_get"
+     * })
      */
     private $acronym;
 
@@ -132,7 +136,11 @@ class Diagnosis
      *          "api_admin_resident_diagnosis_edit"
      *      }
      * )
-     * @Groups({"api_admin_diagnosis_grid", "api_admin_diagnosis_list", "api_admin_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_diagnosis_grid",
+     *     "api_admin_diagnosis_list",
+     *     "api_admin_diagnosis_get"
+     * })
      */
     private $description;
 

@@ -113,7 +113,11 @@ class MedicalHistoryCondition
      *          "api_admin_resident_medical_history_condition_edit"
      *      }
      * )
-     * @Groups({"api_admin_medical_history_condition_grid", "api_admin_medical_history_condition_list", "api_admin_medical_history_condition_get"})
+     * @Groups({
+     *     "api_admin_medical_history_condition_grid",
+     *     "api_admin_medical_history_condition_list",
+     *     "api_admin_medical_history_condition_get"
+     * })
      */
     private $description;
 

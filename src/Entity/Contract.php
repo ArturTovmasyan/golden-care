@@ -72,7 +72,11 @@ class Contract
      *     "api_admin_contract_add",
      *     "api_admin_contract_edit"
      * })
-     * @Groups({"api_admin_contract_grid", "api_admin_contract_list", "api_admin_contract_get"})
+     * @Groups({
+     *     "api_admin_contract_grid",
+     *     "api_admin_contract_list",
+     *     "api_admin_contract_get"
+     * })
      */
     private $resident;
 
@@ -150,7 +154,10 @@ class Contract
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("number")
-     * @Groups({"api_admin_resident_list_by_params", "api_admin_contract_list_by_params"})
+     * @Groups({
+     *     "api_admin_resident_list_by_params",
+     *     "api_admin_contract_list_by_params"
+     * })
      */
     public function getOptionNumber(): ?string
     {

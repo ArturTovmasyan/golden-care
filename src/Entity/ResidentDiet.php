@@ -69,7 +69,11 @@ class ResidentDiet
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_diet_grid", "api_admin_resident_diet_list", "api_admin_resident_diet_get"})
+     * @Groups({
+     *     "api_admin_resident_diet_grid",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $resident;
 
@@ -83,7 +87,11 @@ class ResidentDiet
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diet", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_diet_grid", "api_admin_resident_diet_list", "api_admin_resident_diet_get"})
+     * @Groups({
+     *     "api_admin_resident_diet_grid",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $diet;
 
@@ -101,7 +109,11 @@ class ResidentDiet
      *          "api_admin_resident_diet_add",
      *          "api_admin_resident_diet_edit"
      * })
-     * @Groups({"api_admin_resident_diet_grid", "api_admin_resident_diet_list", "api_admin_resident_diet_get"})
+     * @Groups({
+     *     "api_admin_resident_diet_grid",
+     *     "api_admin_resident_diet_list",
+     *     "api_admin_resident_diet_get"
+     * })
      */
     private $description;
 

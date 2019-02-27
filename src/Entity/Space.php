@@ -77,6 +77,8 @@ class Space
      *     "api_admin_assessment_care_level_get",
      *     "api_admin_assessment_care_level_group_list",
      *     "api_admin_assessment_care_level_group_get",
+     *     "api_admin_assessment_form_list",
+     *     "api_admin_assessment_form_get",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get",
      *     "api_admin_salutation_list",

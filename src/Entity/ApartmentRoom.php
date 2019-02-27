@@ -152,7 +152,11 @@ class ApartmentRoom
      *          "api_admin_apartment_room_add",
      *          "api_admin_apartment_room_edit"
      * })
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
+     * @Groups({
+     *     "api_admin_apartment_room_grid",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
      */
     private $notes;
 
@@ -170,7 +174,11 @@ class ApartmentRoom
      *     "api_admin_apartment_room_edit"
      * })
      * @ORM\OneToMany(targetEntity="App\Entity\ApartmentBed", mappedBy="room", cascade={"remove", "persist"})
-     * @Groups({"api_admin_apartment_room_grid", "api_admin_apartment_room_list", "api_admin_apartment_room_get"})
+     * @Groups({
+     *     "api_admin_apartment_room_grid",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
      */
     private $beds;
 

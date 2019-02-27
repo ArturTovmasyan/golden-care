@@ -83,7 +83,11 @@ class ResidentEvent
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_definition", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $definition;
 
@@ -97,7 +101,11 @@ class ResidentEvent
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $resident;
 
@@ -112,7 +120,11 @@ class ResidentEvent
      *     "api_admin_resident_event_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $date;
 
@@ -126,7 +138,11 @@ class ResidentEvent
      *          "api_admin_resident_event_add",
      *          "api_admin_resident_event_edit"
      * })
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $notes;
 
@@ -136,7 +152,11 @@ class ResidentEvent
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $physician;
 
@@ -146,7 +166,11 @@ class ResidentEvent
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $responsiblePerson;
 
@@ -157,7 +181,11 @@ class ResidentEvent
      *     "api_admin_resident_event_edit"
      * })
      * @ORM\Column(name="additional_date", type="datetime", nullable=true)
-     * @Groups({"api_admin_resident_event_grid", "api_admin_resident_event_list", "api_admin_resident_event_get"})
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
      */
     private $additionalDate;
 

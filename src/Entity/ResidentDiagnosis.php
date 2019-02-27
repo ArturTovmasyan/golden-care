@@ -71,7 +71,11 @@ class ResidentDiagnosis
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_resident_diagnosis_grid",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $resident;
 
@@ -89,7 +93,11 @@ class ResidentDiagnosis
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diagnosis", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_resident_diagnosis_grid",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $diagnosis;
 
@@ -106,7 +114,11 @@ class ResidentDiagnosis
      *         "api_admin_resident_diagnosis_edit"
      * })
      * @ORM\Column(name="type", type="integer", length=1)
-     * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_resident_diagnosis_grid",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $type = DiagnosisType::PRIMARY;
 
@@ -120,7 +132,11 @@ class ResidentDiagnosis
      *          "api_admin_resident_diagnosis_add",
      *          "api_admin_resident_diagnosis_edit"
      * })
-     * @Groups({"api_admin_resident_diagnosis_grid", "api_admin_resident_diagnosis_list", "api_admin_resident_diagnosis_get"})
+     * @Groups({
+     *     "api_admin_resident_diagnosis_grid",
+     *     "api_admin_resident_diagnosis_list",
+     *     "api_admin_resident_diagnosis_get"
+     * })
      */
     private $notes;
 

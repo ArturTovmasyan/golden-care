@@ -64,7 +64,11 @@ class ResidentMedicationAllergy
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_allergy_grid", "api_admin_resident_medication_allergy_list", "api_admin_resident_medication_allergy_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_allergy_grid",
+     *     "api_admin_resident_medication_allergy_list",
+     *     "api_admin_resident_medication_allergy_get"
+     * })
      */
     private $resident;
 
@@ -82,7 +86,11 @@ class ResidentMedicationAllergy
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({"api_admin_resident_medication_allergy_grid", "api_admin_resident_medication_allergy_list", "api_admin_resident_medication_allergy_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_allergy_grid",
+     *     "api_admin_resident_medication_allergy_list",
+     *     "api_admin_resident_medication_allergy_get"
+     * })
      */
     private $medication;
 
@@ -96,7 +104,11 @@ class ResidentMedicationAllergy
      *          "api_admin_resident_medication_allergy_add",
      *          "api_admin_resident_medication_allergy_edit"
      * })
-     * @Groups({"api_admin_resident_medication_allergy_grid", "api_admin_resident_medication_allergy_list", "api_admin_resident_medication_allergy_get"})
+     * @Groups({
+     *     "api_admin_resident_medication_allergy_grid",
+     *     "api_admin_resident_medication_allergy_list",
+     *     "api_admin_resident_medication_allergy_get"
+     * })
      */
     private $notes;
 
