@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -13,6 +14,15 @@ use App\Annotation\Grid;
  * Class MedicationFormFactor
  *
  * @ORM\Entity(repositoryClass="App\Repository\MedicationFormFactorRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_medication_form_factor_add",
+ *          "api_admin_medication_form_factor_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_medication_form_factor")
  * @Grid(
  *     api_admin_medication_form_factor_grid={

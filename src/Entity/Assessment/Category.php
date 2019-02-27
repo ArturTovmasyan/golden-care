@@ -5,6 +5,7 @@ namespace App\Entity\Assessment;
 use App\Entity\Space;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -14,6 +15,15 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 /**
  * @ORM\Table(name="tbl_assessment_category")
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\CategoryRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_assessment_category_add",
+ *          "api_admin_assessment_category_edit"
+ *     }
+ * )
  * @Grid(
  *     api_admin_assessment_category_grid={
  *          {

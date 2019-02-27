@@ -128,17 +128,11 @@ class BaseController extends Controller
      */
     protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
-        $fields = $this->getGrid($entityName)->getGroupOptions($groupName);
-
         /** @var Serializer $serializer */
         $serializer = $this->get('jms_serializer');
 
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
         $service->gridSelect($queryBuilder, $params);
-
-        foreach ($fields as $field) {
-            $queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
-        }
 
         $paginator = new Paginator($queryBuilder);
 

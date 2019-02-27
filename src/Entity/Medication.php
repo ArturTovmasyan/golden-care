@@ -19,9 +19,7 @@ use JMS\Serializer\Annotation\Groups;
  *     message="This title is already in use on that space",
  *     groups={
  *          "api_admin_medication_add",
- *          "api_admin_medication_edit",
- *          "api_admin_resident_medication_allergy_add",
- *          "api_admin_resident_medication_allergy_edit"
+ *          "api_admin_medication_edit"
  *     }
  * )
  * @Grid(

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -13,6 +14,15 @@ use App\Annotation\Grid;
  * Class ResponsiblePersonRole
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResponsiblePersonRoleRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_responsible_person_role_add",
+ *          "api_admin_responsible_person_role_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_responsible_person_role")
  * @Grid(
  *     api_admin_responsible_person_role_grid={

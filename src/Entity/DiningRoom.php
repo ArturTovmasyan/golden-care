@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -13,6 +14,14 @@ use App\Annotation\Grid;
  * Class DiningRoom
  *
  * @ORM\Entity(repositoryClass="App\Repository\DiningRoomRepository")
+ * @UniqueEntity(
+ *     fields={"facility", "title"},
+ *     errorPath="number",
+ *     message="This title is already in use on that facility",
+ *     groups={
+ *         "api_admin_dining_room_add",
+ *         "api_admin_dining_room_edit"
+ * })
  * @ORM\Table(name="tbl_dining_room")
  * @Grid(
  *     api_admin_dining_room_grid={

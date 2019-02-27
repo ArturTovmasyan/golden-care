@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -15,6 +16,15 @@ use App\Annotation\Grid;
  * Class CareLevelGroup
  *
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\CareLevelGroupRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_assessment_care_level_group_add",
+ *          "api_admin_assessment_care_level_group_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_assessment_care_level_group")
  * @Grid(
  *     api_admin_assessment_care_level_group_grid={

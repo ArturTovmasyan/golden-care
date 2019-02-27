@@ -223,9 +223,14 @@ class Grid
 
         $this->queryBuilder = $this->em->createQueryBuilder();
         $options            = $this->getGroupOptionsById($groupName);
+        $fields             = $this->getGroupOptions($groupName);
 
-        if (!$options) {
+        if (!$fields || !$options) {
             return false;
+        }
+
+        foreach ($fields as $field) {
+            $this->queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
         }
 
         // set page

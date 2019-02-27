@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -16,6 +17,15 @@ use JMS\Serializer\Annotation as Serializer;
  * Class Form
  *
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\FormRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_assessment_form_add",
+ *          "api_admin_assessment_form_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_assessment_form")
  * @Grid(
  *     api_admin_assessment_form_grid={

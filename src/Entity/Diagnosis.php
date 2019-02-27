@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -13,6 +14,15 @@ use App\Annotation\Grid;
  * Class Diagnosis
  *
  * @ORM\Entity(repositoryClass="App\Repository\DiagnosisRepository")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space",
+ *     groups={
+ *          "api_admin_diagnosis_add",
+ *          "api_admin_diagnosis_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_diagnosis")
  * @Grid(
  *     api_admin_diagnosis_grid={
