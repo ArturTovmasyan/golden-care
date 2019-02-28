@@ -246,7 +246,7 @@ class RelationshipController extends BaseController
      */
     public function addAction(Request $request, RelationshipService $relationshipService)
     {
-        $relationshipService->add(
+        $id = $relationshipService->add(
             [
                 'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
@@ -254,7 +254,9 @@ class RelationshipController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

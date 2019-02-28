@@ -338,7 +338,7 @@ class ResidentContractController extends BaseController
      */
     public function addAction(Request $request, ContractService $contractService)
     {
-        $contractService->add(
+        $id = $contractService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'type' => $request->get('type'),
@@ -349,7 +349,9 @@ class ResidentContractController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

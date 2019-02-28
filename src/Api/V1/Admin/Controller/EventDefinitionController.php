@@ -300,7 +300,7 @@ class EventDefinitionController extends BaseController
      */
     public function addAction(Request $request, EventDefinitionService $eventDefinitionService)
     {
-        $eventDefinitionService->add(
+        $id = $eventDefinitionService->add(
             [
                 'title' => $request->get('title'),
                 'ffc' => $request->get('ffc'),
@@ -314,7 +314,9 @@ class EventDefinitionController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

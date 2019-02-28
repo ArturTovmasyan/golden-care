@@ -278,7 +278,7 @@ class ResidentMedicalHistoryConditionController extends BaseController
      */
     public function addAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
     {
-        $residentMedicalHistoryConditionService->add(
+        $id = $residentMedicalHistoryConditionService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'condition_id' => $request->get('condition_id'),
@@ -288,7 +288,9 @@ class ResidentMedicalHistoryConditionController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

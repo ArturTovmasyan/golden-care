@@ -313,7 +313,7 @@ class ResidentEventController extends BaseController
      */
     public function addAction(Request $request, ResidentEventService $residentEventService)
     {
-        $residentEventService->add(
+        $id = $residentEventService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'definition_id' => $request->get('definition_id'),
@@ -326,7 +326,9 @@ class ResidentEventController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

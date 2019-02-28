@@ -232,14 +232,16 @@ class SpaceController extends BaseController
      */
     public function addAction(Request $request, SpaceService $spaceService)
     {
-        $spaceService->add(
+        $id = $spaceService->add(
             [
                 'name' => $request->get('name')
             ]
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

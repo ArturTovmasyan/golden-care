@@ -58,8 +58,9 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Category $entity
@@ -84,11 +85,15 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
 
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $careLevelGroup->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

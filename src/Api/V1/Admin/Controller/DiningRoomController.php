@@ -253,7 +253,7 @@ class DiningRoomController extends BaseController
      */
     public function addAction(Request $request, DiningRoomService $diningRoomService)
     {
-        $diningRoomService->add(
+        $id = $diningRoomService->add(
             [
                 'title'       => $request->get('title'),
                 'facility_id' => $request->get('facility_id')
@@ -261,7 +261,9 @@ class DiningRoomController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

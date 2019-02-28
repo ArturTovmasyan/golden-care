@@ -76,8 +76,9 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -119,15 +120,18 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
 
             $this->validate($residentMedicalHistoryCondition, null, ['api_admin_resident_medical_history_condition_add']);
 
-            $this->em->persist($medicalHistoryCondition);
             $this->em->persist($residentMedicalHistoryCondition);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $residentMedicalHistoryCondition->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

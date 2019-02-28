@@ -268,7 +268,7 @@ class ResidentDietController extends BaseController
      */
     public function addAction(Request $request, ResidentDietService $residentDietService)
     {
-        $residentDietService->add(
+        $id = $residentDietService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'diet_id' => $request->get('diet_id'),
@@ -277,7 +277,9 @@ class ResidentDietController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

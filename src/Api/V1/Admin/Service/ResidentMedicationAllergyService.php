@@ -76,8 +76,9 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -110,15 +111,18 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
             $this->validate($residentMedicationAllergy, null, ['api_admin_resident_medication_allergy_add']);
 
-            $this->em->persist($medication);
             $this->em->persist($residentMedicationAllergy);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $residentMedicationAllergy->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

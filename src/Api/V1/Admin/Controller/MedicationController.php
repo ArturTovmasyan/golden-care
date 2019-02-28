@@ -246,7 +246,7 @@ class MedicationController extends BaseController
      */
     public function addAction(Request $request, MedicationService $medicationService)
     {
-        $medicationService->add(
+        $id = $medicationService->add(
             [
                 'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
@@ -254,7 +254,9 @@ class MedicationController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

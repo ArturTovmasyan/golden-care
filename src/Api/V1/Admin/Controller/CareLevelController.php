@@ -280,7 +280,7 @@ class CareLevelController extends BaseController
      */
     public function addAction(Request $request, CareLevelService $careLevelService)
     {
-        $careLevelService->add(
+        $id = $careLevelService->add(
             [
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
@@ -289,7 +289,9 @@ class CareLevelController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

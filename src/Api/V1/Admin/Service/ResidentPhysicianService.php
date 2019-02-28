@@ -84,8 +84,9 @@ class ResidentPhysicianService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Resident $resident
@@ -143,11 +144,15 @@ class ResidentPhysicianService extends BaseService implements IGridService
             $this->em->persist($residentPhysician);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $residentPhysician->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

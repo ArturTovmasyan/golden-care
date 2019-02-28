@@ -327,7 +327,7 @@ class ResidentRentController extends BaseController
      */
     public function addAction(Request $request, ResidentRentService $residentRentService)
     {
-        $residentRentService->add(
+        $id = $residentRentService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'start' => $request->get('start'),
@@ -340,7 +340,9 @@ class ResidentRentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

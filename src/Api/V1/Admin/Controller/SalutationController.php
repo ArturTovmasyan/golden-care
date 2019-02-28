@@ -275,7 +275,7 @@ class SalutationController extends BaseController
      */
     public function addAction(Request $request, SalutationService $salutationService)
     {
-        $salutationService->add(
+        $id = $salutationService->add(
             [
                 'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
@@ -283,7 +283,9 @@ class SalutationController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

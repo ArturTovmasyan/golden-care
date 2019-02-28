@@ -370,7 +370,7 @@ class ResidentMedicationController extends BaseController
      */
     public function addAction(Request $request, ResidentMedicationService $residentMedicationService)
     {
-        $residentMedicationService->add(
+        $id = $residentMedicationService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'physician_id' => $request->get('physician_id'),
@@ -391,7 +391,9 @@ class ResidentMedicationController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

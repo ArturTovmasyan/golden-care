@@ -76,8 +76,9 @@ class ResidentDiagnosisService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -111,15 +112,18 @@ class ResidentDiagnosisService extends BaseService implements IGridService
 
             $this->validate($residentDiagnosis, null, ['api_admin_resident_diagnosis_add']);
 
-            $this->em->persist($diagnosis);
             $this->em->persist($residentDiagnosis);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $residentDiagnosis->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

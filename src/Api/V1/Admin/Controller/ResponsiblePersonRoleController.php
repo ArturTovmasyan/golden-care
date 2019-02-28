@@ -253,7 +253,7 @@ class ResponsiblePersonRoleController extends BaseController
      */
     public function addAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
     {
-        $responsiblePersonRoleService->add(
+        $id = $responsiblePersonRoleService->add(
             [
                 'space_id' => $request->get('space_id'),
                 'title'    => $request->get('title')
@@ -261,7 +261,9 @@ class ResponsiblePersonRoleController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

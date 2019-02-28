@@ -85,8 +85,9 @@ class ResidentEventService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -188,11 +189,15 @@ class ResidentEventService extends BaseService implements IGridService
             $this->em->persist($residentEvent);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $residentEvent->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

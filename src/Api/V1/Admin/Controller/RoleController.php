@@ -258,7 +258,7 @@ class RoleController extends BaseController
      */
     public function addAction(Request $request, RoleService $roleService)
     {
-        $roleService->add(
+        $id = $roleService->add(
             [
                 'name'          => $request->get('name'),
                 'grants'        => $request->get('grants'),
@@ -267,7 +267,9 @@ class RoleController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

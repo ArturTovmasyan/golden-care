@@ -334,7 +334,7 @@ class ApartmentController extends BaseController
      */
     public function addAction(Request $request, ApartmentService $apartmentService)
     {
-        $apartmentService->add(
+        $id = $apartmentService->add(
             [
                 'name' => $request->get('name'),
                 'description' => $request->get('description') ?? '',
@@ -351,7 +351,9 @@ class ApartmentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

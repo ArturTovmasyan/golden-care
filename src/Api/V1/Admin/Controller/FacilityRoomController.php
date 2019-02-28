@@ -321,7 +321,7 @@ class FacilityRoomController extends BaseController
      */
     public function addAction(Request $request, FacilityRoomService $facilityRoomService)
     {
-        $facilityRoomService->add(
+        $id = $facilityRoomService->add(
             [
                 'facility_id' => $request->get('facility_id'),
                 'number' => $request->get('number'),
@@ -332,7 +332,9 @@ class FacilityRoomController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

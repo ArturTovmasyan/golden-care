@@ -57,8 +57,9 @@ class AssessmentCategoryService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Category $entity
@@ -86,11 +87,15 @@ class AssessmentCategoryService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $category->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

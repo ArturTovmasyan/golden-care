@@ -268,7 +268,7 @@ class DiagnosisController extends BaseController
      */
     public function addAction(Request $request, DiagnosisService $diagnosisService)
     {
-        $diagnosisService->add(
+        $id = $diagnosisService->add(
             [
                 'title' => $request->get('title'),
                 'acronym' => $request->get('acronym') ?? '',
@@ -278,7 +278,9 @@ class DiagnosisController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

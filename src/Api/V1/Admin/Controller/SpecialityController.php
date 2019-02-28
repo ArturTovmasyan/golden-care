@@ -253,7 +253,7 @@ class SpecialityController extends BaseController
      */
     public function addAction(Request $request, SpecialityService $specialityService)
     {
-        $specialityService->add(
+        $id = $specialityService->add(
             [
                 'space_id' => $request->get('space_id'),
                 'title'    => $request->get('title')
@@ -261,7 +261,9 @@ class SpecialityController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

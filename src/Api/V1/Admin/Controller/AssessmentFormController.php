@@ -282,7 +282,7 @@ class AssessmentFormController extends BaseController
      */
     public function addAction(Request $request, AssessmentFormService $formService)
     {
-        $formService->add(
+        $id = $formService->add(
             [
                 'title'             => $request->get('title'),
                 'space_id'          => $request->get('space_id'),
@@ -292,7 +292,9 @@ class AssessmentFormController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

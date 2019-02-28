@@ -252,7 +252,7 @@ class MedicationFormFactorController extends BaseController
      */
     public function addAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
     {
-        $medicationFormFactorService->add(
+        $id = $medicationFormFactorService->add(
             [
                 'title' => $request->get('title'),
                 'space_id' => $request->get('space_id')
@@ -260,7 +260,9 @@ class MedicationFormFactorController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

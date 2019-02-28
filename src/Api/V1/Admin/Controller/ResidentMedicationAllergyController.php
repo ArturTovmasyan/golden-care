@@ -269,7 +269,7 @@ class ResidentMedicationAllergyController extends BaseController
      */
     public function addAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
     {
-        $residentMedicationAllergyService->add(
+        $id = $residentMedicationAllergyService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'medication_id' => $request->get('medication_id'),
@@ -278,7 +278,9 @@ class ResidentMedicationAllergyController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

@@ -284,7 +284,7 @@ class UserController extends BaseController
      */
     public function addAction(Request $request, UserService $userService)
     {
-        $userService->add(
+        $id = $userService->add(
             [
                 'first_name'  => $request->get('first_name'),
                 'last_name'   => $request->get('last_name'),
@@ -301,7 +301,9 @@ class UserController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

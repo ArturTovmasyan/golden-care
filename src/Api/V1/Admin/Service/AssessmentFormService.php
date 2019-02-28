@@ -62,8 +62,9 @@ class AssessmentFormService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             /**
              * @var Space $space
@@ -100,11 +101,15 @@ class AssessmentFormService extends BaseService implements IGridService
             $this->saveCategories($form, $params['categories']);
 
             $this->em->getConnection()->commit();
+
+            $insert_id = $form->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**

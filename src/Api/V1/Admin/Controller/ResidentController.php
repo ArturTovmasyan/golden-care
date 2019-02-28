@@ -535,7 +535,7 @@ class ResidentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_OK
         );
     }
 
@@ -626,7 +626,7 @@ class ResidentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_OK
         );
     }
 

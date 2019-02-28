@@ -338,7 +338,7 @@ class ResidentAssessmentController extends BaseController
      */
     public function addAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
-        $residentAssessmentService->add(
+        $id = $residentAssessmentService->add(
             [
                 'space_id'     => $request->get('space_id'),
                 'resident_id'  => $request->get('resident_id'),
@@ -351,7 +351,9 @@ class ResidentAssessmentController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

@@ -251,7 +251,7 @@ class AssessmentCategoryController extends BaseController
      */
     public function addAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
     {
-        $assessmentCategoryService->add(
+        $id = $assessmentCategoryService->add(
             [
                 'title'      => $request->get('title'),
                 'space_id'   => $request->get('space_id'),
@@ -261,7 +261,9 @@ class AssessmentCategoryController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

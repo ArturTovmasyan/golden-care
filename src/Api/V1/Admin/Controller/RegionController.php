@@ -284,7 +284,7 @@ class RegionController extends BaseController
      */
     public function addAction(Request $request, RegionService $regionService)
     {
-        $regionService->add(
+        $id = $regionService->add(
             [
                 'name' => $request->get('name'),
                 'description' => $request->get('description') ?? '',
@@ -296,7 +296,9 @@ class RegionController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

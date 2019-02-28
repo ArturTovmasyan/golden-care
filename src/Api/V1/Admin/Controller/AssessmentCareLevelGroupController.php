@@ -237,7 +237,7 @@ class AssessmentCareLevelGroupController extends BaseController
      */
     public function addAction(Request $request, AssessmentCareLevelGroupService $careLevelGroupService)
     {
-        $careLevelGroupService->add(
+        $id = $careLevelGroupService->add(
             [
                 'title'    => $request->get('title'),
                 'space_id' => $request->get('space_id')
@@ -245,7 +245,9 @@ class AssessmentCareLevelGroupController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

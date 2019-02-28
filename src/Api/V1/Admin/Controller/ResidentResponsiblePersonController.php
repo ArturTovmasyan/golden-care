@@ -269,7 +269,7 @@ class ResidentResponsiblePersonController extends BaseController
      */
     public function addAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
     {
-        $residentResponsiblePersonService->add(
+        $id = $residentResponsiblePersonService->add(
             [
                 'resident_id'           => $request->get('resident_id'),
                 'responsible_person_id' => $request->get('responsible_person_id'),
@@ -279,7 +279,9 @@ class ResidentResponsiblePersonController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

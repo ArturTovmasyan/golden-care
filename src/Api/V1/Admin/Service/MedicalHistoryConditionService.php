@@ -56,8 +56,9 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function add(array $params) : void
+    public function add(array $params) : ?int
     {
+        $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -78,11 +79,15 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
             $this->em->persist($medicalHistoryCondition);
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $medicalHistoryCondition->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+
+        return $insert_id;
     }
 
     /**
