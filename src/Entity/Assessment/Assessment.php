@@ -266,7 +266,7 @@ class Assessment
     /**
      * @return string
      */
-    public function getNotes(): string
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
@@ -274,7 +274,7 @@ class Assessment
     /**
      * @param string $notes
      */
-    public function setNotes(string $notes): void
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
     }
