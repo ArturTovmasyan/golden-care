@@ -33,9 +33,9 @@ class DiagnosisType
      * @var array
      */
     private static $typeValues = [
-        self::PRIMARY => '1',
-        self::SECONDARY => '2',
-        self::OTHER => '3',
+        self::PRIMARY => 1,
+        self::SECONDARY => 2,
+        self::OTHER => 3,
     ];
 
     /**
