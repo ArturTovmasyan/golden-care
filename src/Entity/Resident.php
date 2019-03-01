@@ -79,6 +79,8 @@ class Resident
      *      "api_admin_resident_rent_get",
      *      "api_admin_resident_event_list",
      *      "api_admin_resident_event_get",
+     *      "api_admin_resident_admission_list",
+     *      "api_admin_resident_admission_get",
      *      "api_admin_contract_list",
      *      "api_admin_contract_get",
      *      "api_admin_facility_room_list",
