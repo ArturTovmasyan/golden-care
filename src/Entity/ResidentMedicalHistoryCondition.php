@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -13,6 +14,15 @@ use App\Annotation\Grid;
  * Class ResidentMedicalHistoryCondition
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResidentMedicalHistoryConditionRepository")
+ * @UniqueEntity(
+ *     fields={"resident", "condition"},
+ *     errorPath="condition_id",
+ *     message="This value is already in use for this resident",
+ *     groups={
+ *          "api_admin_resident_medical_history_condition_add",
+ *          "api_admin_resident_medical_history_condition_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_resident_medical_history_condition")
  * @Grid(
  *     api_admin_resident_medical_history_condition_grid={
