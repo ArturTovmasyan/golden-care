@@ -25,7 +25,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)",
+ *              "field"      = "CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))",
  *              "link"       = ":edit"
  *          },
  *          {

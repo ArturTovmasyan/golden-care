@@ -26,7 +26,7 @@ use JMS\Serializer\Annotation\Groups;
  *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "CONCAT(sal.title, ' ', p.firstName, ' ', p.middleName, ' ', p.lastName)",
+ *              "field"      = "CONCAT(COALESCE(sal.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))",
  *              "link"       = ":edit"
  *          },
  *          {

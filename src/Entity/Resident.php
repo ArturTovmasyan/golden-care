@@ -23,7 +23,7 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
- *              "field"      = "CONCAT(sal.title, ' ', r.firstName, ' ', r.middleName, ' ', r.lastName)",
+ *              "field"      = "CONCAT(COALESCE(sal.title,''), ' ', COALESCE(r.firstName, ''), ' ', COALESCE(r.middleName, ''), ' ', COALESCE(r.lastName, ''))",
  *              "link"       = "/resident/:id"
  *          },
  *          {

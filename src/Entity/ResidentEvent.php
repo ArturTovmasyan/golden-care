@@ -41,12 +41,12 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "physician",
  *              "type"       = "string",
- *              "field"      = "CONCAT(ps.title, ' ', p.firstName, ' ', p.lastName)"
+ *              "field"      = "CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))"
  *          },
  *          {
  *              "id"         = "responsible_person",
  *              "type"       = "string",
- *              "field"      = "CONCAT(rps.title, ' ', rp.firstName, ' ', rp.lastName)"
+ *              "field"      = "CONCAT(COALESCE(rps.title,''), ' ', COALESCE(rp.firstName, ''), ' ', COALESCE(rp.middleName, ''), ' ', COALESCE(rp.lastName, ''))"
  *          },
  *          {
  *              "id"         = "additional_date",

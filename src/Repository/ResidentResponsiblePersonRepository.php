@@ -8,6 +8,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonRole;
+use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -51,6 +52,12 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                 'role',
                 Join::WITH,
                 'role = rrp.role'
+            )
+            ->innerJoin(
+                Salutation::class,
+                'rps',
+                Join::WITH,
+                'rps = rp.salutation'
             );
 
         if ($space !== null) {
