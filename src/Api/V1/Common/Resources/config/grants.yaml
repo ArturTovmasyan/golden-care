@@ -234,11 +234,8 @@ persistence:
 
         admission:
           title: 'ResidentAdmission'
-          children:
-            admission:
-              title: 'ResidentAdmission'
-              class: App\Entity\ResidentAdmission
-              route: api_admin_resident_admission_list
+          class: App\Entity\ResidentAdmission
+          route: api_admin_resident_admission_list
 
         contract:
           title: 'Contract'

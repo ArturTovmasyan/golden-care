@@ -27,7 +27,7 @@ use App\Annotation\Grant as Grant;
  *
  * @Route("/api/v1.0/admin/resident/admission")
  *
- * @Grant(grant="persistence-resident-admission-admission", level="VIEW")
+ * @Grant(grant="persistence-resident-admission", level="VIEW")
  *
  * Class AdmissionController
  * @package App\Api\V1\Admin\Controller
@@ -394,7 +394,7 @@ class ResidentAdmissionController extends BaseController
      *
      * @Route("", name="api_admin_resident_admission_add", methods={"POST"})
      *
-     * @Grant(grant="persistence-resident-admission-admission", level="ADD")
+     * @Grant(grant="persistence-resident-admission", level="ADD")
      *
      * @param Request $request
      * @param ResidentAdmissionService $residentAdmissionService
@@ -502,7 +502,7 @@ class ResidentAdmissionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_admission_edit", methods={"PUT"})
      *
-     * @Grant(grant="persistence-resident-admission-admission", level="EDIT")
+     * @Grant(grant="persistence-resident-admission", level="EDIT")
      *
      * @param Request $request
      * @param $id
@@ -559,7 +559,7 @@ class ResidentAdmissionController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_admission_delete", methods={"DELETE"})
      *
-     * @Grant(grant="persistence-resident-admission-admission", level="DELETE")
+     * @Grant(grant="persistence-resident-admission", level="DELETE")
      *
      * @param $id
      * @param ResidentAdmissionService $residentAdmissionService
@@ -603,7 +603,7 @@ class ResidentAdmissionController extends BaseController
      *
      * @Route("", name="api_admin_resident_admission_delete_bulk", methods={"DELETE"})
      *
-     * @Grant(grant="persistence-resident-admission-admission", level="DELETE")
+     * @Grant(grant="persistence-resident-admission", level="DELETE")
      *
      * @param Request $request
      * @param ResidentAdmissionService $residentAdmissionService
