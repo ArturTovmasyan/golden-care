@@ -21,6 +21,7 @@ class Grid
     const FIELD_OPTION_AVAILABLE_VALUES = 'values';
     const FIELD_OPTION_LINK             = 'link';
     const FIELD_OPTION_HIDDEN           = 'hidden';
+    const FIELD_OPTION_SORT_TYPE        = 'sort_type';
 
     /**
      * Field types
@@ -45,7 +46,8 @@ class Grid
         self::FIELD_OPTION_ORIGINAL,
         self::FIELD_OPTION_AVAILABLE_VALUES,
         self::FIELD_OPTION_LINK,
-        self::FIELD_OPTION_HIDDEN
+        self::FIELD_OPTION_HIDDEN,
+        self::FIELD_OPTION_SORT_TYPE
     ];
 
     /**
@@ -98,6 +100,7 @@ class Grid
                     self::FIELD_OPTION_AVAILABLE_VALUES => null,
                     self::FIELD_OPTION_LINK             => null,
                     self::FIELD_OPTION_HIDDEN           => false,
+                    self::FIELD_OPTION_SORT_TYPE        => null,
                 ];
 
                 foreach ($groupOption as $key => $fieldOption) {
@@ -252,11 +255,25 @@ class Grid
 
                 $key = strtolower($key);
 
-                if (!isset($options[$key]['sortable']) || !$options[$key]['sortable'] || !isset($options[$key]['field'])) {
+                if (!isset($options[$key][self::FIELD_OPTION_SORTABLE])
+                    || !$options[$key][self::FIELD_OPTION_SORTABLE]
+                    || !isset($options[$key]['field'])
+                ) {
                     continue;
                 }
 
-                $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                if (isset($options[$key][self::FIELD_OPTION_SORT_TYPE])) {
+                    switch ($options[$key][self::FIELD_OPTION_SORT_TYPE]) {
+                        case "natural":
+                            $this->queryBuilder->addOrderBy("NATURAL_SORT(".$options[$key]['field'] . ", 10, '.')", $sortType);
+                            break;
+                        default:
+                            $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                            break;
+                    }
+                } else {
+                    $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                }
             }
         }
 
