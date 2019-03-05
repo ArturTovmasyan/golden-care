@@ -58,6 +58,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
 
     /**
      * @param array $params
+     * @return int|null
      * @throws \Exception
      */
     public function add(array $params) : ?int

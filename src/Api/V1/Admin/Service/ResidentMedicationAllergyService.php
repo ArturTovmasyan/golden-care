@@ -74,6 +74,7 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
 
     /**
      * @param array $params
+     * @return int|null
      * @throws \Exception
      */
     public function add(array $params) : ?int
