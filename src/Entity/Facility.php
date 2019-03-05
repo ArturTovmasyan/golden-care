@@ -101,6 +101,7 @@ class Facility
      *     "api_admin_dining_room_get",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"
      * })
@@ -129,6 +130,7 @@ class Facility
      *     "api_admin_dining_room_get",
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"
      * })
@@ -171,6 +173,7 @@ class Facility
      *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"
      * })

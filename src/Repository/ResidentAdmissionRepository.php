@@ -11,6 +11,7 @@ use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\Space;
+use App\Model\AdmissionType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -234,6 +235,48 @@ class ResidentAdmissionRepository extends EntityRepository
             ->join('ra.resident', 'r')
             ->where('r.id=:id')
             ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('ra.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getActiveByResident(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->setParameter('id', $id)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
 
         if ($space !== null) {
             $qb

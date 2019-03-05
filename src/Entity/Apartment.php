@@ -99,6 +99,7 @@ class Apartment
      *     "api_admin_apartment_get",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"
      * })
@@ -124,6 +125,7 @@ class Apartment
      *     "api_admin_apartment_get",
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"
      * })
@@ -166,6 +168,7 @@ class Apartment
      *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
+     *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get"})
      */

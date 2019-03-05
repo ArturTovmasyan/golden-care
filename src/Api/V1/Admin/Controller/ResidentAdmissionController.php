@@ -633,10 +633,91 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @api {get} /api/v1.0/admin/resident/admission/{id}/active Get Active Admission
+     * @apiVersion 1.0.0
+     * @apiName Get Active Resident Admission
+     * @apiGroup Admin ResidentAdmissions
+     * @apiDescription This function is used to get active admission
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the admission
+     * @apiSuccess {Object}   resident             The resident of the admission
+     * @apiSuccess {Int}      group_type           The group type of the admission
+     * @apiSuccess {Int}      admission_type       The admission type of the admission
+     * @apiSuccess {String}   date                 The date of the admission
+     * @apiSuccess {String}   start                The start date of the admission
+     * @apiSuccess {String}   end                  The end date of the admission
+     * @apiSuccess {Object}   facility_bed         The facility bed of the admission
+     * @apiSuccess {Object}   dining_room          The dining room of the admission
+     * @apiSuccess {Boolean}  dnr                  The dnr of the admission
+     * @apiSuccess {Boolean}  polst                The polst of the admission
+     * @apiSuccess {Boolean}  ambulatory           The ambulatory of the admission
+     * @apiSuccess {Int}      care_group           The care group of the admission
+     * @apiSuccess {Object}   care_level           The care level of the admission
+     * @apiSuccess {Object}   apartment_bed        The apartment bed of the admission
+     * @apiSuccess {Object}   region               The region of the admission
+     * @apiSuccess {Object}   csz                  The city, state and zip of the admission
+     * @apiSuccess {String}   address              The address date of the admission
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                  "id": 1,
+     *                  "resident": {
+     *                      "id": 1
+     *                  },
+     *                  "group_type": 1,
+     *                  "admission_type": 1,
+     *                  "date": "2018-12-11T20:18:00+00:00",
+     *                  "start": "2018-12-11T20:18:00+00:00",
+     *                  "end": null,
+     *                  "facility_bed": {
+     *                      "id": 1,
+     *                      "number": "A"
+     *                   },
+     *                  "dining_room": {
+     *                      "id": 1,
+     *                      "title": "North Dining Room"
+     *                  },
+     *                  "dnr": false,
+     *                  "polst": false,
+     *                  "ambulatory": false,
+     *                  "care_group": 1,
+     *                  "care_level": {
+     *                      "id": 1,
+     *                      "title": "Level 1"
+     *                  },
+     *                  "apartment_bed": null,
+     *                  "region": null,
+     *                  "csz": null,
+     *                  "address": null
+     *          }
+     *     }
+     *
+     * @Route("/{id}/active", requirements={"id"="\d+"}, name="api_admin_admission_get_active", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getActiveAdmissionAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getActiveByResidentId($id),
+            ['api_admin_resident_admission_get_active']
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/admin/resident/admission/no-admission Get Residents No Admission
      * @apiVersion 1.0.0
      * @apiName Get Residents No Admission
-     * @apiGroup Admin Residents
+     * @apiGroup Admin ResidentAdmissions
      * @apiDescription This function is used to get Residents without admission
      *
      * @apiHeader {String} Content-Type  application/json
