@@ -10,11 +10,14 @@ use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
 use App\Entity\ContractAction;
+use App\Entity\ResidentAdmission;
 use App\Model\ContractType;
+use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\ApartmentRepository;
 use App\Repository\ApartmentRoomRepository;
 use App\Repository\ContractActionRepository;
+use App\Repository\ResidentAdmissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 
@@ -35,6 +38,136 @@ class ApartmentRoomService extends BaseService implements IGridService
 
         $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $queryBuilder);
     }
+
+//    public function list($params)
+//    {
+//        $currentSpace = $this->grantService->getCurrentSpace();
+//
+//        $vacant = false;
+//        if (!empty($params) && !empty($params[0]['vacant']) && $params[0]['vacant'] === 1) {
+//            $vacant = true;
+//        }
+//
+//        /** @var ApartmentRoomRepository $repo */
+//        $repo = $this->em->getRepository(ApartmentRoom::class);
+//
+//        if (!empty($params) && !empty($params[0]['apartment_id'])) {
+//            $apartmentId = $params[0]['apartment_id'];
+//
+//            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $apartmentId);
+//        } else {
+//            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class));
+//        }
+//
+//        if (!empty($rooms)) {
+//
+//            $roomIds = array_map(function(ApartmentRoom $item){return $item->getId();} , $rooms);
+//
+//            /** @var ResidentAdmissionRepository $admissionRepo */
+//            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+//
+//            /** @var ApartmentBedRepository $bedRepo */
+//            $bedRepo = $this->em->getRepository(ApartmentBed::class);
+//
+//            $apartmentBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+//            $bedIds = [];
+//            if (\count($apartmentBeds)) {
+//                $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
+//            }
+//
+//            if ($vacant) {
+//                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
+//
+//                $occupancyBedIds = [];
+//                if (!empty($residentAdmissions)) {
+//                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $residentAdmissions);
+//                }
+//
+//                /** @var ApartmentRoom $room */
+//                foreach ($rooms as $room) {
+//                    $beds = $room->getBeds();
+//
+//                    if (\count($beds)) {
+//                        /** @var ApartmentBed $bed */
+//                        foreach ($beds as $bed) {
+//                            if (\in_array($bed->getId(), $occupancyBedIds, false)) {
+//                                $room->removeBed($bed);
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
+//
+//                $admissions = [];
+//                if (!empty($residentAdmissions)) {
+//                    foreach ($residentAdmissions as $residentAdmission) {
+//                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
+//                    }
+//                }
+//
+//                /** @var ApartmentRoom $room */
+//                foreach ($rooms as $room) {
+//                    $beds = $room->getBeds();
+//
+//                    if (\count($beds)) {
+//                        /** @var ApartmentBed $bed */
+//                        foreach ($beds as $bed) {
+//                            if (!empty($admissions[$bed->getId()])) {
+//                                $bed->setResident($admissions[$bed->getId()]);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return $rooms;
+//    }
+//
+//    /**
+//     * @param $id
+//     * @return ApartmentRoom|null|object
+//     */
+//    public function getById($id)
+//    {
+//        $currentSpace = $this->grantService->getCurrentSpace();
+//
+//        /** @var ApartmentRoomRepository $repo */
+//        $repo = $this->em->getRepository(ApartmentRoom::class);
+//
+//        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
+//
+//        if ($room !== null) {
+//            /** @var ArrayCollection $beds */
+//            $beds = $room->getBeds();
+//
+//            if ($beds !== null) {
+//                $ids = array_map(function(ApartmentBed $item){return $item->getId();} , $beds->toArray());
+//
+//                /** @var ResidentAdmissionRepository $admissionRepo */
+//                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+//
+//                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $ids);
+//
+//                $admissions = [];
+//                if (!empty($residentAdmissions)) {
+//                    foreach ($residentAdmissions as $residentAdmission) {
+//                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
+//                    }
+//                }
+//
+//                /** @var ApartmentBed $bed */
+//                foreach ($beds as $bed) {
+//                    if (!empty($admissions[$bed->getId()])) {
+//                        $bed->setResident($admissions[$bed->getId()]);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return $room;
+//    }
 
     public function list($params)
     {
@@ -286,6 +419,15 @@ class ApartmentRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
+//                        /** @var ResidentAdmissionRepository $admissionRepo */
+//                        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+//
+//                        $admission = $admissionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $existingBed->getId());
+//
+//                        if ($admission !== null) {
+//                            throw new CanNotRemoveBadException();
+//                        }
+
                         /** @var ContractActionRepository $actionRepo */
                         $actionRepo = $this->em->getRepository(ContractAction::class);
 

@@ -3,11 +3,15 @@
 namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
+use App\Entity\ApartmentRoom;
 use App\Entity\CareLevel;
 use App\Entity\CityStateZip;
 use App\Entity\DiningRoom;
+use App\Entity\Facility;
 use App\Entity\FacilityBed;
+use App\Entity\FacilityRoom;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -480,5 +484,352 @@ class ResidentAdmissionRepository extends EntityRepository
             ->groupBy('r.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $ids
+     * @return mixed
+     */
+    public function getBeds(Space $space = null, array $entityGrants = null, $type, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->select('fb.id AS bedId')
+                    ->join('ra.facilityBed', 'fb')
+                    ->andWhere('fb.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->select('ab.id AS bedId')
+                    ->join('ra.apartmentBed', 'ab')
+                    ->andWhere('ab.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->select('reg.id AS regionId')
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $ids
+     * @return mixed
+     */
+    public function getResidentsByBeds(Space $space = null, array $entityGrants = null, $type, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'ra AS admission',
+                'r AS resident'
+            )
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect('fb.id AS bedId')
+                    ->join('ra.facilityBed', 'fb')
+                    ->andWhere('fb.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect('ab.id AS bedId')
+                    ->join('ra.apartmentBed', 'ab')
+                    ->andWhere('ab.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect('reg.id AS regionId')
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
+    public function getResidentByBed(Space $space = null, array $entityGrants = null, $type, $id)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select('r.id AS residentId')
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->join('ra.facilityBed', 'fb')
+                    ->andWhere('fb.id=:id')
+                    ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->join('ra.apartmentBed', 'ab')
+                    ->andWhere('ab.id=:id')
+                    ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id=:id')
+                    ->setParameter('id', $id);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

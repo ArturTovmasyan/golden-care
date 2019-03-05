@@ -121,10 +121,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
      */
     public function getInactiveResidentsByStrategy($type, $id)
     {
-        /** @var ResidentAdmissionRepository $actionRepo */
-        $actionRepo = $this->em->getRepository(ResidentAdmission::class);
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
 
-        return $actionRepo->getInactiveResidentsByStrategy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $id);
+        return $repo->getInactiveResidentsByStrategy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $id);
     }
 
     /**
