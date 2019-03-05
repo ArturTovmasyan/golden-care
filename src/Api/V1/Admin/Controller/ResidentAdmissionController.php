@@ -761,6 +761,53 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @api {get} /api/v1.0/admin/resident/admission/inactive/{type}/{id} Get Inactive Residents
+     * @apiVersion 1.0.0
+     * @apiName Get Inactive Residents
+     * @apiGroup Admin ResidentAdmissions
+     * @apiDescription This function is used to get inactive Residents
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the resident
+     * @apiSuccess {String}   first_name           The firstName of the resident
+     * @apiSuccess {String}   last_name            The lastName of the resident
+     * @apiSuccess {String}   salutation           The salutation of the resident
+     * @apiSuccess {String}   room_number          The room number of the resident
+     * @apiSuccess {String}   bed_number           The bed number of the resident
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                   "id": 4,
+     *                   "first_name": FirstName,
+     *                   "last_name": LastName,
+     *                   "salutation": Mr.,
+     *                   "room_number": 106,
+     *                   "bed_number": C,
+     *          }
+     *     }
+     *
+     * @Route("/inactive/{type}/{id}", requirements={"type"="\d+", "id"="\d+"}, name="api_admin_resident_admission_get_inactive_residents", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param $type
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getInactiveResidentsAction(Request $request, $type, $id, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getInactiveResidentsByStrategy($type, $id),
+            ['api_admin_resident_get_inactive']
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/admin/resident/admission/no-admission Get Residents No Admission
      * @apiVersion 1.0.0
      * @apiName Get Residents No Admission

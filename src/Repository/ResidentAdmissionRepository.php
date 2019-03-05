@@ -327,12 +327,6 @@ class ResidentAdmissionRepository extends EntityRepository
             ->leftJoin('r.salutation', 'rs')
             ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
-//            ->andWhere('ra.id IN (SELECT MAX(mra.id)
-//                        FROM App:ResidentAdmission mra
-//                        JOIN mra.resident res
-//                        WHERE mra.admissionType < :admissionType AND mra.end IS NULL
-//                        GROUP BY res.id)'
-//            )
             ->setParameter('type', $type)
             ->setParameter('admissionType', AdmissionType::DISCHARGE);
 
@@ -390,6 +384,100 @@ class ResidentAdmissionRepository extends EntityRepository
         }
 
         return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
+    public function getInactiveResidentsByStrategy(Space $space = null, array $entityGrants = null, $type, $id)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'MAX(ra.id) AS HIDDEN raId',
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->join('ra.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->andWhere('ra.id IN (SELECT MAX(mra.id)
+                        FROM App:ResidentAdmission mra
+                        WHERE mra.admissionType = :admissionType AND mra.end IS NULL)'
+            )
+            ->andWhere('r.id NOT IN (SELECT ar.id
+                        FROM App:ResidentAdmission ara
+                        JOIN ara.resident ar
+                        WHERE ara.admissionType < :admissionType AND ara.end IS NULL)'
+            )
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fb.number AS bed_number'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->andWhere('fbrf.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'ab.number AS bed_number'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra')
+                    ->andWhere('abra.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }
