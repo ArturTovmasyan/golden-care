@@ -90,6 +90,17 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
+     * @return Resident|null|object
+     */
+    public function getNoAdmissionResidents()
+    {
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        return $repo->getNoAdmissionResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class));
+    }
+
+    /**
      * @param array $params
      * @throws \Exception
      */
@@ -119,6 +130,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setResident($resident);
             $entity->setGroupType($type);
             $entity->setAdmissionType($admissionType);
+            $entity->setNotes($params['notes']);
 
             $date = $params['date'];
 
@@ -198,6 +210,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             $entity->setResident($resident);
             $entity->setAdmissionType($admissionType);
+            $entity->setNotes($params['notes']);
 
             $date = $params['date'];
 

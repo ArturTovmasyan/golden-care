@@ -470,6 +470,29 @@ class ResidentAdmission
     private $careLevel;
 
     /**
+     * @var string $notes
+     * @ORM\Column(name="notes", type="text", length=512, nullable=true)
+     * @Assert\Length(
+     *      max = 512,
+     *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_facility_add",
+     *          "api_admin_facility_edit",
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit",
+     *          "api_admin_region_add",
+     *          "api_admin_region_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_admission_grid",
+     *     "api_admin_resident_admission_list",
+     *     "api_admin_resident_admission_get",
+     *     "api_admin_resident_admission_get_active"
+     * })
+     */
+    private $notes;
+
+    /**
      * @return int
      */
     public function getId() : ?int
@@ -743,5 +766,15 @@ class ResidentAdmission
     public function setCareLevel(?CareLevel $careLevel): void
     {
         $this->careLevel = $careLevel;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): void
+    {
+        $this->notes = $notes;
     }
 }

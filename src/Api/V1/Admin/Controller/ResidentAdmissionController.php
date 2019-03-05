@@ -341,6 +341,7 @@ class ResidentAdmissionController extends BaseController
      * @apiParam {Int}     ambulatory          The ambulatory of the admission
      * @apiParam {Int}     care_group          The care group of the admission
      * @apiParam {Int}     care_level_id       The unique identifier of the care level
+     * @apiParam {String}  [notes]             The notes of the admission
      *
      * @apiParamExample {json} Facility Request:
      *     {
@@ -354,7 +355,8 @@ class ResidentAdmissionController extends BaseController
      *          "polst": 1
      *          "ambulatory": 1,
      *          "care_group": 5,
-     *          "care_level_id": 1
+     *          "care_level_id": 1,
+     *          "notes": "some notes"
      *     }
      * @apiParamExample {json} Apartment Request:
      *     {
@@ -363,6 +365,7 @@ class ResidentAdmissionController extends BaseController
      *          "admission_type": 1,
      *          "date": "2016-10-01",
      *          "apartment_bed_id": 1,
+     *          "notes": "some notes"
      *     }
      * @apiParamExample {json} Region Request:
      *     {
@@ -377,7 +380,8 @@ class ResidentAdmissionController extends BaseController
      *          "polst": 1,
      *          "ambulatory": 1,
      *          "care_group": 5,
-     *          "care_level": 1
+     *          "care_level": 1,
+     *          "notes": "some notes"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -419,7 +423,9 @@ class ResidentAdmissionController extends BaseController
                 'polst' => $request->get('polst'),
                 'ambulatory' => $request->get('ambulatory'),
                 'care_group' => $request->get('care_group'),
-                'care_level_id' => $request->get('care_level_id')
+                'care_level_id' => $request->get('care_level_id'),
+                'notes' => $request->get('notes') ?? ''
+
             ]
         );
 
@@ -452,6 +458,7 @@ class ResidentAdmissionController extends BaseController
      * @apiParam {Int}     ambulatory          The ambulatory of the admission
      * @apiParam {Int}     care_group          The care group of the admission
      * @apiParam {Int}     care_level_id       The unique identifier of the care level
+     * @apiParam {String}  [notes]             The notes of the admission
      *
      * @apiParamExample {json} Facility Request:
      *     {
@@ -464,7 +471,8 @@ class ResidentAdmissionController extends BaseController
      *          "polst": 1
      *          "ambulatory": 1,
      *          "care_group": 5,
-     *          "care_level_id": 1
+     *          "care_level_id": 1,
+     *          "notes": "some notes"
      *     }
      * @apiParamExample {json} Apartment Request:
      *     {
@@ -472,6 +480,7 @@ class ResidentAdmissionController extends BaseController
      *          "admission_type": 1,
      *          "date": "2016-10-01",
      *          "apartment_bed_id": 1,
+     *          "notes": "some notes"
      *     }
      * @apiParamExample {json} Region Request:
      *     {
@@ -485,7 +494,8 @@ class ResidentAdmissionController extends BaseController
      *          "polst": 1,
      *          "ambulatory": 1,
      *          "care_group": 5,
-     *          "care_level": 1
+     *          "care_level": 1,
+     *          "notes": "some notes"
      *     }
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 201 Created
@@ -528,7 +538,9 @@ class ResidentAdmissionController extends BaseController
                 'polst' => $request->get('polst'),
                 'ambulatory' => $request->get('ambulatory'),
                 'care_group' => $request->get('care_group'),
-                'care_level_id' => $request->get('care_level_id')
+                'care_level_id' => $request->get('care_level_id'),
+                'notes' => $request->get('notes') ?? ''
+
             ]
         );
 
@@ -617,6 +629,47 @@ class ResidentAdmissionController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/resident/admission/no-admission Get Residents No Admission
+     * @apiVersion 1.0.0
+     * @apiName Get Residents No Admission
+     * @apiGroup Admin Residents
+     * @apiDescription This function is used to get Residents without admission
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the resident
+     * @apiSuccess {String}   first_name           The firstName of the resident
+     * @apiSuccess {String}   last_name            The lastName of the resident
+     * @apiSuccess {String}   salutation           The salutation of the resident
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                   "id": 4,
+     *                   "first_name": FirstName,
+     *                   "last_name": LastName,
+     *                   "salutation": Mr.
+     *          }
+     *     }
+     *
+     * @Route("/no-admission",  name="api_admin_resident_get_no_admission", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     */
+    public function getNoAdmissionAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getNoAdmissionResidents(),
+            ['api_admin_resident_get_no_admission']
         );
     }
 }

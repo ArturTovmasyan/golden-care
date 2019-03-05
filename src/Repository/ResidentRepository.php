@@ -223,6 +223,48 @@ class ResidentRepository extends EntityRepository
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getNoAdmissionResidents(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->innerJoin('r.salutation', 'rs')
+            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $type
      * @param null $typeId
      * @param null $residentId
