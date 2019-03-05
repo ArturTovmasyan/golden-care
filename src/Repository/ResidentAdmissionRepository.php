@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Entity\ApartmentBed;
 use App\Entity\CareLevel;
 use App\Entity\CityStateZip;
@@ -12,6 +13,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\Space;
 use App\Model\AdmissionType;
+use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -301,5 +303,94 @@ class ResidentAdmissionRepository extends EntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
+    public function getActiveResidentsByStrategy(Space $space = null, array $entityGrants = null, $type, $id)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'rs.title AS salutation'
+            )
+            ->join('ra.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+//            ->andWhere('ra.id IN (SELECT MAX(mra.id)
+//                        FROM App:ResidentAdmission mra
+//                        JOIN mra.resident res
+//                        WHERE mra.admissionType < :admissionType AND mra.end IS NULL
+//                        GROUP BY res.id)'
+//            )
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fb.number AS bed_number'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->andWhere('fbrf.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'ab.number AS bed_number'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra')
+                    ->andWhere('abra.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id=:id')
+                    ->setParameter('id', $id);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 }

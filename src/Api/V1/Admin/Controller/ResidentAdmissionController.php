@@ -635,9 +635,9 @@ class ResidentAdmissionController extends BaseController
     /**
      * @api {get} /api/v1.0/admin/resident/admission/{id}/active Get Active Admission
      * @apiVersion 1.0.0
-     * @apiName Get Active Resident Admission
+     * @apiName Get Active Resident
      * @apiGroup Admin ResidentAdmissions
-     * @apiDescription This function is used to get active admission
+     * @apiDescription This function is used to get active resident
      *
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
@@ -697,19 +697,66 @@ class ResidentAdmissionController extends BaseController
      *          }
      *     }
      *
-     * @Route("/{id}/active", requirements={"id"="\d+"}, name="api_admin_admission_get_active", methods={"GET"})
+     * @Route("/{id}/active", requirements={"id"="\d+"}, name="api_admin_resident_admission_get_active_resident", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
      * @param $id
      * @return JsonResponse
      */
-    public function getActiveAdmissionAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
+    public function getActiveResidentAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
             $residentAdmissionService->getActiveByResidentId($id),
             ['api_admin_resident_admission_get_active']
+        );
+    }
+
+    /**
+     * @api {get} /api/v1.0/admin/resident/admission/active/{type}/{id} Get Active Residents
+     * @apiVersion 1.0.0
+     * @apiName Get Active Residents
+     * @apiGroup Admin ResidentAdmissions
+     * @apiDescription This function is used to get active Residents
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}      id                   The unique identifier of the resident
+     * @apiSuccess {String}   first_name           The firstName of the resident
+     * @apiSuccess {String}   last_name            The lastName of the resident
+     * @apiSuccess {String}   salutation           The salutation of the resident
+     * @apiSuccess {String}   room_number          The room number of the resident
+     * @apiSuccess {String}   bed_number           The bed number of the resident
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "data": {
+     *                   "id": 4,
+     *                   "first_name": FirstName,
+     *                   "last_name": LastName,
+     *                   "salutation": Mr.,
+     *                   "room_number": 106,
+     *                   "bed_number": C,
+     *          }
+     *     }
+     *
+     * @Route("/active/{type}/{id}", requirements={"type"="\d+", "id"="\d+"}, name="api_admin_resident_admission_get_active_residents", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param $type
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getActiveResidentsAction(Request $request, $type, $id, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getActiveResidentsByStrategy($type, $id),
+            ['api_admin_resident_get_active']
         );
     }
 
@@ -739,12 +786,12 @@ class ResidentAdmissionController extends BaseController
      *          }
      *     }
      *
-     * @Route("/no-admission",  name="api_admin_resident_get_no_admission", methods={"GET"})
+     * @Route("/no-admission",  name="api_admin_resident_admission_get_no_admission_resident", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      */
-    public function getNoAdmissionAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    public function getNoAdmissionResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
