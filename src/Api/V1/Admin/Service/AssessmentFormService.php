@@ -86,7 +86,7 @@ class AssessmentFormService extends BaseService implements IGridService
             $this->validate($form, null, ['api_admin_assessment_form_add']);
 
             /** @var CareLevelGroupRepository $careLevelGroupRepo */
-            $careLevelGroupRepo = $this->em->getRepository(Form::class);
+            $careLevelGroupRepo = $this->em->getRepository(CareLevelGroup::class);
 
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
@@ -158,7 +158,7 @@ class AssessmentFormService extends BaseService implements IGridService
             }
 
             /** @var CareLevelGroupRepository $careLevelGroupRepo */
-            $careLevelGroupRepo = $this->em->getRepository(Form::class);
+            $careLevelGroupRepo = $this->em->getRepository(CareLevelGroup::class);
 
             // add care level groups
             $groupIds = array_unique($params['care_level_groups']);
