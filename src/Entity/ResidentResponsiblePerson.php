@@ -132,10 +132,6 @@ class ResidentResponsiblePerson
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_responsible_person_add",
-     *     "api_admin_resident_responsible_person_edit"
-     * })
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
