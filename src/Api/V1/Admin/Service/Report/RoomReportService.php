@@ -52,7 +52,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return Payor
      */
-    public function getPayorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getPayorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -139,7 +139,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomList
      */
-    public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $type = $group;
         $typeId = $groupId;
@@ -218,7 +218,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomRent
      */
-    public function getRoomRentReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomRentReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -346,7 +346,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomRentMaster
      */
-    public function getRoomRentMasterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomRentMasterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -547,7 +547,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomRentMasterNew
      */
-    public function getRoomRentMasterNewReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomRentMasterNewReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -722,7 +722,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomVacancyList
      */
-    public function getRoomVacancyListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomVacancyListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -840,7 +840,7 @@ class RoomReportService extends BaseService
      * @param $dateTo
      * @return RoomOccupancyRate
      */
-    public function getRoomOccupancyRateReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getRoomOccupancyRateReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

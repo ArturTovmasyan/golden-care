@@ -50,7 +50,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return Profile
      */
-    public function getProfileReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getProfileReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -132,7 +132,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return FaceSheet
      */
-    public function getFaceSheetReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getFaceSheetReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -206,7 +206,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return ResidentDetailedRoster
      */
-    public function getDetailedRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getDetailedRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -269,7 +269,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return ResidentSimpleRoster
      */
-    public function getSimpleRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getSimpleRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $type = $group;
         $typeId = $groupId;
@@ -308,7 +308,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return DietaryRestriction
      */
-    public function getDietaryRestrictionsReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getDietaryRestrictionsReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -358,7 +358,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return SixtyDays
      */
-    public function getSixtyDaysReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getSixtyDaysReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -509,7 +509,7 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @return \App\Model\Report\ResidentEvent
      */
-    public function getEventReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getEventReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

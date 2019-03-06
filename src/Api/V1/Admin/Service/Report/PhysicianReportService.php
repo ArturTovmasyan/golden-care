@@ -25,7 +25,7 @@ class PhysicianReportService extends BaseService
      * @param $dateTo
      * @return PhysicianSimple
      */
-    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -95,7 +95,7 @@ class PhysicianReportService extends BaseService
      * @param $dateTo
      * @return PhysicianFull
      */
-    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo)
+    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

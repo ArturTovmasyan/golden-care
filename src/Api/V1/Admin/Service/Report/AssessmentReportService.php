@@ -24,9 +24,9 @@ class AssessmentReportService extends BaseService
      * @param $dateTo
      * @return ReportAssessment
      */
-    public function getBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo): ReportAssessment
+    public function getBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId): ReportAssessment
     {
-        return $this->getReportByType($residentId, AssessmentReportType::TYPE_BLANK);
+        return $this->getReportByType($assessmentId, AssessmentReportType::TYPE_BLANK);
     }
 
     /**
@@ -40,9 +40,9 @@ class AssessmentReportService extends BaseService
      * @param $dateTo
      * @return ReportAssessment
      */
-    public function getFilledReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo): ReportAssessment
+    public function getFilledReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId): ReportAssessment
     {
-        return $this->getReportByType($residentId, AssessmentReportType::TYPE_FILLED);
+        return $this->getReportByType($assessmentId, AssessmentReportType::TYPE_FILLED);
     }
 
     /**
@@ -50,7 +50,7 @@ class AssessmentReportService extends BaseService
      * @param $group
      * @return ReportAssessment
      */
-    private function getReportByType($residentId, $group): ReportAssessment
+    private function getReportByType($assessmentId, $group): ReportAssessment
     {
         $type = $group;
 
@@ -65,7 +65,7 @@ class AssessmentReportService extends BaseService
          * @var Assessment $assessment
          * @var Resident $resident
          */
-        $assessment = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $residentId);
+        $assessment = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $assessmentId);
 
         if ($assessment === null) {
             throw new AssessmentNotFoundException();

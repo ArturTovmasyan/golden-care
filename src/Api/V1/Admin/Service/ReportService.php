@@ -93,7 +93,7 @@ class ReportService
     {
         $config_filtered = $this->config;
 
-        foreach ( $config_filtered as $group => $config) {
+        foreach ($config_filtered as $group => $config) {
             foreach ($config['reports'] as $alias => $report) {
                 $grant = sprintf("report-%s-%s", $group, $alias);
                 if ($this->grantService->getCurrentUserHasGrant($grant) === false) {
@@ -101,7 +101,7 @@ class ReportService
                 }
             }
 
-            if(count($config_filtered[$group]['reports']) === 0) {
+            if (count($config_filtered[$group]['reports']) === 0) {
                 unset($config_filtered[$group]);
             }
         }
@@ -165,17 +165,18 @@ class ReportService
             $this->grantService
         );
 
-        $request_group = $request->get('type') ? (int) $request->get('type') : null;
+        $request_group = $request->get('type') ? (int)$request->get('type') : null;
         $request_groupAll = $request->get('type_all') ? (bool)$request->get('type_all') : null;
-        $request_groupId = $request->get('type_id') ? (int) $request->get('type_id') : null;
+        $request_groupId = $request->get('type_id') ? (int)$request->get('type_id') : null;
 
         $request_residentAll = $request->get('resident_all') ? (bool)$request->get('resident_all') : null;
-        $request_residentId = $request->get('resident_id') ? (int) $request->get('resident_id') : null;
+        $request_residentId = $request->get('resident_id') ? (int)$request->get('resident_id') : null;
 
         $request_date = $request->get('date') ?? null;
         $request_dateFrom = $request->get('date_from') ?? null;
         $request_dateTo = $request->get('date_to') ?? null;
 
+        $request_assessmentId = $request->get('assessment_id') ? (int)$request->get('assessment_id') : null;
 
         return $service->$action(
             $request_group,
@@ -185,13 +186,16 @@ class ReportService
             $request_residentId,
             $request_date,
             $request_dateFrom,
-            $request_dateTo
+            $request_dateTo,
+            $request_assessmentId
         );
     }
 
     private function checkParameters(Request $request, string $group, string $alias)
     {
         $request_param_map = [
+            'assessment_id' => 'assessment_id',
+
             'group' => 'type',
             'group_all' => 'type_all',
             'group_id' => 'type_id',
@@ -205,6 +209,8 @@ class ReportService
         ];
 
         $parameters = $this->config[$group]['reports'][$alias]['parameters'];
+
+        $assessmentId = $request->get('assessment_id') ?? null;
 
         $group = $request->get('type') ?? null;
         $groupAll = $request->get('type_all') ?? null;
@@ -228,6 +234,11 @@ class ReportService
         $configParameter['date'] = array_key_exists('date', $parameters);
         $configParameter['date_to'] = array_key_exists('date_to', $parameters);
         $configParameter['date_from'] = array_key_exists('date_from', $parameters);
+
+        // TODO: review temp solution
+        if ($assessmentId !== null) {
+            return;
+        }
 
         if ($group === null) {
             throw new IncorrectReportParameterException([$request_param_map['group']]);
