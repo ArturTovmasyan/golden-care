@@ -316,6 +316,49 @@ class ResidentAdmissionRepository extends EntityRepository
      * @param $id
      * @return mixed
      */
+    public function getDataByResident(Space $space = null, array $entityGrants = null, $type, $id)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('id', $id)
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $id
+     * @return mixed
+     */
     public function getActiveResidentsByStrategy(Space $space = null, array $entityGrants = null, $type, $id)
     {
         $qb = $this->createQueryBuilder('ra');

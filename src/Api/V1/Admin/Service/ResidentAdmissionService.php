@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -20,6 +21,7 @@ use App\Entity\FacilityBed;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
+use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\CareLevelRepository;
@@ -285,6 +287,127 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             $this->validate($entity, null, [$validationGroup]);
             $this->em->persist($entity);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Exception
+     */
+    public function move($id, array $params) : void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
+
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            $type = !empty($params['group_type']) ? (int)$params['group_type'] : 0;
+
+            /** @var ResidentAdmissionRepository $repo */
+            $repo = $this->em->getRepository(ResidentAdmission::class);
+
+            //assignment mode
+            if (!empty($params['move_id'])) {
+
+                /** @var ResidentAdmission $admission */
+                $admission = $repo->getDataByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $id);
+
+                if ($admission === null) {
+                    throw new ResidentAdmissionNotFoundException();
+                }
+
+                $moveId = (int)$params['move_id'];
+
+                switch ($type) {
+                    case GroupType::TYPE_FACILITY:
+                        /** @var FacilityBedRepository $facilityBedRepo */
+                        $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+
+                        /** @var FacilityBed $bed */
+                        $bed = $facilityBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $moveId);
+
+                        if ($bed === null) {
+                            throw new FacilityBedNotFoundException();
+                        }
+
+                        $now = new \DateTime('now');
+
+                        $entity = new ResidentAdmission();
+                        $entity->setResident($admission->getResident());
+                        $entity->setGroupType($admission->getGroupType());
+                        $entity->setAdmissionType(AdmissionType::READMIT);
+                        $entity->setStart($now);
+                        $entity->setDate($now);
+                        $entity->setFacilityBed($bed);
+                        $entity->setDiningRoom($admission->getDiningRoom());
+                        $entity->setDnr($admission->isDnr());
+                        $entity->setPolst($admission->isPolst());
+                        $entity->setAmbulatory($admission->isAmbulatory());
+                        $entity->setCareGroup($admission->getCareGroup());
+                        $entity->setCareLevel($admission->getCareLevel());
+                        $entity->setNotes($admission->getNotes());
+
+                        $this->em->persist($entity);
+
+                        $admission->setEnd($now);
+                        $this->em->persist($admission);
+
+                        break;
+                    case GroupType::TYPE_APARTMENT:
+                        /** @var ApartmentBedRepository $apartmentBedRepo */
+                        $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+
+                        /** @var ApartmentBed $bed */
+                        $bed = $apartmentBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $moveId);
+
+                        if ($bed === null) {
+                            throw new ApartmentBedNotFoundException();
+                        }
+
+                        $now = new \DateTime('now');
+
+                        $entity = new ResidentAdmission();
+                        $entity->setResident($admission->getResident());
+                        $entity->setGroupType($admission->getGroupType());
+                        $entity->setAdmissionType(AdmissionType::READMIT);
+                        $entity->setStart($now);
+                        $entity->setDate($now);
+                        $entity->setApartmentBed($bed);
+                        $entity->setNotes($admission->getNotes());
+
+                        $this->em->persist($entity);
+
+                        $admission->setEnd($now);
+                        $this->em->persist($admission);
+
+                        break;
+                    case GroupType::TYPE_REGION:
+                        throw new RegionCanNotHaveBedException();
+
+                        break;
+                    default:
+                        throw new IncorrectStrategyTypeException();
+                }
+            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();

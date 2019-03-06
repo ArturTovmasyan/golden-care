@@ -550,6 +550,64 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @api {put} /api/v1.0/admin/resident/admission/{id}/move Move Resident
+     * @apiVersion 1.0.0
+     * @apiName Move Resident
+     * @apiGroup Admin ResidentAdmissions
+     * @apiDescription This function is used to move resident
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int}     group_type  Strategy type of the resident
+     * @apiParam {Int}     move_id     The unique identifier where the resident to move
+     *
+     * @apiParamExample {json} Sample Response:
+     *     {
+     *          "group_type": "1",
+     *          "move_id": "1"
+     *     }
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 201 Created
+     *     {}
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 610,
+     *          "error": "Validation error",
+     *          "details": {
+     *              "type": "Sorry, this type is already in use."
+     *          }
+     *     }
+     *
+     * @Route("/{id}/move", requirements={"id"="\d+"}, name="api_admin_resident_admission_move", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-admission", level="EDIT")
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function moveAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
+    {
+        $residentAdmissionService->move(
+            $id,
+            [
+                'group_type'    => $request->get('group_type'),
+                'move_id' => $request->get('move_id')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @api {delete} /api/v1.0/admin/resident/admission/{id} Delete ResidentAdmission
      * @apiVersion 1.0.0
      * @apiName Delete ResidentAdmission
