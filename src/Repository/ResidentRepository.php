@@ -1347,7 +1347,7 @@ class ResidentRepository extends EntityRepository
     public function getAdmissionResidentsInfoWithCareGroupByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
     {
         /**
-         * @var ContractAction $contractAction
+         * @var ResidentAdmission $admission
          */
         $qb = $this->createQueryBuilder('r');
 
@@ -1392,7 +1392,7 @@ class ResidentRepository extends EntityRepository
             ->setParameter('admissionType', AdmissionType::DISCHARGE);
 
         switch ($type) {
-            case ContractType::TYPE_FACILITY:
+            case GroupType::TYPE_FACILITY:
                 $qb
                     ->addSelect(
                         'f.id as typeId,
@@ -1441,7 +1441,7 @@ class ResidentRepository extends EntityRepository
                         ->setParameter('typeId', $typeId);
                 }
                 break;
-            case ContractType::TYPE_REGION:
+            case GroupType::TYPE_REGION:
                 $qb
                     ->addSelect(
                         'ra.address as address,
@@ -1468,6 +1468,389 @@ class ResidentRepository extends EntityRepository
                 $qb
                     ->orderBy('reg.name')
                     ->addOrderBy('ra.careGroup');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($residentId) {
+            $qb
+                ->andWhere('r.id = :id')
+                ->setParameter('id', $residentId);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param null $typeId
+     * @param null $residentId
+     * @return mixed
+     */
+    public function getAdmissionDietaryRestrictionsInfo(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    {
+        /**
+         * @var ResidentAdmission $admission
+         */
+        $qb = $this->createQueryBuilder('r');
+
+        if ($residentId) {
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
+
+            $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
+
+            if ($admission === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            $type = $admission->getGroupType() ?? 0 ;
+        }
+
+        $qb
+            ->select(
+                'r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,        
+                    ra.groupType as type,
+                    (SELECT mra.start FROM App:ResidentAdmission mra
+                    WHERE mra.resident=r
+                    AND mra.id = (SELECT MIN(raMin.id) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
+                    )
+                    as startDate,
+                    ra.admissionType as state,
+                    ra.dnr as dnr,
+                    ra.polst as polst,
+                    ra.ambulatory as ambulatory,
+                    ra.careGroup as careGroup,
+                    cl.title as careLevel,
+                    r.birthday as birthday,
+                    r.gender as gender,
+                    sal.title as salutation'
+            )
+            ->innerJoin(
+                ResidentAdmission::class,
+                'ra',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->innerJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'r.salutation = sal'
+            )
+            ->innerJoin(
+                CareLevel::class,
+                'cl',
+                Join::WITH,
+                'ra.careLevel = cl'
+            )
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.address as address,
+                        f.license as license,
+                        f.phone as typePhone,
+                        f.fax as typeFax,
+                        fr.number as roomNumber,
+                        fr.floor as floor,
+                        fb.number as bedNumber,
+                        dr.title as diningRoom'
+                    )
+                    ->innerJoin(
+                        DiningRoom::class,
+                        'dr',
+                        Join::WITH,
+                        'ra.diningRoom = dr'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    );
+
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('dr.title')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'ra.address as address,
+                        csz.city as city,
+                        csz.stateAbbr as state,
+                        csz.zipMain as zip,
+                        reg.id as typeId,
+                        reg.name as typeName,
+                        reg.phone as typePhone,
+                        reg.fax as typeFax'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'ra.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('reg.name');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($residentId) {
+            $qb
+                ->andWhere('r.id = :id')
+                ->setParameter('id', $residentId);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param null $typeId
+     * @param null $residentId
+     * @return mixed
+     */
+    public function getAdmissionResidentsFullInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    {
+        /**
+         * @var ResidentAdmission $admission
+         */
+        $qb = $this->createQueryBuilder('r');
+
+        if ($residentId) {
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
+
+            $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
+
+            if ($admission === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            $type = $admission->getGroupType() ?? 0 ;
+        }
+
+        $qb
+            ->select(
+                'r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    ra.groupType as type,
+                    (SELECT mra.start FROM App:ResidentAdmission mra
+                    WHERE mra.resident=r
+                    AND mra.id = (SELECT MIN(raMin.id) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
+                    )
+                    as startDate,
+                    ra.admissionType as state,
+                    ra.dnr as dnr,
+                    ra.polst as polst,
+                    ra.ambulatory as ambulatory,
+                    ra.careGroup as careGroup,
+                    cl.title as careLevel,
+                    r.birthday as birthday,
+                    r.gender as gender,
+                    sal.title as salutation'
+            )
+            ->innerJoin(
+                ResidentAdmission::class,
+                'ra',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->innerJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'r.salutation = sal'
+            )
+            ->innerJoin(
+                CareLevel::class,
+                'cl',
+                Join::WITH,
+                'ra.careLevel = cl'
+            )
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.address as address,
+                        f.license as license,
+                        f.phone as typePhone,
+                        f.fax as typeFax,
+                        fr.number as roomNumber,
+                        fr.floor as floor,
+                        fb.number as bedNumber,
+                        dr.title as diningRoom'
+                    )
+                    ->innerJoin(
+                        DiningRoom::class,
+                        'dr',
+                        Join::WITH,
+                        'ra.diningRoom = dr'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    );
+
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'ra.address as address,
+                        csz.city as city,
+                        csz.stateAbbr as state,
+                        csz.zipMain as zip,
+                        reg.id as typeId,
+                        reg.name as typeName,
+                        reg.phone as typePhone,
+                        reg.fax as typeFax'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'ra.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('reg.name');
 
                 if ($typeId) {
                     $qb

@@ -5,3 +5,10 @@
 {% for datum in data.data %}
     {{ datum.typeId }}, {{ datum.typeName }}, {{ datum.id }},{{ datum.firstName }},{{ datum.lastName }},{{ datum.admitted|date("m/d/Y") }},{% if datum.discharged is not null %}{{ datum.discharged|date("m/d/Y") }}{% else %}N/A{% endif %},{{ datum.rpId }},{{ datum.rpFullName }},{{ datum.rpTitle }},{% if datum.rpPhoneTitle != 'N/A' %}{{ phoneType(datum.rpPhoneTitle) }}{% else %}{{ datum.rpPhoneTitle }}{% endif %},{{ datum.rpPhoneNumber }}{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_APARTMENT') %},{{ datum.careGroup }},{{ datum.careLevel }}{% endif %},
 {% endfor %}
+{#{{ data.strategy }} 60 Days Roster Report: {{ data.date|date("m/d/Y") }}#}
+{#{{ data.strategy }} ID,{{ data.strategy }} Name,Resident ID,Resident First Name,Resident Last Name,Admitted Date,Discharge Date,Responsible Person ID, Responsible Person Full Name,Relationship,Phone Type,Phone Number{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},Care Group,Level of Care{% endif %},#}
+
+
+{#{% for datum in data.data %}#}
+    {#{{ datum.typeId }}, {{ datum.typeName }}, {{ datum.id }},{{ datum.firstName }},{{ datum.lastName }},{{ datum.admitted|date("m/d/Y") }},{% if datum.discharged is not null %}{{ datum.discharged|date("m/d/Y") }}{% else %}N/A{% endif %},{{ datum.rpId }},{{ datum.rpFullName }},{{ datum.rpTitle }},{% if datum.rpPhoneTitle != 'N/A' %}{{ phoneType(datum.rpPhoneTitle) }}{% else %}{{ datum.rpPhoneTitle }}{% endif %},{{ datum.rpPhoneNumber }}{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},{{ datum.careGroup }},{{ datum.careLevel }}{% endif %},#}
+{#{% endfor %}#}

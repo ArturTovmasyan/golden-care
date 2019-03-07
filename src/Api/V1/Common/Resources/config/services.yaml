@@ -5,6 +5,7 @@ parameters:
     count.age.extension.class: App\Util\Twig\Extension\CountAgeExtension
     rent.period.extension.class: App\Util\Twig\Extension\RentPeriodExtension
     phone.type.extension.class: App\Util\Twig\Extension\PhoneTypeExtension
+    adission.type.extension.class: App\Util\Twig\Extension\AdmissionTypeExtension
 
 services:
     core.model.user.provider:
@@ -28,5 +29,9 @@ services:
           - { name: twig.extension }
     phone.type.extension:
         class: %phone.type.extension.class%
+        tags:
+          - { name: twig.extension }
+    adission.type.extension:
+        class: %adission.type.extension.class%
         tags:
           - { name: twig.extension }

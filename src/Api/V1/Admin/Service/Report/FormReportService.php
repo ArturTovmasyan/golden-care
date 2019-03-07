@@ -7,6 +7,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
 use App\Model\ContractType;
+use App\Model\GroupType;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
@@ -41,6 +42,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -73,6 +77,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -106,6 +113,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -138,6 +148,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -170,6 +183,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -203,6 +219,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -236,6 +255,9 @@ class FormReportService extends BaseService
 
         $type = $group;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -287,6 +309,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -332,6 +357,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -364,6 +392,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
@@ -397,6 +428,9 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }

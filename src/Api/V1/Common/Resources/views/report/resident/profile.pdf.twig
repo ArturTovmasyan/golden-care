@@ -84,6 +84,7 @@
                             <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
                         {% endif %}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
+                        {#<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{{ admissionType(resident['state']) }}</b></div>#}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                     </td>
                 </tr>
@@ -308,6 +309,7 @@
                             <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
                         {% endif %}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
+                        {#<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{{ admissionType(resident['state']) }}</b></div>#}
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                     </td>
                 </tr>
@@ -399,6 +401,7 @@
                                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">N/A</b></div>
                                     {% endif %}
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}</b></div>
+                                    {#<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{{ admissionType(resident['state']) }}</b></div>#}
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['state'] == 1 %}Active{% elseif resident['state'] > 1 %}Inactive{% endif %}</b></div>
                                 </td>
                             </tr>

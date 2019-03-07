@@ -32,7 +32,7 @@
             <tr style="font-size: 13px; border: none; margin-bottom: 0">
                 {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important"><b style="text-align: left">Room</b></td>{% endif %}
                 <td style="width: 250px !important"><b>Resident</b></td>
-                {% if resident.ambulatory is defined and resident.ambulatory %}<td style="width: 30px"><b>amb*</b></td>{% endif %}
+                {% if resident.ambulatory is defined %}<td style="width: 30px"><b>amb*</b></td>{% endif %}
                 <td style="width: 250px !important"><b>Physicians</b></td>
                 <td style="width: 250px !important"><b>Emergency Contacts</b></td>
                 <td style="width: 250px !important"><b>Billing Persons</b></td>
@@ -44,7 +44,7 @@
         <tr>
             {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</td>{% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
-            {% if resident.ambulatory is defined and resident.ambulatory %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
+            {% if resident.ambulatory is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
                 {% if resident['physicians'] is defined %}
                     {% for physician in resident['physicians'] %}
