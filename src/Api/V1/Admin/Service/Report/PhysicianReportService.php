@@ -39,6 +39,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
+//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residentIds = [];
 
@@ -50,6 +51,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
+//        $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
         $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $data = [];
@@ -109,6 +111,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
+//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $residentIds = [];
 
@@ -120,6 +123,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
+//        $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
         $physicians = $physicianRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $data = [];
