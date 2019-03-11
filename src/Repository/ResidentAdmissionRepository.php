@@ -1143,4 +1143,21 @@ class ResidentAdmissionRepository extends EntityRepository
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
+
+    /**
+     * @param ImtDateTimeInterval $dateTimeInterval
+     * @return QueryBuilder
+     */
+    public function getRoomListResidentAdmissionIntervalQb(ImtDateTimeInterval $dateTimeInterval): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('ra');
+        if ($dateTimeInterval) {
+            $qb
+                ->join('ra.resident', 'rar')
+                ->andWhere('(ra.start < = :end AND ra.start > = :start) OR (ra.start < :start AND (ra.end IS NULL OR ra.end > :start))')
+                ->setParameter('start', $dateTimeInterval->getStart())
+                ->setParameter('end', $dateTimeInterval->getEnd());
+        }
+        return $qb;
+    }
 }

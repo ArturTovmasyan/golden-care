@@ -18,6 +18,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Model\ContractType;
+use App\Model\GroupType;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
 use App\Model\Report\RoomOccupancyRate;
@@ -59,6 +60,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
@@ -76,6 +80,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
+//        $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
         $data = $repo->getRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
@@ -121,6 +126,7 @@ class RoomReportService extends BaseService
         $report->setPlace($place);
         $report->setTotal($total);
         $report->setSources($sources);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
@@ -144,6 +150,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
@@ -161,7 +170,8 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $data = $repo->getRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
+        $data = $repo->getAdmissionRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
+//        $data = $repo->getRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
@@ -200,6 +210,7 @@ class RoomReportService extends BaseService
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
@@ -225,6 +236,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
@@ -327,6 +341,7 @@ class RoomReportService extends BaseService
         $report->setPlace($place);
         $report->setTotal($total);
         $report->setResponsiblePersons($responsiblePersons);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
@@ -354,6 +369,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
@@ -528,6 +546,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomRentMaster();
         $report->setData($data);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
@@ -555,6 +574,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, ContractType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
@@ -703,6 +725,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomRentMasterNew();
         $report->setData($data);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
@@ -733,6 +756,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
@@ -824,6 +850,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomVacancyList();
         $report->setData($data);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
 
         return $report;
@@ -851,6 +878,9 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
+//        if (!\in_array($type, [GroupType::TYPE_FACILITY, v::TYPE_APARTMENT], false)) {
+//            throw new InvalidParameterException('group');
+//        }
         if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
@@ -979,6 +1009,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomOccupancyRate();
         $report->setData($data);
+//        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategy(ContractType::getTypes()[$type]);
 
         return $report;
