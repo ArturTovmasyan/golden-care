@@ -15,6 +15,7 @@ use App\Entity\FacilityRoom;
 use App\Entity\PaymentSource;
 use App\Entity\Region;
 use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Model\ContractType;
@@ -35,6 +36,7 @@ use App\Repository\FacilityRepository;
 use App\Repository\FacilityRoomRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\RegionRepository;
+use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Util\Common\ImtDateTimeInterval;
@@ -750,6 +752,8 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
+//        /** @var ResidentAdmissionRepository $admissionRepo */
+//        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
         /** @var ContractActionRepository $actionRepo */
         $actionRepo = $this->em->getRepository(ContractAction::class);
 
@@ -767,6 +771,7 @@ class RoomReportService extends BaseService
         $rooms = [];
         $data = [];
 
+//        if ($type === GroupType::TYPE_FACILITY) {
         if ($type === ContractType::TYPE_FACILITY) {
             /** @var FacilityRoomRepository $facilityRoomRepo */
             $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
@@ -794,6 +799,12 @@ class RoomReportService extends BaseService
                 if (\count($facilityBeds)) {
                     $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
 
+//                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
+//
+//                    if (!empty($admissions)) {
+//                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+//                    }
+
                     $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
 
                     if (!empty($contractActions)) {
@@ -807,6 +818,7 @@ class RoomReportService extends BaseService
                     }
                 }
             }
+//        } elseif ($type === GroupType::TYPE_APARTMENT) {
         } elseif ($type === ContractType::TYPE_APARTMENT) {
             /** @var ApartmentRoomRepository $apartmentRoomRepo */
             $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
@@ -833,6 +845,12 @@ class RoomReportService extends BaseService
 
                 if (\count($apartmentBeds)) {
                     $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
+
+//                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
+//
+//                    if (!empty($admissions)) {
+//                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+//                    }
 
                     $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
 
@@ -872,6 +890,8 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
+//        /** @var ResidentAdmissionRepository $admissionRepo */
+//        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
         /** @var ContractActionRepository $actionRepo */
         $actionRepo = $this->em->getRepository(ContractAction::class);
 
@@ -890,6 +910,7 @@ class RoomReportService extends BaseService
         $types = [];
         $data = [];
 
+//        if ($type === GroupType::TYPE_FACILITY) {
         if ($type === ContractType::TYPE_FACILITY) {
             /** @var FacilityRoomRepository $facilityRoomRepo */
             $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
@@ -927,6 +948,13 @@ class RoomReportService extends BaseService
                     $bedIds = array_count_values($bedIds);
                 }
 
+//                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
+//
+//                if (!empty($admissions)) {
+//                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
+//                    $occupancyBedIds = array_count_values($occupancyBedIds);
+//                }
+
                 $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
 
                 if (!empty($contractActions)) {
@@ -948,6 +976,7 @@ class RoomReportService extends BaseService
                     ];
                 }
             }
+//        } elseif ($type === GroupType::TYPE_APARTMENT) {
         } elseif ($type === ContractType::TYPE_APARTMENT) {
             /** @var ApartmentRoomRepository $apartmentRoomRepo */
             $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
@@ -984,6 +1013,13 @@ class RoomReportService extends BaseService
                     $bedIds = array_column($apartmentBeds, 'typeId', 'id');
                     $bedIds = array_count_values($bedIds);
                 }
+
+//                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $ids);
+//
+//                if (!empty($admissions)) {
+//                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
+//                    $occupancyBedIds = array_count_values($occupancyBedIds);
+//                }
 
                 $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $ids);
 

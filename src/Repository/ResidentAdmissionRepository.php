@@ -1160,4 +1160,67 @@ class ResidentAdmissionRepository extends EntityRepository
         }
         return $qb;
     }
+
+    public function getBedIdAndTypeId(Space $space = null, array $entityGrants = null, $type, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->select('
+                        fb.id AS bedId,
+                        type.id AS typeId
+                    ')
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'room')
+                    ->join('room.facility', 'type')
+                    ->andWhere('fb.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->select('
+                        ab.id AS bedId,
+                        type.id AS typeId
+                    ')
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'room')
+                    ->join('room.apartment', 'type')
+                    ->andWhere('ab.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
