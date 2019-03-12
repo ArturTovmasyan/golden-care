@@ -134,6 +134,7 @@
                         <div style="float: left">
                             <div style="height: 3px;"></div>
                             <b style="font-size: 22px !important">{{ data.strategy }}
+                                {#&nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}#}
                                 &nbsp;{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}Room&nbsp;{% endif %}
                                 Rent&nbsp;Master</b>
                             <p style="margin-bottom: 10px;"></p>
@@ -144,6 +145,7 @@
             </tr>
         </thead>
         <tbody>
+        {#{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}#}
         {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
             <tr style="margin: 0">
                 <td style="border: none; margin: 0">

@@ -396,6 +396,7 @@ class RoomReportService extends BaseService
 
         $types = [];
         switch ($type) {
+//            case GroupType::TYPE_FACILITY:
             case ContractType::TYPE_FACILITY:
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
@@ -409,6 +410,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
+//            case GroupType::TYPE_APARTMENT:
             case ContractType::TYPE_APARTMENT:
                 /** @var ApartmentRepository $apartmentRepo */
                 $apartmentRepo = $this->em->getRepository(Apartment::class);
@@ -422,6 +424,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
+//            case GroupType::TYPE_REGION:
             case ContractType::TYPE_REGION:
                 /** @var RegionRepository $regionRepo */
                 $regionRepo = $this->em->getRepository(Region::class);
@@ -442,6 +445,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
+//        $rents = $repo->getAdmissionRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rents = $repo->getRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
@@ -517,7 +521,7 @@ class RoomReportService extends BaseService
 
                 if ($type !== ContractType::TYPE_REGION) {
 
-                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo);
+                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null);
 
                     $availableCount = [];
                     foreach ($occupancyRate->getData() as $val) {
@@ -605,6 +609,7 @@ class RoomReportService extends BaseService
 
         $types = [];
         switch ($type) {
+//            case GroupType::TYPE_FACILITY:
             case ContractType::TYPE_FACILITY:
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
@@ -618,6 +623,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
+//            case GroupType::TYPE_APARTMENT:
             case ContractType::TYPE_APARTMENT:
                 /** @var ApartmentRepository $apartmentRepo */
                 $apartmentRepo = $this->em->getRepository(Apartment::class);
@@ -631,6 +637,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
+//            case GroupType::TYPE_REGION:
             case ContractType::TYPE_REGION:
                 /** @var RegionRepository $regionRepo */
                 $regionRepo = $this->em->getRepository(Region::class);
@@ -651,6 +658,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
+//        $rents = $repo->getAdmissionRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rents = $repo->getRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
@@ -707,7 +715,7 @@ class RoomReportService extends BaseService
                     $data[$typeId]['occupancy'] = number_format($data[$typeId]['occupancy'] * 100, 2);
                     $data[$typeId]['occupancy'] = $data[$typeId]['occupancy'] > 100 ? 100 : $data[$typeId]['occupancy'];
 
-                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo);
+                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null);
 
                     foreach ($occupancyRate->getData() as $val) {
                         if ($val['typeId'] === $typeId) {

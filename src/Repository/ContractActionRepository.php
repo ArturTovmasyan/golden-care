@@ -1100,7 +1100,7 @@ class ContractActionRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);

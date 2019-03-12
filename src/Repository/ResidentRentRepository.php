@@ -475,7 +475,7 @@ class ResidentRentRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -523,7 +523,7 @@ class ResidentRentRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -571,7 +571,7 @@ class ResidentRentRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -810,7 +810,7 @@ class ResidentRentRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -858,7 +858,7 @@ class ResidentRentRepository extends EntityRepository
                     Space::class,
                     's',
                     Join::WITH,
-                    's = r.space'
+                    's = car.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -1367,6 +1367,100 @@ class ResidentRentRepository extends EntityRepository
      * @return mixed
      */
     public function getAdmissionRoomRentData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    {
+        $qb = $this
+            ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end)
+                        GROUP BY res.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ResidentAdmission ara 
+                        JOIN ara.resident ar 
+                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getAdmissionRoomRentMasterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    {
+        $qb = $this
+            ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
+                        FROM App:ResidentRent mrr 
+                        JOIN mrr.resident res 
+                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end)
+                        GROUP BY res.id)'
+            )
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ResidentAdmission ara 
+                        JOIN ara.resident ar 
+                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getAdmissionRoomRentMasterNewData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
