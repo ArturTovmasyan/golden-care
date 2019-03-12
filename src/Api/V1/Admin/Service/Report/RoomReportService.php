@@ -258,6 +258,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
+//        $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $data = $repo->getRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
