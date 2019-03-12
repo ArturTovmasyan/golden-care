@@ -34,6 +34,7 @@ class Grid
     const FIELD_TYPE_TIME               = 'time';
     const FIELD_TYPE_DATETIME           = 'datetime';
     const FIELD_TYPE_ENUM               = 'enum';
+    const FIELD_TYPE_JSON               = 'json';
 
     /**
      * Field options listing
@@ -233,7 +234,9 @@ class Grid
         }
 
         foreach ($fields as $field) {
-            $this->queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
+            if($field['type'] !== self::FIELD_TYPE_JSON) {
+                $this->queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
+            }
         }
 
         // set page

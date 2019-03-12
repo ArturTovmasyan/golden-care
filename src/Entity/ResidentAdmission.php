@@ -23,12 +23,6 @@ use App\Annotation\Grid;
  *              "field"      = "ra.id"
  *          },
  *          {
- *              "id"         = "group_type",
- *              "type"       = "enum",
- *              "field"      = "ra.groupType",
- *              "values"     = "\App\Model\GroupType::getTypeDefaultNames"
- *          },
- *          {
  *              "id"         = "admission_type",
  *              "type"       = "enum",
  *              "field"      = "ra.admissionType",
@@ -40,69 +34,11 @@ use App\Annotation\Grid;
  *              "field"      = "ra.start"
  *          },
  *          {
- *              "id"         = "start",
- *              "type"       = "string",
- *              "field"      = "ra.start"
- *          },
- *          {
- *              "id"         = "end",
- *              "type"       = "string",
- *              "field"      = "ra.end"
- *          },
- *          {
- *              "id"         = "facility_bed",
- *              "type"       = "string",
- *              "field"      = "fb.number"
- *          },
- *          {
- *              "id"         = "apartment_bed",
- *              "type"       = "string",
- *              "field"      = "ab.number"
- *          },
- *          {
- *              "id"         = "region",
- *              "type"       = "string",
- *              "field"      = "reg.name"
- *          },
- *          {
- *              "id"         = "csz_str",
- *              "type"       = "string",
- *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
- *          },
- *          {
- *              "id"         = "address",
- *              "type"       = "string",
- *              "field"      = "ra.address"
- *          },
- *          {
- *              "id"         = "dining_room",
- *              "type"       = "string",
- *              "field"      = "dr.title"
- *          },
- *          {
- *              "id"         = "dnr",
- *              "type"       = "boolean",
- *              "field"      = "ra.dnr"
- *          },
- *          {
- *              "id"         = "polst",
- *              "type"       = "boolean",
- *              "field"      = "ra.polst"
- *          },
- *          {
- *              "id"         = "ambulatory",
- *              "type"       = "boolean",
- *              "field"      = "ra.ambulatory"
- *          },
- *          {
- *              "id"         = "care_group",
- *              "type"       = "string",
- *              "field"      = "ra.careGroup"
- *          },
- *          {
- *              "id"         = "care_level",
- *              "type"       = "string",
- *              "field"      = "cl.title"
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "filterable" = false
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )

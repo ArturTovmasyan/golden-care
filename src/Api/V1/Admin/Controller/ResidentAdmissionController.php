@@ -107,7 +107,7 @@ class ResidentAdmissionController extends BaseController
             ResidentAdmission::class,
             'api_admin_resident_admission_grid',
             $residentAdmissionService,
-            ['resident_id' => 1]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -407,7 +407,7 @@ class ResidentAdmissionController extends BaseController
      */
     public function addAction(Request $request, ResidentAdmissionService $residentAdmissionService)
     {
-        $residentAdmissionService->add(
+        $id = $residentAdmissionService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'group_type' => $request->get('group_type'),
@@ -430,7 +430,9 @@ class ResidentAdmissionController extends BaseController
         );
 
         return $this->respondSuccess(
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
+            '',
+            [$id]
         );
     }
 

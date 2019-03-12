@@ -37,6 +37,28 @@ class ResidentAdmissionRepository extends EntityRepository
     {
         $queryBuilder
             ->from(ResidentAdmission::class, 'ra')
+
+            ->addSelect("
+                JSON_ARRAY(
+                    JSON_OBJECT('Facility', f.name),
+                    JSON_OBJECT('Room (Bed)', CONCAT(fr.number, ' (', fb.number, ')')),
+                    JSON_OBJECT('Dinning Room', dr.title),
+                    
+                    JSON_OBJECT('Apartment', a.name),
+                    JSON_OBJECT('Room (Bed)', CONCAT(ar.number, ' (', ab.number, ')')),
+                    
+                    JSON_OBJECT('Region', reg.name),
+                    JSON_OBJECT('Address', ra.address),
+                    JSON_OBJECT('CSZ', CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)),
+                    
+                    JSON_OBJECT('Care Group', ra.careGroup),
+                    JSON_OBJECT('Care Level', cl.title),
+                    JSON_OBJECT('Ambulatory', CAST(ra.ambulatory AS BOOLEAN)),
+                    JSON_OBJECT('DNR', CAST(ra.dnr AS BOOLEAN)),
+                    JSON_OBJECT('POLST', CAST(ra.polst AS BOOLEAN))
+                ) as info
+            ")
+
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -50,10 +72,34 @@ class ResidentAdmissionRepository extends EntityRepository
                 'fb = ra.facilityBed'
             )
             ->leftJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'fr = fb.room'
+            )
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            )
+            ->leftJoin(
                 ApartmentBed::class,
                 'ab',
                 Join::WITH,
                 'ab = ra.apartmentBed'
+            )
+            ->leftJoin(
+                ApartmentRoom::class,
+                'ar',
+                Join::WITH,
+                'ar = ab.room'
+            )
+            ->leftJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
             )
             ->leftJoin(
                 Region::class,
