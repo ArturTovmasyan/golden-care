@@ -30,8 +30,13 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "date",
- *              "type"       = "string",
+ *              "type"       = "datetime",
  *              "field"      = "ra.start"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "field"      = "ra.notes"
  *          },
  *          {
  *              "id"         = "info",
