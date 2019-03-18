@@ -133,17 +133,17 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $residentResponsiblePerson->setResponsiblePerson($responsiblePerson);
             $residentResponsiblePerson->setRelationship($relationship);
 
-            if($params['role_id'] !== null) {
-                /** @var ResponsiblePersonRoleRepository $roleRepo */
-                $roleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
+            /* Roles - begin */
+            /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
+            $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
 
-                $role = $roleRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $params['role_id']);
+            $roleIds = array_unique($params['roles']);
+            $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
 
-                if ($role === null) {
-                    throw new ResponsiblePersonRoleNotFoundException();
-                }
-                $residentResponsiblePerson->setRole($role);
+            if (!empty($roles)) {
+                $residentResponsiblePerson->setRoles($roles);
             }
+            /* Roles - end */
 
             $this->validate($residentResponsiblePerson, null, ['api_admin_resident_responsible_person_add']);
 
@@ -224,17 +224,22 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $entity->setResponsiblePerson($responsiblePerson);
             $entity->setRelationship($relationship);
 
-            if($params['role_id'] !== null) {
-                /** @var ResponsiblePersonRoleRepository $roleRepo */
-                $roleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
-
-                $role = $roleRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $params['role_id']);
-
-                if ($role === null) {
-                    throw new ResponsiblePersonRoleNotFoundException();
-                }
-                $entity->setRole($role);
+            /* Roles - begin */
+            $roles = $entity->getRoles();
+            foreach ($roles as $role) {
+                $entity->removeRole($role);
             }
+
+            /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
+            $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+            $roleIds = array_unique($params['roles']);
+            $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
+
+            if (!empty($roles)) {
+                $entity->setRoles($roles);
+            }
+            /* Roles - end */
 
             $this->validate($entity, null, ['api_admin_resident_responsible_person_edit']);
 

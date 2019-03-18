@@ -274,7 +274,7 @@ class ResidentResponsiblePersonController extends BaseController
                 'resident_id'           => $request->get('resident_id'),
                 'responsible_person_id' => $request->get('responsible_person_id'),
                 'relationship_id'       => $request->get('relationship_id'),
-                'role_id'               => $request->get('role_id')
+                'roles'                 => $request->get('roles'),
             ]
         );
 
@@ -336,7 +336,7 @@ class ResidentResponsiblePersonController extends BaseController
                 'resident_id'           => $request->get('resident_id'),
                 'responsible_person_id' => $request->get('responsible_person_id'),
                 'relationship_id'       => $request->get('relationship_id'),
-                'role_id'               => $request->get('role_id')
+                'roles'                 => $request->get('roles'),
             ]
         );
 

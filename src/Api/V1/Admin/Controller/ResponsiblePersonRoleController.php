@@ -256,7 +256,8 @@ class ResponsiblePersonRoleController extends BaseController
         $id = $responsiblePersonRoleService->add(
             [
                 'space_id' => $request->get('space_id'),
-                'title'    => $request->get('title')
+                'title'    => $request->get('title'),
+                'icon'     => $request->get('icon')
             ]
         );
 
@@ -314,7 +315,8 @@ class ResponsiblePersonRoleController extends BaseController
             $id,
             [
                 'space_id' => $request->get('space_id'),
-                'title'    => $request->get('title')
+                'title'    => $request->get('title'),
+                'icon'     => $request->get('icon')
             ]
         );
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,6 +40,12 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "icon",
+ *              "type"       = "icon",
+ *              "field"      = "rpr.icon",
+ *              "link"       = ":edit"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -59,8 +66,6 @@ class ResponsiblePersonRole
      * @Groups({
      *     "api_admin_responsible_person_role_list",
      *     "api_admin_responsible_person_role_get",
-     *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_get",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
@@ -88,13 +93,29 @@ class ResponsiblePersonRole
      *     "api_admin_responsible_person_role_get",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get"
+     * })
+     */
+    private $title;
+
+    /**
+     * @var string
+     * @ORM\Column(name="icon", type="string", length=255)
+     * @Assert\NotNull(groups={
+     *     "api_admin_responsible_person_role_add",
+     *     "api_admin_responsible_person_role_edit"
+     * })
+     * @Groups({
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get",
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
      * })
      */
-    private $title;
+    private $icon;
 
     /**
      * @var Space
@@ -114,9 +135,19 @@ class ResponsiblePersonRole
     private $space;
 
     /**
-     * @ORM\OneToMany(targetEntity="ResidentResponsiblePerson", mappedBy="role", cascade={"persist", "remove"})
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="ResidentResponsiblePerson", inversedBy="roles", cascade={"persist", "remove"})
+     * @ORM\JoinTable(
+     *      name="tbl_resident_responsible_person_roles",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_responsible_person_role", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_resident_responsible_person", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
      */
-    protected $residentResponsiblePersons;
+    private $residentResponsiblePersons;
 
     public function getId()
     {
@@ -137,6 +168,22 @@ class ResponsiblePersonRole
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon(?string $icon): void
+    {
+        $this->icon = $icon;
     }
 
     public function getSpace(): ?Space
@@ -163,7 +210,27 @@ class ResponsiblePersonRole
     public function setResidentResponsiblePersons($residentResponsiblePersons): void
     {
         $this->residentResponsiblePersons = $residentResponsiblePersons;
+
+        /** @var ResponsiblePersonRole $residentResponsiblePerson */
+        foreach ($this->residentResponsiblePersons as $residentResponsiblePersons) {
+            $residentResponsiblePersons->addResidentResponsiblePerson($this);
+        }
     }
 
+    /**
+     * @param ResidentResponsiblePerson $residentResponsiblePerson
+     */
+    public function addResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson)
+    {
+        $this->residentResponsiblePersons->add($residentResponsiblePerson);
+    }
+
+    /**
+     * @param ResidentResponsiblePerson $residentResponsiblePerson
+     */
+    public function removeResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson)
+    {
+        $this->residentResponsiblePersons->removeElement($residentResponsiblePerson);
+    }
 
 }

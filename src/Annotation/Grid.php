@@ -35,6 +35,8 @@ class Grid
     const FIELD_TYPE_DATETIME           = 'datetime';
     const FIELD_TYPE_ENUM               = 'enum';
     const FIELD_TYPE_JSON               = 'json';
+    const FIELD_TYPE_ICON               = 'icon';
+    const FIELD_TYPE_COLOR              = 'color';
 
     /**
      * Field options listing

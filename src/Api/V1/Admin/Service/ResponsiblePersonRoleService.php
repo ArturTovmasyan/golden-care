@@ -75,6 +75,7 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
 
             $responsiblePersonRole = new ResponsiblePersonRole();
             $responsiblePersonRole->setTitle($params['title']);
+            $responsiblePersonRole->setIcon($params['icon']);
             $responsiblePersonRole->setSpace($space);
 
             $this->validate($responsiblePersonRole, null, ['api_admin_responsible_person_role_add']);
@@ -124,6 +125,7 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
             }
 
             $entity->setTitle($params['title']);
+            $entity->setIcon($params['icon']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_responsible_person_role_edit']);

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -14,37 +15,6 @@ use App\Annotation\Grid;
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResidentResponsiblePersonRepository")
  * @ORM\Table(name="tbl_resident_responsible_person")
- * @Grid(
- *     api_admin_resident_responsible_person_grid={
- *          {
- *              "id"         = "id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "rrp.id"
- *          },
- *          {
- *              "id"         = "full_name",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(rps.title,''), ' ', COALESCE(rp.firstName, ''), ' ', COALESCE(rp.middleName, ''), ' ', COALESCE(rp.lastName, ''))",
- *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "relationship",
- *              "type"       = "string",
- *              "field"      = "rel.title"
- *          },
- *          {
- *              "id"         = "role",
- *              "type"       = "string",
- *              "field"      = "role.title"
- *          },
- *          {
- *              "id"         = "address",
- *              "type"       = "string",
- *              "field"      = "CONCAT(rp.address1, ' ', rp.address2)"
- *          }
- *     }
- * )
  */
 class ResidentResponsiblePerson
 {
@@ -127,17 +97,14 @@ class ResidentResponsiblePerson
     private $relationship;
 
     /**
-     * @var ResponsiblePersonRole
-     * @ORM\ManyToOne(targetEntity="ResponsiblePersonRole", inversedBy="residentResponsiblePersons", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="ResponsiblePersonRole", mappedBy="residentResponsiblePersons", cascade={"persist", "remove"})
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
      * })
      */
-    private $role;
+    protected $roles;
 
     /**
      * @return int
@@ -204,19 +171,42 @@ class ResidentResponsiblePerson
     }
 
     /**
-     * @return ResponsiblePersonRole|null
+     * @return mixed
      */
-    public function getRole(): ?ResponsiblePersonRole
+    public function getRoles()
     {
-        return $this->role;
+        return $this->roles;
     }
 
     /**
-     * @param ResponsiblePersonRole|null $role
+     * @param mixed $roles
      */
-    public function setRole(?ResponsiblePersonRole $role): void
+    public function setRoles($roles): void
     {
-        $this->role = $role;
+        $this->roles = $roles;
+
+        /** @var ResponsiblePersonRole $role */
+        foreach ($this->roles as $role) {
+            $role->addResidentResponsiblePerson($this);
+        }
+    }
+
+    /**
+     * @param ResponsiblePersonRole $role
+     */
+    public function addRole(ResponsiblePersonRole $role)
+    {
+        $role->addResidentResponsiblePerson($this);
+        $this->roles[] = $role;
+    }
+
+    /**
+     * @param ResponsiblePersonRole $role
+     */
+    public function removeRole(ResponsiblePersonRole $role)
+    {
+        $this->roles->removeElement($role);
+        $role->removeResidentResponsiblePerson($this);
     }
 
 }
