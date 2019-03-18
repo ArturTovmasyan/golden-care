@@ -113,6 +113,7 @@ class Form
     private $title;
 
     /**
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="CareLevelGroup", mappedBy="forms", cascade={"persist", "remove"})
      * @Groups({
      *     "api_admin_assessment_form_list",

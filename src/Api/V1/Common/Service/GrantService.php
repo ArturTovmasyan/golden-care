@@ -92,10 +92,42 @@ class GrantService
      * @param string $grant
      * @return bool
      */
-    public function getCurrentUserHasGrant(string $grant): bool
+    public function hasCurrentUserGrant(string $grant): bool
     {
         $grants = $this->getCurrentUserGrants();
         return array_key_exists($grant, $grants) && $grants[$grant]['enabled'] === true;
+    }
+
+    /**
+     * @param string $entity_name
+     * @param int $level
+     * @return bool
+     */
+    public function hasCurrentUserEntityGrant(string $entity_name, int $level): bool
+    {
+        $user = $this->current_user;
+        if($user === null) {
+            return null;
+        }
+
+        $role_grants = $this->getEffectiveGrants($user->getRoleObjects());
+
+        $required_grants = array_filter($this->config_flat, function ($value) use ($entity_name) {
+            return array_key_exists('class', $value) && $value['class'] === $entity_name;
+        });
+
+        if (\count($required_grants) > 1) {
+            throw new InvalidGrantConfigException();
+        }
+
+        $user_level = 0;
+        foreach ($required_grants as $key => $required_grant) {
+            if (array_key_exists($key, $role_grants) && $role_grants[$key]['enabled'] === true) {
+                $user_level = $role_grants[$key]['level'];
+            }
+        }
+
+        return $user_level >= $level;
     }
 
     /**

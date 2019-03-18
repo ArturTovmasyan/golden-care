@@ -128,7 +128,7 @@ class BaseService
         $space = $this->grantService->getCurrentSpace();
 
         // TODO: revisit null case
-        if($this->grantService->getCurrentUserHasGrant('persistence-security-space') && $spaceId !== null) {
+        if($this->grantService->hasCurrentUserGrant('persistence-security-space') && $spaceId !== null) {
             $space = $this->em->getRepository(Space::class)->find($spaceId);
         }
 

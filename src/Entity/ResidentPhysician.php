@@ -14,27 +14,6 @@ use App\Annotation\Grid;
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResidentPhysicianRepository")
  * @ORM\Table(name="tbl_resident_physician")
- * @Grid(
- *     api_admin_resident_physician_grid={
- *          {
- *              "id"         = "id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "rp.id"
- *          },
- *          {
- *              "id"         = "full_name",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))",
- *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "primary",
- *              "type"       = "boolean",
- *              "field"      = "rp.primary"
- *          }
- *     }
- * )
  */
 class ResidentPhysician
 {

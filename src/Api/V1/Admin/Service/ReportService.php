@@ -96,7 +96,7 @@ class ReportService
         foreach ($config_filtered as $group => $config) {
             foreach ($config['reports'] as $alias => $report) {
                 $grant = sprintf("report-%s-%s", $group, $alias);
-                if ($this->grantService->getCurrentUserHasGrant($grant) === false) {
+                if ($this->grantService->hasCurrentUserGrant($grant) === false) {
                     unset($config_filtered[$group]['reports'][$alias]);
                 }
             }
@@ -133,7 +133,7 @@ class ReportService
         }
 
         $grant = sprintf("report-%s-%s", $group, $alias);
-        if ($this->grantService->getCurrentUserHasGrant($grant) === false) {
+        if ($this->grantService->hasCurrentUserGrant($grant) === false) {
             throw new AccessDeniedHttpException();
         }
 
