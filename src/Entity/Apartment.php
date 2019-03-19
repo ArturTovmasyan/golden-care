@@ -275,7 +275,7 @@ class Apartment
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)/",
-     *      message="The value should be numeric",
+     *      message="The value should be numeric.",
      *      groups={
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit"
@@ -297,7 +297,7 @@ class Apartment
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)/",
-     *      message="The value should be numeric",
+     *      message="The value should be numeric.",
      *      groups={
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit"

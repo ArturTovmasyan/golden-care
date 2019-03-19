@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"resident", "medication"},
  *     errorPath="medication_id",
- *     message="This value is already in use for this resident",
+ *     message="This value is already in use for this resident.",
  *     groups={
  *          "api_admin_resident_medication_allergy_add",
  *          "api_admin_resident_medication_allergy_edit"

@@ -18,7 +18,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @UniqueEntity(
  *     fields={"room", "number"},
  *     errorPath="number",
- *     message="This number is already in use on that room",
+ *     message="This number is already in use on that room.",
  *     groups={
  *          "api_admin_facility_bed_add",
  *          "api_admin_facility_bed_edit"

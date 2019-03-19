@@ -6,6 +6,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -15,6 +16,15 @@ use App\Annotation\Grid;
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResidentResponsiblePersonRepository")
  * @ORM\Table(name="tbl_resident_responsible_person")
+ * @UniqueEntity(
+ *     fields={"resident", "responsiblePerson"},
+ *     errorPath="responsible_person_id",
+ *     message="This value is already in use for this resident.",
+ *     groups={
+ *          "api_admin_resident_responsible_person_add",
+ *          "api_admin_resident_responsible_person_edit"
+ *     }
+ * )
  */
 class ResidentResponsiblePerson
 {

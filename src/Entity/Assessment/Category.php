@@ -18,7 +18,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
  * @UniqueEntity(
  *     fields={"space", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that space",
+ *     message="This title is already in use on that space.",
  *     groups={
  *          "api_admin_assessment_category_add",
  *          "api_admin_assessment_category_edit"

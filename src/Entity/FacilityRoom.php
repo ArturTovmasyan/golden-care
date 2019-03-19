@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"facility", "number"},
  *     errorPath="number",
- *     message="This number is already in use on that facility",
+ *     message="This number is already in use on that facility.",
  *     groups={
  *         "api_admin_facility_room_add",
  *         "api_admin_facility_room_edit"
