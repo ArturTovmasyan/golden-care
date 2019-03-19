@@ -118,8 +118,6 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setAddress1($params['address_1'] ?? '');
             $responsiblePerson->setAddress2($params['address_2'] ?? '');
             $responsiblePerson->setEmail($params['email'] ?? '');
-            $responsiblePerson->setFinancially($params['financially'] ?? false);
-            $responsiblePerson->setEmergency($params['emergency'] ?? false);
             $responsiblePerson->setPhones($this->savePhones($responsiblePerson, $params['phones'] ?? []));
 
             $this->validate($responsiblePerson, null, ['api_admin_responsible_person_add']);
@@ -202,8 +200,6 @@ class ResponsiblePersonService extends BaseService implements IGridService
             $responsiblePerson->setAddress1($params['address_1'] ?? '');
             $responsiblePerson->setAddress2($params['address_2'] ?? '');
             $responsiblePerson->setEmail($params['email'] ?? '');
-            $responsiblePerson->setFinancially($params['financially'] ?? false);
-            $responsiblePerson->setEmergency($params['emergency'] ?? false);
 
             $responsiblePerson->setPhones($this->savePhones($responsiblePerson, $params['phones'] ?? []));
 

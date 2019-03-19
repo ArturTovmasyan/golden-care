@@ -225,8 +225,6 @@ class ResidentResponsiblePersonRepository extends EntityRepository
                     rp.firstName as firstName,
                     rp.lastName as lastName,
                     rp.address_1 as address,
-                    rp.financially as financially,
-                    rp.emergency as emergency,
                     csz.stateFull as state,
                     csz.zipMain as zip,
                     csz.city as city,

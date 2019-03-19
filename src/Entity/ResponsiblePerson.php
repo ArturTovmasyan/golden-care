@@ -36,16 +36,6 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "rp.address_2"
  *          },
  *          {
- *              "id"         = "financially",
- *              "type"       = "boolean",
- *              "field"      = "rp.financially"
- *          },
- *          {
- *              "id"         = "emergency",
- *              "type"       = "boolean",
- *              "field"      = "rp.emergency"
- *          },
- *          {
  *              "id"         = "email",
  *              "type"       = "string",
  *              "field"      = "rp.email"
@@ -178,35 +168,6 @@ class ResponsiblePerson
      * )
      */
     private $email;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="is_financially", type="boolean", nullable=false)
-     * @Assert\NotNull(groups={
-     *      "api_admin_responsible_person_edit",
-     *      "api_admin_responsible_person_add",
-     *      "api_admin_resident_responsible_person_list"
-     * })
-     * @Groups({
-     *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get",
-     *     "api_admin_resident_responsible_person_list"
-     * })
-     */
-    private $financially = false;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="is_emergency", type="boolean", nullable=false)
-     * @Groups({
-     *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
-     *     "api_admin_responsible_person_get",
-     *     "api_admin_resident_responsible_person_list"
-     * })
-     */
-    private $emergency = false;
 
     /**
      * @var CityStateZip
@@ -393,38 +354,6 @@ class ResponsiblePerson
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFinancially(): bool
-    {
-        return $this->financially;
-    }
-
-    /**
-     * @param bool $financially
-     */
-    public function setFinancially(bool $financially): void
-    {
-        $this->financially = $financially;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmergency(): bool
-    {
-        return $this->emergency;
-    }
-
-    /**
-     * @param bool $emergency
-     */
-    public function setEmergency(bool $emergency): void
-    {
-        $this->emergency = $emergency;
     }
 
     /**
