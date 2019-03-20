@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\CityStateZip;
 use App\Entity\Apartment;
 use App\Entity\Space;
@@ -13,7 +14,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ApartmentRepository
  * @package App\Repository
  */
-class ApartmentRepository extends EntityRepository
+class ApartmentRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -222,6 +223,55 @@ class ApartmentRepository extends EntityRepository
         }
 
         return $qb->orderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->select('a.name');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('a.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('a.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

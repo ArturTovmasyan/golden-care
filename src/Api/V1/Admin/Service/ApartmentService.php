@@ -246,4 +246,26 @@ class ApartmentService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ApartmentNotFoundException();
+        }
+
+        /** @var ApartmentRepository $repo */
+        $repo = $this->em->getRepository(Apartment::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $ids);
+
+        if (empty($entities)) {
+            throw new ApartmentNotFoundException();
+        }
+
+        return $this->getRelatedData(Apartment::class, $entities);
+    }
 }
