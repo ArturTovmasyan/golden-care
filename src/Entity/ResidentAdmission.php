@@ -228,7 +228,7 @@ class ResidentAdmission
 
     /**
      * @var ApartmentBed
-     * @ORM\ManyToOne(targetEntity="App\Entity\ApartmentBed")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ApartmentBed", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_apartment_bed", referencedColumnName="id", onDelete="CASCADE")
      * })

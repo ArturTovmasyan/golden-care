@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -167,6 +168,12 @@ class ApartmentBed
     private $enabled;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="apartmentBed", cascade={"remove", "persist"})
+     */
+    private $residentAdmissions;
+
+    /**
      * @return int
      */
     public function getId()
@@ -244,5 +251,21 @@ class ApartmentBed
     public function setEnabled(?bool $enabled): void
     {
         $this->enabled = $enabled;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAdmissions(): ArrayCollection
+    {
+        return $this->residentAdmissions;
+    }
+
+    /**
+     * @param ArrayCollection $residentAdmissions
+     */
+    public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
+    {
+        $this->residentAdmissions = $residentAdmissions;
     }
 }
