@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -140,6 +141,12 @@ class Allergen
      */
     private $space;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAllergen", mappedBy="allergen", cascade={"remove", "persist"})
+     */
+    private $residentAllergens;
+
     public function getId()
     {
         return $this->id;
@@ -182,10 +189,25 @@ class Allergen
 
     /**
      * @param Space|null $space
-     * @return Allergen
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAllergens(): ArrayCollection
+    {
+        return $this->residentAllergens;
+    }
+
+    /**
+     * @param ArrayCollection $residentAllergens
+     */
+    public function setResidentAllergens(ArrayCollection $residentAllergens): void
+    {
+        $this->residentAllergens = $residentAllergens;
     }
 }

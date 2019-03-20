@@ -92,7 +92,7 @@ class ResidentAllergen
      *     "api_admin_resident_allergen_add",
      *     "api_admin_resident_allergen_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Allergen", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Allergen", inversedBy="residentAllergens", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_allergen", referencedColumnName="id", onDelete="CASCADE")
      * })

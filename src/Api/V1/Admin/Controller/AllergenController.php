@@ -416,4 +416,48 @@ class AllergenController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/allergen/related/info Allergen related info
+     * @apiVersion 1.0.0
+     * @apiName Allergen Related Info
+     * @apiGroup Admin Allergen
+     * @apiDescription This function is used to get allergen related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Allergen not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_allergen_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param AllergenService $allergenService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, AllergenService $allergenService)
+    {
+        $relatedData = $allergenService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }

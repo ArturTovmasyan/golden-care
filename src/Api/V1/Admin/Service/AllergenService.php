@@ -201,4 +201,26 @@ class AllergenService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new AllergenNotFoundException();
+        }
+
+        /** @var AllergenRepository $repo */
+        $repo = $this->em->getRepository(Allergen::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Allergen::class), $ids);
+
+        if (empty($entities)) {
+            throw new AllergenNotFoundException();
+        }
+
+        return $this->getRelatedData(Allergen::class, $entities);
+    }
 }
