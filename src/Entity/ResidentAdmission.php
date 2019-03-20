@@ -391,7 +391,7 @@ class ResidentAdmission
 
     /**
      * @var CareLevel
-     * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="CASCADE")
      * })
