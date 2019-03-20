@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use App\Entity\Space;
@@ -13,7 +14,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class FacilityRoomRepository
  * @package App\Repository
  */
-class FacilityRoomRepository extends EntityRepository
+class FacilityRoomRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -257,5 +258,60 @@ class FacilityRoomRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('fr')
+            ->select('fr.number');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('fr.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('fr.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'f = fr.facility'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 }

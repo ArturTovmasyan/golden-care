@@ -4,9 +4,11 @@ namespace App\Api\V1\Common\Service;
 use App\Annotation\ValidationSerializedName;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Entity\Space;
+use App\Model\Grant;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -128,10 +130,78 @@ class BaseService
         $space = $this->grantService->getCurrentSpace();
 
         // TODO: revisit null case
-        if($this->grantService->hasCurrentUserGrant('persistence-security-space') && $spaceId !== null) {
+        if($spaceId !== null && $this->grantService->hasCurrentUserGrant('persistence-security-space')) {
             $space = $this->em->getRepository(Space::class)->find($spaceId);
         }
 
         return $space;
+    }
+
+    /**
+     * @param $className
+     * @param $entities
+     * @return array
+     */
+    protected function getRelatedData($className, $entities) : array
+    {
+        $relatedData = [];
+        if (!empty($entities)) {
+            $classMetadata = $this->em->getClassMetadata($className);
+            $associationMappings = $classMetadata->getAssociationMappings();
+
+            foreach ($entities as $entity) {
+
+                $relatedData[$entity->getId()]['sum'] = 0;
+
+                if (!empty($associationMappings)) {
+                    foreach ($associationMappings as $associationMapping) {
+                        $mappedBy = null;
+                        $id = null;
+                        $ids = null;
+                        if ($associationMapping['type'] === ClassMetadataInfo::MANY_TO_MANY) {
+                            $getter = $entity->{'get' . ucfirst($associationMapping['fieldName'])}();
+
+                            if (\count($getter)) {
+                                $ids = array_map(function($item){return $item->getId();} , $getter->toArray());
+                            }
+                        } else {
+                            $mappedBy = $associationMapping['mappedBy'];
+                            $id = $entity->getId();
+                        }
+
+                        if ($associationMapping['type'] === ClassMetadataInfo::MANY_TO_MANY || ($associationMapping['isOwningSide'] === false && ($associationMapping['type'] === ClassMetadataInfo::ONE_TO_MANY || $associationMapping['type'] === ClassMetadataInfo::ONE_TO_ONE))) {
+                            $targetEntityName = explode('\\',$associationMapping['targetEntity']);
+                            $targetEntityName = lcfirst(end($targetEntityName)) . 's';
+
+                            $targetEntityRepo = $this->em->getRepository($associationMapping['targetEntity']);
+
+                            $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), null, $mappedBy, $id, $ids);
+                            $count = 0;
+                            if (!empty($targetEntities)) {
+                                $count = \count($targetEntities);
+                            }
+
+                            $hasAccessToView = $this->grantService->hasCurrentUserEntityGrant($associationMapping['targetEntity'], Grant::$LEVEL_VIEW);
+
+                            if ($hasAccessToView) {
+                                $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($associationMapping['targetEntity']), $mappedBy, $id, $ids);
+                            } else {
+                                $targetEntities = [];
+                            }
+
+                            $relatedData[$entity->getId()][] = [
+                                'targetEntity' => $associationMapping['targetEntity'],
+                                $targetEntityName => $targetEntities,
+                                'count' => $count
+                            ];
+
+                            $relatedData[$entity->getId()]['sum'] += $count;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $relatedData;
     }
 }

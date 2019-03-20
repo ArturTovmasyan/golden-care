@@ -247,4 +247,26 @@ class FacilityService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new FacilityNotFoundException();
+        }
+
+        /** @var FacilityRepository $repo */
+        $repo = $this->em->getRepository(Facility::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
+
+        if (empty($entities)) {
+            throw new FacilityNotFoundException();
+        }
+
+        return $this->getRelatedData(Facility::class, $entities);
+    }
 }

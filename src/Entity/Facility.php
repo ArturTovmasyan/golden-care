@@ -347,6 +347,12 @@ class Facility
     private $rooms;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\DiningRoom", mappedBy="facility", cascade={"remove", "persist"})
+     */
+    private $diningRooms;
+
+    /**
      * @return int
      */
     public function getId()
@@ -486,6 +492,22 @@ class Facility
     public function setRooms(ArrayCollection $rooms): void
     {
         $this->rooms = $rooms;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDiningRooms(): ArrayCollection
+    {
+        return $this->diningRooms;
+    }
+
+    /**
+     * @param ArrayCollection $diningRooms
+     */
+    public function setDiningRooms(ArrayCollection $diningRooms): void
+    {
+        $this->diningRooms = $diningRooms;
     }
 
     /**

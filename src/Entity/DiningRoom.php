@@ -107,7 +107,7 @@ class DiningRoom
      *     "api_admin_dining_room_add",
      *     "api_admin_dining_room_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Facility")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Facility", inversedBy="diningRooms", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -163,7 +163,6 @@ class DiningRoom
 
     /**
      * @param Facility|null $facility
-     * @return DiningRoom
      */
     public function setFacility(?Facility $facility): void
     {
