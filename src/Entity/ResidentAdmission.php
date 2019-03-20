@@ -209,7 +209,7 @@ class ResidentAdmission
 
     /**
      * @var FacilityBed
-     * @ORM\ManyToOne(targetEntity="App\Entity\FacilityBed")
+     * @ORM\ManyToOne(targetEntity="App\Entity\FacilityBed", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_facility_bed", referencedColumnName="id", onDelete="CASCADE")
      * })

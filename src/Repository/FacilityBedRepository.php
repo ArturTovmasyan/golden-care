@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
@@ -14,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class FacilityBedRepository
  * @package App\Repository
  */
-class FacilityBedRepository extends EntityRepository
+class FacilityBedRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -248,6 +249,67 @@ class FacilityBedRepository extends EntityRepository
             ->orderBy('type.name')
             ->addOrderBy('r.number')
             ->addOrderBy('fb.number')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('fb')
+            ->select('fb.number');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('fb.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('fb.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    FacilityRoom::class,
+                    'fr',
+                    Join::WITH,
+                    'fr = fb.room'
+                )
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'f = fr.facility'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fb.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
