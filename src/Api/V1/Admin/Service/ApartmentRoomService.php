@@ -546,4 +546,26 @@ class ApartmentRoomService extends BaseService implements IGridService
 
         return $max_number ? $max_number['max_room_number'] : null;
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ApartmentRoomNotFoundException();
+        }
+
+        /** @var ApartmentRoomRepository $repo */
+        $repo = $this->em->getRepository(ApartmentRoom::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $ids);
+
+        if (empty($entities)) {
+            throw new ApartmentRoomNotFoundException();
+        }
+
+        return $this->getRelatedData(ApartmentRoom::class, $entities);
+    }
 }
