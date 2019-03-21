@@ -99,7 +99,7 @@ class ResidentDiagnosis
      *     "api_admin_resident_diagnosis_add",
      *     "api_admin_resident_diagnosis_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Diagnosis", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Diagnosis", inversedBy="residentDiagnoses", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diagnosis", referencedColumnName="id", onDelete="CASCADE")
      * })

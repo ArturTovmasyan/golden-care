@@ -428,4 +428,48 @@ class DiagnosisController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/diagnosis/related/info Diagnosis related info
+     * @apiVersion 1.0.0
+     * @apiName Diagnosis Related Info
+     * @apiGroup Admin Diagnosis
+     * @apiDescription This function is used to get diagnosis related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Diagnosis not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_diagnosis_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param DiagnosisService $diagnosisService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, DiagnosisService $diagnosisService)
+    {
+        $relatedData = $diagnosisService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }
