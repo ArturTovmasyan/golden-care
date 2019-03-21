@@ -221,4 +221,26 @@ class DiningRoomService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new DiningRoomNotFoundException();
+        }
+
+        /** @var DiningRoomRepository $repo */
+        $repo = $this->em->getRepository(DiningRoom::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $ids);
+
+        if (empty($entities)) {
+            throw new DiningRoomNotFoundException();
+        }
+
+        return $this->getRelatedData(DiningRoom::class, $entities);
+    }
 }
