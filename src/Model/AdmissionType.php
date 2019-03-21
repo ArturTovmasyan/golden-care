@@ -24,7 +24,7 @@ class AdmissionType
      */
     private static $typeDefaultNames = [
         'Admit'               => '1',
-        'admit'               => '2',
+        'Re-admit'            => '2',
         'Temporary Discharge' => '3',
         'Discharge'           => '4',
     ];

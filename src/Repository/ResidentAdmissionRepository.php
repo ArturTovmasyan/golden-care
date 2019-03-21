@@ -127,7 +127,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'cl',
                 Join::WITH,
                 'cl = ra.careLevel'
-            );
+            )
+            ->addOrderBy('ra.date');
 
         if ($space !== null) {
             $queryBuilder
