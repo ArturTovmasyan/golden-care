@@ -211,4 +211,26 @@ class EventDefinitionService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new EventDefinitionNotFoundException();
+        }
+
+        /** @var EventDefinitionRepository $repo */
+        $repo = $this->em->getRepository(EventDefinition::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $ids);
+
+        if (empty($entities)) {
+            throw new EventDefinitionNotFoundException();
+        }
+
+        return $this->getRelatedData(EventDefinition::class, $entities);
+    }
 }

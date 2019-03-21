@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -205,6 +206,12 @@ class EventDefinition
     protected $additionalDate;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="definition", cascade={"remove", "persist"})
+     */
+    private $residentEvents;
+
+    /**
      * @return int
      */
     public function getId()
@@ -246,7 +253,6 @@ class EventDefinition
 
     /**
      * @param Space|null $space
-     * @return EventDefinition
      */
     public function setSpace(?Space $space): void
     {
@@ -347,5 +353,21 @@ class EventDefinition
     public function setAdditionalDate(bool $additionalDate): void
     {
         $this->additionalDate = $additionalDate;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentEvents(): ArrayCollection
+    {
+        return $this->residentEvents;
+    }
+
+    /**
+     * @param ArrayCollection $residentEvents
+     */
+    public function setResidentEvents(ArrayCollection $residentEvents): void
+    {
+        $this->residentEvents = $residentEvents;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
 use App\Entity\Physician;
 use App\Entity\Resident;
@@ -17,7 +18,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ResidentEventRepository
  * @package App\Repository
  */
-class ResidentEventRepository extends EntityRepository
+class ResidentEventRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -391,6 +392,67 @@ class ResidentEventRepository extends EntityRepository
         return $qb
             ->orderBy('re.date', 'DESC')
             ->groupBy('re.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('re')
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                're.definition = ed'
+            )
+            ->select('ed.title');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('re.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('re.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = re.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

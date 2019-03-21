@@ -79,7 +79,7 @@ class ResidentEvent
      * @Assert\NotNull(message = "Please select a Definition", groups={
      *     "api_admin_resident_event_add"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\EventDefinition")
+     * @ORM\ManyToOne(targetEntity="App\Entity\EventDefinition", inversedBy="residentEvents")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_definition", referencedColumnName="id", onDelete="CASCADE")
      * })
