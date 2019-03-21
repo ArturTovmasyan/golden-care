@@ -201,4 +201,26 @@ class DietService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new DietNotFoundException();
+        }
+
+        /** @var DietRepository $repo */
+        $repo = $this->em->getRepository(Diet::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Diet::class), $ids);
+
+        if (empty($entities)) {
+            throw new DietNotFoundException();
+        }
+
+        return $this->getRelatedData(Diet::class, $entities);
+    }
 }

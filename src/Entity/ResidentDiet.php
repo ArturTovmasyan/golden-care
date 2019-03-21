@@ -93,7 +93,7 @@ class ResidentDiet
      *     "api_admin_resident_diet_add",
      *     "api_admin_resident_diet_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Diet")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Diet", inversedBy="residentDiets")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_diet", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -153,7 +153,6 @@ class ResidentDiet
 
     /**
      * @param Resident|null $resident
-     * @return ResidentDiet
      */
     public function setResident(?Resident $resident): void
     {
@@ -170,7 +169,6 @@ class ResidentDiet
 
     /**
      * @param Diet|null $diet
-     * @return ResidentDiet
      */
     public function setDiet(?Diet $diet): void
     {

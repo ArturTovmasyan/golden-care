@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -136,6 +137,12 @@ class Diet
      */
     private $space;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiet", mappedBy="diet", cascade={"remove", "persist"})
+     */
+    private $residentDiets;
+
     public function getId()
     {
         return $this->id;
@@ -176,10 +183,25 @@ class Diet
 
     /**
      * @param Space|null $space
-     * @return Diet
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentDiets(): ArrayCollection
+    {
+        return $this->residentDiets;
+    }
+
+    /**
+     * @param ArrayCollection $residentDiets
+     */
+    public function setResidentDiets(ArrayCollection $residentDiets): void
+    {
+        $this->residentDiets = $residentDiets;
     }
 }
