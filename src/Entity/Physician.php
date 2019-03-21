@@ -103,7 +103,7 @@ class Physician
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Space", inversedBy="spacePhysicians", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Space", inversedBy="physicians", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

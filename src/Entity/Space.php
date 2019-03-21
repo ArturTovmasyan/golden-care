@@ -172,6 +172,12 @@ class Space
     protected $users;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Physician", mappedBy="space", cascade={"persist", "remove"})
+     */
+    protected $physicians;
+
+    /**
      * Space constructor.
      */
     public function __construct()
@@ -225,5 +231,21 @@ class Space
     public function setUsers(?ArrayCollection $users): void
     {
         $this->users = $users;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPhysicians(): ?ArrayCollection
+    {
+        return $this->physicians;
+    }
+
+    /**
+     * @param ArrayCollection $physicians
+     */
+    public function setPhysicians(?ArrayCollection $physicians): void
+    {
+        $this->physicians = $physicians;
     }
 }

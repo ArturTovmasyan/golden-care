@@ -380,7 +380,7 @@ class User implements UserInterface
      *     "api_admin_space_add",
      *     "api_admin_space_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="users")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
