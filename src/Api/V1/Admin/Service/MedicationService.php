@@ -203,4 +203,26 @@ class MedicationService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new MedicationNotFoundException();
+        }
+
+        /** @var MedicationRepository $repo */
+        $repo = $this->em->getRepository(Medication::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Medication::class), $ids);
+
+        if (empty($entities)) {
+            throw new MedicationNotFoundException();
+        }
+
+        return $this->getRelatedData(Medication::class, $entities);
+    }
 }

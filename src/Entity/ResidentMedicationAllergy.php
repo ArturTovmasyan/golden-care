@@ -92,7 +92,7 @@ class ResidentMedicationAllergy
      *     "api_admin_resident_medication_allergy_add",
      *     "api_admin_resident_medication_allergy_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Medication", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Medication", inversedBy="residentMedicationAllergies", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -148,7 +148,6 @@ class ResidentMedicationAllergy
 
     /**
      * @param Resident|null $resident
-     * @return ResidentMedicationAllergy
      */
     public function setResident(?Resident $resident): void
     {
@@ -165,7 +164,6 @@ class ResidentMedicationAllergy
 
     /**
      * @param Medication|null $medication
-     * @return ResidentMedicationAllergy
      */
     public function setMedication(?Medication $medication): void
     {

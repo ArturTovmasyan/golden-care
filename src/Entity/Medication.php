@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -113,6 +114,18 @@ class Medication
     private $space;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedication", mappedBy="medication", cascade={"remove", "persist"})
+     */
+    private $residentMedications;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedicationAllergy", mappedBy="medication", cascade={"remove", "persist"})
+     */
+    private $residentMedicationAllergies;
+
+    /**
      * @return int
      */
     public function getId()
@@ -154,10 +167,41 @@ class Medication
 
     /**
      * @param Space|null $space
-     * @return Medication
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentMedications(): ArrayCollection
+    {
+        return $this->residentMedications;
+    }
+
+    /**
+     * @param ArrayCollection $residentMedications
+     */
+    public function setResidentMedications(ArrayCollection $residentMedications): void
+    {
+        $this->residentMedications = $residentMedications;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentMedicationAllergies(): ArrayCollection
+    {
+        return $this->residentMedicationAllergies;
+    }
+
+    /**
+     * @param ArrayCollection $residentMedicationAllergies
+     */
+    public function setResidentMedicationAllergies(ArrayCollection $residentMedicationAllergies): void
+    {
+        $this->residentMedicationAllergies = $residentMedicationAllergies;
     }
 }

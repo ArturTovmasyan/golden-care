@@ -151,7 +151,7 @@ class ResidentMedication
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Medication")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Medication", inversedBy="residentMedications")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medication", referencedColumnName="id", onDelete="CASCADE")
      * })
