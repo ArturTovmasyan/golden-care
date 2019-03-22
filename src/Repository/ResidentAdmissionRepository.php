@@ -498,7 +498,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         $qb
             ->select(
-                'MAX(ra.id) AS HIDDEN raId',
+                'ra.id AS raId',
                 'r.id AS id',
                 'r.firstName AS first_name',
                 'r.lastName AS last_name',
@@ -508,10 +508,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->leftJoin('r.salutation', 'rs')
             ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
-            ->andWhere('ra.id IN (SELECT MAX(mra.id)
-                        FROM App:ResidentAdmission mra
-                        WHERE mra.admissionType = :admissionType AND mra.end IS NULL)'
-            )
             ->andWhere('r.id NOT IN (SELECT ar.id
                         FROM App:ResidentAdmission ara
                         JOIN ara.resident ar
