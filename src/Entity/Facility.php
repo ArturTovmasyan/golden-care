@@ -265,7 +265,7 @@ class Facility
      *     "api_admin_facility_add",
      *     "api_admin_facility_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip", inversedBy="facilities")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })

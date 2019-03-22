@@ -141,7 +141,7 @@ class Physician
 
     /**
      * @var CityStateZip
-     * @ORM\ManyToOne(targetEntity="CityStateZip")
+     * @ORM\ManyToOne(targetEntity="CityStateZip", inversedBy="physicians")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })

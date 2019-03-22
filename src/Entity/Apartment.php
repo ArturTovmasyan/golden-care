@@ -259,7 +259,7 @@ class Apartment
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip", inversedBy="apartments")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })

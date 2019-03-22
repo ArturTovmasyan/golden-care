@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\CityStateZip;
 use App\Entity\ResponsiblePerson;
 use App\Entity\Salutation;
@@ -14,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ResponsiblePersonRepository
  * @package App\Repository
  */
-class ResponsiblePersonRepository extends EntityRepository
+class ResponsiblePersonRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -161,6 +162,55 @@ class ResponsiblePersonRepository extends EntityRepository
         }
 
         return $qb->groupBy('rp.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('rp')
+            ->select("CONCAT(rp.firstName, ' ', rp.lastName) as fullName");
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('rp.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('rp.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rp.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

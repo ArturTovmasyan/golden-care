@@ -206,4 +206,26 @@ class CityStateZipService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new CityStateZipNotFoundException();
+        }
+
+        /** @var CityStateZipRepository $repo */
+        $repo = $this->em->getRepository(CityStateZip::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $ids);
+
+        if (empty($entities)) {
+            throw new CityStateZipNotFoundException();
+        }
+
+        return $this->getRelatedData(CityStateZip::class, $entities);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -250,6 +251,36 @@ class CityStateZip
     private $space;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Apartment", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $apartments;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Facility", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $facilities;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Physician", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $physicians;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $residentAdmissions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $responsiblePersons;
+
+    /**
      * @return int
      */
     public function getId()
@@ -328,10 +359,89 @@ class CityStateZip
 
     /**
      * @param Space|null $space
-     * @return CityStateZip
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getApartments(): ArrayCollection
+    {
+        return $this->apartments;
+    }
+
+    /**
+     * @param ArrayCollection $apartments
+     */
+    public function setApartments(ArrayCollection $apartments): void
+    {
+        $this->apartments = $apartments;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFacilities(): ArrayCollection
+    {
+        return $this->facilities;
+    }
+
+    /**
+     * @param ArrayCollection $facilities
+     */
+    public function setFacilities(ArrayCollection $facilities): void
+    {
+        $this->facilities = $facilities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPhysicians(): ArrayCollection
+    {
+        return $this->physicians;
+    }
+
+    /**
+     * @param ArrayCollection $physicians
+     */
+    public function setPhysicians(ArrayCollection $physicians): void
+    {
+        $this->physicians = $physicians;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAdmissions(): ArrayCollection
+    {
+        return $this->residentAdmissions;
+    }
+
+    /**
+     * @param ArrayCollection $residentAdmissions
+     */
+    public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
+    {
+        $this->residentAdmissions = $residentAdmissions;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResponsiblePersons(): ArrayCollection
+    {
+        return $this->responsiblePersons;
+    }
+
+    /**
+     * @param ArrayCollection $responsiblePersons
+     */
+    public function setResponsiblePersons(ArrayCollection $responsiblePersons): void
+    {
+        $this->responsiblePersons = $responsiblePersons;
     }
 }

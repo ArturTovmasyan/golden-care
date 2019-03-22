@@ -266,7 +266,7 @@ class ResidentAdmission
 
     /**
      * @var CityStateZip
-     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CityStateZip", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
