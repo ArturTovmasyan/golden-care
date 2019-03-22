@@ -169,7 +169,7 @@ class ResidentMedication
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\MedicationFormFactor")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MedicationFormFactor", inversedBy="formFactors")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_form_factor", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -405,7 +405,6 @@ class ResidentMedication
 
     /**
      * @param Resident|null $resident
-     * @return ResidentMedication
      */
     public function setResident(?Resident $resident): void
     {
@@ -422,7 +421,6 @@ class ResidentMedication
 
     /**
      * @param Physician|null $physician
-     * @return ResidentMedication
      */
     public function setPhysician(?Physician $physician): void
     {
@@ -439,7 +437,6 @@ class ResidentMedication
 
     /**
      * @param Medication|null $medication
-     * @return ResidentMedication
      */
     public function setMedication(?Medication $medication): void
     {
@@ -456,7 +453,6 @@ class ResidentMedication
 
     /**
      * @param MedicationFormFactor|null $formFactor
-     * @return ResidentMedication
      */
     public function setFormFactor(?MedicationFormFactor $formFactor): void
     {

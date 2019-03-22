@@ -199,4 +199,26 @@ class MedicationFormFactorService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new MedicationFormFactorNotFoundException();
+        }
+
+        /** @var MedicationFormFactorRepository $repo */
+        $repo = $this->em->getRepository(MedicationFormFactor::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicationFormFactor::class), $ids);
+
+        if (empty($entities)) {
+            throw new MedicationFormFactorNotFoundException();
+        }
+
+        return $this->getRelatedData(MedicationFormFactor::class, $entities);
+    }
 }
