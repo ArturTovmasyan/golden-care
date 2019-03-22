@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -139,6 +140,12 @@ class MedicalHistoryCondition
      */
     private $space;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedicalHistoryCondition", mappedBy="condition", cascade={"remove", "persist"})
+     */
+    private $historyConditions;
+
 
     public function getId()
     {
@@ -182,10 +189,25 @@ class MedicalHistoryCondition
 
     /**
      * @param Space|null $space
-     * @return MedicalHistoryCondition
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHistoryConditions(): ArrayCollection
+    {
+        return $this->historyConditions;
+    }
+
+    /**
+     * @param ArrayCollection $historyConditions
+     */
+    public function setHistoryConditions(ArrayCollection $historyConditions): void
+    {
+        $this->historyConditions = $historyConditions;
     }
 }

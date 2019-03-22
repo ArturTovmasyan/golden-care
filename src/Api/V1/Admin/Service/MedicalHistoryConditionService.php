@@ -201,4 +201,26 @@ class MedicalHistoryConditionService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new MedicalHistoryConditionNotFoundException();
+        }
+
+        /** @var MedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(MedicalHistoryCondition::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(MedicalHistoryCondition::class), $ids);
+
+        if (empty($entities)) {
+            throw new MedicalHistoryConditionNotFoundException();
+        }
+
+        return $this->getRelatedData(MedicalHistoryCondition::class, $entities);
+    }
 }

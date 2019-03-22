@@ -416,4 +416,48 @@ class MedicalHistoryConditionController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/medical/history/condition/related/info MedicalHistoryCondition related info
+     * @apiVersion 1.0.0
+     * @apiName MedicalHistoryCondition Related Info
+     * @apiGroup Admin Medical History Conditions
+     * @apiDescription This function is used to get medicalHistoryCondition related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "MedicalHistoryCondition not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_medical_history_condition_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param MedicalHistoryConditionService $medicalHistoryConditionService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, MedicalHistoryConditionService $medicalHistoryConditionService)
+    {
+        $relatedData = $medicalHistoryConditionService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }

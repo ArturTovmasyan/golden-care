@@ -97,7 +97,7 @@ class ResidentMedicalHistoryCondition
      *     "api_admin_resident_medical_history_condition_add",
      *     "api_admin_resident_medical_history_condition_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\MedicalHistoryCondition", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\MedicalHistoryCondition", inversedBy="historyConditions", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_medical_history_condition", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -172,7 +172,6 @@ class ResidentMedicalHistoryCondition
 
     /**
      * @param Resident|null $resident
-     * @return ResidentMedicalHistoryCondition
      */
     public function setResident(?Resident $resident): void
     {
