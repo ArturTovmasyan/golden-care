@@ -199,4 +199,26 @@ class PaymentSourceService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new PaymentSourceNotFoundException();
+        }
+
+        /** @var PaymentSourceRepository $repo */
+        $repo = $this->em->getRepository(PaymentSource::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(PaymentSource::class), $ids);
+
+        if (empty($entities)) {
+            throw new PaymentSourceNotFoundException();
+        } 
+
+        return $this->getRelatedData(PaymentSource::class, $entities);
+    }
 }

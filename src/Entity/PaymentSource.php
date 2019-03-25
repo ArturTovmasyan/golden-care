@@ -146,7 +146,6 @@ class PaymentSource
 
     /**
      * @param Space|null $space
-     * @return PaymentSource
      */
     public function setSpace(?Space $space): void
     {
