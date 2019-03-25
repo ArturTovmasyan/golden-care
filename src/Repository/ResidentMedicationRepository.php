@@ -80,7 +80,7 @@ class ResidentMedicationRepository extends EntityRepository
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, $id, $medication_id = null)
     {
         $qb = $this
             ->createQueryBuilder('rm')
@@ -92,6 +92,12 @@ class ResidentMedicationRepository extends EntityRepository
             )
             ->where('r.id = :id')
             ->setParameter('id', $id);
+
+        if ($medication_id !== null) {
+            $qb
+                ->andWhere('rm.medication = :medication_id')
+                ->setParameter('medication_id', $medication_id);
+        }
 
         if ($space !== null) {
             $qb

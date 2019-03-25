@@ -222,7 +222,10 @@ class ResidentMedicationController extends BaseController
             ResidentMedication::class,
             'api_admin_resident_medication_list',
             $residentMedicationService,
-            ['resident_id' => $request->get('resident_id')]
+            [
+                'resident_id' => $request->get('resident_id'),
+                'medication_id' => $request->get('medication_id')
+            ]
         );
     }
 

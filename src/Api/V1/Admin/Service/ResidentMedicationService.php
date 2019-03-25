@@ -60,7 +60,13 @@ class ResidentMedicationService extends BaseService implements IGridService
             /** @var ResidentMedicationRepository $repo */
             $repo = $this->em->getRepository(ResidentMedication::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentId);
+            $medication_id = null;
+
+            if(!empty($params[0]['medication_id'])) {
+                $medication_id = $params[0]['medication_id'];
+            }
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentId, $medication_id);
         }
 
         throw new ResidentNotFoundException();
