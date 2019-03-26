@@ -207,4 +207,26 @@ class RegionService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new RegionNotFoundException();
+        }
+
+        /** @var RegionRepository $repo */
+        $repo = $this->em->getRepository(Region::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Region::class), $ids);
+
+        if (empty($entities)) {
+            throw new RegionNotFoundException();
+        }
+
+        return $this->getRelatedData(Region::class, $entities);
+    }
 }

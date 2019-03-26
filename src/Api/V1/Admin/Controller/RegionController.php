@@ -452,4 +452,48 @@ class RegionController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/region/related/info Region related info
+     * @apiVersion 1.0.0
+     * @apiName Region Related Info
+     * @apiGroup Admin Regions
+     * @apiDescription This function is used to get region related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Region not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_region_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param RegionService $regionService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, RegionService $regionService)
+    {
+        $relatedData = $regionService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }

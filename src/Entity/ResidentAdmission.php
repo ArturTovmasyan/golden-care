@@ -247,7 +247,7 @@ class ResidentAdmission
 
     /**
      * @var Region
-     * @ORM\ManyToOne(targetEntity="App\Entity\Region")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Region", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_region", referencedColumnName="id", onDelete="CASCADE")
      * })

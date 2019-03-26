@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -202,6 +203,12 @@ class Region
     private $space;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="region", cascade={"remove", "persist"})
+     */
+    private $residentAdmissions;
+
+    /**
      * @return int
      */
     public function getId()
@@ -275,5 +282,21 @@ class Region
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAdmissions(): ArrayCollection
+    {
+        return $this->residentAdmissions;
+    }
+
+    /**
+     * @param ArrayCollection $residentAdmissions
+     */
+    public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
+    {
+        $this->residentAdmissions = $residentAdmissions;
     }
 }
