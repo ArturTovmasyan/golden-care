@@ -89,17 +89,6 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
-     * @return Resident|null|object
-     */
-    public function getNoContractResidents()
-    {
-        /** @var ResidentRepository $repo */
-        $repo = $this->em->getRepository(Resident::class);
-
-        return $repo->getNoContractResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class));
-    }
-
-    /**
      * @param array $params
      * @return integer|null
      * @throws \Exception

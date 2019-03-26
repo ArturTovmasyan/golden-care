@@ -92,13 +92,10 @@ class ResponseCode
     const REPORT_MISCONFIGURATION_EXCEPTION                      = 692;
     const FACILITY_BED_NOT_FOUND_EXCEPTION                       = 693;
     const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 694;
-    const CONTRACT_NOT_FOUND_EXCEPTION                           = 695;
-    const CONTRACT_ALREADY_EXIST_EXCEPTION                       = 696;
     const START_GREATER_END_DATE_EXCEPTION                       = 697;
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 698;
     const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 699;
     const CAN_NOT_REMOVE_BED_EXCEPTION                           = 700;
-    const CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    = 701;
     const REGION_CAN_NOT_HAVE_BED_EXCEPTION                      = 702;
     const UNHANDLED_RENT_PERIOD_EXCEPTION                        = 703;
     const RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION                 = 704;
@@ -192,13 +189,10 @@ class ResponseCode
         self::REPORT_MISCONFIGURATION_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report misconfiguration.'],
         self::FACILITY_BED_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityBed not found.'],
         self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentBed not found.'],
-        self::CONTRACT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Contract not found.'],
-        self::CONTRACT_ALREADY_EXIST_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Active contract already exist for this resident.'],
         self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the end date.'],
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank.'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region.'],
         self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bad has resident. Move resident to another bad.'],
-        self::CONTRACT_ACTION_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ContractAction not found.'],
         self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region can not hav bed.'],
         self::UNHANDLED_RENT_PERIOD_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Unhandled rent period.'],
         self::RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ResidentAdmission not found.'],

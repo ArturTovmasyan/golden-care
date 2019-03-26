@@ -6,14 +6,11 @@ use App\Api\V1\Common\Service\Exception\CanNotRemoveBadException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\ContractAction;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use App\Entity\ResidentAdmission;
-use App\Model\ContractType;
 use App\Model\GroupType;
-use App\Repository\ContractActionRepository;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FacilityRoomRepository;
@@ -38,141 +35,6 @@ class FacilityRoomService extends BaseService implements IGridService
 
         $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $queryBuilder);
     }
-
-//    /**
-//     * @param $params
-//     * @return mixed
-//     */
-//    public function list($params)
-//    {
-//        $currentSpace = $this->grantService->getCurrentSpace();
-//
-//        $vacant = false;
-//        if (!empty($params) && !empty($params[0]['vacant']) && $params[0]['vacant'] === 1) {
-//            $vacant = true;
-//        }
-//
-//        /** @var FacilityRoomRepository $repo */
-//        $repo = $this->em->getRepository(FacilityRoom::class);
-//
-//        if (!empty($params) && !empty($params[0]['facility_id'])) {
-//            $facilityId = $params[0]['facility_id'];
-//
-//            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $facilityId);
-//        } else {
-//            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class));
-//        }
-//
-//        if (!empty($rooms)) {
-//
-//            $roomIds = array_map(function(FacilityRoom $item){return $item->getId();} , $rooms);
-//
-//            /** @var ResidentAdmissionRepository $admissionRepo */
-//            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-//
-//            /** @var FacilityBedRepository $bedRepo */
-//            $bedRepo = $this->em->getRepository(FacilityBed::class);
-//
-//            $facilityBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
-//            $bedIds = [];
-//            if (\count($facilityBeds)) {
-//                $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
-//            }
-//
-//            if ($vacant) {
-//                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
-//
-//                $occupancyBedIds = [];
-//                if (!empty($residentAdmissions)) {
-//                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $residentAdmissions);
-//                }
-//
-//                /** @var FacilityRoom $room */
-//                foreach ($rooms as $room) {
-//                    $beds = $room->getBeds();
-//
-//                    if (\count($beds)) {
-//                        /** @var FacilityBed $bed */
-//                        foreach ($beds as $bed) {
-//                            if (\in_array($bed->getId(), $occupancyBedIds, false)) {
-//                                $room->removeBed($bed);
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
-//
-//                $admissions = [];
-//                if (!empty($residentAdmissions)) {
-//                    foreach ($residentAdmissions as $residentAdmission) {
-//                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
-//                    }
-//                }
-//
-//                /** @var FacilityRoom $room */
-//                foreach ($rooms as $room) {
-//                    $beds = $room->getBeds();
-//
-//                    if (\count($beds)) {
-//                        /** @var FacilityBed $bed */
-//                        foreach ($beds as $bed) {
-//                            if (!empty($admissions[$bed->getId()])) {
-//                                $bed->setResident($admissions[$bed->getId()]);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return $rooms;
-//
-//    }
-//
-//    /**
-//     * @param $id
-//     * @return FacilityRoom|null|object
-//     */
-//    public function getById($id)
-//    {
-//        $currentSpace = $this->grantService->getCurrentSpace();
-//
-//        /** @var FacilityRoomRepository $repo */
-//        $repo = $this->em->getRepository(FacilityRoom::class);
-//
-//        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
-//
-//        if ($room !== null) {
-//            /** @var ArrayCollection $beds */
-//            $beds = $room->getBeds();
-//
-//            if ($beds !== null) {
-//                $ids = array_map(function(FacilityBed $item){return $item->getId();} , $beds->toArray());
-//
-//                /** @var ResidentAdmissionRepository $admissionRepo */
-//                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-//
-//                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $ids);
-//
-//                $admissions = [];
-//                if (!empty($residentAdmissions)) {
-//                    foreach ($residentAdmissions as $residentAdmission) {
-//                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
-//                    }
-//                }
-//
-//                /** @var FacilityBed $bed */
-//                foreach ($beds as $bed) {
-//                    if (!empty($admissions[$bed->getId()])) {
-//                        $bed->setResident($admissions[$bed->getId()]);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return $room;
-//    }
 
     /**
      * @param $params
@@ -202,8 +64,8 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $roomIds = array_map(function(FacilityRoom $item){return $item->getId();} , $rooms);
 
-            /** @var ContractActionRepository $actionRepo */
-            $actionRepo = $this->em->getRepository(ContractAction::class);
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
             /** @var FacilityBedRepository $bedRepo */
             $bedRepo = $this->em->getRepository(FacilityBed::class);
@@ -215,11 +77,11 @@ class FacilityRoomService extends BaseService implements IGridService
             }
 
             if ($vacant) {
-                $contractActions = $actionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
+                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                 $occupancyBedIds = [];
-                if (!empty($contractActions)) {
-                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $contractActions);
+                if (!empty($residentAdmissions)) {
+                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $residentAdmissions);
                 }
 
                 /** @var FacilityRoom $room */
@@ -236,12 +98,12 @@ class FacilityRoomService extends BaseService implements IGridService
                     }
                 }
             } else {
-                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
+                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
-                $actions = [];
-                if (!empty($contractActions)) {
-                    foreach ($contractActions as $contractAction) {
-                        $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                $admissions = [];
+                if (!empty($residentAdmissions)) {
+                    foreach ($residentAdmissions as $residentAdmission) {
+                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
                     }
                 }
 
@@ -252,8 +114,8 @@ class FacilityRoomService extends BaseService implements IGridService
                     if (\count($beds)) {
                         /** @var FacilityBed $bed */
                         foreach ($beds as $bed) {
-                            if (!empty($actions[$bed->getId()])) {
-                                $bed->setResident($actions[$bed->getId()]);
+                            if (!empty($admissions[$bed->getId()])) {
+                                $bed->setResident($admissions[$bed->getId()]);
                             }
                         }
                     }
@@ -285,22 +147,22 @@ class FacilityRoomService extends BaseService implements IGridService
             if ($beds !== null) {
                 $ids = array_map(function(FacilityBed $item){return $item->getId();} , $beds->toArray());
 
-                /** @var ContractActionRepository $actionRepo */
-                $actionRepo = $this->em->getRepository(ContractAction::class);
+                /** @var ResidentAdmissionRepository $admissionRepo */
+                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-                $contractActions = $actionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
+                $residentAdmissions = $admissionRepo->getResidentsByBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $ids);
 
-                $actions = [];
-                if (!empty($contractActions)) {
-                    foreach ($contractActions as $contractAction) {
-                        $actions[$contractAction['bedId']] = $contractAction['action']->getContract()->getResident();
+                $admissions = [];
+                if (!empty($residentAdmissions)) {
+                    foreach ($residentAdmissions as $residentAdmission) {
+                        $admissions[$residentAdmission['bedId']] = $residentAdmission['admission']->getResident();
                     }
                 }
 
                 /** @var FacilityBed $bed */
                 foreach ($beds as $bed) {
-                    if (!empty($actions[$bed->getId()])) {
-                        $bed->setResident($actions[$bed->getId()]);
+                    if (!empty($admissions[$bed->getId()])) {
+                        $bed->setResident($admissions[$bed->getId()]);
                     }
                 }
             }
@@ -429,21 +291,12 @@ class FacilityRoomService extends BaseService implements IGridService
 
                         $this->em->persist($existingBed);
                     } else {
-//                        /** @var ResidentAdmissionRepository $admissionRepo */
-//                        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-//
-//                        $admission = $admissionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $existingBed->getId());
-//
-//                        if ($admission !== null) {
-//                            throw new CanNotRemoveBadException();
-//                        }
+                        /** @var ResidentAdmissionRepository $admissionRepo */
+                        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-                        /** @var ContractActionRepository $actionRepo */
-                        $actionRepo = $this->em->getRepository(ContractAction::class);
+                        $admission = $admissionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $existingBed->getId());
 
-                        $action = $actionRepo->getResidentByBed($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $existingBed->getId());
-
-                        if ($action !== null) {
+                        if ($admission !== null) {
                             throw new CanNotRemoveBadException();
                         }
 

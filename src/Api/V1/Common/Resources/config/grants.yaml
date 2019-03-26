@@ -237,30 +237,6 @@ persistence:
           class: App\Entity\ResidentAdmission
           route: api_admin_resident_admission_list
 
-        contract:
-          title: 'Contract'
-          children:
-            contract:
-              title: 'Contract'
-              class: App\Entity\Contract
-              route: api_admin_contract_list
-            contract_action:
-              title: 'ContractAction'
-              class: App\Entity\ContractAction
-              route: api_admin_contract_action_list
-            contract_apartment_option:
-              title: 'ContractApartmentOption'
-              class: App\Entity\ContractApartmentOption
-              route: api_admin_contract_apartment_option_list
-            contract_facility_option:
-              title: 'ContractFacilityOption'
-              class: App\Entity\ContractFacilityOption
-              route: api_admin_contract_facility_option_list
-            contract_region_option:
-              title: 'ContractRegionOption'
-              class: App\Entity\ContractRegionOption
-              route: api_admin_contract_region_option_list
-
         assessment:
           title: 'Assessment'
           children:

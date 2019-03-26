@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
-use App\Model\ContractType;
 use App\Model\GroupType;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
@@ -42,18 +41,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new ResidentBirthdayList();
         $report->setResidents($residents);
@@ -77,18 +72,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
@@ -113,18 +104,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new BowelMovement();
         $report->setResidents($residents);
@@ -148,18 +135,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new ChangeoverNotes();
         $report->setResidents($residents);
@@ -183,18 +166,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
@@ -219,18 +198,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new MealMonitor();
         $report->setResidents($residents);
@@ -255,18 +230,14 @@ class FormReportService extends BaseService
 
         $type = $group;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, null, $residentId);
-        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, null, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, null, $residentId);
         $residentIds = [];
 
         foreach ($residents as $resident) {
@@ -309,18 +280,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
-        $residents = $repo->getResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
         $residentIds = [];
         $residentsById = [];
 
@@ -357,18 +324,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new NightActivity();
         $report->setResidents($residents);
@@ -392,18 +355,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
-        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
@@ -428,18 +387,14 @@ class FormReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_REGION], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
         }
 
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-//        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
-        $residents = $repo->getResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);

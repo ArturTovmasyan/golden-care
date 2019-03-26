@@ -3,7 +3,7 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
-        var is_region = {% if data.strategyId == constant('App\\Model\\ContractType::TYPE_REGION') %}true{% else %}false{% endif %};
+        var is_region = {% if data.strategyId == constant('App\\Model\\GroupType::TYPE_REGION') %}true{% else %}false{% endif %};
         var report_data = {{ data.data|json_encode()|raw }};
 
         function init() {
@@ -134,8 +134,7 @@
                         <div style="float: left">
                             <div style="height: 3px;"></div>
                             <b style="font-size: 22px !important">{{ data.strategy }}
-                                {#&nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}#}
-                                &nbsp;{% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}Room&nbsp;{% endif %}
+                                &nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}
                                 Rent&nbsp;Master</b>
                             <p style="margin-bottom: 10px;"></p>
                         </div>
@@ -145,8 +144,7 @@
             </tr>
         </thead>
         <tbody>
-        {#{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}#}
-        {% if data.strategyId != constant('App\\Model\\ContractType::TYPE_REGION') %}
+        {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
             <tr style="margin: 0">
                 <td style="border: none; margin: 0">
                     <div id="chart-dual-column-{{ key }}"></div>

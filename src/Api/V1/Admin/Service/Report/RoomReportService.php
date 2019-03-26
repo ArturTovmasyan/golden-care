@@ -8,7 +8,6 @@ use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
-use App\Entity\ContractAction;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
@@ -18,7 +17,6 @@ use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
-use App\Model\ContractType;
 use App\Model\GroupType;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
@@ -30,7 +28,6 @@ use App\Model\Report\RoomVacancyList;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\ApartmentRepository;
 use App\Repository\ApartmentRoomRepository;
-use App\Repository\ContractActionRepository;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FacilityRoomRepository;
@@ -62,10 +59,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, ContractType::getTypeValues(), false)) {
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -82,8 +76,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-//        $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
-        $data = $repo->getRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
+        $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
@@ -128,8 +121,7 @@ class RoomReportService extends BaseService
         $report->setPlace($place);
         $report->setTotal($total);
         $report->setSources($sources);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
 
@@ -152,10 +144,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, ContractType::getTypeValues(), false)) {
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -173,7 +162,6 @@ class RoomReportService extends BaseService
         $repo = $this->em->getRepository(ResidentRent::class);
 
         $data = $repo->getAdmissionRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
-//        $data = $repo->getRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
@@ -212,8 +200,7 @@ class RoomReportService extends BaseService
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
 
@@ -238,10 +225,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, ContractType::getTypeValues(), false)) {
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -260,8 +244,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-//        $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
-        $data = $repo->getRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
         $residentIds = array_map(function($item){return $item['id'];} , $data);
@@ -344,8 +327,7 @@ class RoomReportService extends BaseService
         $report->setPlace($place);
         $report->setTotal($total);
         $report->setResponsiblePersons($responsiblePersons);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
         $report->setDateEnd($dateEnd);
@@ -372,10 +354,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, ContractType::getTypeValues(), false)) {
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -396,8 +375,7 @@ class RoomReportService extends BaseService
 
         $types = [];
         switch ($type) {
-//            case GroupType::TYPE_FACILITY:
-            case ContractType::TYPE_FACILITY:
+            case GroupType::TYPE_FACILITY:
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -410,8 +388,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
-//            case GroupType::TYPE_APARTMENT:
-            case ContractType::TYPE_APARTMENT:
+            case GroupType::TYPE_APARTMENT:
                 /** @var ApartmentRepository $apartmentRepo */
                 $apartmentRepo = $this->em->getRepository(Apartment::class);
 
@@ -424,8 +401,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
-//            case GroupType::TYPE_REGION:
-            case ContractType::TYPE_REGION:
+            case GroupType::TYPE_REGION:
                 /** @var RegionRepository $regionRepo */
                 $regionRepo = $this->em->getRepository(Region::class);
 
@@ -445,12 +421,11 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-//        $rents = $repo->getAdmissionRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
-        $rents = $repo->getRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $rents = $repo->getAdmissionRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
 
-        if ($type !== ContractType::TYPE_REGION) {
+        if ($type !== GroupType::TYPE_REGION) {
             $incomePer = 'bedId';
         } else {
             $incomePer = 'id';
@@ -519,7 +494,7 @@ class RoomReportService extends BaseService
                 $data[$typeId]['ave'] = $paymentsCount > 0 ? $sum / $paymentsCount : 0;
                 $data[$typeId]['avgRent'] = number_format($data[$typeId]['ave'], 2, '.', null);
 
-                if ($type !== ContractType::TYPE_REGION) {
+                if ($type !== GroupType::TYPE_REGION) {
 
                     $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null);
 
@@ -553,8 +528,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomRentMaster();
         $report->setData($data);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
         $report->setDateEnd($dateEnd);
@@ -581,10 +555,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, GroupType::getTypeValues(), false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, ContractType::getTypeValues(), false)) {
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -609,8 +580,7 @@ class RoomReportService extends BaseService
 
         $types = [];
         switch ($type) {
-//            case GroupType::TYPE_FACILITY:
-            case ContractType::TYPE_FACILITY:
+            case GroupType::TYPE_FACILITY:
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -623,8 +593,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
-//            case GroupType::TYPE_APARTMENT:
-            case ContractType::TYPE_APARTMENT:
+            case GroupType::TYPE_APARTMENT:
                 /** @var ApartmentRepository $apartmentRepo */
                 $apartmentRepo = $this->em->getRepository(Apartment::class);
 
@@ -637,8 +606,7 @@ class RoomReportService extends BaseService
                 }
 
                 break;
-//            case GroupType::TYPE_REGION:
-            case ContractType::TYPE_REGION:
+            case GroupType::TYPE_REGION:
                 /** @var RegionRepository $regionRepo */
                 $regionRepo = $this->em->getRepository(Region::class);
 
@@ -658,12 +626,11 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-//        $rents = $repo->getAdmissionRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
-        $rents = $repo->getRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $rents = $repo->getAdmissionRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
 
-        if ($type !== ContractType::TYPE_REGION) {
+        if ($type !== GroupType::TYPE_REGION) {
             $incomePer = 'bedId';
         } else {
             $incomePer = 'id';
@@ -710,7 +677,7 @@ class RoomReportService extends BaseService
                     $data[$typeId]['incomes'][$incomePerId] = array_sum($data[$typeId]['incomes'][$incomePerId]);
                 }
 
-                if ($type !== ContractType::TYPE_REGION) {
+                if ($type !== GroupType::TYPE_REGION) {
                     $data[$typeId]['occupancy'] = \count($data[$typeId]['occupancies']) === 0 ? 0 : array_sum($data[$typeId]['occupancies']) / \count($data[$typeId]['occupancies']);
                     $data[$typeId]['occupancy'] = number_format($data[$typeId]['occupancy'] * 100, 2);
                     $data[$typeId]['occupancy'] = $data[$typeId]['occupancy'] > 100 ? 100 : $data[$typeId]['occupancy'];
@@ -736,8 +703,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomRentMasterNew();
         $report->setData($data);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
         $report->setDateEnd($dateEnd);
@@ -760,27 +726,21 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-//        /** @var ResidentAdmissionRepository $admissionRepo */
-//        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-        /** @var ContractActionRepository $actionRepo */
-        $actionRepo = $this->em->getRepository(ContractAction::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
         $all = $groupAll;
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_APARTMENT], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
 
         $rooms = [];
         $data = [];
 
-//        if ($type === GroupType::TYPE_FACILITY) {
-        if ($type === ContractType::TYPE_FACILITY) {
+        if ($type === GroupType::TYPE_FACILITY) {
             /** @var FacilityRoomRepository $facilityRoomRepo */
             $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
 
@@ -807,16 +767,10 @@ class RoomReportService extends BaseService
                 if (\count($facilityBeds)) {
                     $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
 
-//                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
-//
-//                    if (!empty($admissions)) {
-//                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
-//                    }
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
-                    $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $bedIds);
-
-                    if (!empty($contractActions)) {
-                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $contractActions);
+                    if (!empty($admissions)) {
+                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
                     }
 
                     foreach ($facilityBeds as $bed) {
@@ -826,8 +780,7 @@ class RoomReportService extends BaseService
                     }
                 }
             }
-//        } elseif ($type === GroupType::TYPE_APARTMENT) {
-        } elseif ($type === ContractType::TYPE_APARTMENT) {
+        } elseif ($type === GroupType::TYPE_APARTMENT) {
             /** @var ApartmentRoomRepository $apartmentRoomRepo */
             $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
 
@@ -854,16 +807,10 @@ class RoomReportService extends BaseService
                 if (\count($apartmentBeds)) {
                     $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
 
-//                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
-//
-//                    if (!empty($admissions)) {
-//                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
-//                    }
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
 
-                    $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $bedIds);
-
-                    if (!empty($contractActions)) {
-                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $contractActions);
+                    if (!empty($admissions)) {
+                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
                     }
 
                     foreach ($apartmentBeds as $bed) {
@@ -877,8 +824,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomVacancyList();
         $report->setData($data);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
 
         return $report;
     }
@@ -898,19 +844,14 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-//        /** @var ResidentAdmissionRepository $admissionRepo */
-//        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-        /** @var ContractActionRepository $actionRepo */
-        $actionRepo = $this->em->getRepository(ContractAction::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
         $all = $groupAll;
         $type = $group;
         $typeId = $groupId;
 
-//        if (!\in_array($type, [GroupType::TYPE_FACILITY, v::TYPE_APARTMENT], false)) {
-//            throw new InvalidParameterException('group');
-//        }
-        if (!\in_array($type, [ContractType::TYPE_FACILITY, ContractType::TYPE_APARTMENT], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, v::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -918,8 +859,7 @@ class RoomReportService extends BaseService
         $types = [];
         $data = [];
 
-//        if ($type === GroupType::TYPE_FACILITY) {
-        if ($type === ContractType::TYPE_FACILITY) {
+        if ($type === GroupType::TYPE_FACILITY) {
             /** @var FacilityRoomRepository $facilityRoomRepo */
             $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
 
@@ -956,17 +896,10 @@ class RoomReportService extends BaseService
                     $bedIds = array_count_values($bedIds);
                 }
 
-//                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
-//
-//                if (!empty($admissions)) {
-//                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
-//                    $occupancyBedIds = array_count_values($occupancyBedIds);
-//                }
+                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $ids);
 
-                $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_FACILITY, $ids);
-
-                if (!empty($contractActions)) {
-                    $occupancyBedIds = array_column($contractActions, 'typeId', 'bedId');
+                if (!empty($admissions)) {
+                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
                     $occupancyBedIds = array_count_values($occupancyBedIds);
                 }
             }
@@ -984,8 +917,7 @@ class RoomReportService extends BaseService
                     ];
                 }
             }
-//        } elseif ($type === GroupType::TYPE_APARTMENT) {
-        } elseif ($type === ContractType::TYPE_APARTMENT) {
+        } elseif ($type === GroupType::TYPE_APARTMENT) {
             /** @var ApartmentRoomRepository $apartmentRoomRepo */
             $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
 
@@ -1022,17 +954,10 @@ class RoomReportService extends BaseService
                     $bedIds = array_count_values($bedIds);
                 }
 
-//                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $ids);
-//
-//                if (!empty($admissions)) {
-//                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
-//                    $occupancyBedIds = array_count_values($occupancyBedIds);
-//                }
+                $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $ids);
 
-                $contractActions = $actionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContractAction::class), ContractType::TYPE_APARTMENT, $ids);
-
-                if (!empty($contractActions)) {
-                    $occupancyBedIds = array_column($contractActions, 'typeId', 'bedId');
+                if (!empty($admissions)) {
+                    $occupancyBedIds = array_column($admissions, 'typeId', 'bedId');
                     $occupancyBedIds = array_count_values($occupancyBedIds);
                 }
             }
@@ -1054,8 +979,7 @@ class RoomReportService extends BaseService
 
         $report = new RoomOccupancyRate();
         $report->setData($data);
-//        $report->setStrategy(GroupType::getTypes()[$type]);
-        $report->setStrategy(ContractType::getTypes()[$type]);
+        $report->setStrategy(GroupType::getTypes()[$type]);
 
         return $report;
     }
