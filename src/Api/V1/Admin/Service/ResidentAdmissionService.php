@@ -670,4 +670,26 @@ class ResidentAdmissionService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentAdmissionNotFoundException();
+        }
+
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentAdmissionNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentAdmission::class, $entities);
+    }
 }

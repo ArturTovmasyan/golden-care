@@ -907,4 +907,48 @@ class ResidentAdmissionController extends BaseController
             ['api_admin_resident_get_no_admission']
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/resident/admission/related/info ResidentAdmission related info
+     * @apiVersion 1.0.0
+     * @apiName ResidentAdmission Related Info
+     * @apiGroup Admin ResidentAdmissions
+     * @apiDescription This function is used to get residentAdmission related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "ResidentAdmission not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_resident_admission_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    {
+        $relatedData = $residentAdmissionService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }
