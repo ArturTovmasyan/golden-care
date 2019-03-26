@@ -77,7 +77,7 @@ class ResidentDiagnosis
      *     "api_admin_resident_diagnosis_add",
      *     "api_admin_resident_diagnosis_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentDiagnoses")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

@@ -83,7 +83,7 @@ class ResidentRent
      *     "api_admin_resident_rent_add",
      *     "api_admin_resident_rent_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentRents")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -241,7 +241,6 @@ class ResidentRent
 
     /**
      * @param Resident|null $resident
-     * @return ResidentRent
      */
     public function setResident(?Resident $resident): void
     {

@@ -69,7 +69,7 @@ class ResidentAdmission
 
     /**
      * @var Resident
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

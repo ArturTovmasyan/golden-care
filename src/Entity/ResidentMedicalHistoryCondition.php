@@ -75,7 +75,7 @@ class ResidentMedicalHistoryCondition
      *     "api_admin_resident_medical_history_condition_add",
      *     "api_admin_resident_medical_history_condition_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="historyConditions")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

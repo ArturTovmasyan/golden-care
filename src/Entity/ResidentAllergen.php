@@ -70,7 +70,7 @@ class ResidentAllergen
      *     "api_admin_resident_allergen_add",
      *     "api_admin_resident_allergen_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentAllergens")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -148,7 +148,6 @@ class ResidentAllergen
 
     /**
      * @param Resident|null $resident
-     * @return ResidentAllergen
      */
     public function setResident(?Resident $resident): void
     {
@@ -165,7 +164,6 @@ class ResidentAllergen
 
     /**
      * @param Allergen|null $allergen
-     * @return ResidentAllergen
      */
     public function setAllergen(?Allergen $allergen): void
     {

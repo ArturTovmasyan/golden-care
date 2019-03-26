@@ -75,7 +75,7 @@ class ResidentDiet
      *     "api_admin_resident_diet_add",
      *     "api_admin_resident_diet_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentDiets")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

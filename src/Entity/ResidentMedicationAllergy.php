@@ -70,7 +70,7 @@ class ResidentMedicationAllergy
      *     "api_admin_resident_medication_allergy_add",
      *     "api_admin_resident_medication_allergy_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentMedicationAllergies")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

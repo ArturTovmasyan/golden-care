@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -243,6 +244,72 @@ class Resident
     private $assessments;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentAdmissions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAllergen", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentAllergens;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiagnosis", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentDiagnoses;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiet", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentDiets;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedicalHistoryCondition", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $historyConditions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedication", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentMedications;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedicationAllergy", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentMedicationAllergies;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPhysician", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentPhysicians;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentRent", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentRents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentResponsiblePerson", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentResponsiblePersons;
+
+    /**
      * @return int
      */
     public function getId()
@@ -432,5 +499,181 @@ class Resident
     public function setAssessments($assessments): void
     {
         $this->assessments = $assessments;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAdmissions(): ArrayCollection
+    {
+        return $this->residentAdmissions;
+    }
+
+    /**
+     * @param ArrayCollection $residentAdmissions
+     */
+    public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
+    {
+        $this->residentAdmissions = $residentAdmissions;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentAllergens(): ArrayCollection
+    {
+        return $this->residentAllergens;
+    }
+
+    /**
+     * @param ArrayCollection $residentAllergens
+     */
+    public function setResidentAllergens(ArrayCollection $residentAllergens): void
+    {
+        $this->residentAllergens = $residentAllergens;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentDiagnoses(): ArrayCollection
+    {
+        return $this->residentDiagnoses;
+    }
+
+    /**
+     * @param ArrayCollection $residentDiagnoses
+     */
+    public function setResidentDiagnoses(ArrayCollection $residentDiagnoses): void
+    {
+        $this->residentDiagnoses = $residentDiagnoses;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentDiets(): ArrayCollection
+    {
+        return $this->residentDiets;
+    }
+
+    /**
+     * @param ArrayCollection $residentDiets
+     */
+    public function setResidentDiets(ArrayCollection $residentDiets): void
+    {
+        $this->residentDiets = $residentDiets;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentEvents(): ArrayCollection
+    {
+        return $this->residentEvents;
+    }
+
+    /**
+     * @param ArrayCollection $residentEvents
+     */
+    public function setResidentEvents(ArrayCollection $residentEvents): void
+    {
+        $this->residentEvents = $residentEvents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHistoryConditions(): ArrayCollection
+    {
+        return $this->historyConditions;
+    }
+
+    /**
+     * @param ArrayCollection $historyConditions
+     */
+    public function setHistoryConditions(ArrayCollection $historyConditions): void
+    {
+        $this->historyConditions = $historyConditions;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentMedications(): ArrayCollection
+    {
+        return $this->residentMedications;
+    }
+
+    /**
+     * @param ArrayCollection $residentMedications
+     */
+    public function setResidentMedications(ArrayCollection $residentMedications): void
+    {
+        $this->residentMedications = $residentMedications;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentMedicationAllergies(): ArrayCollection
+    {
+        return $this->residentMedicationAllergies;
+    }
+
+    /**
+     * @param ArrayCollection $residentMedicationAllergies
+     */
+    public function setResidentMedicationAllergies(ArrayCollection $residentMedicationAllergies): void
+    {
+        $this->residentMedicationAllergies = $residentMedicationAllergies;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPhysicians(): ArrayCollection
+    {
+        return $this->residentPhysicians;
+    }
+
+    /**
+     * @param ArrayCollection $residentPhysicians
+     */
+    public function setResidentPhysicians(ArrayCollection $residentPhysicians): void
+    {
+        $this->residentPhysicians = $residentPhysicians;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentRents(): ArrayCollection
+    {
+        return $this->residentRents;
+    }
+
+    /**
+     * @param ArrayCollection $residentRents
+     */
+    public function setResidentRents(ArrayCollection $residentRents): void
+    {
+        $this->residentRents = $residentRents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentResponsiblePersons(): ArrayCollection
+    {
+        return $this->residentResponsiblePersons;
+    }
+
+    /**
+     * @param ArrayCollection $residentResponsiblePersons
+     */
+    public function setResidentResponsiblePersons(ArrayCollection $residentResponsiblePersons): void
+    {
+        $this->residentResponsiblePersons = $residentResponsiblePersons;
     }
 }

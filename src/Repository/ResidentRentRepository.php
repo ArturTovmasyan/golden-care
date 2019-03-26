@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
@@ -28,7 +29,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ResidentRentRepository
  * @package App\Repository
  */
-class ResidentRentRepository extends EntityRepository
+class ResidentRentRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -865,5 +866,60 @@ class ResidentRentRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('rr')
+            ->select('rr.amount');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('rr.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('rr.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Resident::class,
+                    'r',
+                    Join::WITH,
+                    'r = rr.resident'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 }
