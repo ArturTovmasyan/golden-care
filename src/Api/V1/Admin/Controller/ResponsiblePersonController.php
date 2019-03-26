@@ -530,7 +530,7 @@ class ResponsiblePersonController extends BaseController
      *          "error": "ResponsiblePerson not found"
      *     }
      *
-     * @Route("/related/info", name="api_admin_resident_responsible_person_related_info", methods={"POST"})
+     * @Route("/related/info", name="api_admin_responsible_person_related_info", methods={"POST"})
      *
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
