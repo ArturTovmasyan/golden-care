@@ -206,4 +206,26 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResponsiblePersonRoleNotFoundException();
+        }
+
+        /** @var ResponsiblePersonRoleRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePersonRole::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResponsiblePersonRoleNotFoundException();
+        }
+
+        return $this->getRelatedData(ResponsiblePersonRole::class, $entities);
+    }
 }
