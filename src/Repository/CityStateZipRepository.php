@@ -75,6 +75,9 @@ class CityStateZipRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy("CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)", 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

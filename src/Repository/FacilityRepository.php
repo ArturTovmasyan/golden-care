@@ -82,6 +82,9 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('f.name', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

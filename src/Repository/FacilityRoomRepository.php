@@ -87,6 +87,9 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('fr.number', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

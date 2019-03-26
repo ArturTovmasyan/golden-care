@@ -75,6 +75,9 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('ed.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

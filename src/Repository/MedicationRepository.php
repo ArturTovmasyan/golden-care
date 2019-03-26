@@ -75,6 +75,9 @@ class MedicationRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('m.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

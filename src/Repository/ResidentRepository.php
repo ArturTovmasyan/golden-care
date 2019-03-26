@@ -78,6 +78,12 @@ class ResidentRepository extends EntityRepository
     {
         $qb = $this
             ->createQueryBuilder('r')
+            ->leftJoin(
+                Salutation::class,
+                'rs',
+                Join::WITH,
+                'rs = r.salutation'
+            )
             ->innerJoin(
                 Space::class,
                 's',
@@ -96,6 +102,11 @@ class ResidentRepository extends EntityRepository
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END, 
+            r.firstName, ' ', r.lastName)", 'ASC');
 
         return $qb
             ->getQuery()

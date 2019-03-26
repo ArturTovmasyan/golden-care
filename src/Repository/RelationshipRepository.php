@@ -75,6 +75,9 @@ class RelationshipRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('r.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

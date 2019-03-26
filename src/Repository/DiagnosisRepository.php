@@ -75,6 +75,9 @@ class DiagnosisRepository extends EntityRepository implements RelatedInfoInterfa
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('d.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

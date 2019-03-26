@@ -76,6 +76,9 @@ class PaymentSourceRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('ps.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

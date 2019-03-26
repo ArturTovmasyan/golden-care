@@ -74,6 +74,9 @@ class CategoryRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('ac.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

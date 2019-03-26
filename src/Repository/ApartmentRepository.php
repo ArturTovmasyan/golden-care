@@ -82,6 +82,9 @@ class ApartmentRepository extends EntityRepository implements RelatedInfoInterfa
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('a.name', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

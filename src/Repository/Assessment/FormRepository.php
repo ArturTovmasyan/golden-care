@@ -74,6 +74,9 @@ class FormRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('af.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

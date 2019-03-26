@@ -75,6 +75,9 @@ class MedicationFormFactorRepository extends EntityRepository implements Related
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('mff.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

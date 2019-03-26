@@ -74,6 +74,9 @@ class SalutationRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('sa.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

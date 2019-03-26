@@ -75,6 +75,9 @@ class AllergenRepository extends EntityRepository  implements RelatedInfoInterfa
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('a.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

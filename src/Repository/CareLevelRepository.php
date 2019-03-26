@@ -75,6 +75,9 @@ class CareLevelRepository extends EntityRepository implements RelatedInfoInterfa
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('cl.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

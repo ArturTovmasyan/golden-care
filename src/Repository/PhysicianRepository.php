@@ -77,6 +77,12 @@ class PhysicianRepository extends EntityRepository implements RelatedInfoInterfa
     {
         $qb = $this
             ->createQueryBuilder('p')
+            ->leftJoin(
+                Salutation::class,
+                'ps',
+                Join::WITH,
+                'ps = p.salutation'
+            )
             ->innerJoin(
                 Space::class,
                 's',
@@ -95,6 +101,11 @@ class PhysicianRepository extends EntityRepository implements RelatedInfoInterfa
                 ->andWhere('p.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN ps IS NOT NULL THEN CONCAT(ps.title, ' ') ELSE '' END,
+            p.firstName, ' ', p.lastName)", 'ASC');
 
         return $qb
             ->getQuery()

@@ -70,6 +70,12 @@ class ResponsiblePersonRepository extends EntityRepository implements RelatedInf
     {
         $qb = $this
             ->createQueryBuilder('rp')
+            ->leftJoin(
+                Salutation::class,
+                'rps',
+                Join::WITH,
+                'rps = rp.salutation'
+            )
             ->innerJoin(
                 Space::class,
                 's',
@@ -88,6 +94,11 @@ class ResponsiblePersonRepository extends EntityRepository implements RelatedInf
                 ->andWhere('rp.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rps IS NOT NULL THEN CONCAT(rps.title, ' ') ELSE '' END, 
+            rp.firstName, ' ', rp.lastName)", 'ASC');
 
         return $qb
             ->getQuery()

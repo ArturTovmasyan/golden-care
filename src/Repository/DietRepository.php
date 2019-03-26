@@ -75,6 +75,9 @@ class DietRepository extends EntityRepository implements RelatedInfoInterface
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('d.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

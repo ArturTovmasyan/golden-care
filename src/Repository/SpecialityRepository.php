@@ -74,6 +74,9 @@ class SpecialityRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('sp.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

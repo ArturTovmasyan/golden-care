@@ -87,6 +87,9 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('dr.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

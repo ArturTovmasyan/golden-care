@@ -86,6 +86,9 @@ class CareLevelRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('acl.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

@@ -75,6 +75,9 @@ class MedicalHistoryConditionRepository extends EntityRepository implements Rela
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('mhc.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

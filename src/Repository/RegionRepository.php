@@ -75,6 +75,9 @@ class RegionRepository extends EntityRepository implements RelatedInfoInterface
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('r.name', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();

@@ -74,6 +74,9 @@ class ResponsiblePersonRoleRepository extends EntityRepository
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy('rpr.title', 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();
