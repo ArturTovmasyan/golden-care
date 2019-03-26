@@ -252,4 +252,26 @@ class ResidentMedicationAllergyService extends BaseService implements IGridServi
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentMedicationAllergyNotFoundException();
+        }
+
+        /** @var ResidentMedicationAllergyRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicationAllergy::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentMedicationAllergyNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentMedicationAllergy::class, $entities);
+    }
 }

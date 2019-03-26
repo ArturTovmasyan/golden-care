@@ -429,4 +429,48 @@ class ResidentMedicationAllergyController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/resident/history/allergy/medication/related/info ResidentMedicationAllergy related info
+     * @apiVersion 1.0.0
+     * @apiName ResidentMedicationAllergy Related Info
+     * @apiGroup Admin Resident Medication Allergies
+     * @apiDescription This function is used to get residentMedicationAllergy related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "ResidentMedicationAllergy not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_resident_medication_allergy_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param ResidentMedicationAllergyService $residentMedicationAllergyService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    {
+        $relatedData = $residentMedicationAllergyService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }
