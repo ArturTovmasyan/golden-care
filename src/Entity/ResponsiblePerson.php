@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\PhoneTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -245,6 +246,18 @@ class ResponsiblePerson
     private $phones;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+     */
+    private $residentEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentResponsiblePerson", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+     */
+    private $residentResponsiblePersons;
+
+    /**
      * @return int
      */
     public function getId()
@@ -418,5 +431,37 @@ class ResponsiblePerson
     public function setPhones($phones): void
     {
         $this->phones = $phones;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentEvents(): ArrayCollection
+    {
+        return $this->residentEvents;
+    }
+
+    /**
+     * @param ArrayCollection $residentEvents
+     */
+    public function setResidentEvents(ArrayCollection $residentEvents): void
+    {
+        $this->residentEvents = $residentEvents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentResponsiblePersons(): ArrayCollection
+    {
+        return $this->residentResponsiblePersons;
+    }
+
+    /**
+     * @param ArrayCollection $residentResponsiblePersons
+     */
+    public function setResidentResponsiblePersons(ArrayCollection $residentResponsiblePersons): void
+    {
+        $this->residentResponsiblePersons = $residentResponsiblePersons;
     }
 }

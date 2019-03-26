@@ -65,7 +65,7 @@ class ResidentResponsiblePerson
 
     /**
      * @var ResponsiblePerson
-     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", inversedBy="residentResponsiblePersons", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
      * })

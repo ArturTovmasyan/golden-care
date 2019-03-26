@@ -162,7 +162,7 @@ class ResidentEvent
 
     /**
      * @var ResponsiblePerson
-     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", inversedBy="residentEvents")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
      * })

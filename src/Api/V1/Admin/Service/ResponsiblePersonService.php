@@ -332,4 +332,26 @@ class ResponsiblePersonService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResponsiblePersonNotFoundException();
+        }
+
+        /** @var ResponsiblePersonRepository $repo */
+        $repo = $this->em->getRepository(ResponsiblePerson::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResponsiblePersonNotFoundException();
+        }
+
+        return $this->getRelatedData(ResponsiblePerson::class, $entities);
+    }
 }
