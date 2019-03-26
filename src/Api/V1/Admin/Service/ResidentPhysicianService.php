@@ -300,4 +300,26 @@ class ResidentPhysicianService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentPhysicianNotFoundException();
+        }
+
+        /** @var ResidentPhysicianRepository $repo */
+        $repo = $this->em->getRepository(ResidentPhysician::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentPhysicianNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentPhysician::class, $entities);
+    }
 }
