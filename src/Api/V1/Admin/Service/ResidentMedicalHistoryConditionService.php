@@ -266,4 +266,26 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentMedicalHistoryConditionNotFoundException();
+        }
+
+        /** @var ResidentMedicalHistoryConditionRepository $repo */
+        $repo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentMedicalHistoryConditionNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentMedicalHistoryCondition::class, $entities);
+    }
 }
