@@ -143,7 +143,6 @@ class Relationship
 
     /**
      * @param Space|null $space
-     * @return Relationship
      */
     public function setSpace(?Space $space): void
     {

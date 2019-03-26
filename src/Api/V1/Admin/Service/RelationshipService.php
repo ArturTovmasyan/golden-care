@@ -203,4 +203,26 @@ class RelationshipService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new RelationshipNotFoundException();
+        }
+
+        /** @var RelationshipRepository $repo */
+        $repo = $this->em->getRepository(Relationship::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Relationship::class), $ids);
+
+        if (empty($entities)) {
+            throw new RelationshipNotFoundException();
+        }
+
+        return $this->getRelatedData(Relationship::class, $entities);
+    }
 }
