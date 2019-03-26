@@ -381,4 +381,26 @@ class ResidentEventService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentEventNotFoundException();
+        }
+
+        /** @var ResidentEventRepository $repo */
+        $repo = $this->em->getRepository(ResidentEvent::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentEventNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentEvent::class, $entities);
+    }
 }
