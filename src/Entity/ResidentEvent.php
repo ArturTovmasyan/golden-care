@@ -30,7 +30,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "date",
- *              "type"       = "string",
+ *              "type"       = "date",
  *              "field"      = "re.date"
  *          },
  *          {
@@ -50,7 +50,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "additional_date",
- *              "type"       = "string",
+ *              "type"       = "date",
  *              "field"      = "re.additionalDate"
  *          }
  *     }
