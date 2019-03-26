@@ -64,7 +64,7 @@ class ResidentPhysician
 
     /**
      * @var Physician
-     * @ORM\ManyToOne(targetEntity="App\Entity\Physician", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Physician", inversedBy="residentPhysicians", cascade={"persist"})
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
      * })

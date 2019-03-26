@@ -148,7 +148,7 @@ class ResidentEvent
 
     /**
      * @var Physician
-     * @ORM\ManyToOne(targetEntity="App\Entity\Physician")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Physician", inversedBy="residentEvents")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_physician", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -215,7 +215,6 @@ class ResidentEvent
 
     /**
      * @param EventDefinition|null $definition
-     * @return ResidentEvent
      */
     public function setDefinition(?EventDefinition $definition): void
     {
@@ -232,7 +231,6 @@ class ResidentEvent
 
     /**
      * @param Resident|null $resident
-     * @return ResidentEvent
      */
     public function setResident(?Resident $resident): void
     {
@@ -275,7 +273,6 @@ class ResidentEvent
 
     /**
      * @param Physician|null $physician
-     * @return ResidentEvent
      */
     public function setPhysician(?Physician $physician): void
     {
@@ -292,7 +289,6 @@ class ResidentEvent
 
     /**
      * @param ResponsiblePerson|null $responsiblePerson
-     * @return ResidentEvent
      */
     public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
     {

@@ -358,6 +358,24 @@ class Physician
     private $websiteUrl;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="physician", cascade={"remove", "persist"})
+     */
+    private $residentEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentMedication", mappedBy="physician", cascade={"remove", "persist"})
+     */
+    private $residentMedications;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPhysician", mappedBy="physician", cascade={"remove", "persist"})
+     */
+    private $residentPhysicians;
+
+    /**
      * @return int
      */
     public function getId()
@@ -595,5 +613,53 @@ class Physician
     public function setCsz($csz)
     {
         $this->csz = $csz;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentEvents(): ArrayCollection
+    {
+        return $this->residentEvents;
+    }
+
+    /**
+     * @param ArrayCollection $residentEvents
+     */
+    public function setResidentEvents(ArrayCollection $residentEvents): void
+    {
+        $this->residentEvents = $residentEvents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentMedications(): ArrayCollection
+    {
+        return $this->residentMedications;
+    }
+
+    /**
+     * @param ArrayCollection $residentMedications
+     */
+    public function setResidentMedications(ArrayCollection $residentMedications): void
+    {
+        $this->residentMedications = $residentMedications;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPhysicians(): ArrayCollection
+    {
+        return $this->residentPhysicians;
+    }
+
+    /**
+     * @param ArrayCollection $residentPhysicians
+     */
+    public function setResidentPhysicians(ArrayCollection $residentPhysicians): void
+    {
+        $this->residentPhysicians = $residentPhysicians;
     }
 }
