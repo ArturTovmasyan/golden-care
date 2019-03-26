@@ -289,6 +289,12 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('ids', $ids);
         }
 
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('fr.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(

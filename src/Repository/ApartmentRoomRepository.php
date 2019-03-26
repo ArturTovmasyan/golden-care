@@ -289,6 +289,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('ids', $ids);
         }
 
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('ar.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(

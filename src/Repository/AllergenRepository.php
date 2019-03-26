@@ -182,6 +182,12 @@ class AllergenRepository extends EntityRepository  implements RelatedInfoInterfa
                 ->setParameter('ids', $ids);
         }
 
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('a.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(

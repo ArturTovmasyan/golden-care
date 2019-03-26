@@ -256,6 +256,12 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('ids', $ids);
         }
 
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('f.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(

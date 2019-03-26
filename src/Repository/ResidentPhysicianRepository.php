@@ -510,6 +510,12 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 ->setParameter('ids', $ids);
         }
 
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('rp.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(

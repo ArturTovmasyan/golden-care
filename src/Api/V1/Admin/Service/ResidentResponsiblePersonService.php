@@ -319,4 +319,26 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentResponsiblePersonNotFoundException();
+        }
+
+        /** @var ResidentResponsiblePersonRepository $repo */
+        $repo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentResponsiblePersonNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentResponsiblePerson::class, $entities);
+    }
 }
