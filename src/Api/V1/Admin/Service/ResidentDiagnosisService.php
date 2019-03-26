@@ -254,4 +254,26 @@ class ResidentDiagnosisService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentDiagnosisNotFoundException();
+        }
+
+        /** @var ResidentDiagnosisRepository $repo */
+        $repo = $this->em->getRepository(ResidentDiagnosis::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $ids);
+
+        if (empty( $entities)) {
+            throw new ResidentDiagnosisNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentDiagnosis::class, $entities);
+    }
 }
