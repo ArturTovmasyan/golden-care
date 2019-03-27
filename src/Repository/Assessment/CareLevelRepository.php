@@ -2,6 +2,7 @@
 
 namespace App\Repository\Assessment;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Assessment\CareLevel;
 use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Space;
@@ -13,7 +14,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class CareLevelRepository
  * @package App\Repository\Assessment
  */
-class CareLevelRepository extends EntityRepository
+class CareLevelRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -174,6 +175,67 @@ class CareLevelRepository extends EntityRepository
         }
 
         return $qb->groupBy('acl.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('acl')
+            ->select('acl.title');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('acl.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('acl.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('acl.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    CareLevelGroup::class,
+                    'aclg',
+                    Join::WITH,
+                    'aclg = acl.careLevelGroup'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = aclg.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('acl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
