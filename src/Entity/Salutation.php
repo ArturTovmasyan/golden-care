@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -125,6 +126,24 @@ class Salutation
      */
     private $space;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Physician", mappedBy="salutation", cascade={"remove", "persist"})
+     */
+    private $physicians;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Resident", mappedBy="salutation", cascade={"remove", "persist"})
+     */
+    private $residents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="salutation", cascade={"remove", "persist"})
+     */
+    private $responsiblePersons;
+
     public function getId()
     {
         return $this->id;
@@ -156,10 +175,57 @@ class Salutation
 
     /**
      * @param Space|null $space
-     * @return Salutation
      */
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPhysicians(): ArrayCollection
+    {
+        return $this->physicians;
+    }
+
+    /**
+     * @param ArrayCollection $physicians
+     */
+    public function setPhysicians(ArrayCollection $physicians): void
+    {
+        $this->physicians = $physicians;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidents(): ArrayCollection
+    {
+        return $this->residents;
+    }
+
+    /**
+     * @param ArrayCollection $residents
+     */
+    public function setResidents(ArrayCollection $residents): void
+    {
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResponsiblePersons(): ArrayCollection
+    {
+        return $this->responsiblePersons;
+    }
+
+    /**
+     * @param ArrayCollection $responsiblePersons
+     */
+    public function setResponsiblePersons(ArrayCollection $responsiblePersons): void
+    {
+        $this->responsiblePersons = $responsiblePersons;
     }
 }

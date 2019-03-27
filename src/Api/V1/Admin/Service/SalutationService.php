@@ -199,4 +199,26 @@ class SalutationService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new SalutationNotFoundException();
+        }
+
+        /** @var SalutationRepository $repo */
+        $repo = $this->em->getRepository(Salutation::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Salutation::class), $ids);
+
+        if (empty($entities)) {
+            throw new SalutationNotFoundException();
+        }
+
+        return $this->getRelatedData(Salutation::class, $entities);
+    }
 }

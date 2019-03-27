@@ -211,7 +211,7 @@ class ResponsiblePerson
     private $space;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Salutation", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Salutation", inversedBy="responsiblePersons", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="CASCADE")
      * })

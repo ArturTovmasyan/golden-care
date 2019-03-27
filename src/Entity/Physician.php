@@ -120,7 +120,7 @@ class Physician
 
     /**
      * @var Salutation
-     * @ORM\ManyToOne(targetEntity="Salutation")
+     * @ORM\ManyToOne(targetEntity="Salutation", inversedBy="physicians")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_salutation", referencedColumnName="id", onDelete="CASCADE")
      * })
