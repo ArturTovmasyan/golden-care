@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Role;
+use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -10,7 +12,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class RoleRepository
  * @package App\Repository
  */
-class RoleRepository extends EntityRepository
+class RoleRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -29,9 +31,10 @@ class RoleRepository extends EntityRepository
      */
     public function findByIds($ids)
     {
-        $qb = $this->createQueryBuilder('r');
-
-        $qb->where($qb->expr()->in('r.id', $ids));
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         // TODO: add check
 
@@ -53,5 +56,42 @@ class RoleRepository extends EntityRepository
             ->setParameter('default', true)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->select('r.name');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('r.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('r.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('r.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 }

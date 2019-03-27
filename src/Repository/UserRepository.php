@@ -136,6 +136,42 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->where('u.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = u.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('u.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb->groupBy('u.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

@@ -298,4 +298,26 @@ class UserService extends BaseService implements IGridService
 
         return $userPhones;
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new UserNotFoundException();
+        }
+
+        /** @var UserRepository $repo */
+        $repo = $this->em->getRepository(User::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $ids);
+
+        if (empty($entities)) {
+            throw new UserNotFoundException();
+        }
+
+        return $this->getRelatedData(User::class, $entities);
+    }
 }

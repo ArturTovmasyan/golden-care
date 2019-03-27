@@ -3,6 +3,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Annotation\ValidationSerializedName;
 use App\Api\V1\Common\Service\Exception\ValidationException;
+use App\Entity\Role;
 use App\Entity\Space;
 use App\Model\Grant;
 use App\Util\Mailer;
@@ -160,6 +161,10 @@ class BaseService
                         $ids = null;
                         if ($associationMapping['type'] === ClassMetadataInfo::MANY_TO_MANY) {
                             $getter = $entity->{'get' . ucfirst($associationMapping['fieldName'])}();
+
+                            if ($associationMapping['targetEntity'] === Role::class) {
+                                $getter = $entity->{'getRoleObjects'}();
+                            }
 
                             if (\count($getter)) {
                                 $ids = array_map(function($item){return $item->getId();} , $getter->toArray());
