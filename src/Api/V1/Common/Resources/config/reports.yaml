@@ -133,7 +133,7 @@ form:
               select_all: true
     medication-list-all:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
-      title: 'Medications List All Residents : Medications list for all residents.'
+      title: 'Medications List All Residents : Medications list for all residents'
       show_in_list: true
       formats: ['pdf']
       template: 'medication-list'
@@ -166,7 +166,7 @@ form:
           select_all: true
     shower-skin-list:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getShowerSkinInspectionReport
-      title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number.'
+      title: 'Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number'
       show_in_list: true
       formats: ['pdf']
       template: 'shower-skin-inspection'
@@ -179,7 +179,7 @@ room:
   reports:
     payor:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getPayorReport
-      title: 'Payor Report : Monthly Payor Report.'
+      title: 'Payor Report : Monthly Payor Report'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:
@@ -188,7 +188,7 @@ room:
         date: "m/d/Y"
     room-list:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomListReport
-      title: 'Room : List of Rooms, with occupants and room rent rates.'
+      title: 'Room : List of Rooms, with occupants and room rent rates'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:
@@ -197,7 +197,7 @@ room:
         date: "m/d/Y"
     room-rent:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentReport
-      title: 'Room Rent : Monthly Rent Report.'
+      title: 'Room Rent : Monthly Rent Report'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:
@@ -206,7 +206,7 @@ room:
         date: "m/d/Y"
     room-rent-master:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
-      title: 'Room Rent Master : Historical Rent Graphs, Data - for Finance Use only.'
+      title: 'Room Rent Master : Historical Rent Graphs, Data - for Finance Use only'
       show_in_list: true
       formats: ['pdf']
       parameters:
@@ -215,7 +215,7 @@ room:
         date: "m/d/Y"
     room-rent-master-new:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterNewReport
-      title: 'Room Rent Master: New! : Monthly Rent Master Report.'
+      title: 'Room Rent Master: New! : Monthly Rent Master Report'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:

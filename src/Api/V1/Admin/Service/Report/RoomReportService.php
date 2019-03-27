@@ -851,7 +851,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-        if (!\in_array($type, [GroupType::TYPE_FACILITY, v::TYPE_APARTMENT], false)) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
 
