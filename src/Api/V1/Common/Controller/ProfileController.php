@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Common\Controller;
 
+use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Api\V1\Common\Service\ProfileService;
 use App\Entity\User;
@@ -92,13 +93,14 @@ class ProfileController extends BaseController
      * @var Request $request
      * @return JsonResponse
      */
-    public function getAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper)
+    public function getAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, GrantService $grantService)
     {
         $profileService->setUserAvatarHelper($userAvatarHelper);
 
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $user->setAvatar($userAvatarHelper->get($user->getId()));
+        $user->setPermissions($grantService->getEffectiveGrants($user->getRoleObjects()));
 
         return $this->respondSuccess(
             Response::HTTP_OK,

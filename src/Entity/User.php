@@ -390,6 +390,14 @@ class User implements UserInterface
      */
     private $space;
 
+    /* PermissionDTO */
+    /** @var array|mixed
+     * @Groups({
+     *     "api_profile_me",
+     * })
+     */
+    private $permissions;
+
     /**
      * Space constructor.
      */
@@ -791,6 +799,22 @@ class User implements UserInterface
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @param array|mixed $permissions
+     */
+    public function setPermissions($permissions): void
+    {
+        $this->permissions = $permissions;
     }
 
 }

@@ -292,6 +292,8 @@ class BaseController extends Controller
             throw new GridOptionsNotFoundException();
         }
 
+        // TODO: add space check and add/edit/delete
+
         $options = ArrayUtil::remove_keys($options, ['field']);
 
         return $this->respondSuccess(
