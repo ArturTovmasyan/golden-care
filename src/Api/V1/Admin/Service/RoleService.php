@@ -194,4 +194,26 @@ class RoleService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new RoleNotFoundException();
+        }
+
+        /** @var RoleRepository $repo */
+        $repo = $this->em->getRepository(Role::class);
+
+        $entities = $repo->findByIds($ids);
+
+        if (empty($entities)) {
+            throw new RoleNotFoundException();
+        }
+
+        return $this->getRelatedData(Role::class, $entities);
+    }
 }
