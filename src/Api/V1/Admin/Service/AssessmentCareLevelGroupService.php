@@ -209,4 +209,26 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new AssessmentCareLevelGroupNotFoundException();
+        }
+
+        /** @var CareLevelGroupRepository $repo */
+        $repo = $this->em->getRepository(CareLevelGroup::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevelGroup::class), $ids);
+
+        if (empty($entities)) {
+            throw new AssessmentCareLevelGroupNotFoundException();
+        }
+
+        return $this->getRelatedData(CareLevelGroup::class, $entities);
+    }
 }
