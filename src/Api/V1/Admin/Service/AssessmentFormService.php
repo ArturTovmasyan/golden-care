@@ -323,4 +323,26 @@ class AssessmentFormService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new AssessmentFormNotFoundException();
+        }
+
+        /** @var FormRepository $repo */
+        $repo = $this->em->getRepository(Form::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Form::class), $ids);
+
+        if (empty($entities)) {
+            throw new AssessmentFormNotFoundException();
+        }
+
+        return $this->getRelatedData(Form::class, $entities);
+    }
 }

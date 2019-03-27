@@ -136,6 +136,12 @@ class Form
     private $formCategories;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="form", cascade={"remove", "persist"})
+     */
+    private $assessments;
+
+    /**
      * Form constructor.
      */
     public function __construct()
@@ -265,4 +271,19 @@ class Form
         return $categories;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getAssessments(): ArrayCollection
+    {
+        return $this->assessments;
+    }
+
+    /**
+     * @param ArrayCollection $assessments
+     */
+    public function setAssessments(ArrayCollection $assessments): void
+    {
+        $this->assessments = $assessments;
+    }
 }

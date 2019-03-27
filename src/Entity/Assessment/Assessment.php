@@ -90,7 +90,7 @@ class Assessment
 
     /**
      * @var Form
-     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Form")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Form", inversedBy="assessments")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="CASCADE")
      * })
