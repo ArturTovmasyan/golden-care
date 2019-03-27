@@ -16,10 +16,11 @@ class RowRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
             ->createQueryBuilder('ar')
@@ -42,6 +43,12 @@ class RowRepository extends EntityRepository implements RelatedInfoInterface
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ar.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb->groupBy('ar.id')

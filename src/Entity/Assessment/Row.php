@@ -2,6 +2,7 @@
 namespace App\Entity\Assessment;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -107,6 +108,12 @@ class Row
     private $orderNumber = 0;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="row", cascade={"persist"})
+     */
+    private $assessmentRows;
+
+    /**
      * @return int
      */
     public function getId()
@@ -184,5 +191,21 @@ class Row
     public function setOrderNumber(int $orderNumber): void
     {
         $this->orderNumber = $orderNumber;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAssessmentRows(): ArrayCollection
+    {
+        return $this->assessmentRows;
+    }
+
+    /**
+     * @param ArrayCollection $assessmentRows
+     */
+    public function setAssessmentRows(ArrayCollection $assessmentRows): void
+    {
+        $this->assessmentRows = $assessmentRows;
     }
 }

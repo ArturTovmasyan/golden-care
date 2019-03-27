@@ -92,6 +92,7 @@ class ResponseCode
     const REPORT_MISCONFIGURATION_EXCEPTION                      = 692;
     const FACILITY_BED_NOT_FOUND_EXCEPTION                       = 693;
     const APARTMENT_BED_NOT_FOUND_EXCEPTION                      = 694;
+    const ASSESSMENT_ROW_NOT_FOUND_EXCEPTION                     = 695;
     const START_GREATER_END_DATE_EXCEPTION                       = 697;
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 698;
     const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 699;
@@ -189,6 +190,7 @@ class ResponseCode
         self::REPORT_MISCONFIGURATION_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Report misconfiguration.'],
         self::FACILITY_BED_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'FacilityBed not found.'],
         self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ApartmentBed not found.'],
+        self::ASSESSMENT_ROW_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment row not found.'],
         self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the end date.'],
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date should not be blank.'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region.'],

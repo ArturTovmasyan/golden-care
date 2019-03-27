@@ -282,7 +282,7 @@ class Assessment
     /**
      * @return ArrayCollection
      */
-    public function getAssessmentRows()
+    public function getAssessmentRows(): ArrayCollection
     {
         return $this->assessmentRows;
     }
@@ -310,8 +310,6 @@ class Assessment
     {
         $this->score = $score;
     }
-
-
 
     /**
      * @Serializer\VirtualProperty()
