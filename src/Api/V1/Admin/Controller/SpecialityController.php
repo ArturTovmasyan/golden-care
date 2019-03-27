@@ -405,4 +405,48 @@ class SpecialityController extends BaseController
             Response::HTTP_NO_CONTENT
         );
     }
+
+    /**
+     * @api {post} /api/v1.0/admin/speciality/related/info Speciality related info
+     * @apiVersion 1.0.0
+     * @apiName Speciality Related Info
+     * @apiGroup Admin Specialities
+     * @apiDescription This function is used to get speciality related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Speciality not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_speciality_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param SpecialityService $specialityService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, SpecialityService $specialityService)
+    {
+        $relatedData = $specialityService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
 }

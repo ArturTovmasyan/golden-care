@@ -160,7 +160,7 @@ class Physician
 
     /**
      * @var Speciality
-     * @ORM\ManyToOne(targetEntity="Speciality", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Speciality", inversedBy="physicians", cascade={"persist"})
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_speciality", referencedColumnName="id", onDelete="CASCADE")
      * })
