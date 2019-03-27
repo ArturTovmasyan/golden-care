@@ -158,8 +158,6 @@ class AssessmentRepository extends EntityRepository implements RelatedInfoInterf
             ->where('a.id IN (:ids)')
             ->setParameter('ids', $ids);
 
-        $qb->where($qb->expr()->in('a.id', $ids));
-
         if ($space !== null) {
             $qb
                 ->innerJoin(

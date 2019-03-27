@@ -400,4 +400,26 @@ class ResidentAssessmentService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new AssessmentNotFoundException();
+        }
+
+        /** @var AssessmentRepository $repo */
+        $repo = $this->em->getRepository(Assessment::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $ids);
+
+        if (empty($entities)) {
+            throw new AssessmentNotFoundException();
+        }
+
+        return $this->getRelatedData(Assessment::class, $entities);
+    }
 }
