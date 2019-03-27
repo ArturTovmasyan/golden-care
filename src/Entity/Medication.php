@@ -101,7 +101,7 @@ class Medication
      *     "api_admin_medication_add",
      *     "api_admin_medication_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="medications")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

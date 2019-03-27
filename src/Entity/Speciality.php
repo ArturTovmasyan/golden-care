@@ -103,7 +103,7 @@ class Speciality
      *     "api_admin_speciality_add",
      *     "api_admin_speciality_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="specialities")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

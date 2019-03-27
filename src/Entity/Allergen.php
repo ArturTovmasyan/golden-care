@@ -129,7 +129,7 @@ class Allergen
      *     "api_admin_allergen_add",
      *     "api_admin_allergen_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="allergens")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

@@ -92,7 +92,7 @@ class PaymentSource
      *     "api_admin_payment_source_add",
      *     "api_admin_payment_source_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="paymentSources")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

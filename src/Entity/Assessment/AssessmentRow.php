@@ -48,7 +48,7 @@ class AssessmentRow
 
     /**
      * @var Row
-     * @ORM\ManyToOne(targetEntity="Row", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Row", inversedBy="assessmentRows", cascade={"persist"})
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_row", referencedColumnName="id", onDelete="CASCADE")
      * })

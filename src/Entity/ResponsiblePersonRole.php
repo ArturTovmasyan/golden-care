@@ -161,7 +161,7 @@ class ResponsiblePersonRole
      *     "api_admin_responsible_person_role_add",
      *     "api_admin_responsible_person_role_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="responsiblePersonRoles")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

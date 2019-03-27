@@ -38,4 +38,41 @@ class SpaceRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $mappedBy
+     * @param null $id
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('s')
+            ->select('s.name');
+
+        if ($mappedBy !== null && $id !== null) {
+            $qb
+                ->where('s.'.$mappedBy.'= :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('s.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
+
+        if ($mappedBy === null && $id === null && $ids === null) {
+            $qb
+                ->andWhere('s.id IN (:array)')
+                ->setParameter('array', []);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

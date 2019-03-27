@@ -93,7 +93,7 @@ class Resident
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Space", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Space", inversedBy="residents", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

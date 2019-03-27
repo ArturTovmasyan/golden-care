@@ -74,7 +74,7 @@ class CareLevelGroup
      *          "api_admin_assessment_care_level_group_edit"
      *      }
      * )
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="assessmentCareLevelGroups")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })

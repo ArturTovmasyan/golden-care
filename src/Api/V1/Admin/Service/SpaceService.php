@@ -166,4 +166,26 @@ class SpaceService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new SpaceNotFoundException();
+        }
+
+        /** @var SpaceRepository $repo */
+        $repo = $this->em->getRepository(Space::class);
+
+        $entities = $repo->findByIds($ids);
+
+        if (empty($entities)) {
+            throw new SpaceNotFoundException();
+        }
+
+        return $this->getRelatedData(Space::class, $entities);
+    }
 }

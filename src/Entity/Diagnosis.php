@@ -151,7 +151,7 @@ class Diagnosis
      *     "api_admin_diagnosis_add",
      *     "api_admin_diagnosis_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="diagnoses")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
