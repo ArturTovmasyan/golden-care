@@ -151,6 +151,12 @@ class Category
     private $multiItem = false;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\FormCategory", mappedBy="category", cascade={"remove", "persist"})
+     */
+    private $formCategories;
+
+    /**
      * Category constructor.
      */
     public function __construct()
@@ -244,5 +250,21 @@ class Category
     public function setMultiItem(bool $multiItem): void
     {
         $this->multiItem = $multiItem;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFormCategories(): ArrayCollection
+    {
+        return $this->formCategories;
+    }
+
+    /**
+     * @param ArrayCollection $formCategories
+     */
+    public function setFormCategories(ArrayCollection $formCategories): void
+    {
+        $this->formCategories = $formCategories;
     }
 }

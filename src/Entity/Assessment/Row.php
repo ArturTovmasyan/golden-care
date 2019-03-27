@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="tbl_assessment_row")
- * @ORM\Entity
+ * @ORM\Entity (repositoryClass="App\Repository\Assessment\RowRepository")
  */
 class Row
 {

@@ -271,4 +271,26 @@ class AssessmentCategoryService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new AssessmentCategoryNotFoundException();
+        }
+
+        /** @var CategoryRepository $repo */
+        $repo = $this->em->getRepository(Category::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $ids);
+
+        if (empty($entities)) {
+            throw new AssessmentCategoryNotFoundException();
+        }
+
+        return $this->getRelatedData(Category::class, $entities);
+    }
 }

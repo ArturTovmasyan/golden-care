@@ -158,10 +158,10 @@ class AssessmentCategoryController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/assessment/category/{id} Get Allergen
+     * @api {get} /api/v1.0/admin/assessment/category/{id} Get Assessment Category
      * @apiVersion 1.0.0
-     * @apiName Get Allergen
-     * @apiGroup Admin Allergens
+     * @apiName Get Assessment Category
+     * @apiGroup Admin Assessment Categories
      * @apiDescription This function is used to get assessment category
      *
      * @apiHeader {String} Content-Type  application/json
@@ -268,10 +268,10 @@ class AssessmentCategoryController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/assessment/category/{id} Edit Allergen
+     * @api {put} /api/v1.0/admin/assessment/category/{id} Edit Assessment Category
      * @apiVersion 1.0.0
-     * @apiName Edit Allergen
-     * @apiGroup Admin Allergens
+     * @apiName Edit Assessment Category
+     * @apiGroup Admin Assessment Categories
      * @apiDescription This function is used to edit assessment category
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
@@ -337,10 +337,10 @@ class AssessmentCategoryController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment/category/{id} Delete Allergen
+     * @api {delete} /api/v1.0/admin/assessment/category/{id} Delete Assessment Category
      * @apiVersion 1.0.0
-     * @apiName Delete Allergen
-     * @apiGroup Admin Allergens
+     * @apiName Delete Assessment Category
+     * @apiGroup Admin Assessment Categories
      * @apiDescription This function is used to remove assessment category
      *
      * @apiHeader {String} Content-Type  application/json
@@ -376,10 +376,10 @@ class AssessmentCategoryController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/assessment/category Bulk Delete Allergens
+     * @api {delete} /api/v1.0/admin/assessment/category Bulk Delete Assessment Category
      * @apiVersion 1.0.0
-     * @apiName Bulk Delete Allergens
-     * @apiGroup Admin Allergens
+     * @apiName Bulk Delete Assessment Category
+     * @apiGroup Admin Assessment Category
      * @apiDescription This function is used to bulk remove assessment categories
      *
      * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
@@ -416,6 +416,50 @@ class AssessmentCategoryController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {post} /api/v1.0/admin/assessment/category/related/info AssessmentCategory related info
+     * @apiVersion 1.0.0
+     * @apiName AssessmentCategory Related Info
+     * @apiGroup Admin Assessment Categories
+     * @apiDescription This function is used to get assessmentCategory related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "AssessmentCategory not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_assessment_category_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param AssessmentCategoryService $assessmentCategoryService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
+    {
+        $relatedData = $assessmentCategoryService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
         );
     }
 }

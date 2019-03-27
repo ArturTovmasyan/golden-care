@@ -48,7 +48,7 @@ class FormCategory
 
     /**
      * @var Category
-     * @ORM\ManyToOne(targetEntity="Category", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="formCategories", cascade={"persist"})
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
      * })

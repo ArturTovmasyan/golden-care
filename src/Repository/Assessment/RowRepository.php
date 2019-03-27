@@ -4,16 +4,15 @@ namespace App\Repository\Assessment;
 
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Assessment\Category;
-use App\Entity\Assessment\Form;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
 /**
- * Class FormCategoryRepository
+ * Class RowRepository
  * @package App\Repository\Assessment
  */
-class FormCategoryRepository extends EntityRepository implements RelatedInfoInterface
+class RowRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -23,8 +22,8 @@ class FormCategoryRepository extends EntityRepository implements RelatedInfoInte
     public function findByIds(Space $space = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('afc')
-            ->where('afc.id IN (:ids)')
+            ->createQueryBuilder('ar')
+            ->where('ar.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
@@ -33,25 +32,19 @@ class FormCategoryRepository extends EntityRepository implements RelatedInfoInte
                     Category::class,
                     'c',
                     Join::WITH,
-                    'c = afc.category'
-                )
-                ->innerJoin(
-                    Form::class,
-                    'f',
-                    Join::WITH,
-                    'f = afc.form'
+                    'c = ar.category'
                 )
                 ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
-                    's = f.space'
+                    's = c.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
-        return $qb->groupBy('afc.id')
+        return $qb->groupBy('ar.id')
             ->getQuery()
             ->getResult();
     }
@@ -67,46 +60,40 @@ class FormCategoryRepository extends EntityRepository implements RelatedInfoInte
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('afc')
-            ->innerJoin(
-                Category::class,
-                'c',
-                Join::WITH,
-                'c = afc.category'
-            )
-            ->select('c.title');
+            ->createQueryBuilder('ar')
+            ->select('ar.title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('afc.'.$mappedBy.'= :id')
+                ->where('ar.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('afc.id IN (:ids)')
+                ->andWhere('ar.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('afc.id IN (:array)')
+                ->andWhere('ar.id IN (:array)')
                 ->setParameter('array', []);
         }
 
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    Form::class,
-                    'f',
+                    Category::class,
+                    'c',
                     Join::WITH,
-                    'f = afc.form'
+                    'c = ar.category'
                 )
                 ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
-                    's = f.space'
+                    's = c.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -114,7 +101,7 @@ class FormCategoryRepository extends EntityRepository implements RelatedInfoInte
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('afc.id IN (:grantIds)')
+                ->andWhere('ar.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
