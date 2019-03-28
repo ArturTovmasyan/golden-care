@@ -70,23 +70,24 @@ class EventDefinitionService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $eventDefinition = new EventDefinition();
-            $eventDefinition->setTitle($params['title']);
-            $eventDefinition->setFfc($params['ffc']);
-            $eventDefinition->setIhc($params['ihc']);
-            $eventDefinition->setIl($params['il']);
-            $eventDefinition->setPhysician($params['physician']);
-            $eventDefinition->setResponsiblePerson($params['responsible_person']);
-            $eventDefinition->setAdditionalDate($params['additional_date']);
-            $eventDefinition->setSpace($space);
+            $entity = new EventDefinition();
+            $entity->setTitle($params['title']);
+            $entity->setFfc($params['ffc']);
+            $entity->setIhc($params['ihc']);
+            $entity->setIl($params['il']);
+            $entity->setPhysician($params['physician']);
+            $entity->setResponsiblePerson($params['responsible_person']);
+            $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
+            $entity->setAdditionalDate($params['additional_date']);
+            $entity->setSpace($space);
 
-            $this->validate($eventDefinition, null, ['api_admin_event_definition_add']);
+            $this->validate($entity, null, ['api_admin_event_definition_add']);
 
-            $this->em->persist($eventDefinition);
+            $this->em->persist($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
 
-            $insert_id = $eventDefinition->getId();
+            $insert_id = $entity->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -130,6 +131,7 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setIl($params['il']);
             $entity->setPhysician($params['physician']);
             $entity->setResponsiblePerson($params['responsible_person']);
+            $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
             $entity->setAdditionalDate($params['additional_date']);
             $entity->setSpace($space);
 

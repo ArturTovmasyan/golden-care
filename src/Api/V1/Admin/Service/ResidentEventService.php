@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -6,10 +7,8 @@ use App\Api\V1\Common\Service\Exception\AdditionalDateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentEventNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotBeBlankException;
-use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
 use App\Entity\Physician;
@@ -33,7 +32,7 @@ class ResidentEventService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -86,7 +85,7 @@ class ResidentEventService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -138,24 +137,18 @@ class ResidentEventService extends BaseService implements IGridService
                 }
             }
 
-            $responsiblePerson = null;
+            $rps = [];
 
-            if ($definition && $definition->isResponsiblePerson()) {
-                $responsiblePersonId = $params['responsible_person_id'];
+            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+                /** @var ResponsiblePersonRepository $rpRepo */
+                $rpRepo = $this->em->getRepository(ResponsiblePerson::class);
 
-                if ($responsiblePersonId && is_numeric($responsiblePersonId)) {
-                    /** @var ResponsiblePersonRepository $responsiblePersonRepo */
-                    $responsiblePersonRepo = $this->em->getRepository(ResponsiblePerson::class);
-
-                    /** @var ResponsiblePerson $responsiblePerson */
-                    $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $responsiblePersonId);
-
-                    if ($responsiblePerson === null) {
-                        throw new ResponsiblePersonNotFoundException();
-                    }
-                } else {
-                    throw new ResponsiblePersonNotBeBlankException();
-                }
+                $rpIds = array_unique($params['responsible_persons']);
+                $rps = $rpRepo->findByIds(
+                    $this->grantService->getCurrentSpace(),
+                    $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
+                    $rpIds
+                );
             }
 
             $additionalDate = null;
@@ -173,7 +166,7 @@ class ResidentEventService extends BaseService implements IGridService
             $residentEvent->setResident($resident);
             $residentEvent->setDefinition($definition);
             $residentEvent->setPhysician($physician);
-            $residentEvent->setResponsiblePerson($responsiblePerson);
+            $residentEvent->setResponsiblePersons($rps);
             $residentEvent->setAdditionalDate($additionalDate);
             $residentEvent->setNotes($params['notes']);
 
@@ -206,7 +199,7 @@ class ResidentEventService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -258,24 +251,22 @@ class ResidentEventService extends BaseService implements IGridService
                 }
             }
 
-            $responsiblePerson = null;
-
-            if ($definition && $definition->isResponsiblePerson()) {
-                $responsiblePersonId = $params['responsible_person_id'];
-
-                if ($responsiblePersonId && is_numeric($responsiblePersonId)) {
-                    /** @var ResponsiblePersonRepository $responsiblePersonRepo */
-                    $responsiblePersonRepo = $this->em->getRepository(ResponsiblePerson::class);
-
-                    /** @var ResponsiblePerson $responsiblePerson */
-                    $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class), $responsiblePersonId);
-
-                    if ($responsiblePerson === null) {
-                        throw new ResponsiblePersonNotFoundException();
-                    }
-                } else {
-                    throw new ResponsiblePersonNotBeBlankException();
+            $rps = [];
+            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+                $oldRPs = $entity->getResponsiblePersons();
+                foreach ($oldRPs as $oldRP) {
+                    $entity->removeResponsiblePerson($oldRP);
                 }
+
+                /** @var ResponsiblePersonRepository $rpRepo */
+                $rpRepo = $this->em->getRepository(ResponsiblePerson::class);
+
+                $rpIds = array_unique($params['responsible_persons']);
+                $rps = $rpRepo->findByIds(
+                    $this->grantService->getCurrentSpace(),
+                    $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
+                    $rpIds
+                );
             }
 
             $additionalDate = null;
@@ -291,7 +282,7 @@ class ResidentEventService extends BaseService implements IGridService
 
             $entity->setResident($resident);
             $entity->setPhysician($physician);
-            $entity->setResponsiblePerson($responsiblePerson);
+            $entity->setResponsiblePersons($rps);
             $entity->setAdditionalDate($additionalDate);
             $entity->setNotes($params['notes']);
 

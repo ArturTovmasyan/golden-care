@@ -318,7 +318,7 @@ class ResidentEventController extends BaseController
                 'resident_id' => $request->get('resident_id'),
                 'definition_id' => $request->get('definition_id'),
                 'physician_id' => $request->get('physician_id'),
-                'responsible_person_id' => $request->get('responsible_person_id'),
+                'responsible_persons' => $request->get('responsible_persons'),
                 'additional_date' => $request->get('additional_date'),
                 'date' => $request->get('date'),
                 'notes' => $request->get('notes') ?? ''
@@ -388,7 +388,7 @@ class ResidentEventController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'physician_id' => $request->get('physician_id'),
-                'responsible_person_id' => $request->get('responsible_person_id'),
+                'responsible_persons' => $request->get('responsible_persons'),
                 'additional_date' => $request->get('additional_date'),
                 'date' => $request->get('date'),
                 'notes' => $request->get('notes') ?? ''

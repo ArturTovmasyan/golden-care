@@ -308,6 +308,7 @@ class EventDefinitionController extends BaseController
                 'il' => $request->get('il'),
                 'physician' => $request->get('physician'),
                 'responsible_person' => $request->get('responsible_person'),
+                'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'additional_date' => $request->get('additional_date'),
                 'space_id' => $request->get('space_id')
             ]
@@ -384,6 +385,7 @@ class EventDefinitionController extends BaseController
                 'il' => $request->get('il'),
                 'physician' => $request->get('physician'),
                 'responsible_person' => $request->get('responsible_person'),
+                'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'additional_date' => $request->get('additional_date'),
                 'space_id' => $request->get('space_id')
             ]

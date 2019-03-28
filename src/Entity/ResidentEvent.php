@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -39,19 +40,11 @@ use App\Annotation\Grid;
  *              "field"      = "re.notes"
  *          },
  *          {
- *              "id"         = "physician",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))"
- *          },
- *          {
- *              "id"         = "responsible_person",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(rps.title,''), ' ', COALESCE(rp.firstName, ''), ' ', COALESCE(rp.middleName, ''), ' ', COALESCE(rp.lastName, ''))"
- *          },
- *          {
- *              "id"         = "additional_date",
- *              "type"       = "date",
- *              "field"      = "re.additionalDate"
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "filterable" = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )
@@ -160,19 +153,29 @@ class ResidentEvent
      */
     private $physician;
 
+//    /**
+//     * @var ResponsiblePerson
+//     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", inversedBy="residentEvents")
+//     * @ORM\JoinColumns({
+//     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
+//     * })
+//     * @Groups({
+//     *     "api_admin_resident_event_grid",
+//     *     "api_admin_resident_event_list",
+//     *     "api_admin_resident_event_get"
+//     * })
+//     */
+//    private $responsiblePerson;
+
     /**
-     * @var ResponsiblePerson
-     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", inversedBy="residentEvents")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="residentEvents", cascade={"persist", "remove"})
      * @Groups({
-     *     "api_admin_resident_event_grid",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get"
      * })
      */
-    private $responsiblePerson;
+    protected $responsiblePersons;
 
     /**
      * @var \DateTime
@@ -280,20 +283,52 @@ class ResidentEvent
     }
 
     /**
-     * @return ResponsiblePerson|null
+     * @return mixed
      */
-    public function getResponsiblePerson(): ?ResponsiblePerson
+    public function getResponsiblePersons()
     {
-        return $this->responsiblePerson;
+        return $this->responsiblePersons;
     }
 
     /**
-     * @param ResponsiblePerson|null $responsiblePerson
+     * @param mixed $responsiblePersons
      */
-    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
+    public function setResponsiblePersons($responsiblePersons): void
     {
-        $this->responsiblePerson = $responsiblePerson;
+        $this->responsiblePersons = $responsiblePersons;
     }
+
+    /**
+     * @param ResponsiblePerson $responsiblePerson
+     */
+    public function addResponsiblePerson(ResponsiblePerson $responsiblePerson)
+    {
+        $this->responsiblePersons->add($responsiblePerson);
+    }
+
+    /**
+     * @param ResponsiblePerson $responsiblePerson
+     */
+    public function removeResponsiblePerson(ResponsiblePerson $responsiblePerson)
+    {
+        $this->responsiblePersons->removeElement($responsiblePerson);
+    }
+
+//    /**
+//     * @return ResponsiblePerson|null
+//     */
+//    public function getResponsiblePerson(): ?ResponsiblePerson
+//    {
+//        return $this->responsiblePerson;
+//    }
+//
+//    /**
+//     * @param ResponsiblePerson|null $responsiblePerson
+//     */
+//    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
+//    {
+//        $this->responsiblePerson = $responsiblePerson;
+//    }
 
     /**
      * @return \DateTime

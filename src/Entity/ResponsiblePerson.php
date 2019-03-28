@@ -245,9 +245,24 @@ class ResponsiblePerson
      */
     private $phones;
 
+//    /**
+//     * @var ArrayCollection
+//     * @ORM\ManyToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+//     */
+//    private $residentEvents;
+
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+     * @ORM\ManyToMany(targetEntity="ResidentEvent", inversedBy="responsiblePersons", cascade={"persist", "remove"})
+     * @ORM\JoinTable(
+     *      name="tbl_resident_event_responsible_persons",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_resident_event", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
      */
     private $residentEvents;
 

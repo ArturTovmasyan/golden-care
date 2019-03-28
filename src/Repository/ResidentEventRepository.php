@@ -29,6 +29,16 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
     {
         $queryBuilder
             ->from(ResidentEvent::class, 're')
+
+            ->addSelect("
+                JSON_ARRAY(
+                    JSON_OBJECT('Date Added', re.additionalDate),
+                    JSON_OBJECT('Physician', CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))),
+                    
+                    JSON_OBJECT('Responsible Person(s)', JSON_ARRAY())
+                ) as info
+            ")
+
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -53,18 +63,19 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'ps = p.salutation'
             )
-            ->leftJoin(
-                ResponsiblePerson::class,
-                'rp',
-                Join::WITH,
-                'rp = re.responsiblePerson'
-            )
-            ->leftJoin(
-                Salutation::class,
-                'rps',
-                Join::WITH,
-                'rps = rp.salutation'
-            );
+//            ->leftJoin(
+//                ResponsiblePerson::class,
+//                'rps',
+//                Join::WITH,
+//                'rps = re.responsiblePersons'
+//            )
+//            ->leftJoin(
+//                Salutation::class,
+//                'rps',
+//                Join::WITH,
+//                'rps = rp.salutation'
+//            )
+        ;
 
         if ($space !== null) {
             $queryBuilder

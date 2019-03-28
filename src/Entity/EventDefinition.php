@@ -65,6 +65,11 @@ use App\Annotation\Grid;
  *              "field"      = "ed.responsiblePerson"
  *          },
  *          {
+ *              "id"         = "responsible_person_multi",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.responsiblePersonMulti"
+ *          },
+ *          {
  *              "id"         = "additional_date",
  *              "type"       = "boolean",
  *              "field"      = "ed.additionalDate"
@@ -193,6 +198,17 @@ class EventDefinition
      * })
      */
     protected $responsiblePerson;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_responsible_person_multi", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_grid",
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $responsiblePersonMulti;
 
     /**
      * @var bool
@@ -337,6 +353,22 @@ class EventDefinition
     public function setResponsiblePerson(bool $responsiblePerson): void
     {
         $this->responsiblePerson = $responsiblePerson;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResponsiblePersonMulti(): bool
+    {
+        return $this->responsiblePersonMulti;
+    }
+
+    /**
+     * @param bool $responsiblePersonMulti
+     */
+    public function setResponsiblePersonMulti(bool $responsiblePersonMulti): void
+    {
+        $this->responsiblePersonMulti = $responsiblePersonMulti;
     }
 
     /**
