@@ -60,10 +60,17 @@
                                 <div style="float: left; width: 19% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event.title %}{{ event.title }}{% else %}N/A{% endif %}</b></div>
                                 <div style="float: left; width: 35% !important; margin: 0;">
                                     <b style="font-size: 11px !important;">
-                                        {% if event.physicianFirstName and event.physicianLastName %}Physician&nbsp;:&nbsp;{% if event.physicianSalutation %}{{ event.physicianSalutation }}&nbsp;{% endif %}{{ event.physicianFirstName }}&nbsp;{{ event.physicianLastName }}{% endif %}
-                                        {% if event.responsiblePersonFirstName and event.responsiblePersonLastName %}RP&nbsp;person&nbsp;:&nbsp;{% if event.responsiblePersonSalutation %}{{ event.responsiblePersonSalutation }}&nbsp;{% endif %}{{ event.responsiblePersonFirstName }}&nbsp;{{ event.responsiblePersonLastName }}{% endif %}
+                                        {% if event.physicianFullName %}Physician&nbsp;:&nbsp;{% if event.physicianSalutation %}{{ event.physicianSalutation }}&nbsp;{% endif %}{{ event.physicianFullName }}{% endif %}
+                                        {% if event.responsiblePersons|length > 0 %}
+                                            {% for responsiblePerson in event.responsiblePersons %}
+                                                {% if responsiblePerson.fullName %}
+                                                    {% if loop.first %}ResponsiblePersons&nbsp;:<br>{% endif %}
+                                                    {% if responsiblePerson.salutation %}{{ responsiblePerson.salutation }}&nbsp;{% endif %}{{ responsiblePerson.fullName }}{% if not loop.last %}<br>{% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                         {% if event.additionalDate %}Discharge&nbsp;Date&nbsp;:&nbsp;{{ event.additionalDate|date('m/d/Y') }}{% endif %}
-                                        {% if not event.physicianFirstName and not event.responsiblePersonFirstName and not event.additionalDate %}N/A{% endif %}
+                                        {% if not event.physicianFullName and event.responsiblePersons|length < 1 and not event.additionalDate %}N/A{% endif %}
                                     </b>
                                 </div>
                                 <div style="float: left; width: 35% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event.notes %}{{ event.notes }}{% else %}N/A{% endif %}</b></div>

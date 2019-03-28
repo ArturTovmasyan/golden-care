@@ -2,6 +2,8 @@
 
 namespace App\Model\Report;
 
+use App\Entity\ResponsiblePerson;
+
 class Profile extends Base
 {
     /**
@@ -107,8 +109,32 @@ class Profile extends Base
      */
     public function setEvents($events): void
     {
+        /** @var \App\Entity\ResidentEvent $event */
         foreach ($events as $event) {
-            $this->residents[$event['residentId']]['events'][] = $event;
+            $responsiblePersons = [];
+            if (!empty($event->getResponsiblePersons())) {
+                /** @var ResponsiblePerson $responsiblePerson */
+                foreach ($event->getResponsiblePersons() as $responsiblePerson) {
+                    $responsiblePersons[] = [
+                        'fullName' => $responsiblePerson->getFirstName() . ' ' . $responsiblePerson->getLastName(),
+                        'salutation' => $responsiblePerson->getSalutation() ? $responsiblePerson->getSalutation()->getTitle() : '',
+                    ];
+                }
+            }
+
+            $residentId = $event->getResident() ? $event->getResident()->getId() : 0;
+
+            $this->residents[$residentId]['events'][] = [
+                'id' => $residentId,
+                'residentId' => $event->getId(),
+                'title' => $event->getDefinition() ? $event->getDefinition()->getTitle() : 'N/A',
+                'date' => $event->getDate(),
+                'additionalDate' => $event->getAdditionalDate() ?? '',
+                'notes' => $event->getNotes() ?? 'N/A',
+                'physicianFullName' => $event->getPhysician() ? $event->getPhysician()->getFirstName() . ' ' . $event->getPhysician()->getLastName() : '',
+                'physicianSalutation' => $event->getPhysician() && $event->getPhysician()->getSalutation() ? $event->getPhysician()->getSalutation()->getTitle() : '',
+                'responsiblePersons' => $responsiblePersons
+            ];
         }
     }
 

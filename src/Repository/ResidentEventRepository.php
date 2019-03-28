@@ -245,20 +245,6 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
         $qb = $this->createQueryBuilder('re');
 
         $qb
-            ->select(
-                're.id as id,
-                    r.id as residentId,
-                    ed.title as title,
-                    re.date as date,
-                    re.additionalDate as additionalDate,
-                    re.notes as notes,
-                    p.firstName as physicianFirstName,
-                    p.lastName as physicianLastName,
-                    psal.title as physicianSalutation,
-                    rp.firstName as responsiblePersonFirstName,
-                    rp.lastName as responsiblePersonLastName,
-                    rpsal.title as responsiblePersonSalutation'
-            )
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -283,17 +269,12 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'p.salutation = psal'
             )
-            ->leftJoin(
-                ResponsiblePerson::class,
-                'rp',
-                Join::WITH,
-                're.responsiblePerson = rp'
-            )
+            ->leftJoin('re.responsiblePersons','rps')
             ->leftJoin(
                 Salutation::class,
                 'rpsal',
                 Join::WITH,
-                'rp.salutation = rpsal'
+                'rps.salutation = rpsal'
             )
             ->where($qb->expr()->in('r.id', $residentIds));
 
@@ -335,20 +316,6 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
         $qb = $this->createQueryBuilder('re');
 
         $qb
-            ->select(
-                're.id as id,
-                    r.id as residentId,
-                    ed.title as title,
-                    re.date as date,
-                    re.additionalDate as additionalDate,
-                    re.notes as notes,
-                    p.firstName as physicianFirstName,
-                    p.lastName as physicianLastName,
-                    psal.title as physicianSalutation,
-                    rp.firstName as responsiblePersonFirstName,
-                    rp.lastName as responsiblePersonLastName,
-                    rpsal.title as responsiblePersonSalutation'
-            )
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -373,17 +340,12 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'p.salutation = psal'
             )
-            ->leftJoin(
-                ResponsiblePerson::class,
-                'rp',
-                Join::WITH,
-                're.responsiblePerson = rp'
-            )
+            ->leftJoin('re.responsiblePersons','rps')
             ->leftJoin(
                 Salutation::class,
                 'rpsal',
                 Join::WITH,
-                'rp.salutation = rpsal'
+                'rps.salutation = rpsal'
             )
             ->where($qb->expr()->in('r.id', $residentIds))
             ->andWhere('re.date>=:startDate')

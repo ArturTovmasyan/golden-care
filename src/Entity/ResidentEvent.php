@@ -340,7 +340,7 @@ class ResidentEvent
     /**
      * @return \DateTime
      */
-    public function getAdditionalDate(): \DateTime
+    public function getAdditionalDate(): ?\DateTime
     {
         return $this->additionalDate;
     }
