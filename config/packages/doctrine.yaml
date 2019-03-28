@@ -29,7 +29,8 @@ doctrine:
                 alias: App
         dql:
             string_functions:
-                NATURAL_SORT:   App\Util\MysqlNaturalSort
+                NATURAL_SORT:   App\Util\MySQL\NaturalSort
+                JSON_ARRAYAGG:  App\Util\MySQL\JsonArrayAgg
                 JSON_ARRAY:     Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
                 JSON_OBJECT:    Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonObject
                 CAST:           Oro\ORM\Query\AST\Functions\Cast

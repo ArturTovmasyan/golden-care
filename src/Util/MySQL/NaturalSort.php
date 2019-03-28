@@ -1,11 +1,11 @@
 <?php
-namespace App\Util;
+namespace App\Util\MySQL;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 
 
-class MysqlNaturalSort extends FunctionNode
+class NaturalSort extends FunctionNode
 {
     private $firstExpression = "";
     private $secondExpression = 10;

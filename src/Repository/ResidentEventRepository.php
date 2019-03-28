@@ -35,7 +35,18 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                     JSON_OBJECT('Date Added', re.additionalDate),
                     JSON_OBJECT('Physician', CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))),
                     
-                    JSON_OBJECT('Responsible Person(s)', JSON_ARRAY())
+                    JSON_OBJECT('Responsible Person(s)', JSON_ARRAYAGG(
+                            CONCAT(
+                                COALESCE(rpss.title,''),
+                                ' ',
+                                COALESCE(rps.firstName, ''),
+                                ' ',
+                                COALESCE(rps.middleName, ''),
+                                ' ',
+                                COALESCE(rps.lastName, '')
+                            )
+                        )
+                    )
                 ) as info
             ")
 
@@ -63,18 +74,16 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'ps = p.salutation'
             )
-//            ->leftJoin(
-//                ResponsiblePerson::class,
-//                'rps',
-//                Join::WITH,
-//                'rps = re.responsiblePersons'
-//            )
-//            ->leftJoin(
-//                Salutation::class,
-//                'rps',
-//                Join::WITH,
-//                'rps = rp.salutation'
-//            )
+            ->leftJoin(
+                're.responsiblePersons',
+                'rps'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'rpss',
+                Join::WITH,
+                'rpss = rps.salutation'
+            )
         ;
 
         if ($space !== null) {
