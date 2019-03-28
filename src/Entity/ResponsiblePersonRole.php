@@ -46,6 +46,16 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "financially",
+ *              "type"       = "boolean",
+ *              "field"      = "rpr.financially"
+ *          },
+ *          {
+ *              "id"         = "emergency",
+ *              "type"       = "boolean",
+ *              "field"      = "rpr.emergency"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -118,6 +128,34 @@ class ResponsiblePersonRole
     private $icon;
 
     /**
+     * @var bool
+     * @ORM\Column(name="is_financially", type="boolean", nullable=false)
+     * @Assert\NotNull(groups={
+     *      "api_admin_responsible_person_role_edit",
+     *      "api_admin_responsible_person_role_add"
+     * })
+     * @Groups({
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get"
+     * })
+     */
+    private $financially = false;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="is_emergency", type="boolean", nullable=false)
+     * @Assert\NotNull(groups={
+     *      "api_admin_responsible_person_role_edit",
+     *      "api_admin_responsible_person_role_add"
+     * })
+     * @Groups({
+     *     "api_admin_responsible_person_role_list",
+     *     "api_admin_responsible_person_role_get"
+     * })
+     */
+    private $emergency = false;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_admin_responsible_person_role_add",
@@ -184,6 +222,38 @@ class ResponsiblePersonRole
     public function setIcon(?string $icon): void
     {
         $this->icon = $icon;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFinancially(): ?bool
+    {
+        return $this->financially;
+    }
+
+    /**
+     * @param bool $financially
+     */
+    public function setFinancially(?bool $financially): void
+    {
+        $this->financially = $financially;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmergency(): ?bool
+    {
+        return $this->emergency;
+    }
+
+    /**
+     * @param bool $emergency
+     */
+    public function setEmergency(?bool $emergency): void
+    {
+        $this->emergency = $emergency;
     }
 
     public function getSpace(): ?Space

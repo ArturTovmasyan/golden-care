@@ -73,18 +73,20 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $responsiblePersonRole = new ResponsiblePersonRole();
-            $responsiblePersonRole->setTitle($params['title']);
-            $responsiblePersonRole->setIcon($params['icon']);
-            $responsiblePersonRole->setSpace($space);
+            $entity = new ResponsiblePersonRole();
+            $entity->setTitle($params['title']);
+            $entity->setIcon($params['icon']);
+            $entity->setSpace($space);
+            $entity->setFinancially($params['financially'] ?? false);
+            $entity->setEmergency($params['emergency'] ?? false);
 
-            $this->validate($responsiblePersonRole, null, ['api_admin_responsible_person_role_add']);
+            $this->validate($entity, null, ['api_admin_responsible_person_role_add']);
 
-            $this->em->persist($responsiblePersonRole);
+            $this->em->persist($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
 
-            $insert_id = $responsiblePersonRole->getId();
+            $insert_id = $entity->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -126,6 +128,8 @@ class ResponsiblePersonRoleService extends BaseService implements IGridService
 
             $entity->setTitle($params['title']);
             $entity->setIcon($params['icon']);
+            $entity->setFinancially($params['financially'] ?? false);
+            $entity->setEmergency($params['emergency'] ?? false);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_responsible_person_role_edit']);
