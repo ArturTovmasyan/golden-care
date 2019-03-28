@@ -6,8 +6,10 @@ use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\PaymentSource;
+use App\Entity\ResidentRent;
 use App\Entity\Space;
 use App\Repository\PaymentSourceRepository;
+use App\Repository\ResidentRentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -217,8 +219,44 @@ class PaymentSourceService extends BaseService implements IGridService
 
         if (empty($entities)) {
             throw new PaymentSourceNotFoundException();
-        } 
+        }
 
-        return $this->getRelatedData(PaymentSource::class, $entities);
+        $ids = array_map(function($item){return $item->getId();} , $entities);
+
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+        $rents = $rentRepo->getWithSources($this->grantService->getCurrentSpace(), null);
+
+        $result = $this->getRelatedData(PaymentSource::class, $entities);
+
+        if (!empty($rents)) {
+            $residentRents = [];
+            foreach ($ids as $id) {
+                foreach ($rents as $rent) {
+                    if (!empty($rent['source'])) {
+                        foreach ($rent['source'] as $source) {
+                            if ((int)$source['id'] === $id) {
+                                $residentRents[$id][] = [
+                                    'amount' => $source['amount'],
+                                ];
+                            }
+                        }
+                    }
+                }
+
+                $currentRents = array_key_exists($id, $residentRents) ? $residentRents[$id] : [];
+
+                $result[$id][0] = [
+                    'targetEntity' => ResidentRent::class,
+                    'residentRents' => $currentRents,
+                    'count' => \count($currentRents),
+                ];
+
+                $result[$id]['sum'] = $result[$id][0]['count'];
+            }
+        }
+
+        return $result;
     }
 }
