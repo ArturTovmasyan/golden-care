@@ -297,7 +297,10 @@ class ResidentEvent
     {
         $this->responsiblePersons = $responsiblePersons;
 
-        $responsiblePersons->addResponsiblePerson($this);
+        /** @var ResponsiblePerson $responsiblePerson */
+        foreach ($this->responsiblePersons as $responsiblePerson) {
+            $responsiblePerson->addResidentEvent($this);
+        }
     }
 
     /**

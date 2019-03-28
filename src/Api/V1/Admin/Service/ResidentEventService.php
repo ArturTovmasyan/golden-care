@@ -166,7 +166,11 @@ class ResidentEventService extends BaseService implements IGridService
             $residentEvent->setResident($resident);
             $residentEvent->setDefinition($definition);
             $residentEvent->setPhysician($physician);
-            $residentEvent->setResponsiblePersons($rps);
+
+            if (!empty($rps)) {
+                $residentEvent->setResponsiblePersons($rps);
+            }
+
             $residentEvent->setAdditionalDate($additionalDate);
             $residentEvent->setNotes($params['notes']);
 
@@ -282,7 +286,11 @@ class ResidentEventService extends BaseService implements IGridService
 
             $entity->setResident($resident);
             $entity->setPhysician($physician);
-            $entity->setResponsiblePersons($rps);
+
+            if (!empty($rps)) {
+                $entity->setResponsiblePersons($rps);
+            }
+
             $entity->setAdditionalDate($additionalDate);
             $entity->setNotes($params['notes']);
 
