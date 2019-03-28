@@ -302,5 +302,4 @@ class ResponsiblePersonRole
     {
         $this->residentResponsiblePersons->removeElement($residentResponsiblePerson);
     }
-
 }

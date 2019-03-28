@@ -449,19 +449,37 @@ class ResponsiblePerson
     }
 
     /**
-     * @return ArrayCollection
+     * @return mixed
      */
-    public function getResidentEvents(): ArrayCollection
+    public function getResidentEvents()
     {
         return $this->residentEvents;
     }
 
     /**
-     * @param ArrayCollection $residentEvents
+     * @param mixed $residentEvents
      */
-    public function setResidentEvents(ArrayCollection $residentEvents): void
+    public function setResidentEvents($residentEvents): void
     {
         $this->residentEvents = $residentEvents;
+
+        $residentEvents->addResidentEvent($this);
+    }
+
+    /**
+     * @param ResidentEvent $residentEvent
+     */
+    public function addResidentEvent(ResidentEvent $residentEvent)
+    {
+        $this->residentEvents->add($residentEvent);
+    }
+
+    /**
+     * @param ResidentEvent $residentEvent
+     */
+    public function removeResidentEvent(ResidentEvent $residentEvent)
+    {
+        $this->residentEvents->removeElement($residentEvent);
     }
 
     /**

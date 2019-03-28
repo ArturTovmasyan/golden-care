@@ -296,6 +296,8 @@ class ResidentEvent
     public function setResponsiblePersons($responsiblePersons): void
     {
         $this->responsiblePersons = $responsiblePersons;
+
+        $responsiblePersons->addResponsiblePerson($this);
     }
 
     /**
@@ -303,7 +305,8 @@ class ResidentEvent
      */
     public function addResponsiblePerson(ResponsiblePerson $responsiblePerson)
     {
-        $this->responsiblePersons->add($responsiblePerson);
+        $responsiblePerson->addResidentEvent($this);
+        $this->responsiblePersons[] = $responsiblePerson;
     }
 
     /**
@@ -312,6 +315,7 @@ class ResidentEvent
     public function removeResponsiblePerson(ResponsiblePerson $responsiblePerson)
     {
         $this->responsiblePersons->removeElement($responsiblePerson);
+        $responsiblePerson->removeResidentEvent($this);
     }
 
 //    /**
