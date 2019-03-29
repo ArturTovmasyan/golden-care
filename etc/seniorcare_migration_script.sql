@@ -1767,23 +1767,20 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_event`
     `notes`,
     `date`,
     `additional_date`,
-    `id_physician`,
-    `id_responsible_person`
+    `id_physician`
   )
-SELECT `cc_old`.`events`.`Event_ID`                                       AS 'id',
-       `cc_old`.`events`.`Resident_ID`                                    AS 'id_resident',
-       `cc_old`.`events`.`Event_Definition_ID`                            AS 'id_definition',
-       IF(`cc_old`.`events`.`Event_Notes`!='', TRIM(REGEXP_REPLACE(`cc_old`.`events`.`Event_Notes`, '\\s+', ' ')), '') AS 'notes',
-       `cc_old`.`events`.`Event_Date`                                     AS 'date',
+SELECT `cc_old`.`events`.`Event_ID`            AS 'id',
+       `cc_old`.`events`.`Resident_ID`         AS 'id_resident',
+       `cc_old`.`events`.`Event_Definition_ID` AS 'id_definition',
+       IF(`cc_old`.`events`.`Event_Notes` != '', TRIM(REGEXP_REPLACE(`cc_old`.`events`.`Event_Notes`, '\\s+', ' ')),
+          '')                                  AS 'notes',
+       `cc_old`.`events`.`Event_Date`          AS 'date',
        IF(JSON_VALID(`cc_old`.`events`.`Event_Data`),
           STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`events`.`Event_Data`, '$.fields.dischargeDate')), '%m/%d/%Y'),
-          NULL)                                                           AS 'additional_date',
+          NULL)                                AS 'additional_date',
        IF(JSON_VALID(`cc_old`.`events`.`Event_Data`),
           CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`events`.`Event_Data`, '$.fields.phycisian.id')), SIGNED INTEGER),
-          NULL)                                                           AS 'id_physician',
-       IF(JSON_VALID(`cc_old`.`events`.`Event_Data`),
-          CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`events`.`Event_Data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
-          NULL)                                                           AS 'id_responsible_person'
+          NULL)                                AS 'id_physician'
 FROM `cc_old`.`events`
 WHERE `cc_old`.`events`.`Resident_ID` IS NOT NULL
   AND `cc_old`.`events`.`Event_Definition_ID` IN (SELECT `id` FROM `db_seniorcare_migration`.`tbl_event_definition`)
@@ -1797,27 +1794,61 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_event`
     `notes`,
     `date`,
     `additional_date`,
-    `id_physician`,
-    `id_responsible_person`
+    `id_physician`
   )
-SELECT (`alms`.`base_event`.`id` + 10000)                             AS 'id',
-       (`alms`.`base_event`.`id_resident` + 10000)                    AS 'id_resident',
-       `alms`.`base_event`.`id_definition`                            AS 'id_definition',
-       IF(`alms`.`base_event`.`notes`!='', TRIM(REGEXP_REPLACE(`alms`.`base_event`.`notes`, '\\s+', ' ')), '') AS 'notes',
-       `alms`.`base_event`.`date`                                     AS 'date',
+SELECT (`alms`.`base_event`.`id` + 10000)                                                                        AS 'id',
+       (`alms`.`base_event`.`id_resident` + 10000)                                                               AS 'id_resident',
+       `alms`.`base_event`.`id_definition`                                                                       AS 'id_definition',
+       IF(`alms`.`base_event`.`notes` != '', TRIM(REGEXP_REPLACE(`alms`.`base_event`.`notes`, '\\s+', ' ')),
+          '')                                                                                                    AS 'notes',
+       `alms`.`base_event`.`date`                                                                                AS 'date',
        IF(JSON_VALID(`alms`.`base_event`.`data`),
           STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(`alms`.`base_event`.`data`, '$.fields.dischargeDate')), '%m/%d/%Y'),
-          NULL)                                                       AS 'additional_date',
+          NULL)                                                                                                  AS 'additional_date',
        IF(JSON_VALID(`alms`.`base_event`.`data`),
           CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`alms`.`base_event`.`data`, '$.fields.phycisian.id')), SIGNED INTEGER),
-          NULL)                                                       AS 'id_physician',
-       IF(JSON_VALID(`alms`.`base_event`.`data`),
-          CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`alms`.`base_event`.`data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
-          NULL)                                                       AS 'id_responsible_person'
+          NULL)                                                                                                  AS 'id_physician'
 FROM `alms`.`base_event`
 WHERE `alms`.`base_event`.`id_resident` IS NOT NULL
   AND `alms`.`base_event`.`id_definition` IN (SELECT `id` FROM `db_seniorcare_migration`.`tbl_event_definition`)
 ;
+
+
+
+INSERT INTO `db_seniorcare_migration`.`tbl_resident_event_responsible_persons`
+  (
+    `id_resident_event`,
+    `id_responsible_person`
+  )
+SELECT `cc_old`.`events`.`Event_ID` AS 'id',
+       IF(JSON_VALID(`cc_old`.`events`.`Event_Data`),
+          CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`events`.`Event_Data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
+          NULL)                     AS 'id_responsible_person'
+FROM `cc_old`.`events`
+WHERE `cc_old`.`events`.`Resident_ID` IS NOT NULL
+  AND `cc_old`.`events`.`Event_Definition_ID` IN (SELECT `id` FROM `db_seniorcare_migration`.`tbl_event_definition`)
+  AND IF(JSON_VALID(`cc_old`.`events`.`Event_Data`),
+         CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`events`.`Event_Data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
+         NULL) IS NOT NULL
+;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_resident_event_responsible_persons`
+  (
+    `id_resident_event`,
+    `id_responsible_person`
+  )
+SELECT (`alms`.`base_event`.`id` + 10000) AS 'id',
+       IF(JSON_VALID(`alms`.`base_event`.`data`),
+          CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`alms`.`base_event`.`data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
+          NULL)                           AS 'id_responsible_person'
+FROM `alms`.`base_event`
+WHERE `alms`.`base_event`.`id_resident` IS NOT NULL
+  AND `alms`.`base_event`.`id_definition` IN (SELECT `id` FROM `db_seniorcare_migration`.`tbl_event_definition`)
+  AND IF(JSON_VALID(`alms`.`base_event`.`data`),
+         CONVERT(JSON_UNQUOTE(JSON_EXTRACT(`alms`.`base_event`.`data`, '$.fields.rpPerson.id')), SIGNED INTEGER),
+         NULL) IS NOT NULL
+;
+
 
 ### Rent
 INSERT INTO `db_seniorcare_migration`.`tbl_resident_rent`
