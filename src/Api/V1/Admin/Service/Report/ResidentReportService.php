@@ -15,6 +15,7 @@ use App\Entity\ResidentPhysician;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
+use App\Entity\ResponsiblePersonRole;
 use App\Model\GroupType;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\FaceSheet;
@@ -396,11 +397,11 @@ class ResidentReportService extends BaseService
         /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
 
-        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
@@ -450,13 +451,29 @@ class ResidentReportService extends BaseService
 
                 $rpArray = [];
                 if (!empty($responsiblePersons)) {
+                    /** @var ResidentResponsiblePerson $rp */
                     foreach ($responsiblePersons as $rp) {
-                        if ($rp['residentId'] === $admission['id'] && $rp['emergency'] === true) {
+                        $isEmergency = false;
+
+                        if (!empty($rp->getRoles())) {
+                            /** @var ResponsiblePersonRole $role */
+                            foreach ($rp->getRoles() as $role) {
+                                if ($role->isEmergency() === true) {
+                                    $isEmergency = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        $rpResidentId = $rp->getResident() ? $rp->getResident()->getId() : 0;
+                        $rpId = $rp->getResponsiblePerson() ? $rp->getResponsiblePerson()->getId() : 0;
+
+                        if ($isEmergency === true && $rpResidentId === $admission['id']) {
 
                             $rpArray = [
-                                'rpId' => $rp['rpId'],
-                                'rpFullName' => $rp['firstName'] . ' ' . $rp['lastName'],
-                                'rpTitle' => $rp['relationshipTitle'],
+                                'rpId' => $rpId,
+                                'rpFullName' => $rp->getResponsiblePerson() ? $rp->getResponsiblePerson()->getFirstName() . ' ' . $rp->getResponsiblePerson()->getLastName() : '',
+                                'rpTitle' => $rp->getRelationship() ? $rp->getRelationship()->getTitle() : '',
                                 'rpPhoneTitle' => 'N/A',
                                 'rpPhoneNumber' => 'N/A',
                             ];
@@ -464,7 +481,7 @@ class ResidentReportService extends BaseService
                             $rpPhone = [];
                             if (!empty($responsiblePersonPhones)) {
                                 foreach ($responsiblePersonPhones as $phone) {
-                                    if ($phone['rpId'] === $rp['rpId']) {
+                                    if ($phone['rpId'] === $rpId) {
                                         $rpPhone = [
                                             'rpPhoneTitle' => $phone['type'],
                                             'rpPhoneNumber' => $phone['number'],
