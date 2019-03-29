@@ -64,7 +64,7 @@
                     {% for responsiblePerson in resident['responsiblePersons'] %}
                         {% if responsiblePerson.emergency %}
                             <div style="margin-bottom: 10px;">
-                                {% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName ~ ' ' ~ responsiblePerson.lastName }}<br/>{% endif %}
+                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}<br/>{% endif %}
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
                                 {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}
@@ -83,7 +83,7 @@
                     {% for responsiblePerson in resident['responsiblePersons'] %}
                         {% if responsiblePerson.financially %}
                             <div style="margin-bottom: 10px;">
-                                {% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName ~ ' ' ~ responsiblePerson.lastName }}<br/>{% endif %}
+                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}<br/>{% endif %}
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
                                 {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}

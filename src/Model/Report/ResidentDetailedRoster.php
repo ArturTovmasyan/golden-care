@@ -2,6 +2,9 @@
 
 namespace App\Model\Report;
 
+use App\Entity\ResidentResponsiblePerson;
+use App\Entity\ResponsiblePersonRole;
+
 class ResidentDetailedRoster extends Base
 {
     /**
@@ -45,8 +48,39 @@ class ResidentDetailedRoster extends Base
      */
     public function setResponsiblePersons($responsiblePersons): void
     {
+        /** @var ResidentResponsiblePerson $responsiblePerson */
         foreach ($responsiblePersons as $responsiblePerson) {
-            $this->residents[$responsiblePerson['residentId']]['responsiblePersons'][] = $responsiblePerson;
+            $isEmergency = false;
+            $isFinancially = false;
+
+            if (!empty($responsiblePerson->getRoles())) {
+                /** @var ResponsiblePersonRole $role */
+                foreach ($responsiblePerson->getRoles() as $role) {
+                    if ($role->isEmergency() === true) {
+                        $isEmergency = true;
+                    }
+
+                    if ($role->isFinancially() === true) {
+                        $isFinancially = true;
+                    }
+                }
+            }
+
+            $residentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
+
+            $this->residents[$residentId]['responsiblePersons'][] = [
+                'residentId' => $residentId,
+                'id' => $responsiblePerson->getId(),
+                'responsiblePersonFullName' => $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getFirstName() . ' ' . $responsiblePerson->getResponsiblePerson()->getLastName() : '',
+                'rpId' => $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getId() : 0,
+                'address' => $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getAddress1() : '',
+                'state' => $responsiblePerson->getResponsiblePerson() && $responsiblePerson->getResponsiblePerson()->getCsz() ? $responsiblePerson->getResponsiblePerson()->getCsz()->getStateFull() : '',
+                'zip' => $responsiblePerson->getResponsiblePerson() && $responsiblePerson->getResponsiblePerson()->getCsz() ? $responsiblePerson->getResponsiblePerson()->getCsz()->getZipMain() : '',
+                'city' => $responsiblePerson->getResponsiblePerson() && $responsiblePerson->getResponsiblePerson()->getCsz() ? $responsiblePerson->getResponsiblePerson()->getCsz()->getCity() : '',
+                'relationshipTitle' => $responsiblePerson->getRelationship() ? $responsiblePerson->getRelationship()->getTitle() : '',
+                'emergency' => $isEmergency,
+                'financially' => $isFinancially
+            ];
         }
     }
 

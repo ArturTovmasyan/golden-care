@@ -236,11 +236,11 @@ class ResidentReportService extends BaseService
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
-        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
