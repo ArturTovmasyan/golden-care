@@ -6,7 +6,10 @@ use App\Annotation\Grid;
 use App\Api\V1\Admin\Service\ReportService;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
+use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Space;
+use App\Model\Grant;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use Doctrine\ORM\QueryBuilder;
@@ -52,6 +55,9 @@ class BaseController extends Controller
     /** @var Security */
     protected $security;
 
+    /** @var GrantService */
+    protected $grantService;
+
     /**
      * BaseController constructor.
      * @param SerializerInterface $serializer
@@ -71,7 +77,8 @@ class BaseController extends Controller
         Reader $reader,
         Pdf $pdf,
         Mailer $mailer,
-        Security $security
+        Security $security,
+        GrantService $grantService
     ) {
         $this->serializer = $serializer;
         $this->em         = $em;
@@ -81,6 +88,7 @@ class BaseController extends Controller
         $this->pdf        = $pdf;
         $this->mailer     = $mailer;
         $this->security   = $security;
+        $this->grantService   = $grantService;
     }
 
     /**
@@ -292,7 +300,13 @@ class BaseController extends Controller
             throw new GridOptionsNotFoundException();
         }
 
-        // TODO: add space check and add/edit/delete
+        if(!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
+            $options = array_filter($options, function ($value) {
+                return $value['id'] !== 'space';
+            });
+        }
+
+        // TODO: add/edit/delete
 
         $options = ArrayUtil::remove_keys($options, ['field']);
 
