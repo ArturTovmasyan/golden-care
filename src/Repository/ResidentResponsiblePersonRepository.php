@@ -285,6 +285,68 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getResponsiblePersonByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rrp');
+
+        $qb
+            ->innerJoin(
+                ResponsiblePerson::class,
+                'rp',
+                Join::WITH,
+                'rrp.responsiblePerson = rp'
+            )
+            ->innerJoin(
+                Relationship::class,
+                'rel',
+                Join::WITH,
+                'rrp.relationship = rel'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rrp.resident = r'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'rp.csz = csz'
+            )
+            ->leftJoin('rrp.roles','rs')
+            ->where($qb->expr()->in('r.id', $residentIds));
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rrp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('rrp.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

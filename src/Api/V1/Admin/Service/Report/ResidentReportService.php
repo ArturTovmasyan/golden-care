@@ -91,14 +91,14 @@ class ResidentReportService extends BaseService
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
-        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
         $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
         $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
@@ -169,12 +169,12 @@ class ResidentReportService extends BaseService
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
-        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item['id'];} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */

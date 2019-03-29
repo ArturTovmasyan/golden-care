@@ -90,78 +90,78 @@
                 </tr>
             </thead>
             <tbody>
-            {#{% if resident['responsiblePersons'] is defined %}#}
-                {#{% set y = 0 %}#}
-                {#{% for responsiblePerson in resident['responsiblePersons'] %}#}
-                    {#{% if (responsiblePerson.emergency == false and responsiblePerson.financially == true)#}
-                    {#or (responsiblePerson.emergency == true and responsiblePerson.financially == false)#}
-                    {#or (responsiblePerson.emergency == true and responsiblePerson.financially == true) %}#}
-                        {#{% set y = y + 1%}#}
-                        {#{% if y > 1 %}#}
-                            {#<tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>#}
-                        {#{% endif %}#}
-                        {#<tr style="border-left: solid 1px darkgrey; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">#}
-                            {#<td colspan="9" style="border-left: none; border-top: none; border-bottom: none">#}
-                                {#{% if responsiblePerson.emergency == false and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing</b>#}
-                                {#{% elseif responsiblePerson.emergency == true and responsiblePerson.financially == false %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Emergency</b>#}
-                                {#{% elseif responsiblePerson.emergency == true and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing&nbsp;/&nbsp;Emergency</b>{% endif %}#}
-                            {#</td>#}
-                        {#</tr>#}
-                        {#<tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">#}
-                            {#<td colspan="9" style="border-left: none; border-top: none; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">#}
-                                {#<div style="float: left; width: 30%">Full&nbsp;name</div>#}
-                                {#<div style="float: left; width: 20%">Relationship</div>#}
-                                {#<div style="float: left; width: 25%">Primary&nbsp;phone</div>#}
-                                {#<div style="float: left; width: 25%">Emergency&nbsp;phone</div>#}
-                            {#</td>#}
-                        {#</tr>#}
-                        {#<tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">#}
-                            {#<td colspan="9" style="border-left: none; border-top: none; border-bottom: none">#}
-                                {#<div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName }}&nbsp;{{ responsiblePerson.lastName }}{% else %}N/A{% endif %}</b></div>#}
-                                {#<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if responsiblePerson.relationshipTitle %}{{ responsiblePerson.relationshipTitle }}{% else %}N/A{% endif %}</b></div>#}
-                                {#<div style="float: left; width: 25%"><b style="font-size: 10px !important;">#}
-                                        {#{% set a = 0 %}#}
-                                        {#{% for responsiblePersonPhone in data.responsiblePersonPhones %}#}
-                                            {#{% if responsiblePersonPhone.rpId == responsiblePerson.rpId and responsiblePersonPhone.primary == true %}#}
-                                                {#{% set a = a + 1 %}#}
-                                                {#{{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>#}
-                                            {#{% endif %}#}
-                                        {#{% endfor %}#}
-                                        {#{% if a == 0 %}N/A{% endif %}#}
-                                    {#</b>#}
-                                {#</div>#}
-                                {#<div style="float: left; width: 25%"><b style="font-size: 10px !important;">#}
-                                        {#{% set b = 0 %}#}
-                                        {#{% for responsiblePersonPhone in data.responsiblePersonPhones %}#}
-                                            {#{% if responsiblePersonPhone.rpId == responsiblePerson.rpId and responsiblePersonPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}#}
-                                                {#{% set b = b + 1 %}#}
-                                                {#{{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>#}
-                                            {#{% endif %}#}
-                                        {#{% endfor %}#}
-                                        {#{% if b == 0 %}N/A{% endif %}#}
-                                    {#</b>#}
-                                {#</div>#}
-                            {#</td>#}
-                        {#</tr>#}
-                        {#<tr style="border-right: solid 1px darkgray; border-left: solid 1px darkgray; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">#}
-                            {#<td colspan="9" style="font-size: 13px !important; border-left: none; border-top: none; border-bottom: none">#}
-                                {#<div style="float: left; width: 50%">Address</div>#}
-                                {#<div style="float: left; width: 30%">City</div>#}
-                                {#<div style="float: left; width: 10%">State</div>#}
-                                {#<div style="float: left; width: 10%">Zip</div>#}
-                            {#</td>#}
-                        {#</tr>#}
-                        {#<tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray; border-bottom: solid 1px darkgray">#}
-                            {#<td colspan="9" style="border-left: none; border-top: none; border-bottom: none">#}
-                                {#<div style="float: left; width: 50%"><b style="font-size: 12px !important;">{% if responsiblePerson.address %}{{ responsiblePerson.address }}{% else %}N/A{% endif %}</b></div>#}
-                                {#<div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.city %}{{ responsiblePerson.city }}{% else %}N/A{% endif %}</b></div>#}
-                                {#<div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.state %}{{ responsiblePerson.state }}{% else %}N/A{% endif %}</b></div>#}
-                                {#<div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.zip %}{{ responsiblePerson.zip }}{% else %}N/A{% endif %}</b></div>#}
-                            {#</td>#}
-                        {#</tr>#}
-                    {#{% endif %}#}
-                {#{% endfor %}#}
-            {#{% endif %}#}
+            {% if resident['responsiblePersons'] is defined %}
+                {% set y = 0 %}
+                {% for responsiblePerson in resident['responsiblePersons'] %}
+                    {% if (responsiblePerson.emergency == false and responsiblePerson.financially == true)
+                    or (responsiblePerson.emergency == true and responsiblePerson.financially == false)
+                    or (responsiblePerson.emergency == true and responsiblePerson.financially == true) %}
+                        {% set y = y + 1%}
+                        {% if y > 1 %}
+                            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                        {% endif %}
+                        <tr style="border-left: solid 1px darkgrey; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                {% if responsiblePerson.emergency == false and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing</b>
+                                {% elseif responsiblePerson.emergency == true and responsiblePerson.financially == false %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Emergency</b>
+                                {% elseif responsiblePerson.emergency == true and responsiblePerson.financially == true %}<b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray">Billing&nbsp;/&nbsp;Emergency</b>{% endif %}
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                                <div style="float: left; width: 30%">Full&nbsp;name</div>
+                                <div style="float: left; width: 20%">Relationship</div>
+                                <div style="float: left; width: 25%">Primary&nbsp;phone</div>
+                                <div style="float: left; width: 25%">Emergency&nbsp;phone</div>
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if responsiblePerson.relationshipTitle %}{{ responsiblePerson.relationshipTitle }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 25%"><b style="font-size: 10px !important;">
+                                        {% set a = 0 %}
+                                        {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                            {% if responsiblePersonPhone.rpId == responsiblePerson.rpId and responsiblePersonPhone.primary == true %}
+                                                {% set a = a + 1 %}
+                                                {{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if a == 0 %}N/A{% endif %}
+                                    </b>
+                                </div>
+                                <div style="float: left; width: 25%"><b style="font-size: 10px !important;">
+                                        {% set b = 0 %}
+                                        {% for responsiblePersonPhone in data.responsiblePersonPhones %}
+                                            {% if responsiblePersonPhone.rpId == responsiblePerson.rpId and responsiblePersonPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                                                {% set b = b + 1 %}
+                                                {{ responsiblePersonPhone.number }}{% if responsiblePersonPhone.extension %}&nbsp;ext:&nbsp;{{ responsiblePersonPhone.extension }}{% endif %}<br/>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if b == 0 %}N/A{% endif %}
+                                    </b>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="border-right: solid 1px darkgray; border-left: solid 1px darkgray; border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
+                            <td colspan="9" style="font-size: 13px !important; border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 50%">Address</div>
+                                <div style="float: left; width: 30%">City</div>
+                                <div style="float: left; width: 10%">State</div>
+                                <div style="float: left; width: 10%">Zip</div>
+                            </td>
+                        </tr>
+                        <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray; border-bottom: solid 1px darkgray">
+                            <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
+                                <div style="float: left; width: 50%"><b style="font-size: 12px !important;">{% if responsiblePerson.address %}{{ responsiblePerson.address }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.city %}{{ responsiblePerson.city }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.state %}{{ responsiblePerson.state }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 10%"><b style="font-size: 12px !important;">{% if responsiblePerson.zip %}{{ responsiblePerson.zip }}{% else %}N/A{% endif %}</b></div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
 
             {% if resident['physicians'] is defined %}
                 {% for physician in resident['physicians'] %}

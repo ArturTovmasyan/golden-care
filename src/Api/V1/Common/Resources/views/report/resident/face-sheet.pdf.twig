@@ -100,7 +100,7 @@
                         </tr>
                         <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
                             <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
-                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.firstName and responsiblePerson.lastName %}{{ responsiblePerson.firstName }}&nbsp;{{ responsiblePerson.lastName }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 30%"><b style="font-size: 12px !important;">{% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}{% else %}N/A{% endif %}</b></div>
                                 <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if responsiblePerson.relationshipTitle %}{{ responsiblePerson.relationshipTitle }}{% else %}N/A{% endif %}</b></div>
                                 <div style="float: left; width: 25%"><b style="font-size: 10px !important;">
                                         {% set a = 0 %}

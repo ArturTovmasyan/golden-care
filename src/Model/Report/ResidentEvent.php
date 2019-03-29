@@ -63,8 +63,8 @@ class ResidentEvent extends Base
             $residentId = $event->getResident() ? $event->getResident()->getId() : 0;
 
             $this->residents[$residentId]['events'][] = [
-                'id' => $residentId,
-                'residentId' => $event->getId(),
+                'residentId' => $residentId,
+                'id' => $event->getId(),
                 'title' => $event->getDefinition() ? $event->getDefinition()->getTitle() : 'N/A',
                 'date' => $event->getDate(),
                 'additionalDate' => $event->getAdditionalDate() ?? '',
