@@ -12,7 +12,6 @@ class RoomRent extends Base
     private $calcAmount = [];
     private $place = [];
     private $total = [];
-    private $responsiblePersons = [];
 
     /**
      * @var string
@@ -122,22 +121,6 @@ class RoomRent extends Base
     public function getTotal(): ?array
     {
         return $this->total;
-    }
-
-    /**
-     * @param $responsiblePersons
-     */
-    public function setResponsiblePersons($responsiblePersons): void
-    {
-        $this->responsiblePersons = $responsiblePersons;
-    }
-
-    /**
-     * @return array
-     */
-    public function getResponsiblePersons(): ?array
-    {
-        return $this->responsiblePersons;
     }
 
     /**

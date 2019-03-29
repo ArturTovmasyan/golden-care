@@ -60,20 +60,15 @@
             <tbody>
         {% endif %}
 
-        {% set k = 0 %}
         <tr>
             {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
-            <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
+            <td style="height: 40px; text-align: left;">{{ datum.fullName }}</td>
             <td style="height: 40px; text-align: left;">
-                {% for responsiblePerson in data.responsiblePersons %}
-                    {% if responsiblePerson.residentId == datum.id %}
-                        {% if responsiblePerson.financially %}
-                            {% set k = k + 1 %}
-                            {% if responsiblePerson.firstName is defined and responsiblePerson.lastName is defined %}{{ responsiblePerson.firstName ~ ' ' ~ responsiblePerson.lastName }}{% if responsiblePerson.relationshipTitle is defined %}&nbsp;({{ responsiblePerson.relationshipTitle }}){% endif %}<br/>{% else %}N/A{% endif %}
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-                {% if k == 0 %}
+                {% if datum.responsiblePerson|length > 0 %}
+                    {% for responsiblePerson in datum.responsiblePerson %}
+                        {{ responsiblePerson }}<br/>
+                    {% endfor %}
+                {% else %}
                     N/A
                 {% endif %}
             </td>

@@ -17,6 +17,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
+use App\Entity\ResponsiblePersonRole;
 use App\Model\GroupType;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
@@ -253,7 +254,7 @@ class RoomReportService extends BaseService
         /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
 
-        $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
         $countTypeIds = array_count_values($typeIds);
@@ -305,9 +306,25 @@ class RoomReportService extends BaseService
                 'responsiblePerson' => [],
             ];
             $rpArray = array();
+            /** @var ResidentResponsiblePerson $responsiblePerson */
             foreach ($responsiblePersons as $responsiblePerson) {
-                if ($responsiblePerson['financially'] === true && $responsiblePerson['residentId'] === $rent['id']) {
-                    $rpArray['responsiblePerson'][$responsiblePerson['rpId']] = $responsiblePerson['firstName'] . ' ' . $responsiblePerson['lastName'] . ' (' . $responsiblePerson['relationshipTitle'] . ')';
+                $isFinancially = false;
+                if (!empty($responsiblePerson->getRoles())) {
+                    /** @var ResponsiblePersonRole $role */
+                    foreach ($responsiblePerson->getRoles() as $role) {
+                        if ($role->isFinancially() === true) {
+                            $isFinancially = true;
+                        }
+                    }
+                }
+
+                $rpResidentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
+                $rpId = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getId() : 0;
+                $rpFullName = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getFirstName() . ' ' . $responsiblePerson->getResponsiblePerson()->getLastName() : '';
+                $rpRelationship = $responsiblePerson->getRelationship() ? $responsiblePerson->getRelationship()->getTitle() : '';
+
+                if ($isFinancially === true && $rpResidentId === $rent['id']) {
+                    $rpArray['responsiblePerson'][$rpId] = $rpFullName . ' (' . $rpRelationship . ')';
                 }
             }
             $changedData[] = array_merge($rentArray, $rpArray);
@@ -321,12 +338,11 @@ class RoomReportService extends BaseService
         }
 
         $report = new RoomRent();
-        $report->setData($data);
+        $report->setData($changedData);
         $report->setCsvData($csvData);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
-        $report->setResponsiblePersons($responsiblePersons);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart);
