@@ -82,7 +82,11 @@ class ResidentController extends BaseController
             $request,
             Resident::class,
             'api_admin_resident_grid',
-            $residentService
+            $residentService,
+            [
+                'type' => $request->get('type'),
+                'type_id' => $request->get('type')
+            ]
         );
     }
 

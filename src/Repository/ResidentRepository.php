@@ -35,8 +35,9 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
+     * @param array|null $ids
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null) : void
     {
         $queryBuilder
             ->from(Resident::class, 'r')
@@ -65,8 +66,13 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        $queryBuilder
+        if ($ids !== null) {
+            $queryBuilder
+                ->andWhere('r.id IN (:ids)')
+                ->setParameter('ids', $ids);
+        }
 
+        $queryBuilder
             ->groupBy('r.id');
     }
 

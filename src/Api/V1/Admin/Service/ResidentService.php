@@ -10,9 +10,11 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
@@ -46,7 +48,23 @@ class ResidentService extends BaseService implements IGridService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder);
+        $ids = null;
+        if (!empty($params) && !empty($params[0]['type']) && !empty($params[0]['type_id'])) {
+            $type = (int)$params[0]['type'];
+            $typeId = (int)$params[0]['type_id'];
+
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            $residents = $admissionRepo->getActiveResidentsByStrategy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeId);
+
+            $ids = [];
+            if (!empty($residents)) {
+                $ids = array_map(function(array $item){return $item['id'];} , $residents);
+            }
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids);
     }
 
     /**
