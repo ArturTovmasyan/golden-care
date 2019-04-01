@@ -12,6 +12,8 @@ use App\Entity\Space;
 use App\Model\Grant;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use JMS\Serializer\SerializationContext;
@@ -19,9 +21,7 @@ use JMS\Serializer\Serializer;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -296,24 +296,28 @@ class BaseController extends Controller
     {
         $options = $this->getGrid($entityName)->getGroupOptions($groupName);
 
-        if(!$options) {
+        if (!$options) {
             throw new GridOptionsNotFoundException();
         }
 
-        if(!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
+        if (!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
             $options = array_filter($options, function ($value) {
                 return $value['id'] !== 'space';
             });
         }
 
-        // TODO: add/edit/delete
-
         $options = ArrayUtil::remove_keys($options, ['field']);
+
+        $buttons = [
+            'add' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_EDIT),
+            'edit' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_EDIT),
+            'remove' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_DELETE),
+        ];
 
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $options
+            ['buttons' => $buttons, 'fields' => $options]
         );
     }
 

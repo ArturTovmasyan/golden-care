@@ -545,10 +545,10 @@ class Facility
      */
     public function areCapacityValid(ExecutionContextInterface $context): void
     {
-        $licenseCapacity = $this->getLicenseCapacity();
-        $capacity = $this->getCapacity();
+        $licenseCapacity = $this->licenseCapacity;
+        $capacity = $this->capacity;
 
-        if ($capacity >= $licenseCapacity) {
+        if ($capacity > $licenseCapacity) {
             $context->buildViolation('The capacity "'.$capacity.'" should be less than or equal to license capacity "'.$licenseCapacity.'".')
                 ->atPath('capacity')
                 ->addViolation();
