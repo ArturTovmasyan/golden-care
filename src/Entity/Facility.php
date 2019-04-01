@@ -548,8 +548,8 @@ class Facility
         $licenseCapacity = $this->getLicenseCapacity();
         $capacity = $this->getCapacity();
 
-        if ($capacity > $licenseCapacity) {
-            $context->buildViolation('The capacity "'.$capacity.'" should be less than license capacity "'.$licenseCapacity.'".')
+        if ($capacity >= $licenseCapacity) {
+            $context->buildViolation('The capacity "'.$capacity.'" should be less than or equal to license capacity "'.$licenseCapacity.'".')
                 ->atPath('capacity')
                 ->addViolation();
         }
