@@ -92,6 +92,18 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 Join::WITH,
                 'r = rp.resident'
             )
+            ->innerJoin(
+                Physician::class,
+                'p',
+                Join::WITH,
+                'p = rp.physician'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'ps',
+                Join::WITH,
+                'ps = p.salutation'
+            )
             ->where('r.id = :id')
             ->setParameter('id', $id);
 
@@ -112,6 +124,11 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 ->andWhere('rp.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN ps IS NOT NULL THEN CONCAT(ps.title, ' ') ELSE '' END,
+            p.firstName, ' ', p.lastName)", 'ASC');
 
         return $qb
             ->getQuery()

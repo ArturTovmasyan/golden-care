@@ -99,6 +99,18 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 Join::WITH,
                 'r = rrp.resident'
             )
+            ->innerJoin(
+                ResponsiblePerson::class,
+                'rp',
+                Join::WITH,
+                'rp = rrp.responsiblePerson'
+            )
+            ->leftJoin(
+                Salutation::class,
+                'rps',
+                Join::WITH,
+                'rps = rp.salutation'
+            )
             ->where('r.id = :id')
             ->setParameter('id', $id);
 
@@ -119,6 +131,11 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 ->andWhere('rrp.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rps IS NOT NULL THEN CONCAT(rps.title, ' ') ELSE '' END, 
+            rp.firstName, ' ', rp.lastName)", 'ASC');
 
         return $qb
             ->getQuery()
