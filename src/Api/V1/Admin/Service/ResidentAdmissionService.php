@@ -13,10 +13,12 @@ use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\CareLevel;
 use App\Entity\CityStateZip;
 use App\Entity\DiningRoom;
+use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\Region;
 use App\Entity\Resident;
@@ -24,10 +26,12 @@ use App\Entity\ResidentAdmission;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
+use App\Repository\ApartmentRepository;
 use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\DiningRoomRepository;
 use App\Repository\FacilityBedRepository;
+use App\Repository\FacilityRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentRepository;
@@ -101,6 +105,95 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
         return $repo->getActiveByResident($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActiveResidents()
+    {
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        /** @var FacilityRepository $facilityRepo */
+        $facilityRepo = $this->em->getRepository(Facility::class);
+
+        $facilities = [];
+        $facilityIds = null;
+        $facilityList = $facilityRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+        if (!empty($facilityList)) {
+            $facilityIds = array_map(function(Facility $item){return $item->getId();} , $facilityList);
+
+            $facilityResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $facilityIds);
+
+            foreach ($facilityIds as $facilityId) {
+                $facilities[$facilityId] = [];
+                $i = 0;
+                foreach ($facilityResidents as $facilityResident) {
+                    if ($facilityResident['type_id'] === $facilityId) {
+                        ++$i;
+                        $facilities[$facilityId][] = $facilityResident;
+                    }
+                    if ($i === 3) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /** @var ApartmentRepository $apartmentRepo */
+        $apartmentRepo = $this->em->getRepository(Apartment::class);
+
+        $apartments = [];
+        $apartmentIds = null;
+        $apartmentList = $apartmentRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
+        if (!empty($apartmentList)) {
+            $apartmentIds = array_map(function(Apartment $item){return $item->getId();} , $apartmentList);
+
+            $apartmentResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $apartmentIds);
+
+            foreach ($apartmentIds as $apartmentId) {
+                $apartments[$apartmentId] = [];
+                $i = 0;
+                foreach ($apartmentResidents as $apartmentResident) {
+                    if ($apartmentResident['type_id'] === $apartmentId) {
+                        ++$i;
+                        $apartments[$apartmentId][] = $apartmentResident;
+                    }
+                    if ($i === 3) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /** @var RegionRepository $regionRepo */
+        $regionRepo = $this->em->getRepository(Region::class);
+
+        $regions = [];
+        $regionIds = null;
+        $regionList = $regionRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Region::class));
+        if (!empty($regionList)) {
+            $regionIds = array_map(function(Region $item){return $item->getId();} , $regionList);
+
+            $regionResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_REGION, $regionIds);
+
+            foreach ($regionIds as $regionId) {
+                $regions[$regionId] = [];
+                $i = 0;
+                foreach ($regionResidents as $regionResident) {
+                    if ($regionResident['type_id'] === $regionId) {
+                        ++$i;
+                        $regions[$regionId][] = $regionResident;
+                    }
+                    if ($i === 3) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return ['facility' => $facilities, 'apartment' => $apartments, 'region' => $regions];
     }
 
     /**
