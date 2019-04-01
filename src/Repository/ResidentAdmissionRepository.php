@@ -456,7 +456,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
                     ->andWhere('fbrf.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('fbr.number')
+                    ->addOrderBy('fb.number');
                 break;
             case GroupType::TYPE_APARTMENT:
                 $qb
@@ -468,13 +470,16 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->join('ab.room', 'abr')
                     ->join('abr.apartment', 'abra')
                     ->andWhere('abra.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('abr.number')
+                    ->addOrderBy('ab.number');
                 break;
             case GroupType::TYPE_REGION:
                 $qb
                     ->join('ra.region', 'reg')
                     ->andWhere('reg.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('reg.name');
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
@@ -545,7 +550,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
                     ->andWhere('fbrf.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('fbr.number')
+                    ->addOrderBy('fb.number');
                 break;
             case GroupType::TYPE_APARTMENT:
                 $qb
@@ -557,13 +564,16 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->join('ab.room', 'abr')
                     ->join('abr.apartment', 'abra')
                     ->andWhere('abra.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('abr.number')
+                    ->addOrderBy('ab.number');
                 break;
             case GroupType::TYPE_REGION:
                 $qb
                     ->join('ra.region', 'reg')
                     ->andWhere('reg.id=:id')
-                    ->setParameter('id', $id);
+                    ->setParameter('id', $id)
+                    ->orderBy('reg.name');
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
