@@ -485,6 +485,11 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 throw new IncorrectStrategyTypeException();
         }
 
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
+            r.firstName, ' ', r.lastName)", 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -578,6 +583,11 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             default:
                 throw new IncorrectStrategyTypeException();
         }
+
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
+            r.firstName, ' ', r.lastName)", 'ASC');
 
         return $qb
             ->groupBy('r.id')

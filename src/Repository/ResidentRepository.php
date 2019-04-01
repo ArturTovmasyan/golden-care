@@ -223,6 +223,11 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->addOrderBy("CONCAT(
+            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
+            r.firstName, ' ', r.lastName)", 'ASC');
+
         return $qb
             ->getQuery()
             ->getResult();
