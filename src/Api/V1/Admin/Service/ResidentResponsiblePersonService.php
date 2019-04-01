@@ -134,14 +134,16 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $residentResponsiblePerson->setRelationship($relationship);
 
             /* Roles - begin */
-            /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
-            $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
+            if(!empty($params['roles'])) {
+                /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
+                $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
 
-            $roleIds = array_unique($params['roles']);
-            $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
+                $roleIds = array_unique($params['roles']);
+                $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
 
-            if (!empty($roles)) {
-                $residentResponsiblePerson->setRoles($roles);
+                if (!empty($roles)) {
+                    $residentResponsiblePerson->setRoles($roles);
+                }
             }
             /* Roles - end */
 
@@ -230,14 +232,16 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                 $entity->removeRole($role);
             }
 
-            /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
-            $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
+            if(!empty($params['roles'])) {
+                /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
+                $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
 
-            $roleIds = array_unique($params['roles']);
-            $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
+                $roleIds = array_unique($params['roles']);
+                $roles = $responsiblePersonRoleRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonRole::class), $roleIds);
 
-            if (!empty($roles)) {
-                $entity->setRoles($roles);
+                if (!empty($roles)) {
+                    $entity->setRoles($roles);
+                }
             }
             /* Roles - end */
 
