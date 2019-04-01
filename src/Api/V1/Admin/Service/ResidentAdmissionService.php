@@ -123,16 +123,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $facilityList = $facilityRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
         if (!empty($facilityList)) {
             $facilityIds = array_map(function(Facility $item){return $item->getId();} , $facilityList);
+            $facilityArray = array_map(function(Facility $item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $facilityList);
 
             $facilityResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $facilityIds);
 
-            foreach ($facilityIds as $facilityId) {
-                $facilities[$facilityId] = [];
+            foreach ($facilityArray as $facility) {
+                $facilities[$facility['id']] = [
+                    'name' => $facility['name'],
+                    'residents' => []
+                ];
                 $i = 0;
                 foreach ($facilityResidents as $facilityResident) {
-                    if ($facilityResident['type_id'] === $facilityId) {
+                    if ($facilityResident['type_id'] === $facility['id']) {
                         ++$i;
-                        $facilities[$facilityId][] = $facilityResident;
+                        $facilities[$facility['id']]['residents'][] = $facilityResident;
                     }
                     if ($i === 3) {
                         break;
@@ -149,16 +153,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $apartmentList = $apartmentRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
         if (!empty($apartmentList)) {
             $apartmentIds = array_map(function(Apartment $item){return $item->getId();} , $apartmentList);
+            $apartmentArray = array_map(function(Apartment $item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $apartmentList);
 
             $apartmentResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $apartmentIds);
 
-            foreach ($apartmentIds as $apartmentId) {
-                $apartments[$apartmentId] = [];
+            foreach ($apartmentArray as $apartment) {
+                $apartments[$apartment['id']] = [
+                    'name' => $apartment['name'],
+                    'residents' => []
+                ];
                 $i = 0;
                 foreach ($apartmentResidents as $apartmentResident) {
-                    if ($apartmentResident['type_id'] === $apartmentId) {
+                    if ($apartmentResident['type_id'] === $apartment['id']) {
                         ++$i;
-                        $apartments[$apartmentId][] = $apartmentResident;
+                        $apartments[$apartment['id']]['residents'][] = $apartmentResident;
                     }
                     if ($i === 3) {
                         break;
@@ -175,16 +183,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $regionList = $regionRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Region::class));
         if (!empty($regionList)) {
             $regionIds = array_map(function(Region $item){return $item->getId();} , $regionList);
+            $regionArray = array_map(function(Region $item){return ['id' => $item->getId(), 'name' => $item->getName()];} ,$regionList);
 
             $regionResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_REGION, $regionIds);
 
-            foreach ($regionIds as $regionId) {
-                $regions[$regionId] = [];
+            foreach ($regionArray as $region) {
+                $regions[$region['id']] = [
+                    'name' => $region['name'],
+                    'residents' => []
+                ];
                 $i = 0;
                 foreach ($regionResidents as $regionResident) {
-                    if ($regionResident['type_id'] === $regionId) {
+                    if ($regionResident['type_id'] === $region['id']) {
                         ++$i;
-                        $regions[$regionId][] = $regionResident;
+                        $regions[$region['id']]['residents'][] = $regionResident;
                     }
                     if ($i === 3) {
                         break;
