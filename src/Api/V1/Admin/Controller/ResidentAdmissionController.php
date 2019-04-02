@@ -694,7 +694,7 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/admission/active/first/six Get Active Residents
+     * @api {get} /api/v1.0/admin/resident/admission/active/first Get Active Residents
      * @apiVersion 1.0.0
      * @apiName Get Active Residents
      * @apiGroup Admin ResidentAdmissions
@@ -723,13 +723,13 @@ class ResidentAdmissionController extends BaseController
      *          }
      *     }
      *
-     * @Route("/active/first/six", name="api_admin_resident_admission_get_active_first_six_residents", methods={"GET"})
+     * @Route("/active/first", name="api_admin_resident_admission_get_active_first_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
      * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      */
-    public function getActiveFirstSixResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService, ResidentPhotoHelper $residentPhotoHelper)
+    public function getActiveFirstResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService, ResidentPhotoHelper $residentPhotoHelper)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
