@@ -349,7 +349,7 @@ class User implements UserInterface
     private $avatar;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"persist"})
      * @ORM\JoinTable(
      *      name="tbl_user_role",
      *      joinColumns={

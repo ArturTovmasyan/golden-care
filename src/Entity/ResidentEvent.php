@@ -169,7 +169,7 @@ class ResidentEvent
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="residentEvents", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="residentEvents", cascade={"persist"})
      * @Groups({
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get"

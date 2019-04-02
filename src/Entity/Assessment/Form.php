@@ -114,7 +114,7 @@ class Form
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="CareLevelGroup", mappedBy="forms", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="CareLevelGroup", mappedBy="forms", cascade={"persist"})
      * @Groups({
      *     "api_admin_assessment_form_list",
      *     "api_admin_assessment_form_get",
@@ -125,7 +125,7 @@ class Form
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="FormCategory", mappedBy="form", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="FormCategory", mappedBy="form", cascade={"persist"})
      * @ORM\OrderBy({"orderNumber" = "ASC"})
      * @Groups({
      *     "api_admin_resident_assessment_list",

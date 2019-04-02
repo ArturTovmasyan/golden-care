@@ -105,7 +105,7 @@ class Role
     private $grants = [];
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"persist"})
      */
     private $users;
 

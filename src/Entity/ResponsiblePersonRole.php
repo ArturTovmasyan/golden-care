@@ -174,7 +174,7 @@ class ResponsiblePersonRole
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="ResidentResponsiblePerson", inversedBy="roles", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="ResidentResponsiblePerson", inversedBy="roles", cascade={"persist"})
      * @ORM\JoinTable(
      *      name="tbl_resident_responsible_person_roles",
      *      joinColumns={

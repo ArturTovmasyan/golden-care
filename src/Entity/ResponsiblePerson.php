@@ -247,13 +247,13 @@ class ResponsiblePerson
 
 //    /**
 //     * @var ArrayCollection
-//     * @ORM\ManyToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+//     * @ORM\ManyToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"persist"})
 //     */
 //    private $residentEvents;
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="ResidentEvent", inversedBy="responsiblePersons", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="ResidentEvent", inversedBy="responsiblePersons", cascade={"persist"})
      * @ORM\JoinTable(
      *      name="tbl_resident_event_responsible_persons",
      *      joinColumns={

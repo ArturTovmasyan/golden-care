@@ -176,7 +176,6 @@ class ResidentDiagnosis
 
     /**
      * @param Resident|null $resident
-     * @return ResidentDiagnosis
      */
     public function setResident(?Resident $resident): void
     {
@@ -193,7 +192,6 @@ class ResidentDiagnosis
 
     /**
      * @param Diagnosis|null $diagnosis
-     * @return ResidentDiagnosis
      */
     public function setDiagnosis(?Diagnosis $diagnosis): void
     {

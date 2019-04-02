@@ -188,7 +188,6 @@ class ResidentMedicalHistoryCondition
 
     /**
      * @param MedicalHistoryCondition|null $condition
-     * @return ResidentMedicalHistoryCondition
      */
     public function setCondition(?MedicalHistoryCondition $condition): void
     {
