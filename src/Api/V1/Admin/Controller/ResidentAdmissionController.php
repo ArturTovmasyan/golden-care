@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Entity\ResidentAdmission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -693,7 +694,7 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/admission/active/first/tree Get Active Residents
+     * @api {get} /api/v1.0/admin/resident/admission/active/first/six Get Active Residents
      * @apiVersion 1.0.0
      * @apiName Get Active Residents
      * @apiGroup Admin ResidentAdmissions
@@ -722,17 +723,18 @@ class ResidentAdmissionController extends BaseController
      *          }
      *     }
      *
-     * @Route("/active/first/tree", name="api_admin_resident_admission_get_active_first_tree_residents", methods={"GET"})
+     * @Route("/active/first/six", name="api_admin_resident_admission_get_active_first_six_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
+     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      */
-    public function getActiveFirstTreeResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    public function getActiveFirstSixResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService, ResidentPhotoHelper $residentPhotoHelper)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getActiveResidents(),
+            $residentAdmissionService->getActiveResidents($residentPhotoHelper),
             ['api_admin_resident_get_active']
         );
     }

@@ -12,6 +12,7 @@ use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -26,12 +27,10 @@ use App\Entity\ResidentAdmission;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
-use App\Repository\ApartmentRepository;
 use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\DiningRoomRepository;
 use App\Repository\FacilityBedRepository;
-use App\Repository\FacilityRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentRepository;
@@ -108,105 +107,78 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
-     * @return mixed
+     * @param ResidentPhotoHelper $residentPhotoHelper
+     * @return array
      */
-    public function getActiveResidents()
+    public function getActiveResidents(ResidentPhotoHelper $residentPhotoHelper)
     {
+        $limit = 6;
+
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
-        /** @var FacilityRepository $facilityRepo */
-        $facilityRepo = $this->em->getRepository(Facility::class);
+        $data = [
+            [
+                'groupType' => GroupType::TYPE_FACILITY,
+                'entityClass' => Facility::class,
+                'title' => 'facility'
+            ],
+            [
+                'groupType' => GroupType::TYPE_APARTMENT,
+                'entityClass' => Apartment::class,
+                'title' => 'apartment'
+            ],
+            [
+                'groupType' => GroupType::TYPE_REGION,
+                'entityClass' => Region::class,
+                'title' => 'region'
+            ]
+        ];
 
-        $facilities = [];
-        $facilityIds = null;
-        $facilityList = $facilityRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
-        if (!empty($facilityList)) {
-            $facilityIds = array_map(function(Facility $item){return $item->getId();} , $facilityList);
-            $facilityArray = array_map(function(Facility $item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $facilityList);
+        $result = [];
+        foreach ($data as $strategy) {
+            $groupRepo = $this->em->getRepository($strategy['entityClass']);
 
-            $facilityResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $facilityIds);
+            $groups = [];
+            $groupIds = null;
+            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
+            if (!empty($groupList)) {
+                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
+                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
 
-            foreach ($facilityArray as $facility) {
-                $facilities[$facility['id']] = [
-                    'name' => $facility['name'],
-                    'residents' => []
-                ];
-                $i = 0;
-                foreach ($facilityResidents as $facilityResident) {
-                    if ($facilityResident['type_id'] === $facility['id']) {
-                        ++$i;
-                        $facilities[$facility['id']]['residents'][] = $facilityResident;
+                $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
+
+                foreach ($groupArray as $group) {
+                    $currentGroup = [
+                        'id' => $group['id'],
+                        'name' => $group['name'],
+                        'residents' => []
+                    ];
+                    $i = 0;
+                    foreach ($groupResidents as $groupResident) {
+                        if ($groupResident['type_id'] === $group['id']) {
+                            $groupResident['photo'] = $residentPhotoHelper->get($groupResident['id']) ?? null;
+
+                            ++$i;
+                            $currentGroup['residents'][] = $groupResident;
+                        }
+                        if ($i === $limit) {
+                            break;
+                        }
                     }
-                    if ($i === 3) {
-                        break;
-                    }
-                }
-            }
-        }
 
-        /** @var ApartmentRepository $apartmentRepo */
-        $apartmentRepo = $this->em->getRepository(Apartment::class);
-
-        $apartments = [];
-        $apartmentIds = null;
-        $apartmentList = $apartmentRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
-        if (!empty($apartmentList)) {
-            $apartmentIds = array_map(function(Apartment $item){return $item->getId();} , $apartmentList);
-            $apartmentArray = array_map(function(Apartment $item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $apartmentList);
-
-            $apartmentResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $apartmentIds);
-
-            foreach ($apartmentArray as $apartment) {
-                $apartments[$apartment['id']] = [
-                    'name' => $apartment['name'],
-                    'residents' => []
-                ];
-                $i = 0;
-                foreach ($apartmentResidents as $apartmentResident) {
-                    if ($apartmentResident['type_id'] === $apartment['id']) {
-                        ++$i;
-                        $apartments[$apartment['id']]['residents'][] = $apartmentResident;
-                    }
-                    if ($i === 3) {
-                        break;
+                    if(!empty($currentGroup['residents'])) {
+                        $groups[] = $currentGroup;
                     }
                 }
             }
+
+            $result[$strategy['title']] = $groups;
         }
 
-        /** @var RegionRepository $regionRepo */
-        $regionRepo = $this->em->getRepository(Region::class);
-
-        $regions = [];
-        $regionIds = null;
-        $regionList = $regionRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Region::class));
-        if (!empty($regionList)) {
-            $regionIds = array_map(function(Region $item){return $item->getId();} , $regionList);
-            $regionArray = array_map(function(Region $item){return ['id' => $item->getId(), 'name' => $item->getName()];} ,$regionList);
-
-            $regionResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_REGION, $regionIds);
-
-            foreach ($regionArray as $region) {
-                $regions[$region['id']] = [
-                    'name' => $region['name'],
-                    'residents' => []
-                ];
-                $i = 0;
-                foreach ($regionResidents as $regionResident) {
-                    if ($regionResident['type_id'] === $region['id']) {
-                        ++$i;
-                        $regions[$region['id']]['residents'][] = $regionResident;
-                    }
-                    if ($i === 3) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return ['facility' => $facilities, 'apartment' => $apartments, 'region' => $regions];
+        return $result;
     }
+
 
     /**
      * @param $type
