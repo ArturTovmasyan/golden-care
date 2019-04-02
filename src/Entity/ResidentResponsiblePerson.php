@@ -108,7 +108,7 @@ class ResidentResponsiblePerson
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="ResponsiblePersonRole", mappedBy="residentResponsiblePersons", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="ResponsiblePersonRole", mappedBy="residentResponsiblePersons", cascade={"persist"})
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get"
