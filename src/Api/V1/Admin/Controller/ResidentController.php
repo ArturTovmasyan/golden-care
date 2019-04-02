@@ -85,7 +85,7 @@ class ResidentController extends BaseController
             $residentService,
             [
                 'type' => $request->get('type'),
-                'type_id' => $request->get('type')
+                'type_id' => $request->get('type_id')
             ]
         );
     }
