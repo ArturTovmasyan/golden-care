@@ -45,7 +45,7 @@ class FacilityRoomService extends BaseService implements IGridService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         $vacant = false;
-        if (!empty($params) && !empty($params[0]['vacant']) && $params[0]['vacant'] === 1) {
+        if (!empty($params) && !empty($params[0]['vacant']) && (int)$params[0]['vacant'] === 1) {
             $vacant = true;
         }
 
