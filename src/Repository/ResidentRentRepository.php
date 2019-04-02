@@ -971,4 +971,43 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getEntityWithSources(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('rr')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rr.resident'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

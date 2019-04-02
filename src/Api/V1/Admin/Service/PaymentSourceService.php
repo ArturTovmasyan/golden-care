@@ -154,6 +154,29 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new PaymentSourceNotFoundException();
             }
 
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            $rents = $rentRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($rents)) {
+                /** @var ResidentRent $rent */
+                foreach ($rents as $rent) {
+                    if (!empty($rent->getSource())) {
+                        $sources = $rent->getSource();
+                        foreach ($sources as $key => $source) {
+                            if ($source['id'] === $id) {
+                                unset($sources[$key]);
+                                $changedSources = array_values($sources);
+                                $rent->setSource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($rent);
+                    }
+                }
+            }
+            
             $this->em->remove($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -184,6 +207,33 @@ class PaymentSourceService extends BaseService implements IGridService
 
             if (empty($paymentSources)) {
                 throw new PaymentSourceNotFoundException();
+            }
+
+            $ids = array_map(function($item){return $item->getId();} , $paymentSources);
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            $rents = $rentRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($rents)) {
+                foreach ($ids as $id) {
+                    /** @var ResidentRent $rent */
+                    foreach ($rents as $rent) {
+                        if (!empty($rent->getSource())) {
+                            $sources = $rent->getSource();
+                            foreach ($sources as $key => $source) {
+                                if ($source['id'] === $id) {
+                                    unset($sources[$key]);
+                                    $changedSources = array_values($sources);
+                                    $rent->setSource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($rent);
+                        }
+                    }
+                }
             }
 
             /**
