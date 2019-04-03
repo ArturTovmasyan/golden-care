@@ -42,7 +42,6 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "info",
  *              "sortable"   = false,
- *              "filterable" = false,
  *              "type"       = "json",
  *              "field"      = "info"
  *          }

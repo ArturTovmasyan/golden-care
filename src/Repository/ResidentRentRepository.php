@@ -40,6 +40,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     {
         $queryBuilder
             ->from(ResidentRent::class, 'rr')
+            ->addSelect('SC_PAYMENT_SOURCE_DECORATOR(rr.source) AS info')
             ->innerJoin(
                 Resident::class,
                 'r',

@@ -52,9 +52,10 @@ use App\Annotation\Grid;
  *              "field"      = "rr.notes"
  *          },
  *          {
- *              "id"         = "sources",
- *              "type"       = "string",
- *              "field"      = "rr.source"
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )

@@ -98,7 +98,7 @@ class Grid
                     self::FIELD_OPTION_ID               => null,
                     self::FIELD_OPTION_TYPE             => null,
                     self::FIELD_OPTION_SORTABLE         => true,
-                    self::FIELD_OPTION_FILTERABLE       => true,
+                    self::FIELD_OPTION_FILTERABLE       => false,
                     self::FIELD_OPTION_ORIGINAL         => null,
                     self::FIELD_OPTION_AVAILABLE_VALUES => null,
                     self::FIELD_OPTION_LINK             => null,
