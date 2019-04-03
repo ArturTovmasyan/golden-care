@@ -15,7 +15,7 @@ use App\Annotation\Grid;
  *
  * @ORM\Entity(repositoryClass="App\Repository\Assessment\CareLevelRepository")
  * @UniqueEntity(
- *     fields={"space", "title"},
+ *     fields={"careLevelGroup", "title"},
  *     errorPath="title",
  *     message="This title is already in use on that space.",
  *     groups={
