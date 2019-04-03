@@ -6827,6 +6827,12 @@ INSERT INTO `db_seniorcare_pp`.`tbl_medication` (`id_space`, `title`) VALUES   (
 INSERT INTO `db_seniorcare_pp`.`tbl_medication` (`id_space`, `title`) VALUES   (0,'Zytiga');
 INSERT INTO `db_seniorcare_pp`.`tbl_medication` (`id_space`, `title`) VALUES   (0,'Zyvox');
 
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Allergy and Immunology');
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Anesthesiology');
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Dermatology');
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Diagnostic Radiology');
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Emergency Medicine');
+INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Family Medicine');
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Internal Medicine');
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Endocrinology');
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Gastroenterology');
@@ -6852,4 +6858,3 @@ INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Surgery');
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Thoracic Surgery');
 INSERT INTO `db_seniorcare_pp`.`tbl_speciality` (`id_space`, `title`) VALUES   (0,'Urology');
-
