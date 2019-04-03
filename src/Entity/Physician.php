@@ -40,21 +40,6 @@ use JMS\Serializer\Annotation\Groups;
  *              "field"      = "p.address_2"
  *          },
  *          {
- *              "id"         = "office_phone",
- *              "type"       = "string",
- *              "field"      = "p.officePhone"
- *          },
- *          {
- *              "id"         = "fax",
- *              "type"       = "string",
- *              "field"      = "p.fax"
- *          },
- *          {
- *              "id"         = "emergency_phone",
- *              "type"       = "string",
- *              "field"      = "p.emergencyPhone"
- *          },
- *          {
  *              "id"         = "email",
  *              "type"       = "string",
  *              "field"      = "p.email"
@@ -268,67 +253,6 @@ class Physician
 
     /**
      * @var string
-     * @Assert\NotBlank(groups={
-     *     "api_admin_physician_add",
-     *     "api_admin_physician_edit"
-     * })
-     * @Assert\Regex(
-     *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
-     *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
-     *     groups={
-     *          "api_admin_physician_add",
-     *          "api_admin_physician_edit"
-     * })
-     * @ORM\Column(name="office_phone", type="string", length=20, nullable=false)
-     * @Groups({
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
-     * })
-     */
-    private $officePhone;
-
-    /**
-     * @var string
-     * @ORM\Column(name="fax", type="string", length=20, nullable=true)
-     * @Groups({
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
-     * })
-     * @Assert\Regex(
-     *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
-     *     message="Invalid fax number format. Valid format is (XXX) XXX-XXXX.",
-     *     groups={
-     *          "api_admin_physician_add",
-     *          "api_admin_physician_edit"
-     * })
-     */
-    private $fax;
-
-    /**
-     * @var string
-     * @ORM\Column(name="emergency_phone", type="string", length=20, nullable=true)
-     * @Groups({
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
-     * })
-     * @Assert\Regex(
-     *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
-     *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
-     *     groups={
-     *          "api_admin_physician_add",
-     *          "api_admin_physician_edit"
-     * })
-     */
-    private $emergencyPhone;
-
-    /**
-     * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_admin_physician_list",
@@ -356,6 +280,20 @@ class Physician
      * })
      */
     private $websiteUrl;
+
+    /**
+     * @ORM\OneToMany(targetEntity="PhysicianPhone", mappedBy="physician")
+     * @Assert\Valid(groups={
+     *     "api_admin_physician_add",
+     *     "api_admin_physician_edit"
+     * })
+     * @Groups({
+     *      "api_admin_physician_list",
+     *      "api_admin_physician_get",
+     *      "api_admin_resident_physician_list"
+     * })
+     */
+    private $phones;
 
     /**
      * @var ArrayCollection
@@ -413,6 +351,22 @@ class Physician
     public function setSalutation(Salutation $salutation): void
     {
         $this->salutation = $salutation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhones()
+    {
+        return $this->phones;
+    }
+
+    /**
+     * @param mixed $phones
+     */
+    public function setPhones($phones): void
+    {
+        $this->phones = $phones;
     }
 
     /**
@@ -482,30 +436,6 @@ class Physician
     /**
      * @return string
      */
-    public function getOfficePhone()
-    {
-        return $this->officePhone;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFax()
-    {
-        return $this->fax;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmergencyPhone()
-    {
-        return $this->emergencyPhone;
-    }
-
-    /**
-     * @return string
-     */
     public function getEmail()
     {
         return $this->email;
@@ -565,30 +495,6 @@ class Physician
     public function setAddress2($address_2)
     {
         $this->address_2 = $address_2;
-    }
-
-    /**
-     * @param string $officePhone
-     */
-    public function setOfficePhone($officePhone)
-    {
-        $this->officePhone = $officePhone;
-    }
-
-    /**
-     * @param string $fax
-     */
-    public function setFax($fax)
-    {
-        $this->fax = $fax;
-    }
-
-    /**
-     * @param string $emergencyPhone
-     */
-    public function setEmergencyPhone($emergencyPhone)
-    {
-        $this->emergencyPhone = $emergencyPhone;
     }
 
     /**

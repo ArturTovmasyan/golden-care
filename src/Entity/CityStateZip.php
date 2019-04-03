@@ -76,7 +76,6 @@ class CityStateZip
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",

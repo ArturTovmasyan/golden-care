@@ -544,9 +544,6 @@ INSERT INTO `db_seniorcare_migration`.`tbl_physician`
     `middle_name`,
     `address_1`,
     `address_2`,
-    `office_phone`,
-    `fax`,
-    `emergency_phone`,
     `email`,
     `website_url`
   )
@@ -561,13 +558,68 @@ SELECT 1,
        IF(`cc_old`.`people`.`Middle_Initial`!='', TRIM(REGEXP_REPLACE(`cc_old`.`people`.`Middle_Initial`, '\\s+', ' ')), '')  AS 'middle_name',
        IF(`cc_old`.`physicians`.`Address_1`!='', TRIM(REGEXP_REPLACE(`cc_old`.`physicians`.`Address_1`, '\\s+', ' ')), '')   AS 'address_1',
        IF(`cc_old`.`physicians`.`Address_2`!='', TRIM(REGEXP_REPLACE(`cc_old`.`physicians`.`Address_2`, '\\s+', ' ')), '')   AS 'address_2',
-       `cc_old`.`physicians`.`Office_Phone`                                   AS 'office_phone',
-       `cc_old`.`physicians`.`Fax`                                            AS 'fax',
-       `cc_old`.`physicians`.`Emergency_Phone`                                AS 'emergency_phone',
        IF(`cc_old`.`physicians`.`Email`!='', TRIM(REGEXP_REPLACE(`cc_old`.`physicians`.`Email`, '\\s+', ' ')), '')       AS 'email',
        IF(`cc_old`.`physicians`.`Website_URL`!='', TRIM(REGEXP_REPLACE(`cc_old`.`physicians`.`Website_URL`, '\\s+', ' ')), '') AS 'website_url'
 FROM `cc_old`.`physicians`
        INNER JOIN `cc_old`.`people` ON `cc_old`.`physicians`.`People_ID` = `cc_old`.`people`.`People_ID`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT `cc_old`.`physicians`.`Physician_ID`                              AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       4                                                                 AS 'type',
+       `cc_old`.`physicians`.`Office_Phone`                              AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `cc_old`.`physicians`
+       INNER JOIN `cc_old`.`people` ON `cc_old`.`physicians`.`People_ID` = `cc_old`.`people`.`People_ID`
+WHERE `cc_old`.`physicians`.`Office_Phone` IS NOT NULL;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT `cc_old`.`physicians`.`Physician_ID`                              AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       5                                                                 AS 'type',
+       `cc_old`.`physicians`.`Emergency_Phone`                           AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `cc_old`.`physicians`
+       INNER JOIN `cc_old`.`people` ON `cc_old`.`physicians`.`People_ID` = `cc_old`.`people`.`People_ID`
+WHERE `cc_old`.`physicians`.`Emergency_Phone` IS NOT NULL;
+;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT `cc_old`.`physicians`.`Physician_ID`                              AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       6                                                                 AS 'type',
+       `cc_old`.`physicians`.`Fax`                                       AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `cc_old`.`physicians`
+       INNER JOIN `cc_old`.`people` ON `cc_old`.`physicians`.`People_ID` = `cc_old`.`people`.`People_ID`
+WHERE `cc_old`.`physicians`.`Fax` IS NOT NULL;
 
 INSERT INTO `db_seniorcare_migration`.`tbl_physician`
   (
@@ -580,9 +632,6 @@ INSERT INTO `db_seniorcare_migration`.`tbl_physician`
     `middle_name`,
     `address_1`,
     `address_2`,
-    `office_phone`,
-    `fax`,
-    `emergency_phone`,
     `email`,
     `website_url`
   )
@@ -597,12 +646,62 @@ SELECT 1,
        IF(`alms`.`common_physician`.`middle_initial`!='', TRIM(REGEXP_REPLACE(`alms`.`common_physician`.`middle_initial`, '\\s+', ' ')), '') AS `middle_name`,
        IF(`alms`.`common_physician`.`address_1`!='', TRIM(REGEXP_REPLACE(`alms`.`common_physician`.`address_1`, '\\s+', ' ')), '')      AS `address_1`,
        IF(`alms`.`common_physician`.`address_2`!='', TRIM(REGEXP_REPLACE(`alms`.`common_physician`.`address_2`, '\\s+', ' ')), '')      AS `address_2`,
-       `alms`.`common_physician`.`office_phone`                                      AS `office_phone`,
-       `alms`.`common_physician`.`fax`                                               AS `fax`,
-       `alms`.`common_physician`.`emergency_phone`                                   AS `emergency_phone`,
        IF(`alms`.`common_physician`.`email`!='', TRIM(REGEXP_REPLACE(`alms`.`common_physician`.`email`, '\\s+', ' ')), '')          AS `email`,
        IF(`alms`.`common_physician`.`website_url`!='', TRIM(REGEXP_REPLACE(`alms`.`common_physician`.`website_url`, '\\s+', ' ')), '')    AS `website_url`
 FROM `alms`.`common_physician`;
+
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT (`alms`.`common_physician`.`id` + 10000)                          AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       4                                                                 AS 'type',
+       `alms`.`common_physician`.`office_phone`                          AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `alms`.`common_physician` WHERE `alms`.`common_physician`.`office_phone` IS NOT NULL;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT (`alms`.`common_physician`.`id` + 10000)                          AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       5                                                                 AS 'type',
+       `alms`.`common_physician`.`emergency_phone`                       AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `alms`.`common_physician` WHERE `alms`.`common_physician`.`emergency_phone` IS NOT NULL;
+;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_physician_phone`
+  (
+    `id_physician`,
+    `compatibility`,
+    `type`,
+    `number`,
+    `is_primary`,
+    `is_sms_enabled`
+  )
+SELECT (`alms`.`common_physician`.`id` + 10000)                          AS 'id_physician',
+       1                                                                 AS 'compatibility',
+       6                                                                 AS 'type',
+       `alms`.`common_physician`.`fax`                                   AS 'number',
+       0                                                                 AS 'is_primary',
+       0                                                                 AS 'is_sms_enabled'
+FROM `alms`.`common_physician` WHERE `alms`.`common_physician`.`fax` IS NOT NULL;
 
 ### Responsible Person
 INSERT INTO `db_seniorcare_migration`.`tbl_responsible_person`
@@ -2162,6 +2261,7 @@ CALL `db_seniorcare_migration`.ValidateAll();
 # Validate Phone numbers
 UPDATE `db_seniorcare_migration`.`tbl_resident_phone`           SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
 UPDATE `db_seniorcare_migration`.`tbl_responsible_person_phone` SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_physician_phone`          SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
 UPDATE `db_seniorcare_migration`.`tbl_user_phone`               SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
 
 UPDATE `db_seniorcare_migration`.`tbl_apartment`                SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
@@ -2172,10 +2272,6 @@ UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `fax`       
 
 UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
 UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
-
-UPDATE `db_seniorcare_migration`.`tbl_physician`                SET `office_phone`    = REGEXP_REPLACE(`office_phone`,    '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_physician`                SET `emergency_phone` = REGEXP_REPLACE(`emergency_phone`, '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_physician`                SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})', '($2) ($4)-($6)');
 
 
 ### Resident Photo

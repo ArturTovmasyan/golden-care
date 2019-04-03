@@ -63,7 +63,6 @@ class ResponsiblePerson
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
@@ -82,7 +81,6 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
@@ -101,7 +99,6 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
@@ -116,7 +113,6 @@ class ResponsiblePerson
      * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
@@ -132,7 +128,6 @@ class ResponsiblePerson
      * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
@@ -145,7 +140,6 @@ class ResponsiblePerson
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
@@ -157,7 +151,6 @@ class ResponsiblePerson
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
@@ -182,7 +175,6 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
@@ -204,7 +196,6 @@ class ResponsiblePerson
      * )
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get"
      * })
      */
@@ -221,7 +212,6 @@ class ResponsiblePerson
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_event_list",
@@ -238,7 +228,6 @@ class ResponsiblePerson
      * })
      * @Groups({
      *      "api_admin_responsible_person_list",
-     *     "api_admin_responsible_person_list_by_space",
      *      "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })

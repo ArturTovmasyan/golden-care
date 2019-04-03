@@ -375,15 +375,13 @@ class PhysicianController extends BaseController
                 'last_name'         => $request->get('last_name'),
                 'address_1'         => $request->get('address_1'),
                 'address_2'         => $request->get('address_2'),
-                'office_phone'      => $request->get('office_phone'),
-                'fax'               => $request->get('fax'),
-                'emergency_phone'   => $request->get('emergency_phone'),
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id')
+                'speciality_id'     => $request->get('speciality_id'),
+                'phones'            => $request->get('phones')
             ]
         );
 
@@ -468,15 +466,13 @@ class PhysicianController extends BaseController
                 'last_name'         => $request->get('last_name'),
                 'address_1'         => $request->get('address_1'),
                 'address_2'         => $request->get('address_2'),
-                'office_phone'      => $request->get('office_phone'),
-                'fax'               => $request->get('fax'),
-                'emergency_phone'   => $request->get('emergency_phone'),
                 'email'             => $request->get('email'),
                 'website_url'       => $request->get('website_url'),
                 'csz_id'            => $request->get('csz_id'),
                 'space_id'          => $request->get('space_id'),
                 'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id')
+                'speciality_id'     => $request->get('speciality_id'),
+                'phones'            => $request->get('phones')
             ]
         );
 
