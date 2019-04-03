@@ -280,9 +280,9 @@ class Assessment
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|null
      */
-    public function getAssessmentRows(): ArrayCollection
+    public function getAssessmentRows(): ?ArrayCollection
     {
         return $this->assessmentRows;
     }
