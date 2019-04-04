@@ -128,6 +128,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             }
 
             $residentResponsiblePerson = new ResidentResponsiblePerson();
+            $residentResponsiblePerson->setSortOrder(0);
             $residentResponsiblePerson->setResident($resident);
             $residentResponsiblePerson->setResponsiblePerson($responsiblePerson);
             $residentResponsiblePerson->setRelationship($relationship);
