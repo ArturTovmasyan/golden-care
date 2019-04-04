@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\Exception\RelationshipNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
-use App\Api\V1\Common\Service\Exception\ResponsiblePersonRoleNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Relationship;
 use App\Entity\Resident;
@@ -344,5 +343,44 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
         }
 
         return $this->getRelatedData(ResidentResponsiblePerson::class, $entities);
+    }
+
+    /**
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function reorder(array $params)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (!empty($params) && !empty($params['responsible_persons'])) {
+                /** @var ResidentResponsiblePersonRepository $repo */
+                $repo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+                foreach ($params['responsible_persons'] as $idx => $value) {
+                    /** @var ResidentResponsiblePerson $rp */
+                    $rp = $repo->getOne(
+                        $this->grantService->getCurrentSpace(),
+                        $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class),
+                        $value['id']
+                    );
+
+                    if (!empty($rp)) {
+                        $rp->setSortOrder($idx);
+                        $this->em->persist($rp);
+                    }
+                }
+
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
     }
 }

@@ -44,6 +44,12 @@ class ResidentResponsiblePerson
     private $id;
 
     /**
+     * @var int
+     * @ORM\Column(name="sort_order", type="integer", nullable=false, options={"default" = 0})
+     */
+    private $sortOrder;
+
+    /**
      * @var Resident
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentResponsiblePersons")
      * @ORM\JoinColumns({
@@ -217,6 +223,22 @@ class ResidentResponsiblePerson
     {
         $this->roles->removeElement($role);
         $role->removeResidentResponsiblePerson($this);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder(): ?int
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder(?int $sortOrder): void
+    {
+        $this->sortOrder = $sortOrder;
     }
 
 }

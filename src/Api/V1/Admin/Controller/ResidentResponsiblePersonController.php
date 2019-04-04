@@ -471,4 +471,28 @@ class ResidentResponsiblePersonController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/reorder", name="api_admin_resident_responsible_person_reorder", methods={"POST"})
+     *
+     * @Grant(grant="persistence-resident-resident_responsible_person", level="EDIT")
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentResponsiblePersonService $residentResponsiblePersonService
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function reorderAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    {
+        $residentResponsiblePersonService->reorder(
+            [
+                'responsible_persons' => $request->get('responsible_persons')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }

@@ -133,9 +133,11 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
         }
 
         $qb
+            ->addOrderBy('rrp.sortOrder', 'ASC')
             ->addOrderBy("CONCAT(
             CASE WHEN rps IS NOT NULL THEN CONCAT(rps.title, ' ') ELSE '' END, 
-            rp.firstName, ' ', rp.lastName)", 'ASC');
+            rp.firstName, ' ', rp.lastName)", 'ASC')
+        ;
 
         return $qb
             ->getQuery()

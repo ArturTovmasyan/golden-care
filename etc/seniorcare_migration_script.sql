@@ -952,12 +952,14 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_responsible_person`
     `id`,
     `id_resident`,
     `id_responsible_person`,
-    `id_relationship`
+    `id_relationship`,
+    `sort_order`
   )
 SELECT `cc_old`.`residentresponsibleperson`.`Res_RP_ID`             AS 'id',
        `cc_old`.`residentresponsibleperson`.`Resident_ID`           AS 'id_resident',
        `cc_old`.`residentresponsibleperson`.`Responsible_Person_ID` AS 'id_responsible_person',
-       `cc_old`.`residentresponsibleperson`.`Relationship_ID`       AS 'id_relationship'
+       `cc_old`.`residentresponsibleperson`.`Relationship_ID`       AS 'id_relationship',
+       0                                                            AS 'sort_order'
 FROM `cc_old`.`residentresponsibleperson`
 WHERE `cc_old`.`residentresponsibleperson`.`Relationship_ID` <= 69;
 
@@ -966,12 +968,14 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_responsible_person`
     `id`,
     `id_resident`,
     `id_responsible_person`,
-    `id_relationship`
+    `id_relationship`,
+    `sort_order`
   )
 SELECT `cc_old`.`residentresponsibleperson`.`Res_RP_ID`               AS 'id',
        `cc_old`.`residentresponsibleperson`.`Resident_ID`             AS 'id_resident',
        `cc_old`.`residentresponsibleperson`.`Responsible_Person_ID`   AS 'id_responsible_person',
-       (`cc_old`.`residentresponsibleperson`.`Relationship_ID` + 100) AS 'id_relationship'
+       (`cc_old`.`residentresponsibleperson`.`Relationship_ID` + 100) AS 'id_relationship',
+       0                                                              AS 'sort_order'
 FROM `cc_old`.`residentresponsibleperson`
 WHERE `cc_old`.`residentresponsibleperson`.`Relationship_ID` >= 70
   AND `cc_old`.`residentresponsibleperson`.`Relationship_ID` <= 73;
@@ -1008,12 +1012,14 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_responsible_person`
     `id`,
     `id_resident`,
     `id_responsible_person`,
-    `id_relationship`
+    `id_relationship`,
+    `sort_order`
   )
 SELECT (`alms`.`base_resident_responsible_person`.`id` + 10000)                    AS 'id',
        (`alms`.`base_resident_responsible_person`.`id_resident` + 10000)           AS 'id_resident',
        (`alms`.`base_resident_responsible_person`.`id_responsible_person` + 10000) AS 'id_physician',
-       `alms`.`base_resident_responsible_person`.`id_relationship`                 AS 'id_relationship'
+       `alms`.`base_resident_responsible_person`.`id_relationship`                 AS 'id_relationship',
+       `alms`.`base_resident_responsible_person`.`order_no`                        AS 'sort_order'
 FROM `alms`.`base_resident_responsible_person`
 WHERE `alms`.`base_resident_responsible_person`.`id_relationship` <= 69;
 
@@ -1022,12 +1028,14 @@ INSERT INTO `db_seniorcare_migration`.`tbl_resident_responsible_person`
     `id`,
     `id_resident`,
     `id_responsible_person`,
-    `id_relationship`
+    `id_relationship`,
+    `sort_order`
   )
 SELECT (`alms`.`base_resident_responsible_person`.`id` + 10000)                    AS 'id',
        (`alms`.`base_resident_responsible_person`.`id_resident` + 10000)           AS 'id_resident',
        (`alms`.`base_resident_responsible_person`.`id_responsible_person` + 10000) AS 'id_physician',
-       (`alms`.`base_resident_responsible_person`.`id_relationship` + 200)         AS 'id_relationship'
+       (`alms`.`base_resident_responsible_person`.`id_relationship` + 200)         AS 'id_relationship',
+       `alms`.`base_resident_responsible_person`.`order_no`                        AS 'sort_order'
 FROM `alms`.`base_resident_responsible_person`
 WHERE `alms`.`base_resident_responsible_person`.`id_relationship` >= 70
   AND `alms`.`base_resident_responsible_person`.`id_relationship` <= 72;
