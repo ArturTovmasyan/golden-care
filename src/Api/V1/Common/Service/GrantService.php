@@ -341,7 +341,7 @@ class GrantService
     private function load()
     {
         $this->config = Yaml::parseFile(
-            $this->container->get('kernel')->getRootDir() . self::$GRANT_CONFIG_PATH
+            $this->container->get('kernel')->getProjectDir() . self::$GRANT_CONFIG_PATH
         );
 
         /** @var RouterInterface $router */

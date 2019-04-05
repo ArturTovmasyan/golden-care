@@ -86,7 +86,7 @@ class ReportService
         $this->mailer = $mailer;
         $this->security = $security;
         $this->grantService = $grantService;
-        $this->config = Yaml::parseFile($this->container->get('kernel')->getRootDir() . self::$REPORT_CONFIG_PATH);
+        $this->config = Yaml::parseFile($this->container->get('kernel')->getProjectDir() . self::$REPORT_CONFIG_PATH);
     }
 
     public function list()
