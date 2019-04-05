@@ -297,6 +297,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
 
         return $qb
             ->groupBy('rrp.id')
+            ->orderBy('rrp.sortOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -359,6 +360,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
 
         return $qb
             ->groupBy('rrp.id')
+            ->orderBy('rrp.sortOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
