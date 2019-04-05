@@ -76,8 +76,11 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setIhc($params['ihc']);
             $entity->setIl($params['il']);
             $entity->setPhysician($params['physician']);
+            $entity->setPhysicianOptional($params['physician_optional']);
             $entity->setResponsiblePerson($params['responsible_person']);
+            $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
+            $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
             $entity->setSpace($space);
 
@@ -130,8 +133,11 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setIhc($params['ihc']);
             $entity->setIl($params['il']);
             $entity->setPhysician($params['physician']);
+            $entity->setPhysicianOptional($params['physician_optional']);
             $entity->setResponsiblePerson($params['responsible_person']);
+            $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
+            $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
             $entity->setSpace($space);
 

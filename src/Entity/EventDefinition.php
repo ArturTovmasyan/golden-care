@@ -60,14 +60,29 @@ use App\Annotation\Grid;
  *              "field"      = "ed.physician"
  *          },
  *          {
+ *              "id"         = "physician_optional",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.physicianOptional"
+ *          },
+ *          {
  *              "id"         = "responsible_person",
  *              "type"       = "boolean",
  *              "field"      = "ed.responsiblePerson"
  *          },
  *          {
+ *              "id"         = "responsible_person_optional",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.responsiblePersonOptional"
+ *          },
+ *          {
  *              "id"         = "responsible_person_multi",
  *              "type"       = "boolean",
  *              "field"      = "ed.responsiblePersonMulti"
+ *          },
+ *          {
+ *              "id"         = "responsible_person_multi_optional",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.responsiblePersonMultiOptional"
  *          },
  *          {
  *              "id"         = "additional_date",
@@ -190,6 +205,17 @@ class EventDefinition
 
     /**
      * @var bool
+     * @ORM\Column(name="show_physician_optional", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_grid",
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $physicianOptional;
+
+    /**
+     * @var bool
      * @ORM\Column(name="show_responsible_person", type="boolean", options={"default" = 0})
      * @Groups({
      *     "api_admin_event_definition_grid",
@@ -201,6 +227,17 @@ class EventDefinition
 
     /**
      * @var bool
+     * @ORM\Column(name="show_responsible_person_optional", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_grid",
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $responsiblePersonOptional;
+
+    /**
+     * @var bool
      * @ORM\Column(name="show_responsible_person_multi", type="boolean", options={"default" = 0})
      * @Groups({
      *     "api_admin_event_definition_grid",
@@ -209,6 +246,17 @@ class EventDefinition
      * })
      */
     protected $responsiblePersonMulti;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_responsible_person_multi_optional", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_grid",
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $responsiblePersonMultiOptional;
 
     /**
      * @var bool
@@ -369,6 +417,54 @@ class EventDefinition
     public function setResponsiblePersonMulti(bool $responsiblePersonMulti): void
     {
         $this->responsiblePersonMulti = $responsiblePersonMulti;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPhysicianOptional(): bool
+    {
+        return $this->physicianOptional;
+    }
+
+    /**
+     * @param bool $physicianOptional
+     */
+    public function setPhysicianOptional(bool $physicianOptional): void
+    {
+        $this->physicianOptional = $physicianOptional;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResponsiblePersonOptional(): bool
+    {
+        return $this->responsiblePersonOptional;
+    }
+
+    /**
+     * @param bool $responsiblePersonOptional
+     */
+    public function setResponsiblePersonOptional(bool $responsiblePersonOptional): void
+    {
+        $this->responsiblePersonOptional = $responsiblePersonOptional;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResponsiblePersonMultiOptional(): bool
+    {
+        return $this->responsiblePersonMultiOptional;
+    }
+
+    /**
+     * @param bool $responsiblePersonMultiOptional
+     */
+    public function setResponsiblePersonMultiOptional(bool $responsiblePersonMultiOptional): void
+    {
+        $this->responsiblePersonMultiOptional = $responsiblePersonMultiOptional;
     }
 
     /**

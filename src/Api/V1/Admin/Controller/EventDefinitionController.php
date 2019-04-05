@@ -307,8 +307,11 @@ class EventDefinitionController extends BaseController
                 'ihc' => $request->get('ihc'),
                 'il' => $request->get('il'),
                 'physician' => $request->get('physician'),
+                'physician_optional' => $request->get('physician_optional'),
                 'responsible_person' => $request->get('responsible_person'),
+                'responsible_person_optional' => $request->get('responsible_person_optional'),
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
+                'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
                 'space_id' => $request->get('space_id')
             ]
@@ -384,8 +387,11 @@ class EventDefinitionController extends BaseController
                 'ihc' => $request->get('ihc'),
                 'il' => $request->get('il'),
                 'physician' => $request->get('physician'),
+                'physician_optional' => $request->get('physician_optional'),
                 'responsible_person' => $request->get('responsible_person'),
+                'responsible_person_optional' => $request->get('responsible_person_optional'),
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
+                'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
                 'space_id' => $request->get('space_id')
             ]
