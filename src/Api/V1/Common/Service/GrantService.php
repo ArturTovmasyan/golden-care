@@ -19,7 +19,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class GrantService
 {
-    private static $GRANT_CONFIG_PATH = '/../src/Api/V1/Common/Resources/config/grants.yaml';
+    private static $GRANT_CONFIG_PATH = '/src/Api/V1/Common/Resources/config/grants.yaml';
 
     /** @var ContainerInterface */
     private $container;
