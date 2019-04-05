@@ -3,11 +3,13 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
 use App\Entity\ResidentPhysician;
 use App\Model\GroupType;
 use App\Model\Report\PhysicianFull;
 use App\Model\Report\PhysicianSimple;
+use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentPhysicianRepository;
 use App\Repository\ResidentRepository;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -124,7 +126,16 @@ class PhysicianReportService extends BaseService
 
         $data = [];
         $count = [];
+        $physicianPhones = [];
         if (!empty($physicians)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+
             foreach ($physicians as $physician) {
                 foreach ($residents as $resident) {
                     if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
@@ -146,6 +157,7 @@ class PhysicianReportService extends BaseService
         $report->setData($data);
         $report->setCount($count);
         $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setPhysicianPhones($physicianPhones);
 
         return $report;
     }

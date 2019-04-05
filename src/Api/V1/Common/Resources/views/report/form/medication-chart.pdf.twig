@@ -179,7 +179,14 @@
                             <tr style="border: none; margin: 0 !important;">
                                 <td colspan="34" style="border: none; font-size: 12px !important;">
                                     <div style="float:left; width: 400px;">
-                                        <p>Physician: Dr. {{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}&nbsp;{{ medication.physicianFirstName }}</p>
+                                        <p>
+                                            Physician: Dr. {{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}&nbsp;
+                                            {% for physicianPhone in data.physicianPhones %}
+                                                {% if physicianPhone.pId == medication.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
+                                                    {{ physicianPhone.number }}<br/>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </p>
                                         <div style="margin-top: 10px !important;">
                                             {% if data.allergens[resident.id] is defined %}
                                                 {% set i = 0 %}

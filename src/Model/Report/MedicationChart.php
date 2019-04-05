@@ -20,6 +20,11 @@ class MedicationChart extends Base
     private $residents = [];
 
     /**
+     * @var array
+     */
+    private $physicianPhones = [];
+
+    /**
      * MealMonitor constructor.
      */
     public function __construct()
@@ -79,6 +84,22 @@ class MedicationChart extends Base
         foreach ($allergens as $allergen) {
             $this->allergens[$allergen['residentId']][] = $allergen;
         }
+    }
+
+    /**
+     * @param $physicianPhones
+     */
+    public function setPhysicianPhones($physicianPhones): void
+    {
+        $this->physicianPhones = $physicianPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicianPhones(): ?array
+    {
+        return $this->physicianPhones;
     }
 }
 

@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
@@ -18,6 +19,7 @@ use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\ShowerSkinInspection;
+use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentRepository;
@@ -254,10 +256,22 @@ class FormReportService extends BaseService
 
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
 
+        $physicianPhones = [];
+        if (!empty($medications)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $medications);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+        }
+
         $report = new MedicationChart();
         $report->setResidents($residents);
         $report->setMedications($medications);
         $report->setAllergens($allergens);
+        $report->setPhysicianPhones($physicianPhones);
 
         return $report;
     }

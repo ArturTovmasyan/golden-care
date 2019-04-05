@@ -15,6 +15,11 @@ class ResidentDetailedRoster extends Base
     /**
      * @var array
      */
+    private $physicianPhones = [];
+
+    /**
+     * @var array
+     */
     private $responsiblePersonPhones = [];
 
     /**
@@ -92,6 +97,22 @@ class ResidentDetailedRoster extends Base
         foreach ($physicians as $physician) {
             $this->residents[$physician['residentId']]['physicians'][] = $physician;
         }
+    }
+
+    /**
+     * @param $physicianPhones
+     */
+    public function setPhysicianPhones($physicianPhones): void
+    {
+        $this->physicianPhones = $physicianPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicianPhones(): ?array
+    {
+        return $this->physicianPhones;
     }
 
     /**

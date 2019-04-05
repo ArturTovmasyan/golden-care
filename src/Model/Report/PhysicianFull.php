@@ -12,6 +12,11 @@ class PhysicianFull extends Base
     /**
      * @var array
      */
+    private $physicianPhones = [];
+
+    /**
+     * @var array
+     */
     private $count = [];
 
     /**
@@ -65,6 +70,22 @@ class PhysicianFull extends Base
     public function getStrategy()
     {
         return $this->strategy;
+    }
+
+    /**
+     * @param $physicianPhones
+     */
+    public function setPhysicianPhones($physicianPhones): void
+    {
+        $this->physicianPhones = $physicianPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicianPhones(): ?array
+    {
+        return $this->physicianPhones;
     }
 }
 

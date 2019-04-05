@@ -58,14 +58,24 @@
                 <br/> {{ datum.city }} {{ datum.state }} {{ datum.zip }}
             </td>
             <td>
-                {% if datum.officePhone is defined and datum.officePhone %}
-                    {{ datum.officePhone }}
-                {% endif %}
+                {% set a = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
+                        {% set a = a + 1 %}
+                        {{ physicianPhone.number }}<br/>
+                    {% endif %}
+                {% endfor %}
+                {% if a == 0 %}N/A{% endif %}
             </td>
             <td>
-                {% if datum.emergencyPhone is defined and datum.emergencyPhone %}
-                    {{ datum.emergencyPhone }}
-                {% endif %}
+                {% set b = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                        {% set b = b + 1 %}
+                        {{ physicianPhone.number }}<br/>
+                    {% endif %}
+                {% endfor %}
+                {% if b == 0 %}N/A{% endif %}
             </td>
             <td>
                 {% if datum.email is defined and datum.email %}
@@ -73,9 +83,14 @@
                 {% endif %}
             </td>
             <td>
-                {% if datum.fax is defined and datum.fax %}
-                    {{ datum.fax }}
-                {% endif %}
+                {% set c = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_FAX') %}
+                        {% set c = c + 1 %}
+                        {{ physicianPhone.number }}<br/>
+                    {% endif %}
+                {% endfor %}
+                {% if c == 0 %}N/A{% endif %}
             </td>
             <td>
                 {% if datum.websiteUrl is defined and datum.websiteUrl %}

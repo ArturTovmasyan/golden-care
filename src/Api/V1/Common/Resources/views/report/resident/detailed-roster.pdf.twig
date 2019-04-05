@@ -52,9 +52,16 @@
                             {% if physician.firstName and physician.lastName %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}<br/>{% endif %}
                             {% if physician.address %}{{ physician.address }}<br/>{% endif %}
                             {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}<br/>{% endif %}
-                            {% if physician.emergencyPhone is defined and physician.emergencyPhone %}<b>E: {{ physician.emergencyPhone }}</b><br/>{% endif %}
-                            {% if physician.officePhone is defined and physician.officePhone %}O: {{ physician.officePhone }}<br/>{% endif %}
-                            {% if physician.fax is defined and physician.fax %}Fax: {{ physician.fax}}{% endif %}
+                            {% for physicianPhone in data.physicianPhones %}
+                                {% if physicianPhone.pId == physician.pId %}
+                                    {% if physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                                        <b>{{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}</b>
+                                    {% else %}
+                                        {{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}
+                                    {% endif %}
+                                    <br/>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     {% endfor %}
                 {% endif %}

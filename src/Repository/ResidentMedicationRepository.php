@@ -222,6 +222,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
                     r.id as residentId,
                     p.firstName as physicianFirstName,
                     p.lastName as physicianLastName,
+                    p.id as pId,
                     rm.prescriptionNumber as prescriptionNumber,
                     rm.treatment as medicationTreatment,
                     rm.discontinued as medicationDiscont,

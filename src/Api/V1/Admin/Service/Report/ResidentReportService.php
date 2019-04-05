@@ -101,7 +101,7 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getResponsiblePerson()->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
@@ -189,13 +189,24 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getResponsiblePerson()->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
             $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
 
             $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
+        }
+
+        $physicianPhones = [];
+        if (!empty($physicians)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
         }
 
         $report = new FaceSheet();
@@ -206,6 +217,7 @@ class ResidentReportService extends BaseService
         $report->setResponsiblePersons($responsiblePersons);
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
+        $report->setPhysicianPhones($physicianPhones);
 
         return $report;
     }
@@ -252,22 +264,22 @@ class ResidentReportService extends BaseService
 
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
 
-//        $physicianPhones = [];
-//        if (!empty($physicians)) {
-//            $physicianIds = array_map(function($item){return $item->getId();} , $physicians);
-//            $physicianIds = array_unique($physicianIds);
-//
-//            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
-//            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
-//
-//            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
-//        }
+        $physicianPhones = [];
+        if (!empty($physicians)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+        }
 
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getResponsiblePerson()->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
@@ -279,6 +291,7 @@ class ResidentReportService extends BaseService
         $report = new ResidentDetailedRoster();
         $report->setResidents($residentsById);
         $report->setPhysicians($physicians);
+        $report->setPhysicianPhones($physicianPhones);
         $report->setResponsiblePersons($responsiblePersons);
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
 
@@ -427,7 +440,7 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function($item){return $item->getId();} , $responsiblePersons);
+            $responsiblePersonIds = array_map(function($item){return $item->getResponsiblePerson()->getId();} , $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
