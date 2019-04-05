@@ -1,8 +1,7 @@
 knp_snappy:
     pdf:
         enabled:    true
-        binary:     '%kernel.root_dir%/../wkhtmltopdf.exe'
-#        binary:     '%env(WKHTMLTOPDF_PATH)%'
+        binary:     '%env(WKHTMLTOPDF_PATH)%'
         options:
             lowquality: false
             encoding: utf-8
@@ -12,6 +11,5 @@ knp_snappy:
             footer-center: 'Intermotion Technology Confidential, Page [page]'
     image:
         enabled:    true
-        binary:     '%kernel.root_dir%/../wkhtmltoimage.exe'
-#        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
+        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
         options:    []

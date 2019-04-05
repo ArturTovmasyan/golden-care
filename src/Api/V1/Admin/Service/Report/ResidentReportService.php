@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Diet;
+use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentAllergen;
@@ -24,6 +25,7 @@ use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
+use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentDiagnosisRepository;
@@ -108,6 +110,17 @@ class ResidentReportService extends BaseService
             $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
         }
 
+        $physicianPhones = [];
+        if (!empty($physicians)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+        }
+
         $report = new Profile();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
@@ -116,6 +129,7 @@ class ResidentReportService extends BaseService
         $report->setResponsiblePersons($responsiblePersons);
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
+        $report->setPhysicianPhones($physicianPhones);
         $report->setEvents($events);
         $report->setRents($rents);
 
@@ -237,6 +251,18 @@ class ResidentReportService extends BaseService
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+
+//        $physicianPhones = [];
+//        if (!empty($physicians)) {
+//            $physicianIds = array_map(function($item){return $item->getId();} , $physicians);
+//            $physicianIds = array_unique($physicianIds);
+//
+//            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+//            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+//
+//            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+//        }
+
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $responsiblePersonPhones = [];

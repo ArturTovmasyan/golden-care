@@ -180,9 +180,39 @@
                     <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
                         <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
                             <div style="float: left; width: 40%"><b style="font-size: 12px !important;">{% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName }}&nbsp;{{ physician.lastName }}{% else %}N/A{% endif %}</b></div>
-                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.officePhone %}{{ physician.officePhone }}{% else %}N/A{% endif %}</b></div>
-                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.emergencyPhone %}{{ physician.emergencyPhone }}{% else %}N/A{% endif %}</b></div>
-                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if physician.fax %}{{ physician.fax }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">
+                                    {% set c = 0 %}
+                                    {% for physicianPhone in data.physicianPhones %}
+                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_WORK') %}
+                                            {% set c = c + 1 %}
+                                            {{ physicianPhone.number }}<br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if c == 0 %}N/A{% endif %}
+                                </b>
+                            </div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">
+                                    {% set d = 0 %}
+                                    {% for physicianPhone in data.physicianPhones %}
+                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                                            {% set d = d + 1 %}
+                                            {{ physicianPhone.number }}<br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if d == 0 %}N/A{% endif %}
+                                </b>
+                            </div>
+                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">
+                                    {% set f = 0 %}
+                                    {% for physicianPhone in data.physicianPhones %}
+                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_FAX') %}
+                                            {% set f = f + 1 %}
+                                            {{ physicianPhone.number }}<br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if f == 0 %}N/A{% endif %}
+                                </b>
+                            </div>
                         </td>
                     </tr>
                     <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">

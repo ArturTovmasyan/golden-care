@@ -12,6 +12,7 @@ class Profile extends Base
      * @var array
      */
     private $residents = [];
+    private $physicianPhones = [];
     private $responsiblePersonPhones = [];
 
     /**
@@ -119,6 +120,22 @@ class Profile extends Base
         foreach ($physicians as $physician) {
             $this->residents[$physician['residentId']]['physicians'][] = $physician;
         }
+    }
+
+    /**
+     * @param $physicianPhones
+     */
+    public function setPhysicianPhones($physicianPhones): void
+    {
+        $this->physicianPhones = $physicianPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhysicianPhones(): ?array
+    {
+        return $this->physicianPhones;
     }
 
     /**

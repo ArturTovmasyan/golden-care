@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
@@ -10,10 +11,12 @@ use App\Api\V1\Common\Service\Exception\SpecialityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Physician;
+use App\Entity\PhysicianPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
 use App\Repository\CityStateZipRepository;
+use App\Repository\PhysicianPhoneRepository;
 use App\Repository\PhysicianRepository;
 use App\Repository\SalutationRepository;
 use App\Repository\SpecialityRepository;
@@ -122,15 +125,13 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setLastName($params['last_name'] ?? '');
             $physician->setAddress1($params['address_1'] ?? '');
             $physician->setAddress2($params['address_2'] ?? '');
-            $physician->setOfficePhone($params['office_phone'] ?? '');
-            $physician->setFax($params['fax'] ?? '');
-            $physician->setEmergencyPhone($params['emergency_phone'] ?? '');
             $physician->setEmail($params['email'] ?? '');
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setSpace($space);
             $physician->setCsz($csz);
             $physician->setSalutation($salutation);
             $physician->setSpeciality($speciality);
+            $physician->setPhones($this->savePhones($physician, $params['phones'] ?? []));
 
             $this->validate($physician, null, ['api_admin_physician_add']);
 
@@ -216,15 +217,13 @@ class PhysicianService extends BaseService implements IGridService
             $physician->setLastName($params['last_name'] ?? '');
             $physician->setAddress1($params['address_1'] ?? '');
             $physician->setAddress2($params['address_2'] ?? '');
-            $physician->setOfficePhone($params['office_phone'] ?? '');
-            $physician->setFax($params['fax'] ?? '');
-            $physician->setEmergencyPhone($params['emergency_phone'] ?? '');
             $physician->setEmail($params['email'] ?? '');
             $physician->setWebsiteUrl($params['website_url'] ?? '');
             $physician->setSpace($space);
             $physician->setCsz($csz);
             $physician->setSalutation($salutation);
             $physician->setSpeciality($speciality);
+            $physician->setPhones($this->savePhones($physician, $params['phones'] ?? []));
 
             $this->validate($physician, null, ['api_admin_physician_edit']);
 
@@ -236,6 +235,57 @@ class PhysicianService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Physician $physician
+     * @param array $phones
+     * @return array
+     */
+    private function savePhones(Physician $physician, array $phones = []) : ?array
+    {
+        if($physician->getId() !== null) {
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $oldPhones = $physicianPhoneRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physician);
+
+            foreach ($oldPhones as $phone) {
+                $this->em->remove($phone);
+            }
+        }
+
+        $hasPrimary = false;
+
+        $physicianPhones = [];
+
+        foreach($phones as $phone) {
+            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+
+            $physicianPhone = new PhysicianPhone();
+            $physicianPhone->setPhysician($physician);
+            $physicianPhone->setCompatibility($phone['compatibility'] ?? null);
+            $physicianPhone->setType($phone['type']);
+            $physicianPhone->setNumber($phone['number']);
+            $physicianPhone->setPrimary($primary);
+            $physicianPhone->setSmsEnabled($smsEnabled);
+            $physicianPhone->setExtension($phone['extension']);
+
+            if ($physicianPhone->isPrimary()) {
+                if ($hasPrimary) {
+                    throw new PhoneSinglePrimaryException();
+                }
+
+                $hasPrimary = true;
+            }
+
+            $this->em->persist($physicianPhone);
+
+            $physicianPhones[] = $physicianPhone;
+        }
+
+        return $physicianPhones;
     }
 
 
