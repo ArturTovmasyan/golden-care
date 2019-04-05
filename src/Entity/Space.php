@@ -13,9 +13,16 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_space")
  * @ORM\Entity(repositoryClass="App\Repository\SpaceRepository")
- * @UniqueEntity(fields="name", message="Sorry, this name is already in use.", groups={
- *     "api_admin_space_add", "api_admin_space_edit"
- * })
+ * @UniqueEntity(
+ *     fields={"name"},
+ *     errorPath="name",
+ *     message="This name is already in use.",
+ *     groups={
+ *          "api_admin_space_add",
+ *          "api_admin_space_edit"
+ *     }
+ * )
+ * @Grid(
  *     api_admin_space_grid={
  *          {
  *              "id"         = "id",
@@ -26,13 +33,9 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "name",
  *              "type"       = "string",
- *              "field"      = "s.name"
+ *              "field"      = "s.name",
+ *              "link"       = ":edit"
  *          },
- *          {
- *              "id"         = "created_at",
- *              "type"       = "date",
- *              "field"      = "s.createdAt"
- *          }
  *     }
  * )
  */
