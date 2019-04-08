@@ -2,6 +2,8 @@
 /composer.lock
 /symfony.lock
 
+/config/packages/knp_snappy.yaml
+
 ###> symfony/framework-bundle ###
 /.env
 /public/bundles/
