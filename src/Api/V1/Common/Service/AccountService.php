@@ -119,7 +119,7 @@ class AccountService extends BaseService
         /** @var User $user **/
         $user = $this->em->getRepository(User::class)->findOneBy(['activationHash' => $params['hash']]);
 
-        if (is_null($user)) {
+        if ($user === null) {
             throw new InvalidRecoveryLinkException();
         }
 
@@ -144,14 +144,14 @@ class AccountService extends BaseService
     /**
      * @param string $email
      * @param string $baseUrl
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function forgotPassword(string $email, string $baseUrl)
     {
         /** @var User $user **/
         $user = $this->em->getRepository(User::class)->findOneByEmail($email);
 
-        if (is_null($user)) {
+        if ($user === null) {
             return;
         }
 
@@ -182,7 +182,7 @@ class AccountService extends BaseService
         /** @var User $user **/
         $user = $this->em->getRepository(User::class)->findOneBy(['passwordRecoveryHash' => $params['hash']]);
 
-        if (is_null($user)) {
+        if ($user === null) {
             throw new InvalidRecoveryLinkException();
         }
 
@@ -198,7 +198,7 @@ class AccountService extends BaseService
             $user->setPasswordRecoveryHash();
             $this->em->persist($user);
 
-            $this->validate($user, null, ["api_account_reset_password"]);
+            $this->validate($user, null, ['api_account_reset_password']);
 
             $this->em->flush();
 
