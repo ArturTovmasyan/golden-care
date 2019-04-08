@@ -134,6 +134,26 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     /**
+     * @param array $criteria
+     * @return array
+     */
+    public function getUserSpaceAndOwnerCriteria(array $criteria)
+    {
+        if (1 == $criteria['owner']) {
+            return $this->createQueryBuilder('u')
+                ->andWhere('u.space = :space')
+                ->setParameter('space', $criteria['space'])
+                ->andWhere('u.owner = :owner')
+                ->setParameter('owner', $criteria['owner'])
+                ->getQuery()
+                ->getResult()
+                ;
+        }
+
+        return [];
+    }
+
+    /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $ids

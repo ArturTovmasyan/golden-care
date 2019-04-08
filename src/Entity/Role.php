@@ -21,6 +21,16 @@ use App\Annotation\Grid as Grid;
  *          "api_admin_role_edit"
  *     }
  * )
+ * @UniqueEntity(
+ *     fields={"default"},
+ *     repositoryMethod="getRoleByDefaultCriteria",
+ *     errorPath="default",
+ *     message="Default role is already in use.",
+ *     groups={
+ *          "api_admin_role_add",
+ *          "api_admin_role_edit"
+ *     }
+ * )
  * @Grid(
  *     api_admin_role_grid={
  *          {
@@ -196,5 +206,4 @@ class Role
     {
         $this->default = $default;
     }
-
 }

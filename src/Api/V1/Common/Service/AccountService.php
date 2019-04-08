@@ -10,6 +10,8 @@ use App\Entity\User;
 use App\Entity\UserLog;
 use App\Entity\UserPhone;
 use App\Model\Log;
+use App\Model\Phone;
+use App\Repository\RoleRepository;
 
 /**
  * Class AccountService
@@ -21,19 +23,29 @@ class AccountService extends BaseService
      * Register User
      *
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @param string $baseUrl
+     * @throws \Exception
      */
     public function signup(array $params, string $baseUrl)
     {
         try {
             $this->em->getConnection()->beginTransaction();
 
-            /** @var Role $defaultRole **/
-            $defaultRole = $this->em->getRepository(Role::class)->getDefaultRole();
+            /** @var RoleRepository $roleRepo */
+            $roleRepo = $this->em->getRepository(Role::class);
 
-            if($defaultRole === null) {
+            /** @var Role $defaultRole **/
+            $defaultRole = $roleRepo->getDefaultRole();
+
+            if ($defaultRole === null) {
                 throw new DefaultRoleNotFoundException();
             }
+
+            // create space
+            $space = new Space();
+            $space->setName($params['organization']);
+            $this->validate($space, null, ['api_account_signup']);
+            $this->em->persist($space);
 
             // create user
             $user = new User();
@@ -51,34 +63,30 @@ class AccountService extends BaseService
             $user->setConfirmPassword($params['re_password']);
             $user->setPassword($encoded);
             $user->setActivationHash();
-
+            $user->setOwner(true);
+            $user->setSpace($space);
             $user->setPhone($params['phone']);
 
             // validate user
-            $this->validate($user, null, ["api_account_signup"]);
+            $this->validate($user, null, ['api_account_signup']);
 
             if ($defaultRole) {
                 $user->getRoleObjects()->add($defaultRole);
             }
 
+            $this->em->persist($user);
+
             if($params['phone']) { // TODO: review
                 $userPhone = new UserPhone();
                 $userPhone->setUser($user);
                 $userPhone->setCompatibility( null);
-                $userPhone->setType(\App\Model\Phone::TYPE_OFFICE);
+                $userPhone->setType(Phone::TYPE_OFFICE);
                 $userPhone->setNumber($user->getPhone());
                 $userPhone->setPrimary(true);
                 $userPhone->setSmsEnabled(false);
+
+                $this->em->persist($userPhone);
             }
-
-            $this->em->persist($user);
-            $this->em->persist($userPhone);
-
-            // create space
-            $space = new Space();
-            $space->setName($params['organization']);
-            $this->validate($space, null, ["api_account_signup"]);
-            $this->em->persist($space);
 
             // create log
             $log = new UserLog();
@@ -86,7 +94,7 @@ class AccountService extends BaseService
             $log->setUser($user);
             $log->setType(UserLog::LOG_TYPE_AUTHENTICATION);
             $log->setLevel(Log::LOG_LEVEL_LOW);
-            $log->setMessage(sprintf("User %s (%s) registered in ", $user->getFullName(), $user->getUsername()));
+            $log->setMessage(sprintf('User %s (%s) registered in ', $user->getFullName(), $user->getUsername()));
             $this->em->persist($log);
 
             $this->em->flush();

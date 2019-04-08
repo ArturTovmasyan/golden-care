@@ -59,6 +59,24 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     /**
+     * @param array $criteria
+     * @return array
+     */
+    public function getRoleByDefaultCriteria(array $criteria)
+    {
+        if (1 == $criteria['default']) {
+            return $this->createQueryBuilder('r')
+                ->andWhere('r.default = :default')
+                ->setParameter('default', $criteria['default'])
+                ->getQuery()
+                ->getResult()
+                ;
+        }
+
+        return [];
+    }
+
+    /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param null $mappedBy

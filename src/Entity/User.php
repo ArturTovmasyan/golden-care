@@ -24,6 +24,16 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *     "api_admin_user_add",
  *     "api_account_signup"
  * })
+ * @UniqueEntity(
+ *     fields={"space", "owner"},
+ *     repositoryMethod="getUserSpaceAndOwnerCriteria",
+ *     errorPath="owner",
+ *     message="Owner is already in use for this space.",
+ *     groups={
+ *          "api_admin_user_add",
+ *          "api_admin_user_edit"
+ *     }
+ * )
  * @Grid(
  *     api_admin_user_grid={
  *          {
@@ -62,6 +72,11 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *              "id"         = "last_activity_at",
  *              "type"       = "datetime",
  *              "field"      = "u.lastActivityAt"
+ *          },
+ *          {
+ *              "id"         = "owner",
+ *              "type"       = "boolean",
+ *              "field"      = "u.owner"
  *          }
  *     }
  * )
@@ -399,6 +414,22 @@ class User implements UserInterface
     private $permissions;
 
     /**
+     * @var bool
+     * @ORM\Column(name="is_owner", type="boolean", options={"owner" = 0})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_admin_user_get",
+     *     "api_profile_me"
+     * })
+     * @Assert\GreaterThanOrEqual(value=0, groups={
+     *      "api_admin_user_add",
+     *      "api_admin_user_edit",
+     * })
+     */
+    protected $owner;
+
+    /**
      * Space constructor.
      */
     public function __construct()
@@ -657,7 +688,7 @@ class User implements UserInterface
      */
     public function setActivationHash(): void
     {
-        $this->activationHash = hash('sha256', $this->email . time());;
+        $this->activationHash = hash('sha256', $this->email . time());
     }
 
     /**
@@ -817,4 +848,19 @@ class User implements UserInterface
         $this->permissions = $permissions;
     }
 
+    /**
+     * @return bool
+     */
+    public function isOwner(): ?bool
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param bool $owner
+     */
+    public function setOwner(?bool $owner): void
+    {
+        $this->owner = $owner;
+    }
 }

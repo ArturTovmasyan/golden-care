@@ -297,6 +297,7 @@ class UserController extends BaseController
                 'roles'       => $request->get('roles'),
                 'grants'      => $request->get('grants'),
                 'space_id'    => $request->get('space_id'),
+                'owner'    => $request->get('owner'),
             ]
         );
 
@@ -370,6 +371,7 @@ class UserController extends BaseController
                 'roles'       => $request->get('roles'),
                 'grants'      => $request->get('grants'),
                 'space_id'    => $request->get('space_id'),
+                'owner'    => $request->get('owner'),
             ]
         );
 

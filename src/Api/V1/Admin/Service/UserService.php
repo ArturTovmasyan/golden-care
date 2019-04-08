@@ -88,6 +88,7 @@ class UserService extends BaseService implements IGridService
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
+            $user->setOwner((bool) $params['owner']);
             $user->setGrants($params['grants']);
             $user->setSpace($space);
 
@@ -163,6 +164,7 @@ class UserService extends BaseService implements IGridService
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
             $user->setEnabled((bool) $params['enabled']);
+            $user->setOwner((bool) $params['owner']);
             $user->setGrants($params['grants']);
             $user->setSpace($space);
 
