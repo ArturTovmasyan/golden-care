@@ -19,6 +19,7 @@ use App\Repository\Assessment\AssessmentRepository;
 use App\Repository\Assessment\AssessmentRowRepository;
 use App\Repository\Assessment\FormRepository;
 use App\Repository\ResidentRepository;
+use App\Util\ArrayUtil;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -96,7 +97,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $rows = $params['rows'] ?? [];
+            $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
             $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
 
@@ -168,7 +169,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
-            $rows = $params['rows'] ?? [];
+            $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
 
             /** @var FormRepository $formRepo */
             $formRepo = $this->em->getRepository(Form::class);

@@ -321,11 +321,26 @@ class Assessment
      */
     public function getVirtualRows()
     {
-        $rows = [];
+        $categories = [];
 
-        /** @var AssessmentRow $formCategory */
+        /** @var AssessmentRow $assessmentRow */
         foreach ($this->assessmentRows as $assessmentRow) {
-            $rows[] = $assessmentRow->getRow()->getId();
+            if(!array_key_exists($assessmentRow->getRow()->getCategory()->getId(), $categories)) {
+                $categories[$assessmentRow->getRow()->getCategory()->getId()] = [
+                    'multi' => $assessmentRow->getRow()->getCategory()->isMultiItem(),
+                    'rows' => []
+                ];
+            }
+            $categories[$assessmentRow->getRow()->getCategory()->getId()]['rows'][] = $assessmentRow->getRow()->getId();
+        }
+
+        $rows = [];
+        foreach ($categories as $category) {
+            if($category['multi']) {
+                $rows[] = $category['rows'];
+            } else {
+                array_push($rows, ...$category['rows']);
+            }
         }
 
         return $rows;
