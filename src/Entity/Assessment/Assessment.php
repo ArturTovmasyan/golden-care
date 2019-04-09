@@ -6,6 +6,7 @@ use App\Entity\Resident;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -280,9 +281,9 @@ class Assessment
     }
 
     /**
-     * @return ArrayCollection|null
+     * @return Collection|null
      */
-    public function getAssessmentRows(): ?ArrayCollection
+    public function getAssessmentRows(): ?Collection
     {
         return $this->assessmentRows;
     }
