@@ -261,7 +261,7 @@ class ResidentMedication
      * @ORM\Column(name="notes", type="text", length=512, nullable=true)
      * @Assert\Length(
      *      max = 512,
-     *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Instructions cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
