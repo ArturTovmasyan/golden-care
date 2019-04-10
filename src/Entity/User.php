@@ -415,7 +415,7 @@ class User implements UserInterface
 
     /**
      * @var bool
-     * @ORM\Column(name="is_owner", type="boolean", options={"owner" = 0})
+     * @ORM\Column(name="is_owner", type="boolean", options={"default" = 0})
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",

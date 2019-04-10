@@ -3,10 +3,15 @@ namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\DefaultRoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\InvalidRecoveryLinkException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SystemErrorException;
+use App\Api\V1\Common\Service\Exception\UserAlreadyInvitedException;
+use App\Api\V1\Common\Service\Exception\UserAlreadyJoinedException;
+use App\Api\V1\Common\Service\Exception\UserNotYetInvitedException;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Entity\UserInvite;
 use App\Entity\UserLog;
 use App\Entity\UserPhone;
 use App\Model\Log;
@@ -210,353 +215,203 @@ class AccountService extends BaseService
         }
     }
 
-//    /**
-//     * @param $spaceId
-//     * @param $email
-//     * @param $roleId
-//     * @throws \Doctrine\DBAL\ConnectionException
-//     */
-//    public function invite($spaceId, $email, $roleId)
-//    {
-//        /**
-//         * @var User $user|null
-//         * @var Space $space|null
-//         * @var Role $role|null
-//         */
-//        $user  = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
-//        $space = $this->em->getRepository(Space::class)->find($spaceId);
-//        $role  = $this->em->getRepository(Role::class)->find($roleId);
-//
-//        if (is_null($space)) {
-//            throw new SpaceNotFoundException();
-//        }
-//
-//        if (is_null($role)) {
-//            throw new RoleNotFoundException();
-//        }
-//
-//        try {
-//            $this->em->getConnection()->beginTransaction();
-//
-//            // create user if not exist
-//            if (is_null($user)) {
-//                $user = new User();
-//                $user->setEmail($email);
-//                $user->setLastActivityAt(new \DateTime());
-//                $user->setEnabled(false);
-//                $user->setCompleted(false);
-//
-//                // validate user
-//                $this->validate($user, null, ["api_admin_user_invite"]);
-//
-//                $this->em->persist($user);
-//            }
-//
-//            /** @var SpaceUser $spaceUser|null **/
-//            $spaceUser = $this->em
-//                ->getRepository(SpaceUser::class)
-//                ->findOneBy(
-//                    [
-//                        'space' => $space,
-//                        'user'  => $user,
-//                    ]
-//                );
-//
-//            if (!is_null($spaceUser) && $spaceUser->isAccepted()) {
-//                throw new UserAlreadyJoinedException();
-//            }
-//
-//            // create space user relation if not exist
-//            if (is_null($spaceUser)) {
-//                $spaceUser = new SpaceUser();
-//                $spaceUser->setUser($user);
-//                $spaceUser->setSpace($space);
-//                $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_INVITED);
-//
-//                if (!$user->isCompleted()) {
-//                    $spaceUser->generateConfirmationToken();
-//                }
-//
-//                $this->em->persist($spaceUser);
-//
-//                // create space user default roles
-//                /** @var Role $defaultRole **/
-//                $defaultRole = $this->em->getRepository(Role::class)->getSpaceDefaultRole();
-//
-//                if ($defaultRole) {
-//                    $spaceUserRole = new SpaceUserRole();
-//                    $spaceUserRole->setUser($user);
-//                    $spaceUserRole->setRole($defaultRole);
-//                    $spaceUserRole->setSpace($space);
-//                    $this->em->persist($spaceUserRole);
-//                }
-//            }
-//
-//            // send email to customer
-//            if (!$spaceUser->isAccepted()) {
-//                $joinUrl = false;
-//
-//                if (!$user->isCompleted()) {
-//                    /** @todo change to real url from frontend **/
-//                    $joinUrl = 'http://localhost:4200';
-//                }
-//
-//                $this->mailer->inviteUser($user, $joinUrl);
-//            }
-//
-//            // create log
-//            $log = new UserLog();
-//            $log->setCreatedAt(new \DateTime());
-//            $log->setUser($user);
-//            $log->setSpace($space);
-//            $log->setType(UserLog::LOG_TYPE_INVITATION);
-//            $log->setLevel(Log::LOG_LEVEL_LOW);
-//            $log->setMessage(sprintf("User %s (%s) invited to join space ", $user->getFullName(), $user->getUsername()));
-//            $this->em->persist($log);
-//
-//            $this->em->flush();
-//            $this->em->getConnection()->commit();
-//        } catch (\Exception $e) {
-//            $this->em->getConnection()->rollBack();
-//
-//            throw $e;
-//        }
-//    }
-//
-//    /**
-//     * @param $spaceId
-//     * @throws \Doctrine\DBAL\ConnectionException
-//     */
-//    public function acceptInvitation($spaceId)
-//    {
-//        /**
-//         * @var User $user
-//         * @var Space $space|null
-//         * @var Role $role|null
-//         */
-//        $user  = $this->security->getToken()->getUser();
-//        $space = $this->em->getRepository(Space::class)->find($spaceId);
-//
-//        if (is_null($space)) {
-//            throw new SpaceNotFoundException();
-//        }
-//
-//        if (!$user->isCompleted()) {
-//            throw new UserNotFoundException();
-//        }
-//
-//        try {
-//            $this->em->getConnection()->beginTransaction();
-//
-//            /** @var SpaceUser $spaceUser|null **/
-//            $spaceUser = $this->em
-//                ->getRepository(SpaceUser::class)
-//                ->findOneBy(
-//                    [
-//                        'space' => $space,
-//                        'user'  => $user,
-//                    ]
-//                );
-//
-//            if (is_null($spaceUser)) {
-//                throw new SpaceUserNotFoundException();
-//            }
-//
-//            if ($spaceUser->isAccepted()) {
-//                throw new UserAlreadyJoinedException();
-//            }
-//
-//            if (!empty($spaceUser->getConfirmationToken())) {
-//                throw new UserHaventConfirmationTokenException();
-//            }
-//
-//            $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
-//            $this->em->persist($spaceUser);
-//
-//            // create log
-//            $log = new UserLog();
-//            $log->setCreatedAt(new \DateTime());
-//            $log->setUser($user);
-//            $log->setSpace($space);
-//            $log->setType(UserLog::LOG_TYPE_ACCEPT_INVITATION);
-//            $log->setLevel(Log::LOG_LEVEL_LOW);
-//            $log->setMessage(sprintf("User %s (%s) accept invitation for space", $user->getFullName(), $user->getUsername()));
-//            $this->em->persist($log);
-//
-//            $this->em->flush();
-//            $this->em->getConnection()->commit();
-//        } catch (\Exception $e) {
-//            $this->em->getConnection()->rollBack();
-//
-//            throw $e;
-//        }
-//    }
-//
-//    /**
-//     * @param $spaceId
-//     * @throws \Doctrine\DBAL\ConnectionException
-//     */
-//    public function rejectInvitation($spaceId)
-//    {
-//        /**
-//         * @var User $user
-//         * @var Space $space|null
-//         * @var Role $role|null
-//         */
-//        $user  = $this->security->getToken()->getUser();
-//        $space = $this->em->getRepository(Space::class)->find($spaceId);
-//
-//        if (is_null($space)) {
-//            throw new SpaceNotFoundException();
-//        }
-//
-//        if (!$user->isCompleted()) {
-//            throw new UserNotFoundException();
-//        }
-//
-//        try {
-//            $this->em->getConnection()->beginTransaction();
-//
-//            /** @var SpaceUser $spaceUser|null **/
-//            $spaceUser = $this->em
-//                ->getRepository(SpaceUser::class)
-//                ->findOneBy(
-//                    [
-//                        'space' => $space,
-//                        'user'  => $user,
-//                    ]
-//                );
-//
-//            if (is_null($spaceUser)) {
-//                throw new SpaceUserNotFoundException();
-//            }
-//
-//            if ($spaceUser->isAccepted()) {
-//                throw new UserAlreadyJoinedException();
-//            }
-//
-//            $this->em->remove($spaceUser);
-//
-//            // remove all roles
-//            $spaceUserRoles = $this->em
-//                ->getRepository(SpaceUserRole::class)
-//                ->findBy(
-//                    [
-//                        'space' => $space,
-//                        'user'  => $user,
-//                    ]
-//                );
-//
-//            foreach ($spaceUserRoles as $spaceUserRole) {
-//                $this->em->remove($spaceUserRole);
-//            }
-//
-//            // create log
-//            $log = new UserLog();
-//            $log->setCreatedAt(new \DateTime());
-//            $log->setUser($user);
-//            $log->setSpace($space);
-//            $log->setType(UserLog::LOG_TYPE_REJECT_INVITATION);
-//            $log->setLevel(Log::LOG_LEVEL_LOW);
-//            $log->setMessage(sprintf("User %s (%s) reject invitation for space", $user->getFullName(), $user->getUsername()));
-//            $this->em->persist($log);
-//
-//            $this->em->flush();
-//            $this->em->getConnection()->commit();
-//        } catch (\Exception $e) {
-//            $this->em->getConnection()->rollBack();
-//
-//            throw $e;
-//        }
-//    }
-//
-//    /**
-//     * @param $spaceId
-//     * @param $params
-//     * @throws \Doctrine\DBAL\ConnectionException
-//     */
-//    public function completeInvitation($spaceId, $params)
-//    {
-//        /**
-//         * @var User $user
-//         * @var Space $space|null
-//         */
-//        $user  = $this->em->getRepository(User::class)->findOneBy(['email' => $params['email']]);
-//        $space = $this->em->getRepository(Space::class)->find($spaceId);
-//
-//        if (is_null($user)) {
-//            throw new UserNotFoundException();
-//        }
-//
-//        if (is_null($space)) {
-//            throw new SpaceNotFoundException();
-//        }
-//
-//        try {
-//            $this->em->getConnection()->beginTransaction();
-//
-//            /** @var SpaceUser $spaceUser|null **/
-//            $spaceUser = $this->em
-//                ->getRepository(SpaceUser::class)
-//                ->findOneBy(
-//                    [
-//                        'space' => $space,
-//                        'user'  => $user,
-//                    ]
-//                );
-//
-//            if (is_null($spaceUser)) {
-//                throw new SpaceUserNotFoundException();
-//            }
-//
-//            if ($spaceUser->isAccepted()) {
-//                throw new UserAlreadyJoinedException();
-//            }
-//
-//            if (empty($params['token']) || $params['token'] != $spaceUser->getConfirmationToken()) {
-//                throw new InvalidConfirmationTokenException();
-//            }
-//
-//            // update spaceUser
-//            $spaceUser->cleanConfirmationToken();
-//            $spaceUser->setStatus(\App\Model\SpaceUserRole::STATUS_ACCEPTED);
-//            $this->em->persist($spaceUser);
-//
-//            // update user if not completed
-//            if (!$user->isCompleted()) {
-//                $user->setFirstName($params['first_name']);
-//                $user->setLastName($params['last_name']);
-//                $user->setUsername(strtolower($params['first_name']) . time());
-//                $user->setLastActivityAt(new \DateTime());
-//                $user->setEnabled(true);
-//                $user->setCompleted(true);
-//
-//                // encode password
-//                $encoded = $this->encoder->encodePassword($user, $params['password']);
-//                $user->setPassword($encoded);
-//
-//                // validate user
-//                $this->validate($user, null, ["api_space_user_complete"]);
-//
-//                $this->em->persist($user);
-//            }
-//
-//            // create log
-//            $log = new UserLog();
-//            $log->setCreatedAt(new \DateTime());
-//            $log->setUser($user);
-//            $log->setSpace($space);
-//            $log->setType(UserLog::LOG_TYPE_ACCEPT_INVITATION);
-//            $log->setLevel(Log::LOG_LEVEL_LOW);
-//            $log->setMessage(sprintf("User %s (%s) accept invitation for space", $user->getFullName(), $user->getUsername()));
-//            $this->em->persist($log);
-//
-//            $this->em->flush();
-//            $this->em->getConnection()->commit();
-//        } catch (\Exception $e) {
-//            $this->em->getConnection()->rollBack();
-//
-//            throw $e;
-//        }
-//    }
+    /**
+     * @param $spaceId
+     * @param $email
+     * @param $roles
+     * @throws \Exception
+     */
+    public function invite($spaceId, $email, $roles)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /**
+             * @var UserInvite $userInvite|null
+             * @var Space $space|null
+             */
+            $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['email' => $email]);
+            $space = $this->em->getRepository(Space::class)->find($spaceId);
+
+            if ($userInvite !== null) {
+                throw new UserAlreadyInvitedException();
+            }
+
+            if ($space === null) {
+                throw new SpaceNotFoundException();
+            }
+
+            $userInvite = new UserInvite();
+            $userInvite->setEmail($email);
+            $userInvite->setToken();
+            $userInvite->setSpace($space);
+
+            if(\count($roles) > 0) {
+                $userInvite->getRoleObjects()->clear();
+
+                foreach ($roles as $roleId) {
+                    /** @var Role $role */
+                    $role = $this->em->getRepository(Role::class)->find($roleId);
+                    if($role) {
+                        $userInvite->getRoleObjects()->add($role);
+                    }
+                }
+            }
+
+            // validate user
+            $this->validate($userInvite, null, ['api_admin_user_invite']);
+
+            $this->em->persist($userInvite);
+
+            /** @todo change to real url from frontend **/
+            $joinUrl = 'http://localhost:4200';
+            $this->mailer->inviteUser($email, $joinUrl);
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser(null);
+            $log->setSpace($space);
+            $log->setType(UserLog::LOG_TYPE_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf('User %s invited to join space ', $email));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $token
+     * @param array $params
+     * @throws \Exception
+     */
+    public function acceptInvitation($token, array $params)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /**
+             * @var UserInvite $userInvite
+             * @var User $user
+             */
+            $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['token' => $token]);
+
+            if ($userInvite === null) {
+                throw new UserNotYetInvitedException();
+            }
+
+            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $userInvite->getEmail()]);
+
+            if ($user !== null) {
+                throw new UserAlreadyJoinedException();
+            }
+
+            // create user
+            $user = new User();
+            $user->setSpace($userInvite->getSpace());
+            $user->setFirstName($params['first_name']);
+            $user->setLastName($params['last_name']);
+            $user->setUsername(strtolower($params['last_name']) . time());
+            $user->setEmail($userInvite->getEmail());
+            $user->setLastActivityAt(new \DateTime());
+            $user->setEnabled(true);
+            $user->setCompleted(true);
+
+            // encode password
+            $encoded = $this->encoder->encodePassword($user, $params['password']);
+            $user->setPlainPassword($params['password']);
+            $user->setConfirmPassword($params['re_password']);
+            $user->setPassword($encoded);
+            $user->setActivationHash();
+            $user->setOwner(false);
+            $user->setPhone($params['phone']);
+
+            // validate user
+            $this->validate($user, null, ['api_account_signup']);
+
+            if(\count($userInvite->getRoleObjects()) > 0) {
+                $user->getRoleObjects()->clear();
+
+                foreach ($userInvite->getRoleObjects() as $role) {
+                        $user->getRoleObjects()->add($role);
+                }
+            }
+
+            $this->em->persist($user);
+
+            if($params['phone']) { // TODO: review
+                $userPhone = new UserPhone();
+                $userPhone->setUser($user);
+                $userPhone->setCompatibility( null);
+                $userPhone->setType(Phone::TYPE_OFFICE);
+                $userPhone->setNumber($user->getPhone());
+                $userPhone->setPrimary(true);
+                $userPhone->setSmsEnabled(false);
+
+                $this->em->persist($userPhone);
+            }
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser($user);
+            $log->setSpace($user->getSpace());
+            $log->setType(UserLog::LOG_TYPE_ACCEPT_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf('User %s (%s) accept invitation for space', $user->getFullName(), $user->getUsername()));
+            $this->em->persist($log);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @throws \Exception
+     */
+    public function rejectInvitation($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /**
+             * @var UserInvite $userInvite
+             */
+            $userInvite = $this->em->getRepository(UserInvite::class)->find($id);
+
+            if ($userInvite === null) {
+                throw new UserNotYetInvitedException();
+            }
+
+            // create log
+            $log = new UserLog();
+            $log->setCreatedAt(new \DateTime());
+            $log->setUser(null);
+            $log->setSpace($userInvite->getSpace());
+            $log->setType(UserLog::LOG_TYPE_REJECT_INVITATION);
+            $log->setLevel(Log::LOG_LEVEL_LOW);
+            $log->setMessage(sprintf('User %s reject invitation for space', $userInvite->getEmail()));
+            $this->em->persist($log);
+
+            $this->em->remove($userInvite);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }
