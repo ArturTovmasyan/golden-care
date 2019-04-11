@@ -108,9 +108,7 @@ class UserInviteService extends BaseService implements IGridService
 
             $this->em->persist($userInvite);
 
-            /** @todo change to real url from frontend **/
-//            $joinUrl = 'http://localhost:4200';
-            $joinUrl = $urlGeneratorInterface->generate('api_account_user_invite_accept', [$userInvite->getToken()]);
+            $joinUrl = $urlGeneratorInterface->generate('api_account_user_invite_accept', ['token' => $userInvite->getToken()], $urlGeneratorInterface::ABSOLUTE_URL);
             $this->mailer->inviteUser($email, $joinUrl);
 
             // create log
@@ -125,6 +123,8 @@ class UserInviteService extends BaseService implements IGridService
 
             $this->em->flush();
             $this->em->getConnection()->commit();
+
+            $insert_id = $userInvite->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -141,9 +141,9 @@ class UserInviteService extends BaseService implements IGridService
     public function rejectInvitation($id): void
     {
         try {
-            /**
-             * @var UserInvite $userInvite
-             */
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var UserInvite $userInvite */
             $userInvite = $this->em->getRepository(UserInvite::class)->find($id);
 
             if ($userInvite === null) {
