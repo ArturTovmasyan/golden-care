@@ -36,6 +36,52 @@ use App\Annotation\Grant as Grant;
 class UserInviteController extends BaseController
 {
     /**
+     * @api {get} /api/v1.0/admin/user/invite/grid Get UserInvites Grid
+     * @apiVersion 1.0.0
+     * @apiName Get UserInvites Grid
+     * @apiGroup Admin User Invite
+     * @apiDescription This function is used to listing user invites
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Int}     id     The unique identifier of the userInvite
+     * @apiSuccess {String}  email  The email of the userInvite
+     * @apiSuccess {Object}  space  The space of the userInvite
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          "page": "1",
+     *          "per_page": 10,
+     *          "total": 5,
+     *          "data": [
+     *              {
+     *                  "id": 1,
+     *                  "email": "test@gmail.com",
+     *                  "space": "alms"
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_user_invite_grid", methods={"GET"})
+     *
+     * @param Request $request
+     * @param UserInviteService $userInviteService
+     * @return JsonResponse|PdfResponse
+     * @throws \ReflectionException
+     */
+    public function gridAction(Request $request, UserInviteService $userInviteService)
+    {
+        return $this->respondGrid(
+            $request,
+            UserInvite::class,
+            'api_admin_user_invite_grid',
+            $userInviteService
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/user/invite Get UserInvites
      * @apiVersion 1.0.0
      * @apiName Get UserInvites
@@ -168,6 +214,7 @@ class UserInviteController extends BaseController
         $id = $userInviteService->invite(
             $request->get('space_id'),
             $request->get('email'),
+            $request->get('owner'),
             $request->get('roles'),
             $request->getSchemeAndHttpHost()
         );

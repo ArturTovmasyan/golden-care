@@ -60,12 +60,13 @@ class UserInviteService extends BaseService implements IGridService
     /**
      * @param $spaceId
      * @param $email
+     * @param $owner
      * @param $roles
      * @param $baseUrl
      * @return int|null
      * @throws \Exception
      */
-    public function invite($spaceId, $email, $roles, $baseUrl) : ?int
+    public function invite($spaceId, $email, $owner, $roles, $baseUrl) : ?int
     {
         $insert_id = null;
         try {
@@ -89,6 +90,7 @@ class UserInviteService extends BaseService implements IGridService
             $userInvite = new UserInvite();
             $userInvite->setEmail($email);
             $userInvite->setToken();
+            $userInvite->setOwner($owner);
             $userInvite->setSpace($space);
 
             if(\count($roles) > 0) {

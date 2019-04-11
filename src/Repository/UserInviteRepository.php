@@ -114,4 +114,24 @@ class UserInviteRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param array $criteria
+     * @return array
+     */
+    public function getUserInviteSpaceAndOwnerCriteria(array $criteria)
+    {
+        if (1 == $criteria['owner']) {
+            return $this->createQueryBuilder('ui')
+                ->andWhere('ui.space = :space')
+                ->setParameter('space', $criteria['space'])
+                ->andWhere('ui.owner = :owner')
+                ->setParameter('owner', $criteria['owner'])
+                ->getQuery()
+                ->getResult()
+                ;
+        }
+
+        return [];
+    }
 }

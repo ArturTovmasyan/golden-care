@@ -16,6 +16,15 @@ use App\Annotation\Grid as Grid;
  * @UniqueEntity(fields="email", message="This email address was already in use.", groups={
  *     "api_admin_user_invite"
  * })
+ * @UniqueEntity(
+ *     fields={"space", "owner"},
+ *     repositoryMethod="getUserInviteSpaceAndOwnerCriteria",
+ *     errorPath="owner",
+ *     message="Owner is already invited for this space.",
+ *     groups={
+ *          "api_admin_user_invite"
+ *     }
+ * )
  * @Grid(
  *     api_admin_user_invite_grid={
  *          {
@@ -28,6 +37,11 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "email",
  *              "type"       = "string",
  *              "field"      = "u.email"
+ *          },
+ *          {
+ *              "id"         = "owner",
+ *              "type"       = "boolean",
+ *              "field"      = "u.owner"
  *          }
  *     }
  * )
@@ -106,6 +120,20 @@ class UserInvite
      * )
      */
     private $roles;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="is_owner", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_user_invite_grid",
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
+     * })
+     * @Assert\GreaterThanOrEqual(value=0, groups={
+     *      "api_admin_user_invite"
+     * })
+     */
+    protected $owner;
 
     /**
      * UserInvite constructor.
@@ -197,4 +225,20 @@ class UserInvite
     {
         return $this->roles;
     }
+    /**
+     * @return bool
+     */
+    public function isOwner(): ?bool
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param bool $owner
+     */
+    public function setOwner(?bool $owner): void
+    {
+        $this->owner = $owner;
+    }
+
 }

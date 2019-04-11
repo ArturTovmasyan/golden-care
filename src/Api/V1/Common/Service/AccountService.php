@@ -246,6 +246,7 @@ class AccountService extends BaseService
             $user->setLastName($params['last_name']);
             $user->setUsername(strtolower($params['last_name']) . time());
             $user->setEmail($userInvite->getEmail());
+            $user->setOwner($userInvite->isOwner());
             $user->setLastActivityAt(new \DateTime());
             $user->setEnabled(true);
             $user->setCompleted(true);
@@ -256,11 +257,10 @@ class AccountService extends BaseService
             $user->setConfirmPassword($params['re_password']);
             $user->setPassword($encoded);
             $user->setActivationHash();
-            $user->setOwner(false);
             $user->setPhone($params['phone']);
 
             // validate user
-            $this->validate($user, null, ['api_account_signup']);
+            $this->validate($user, null, ['api_admin_user_add']);
 
             if(\count($userInvite->getRoleObjects()) > 0) {
                 $user->getRoleObjects()->clear();
