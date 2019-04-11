@@ -61,11 +61,11 @@ class UserInviteService extends BaseService implements IGridService
      * @param $spaceId
      * @param $email
      * @param $roles
-     * @param UrlGeneratorInterface $urlGeneratorInterface
+     * @param $baseUrl
      * @return int|null
      * @throws \Exception
      */
-    public function invite($spaceId, $email, $roles, UrlGeneratorInterface $urlGeneratorInterface) : ?int
+    public function invite($spaceId, $email, $roles, $baseUrl) : ?int
     {
         $insert_id = null;
         try {
@@ -108,8 +108,7 @@ class UserInviteService extends BaseService implements IGridService
 
             $this->em->persist($userInvite);
 
-            $joinUrl = $urlGeneratorInterface->generate('api_account_user_invite_accept', ['token' => $userInvite->getToken()], $urlGeneratorInterface::ABSOLUTE_URL);
-            $this->mailer->inviteUser($email, $joinUrl);
+            $this->mailer->inviteUser($email, $baseUrl, $userInvite->getToken());
 
             // create log
             $log = new UserLog();

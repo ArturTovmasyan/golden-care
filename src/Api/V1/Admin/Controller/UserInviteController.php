@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use App\Annotation\Grant as Grant;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @IgnoreAnnotation("api")
@@ -161,17 +160,16 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @param UserInviteService $userInviteService
-     * @param UrlGeneratorInterface $urlGeneratorInterface
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function inviteAction(Request $request, UserInviteService $userInviteService, UrlGeneratorInterface $urlGeneratorInterface)
+    public function inviteAction(Request $request, UserInviteService $userInviteService)
     {
         $id = $userInviteService->invite(
             $request->get('space_id'),
             $request->get('email'),
             $request->get('roles'),
-            $urlGeneratorInterface
+            $request->getSchemeAndHttpHost()
         );
 
         return $this->respondSuccess(

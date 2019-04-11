@@ -213,11 +213,12 @@ class Mailer
 
     /**
      * @param $email
-     * @param $url
+     * @param $baseUrl
+     * @param $token
      * @return mixed
      * @throws \Exception
      */
-    public function inviteUser($email, $url = false)
+    public function inviteUser($email, $baseUrl, $token)
     {
         return $this
             ->setRecipient($email)
@@ -225,7 +226,8 @@ class Mailer
             ->setSubject('Invite to Space')
             ->setVars([
                 'subject' => $this->subject,
-                'url'     => $url,
+                'baseUrl' => $baseUrl,
+                'token'   => $token,
             ])
             ->send();
     }
