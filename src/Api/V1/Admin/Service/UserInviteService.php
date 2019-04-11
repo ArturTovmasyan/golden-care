@@ -13,6 +13,7 @@ use App\Entity\UserLog;
 use App\Model\Log;
 use App\Repository\UserInviteRepository;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class UserInviteService
@@ -60,10 +61,11 @@ class UserInviteService extends BaseService implements IGridService
      * @param $spaceId
      * @param $email
      * @param $roles
+     * @param UrlGeneratorInterface $urlGeneratorInterface
      * @return int|null
      * @throws \Exception
      */
-    public function invite($spaceId, $email, $roles) : ?int
+    public function invite($spaceId, $email, $roles, UrlGeneratorInterface $urlGeneratorInterface) : ?int
     {
         $insert_id = null;
         try {
@@ -107,7 +109,8 @@ class UserInviteService extends BaseService implements IGridService
             $this->em->persist($userInvite);
 
             /** @todo change to real url from frontend **/
-            $joinUrl = 'http://localhost:4200';
+//            $joinUrl = 'http://localhost:4200';
+            $joinUrl = $urlGeneratorInterface->generate('api_account_user_invite_accept', [$userInvite->getToken()]);
             $this->mailer->inviteUser($email, $joinUrl);
 
             // create log

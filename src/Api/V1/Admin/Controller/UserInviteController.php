@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use App\Annotation\Grant as Grant;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @IgnoreAnnotation("api")
@@ -124,7 +125,7 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/user/invite Invite User
+     * @api {post} /api/v1.0/admin/user/invite Invite User
      * @apiVersion 1.0.0
      * @apiName Invite User
      * @apiGroup Admin User Invite
@@ -160,15 +161,17 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @param UserInviteService $userInviteService
+     * @param UrlGeneratorInterface $urlGeneratorInterface
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function inviteAction(Request $request, UserInviteService $userInviteService)
+    public function inviteAction(Request $request, UserInviteService $userInviteService, UrlGeneratorInterface $urlGeneratorInterface)
     {
         $id = $userInviteService->invite(
             $request->get('space_id'),
             $request->get('email'),
-            $request->get('roles')
+            $request->get('roles'),
+            $urlGeneratorInterface
         );
 
         return $this->respondSuccess(
@@ -202,7 +205,7 @@ class UserInviteController extends BaseController
      *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_reject", methods={"DELETE"})
      *
-     * @Grant(grant=""persistence-security-user_invite", level="DELETE")
+     * @Grant(grant="persistence-security-user_invite", level="DELETE")
      *
      * @param Request $request
      * @param $id
