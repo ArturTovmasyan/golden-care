@@ -31,18 +31,34 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "u.id"
+ *              "field"      = "ui.id"
  *          },
  *          {
  *              "id"         = "email",
  *              "type"       = "string",
- *              "field"      = "u.email"
+ *              "field"      = "ui.email"
  *          },
  *          {
  *              "id"         = "owner",
  *              "type"       = "boolean",
- *              "field"      = "u.owner"
- *          }
+ *              "field"      = "ui.owner"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "field"      = "s.name"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "field"      = "s.name"
+ *          },
+ *          {
+ *              "id"         = "full_name",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))",
+ *              "link"       = ":edit"
+ *          },
  *     }
  * )
  */
@@ -148,7 +164,7 @@ class UserInvite
      *      "api_admin_user_invite"
      * })
      */
-    protected $owner;
+    private $owner;
 
     /**
      * UserInvite constructor.

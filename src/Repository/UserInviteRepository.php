@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Space;
+use App\Entity\User;
 use App\Entity\UserInvite;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -28,6 +29,12 @@ class UserInviteRepository extends EntityRepository
                 's',
                 Join::WITH,
                 's = ui.space'
+            )
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = ui.user'
             );
 
         if ($space !== null) {

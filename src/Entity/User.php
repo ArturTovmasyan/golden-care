@@ -429,7 +429,7 @@ class User implements UserInterface
      *      "api_admin_user_edit",
      * })
      */
-    protected $owner;
+    private $owner;
 
     /**
      * Space constructor.
