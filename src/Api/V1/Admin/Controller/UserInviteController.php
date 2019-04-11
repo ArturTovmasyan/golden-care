@@ -82,6 +82,42 @@ class UserInviteController extends BaseController
     }
 
     /**
+     * @api {options} /api/v1.0/admin/user/invite/grid Get UserInvites Grid Options
+     * @apiVersion 1.0.0
+     * @apiName Get UserInvites Grid Options
+     * @apiGroup Admin User Invite
+     * @apiDescription This function is used to describe options of listing
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiSuccess {Array} options The options of the medication listing
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *          [
+     *              {
+     *                  "id": "name",
+     *                  "type": "integer",
+     *                  "sortable": true,
+     *                  "filterable": true,
+     *              }
+     *          ]
+     *     }
+     *
+     * @Route("/grid", name="api_admin_user_invite_grid_options", methods={"OPTIONS"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function gridOptionAction(Request $request)
+    {
+        return $this->getOptionsByGroupName(UserInvite::class, 'api_admin_user_invite_grid');
+    }
+
+    /**
      * @api {get} /api/v1.0/user/invite Get UserInvites
      * @apiVersion 1.0.0
      * @apiName Get UserInvites
