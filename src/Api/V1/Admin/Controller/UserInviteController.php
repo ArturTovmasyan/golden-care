@@ -201,7 +201,7 @@ class UserInviteController extends BaseController
      *          }
      *     }
      *
-     * @Route("", name="api_admin_user_invite", methods={"POST"})
+     * @Route("", name="api_admin_user_invite_add", methods={"POST"})
      *
      * @Grant(grant="persistence-security-user_invite", level="ADD")
      *
@@ -210,9 +210,9 @@ class UserInviteController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function inviteAction(Request $request, UserInviteService $userInviteService)
+    public function addAction(Request $request, UserInviteService $userInviteService)
     {
-        $id = $userInviteService->invite(
+        $id = $userInviteService->add(
             $request->get('space_id'),
             $request->get('user_id'),
             $request->get('email'),
@@ -250,7 +250,7 @@ class UserInviteController extends BaseController
      *          "error": "UserUnvite not found"
      *     }
      *
-     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_reject", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-user_invite", level="DELETE")
      *
@@ -261,9 +261,9 @@ class UserInviteController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function rejectInvitationAction(Request $request, $id, UserInviteService $userInviteService)
+    public function deleteAction(Request $request, $id, UserInviteService $userInviteService)
     {
-        $userInviteService->rejectInvitation($id);
+        $userInviteService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

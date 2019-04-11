@@ -69,7 +69,7 @@ class UserInviteService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function invite($spaceId, $userId, $email, $owner, $roles, $baseUrl) : ?int
+    public function add($spaceId, $userId, $email, $owner, $roles, $baseUrl) : ?int
     {
         $insert_id = null;
         try {
@@ -149,7 +149,7 @@ class UserInviteService extends BaseService implements IGridService
      * @param $id
      * @throws \Throwable
      */
-    public function rejectInvitation($id): void
+    public function remove($id): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
