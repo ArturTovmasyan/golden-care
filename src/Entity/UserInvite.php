@@ -7,13 +7,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use JMS\Serializer\Annotation\Groups;
+use App\Annotation\Grid as Grid;
 
 /**
  * @ORM\Table(name="tbl_user_invite")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\UserInviteRepository")
  * @UniqueEntity(fields="email", message="This email address was already in use.", groups={
  *     "api_admin_user_invite"
  * })
+ * @Grid(
+ *     api_admin_user_invite_grid={
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "u.id"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "field"      = "u.email"
+ *          }
+ *     }
+ * )
  */
 class UserInvite
 {
@@ -24,6 +41,11 @@ class UserInvite
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({
+     *     "api_admin_user_invite_grid",
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
+     * })
      */
     private $id;
 
@@ -36,12 +58,21 @@ class UserInvite
      * @Assert\Email(groups={
      *     "api_admin_user_invite"
      * })
+     * @Groups({
+     *     "api_admin_user_invite_grid",
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
+     * })
      */
     private $email;
 
     /**
      * @var string
      * @ORM\Column(name="token", type="string", length=255, nullable=true)
+     * @Groups({
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
+     * })
      */
     private $token = '';
 
@@ -53,6 +84,10 @@ class UserInvite
      * @ORM\ManyToOne(targetEntity="App\Entity\Space")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
      * })
      */
     private $space;

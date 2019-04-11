@@ -107,7 +107,9 @@ class Space
      *     "api_admin_speciality_list",
      *     "api_admin_speciality_get",
      *     "api_admin_responsible_person_role_list",
-     *     "api_admin_responsible_person_role_get"
+     *     "api_admin_responsible_person_role_get",
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
      * })
      */
     private $id;

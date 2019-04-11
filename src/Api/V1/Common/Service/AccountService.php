@@ -3,9 +3,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\DefaultRoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\InvalidRecoveryLinkException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SystemErrorException;
-use App\Api\V1\Common\Service\Exception\UserAlreadyInvitedException;
 use App\Api\V1\Common\Service\Exception\UserAlreadyJoinedException;
 use App\Api\V1\Common\Service\Exception\UserNotYetInvitedException;
 use App\Entity\Role;
@@ -216,77 +214,6 @@ class AccountService extends BaseService
     }
 
     /**
-     * @param $spaceId
-     * @param $email
-     * @param $roles
-     * @throws \Exception
-     */
-    public function invite($spaceId, $email, $roles)
-    {
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            /**
-             * @var UserInvite $userInvite|null
-             * @var Space $space|null
-             */
-            $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['email' => $email]);
-            $space = $this->em->getRepository(Space::class)->find($spaceId);
-
-            if ($userInvite !== null) {
-                throw new UserAlreadyInvitedException();
-            }
-
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
-
-            $userInvite = new UserInvite();
-            $userInvite->setEmail($email);
-            $userInvite->setToken();
-            $userInvite->setSpace($space);
-
-            if(\count($roles) > 0) {
-                $userInvite->getRoleObjects()->clear();
-
-                foreach ($roles as $roleId) {
-                    /** @var Role $role */
-                    $role = $this->em->getRepository(Role::class)->find($roleId);
-                    if($role) {
-                        $userInvite->getRoleObjects()->add($role);
-                    }
-                }
-            }
-
-            // validate user
-            $this->validate($userInvite, null, ['api_admin_user_invite']);
-
-            $this->em->persist($userInvite);
-
-            /** @todo change to real url from frontend **/
-            $joinUrl = 'http://localhost:4200';
-            $this->mailer->inviteUser($email, $joinUrl);
-
-            // create log
-            $log = new UserLog();
-            $log->setCreatedAt(new \DateTime());
-            $log->setUser(null);
-            $log->setSpace($space);
-            $log->setType(UserLog::LOG_TYPE_INVITATION);
-            $log->setLevel(Log::LOG_LEVEL_LOW);
-            $log->setMessage(sprintf('User %s invited to join space ', $email));
-            $this->em->persist($log);
-
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw $e;
-        }
-    }
-
-    /**
      * @param $token
      * @param array $params
      * @throws \Exception
@@ -366,45 +293,6 @@ class AccountService extends BaseService
             $log->setLevel(Log::LOG_LEVEL_LOW);
             $log->setMessage(sprintf('User %s (%s) accept invitation for space', $user->getFullName(), $user->getUsername()));
             $this->em->persist($log);
-
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw $e;
-        }
-    }
-
-    /**
-     * @param $id
-     * @throws \Exception
-     */
-    public function rejectInvitation($id)
-    {
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            /**
-             * @var UserInvite $userInvite
-             */
-            $userInvite = $this->em->getRepository(UserInvite::class)->find($id);
-
-            if ($userInvite === null) {
-                throw new UserNotYetInvitedException();
-            }
-
-            // create log
-            $log = new UserLog();
-            $log->setCreatedAt(new \DateTime());
-            $log->setUser(null);
-            $log->setSpace($userInvite->getSpace());
-            $log->setType(UserLog::LOG_TYPE_REJECT_INVITATION);
-            $log->setLevel(Log::LOG_LEVEL_LOW);
-            $log->setMessage(sprintf('User %s reject invitation for space', $userInvite->getEmail()));
-            $this->em->persist($log);
-
-            $this->em->remove($userInvite);
 
             $this->em->flush();
             $this->em->getConnection()->commit();

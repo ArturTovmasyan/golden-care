@@ -233,57 +233,6 @@ class AccountController extends BaseController
     }
 
     /*********** Review user invite functional ************/
-    /**
-     * @api {post} /api/v1.0/account/admin/user/invite Invite User
-     * @apiVersion 1.0.0
-     * @apiName Invite User
-     * @apiGroup Common Account
-     * @apiPermission PERMISSION_USER
-     * @apiDescription This function is used for user invitation to space
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}    space_id     The unique identifier for space
-     * @apiParam {String} email        The unique email of the user
-     * @apiParam {Int}    roles        The roles
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "email": "test@example.com"
-     *     }
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {
-     *         "code": 231,
-     *         "message": "Invitation sent to email address, please check email"
-     *     }
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 614,
-     *          "message": "User already joined to space"
-     *     }
-     *
-     * @Route("/admin/user/invite", name="api_account_admin_user_invite", methods={"POST"})
-     *
-     * @param Request $request
-     * @param AccountService $userService
-     * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     */
-    public function inviteAction(Request $request, AccountService $userService)
-    {
-        $userService->invite(
-            $request->get('space_id'),
-            $request->get('email'),
-            $request->get('roles')
-        );
-        return $this->respondSuccess(
-            ResponseCode::INVITATION_LINK_SENT_TO_EMAIL
-        );
-    }
 
     /**
      * @api {post} /api/v1.0/account/user/invite/accept/{token} Accept Invitation
@@ -330,44 +279,6 @@ class AccountController extends BaseController
             ]
         );
 
-        return $this->respondSuccess(
-            Response::HTTP_CREATED
-        );
-    }
-
-    /**
-     * @api {post} /api/v1.0/account/user/invite/reject/{id} Reject Invitation
-     * @apiVersion 1.0.0
-     * @apiName Reject Invitation
-     * @apiGroup Dashboard Space
-     * @apiPermission PERMISSION_USER
-     * @apiDescription This function is used to reject space invitation
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier for user invite
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 614,
-     *          "message": "User already joined to space"
-     *     }
-     *
-     * @Route("/user/invite/reject/{id}", name="api_account_user_invite_reject", requirements={"id"="\d+"}, methods={"POST"})
-     *
-     * @param $id
-     * @param AccountService $userService
-     * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     */
-    public function rejectInvitationAction(Request $request, $id, AccountService $userService)
-    {
-        $userService->rejectInvitation($id);
         return $this->respondSuccess(
             Response::HTTP_CREATED
         );
