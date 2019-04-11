@@ -113,7 +113,7 @@ class CareLevelGroup
     private $title;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Form", inversedBy="careLevelGroups", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Form", inversedBy="careLevelGroups", cascade={"persist", "remove"})
      * @ORM\JoinTable(
      *      name="tbl_assessment_form_care_level_group",
      *      joinColumns={
