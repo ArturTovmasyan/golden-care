@@ -2,7 +2,7 @@
 {% block title %}{{ subject }}{% endblock %}
 {% block content %}
     <p>Dear Customer,</p>
-    <p>You have invited to join space.</p>
+    <p>User {{ fullName }} have invited You to join space.</p>
     <p>Please complete sign up form and start with team:</p>
     <p>
         <a href="{{ baseUrl }}/invite?key={{ token }}">Complete</a>

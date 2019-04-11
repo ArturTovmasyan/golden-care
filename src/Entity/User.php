@@ -102,7 +102,9 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
-     *     "api_profile_me"
+     *     "api_profile_me",
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */

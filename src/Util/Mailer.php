@@ -215,19 +215,21 @@ class Mailer
      * @param $email
      * @param $baseUrl
      * @param $token
+     * @param $fullName
      * @return mixed
      * @throws \Exception
      */
-    public function inviteUser($email, $baseUrl, $token)
+    public function inviteUser($email, $baseUrl, $token, $fullName)
     {
         return $this
             ->setRecipient($email)
             ->setTemplate('@api_email/invitation.html.twig')
             ->setSubject('Invite to Space')
             ->setVars([
-                'subject' => $this->subject,
-                'baseUrl' => $baseUrl,
-                'token'   => $token,
+                'subject'  => $this->subject,
+                'baseUrl'  => $baseUrl,
+                'token'    => $token,
+                'fullName' => $fullName,
             ])
             ->send();
     }

@@ -181,6 +181,7 @@ class UserInviteController extends BaseController
      *
      * @apiParam {String}  email      The email of the invite user
      * @apiParam {Int}     space_id   The unique identifier of the space
+     * @apiParam {Int}     user_id    The unique identifier of the user
      *
      * @apiParamExample {json} Request-Example:
      *     {
@@ -213,6 +214,7 @@ class UserInviteController extends BaseController
     {
         $id = $userInviteService->invite(
             $request->get('space_id'),
+            $request->get('user_id'),
             $request->get('email'),
             $request->get('owner'),
             $request->get('roles'),

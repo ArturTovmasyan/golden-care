@@ -4,10 +4,12 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserAlreadyInvitedException;
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotYetInvitedException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
 use App\Entity\Space;
+use App\Entity\User;
 use App\Entity\UserInvite;
 use App\Entity\UserLog;
 use App\Model\Log;
@@ -59,6 +61,7 @@ class UserInviteService extends BaseService implements IGridService
 
     /**
      * @param $spaceId
+     * @param $userId
      * @param $email
      * @param $owner
      * @param $roles
@@ -66,7 +69,7 @@ class UserInviteService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function invite($spaceId, $email, $owner, $roles, $baseUrl) : ?int
+    public function invite($spaceId, $userId, $email, $owner, $roles, $baseUrl) : ?int
     {
         $insert_id = null;
         try {
@@ -75,16 +78,22 @@ class UserInviteService extends BaseService implements IGridService
             /**
              * @var UserInvite $userInvite|null
              * @var Space $space|null
+             * @var User $user|null
              */
             $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['email' => $email]);
             $space = $this->em->getRepository(Space::class)->find($spaceId);
+            $user = $this->em->getRepository(User::class)->find($userId);
 
             if ($userInvite !== null) {
                 throw new UserAlreadyInvitedException();
             }
 
-            if ($space === null) {
+            if ($user === null) {
                 throw new SpaceNotFoundException();
+            }
+
+            if ($space === null) {
+                throw new UserNotFoundException();
             }
 
             $userInvite = new UserInvite();
@@ -92,6 +101,7 @@ class UserInviteService extends BaseService implements IGridService
             $userInvite->setToken();
             $userInvite->setOwner($owner);
             $userInvite->setSpace($space);
+            $userInvite->setUser($user);
 
             if(\count($roles) > 0) {
                 $userInvite->getRoleObjects()->clear();
@@ -110,7 +120,7 @@ class UserInviteService extends BaseService implements IGridService
 
             $this->em->persist($userInvite);
 
-            $this->mailer->inviteUser($email, $baseUrl, $userInvite->getToken());
+            $this->mailer->inviteUser($email, $baseUrl, $userInvite->getToken(), $user->getFullName());
 
             // create log
             $log = new UserLog();

@@ -106,6 +106,21 @@ class UserInvite
      */
     private $space;
 
+    /**
+     * @var User
+     * @Assert\NotNull(message = "Please select an User", groups={
+     *     "api_admin_user_invite"
+     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_user_invite_list",
+     *     "api_admin_user_invite_get"
+     * })
+     */
+    private $user;
 
     /**
      * @ORM\ManyToMany(targetEntity="Role", cascade={"persist"})
@@ -241,4 +256,19 @@ class UserInvite
         $this->owner = $owner;
     }
 
+    /**
+     * @return User
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
+    }
 }
