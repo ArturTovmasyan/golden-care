@@ -119,10 +119,10 @@ class ResidentEventService extends BaseService implements IGridService
 
             $physician = null;
 
-            if ($definition && $definition->isPhysician()) {
-                $physicianId = $params['physician_id'];
+            if ($definition && ($definition->isPhysician() || $definition->isPhysicianOptional())) {
+                $physicianId = (int)$params['physician_id'];
 
-                if ($physicianId && is_numeric($physicianId)) {
+                if ($physicianId) {
                     /** @var PhysicianRepository $physicianRepo */
                     $physicianRepo = $this->em->getRepository(Physician::class);
 
@@ -139,7 +139,7 @@ class ResidentEventService extends BaseService implements IGridService
 
             $rps = [];
 
-            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti() || $definition->isResponsiblePersonOptional() || $definition->isResponsiblePersonMultiOptional())) {
                 /** @var ResponsiblePersonRepository $rpRepo */
                 $rpRepo = $this->em->getRepository(ResponsiblePerson::class);
 
@@ -237,10 +237,10 @@ class ResidentEventService extends BaseService implements IGridService
 
             $physician = null;
 
-            if ($definition && $definition->isPhysician()) {
-                $physicianId = $params['physician_id'];
+            if ($definition && ($definition->isPhysician() || $definition->isPhysicianOptional())) {
+                $physicianId = (int)$params['physician_id'];
 
-                if ($physicianId && is_numeric($physicianId)) {
+                if ($physicianId) {
                     /** @var PhysicianRepository $physicianRepo */
                     $physicianRepo = $this->em->getRepository(Physician::class);
 
@@ -256,7 +256,7 @@ class ResidentEventService extends BaseService implements IGridService
             }
 
             $rps = [];
-            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+            if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti() || $definition->isResponsiblePersonOptional() || $definition->isResponsiblePersonMultiOptional())) {
                 $oldRPs = $entity->getResponsiblePersons();
                 foreach ($oldRPs as $oldRP) {
                     $entity->removeResponsiblePerson($oldRP);
