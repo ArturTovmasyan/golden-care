@@ -235,7 +235,7 @@ class AccountController extends BaseController
     /*********** Review user invite functional ************/
 
     /**
-     * @api {post} /api/v1.0/account/user/invite/accept/{token} Accept Invitation
+     * @api {post} /api/v1.0/account/accept Accept Invitation
      * @apiVersion 1.0.0
      * @apiName Accept Invitation
      * @apiGroup Common Account
@@ -258,18 +258,17 @@ class AccountController extends BaseController
      *     }
      *
      *
-     * @Route("/user/invite/accept/{token}", name="api_account_user_invite_accept", methods={"POST"})
+     * @Route("/accept", name="api_account_accept", methods={"POST"})
      *
      * @param Request $request
-     * @param $token
      * @param AccountService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function acceptInvitationAction(Request $request, $token, AccountService $userService)
+    public function acceptInvitationAction(Request $request, AccountService $userService)
     {
         $userService->acceptInvitation(
-            $token,
+            $request->get('token'),
             [
                 'first_name'   => $request->get('first_name'),
                 'last_name'    => $request->get('last_name'),

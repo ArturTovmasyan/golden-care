@@ -96,19 +96,20 @@ class UserInviteService extends BaseService implements IGridService
             if ($space === null) {
                 throw new UserNotFoundException();
             }
-
-            if ($owner) {
-                $ownerUser = $this->em->getRepository(User::class)->findOneBy(['space' => $spaceId, 'owner' => true]);
-
-                if($ownerUser) {
-                    throw new SpaceAlreadyHasOwnerException();
-                }
-            }
+//TODO will be rework
+//            if ($owner) {
+//                $ownerUser = $this->em->getRepository(User::class)->findOneBy(['space' => $spaceId, 'owner' => true]);
+//
+//                if($ownerUser !== null) {
+//                    throw new SpaceAlreadyHasOwnerException();
+//                }
+//            }
 
             $userInvite = new UserInvite();
             $userInvite->setEmail($email);
             $userInvite->setToken();
-            $userInvite->setOwner($owner);
+//            $userInvite->setOwner($owner);
+            $userInvite->setOwner(false);
             $userInvite->setSpace($space);
             $userInvite->setUser($user);
 
