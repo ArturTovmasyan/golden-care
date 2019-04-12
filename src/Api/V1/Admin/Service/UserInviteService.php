@@ -2,6 +2,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\SpaceAlreadyHasOwnerException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserAlreadyInvitedException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
@@ -94,6 +95,14 @@ class UserInviteService extends BaseService implements IGridService
 
             if ($space === null) {
                 throw new UserNotFoundException();
+            }
+
+            if ($owner) {
+                $ownerUser = $this->em->getRepository(User::class)->findOneBy(['space' => $spaceId, 'owner' => true]);
+
+                if($ownerUser) {
+                    throw new SpaceAlreadyHasOwnerException();
+                }
             }
 
             $userInvite = new UserInvite();
