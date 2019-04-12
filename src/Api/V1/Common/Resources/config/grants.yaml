@@ -27,6 +27,9 @@ persistence:
         user:
           title: 'User'
           class: App\Entity\User
+        user_invite:
+          title: 'UserInvite'
+          class: App\Entity\UserInvite
         user_attempt:
           title: 'UserAttempt'
           class: App\Entity\UserAttempt

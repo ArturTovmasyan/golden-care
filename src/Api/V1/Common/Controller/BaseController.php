@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Space;
+use App\Entity\UserInvite;
 use App\Model\Grant;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
@@ -308,9 +309,10 @@ class BaseController extends Controller
 
         $options = ArrayUtil::remove_keys($options, ['field']);
 
+        // TODO: review
         $buttons = [
             'add' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_EDIT),
-            'edit' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_EDIT),
+            'edit' => $entityName === UserInvite::class ? false : $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_EDIT),
             'remove' => $this->grantService->hasCurrentUserEntityGrant($entityName, Grant::$LEVEL_DELETE),
         ];
 

@@ -141,4 +141,40 @@ class UserInviteRepository extends EntityRepository
 
         return [];
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('ui')
+            ->where('ui.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ui.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ui.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb->groupBy('ui.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

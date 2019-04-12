@@ -49,7 +49,7 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "s.name"
  *          },
  *          {
- *              "id"         = "full_name",
+ *              "id"         = "invited_by",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))",
  *              "link"       = ":edit"

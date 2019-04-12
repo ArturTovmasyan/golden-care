@@ -180,4 +180,42 @@ class UserInviteService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (empty($ids)) {
+                throw new UserNotYetInvitedException();
+            }
+
+            /** @var UserInviteRepository $repo */
+            $repo = $this->em->getRepository(UserInvite::class);
+
+            $userInvites = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(UserInvite::class), $ids);
+
+            if (empty($userInvites)) {
+                throw new UserNotYetInvitedException();
+            }
+
+            /**
+             * @var UserInvite $userInvite
+             */
+            foreach ($userInvites as $userInvite) {
+                $this->em->remove($userInvite);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

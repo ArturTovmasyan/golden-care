@@ -265,36 +265,13 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/user/invite/{id} Reject Invitation
-     * @apiVersion 1.0.0
-     * @apiName Reject Invitation
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to reject space invitation
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of user invite
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 627,
-     *          "error": "UserUnvite not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-user_invite", level="DELETE")
      *
-     * @param Request $request
      * @param $id
      * @param UserInviteService $userInviteService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
     public function deleteAction(Request $request, $id, UserInviteService $userInviteService)
@@ -303,6 +280,41 @@ class UserInviteController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @Route("", name="api_admin_user_invite_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-user_invite", level="DELETE")
+     *
+     * @param Request $request
+     * @param UserInviteService $userInviteService
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, UserInviteService $userInviteService)
+    {
+        $userInviteService->removeBulk($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @Route("/related/info", name="api_admin_user_invite_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            []
         );
     }
 }
