@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\PhysicianNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentEventNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotBeBlankException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
 use App\Entity\Physician;
@@ -153,6 +154,10 @@ class ResidentEventService extends BaseService implements IGridService
                         $rpIds
                     );
                 }
+
+                if (empty($params['responsible_persons']) && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+                    throw new ResponsiblePersonNotBeBlankException();
+                }
             }
 
             $additionalDate = null;
@@ -262,7 +267,7 @@ class ResidentEventService extends BaseService implements IGridService
             }
 
             $rps = [];
-            
+
             if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti() || $definition->isResponsiblePersonOptional() || $definition->isResponsiblePersonMultiOptional())) {
                 $oldRPs = $entity->getResponsiblePersons();
                 foreach ($oldRPs as $oldRP) {
@@ -279,6 +284,10 @@ class ResidentEventService extends BaseService implements IGridService
                         $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
                         $rpIds
                     );
+                }
+
+                if (empty($params['responsible_persons']) && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti())) {
+                    throw new ResponsiblePersonNotBeBlankException();
                 }
             }
 
