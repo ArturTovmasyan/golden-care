@@ -133,6 +133,9 @@ class ResidentAssessmentService extends BaseService implements IGridService
             // save rows
             $this->saveRows($assessment, $rows);
 
+            $this->em->persist($assessment);
+            $this->em->flush();
+
             // calculate and save total score
             $assessment->setScore($this->calculateTotalScore($assessment));
             $this->em->persist($assessment);
@@ -300,9 +303,14 @@ class ResidentAssessmentService extends BaseService implements IGridService
      */
     private function calculateTotalScore(Assessment $assessment) : ?int
     {
+        /** @var AssessmentRowRepository $arRepo */
+        $arRepo = $this->em->getRepository(AssessmentRow::class);
+
+        $assessmentRows = $arRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(AssessmentRow::class), $assessment);
+
         // create report
         $report = new \App\Model\Report\Assessment();
-        $report->setTable($assessment->getForm()->getFormCategories(), $assessment->getAssessmentRows());
+        $report->setTable($assessment->getForm()->getFormCategories(), $assessmentRows);
 
         return $report->getTotalScore();
     }

@@ -22,6 +22,7 @@ class AssessmentReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
      * @return ReportAssessment
      */
     public function getBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId): ReportAssessment
@@ -38,6 +39,7 @@ class AssessmentReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
      * @return ReportAssessment
      */
     public function getFilledReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId): ReportAssessment
@@ -46,7 +48,7 @@ class AssessmentReportService extends BaseService
     }
 
     /**
-     * @param $residentId
+     * @param $assessmentId
      * @param $group
      * @return ReportAssessment
      */

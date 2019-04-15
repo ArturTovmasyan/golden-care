@@ -85,7 +85,7 @@ class Assessment extends Base
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
     public function getDate():string
     {
@@ -148,7 +148,7 @@ class Assessment extends Base
              */
             foreach ($groups as $careLevelGroup) {
                 foreach ($careLevelGroup->getCareLevels() as $careLevel) {
-                    if ($this->totalScore >= $careLevel->getLevelLow() && ($this->totalScore <= $careLevel->getLevelHigh() || $careLevel->getLevelHigh() == null)) {
+                    if ($this->totalScore >= $careLevel->getLevelLow() && ($this->totalScore <= $careLevel->getLevelHigh() || $careLevel->getLevelHigh() === null)) {
                         $this->groups[] = [
                             'group'   => $careLevelGroup->getTitle(),
                             'level'   => $careLevel->getTitle(),
@@ -227,7 +227,7 @@ class Assessment extends Base
                     0 => $category->getTitle(), // activity
                     1 => $category->isMultiItem(), // score
                     2 => null, // subScore
-                    3 => "activity",
+                    3 => 'activity',
                 ];
 
                 foreach ($category->getRows() as $row) {
@@ -263,7 +263,7 @@ class Assessment extends Base
                         0 => $row->getTitle(),
                         1 => $value,
                         2 => null,
-                        3 => "row",
+                        3 => 'row',
                     ];
                 }
 
@@ -271,7 +271,7 @@ class Assessment extends Base
                     0 => null,
                     1 => $multiItemScoreWords,
                     2 => $subScore + $t,
-                    3 => "score",
+                    3 => 'score',
                 );
 
                 $this->totalScore += $subScore + $t;
@@ -302,7 +302,7 @@ class Assessment extends Base
                     0 => $category->getTitle(), // activity
                     1 => null,
                     2 => null, // subScore
-                    3 => "activity",
+                    3 => 'activity',
                 ];
 
                 foreach ($category->getRows() as $row) {
@@ -310,15 +310,15 @@ class Assessment extends Base
                         0 => $row->getTitle(),
                         1 => $row->getScore(),
                         2 => null,
-                        3 => "row",
+                        3 => 'row',
                     ];
                 }
 
                 $table[] = array(
                     0 => null,
                     1 => null,
-                    2 => "_________",
-                    3 => "score"
+                    2 => '_________',
+                    3 => 'score'
                 );
             }
         }
