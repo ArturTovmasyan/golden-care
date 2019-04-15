@@ -40,7 +40,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "diet_color",
- *              "type"       = "string",
+ *              "type"       = "color",
  *              "field"      = "d.color"
  *          },
  *          {

@@ -34,16 +34,21 @@ use App\Annotation\Grid;
  *              "field"      = "rd.id"
  *          },
  *          {
- *              "id"         = "diagnosis",
- *              "type"       = "string",
- *              "field"      = "d.title",
- *              "link"       = ":edit"
- *          },
- *          {
  *              "id"         = "type",
  *              "type"       = "enum",
  *              "field"      = "rd.type",
  *              "values"     = "\App\Model\DiagnosisType::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "acronym",
+ *              "type"       = "string",
+ *              "field"      = "d.acronym"
+ *          },
+ *          {
+ *              "id"         = "diagnosis",
+ *              "type"       = "string",
+ *              "field"      = "d.title",
+ *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "notes",
