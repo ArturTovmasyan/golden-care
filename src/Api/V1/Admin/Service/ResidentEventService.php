@@ -120,9 +120,9 @@ class ResidentEventService extends BaseService implements IGridService
             $physician = null;
 
             if ($definition && ($definition->isPhysician() || $definition->isPhysicianOptional())) {
-                $physicianId = (int)$params['physician_id'];
+                $physicianId = $params['physician_id'];
 
-                if ($physicianId) {
+                if ($physicianId && is_numeric($physicianId)) {
                     /** @var PhysicianRepository $physicianRepo */
                     $physicianRepo = $this->em->getRepository(Physician::class);
 
@@ -132,7 +132,9 @@ class ResidentEventService extends BaseService implements IGridService
                     if ($physician === null) {
                         throw new PhysicianNotFoundException();
                     }
-                } else {
+                }
+
+                if (empty($physicianId) && $definition->isPhysician()) {
                     throw new PhysicianNotBeBlankException();
                 }
             }
@@ -143,12 +145,14 @@ class ResidentEventService extends BaseService implements IGridService
                 /** @var ResponsiblePersonRepository $rpRepo */
                 $rpRepo = $this->em->getRepository(ResponsiblePerson::class);
 
-                $rpIds = array_unique($params['responsible_persons']);
-                $rps = $rpRepo->findByIds(
-                    $this->grantService->getCurrentSpace(),
-                    $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
-                    $rpIds
-                );
+                if (!empty($params['responsible_persons'])) {
+                    $rpIds = array_unique($params['responsible_persons']);
+                    $rps = $rpRepo->findByIds(
+                        $this->grantService->getCurrentSpace(),
+                        $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
+                        $rpIds
+                    );
+                }
             }
 
             $additionalDate = null;
@@ -238,9 +242,9 @@ class ResidentEventService extends BaseService implements IGridService
             $physician = null;
 
             if ($definition && ($definition->isPhysician() || $definition->isPhysicianOptional())) {
-                $physicianId = (int)$params['physician_id'];
+                $physicianId = $params['physician_id'];
 
-                if ($physicianId) {
+                if ($physicianId && is_numeric($physicianId)) {
                     /** @var PhysicianRepository $physicianRepo */
                     $physicianRepo = $this->em->getRepository(Physician::class);
 
@@ -250,12 +254,15 @@ class ResidentEventService extends BaseService implements IGridService
                     if ($physician === null) {
                         throw new PhysicianNotFoundException();
                     }
-                } else {
+                }
+
+                if (empty($physicianId) && $definition->isPhysician()) {
                     throw new PhysicianNotBeBlankException();
                 }
             }
 
             $rps = [];
+            
             if ($definition && ($definition->isResponsiblePerson() || $definition->isResponsiblePersonMulti() || $definition->isResponsiblePersonOptional() || $definition->isResponsiblePersonMultiOptional())) {
                 $oldRPs = $entity->getResponsiblePersons();
                 foreach ($oldRPs as $oldRP) {
@@ -265,12 +272,14 @@ class ResidentEventService extends BaseService implements IGridService
                 /** @var ResponsiblePersonRepository $rpRepo */
                 $rpRepo = $this->em->getRepository(ResponsiblePerson::class);
 
-                $rpIds = array_unique($params['responsible_persons']);
-                $rps = $rpRepo->findByIds(
-                    $this->grantService->getCurrentSpace(),
-                    $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
-                    $rpIds
-                );
+                if (!empty($params['responsible_persons'])) {
+                    $rpIds = array_unique($params['responsible_persons']);
+                    $rps = $rpRepo->findByIds(
+                        $this->grantService->getCurrentSpace(),
+                        $this->grantService->getCurrentUserEntityGrants(ResponsiblePerson::class),
+                        $rpIds
+                    );
+                }
             }
 
             $additionalDate = null;
