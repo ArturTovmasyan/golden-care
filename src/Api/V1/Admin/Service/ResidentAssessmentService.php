@@ -214,10 +214,12 @@ class ResidentAssessmentService extends BaseService implements IGridService
             // save rows
             $this->saveRows($assessment, $rows);
 
+            $this->em->persist($assessment);
+            $this->em->flush();
+
             // calculate and save total score
             $assessment->setScore($this->calculateTotalScore($assessment));
             $this->em->persist($assessment);
-
             $this->em->flush();
 
             $this->em->getConnection()->commit();
