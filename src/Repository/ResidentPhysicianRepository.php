@@ -15,6 +15,7 @@ use App\Entity\ResidentAdmission;
 use App\Entity\ResidentPhysician;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Entity\Speciality;
 use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -375,6 +376,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                     csz.zipMain as zip,
                     csz.city as city,
                     sal.title as salutation,
+                    spc.title as speciality,
                     p.id as pId
             ')
             ->innerJoin(
@@ -400,6 +402,12 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 'sal',
                 Join::WITH,
                 'p.salutation = sal'
+            )
+            ->innerJoin(
+                Speciality::class,
+                'spc',
+                Join::WITH,
+                'p.speciality = spc'
             )
             ->leftJoin(
                 CityStateZip::class,
