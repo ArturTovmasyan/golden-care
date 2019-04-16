@@ -46,7 +46,8 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
                 Join::WITH,
                 'm = rm.medication'
             )
-            ->innerJoin(
+            //TODO will be change to innerJoin
+            ->leftJoin(
                 MedicationFormFactor::class,
                 'ff',
                 Join::WITH,
