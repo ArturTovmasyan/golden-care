@@ -87,6 +87,12 @@ use App\Annotation\Grid;
  *              "id"         = "prescription_number",
  *              "type"       = "string",
  *              "field"      = "rm.prescriptionNumber"
+ *          },
+ *          {
+ *              "id"         = "hidden_discontinued",
+ *              "type"       = "color_row",
+ *              "hidden"     = true,
+ *              "field"      = "rm.discontinued"
  *          }
  *     }
  * )
