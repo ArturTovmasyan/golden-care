@@ -72,6 +72,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "f.capacity"
  *          },
  *          {
+ *              "id"         = "number_of_floors",
+ *              "type"       = "number",
+ *              "field"      = "f.numberOfFloors"
+ *          },
+ *          {
  *              "id"         = "csz_str",
  *              "type"       = "string",
  *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
@@ -322,6 +327,28 @@ class Facility
     private $capacity;
 
     /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_add",
+     *     "api_admin_facility_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/(^[1-9]?$)/",
+     *      message="The value should be numeric and more than zero and no longer than 1 characters.",
+     *      groups={
+     *          "api_admin_facility_add",
+     *          "api_admin_facility_edit"
+     * })
+     * @ORM\Column(name="floor", type="integer", length=1)
+     * @Groups({
+     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $numberOfFloors = 1;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_admin_facility_add",
@@ -460,6 +487,16 @@ class Facility
     public function setCapacity($capacity): void
     {
         $this->capacity = $capacity;
+    }
+
+    public function getNumberOfFloors(): ?int
+    {
+        return $this->numberOfFloors;
+    }
+
+    public function setNumberOfFloors($numberOfFloors): void
+    {
+        $this->numberOfFloors = $numberOfFloors;
     }
 
     public function getCsz(): ?CityStateZip

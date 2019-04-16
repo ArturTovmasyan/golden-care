@@ -97,6 +97,7 @@ class FacilityService extends BaseService implements IGridService
             $facility->setCsz($csz);
             $facility->setLicenseCapacity((int)$params['license_capacity']);
             $facility->setCapacity((int)$params['capacity']);
+            $facility->setNumberOfFloors((int)$params['number_of_floors']);
             $facility->setSpace($space);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
@@ -167,6 +168,7 @@ class FacilityService extends BaseService implements IGridService
             $entity->setCsz($csz);
             $entity->setLicenseCapacity((int)$params['license_capacity']);
             $entity->setCapacity((int)$params['capacity']);
+            $entity->setNumberOfFloors((int)$params['number_of_floors']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_facility_edit']);

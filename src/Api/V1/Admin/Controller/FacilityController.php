@@ -54,7 +54,8 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  license          The license time of the facility
      * @apiSuccess {Object}  csz              The City State & Zip of the facility
      * @apiSuccess {Int}     license_capacity The license capacity time of the facility
-     * @apiSuccess {Int}     capacity         The capacity time of the facility
+     * @apiSuccess {Int}     capacity         The capacity of the facility
+     * @apiSuccess {Int}     number_of_floors The number of floors of the facility
      * @apiSuccess {Object}  space            The space of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -76,6 +77,7 @@ class FacilityController extends BaseController
      *                  "license": "347001498",
      *                  "license_capacity": 46,
      *                  "capacity": 45,
+     *                  "number_of_floors": 3,
      *                  "space": "alms",
      *                  "csz_str": "Verdi CA, 89439"
      *              }
@@ -154,8 +156,9 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  address          The address time of the facility
      * @apiSuccess {String}  license          The license time of the facility
      * @apiSuccess {Object}  csz              The City State & Zip of the facility
-     * @apiSuccess {Int}     license_capacity The license capacity time of the facility
-     * @apiSuccess {Int}     capacity         The capacity time of the facility
+     * @apiSuccess {Int}     license_capacity The license capacity of the facility
+     * @apiSuccess {Int}     capacity         The capacity of the facility
+     * @apiSuccess {Int}     number_of_floors The number of floors of the facility
      * @apiSuccess {Object}  space            The space of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -183,6 +186,7 @@ class FacilityController extends BaseController
      *                  },
      *                  "license_capacity": 46,
      *                  "capacity": 45,
+     *                  "number_of_floors": 3,
      *                  "space": {
      *                      "id": 1,
      *                      "name": "alms"
@@ -227,8 +231,9 @@ class FacilityController extends BaseController
      * @apiSuccess {String}  address          The address time of the facility
      * @apiSuccess {String}  license          The license time of the facility
      * @apiSuccess {Object}  csz              The City State & Zip of the facility
-     * @apiSuccess {Int}     license_capacity The license capacity time of the facility
-     * @apiSuccess {Int}     capacity         The capacity time of the facility
+     * @apiSuccess {Int}     license_capacity The license capacity of the facility
+     * @apiSuccess {Int}     capacity         The capacity of the facility
+     * @apiSuccess {Int}     number_of_floors The number of floors of the facility
      * @apiSuccess {Object}  space            The space of the facility
      *
      * @apiSuccessExample {json} Sample Response:
@@ -251,6 +256,7 @@ class FacilityController extends BaseController
      *                  },
      *                  "license_capacity": 46,
      *                  "capacity": 45,
+     *                  "number_of_floors": 3,
      *                  "space": {
      *                      "id": 1,
      *                      "name": "alms"
@@ -294,6 +300,7 @@ class FacilityController extends BaseController
      * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
      * @apiParam {Int}     license_capacity The license capacity of the facility
      * @apiParam {Int}     capacity         The capacity of the facility
+     * @apiParam {Int}     number_of_floors The number of floors of the facility
      * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
@@ -308,6 +315,7 @@ class FacilityController extends BaseController
      *          "csz_id": 1,
      *          "license_capacity": 46,
      *          "capacity": 45,
+     *          "number_of_floors": 3,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -346,6 +354,7 @@ class FacilityController extends BaseController
                 'csz_id' => $request->get('csz_id'),
                 'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
+                'number_of_floors' => $request->get('number_of_floors'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -377,6 +386,7 @@ class FacilityController extends BaseController
      * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
      * @apiParam {Int}     license_capacity The license capacity of the facility
      * @apiParam {Int}     capacity         The capacity of the facility
+     * @apiParam {Int}     number_of_floors The number of floors of the facility
      * @apiParam {Int}     space_id         The unique identifier of the space
      *
      * @apiParamExample {json} Request-Example:
@@ -391,6 +401,7 @@ class FacilityController extends BaseController
      *          "csz_id": 1,
      *          "license_capacity": 46,
      *          "capacity": 45,
+     *          "number_of_floors": 3,
      *          "space_id": 1
      *     }
      * @apiSuccessExample {json} Sample Response:
@@ -431,6 +442,7 @@ class FacilityController extends BaseController
                 'csz_id' => $request->get('csz_id'),
                 'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
+                'number_of_floors' => $request->get('number_of_floors'),
                 'space_id' => $request->get('space_id')
             ]
         );
