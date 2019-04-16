@@ -42,6 +42,12 @@ class ResidentMedicationService extends BaseService implements IGridService
             ->where('rm.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
+        if (!empty($params[0]['discontinued'])) {
+            $queryBuilder
+                ->andWhere('rm.discontinued = :discontinued')
+                ->setParameter('discontinued', 0);
+        }
+
         /** @var ResidentMedicationRepository $repo */
         $repo = $this->em->getRepository(ResidentMedication::class);
 
@@ -66,7 +72,13 @@ class ResidentMedicationService extends BaseService implements IGridService
                 $medication_id = $params[0]['medication_id'];
             }
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentId, $medication_id);
+            $noDiscontinued = false;
+
+            if (!empty($params[0]['discontinued'])) {
+                $noDiscontinued = true;
+            }
+
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentId, $medication_id, $noDiscontinued);
         }
 
         throw new ResidentNotFoundException();

@@ -73,16 +73,19 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
         }
 
         $queryBuilder
-            ->groupBy('rm.id');
+            ->groupBy('rm.id')
+            ->orderBy('rm.discontinued','ASC');
     }
 
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $id
+     * @param null $medication_id
+     * @param boolean $noDiscontinued
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id, $medication_id = null)
+    public function getBy(Space $space = null, array $entityGrants = null, $id, $medication_id = null, $noDiscontinued)
     {
         $qb = $this
             ->createQueryBuilder('rm')
@@ -119,7 +122,14 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($noDiscontinued) {
+            $qb
+                ->andWhere('rm.discontinued = :discontinued')
+                ->setParameter('discontinued', 0);
+        }
+
         return $qb
+            ->orderBy('rm.discontinued','ASC')
             ->getQuery()
             ->getResult();
     }

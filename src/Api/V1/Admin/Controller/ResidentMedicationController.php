@@ -102,7 +102,10 @@ class ResidentMedicationController extends BaseController
             ResidentMedication::class,
             'api_admin_resident_medication_grid',
             $residentMedicationService,
-            ['resident_id' => $request->get('resident_id')]
+            [
+                'resident_id' => $request->get('resident_id'),
+                'discontinued' => $request->get('discontinued')
+            ]
         );
     }
 
@@ -224,7 +227,8 @@ class ResidentMedicationController extends BaseController
             $residentMedicationService,
             [
                 'resident_id' => $request->get('resident_id'),
-                'medication_id' => $request->get('medication_id')
+                'medication_id' => $request->get('medication_id'),
+                'discontinued' => $request->get('discontinued')
             ]
         );
     }
