@@ -339,7 +339,7 @@ class Facility
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
      * })
-     * @ORM\Column(name="floor", type="integer", length=1)
+     * @ORM\Column(name="number_of_floors", type="integer", length=1)
      * @Groups({
      *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
