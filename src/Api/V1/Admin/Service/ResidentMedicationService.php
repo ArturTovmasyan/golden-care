@@ -42,7 +42,7 @@ class ResidentMedicationService extends BaseService implements IGridService
             ->where('rm.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        if (!empty($params[0]['discontinued'])) {
+        if((int)$params[0]['discontinued'] !== 1) {
             $queryBuilder
                 ->andWhere('rm.discontinued = :discontinued')
                 ->setParameter('discontinued', 0);
@@ -74,7 +74,7 @@ class ResidentMedicationService extends BaseService implements IGridService
 
             $noDiscontinued = false;
 
-            if (!empty($params[0]['discontinued'])) {
+            if ((int)$params[0]['discontinued'] !== 1) {
                 $noDiscontinued = true;
             }
 
