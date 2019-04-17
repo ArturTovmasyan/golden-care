@@ -274,27 +274,25 @@ class ResidentAssessmentService extends BaseService implements IGridService
         if (!empty($newRows)) {
             foreach ($newRows as $rowId) {
                 // check row availability
-                if (!isset($rowsById[$rowId])) {
-                    throw new AssessmentRowNotAvailableException();
-                }
+                if (isset($rowsById[$rowId])) {
+                    // check multiple row availability
+                    $categoryId = $categoryIdsByRowId[$rowId];
+                    $category   = $categoriesById[$categoryId];
 
-                // check multiple row availability
-                $categoryId = $categoryIdsByRowId[$rowId];
-                $category   = $categoriesById[$categoryId];
+                    if (!$category->isMultiItem()) {
+                        if (\in_array($categoryId, $categoryIdsWithUniqueRow, false)) {
+                            throw new AssessmentCategoryMultipleException();
+                        }
 
-                if (!$category->isMultiItem()) {
-                    if (\in_array($categoryId, $categoryIdsWithUniqueRow, false)) {
-                        throw new AssessmentCategoryMultipleException();
+                        $categoryIdsWithUniqueRow[] = $categoryId;
                     }
 
-                    $categoryIdsWithUniqueRow[] = $categoryId;
+                    $assessmentRow = new AssessmentRow();
+                    $assessmentRow->setAssessment($assessment);
+                    $assessmentRow->setRow($rowsById[$rowId]);
+                    $assessmentRow->setScore($rowsById[$rowId]->getScore());
+                    $this->em->persist($assessmentRow);
                 }
-
-                $assessmentRow = new AssessmentRow();
-                $assessmentRow->setAssessment($assessment);
-                $assessmentRow->setRow($rowsById[$rowId]);
-                $assessmentRow->setScore($rowsById[$rowId]->getScore());
-                $this->em->persist($assessmentRow);
             }
         }
     }
