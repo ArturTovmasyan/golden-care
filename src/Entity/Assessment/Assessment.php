@@ -323,15 +323,20 @@ class Assessment
     {
         $categories = [];
 
+        $form_categories = $this->form->getFormCategories();
+        /** @var FormCategory $form_category */
+        foreach ($form_categories as $form_category) {
+            $categories[$form_category->getCategory()->getId()] = [
+                'multi' => $form_category->getCategory()->isMultiItem(),
+                'rows' => []
+            ];
+        }
+
         /** @var AssessmentRow $assessmentRow */
         foreach ($this->assessmentRows as $assessmentRow) {
-            if(!array_key_exists($assessmentRow->getRow()->getCategory()->getId(), $categories)) {
-                $categories[$assessmentRow->getRow()->getCategory()->getId()] = [
-                    'multi' => $assessmentRow->getRow()->getCategory()->isMultiItem(),
-                    'rows' => []
-                ];
+            if(array_key_exists($assessmentRow->getRow()->getCategory()->getId(), $categories)) {
+                $categories[$assessmentRow->getRow()->getCategory()->getId()]['rows'][] = $assessmentRow->getRow()->getId();
             }
-            $categories[$assessmentRow->getRow()->getCategory()->getId()]['rows'][] = $assessmentRow->getRow()->getId();
         }
 
         $rows = [];
