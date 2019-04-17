@@ -76,7 +76,7 @@
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
                         {% if resident['rents'] is defined %}
                             {% for rent in resident['rents'] %}
-                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}N/A{% endif %}</b></div>
                                 <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
                             {% endfor %}
                         {% else %}
@@ -330,7 +330,7 @@
                         <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
                         {% if resident['rents'] is defined %}
                             {% for rent in resident['rents'] %}
-                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}N/A{% endif %}</b></div>
                                 <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
                             {% endfor %}
                         {% else %}
@@ -421,7 +421,7 @@
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>
                                     {% if resident['rents'] is defined %}
                                         {% for rent in resident['rents'] %}
-                                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% endif %}</b></div>
+                                            <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}N/A{% endif %}</b></div>
                                             <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}</b></div>
                                         {% endfor %}
                                     {% else %}
