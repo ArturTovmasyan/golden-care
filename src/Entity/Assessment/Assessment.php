@@ -326,8 +326,9 @@ class Assessment
         $form_categories = $this->form->getFormCategories();
         /** @var FormCategory $form_category */
         foreach ($form_categories as $form_category) {
-            $categories[$form_category->getCategory()->getId()] = [
-                'multi' => $form_category->getCategory()->isMultiItem(),
+            $categoryItem = $form_category->getCategory();
+            $categories[$categoryItem->getId()] = [
+                'multi' => $categoryItem->isMultiItem(),
                 'rows' => []
             ];
         }
@@ -344,7 +345,7 @@ class Assessment
             if($category['multi']) {
                 $rows[] = $category['rows'];
             } else {
-                $rows[] = count($category['rows'])>0? $category['rows'][0]: null;
+                $rows[] = \count($category['rows']) > 0 ? $category['rows'][0] : null;
             }
         }
 
