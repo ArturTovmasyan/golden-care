@@ -403,7 +403,8 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 Join::WITH,
                 'p.salutation = sal'
             )
-            ->innerJoin(
+            //TODO will be change to innerJoin
+            ->leftJoin(
                 Speciality::class,
                 'spc',
                 Join::WITH,
