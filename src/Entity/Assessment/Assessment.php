@@ -344,7 +344,7 @@ class Assessment
             if($category['multi']) {
                 $rows[] = $category['rows'];
             } else {
-                array_push($rows, ...$category['rows']);
+                $rows[] = count($category['rows'])>0? $category['rows'][0]: null;
             }
         }
 
