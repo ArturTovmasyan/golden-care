@@ -1,0 +1,10 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    <p>Dear Customer,</p>
+    <p>User {{ fullName }} have invited You to join space.</p>
+    <p>Please complete sign up form and start with team:</p>
+    <p>
+        <a href="{{ domain }}/accept?key={{ token }}">Complete</a>
+    </p>
+{% endblock %}

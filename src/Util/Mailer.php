@@ -257,4 +257,27 @@ class Mailer
             ])
             ->send();
     }
+
+    /**
+     * @param $email
+     * @param $domain
+     * @param $token
+     * @param $fullName
+     * @return mixed
+     * @throws \Exception
+     */
+    public function inviteCustomer($email, $domain, $token, $fullName)
+    {
+        return $this
+            ->setRecipient($email)
+            ->setTemplate('@api_email/invite-customer.html.twig')
+            ->setSubject('Invite Customer to Space')
+            ->setVars([
+                'subject'  => $this->subject,
+                'domain'  => $domain,
+                'token'    => $token,
+                'fullName' => $fullName,
+            ])
+            ->send();
+    }
 }

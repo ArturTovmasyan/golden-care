@@ -11,6 +11,6 @@ class SpaceNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::SPACE_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::SPACE_NOT_FOUND_EXCEPTION]['message'], ResponseCode::SPACE_NOT_FOUND_EXCEPTION);
     }
 }

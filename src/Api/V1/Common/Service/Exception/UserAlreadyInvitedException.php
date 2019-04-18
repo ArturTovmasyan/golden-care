@@ -11,6 +11,6 @@ class UserAlreadyInvitedException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::USER_ALREADY_INVITED_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::USER_ALREADY_INVITED_EXCEPTION]['message'], ResponseCode::USER_ALREADY_INVITED_EXCEPTION);
     }
 }
