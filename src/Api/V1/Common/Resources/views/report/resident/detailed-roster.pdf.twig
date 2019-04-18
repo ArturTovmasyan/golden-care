@@ -50,8 +50,8 @@
                     {% for physician in resident['physicians'] %}
                         <div style="margin-bottom: 10px;">
                             {% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}<br/>{% endif %}
-                            {% if physician.address %}{{ physician.address }}<br/>{% endif %}
                             {% if physician.speciality %}{{ physician.speciality }}<br/>{% endif %}
+                            {% if physician.address %}{{ physician.address }}<br/>{% endif %}
                             {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}<br/>{% endif %}
                             {% for physicianPhone in data.physicianPhones %}
                                 {% if physicianPhone.pId == physician.pId %}
