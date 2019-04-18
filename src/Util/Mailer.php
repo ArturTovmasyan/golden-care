@@ -233,4 +233,28 @@ class Mailer
             ])
             ->send();
     }
+
+    /**
+     * @param $email
+     * @param $domain
+     * @param $fullName
+     * @param $password
+     * @return mixed
+     * @throws \Exception
+     */
+    public function createCustomer($email, $domain, $fullName, $password)
+    {
+        return $this
+            ->setRecipient($email)
+            ->setTemplate('@api_email/create-customer.html.twig')
+            ->setSubject('New Customer')
+            ->setVars([
+                'subject'  => $this->subject,
+                'domain'  => $domain,
+                'fullName'  => $fullName,
+                'email'  => $email,
+                'password'  => $password
+            ])
+            ->send();
+    }
 }

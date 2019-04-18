@@ -282,14 +282,16 @@
                                                                                         <tr>
                                                                                             <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0px;"
                                                                                                 align="left">
-                                                                                                <a href="{{ app.request.getSchemeAndHttpHost() }}"
-                                                                                                   target="_blank"><img
-                                                                                                        src="{{ app.request.getSchemeAndHttpHost() }}/assets/images/seniorcare.png"
-                                                                                                        alt=""
-                                                                                                        width="60"
-                                                                                                        height="60"
-                                                                                                        style="border-width:0; max-width:60px;height:auto; display:block"
-                                                                                                        align="left"/></a>
+                                                                                                {% if app.request %}
+                                                                                                    <a href="{{ app.request.getSchemeAndHttpHost() }}"
+                                                                                                       target="_blank"><img
+                                                                                                            src="{{ app.request.getSchemeAndHttpHost() }}/assets/images/seniorcare.png"
+                                                                                                            alt=""
+                                                                                                            width="60"
+                                                                                                            height="60"
+                                                                                                            style="border-width:0; max-width:60px;height:auto; display:block"
+                                                                                                            align="left"/></a>
+                                                                                                {% endif %}
                                                                                             </td>
                                                                                         </tr>
                                                                                     </table>

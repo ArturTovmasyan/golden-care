@@ -1,0 +1,13 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    <p>Dear {{ fullName }},</p>
+    <p>Please login and change your password:</p>
+    <p>
+        Login: {{ email }}<br>
+        Password: {{ password }}
+    </p>
+    <p>
+        <a href="{{ domain }}">Link</a>
+    </p>
+{% endblock %}
