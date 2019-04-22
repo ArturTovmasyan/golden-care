@@ -217,7 +217,8 @@ class ResidentDietRepository extends EntityRepository implements RelatedInfoInte
                 Join::WITH,
                 'rd.resident = r'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb

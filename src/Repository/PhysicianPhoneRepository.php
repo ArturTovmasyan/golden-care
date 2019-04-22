@@ -81,7 +81,8 @@ class PhysicianPhoneRepository extends EntityRepository implements RelatedInfoIn
                 Join::WITH,
                 'pp.physician = p'
             )
-            ->where($qb->expr()->in('p.id', $physicianIds));
+            ->where('p.id IN (:physicianIds)')
+            ->setParameter('physicianIds', $physicianIds);
 
         if ($space !== null) {
             $qb

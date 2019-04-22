@@ -216,7 +216,8 @@ class ResidentAllergenRepository extends EntityRepository implements RelatedInfo
                 Join::WITH,
                 'ra.resident = r'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb

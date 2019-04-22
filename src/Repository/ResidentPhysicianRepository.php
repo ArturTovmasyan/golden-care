@@ -416,7 +416,8 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 Join::WITH,
                 'p.csz = csz'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         switch ($type) {
             case GroupType::TYPE_FACILITY:

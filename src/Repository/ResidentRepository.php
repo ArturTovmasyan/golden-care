@@ -310,12 +310,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         fb.number as bedNumber'
                     )
                     ->innerJoin(
-                        DiningRoom::class,
-                        'dr',
-                        Join::WITH,
-                        'ra.diningRoom = dr'
-                    )
-                    ->innerJoin(
                         FacilityBed::class,
                         'fb',
                         Join::WITH,
@@ -903,14 +897,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.fax as typeFax,
                         fr.number as roomNumber,
                         fr.floor as floor,
-                        fb.number as bedNumber,
-                        dr.title as diningRoom'
-                    )
-                    ->innerJoin(
-                        DiningRoom::class,
-                        'dr',
-                        Join::WITH,
-                        'ra.diningRoom = dr'
+                        fb.number as bedNumber'
                     )
                     ->innerJoin(
                         FacilityBed::class,

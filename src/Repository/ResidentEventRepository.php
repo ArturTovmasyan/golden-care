@@ -276,7 +276,8 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'rps.salutation = rpsal'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb
@@ -347,9 +348,10 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'rps.salutation = rpsal'
             )
-            ->where($qb->expr()->in('r.id', $residentIds))
+            ->where('r.id IN (:residentIds)')
             ->andWhere('re.date>=:startDate')
             ->andWhere('re.date<=:endDate')
+            ->setParameter('residentIds', $residentIds)
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate);
 

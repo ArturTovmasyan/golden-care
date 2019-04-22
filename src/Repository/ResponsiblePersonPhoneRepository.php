@@ -81,7 +81,8 @@ class ResponsiblePersonPhoneRepository extends EntityRepository implements Relat
                 Join::WITH,
                 'rpp.responsiblePerson = rp'
             )
-            ->where($qb->expr()->in('rp.id', $responsiblePersonIds));
+            ->where('rp.id IN (:responsiblePersonIds)')
+            ->setParameter('responsiblePersonIds', $responsiblePersonIds);
 
         if ($space !== null) {
             $qb

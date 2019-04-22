@@ -275,7 +275,8 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 Join::WITH,
                 'rp.csz = csz'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb
@@ -338,7 +339,8 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 'rp.csz = csz'
             )
             ->leftJoin('rrp.roles','rs')
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb

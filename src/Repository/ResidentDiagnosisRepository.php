@@ -216,7 +216,8 @@ class ResidentDiagnosisRepository extends EntityRepository implements RelatedInf
                 Join::WITH,
                 'rd.resident = r'
             )
-            ->where($qb->expr()->in('r.id', $residentIds));
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb

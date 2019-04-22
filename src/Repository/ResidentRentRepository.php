@@ -219,8 +219,9 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 Join::WITH,
                 'rr.resident = r'
             )
-            ->where($qb->expr()->in('r.id', $residentIds))
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)');
+            ->where('r.id IN (:residentIds)')
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res GROUP BY res.id)')
+            ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
             $qb
