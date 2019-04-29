@@ -54,6 +54,11 @@ use App\Annotation\Grid;
  *              "id"         = "facility",
  *              "type"       = "string",
  *              "field"      = "f.name"
+ *          },
+ *          {
+ *              "id"         = "shorthand",
+ *              "type"       = "string",
+ *              "field"      = "f.shorthand"
  *          }
  *     }
  * )
