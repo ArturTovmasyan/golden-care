@@ -403,6 +403,7 @@ class User implements UserInterface
      * })
      * @Groups({
      *     "api_admin_user_get",
+     *     "api_profile_me"
      * })
      */
     private $space;
