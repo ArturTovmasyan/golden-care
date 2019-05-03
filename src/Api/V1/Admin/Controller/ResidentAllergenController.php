@@ -457,7 +457,7 @@ class ResidentAllergenController extends BaseController
      *          "error": "ResidentAllergen not found"
      *     }
      *
-     * @Route("/related/info", name="api_admin_resident_medical_history_condition_related_info", methods={"POST"})
+     * @Route("/related/info", name="api_admin_resident_allergen_related_info", methods={"POST"})
      *
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
