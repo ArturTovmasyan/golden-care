@@ -72,15 +72,15 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *              "id"         = "last_activity_at",
  *              "type"       = "datetime",
  *              "field"      = "u.lastActivityAt"
- *          },
- *          {
- *              "id"         = "owner",
- *              "type"       = "boolean",
- *              "field"      = "u.owner"
  *          }
  *     }
  * )
  */
+//*          {
+//    *              "id"         = "owner",
+// *              "type"       = "boolean",
+// *              "field"      = "u.owner"
+//        *          }
 class User implements UserInterface
 {
     use TimeAwareTrait;

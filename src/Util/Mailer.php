@@ -247,7 +247,7 @@ class Mailer
         return $this
             ->setRecipient($email)
             ->setTemplate('@api_email/create-customer.html.twig')
-            ->setSubject('New Customer')
+            ->setSubject('Welcome to SeniorCare Software!')
             ->setVars([
                 'subject'  => $this->subject,
                 'domain'  => $domain,
