@@ -244,7 +244,7 @@ class User implements UserInterface
 
     /**
      * @var \Datetime
-     * @ORM\Column(name="last_activity_at", type="datetime")
+     * @ORM\Column(name="last_activity_at", type="datetime", nullable=true)
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
@@ -750,7 +750,7 @@ class User implements UserInterface
         // Delay during wich the user will be considered as still active
         $delay = new \DateTime('2 minutes ago');
 
-        return ($this->getLastActivityAt() > $delay);
+        return $this->getLastActivityAt() ? ($this->getLastActivityAt() > $delay) : false;
     }
 
     /**

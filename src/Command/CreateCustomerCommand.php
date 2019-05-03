@@ -117,7 +117,7 @@ class CreateCustomerCommand extends Command
             $user->setLastName($input->getArgument('last_name'));
             $user->setUsername(strtolower($input->getArgument('last_name')) . time());
             $user->setEmail($input->getArgument('email'));
-            $user->setLastActivityAt(new \DateTime());
+            $user->setLastActivityAt(null);
             $user->setEnabled(true);
             $user->setCompleted(true);
 
