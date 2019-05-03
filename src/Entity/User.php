@@ -433,6 +433,18 @@ class User implements UserInterface
     private $owner;
 
     /**
+     * @var bool
+     * @ORM\Column(name="license_accepted", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_admin_user_get",
+     *     "api_profile_me"
+     * })
+     */
+    private $licenseAccepted;
+
+    /**
      * Space constructor.
      */
     public function __construct()
@@ -866,4 +878,21 @@ class User implements UserInterface
     {
         $this->owner = $owner;
     }
+
+    /**
+     * @return bool
+     */
+    public function isLicenseAccepted(): ?bool
+    {
+        return $this->licenseAccepted;
+    }
+
+    /**
+     * @param bool $licenseAccepted
+     */
+    public function setLicenseAccepted(?bool $licenseAccepted): void
+    {
+        $this->licenseAccepted = $licenseAccepted;
+    }
+
 }

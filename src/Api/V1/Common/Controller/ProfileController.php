@@ -229,4 +229,38 @@ class ProfileController extends BaseController
             Response::HTTP_CREATED
         );
     }
+
+    /**
+     * @Route("/license/accept", name="api_account_license_accept", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param ProfileService $userService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function acceptLicenseAction(Request $request, ProfileService $userService)
+    {
+        $userService->acceptLicense($this->get('security.token_storage')->getToken()->getUser());
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/license/decline", name="api_account_license_decline", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param ProfileService $userService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function declineLicenseAction(Request $request, ProfileService $userService)
+    {
+        $userService->declineLicense($this->get('security.token_storage')->getToken()->getUser());
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }

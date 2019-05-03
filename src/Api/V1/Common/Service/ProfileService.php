@@ -137,4 +137,56 @@ class ProfileService extends BaseService
 
         return $userPhones;
     }
+
+    /**
+     * @param User $loggedUser
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function acceptLicense(User $loggedUser)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)
+                ->findOneBy(['username' => $loggedUser->getUsername()]);
+
+            $user->setLicenseAccepted(true);
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param User $loggedUser
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function declineLicense(User $loggedUser)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)
+                ->findOneBy(['username' => $loggedUser->getUsername()]);
+
+            $user->setLicenseAccepted(false);
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }
