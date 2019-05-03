@@ -129,6 +129,7 @@ class CreateCustomerCommand extends Command
             $user->setPassword($encoded);
             $user->setActivationHash();
             $user->setOwner(true);
+            $user->setLicenseAccepted(false);
             $user->setSpace($space);
             $user->setPhone($input->getArgument('phone'));
 

@@ -67,6 +67,7 @@ class AccountService extends BaseService
             $user->setPassword($encoded);
             $user->setActivationHash();
             $user->setOwner(true);
+            $user->setLicenseAccepted(false);
             $user->setSpace($space);
             $user->setPhone($params['phone']);
 
@@ -247,6 +248,7 @@ class AccountService extends BaseService
             $user->setUsername(strtolower($params['last_name']) . time());
             $user->setEmail($userInvite->getEmail());
             $user->setOwner($userInvite->isOwner());
+            $user->setLicenseAccepted(false);
             $user->setLastActivityAt(new \DateTime());
             $user->setEnabled(true);
             $user->setCompleted(true);
