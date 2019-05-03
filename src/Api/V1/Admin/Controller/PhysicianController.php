@@ -515,7 +515,7 @@ class PhysicianController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction(Request $request, $id, PhysicianService $physicianService)
+    public function deleteAction(Request $request, $id, PhysicianService $physicianService)
     {
         $physicianService->remove($id);
 

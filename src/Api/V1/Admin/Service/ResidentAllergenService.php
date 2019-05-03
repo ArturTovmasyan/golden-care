@@ -253,4 +253,26 @@ class ResidentAllergenService extends BaseService implements IGridService
             throw $e;
         }
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new ResidentAllergenNotFoundException();
+        }
+
+        /** @var ResidentAllergenRepository $repo */
+        $repo = $this->em->getRepository(ResidentAllergen::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $ids);
+
+        if (empty($entities)) {
+            throw new ResidentAllergenNotFoundException();
+        }
+
+        return $this->getRelatedData(ResidentAllergen::class, $entities);
+    }
 }
