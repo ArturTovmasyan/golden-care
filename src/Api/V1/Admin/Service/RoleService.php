@@ -31,7 +31,7 @@ class RoleService extends BaseService implements IGridService
 
     public function list($params)
     {
-        return $this->em->getRepository(Role::class)->findAll();
+        return $this->em->getRepository(Role::class)->userRoles();
     }
 
     /**

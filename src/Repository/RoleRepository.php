@@ -26,6 +26,21 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     /**
+     * This function used for getting role list when adding user.
+     * @return mixed
+     */
+    public function userRoles() {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->where('r.id != :id_sc_admin')
+            ->setParameter('id_sc_admin', 0);
+
+        return $qb->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param $ids
      * @return mixed
      */
@@ -35,8 +50,6 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
             ->createQueryBuilder('r')
             ->where('r.id IN (:ids)')
             ->setParameter('ids', $ids);
-
-        // TODO: add check
 
         return $qb->groupBy('r.id')
             ->getQuery()
