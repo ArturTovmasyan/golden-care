@@ -8,4 +8,4 @@ fos_oauth_server:
         user_provider: App\Provider\UserProvider
         options:
             supported_scopes: user
-            access_token_lifetime: 604800
+            access_token_lifetime: 28800
