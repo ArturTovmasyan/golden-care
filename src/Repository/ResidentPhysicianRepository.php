@@ -16,6 +16,7 @@ use App\Entity\ResidentPhysician;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
+use App\Model\AdmissionType;
 use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -395,7 +396,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 ResidentAdmission::class,
                 'ra',
                 Join::WITH,
-                'ra.resident = r'
+                'ra.resident = r AND ra.admissionType<'. AdmissionType::DISCHARGE .' AND ra.end IS NULL)'
             )
             ->innerJoin(
                 Salutation::class,
