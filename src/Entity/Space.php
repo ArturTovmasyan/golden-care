@@ -109,7 +109,9 @@ class Space
      *     "api_admin_responsible_person_role_list",
      *     "api_admin_responsible_person_role_get",
      *     "api_admin_user_invite_list",
-     *     "api_admin_user_invite_get"
+     *     "api_admin_user_invite_get",
+     *     "api_lead_type_of_care_list",
+     *     "api_lead_type_of_care_get"
      * })
      */
     private $id;
@@ -159,7 +161,9 @@ class Space
      *     "api_admin_diagnosis_get",
      *     "api_admin_allergen_grid",
      *     "api_admin_allergen_get",
-     *     "api_admin_allergen_list"
+     *     "api_admin_allergen_list",
+     *     "api_lead_type_of_care_list",
+     *     "api_lead_type_of_care_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -312,6 +316,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Form", mappedBy="space", cascade={"remove", "persist"})
      */
     private $assessmentForms;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\TypeOfCare", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadTypeOfCares;
 
     /**
      * Space constructor.
@@ -735,5 +745,21 @@ class Space
     public function setAssessmentForms(ArrayCollection $assessmentForms): void
     {
         $this->assessmentForms = $assessmentForms;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadTypeOfCares(): ArrayCollection
+    {
+        return $this->leadTypeOfCares;
+    }
+
+    /**
+     * @param ArrayCollection $leadTypeOfCares
+     */
+    public function setLeadTypeOfCares(ArrayCollection $leadTypeOfCares): void
+    {
+        $this->leadTypeOfCares = $leadTypeOfCares;
     }
 }

@@ -103,6 +103,7 @@ class ResponseCode
     const USER_ALREADY_INVITED_EXCEPTION                         = 705;
     const USER_NOT_YET_INVITED_EXCEPTION                         = 706;
     const SPACE_ALREADY_HAS_OWNER_EXCEPTION                      = 707;
+    const TYPE_OF_CARE_NOT_FOUND_EXCEPTION                       = 708;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -204,6 +205,7 @@ class ResponseCode
         self::USER_ALREADY_INVITED_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'User already invited to SeniorCare.'],
         self::USER_NOT_YET_INVITED_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Provided invitation key is invalid or expired.'],
         self::SPACE_ALREADY_HAS_OWNER_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space already has owner.'],
+        self::TYPE_OF_CARE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'TypeOfCare not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],
