@@ -97,7 +97,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
                 Space::class,
                 's',
                 Join::WITH,
-                's = as.space'
+                's = ast.space'
             )
             ->where('ast.id = :id')
             ->setParameter('id', $id);
@@ -138,7 +138,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
                     Space::class,
                     's',
                     Join::WITH,
-                    's = as.space'
+                    's = ast.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -194,7 +194,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
                     Space::class,
                     's',
                     Join::WITH,
-                    's = as.space'
+                    's = ast.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
