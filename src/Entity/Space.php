@@ -111,7 +111,10 @@ class Space
      *     "api_admin_user_invite_list",
      *     "api_admin_user_invite_get",
      *     "api_lead_care_type_list",
-     *     "api_lead_care_type_get"
+     *     "api_lead_care_type_get",
+     *     "api_lead_state_change_reason_list",
+     *     "api_lead_state_change_reason_get"
+     *
      * })
      */
     private $id;
@@ -163,7 +166,9 @@ class Space
      *     "api_admin_allergen_get",
      *     "api_admin_allergen_list",
      *     "api_lead_care_type_list",
-     *     "api_lead_care_type_get"
+     *     "api_lead_care_type_get",
+     *     "api_lead_state_change_reason_list",
+     *     "api_lead_state_change_reason_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -322,6 +327,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\CareType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadCareTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\StateChangeReason", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadStateChangeReasons;
 
     /**
      * Space constructor.
@@ -761,5 +772,21 @@ class Space
     public function setLeadCareTypes(ArrayCollection $leadCareTypes): void
     {
         $this->leadCareTypes = $leadCareTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadStateChangeReasons(): ArrayCollection
+    {
+        return $this->leadStateChangeReasons;
+    }
+
+    /**
+     * @param ArrayCollection $leadStateChangeReasons
+     */
+    public function setLeadStateChangeReasons(ArrayCollection $leadStateChangeReasons): void
+    {
+        $this->leadStateChangeReasons = $leadStateChangeReasons;
     }
 }
