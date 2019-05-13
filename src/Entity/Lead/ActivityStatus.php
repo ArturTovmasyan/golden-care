@@ -31,18 +31,18 @@ use App\Annotation\Grid;
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "as.id"
+ *              "field"      = "ast.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "as.title",
+ *              "field"      = "ast.title",
  *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "done",
  *              "type"       = "boolean",
- *              "field"      = "as.treatment"
+ *              "field"      = "ast.done"
  *          },
  *          {
  *              "id"         = "space",

@@ -114,8 +114,8 @@ class Space
      *     "api_lead_care_type_get",
      *     "api_lead_state_change_reason_list",
      *     "api_lead_state_change_reason_get",
-     *     "api_lead_state_activity_status_list",
-     *     "api_lead_state_activity_status_get"
+     *     "api_lead_activity_status_list",
+     *     "api_lead_activity_status_get"
      *
      * })
      */
@@ -171,8 +171,8 @@ class Space
      *     "api_lead_care_type_get",
      *     "api_lead_state_change_reason_list",
      *     "api_lead_state_change_reason_get",
-     *     "api_lead_state_activity_status_list",
-     *     "api_lead_state_activity_status_get"
+     *     "api_lead_activity_status_list",
+     *     "api_lead_activity_status_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",

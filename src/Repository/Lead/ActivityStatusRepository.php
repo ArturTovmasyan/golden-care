@@ -23,12 +23,12 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
     public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
-            ->from(ActivityStatus::class, 'as')
+            ->from(ActivityStatus::class, 'ast')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = as.space'
+                's = ast.space'
             );
 
         if ($space !== null) {
@@ -39,12 +39,12 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('as.id IN (:grantIds)')
+                ->andWhere('ast.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         $queryBuilder
-            ->groupBy('as.id');
+            ->groupBy('ast.id');
     }
 
     /**
@@ -55,12 +55,12 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
     public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
-            ->createQueryBuilder('as')
+            ->createQueryBuilder('ast')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = as.space'
+                's = ast.space'
             );
 
         if ($space !== null) {
@@ -71,12 +71,12 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('as.id IN (:grantIds)')
+                ->andWhere('ast.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         $qb
-            ->addOrderBy('as.title', 'ASC');
+            ->addOrderBy('ast.title', 'ASC');
 
         return $qb
             ->getQuery()
@@ -92,14 +92,14 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
     public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('as')
+            ->createQueryBuilder('ast')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = as.space'
             )
-            ->where('as.id = :id')
+            ->where('ast.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -110,7 +110,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('as.id IN (:grantIds)')
+                ->andWhere('ast.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -128,8 +128,8 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('as')
-            ->where('as.id IN (:ids)')
+            ->createQueryBuilder('ast')
+            ->where('ast.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
@@ -146,12 +146,12 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('as.id IN (:grantIds)')
+                ->andWhere('ast.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
-            ->groupBy('as.id')
+            ->groupBy('ast.id')
             ->getQuery()
             ->getResult();
     }
@@ -167,24 +167,24 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('as')
-            ->select('as.title');
+            ->createQueryBuilder('ast')
+            ->select('ast.title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('as.'.$mappedBy.'= :id')
+                ->where('ast.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('as.id IN (:ids)')
+                ->andWhere('ast.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('as.id IN (:array)')
+                ->andWhere('ast.id IN (:array)')
                 ->setParameter('array', []);
         }
 
@@ -202,7 +202,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('as.id IN (:grantIds)')
+                ->andWhere('ast.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
