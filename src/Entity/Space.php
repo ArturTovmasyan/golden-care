@@ -110,8 +110,8 @@ class Space
      *     "api_admin_responsible_person_role_get",
      *     "api_admin_user_invite_list",
      *     "api_admin_user_invite_get",
-     *     "api_lead_type_of_care_list",
-     *     "api_lead_type_of_care_get"
+     *     "api_lead_care_type_list",
+     *     "api_lead_care_type_get"
      * })
      */
     private $id;
@@ -162,8 +162,8 @@ class Space
      *     "api_admin_allergen_grid",
      *     "api_admin_allergen_get",
      *     "api_admin_allergen_list",
-     *     "api_lead_type_of_care_list",
-     *     "api_lead_type_of_care_get"
+     *     "api_lead_care_type_list",
+     *     "api_lead_care_type_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -319,9 +319,9 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\TypeOfCare", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\CareType", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $leadTypeOfCares;
+    private $leadCareTypes;
 
     /**
      * Space constructor.
@@ -750,16 +750,16 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getLeadTypeOfCares(): ArrayCollection
+    public function getLeadCareTypes(): ArrayCollection
     {
-        return $this->leadTypeOfCares;
+        return $this->leadCareTypes;
     }
 
     /**
-     * @param ArrayCollection $leadTypeOfCares
+     * @param ArrayCollection $leadCareTypes
      */
-    public function setLeadTypeOfCares(ArrayCollection $leadTypeOfCares): void
+    public function setLeadCareTypes(ArrayCollection $leadCareTypes): void
     {
-        $this->leadTypeOfCares = $leadTypeOfCares;
+        $this->leadCareTypes = $leadCareTypes;
     }
 }
