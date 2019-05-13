@@ -113,7 +113,9 @@ class Space
      *     "api_lead_care_type_list",
      *     "api_lead_care_type_get",
      *     "api_lead_state_change_reason_list",
-     *     "api_lead_state_change_reason_get"
+     *     "api_lead_state_change_reason_get",
+     *     "api_lead_state_activity_status_list",
+     *     "api_lead_state_activity_status_get"
      *
      * })
      */
@@ -168,7 +170,9 @@ class Space
      *     "api_lead_care_type_list",
      *     "api_lead_care_type_get",
      *     "api_lead_state_change_reason_list",
-     *     "api_lead_state_change_reason_get"
+     *     "api_lead_state_change_reason_get",
+     *     "api_lead_state_activity_status_list",
+     *     "api_lead_state_activity_status_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -333,6 +337,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\StateChangeReason", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadStateChangeReasons;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\ActivityStatus", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadActivityStatuses;
 
     /**
      * Space constructor.
@@ -788,5 +798,21 @@ class Space
     public function setLeadStateChangeReasons(ArrayCollection $leadStateChangeReasons): void
     {
         $this->leadStateChangeReasons = $leadStateChangeReasons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadActivityStatuses(): ArrayCollection
+    {
+        return $this->leadActivityStatuses;
+    }
+
+    /**
+     * @param ArrayCollection $leadActivityStatuses
+     */
+    public function setLeadActivityStatuses(ArrayCollection $leadActivityStatuses): void
+    {
+        $this->leadActivityStatuses = $leadActivityStatuses;
     }
 }

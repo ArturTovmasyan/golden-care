@@ -72,18 +72,18 @@ class StateChangeReasonService extends BaseService implements IGridService
 
             $state = $params['state'] ? (int)$params['state'] : 0;
 
-            $tateChangeReason = new StateChangeReason();
-            $tateChangeReason->setTitle($params['title']);
-            $tateChangeReason->setState($state);
-            $tateChangeReason->setSpace($space);
+            $stateChangeReason = new StateChangeReason();
+            $stateChangeReason->setTitle($params['title']);
+            $stateChangeReason->setState($state);
+            $stateChangeReason->setSpace($space);
 
-            $this->validate($tateChangeReason, null, ['api_lead_state_change_reason_add']);
+            $this->validate($stateChangeReason, null, ['api_lead_state_change_reason_add']);
 
-            $this->em->persist($tateChangeReason);
+            $this->em->persist($stateChangeReason);
             $this->em->flush();
             $this->em->getConnection()->commit();
 
-            $insert_id = $tateChangeReason->getId();
+            $insert_id = $stateChangeReason->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -184,17 +184,17 @@ class StateChangeReasonService extends BaseService implements IGridService
             /** @var StateChangeReasonRepository $repo */
             $repo = $this->em->getRepository(StateChangeReason::class);
 
-            $tateChangeReasons = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $ids);
+            $stateChangeReasons = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $ids);
 
-            if (empty($tateChangeReasons)) {
+            if (empty($stateChangeReasons)) {
                 throw new StateChangeReasonNotFoundException();
             }
 
             /**
-             * @var StateChangeReason $tateChangeReason
+             * @var StateChangeReason $stateChangeReason
              */
-            foreach ($tateChangeReasons as $tateChangeReason) {
-                $this->em->remove($tateChangeReason);
+            foreach ($stateChangeReasons as $stateChangeReason) {
+                $this->em->remove($stateChangeReason);
             }
 
             $this->em->flush();
