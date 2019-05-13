@@ -7,7 +7,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Lead\CareType;
 use App\Entity\Space;
-use App\Repository\lead\CareTypeRepository;
+use App\Repository\Lead\CareTypeRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
