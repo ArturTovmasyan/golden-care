@@ -64,12 +64,12 @@ use App\Annotation\Grid;
  *              "field"      = "at.facility"
  *          },
  *          {
- *              "id"         = "is_editable",
+ *              "id"         = "editable",
  *              "type"       = "boolean",
  *              "field"      = "at.editable"
  *          },
  *          {
- *              "id"         = "is_deletable",
+ *              "id"         = "deletable",
  *              "type"       = "boolean",
  *              "field"      = "at.deletable"
  *          }
