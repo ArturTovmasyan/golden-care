@@ -25,7 +25,7 @@ use App\Annotation\Grant as Grant;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/lead/care/type")
+ * @Route("/api/v1.0/lead/care-type")
  *
  * @Grant(grant="persistence-lead-care_type", level="VIEW")
  *

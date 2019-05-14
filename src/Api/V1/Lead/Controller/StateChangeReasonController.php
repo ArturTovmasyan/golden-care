@@ -25,7 +25,7 @@ use App\Annotation\Grant as Grant;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/lead/state/change/reason")
+ * @Route("/api/v1.0/lead/state-change-reason")
  *
  * @Grant(grant="persistence-lead-state_change_reason", level="VIEW")
  *

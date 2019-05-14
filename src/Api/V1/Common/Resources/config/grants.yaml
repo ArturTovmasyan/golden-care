@@ -40,6 +40,37 @@ persistence:
           title: 'UserPhone'
           class: App\Entity\UserPhone
 
+    lead:
+      title: 'Lead'
+      children:
+        lead:
+          title: 'Lead'
+          class: App\Entity\Lead\Lead
+        referral:
+          title: 'Referral'
+          class: App\Entity\Lead\Referral
+        organization:
+          title: 'Organization'
+          class: App\Entity\Lead\Organization
+        referrer_type:
+          title: 'Referrer Type'
+          class: App\Entity\Lead\ReferrerType
+        activity:
+          title: 'Activity'
+          class: App\Entity\Lead\Activity
+        activity_status:
+          title: 'Activity Status'
+          class: App\Entity\Lead\ActivityStatus
+        activity_type:
+          title: 'Activity Type'
+          class: App\Entity\Lead\ActivityType
+        care_type:
+          title: 'Care Type'
+          class: App\Entity\Lead\CareType
+        state_change_reason:
+          title: 'State Change Reason'
+          class: App\Entity\Lead\StateChangeReason
+
     common:
       title: 'Common'
       children:
