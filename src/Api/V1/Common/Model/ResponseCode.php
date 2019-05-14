@@ -107,6 +107,7 @@ class ResponseCode
     const LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION           = 709;
     const LEAD_ACTIVITY_STATUS_NOT_FOUND_EXCEPTION               = 710;
     const LEAD_ACTIVITY_TYPE_NOT_FOUND_EXCEPTION                 = 711;
+    const LEAD_REFERRER_TYPE_NOT_FOUND_EXCEPTION                 = 712;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -212,6 +213,7 @@ class ResponseCode
         self::LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'StateChangeReason not found.'],
         self::LEAD_ACTIVITY_STATUS_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ActivityStatus not found.'],
         self::LEAD_ACTIVITY_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ActivityType not found.'],
+        self::LEAD_REFERRER_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ReferrerType not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],

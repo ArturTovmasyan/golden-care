@@ -115,8 +115,9 @@ class Space
      *     "api_lead_state_change_reason_list",
      *     "api_lead_state_change_reason_get",
      *     "api_lead_activity_status_list",
-     *     "api_lead_activity_status_get"
-     *
+     *     "api_lead_activity_status_get",
+     *     "api_lead_referrer_type_list",
+     *     "api_lead_referrer_type_get"
      * })
      */
     private $id;
@@ -172,7 +173,9 @@ class Space
      *     "api_lead_state_change_reason_list",
      *     "api_lead_state_change_reason_get",
      *     "api_lead_activity_status_list",
-     *     "api_lead_activity_status_get"
+     *     "api_lead_activity_status_get",
+     *     "api_lead_referrer_type_list",
+     *     "api_lead_referrer_type_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -343,6 +346,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\ActivityStatus", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadActivityStatuses;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\ReferrerType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadReferrerTypes;
 
     /**
      * Space constructor.
@@ -814,5 +823,21 @@ class Space
     public function setLeadActivityStatuses(ArrayCollection $leadActivityStatuses): void
     {
         $this->leadActivityStatuses = $leadActivityStatuses;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadReferrerTypes(): ArrayCollection
+    {
+        return $this->leadReferrerTypes;
+    }
+
+    /**
+     * @param ArrayCollection $leadReferrerTypes
+     */
+    public function setLeadReferrerTypes(ArrayCollection $leadReferrerTypes): void
+    {
+        $this->leadReferrerTypes = $leadReferrerTypes;
     }
 }
