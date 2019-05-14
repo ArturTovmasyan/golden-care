@@ -5,6 +5,7 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -89,7 +90,9 @@ class ActivityStatus
      * @Groups({
      *     "api_lead_activity_status_grid",
      *     "api_lead_activity_status_list",
-     *     "api_lead_activity_status_get"
+     *     "api_lead_activity_status_get",
+     *     "api_lead_activity_type_list",
+     *     "api_lead_activity_type_get"
      * })
      */
     private $title;
@@ -103,7 +106,7 @@ class ActivityStatus
      *     "api_lead_activity_status_get"
      * })
      */
-    protected $done;
+    private $done;
 
     /**
      * @var Space
@@ -122,6 +125,12 @@ class ActivityStatus
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\ActivityType", mappedBy="defaultStatus", cascade={"remove", "persist"}, fetch="EXTRA_LAZY")
+     */
+    private $types;
 
     public function getId()
     {
@@ -174,5 +183,21 @@ class ActivityStatus
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTypes(): ArrayCollection
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param ArrayCollection $types
+     */
+    public function setTypes(ArrayCollection $types): void
+    {
+        $this->types = $types;
     }
 }
