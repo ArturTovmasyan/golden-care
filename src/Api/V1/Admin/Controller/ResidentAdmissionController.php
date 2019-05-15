@@ -740,6 +740,22 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @Route("/active/count", name="api_admin_resident_admission_get_active_count_residents", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     */
+    public function getActiveCountResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getCountActiveResidents(),
+            ['api_admin_resident_get_active']
+        );
+    }
+
+    /**
      * @api {get} /api/v1.0/admin/resident/admission/{id}/active Get Active Admission
      * @apiVersion 1.0.0
      * @apiName Get Active Resident

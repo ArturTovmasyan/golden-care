@@ -179,6 +179,69 @@ class ResidentAdmissionService extends BaseService implements IGridService
         return $result;
     }
 
+    /**
+     * @return array
+     */
+    public function getCountActiveResidents()
+    {
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $data = [
+            [
+                'groupType' => GroupType::TYPE_FACILITY,
+                'entityClass' => Facility::class,
+                'title' => 'facility'
+            ],
+            [
+                'groupType' => GroupType::TYPE_APARTMENT,
+                'entityClass' => Apartment::class,
+                'title' => 'apartment'
+            ],
+            [
+                'groupType' => GroupType::TYPE_REGION,
+                'entityClass' => Region::class,
+                'title' => 'region'
+            ]
+        ];
+
+        $result = [];
+        foreach ($data as $strategy) {
+            $groupRepo = $this->em->getRepository($strategy['entityClass']);
+
+            $groups = [];
+            $groupIds = null;
+            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
+            if (!empty($groupList)) {
+                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
+                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
+
+                $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
+
+                foreach ($groupArray as $group) {
+                    $currentGroup = [
+                        'id' => $group['id'],
+                        'name' => $group['name'],
+                        'count' => 0
+                    ];
+                    $i = 0;
+                    foreach ($groupResidents as $groupResident) {
+                        if ($groupResident['type_id'] === $group['id']) {
+                            ++$i;
+                            $currentGroup['count'] = $i;
+                        }
+                    }
+
+                    $groups[] = $currentGroup;
+                }
+            }
+
+            $result[$strategy['title']] = $groups;
+        }
+
+        return $result;
+    }
+
 
     /**
      * @param $type
