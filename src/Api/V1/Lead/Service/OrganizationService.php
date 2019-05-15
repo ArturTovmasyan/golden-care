@@ -218,7 +218,6 @@ class OrganizationService extends BaseService implements IGridService
 
         foreach($phones as $phone) {
             $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
 
             $organizationPhone = new OrganizationPhone();
             $organizationPhone->setOrganization($organization);
@@ -226,7 +225,6 @@ class OrganizationService extends BaseService implements IGridService
             $organizationPhone->setType($phone['type']);
             $organizationPhone->setNumber($phone['number']);
             $organizationPhone->setPrimary($primary);
-            $organizationPhone->setSmsEnabled($smsEnabled);
 
             if ($organizationPhone->isPrimary()) {
                 if ($hasPrimary) {
