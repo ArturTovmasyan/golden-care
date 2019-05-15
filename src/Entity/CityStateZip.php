@@ -141,7 +141,9 @@ class CityStateZip
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $stateAbbr;
@@ -173,7 +175,9 @@ class CityStateZip
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $zipMain;
@@ -227,7 +231,9 @@ class CityStateZip
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $city;
@@ -278,6 +284,12 @@ class CityStateZip
      * @ORM\OneToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="csz", cascade={"remove", "persist"})
      */
     private $responsiblePersons;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Organization", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $organizations;
 
     /**
      * @return int
@@ -442,5 +454,21 @@ class CityStateZip
     public function setResponsiblePersons(ArrayCollection $responsiblePersons): void
     {
         $this->responsiblePersons = $responsiblePersons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOrganizations(): ArrayCollection
+    {
+        return $this->organizations;
+    }
+
+    /**
+     * @param ArrayCollection $organizations
+     */
+    public function setOrganizations(ArrayCollection $organizations): void
+    {
+        $this->organizations = $organizations;
     }
 }

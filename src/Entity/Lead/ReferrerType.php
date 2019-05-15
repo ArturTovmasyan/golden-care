@@ -5,6 +5,7 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -94,7 +95,9 @@ class ReferrerType
      * @Groups({
      *     "api_lead_referrer_type_grid",
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $title;
@@ -138,6 +141,12 @@ class ReferrerType
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Organization", mappedBy="category", cascade={"remove", "persist"})
+     */
+    private $organizations;
 
     public function getId()
     {
@@ -206,5 +215,21 @@ class ReferrerType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOrganizations(): ArrayCollection
+    {
+        return $this->organizations;
+    }
+
+    /**
+     * @param ArrayCollection $organizations
+     */
+    public function setOrganizations(ArrayCollection $organizations): void
+    {
+        $this->organizations = $organizations;
     }
 }
