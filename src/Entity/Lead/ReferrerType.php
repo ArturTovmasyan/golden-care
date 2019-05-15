@@ -70,7 +70,9 @@ class ReferrerType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $id;

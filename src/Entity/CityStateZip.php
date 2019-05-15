@@ -85,7 +85,9 @@ class CityStateZip
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
+     *     "api_admin_resident_physician_get",
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $id;

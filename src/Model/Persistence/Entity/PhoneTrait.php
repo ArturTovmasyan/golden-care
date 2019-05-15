@@ -23,7 +23,9 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_profile_me"
+     *      "api_profile_me",
+     *      "api_lead_organization_list",
+     *      "api_lead_organization_get"
      * })
      */
     private $compatibility;
@@ -39,7 +41,9 @@ trait PhoneTrait
      *          "api_admin_resident_edit",
      *          "api_admin_responsible_person_add",
      *          "api_admin_responsible_person_edit",
-     *          "api_profile_edit"
+     *          "api_profile_edit",
+     *          "api_lead_organization_add",
+     *          "api_lead_organization_edit"
      *      }
      * )
      * @Groups({
@@ -52,7 +56,9 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_profile_me"
+     *      "api_profile_me",
+     *      "api_lead_organization_list",
+     *      "api_lead_organization_get"
      * })
      */
     private $type;
@@ -69,7 +75,9 @@ trait PhoneTrait
      *         "api_admin_resident_edit",
      *         "api_admin_responsible_person_add",
      *         "api_admin_responsible_person_edit",
-     *         "api_profile_edit"
+     *         "api_profile_edit",
+     *         "api_lead_organization_add",
+     *         "api_lead_organization_edit"
      * })
      * @Groups({
      *      "api_admin_user_get",
@@ -81,7 +89,9 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_profile_me"
+     *      "api_profile_me",
+     *      "api_lead_organization_list",
+     *      "api_lead_organization_get"
      * })
      */
     private $number;
@@ -92,11 +102,13 @@ trait PhoneTrait
      * @Assert\NotNull(groups={
      *      "api_admin_user_add",
      *      "api_admin_user_edit",
-     *     "api_admin_resident_add",
-     *     "api_admin_resident_edit",
-     *     "api_admin_responsible_person_add",
-     *     "api_admin_responsible_person_edit",
-     *     "api_profile_edit"
+     *      "api_admin_resident_add",
+     *      "api_admin_resident_edit",
+     *      "api_admin_responsible_person_add",
+     *      "api_admin_responsible_person_edit",
+     *      "api_profile_edit",
+     *      "api_lead_organization_add",
+     *      "api_lead_organization_edit"
      * })
      * @Groups({
      *      "api_admin_user_get",
@@ -108,7 +120,9 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
-     *      "api_profile_me"
+     *      "api_profile_me",
+     *      "api_lead_organization_list",
+     *      "api_lead_organization_get"
      * })
      */
     private $primary = false;
