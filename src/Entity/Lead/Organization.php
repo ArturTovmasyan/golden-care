@@ -205,12 +205,12 @@ class Organization
      *      max = 10,
      *      maxMessage = "You cannot specify more than {{ limit }} emails",
      *      groups={
-     *          "api_admin_organization_add",
-     *          "api_admin_organization_edit"
+     *          "api_lead_organization_add",
+     *          "api_lead_organization_edit"
      * })
      * @Groups({
-     *     "api_admin_organization_list",
-     *     "api_admin_organization_get"
+     *     "api_lead_organization_list",
+     *     "api_lead_organization_get"
      * })
      */
     private $emails = [];

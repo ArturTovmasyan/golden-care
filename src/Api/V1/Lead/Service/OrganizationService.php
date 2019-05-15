@@ -94,14 +94,16 @@ class OrganizationService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
+            $emails = !empty($params['emails']) ? $params['emails'] : [];
+
             $organization = new Organization();
             $organization->setTitle($params['title']);
             $organization->setCategory($category);
             $organization->setAddress1($params['address_1']);
-            $organization->setAddress2($params['address_s']);
+            $organization->setAddress2($params['address_2']);
             $organization->setCsz($csz);
             $organization->setWebsiteUrl($params['website_url']);
-            $organization->setEmails($params['emails']);
+            $organization->setEmails($emails);
             $organization->setPhones($this->savePhones($organization, $params['phones'] ?? []));
 
             $this->validate($organization, null, ['api_lead_organization_add']);
@@ -167,14 +169,16 @@ class OrganizationService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
+            $emails = !empty($params['emails']) ? $params['emails'] : [];
+
             $entity->setTitle($params['title']);
             $entity->setTitle($params['title']);
             $entity->setCategory($category);
             $entity->setAddress1($params['address_1']);
-            $entity->setAddress2($params['address_s']);
+            $entity->setAddress2($params['address_2']);
             $entity->setCsz($csz);
             $entity->setWebsiteUrl($params['website_url']);
-            $entity->setEmails($params['emails']);
+            $entity->setEmails($emails);
             $entity->setPhones($this->savePhones($entity, $params['phones'] ?? []));
 
             $this->validate($entity, null, ['api_lead_organization_edit']);
