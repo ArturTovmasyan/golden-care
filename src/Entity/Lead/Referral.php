@@ -144,8 +144,8 @@ class Referral
      *      max = 512,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_lead_referral_organization_required_add",
-     *          "api_lead_referral_organization_required_edit"
+     *          "api_lead_referral_representative_required_add",
+     *          "api_lead_referral_representative_required_edit"
      * })
      * @Groups({
      *     "api_lead_referral_list",
@@ -157,8 +157,8 @@ class Referral
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\ReferralPhone", mappedBy="referral")
      * @Assert\Valid(groups={
-     *          "api_lead_referral_organization_required_add",
-     *          "api_lead_referral_organization_required_edit"
+     *          "api_lead_referral_representative_required_add",
+     *          "api_lead_referral_representative_required_edit"
      * })
      * @Groups({
      *      "api_lead_referral_list",
@@ -174,8 +174,8 @@ class Referral
      *      max = 10,
      *      maxMessage = "You cannot specify more than {{ limit }} emails",
      *      groups={
-     *          "api_lead_referral_organization_required_add",
-     *          "api_lead_referral_organization_required_edit"
+     *          "api_lead_referral_representative_required_add",
+     *          "api_lead_referral_representative_required_edit"
      * })
      * @Groups({
      *     "api_lead_referral_list",
@@ -315,8 +315,8 @@ class Referral
     /**
      * @param ExecutionContextInterface $context
      * @Assert\Callback(groups={
-     *          "api_lead_referral_organization_required_add",
-     *          "api_lead_referral_organization_required_edit"
+     *          "api_lead_referral_representative_required_add",
+     *          "api_lead_referral_representative_required_edit"
      * })
      */
     public function areEmailsValid(ExecutionContextInterface $context): void
