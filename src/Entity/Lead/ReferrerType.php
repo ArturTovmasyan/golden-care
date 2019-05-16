@@ -72,7 +72,9 @@ class ReferrerType
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get"
      * })
      */
     private $id;
@@ -99,7 +101,9 @@ class ReferrerType
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get"
      * })
      */
     private $title;
@@ -149,6 +153,12 @@ class ReferrerType
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Organization", mappedBy="category", cascade={"remove", "persist"})
      */
     private $organizations;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Referral", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $referrals;
 
     public function getId()
     {
@@ -233,5 +243,21 @@ class ReferrerType
     public function setOrganizations(ArrayCollection $organizations): void
     {
         $this->organizations = $organizations;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getReferrals(): ArrayCollection
+    {
+        return $this->referrals;
+    }
+
+    /**
+     * @param ArrayCollection $referrals
+     */
+    public function setReferrals(ArrayCollection $referrals): void
+    {
+        $this->referrals = $referrals;
     }
 }

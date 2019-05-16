@@ -25,7 +25,9 @@ trait PhoneTrait
      *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me",
      *      "api_lead_organization_list",
-     *      "api_lead_organization_get"
+     *      "api_lead_organization_get",
+     *      "api_lead_referral_list",
+     *      "api_lead_referral_get"
      * })
      */
     private $compatibility;
@@ -43,7 +45,9 @@ trait PhoneTrait
      *          "api_admin_responsible_person_edit",
      *          "api_profile_edit",
      *          "api_lead_organization_add",
-     *          "api_lead_organization_edit"
+     *          "api_lead_organization_edit",
+     *          "api_lead_referral_organization_required_add",
+     *          "api_lead_referral_organization_required_edit"
      *      }
      * )
      * @Groups({
@@ -58,7 +62,9 @@ trait PhoneTrait
      *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me",
      *      "api_lead_organization_list",
-     *      "api_lead_organization_get"
+     *      "api_lead_organization_get",
+     *      "api_lead_referral_list",
+     *      "api_lead_referral_get"
      * })
      */
     private $type;
@@ -77,7 +83,9 @@ trait PhoneTrait
      *         "api_admin_responsible_person_edit",
      *         "api_profile_edit",
      *         "api_lead_organization_add",
-     *         "api_lead_organization_edit"
+     *         "api_lead_organization_edit",
+     *         "api_lead_referral_organization_required_add",
+     *         "api_lead_referral_organization_required_edit"
      * })
      * @Groups({
      *      "api_admin_user_get",
@@ -91,7 +99,9 @@ trait PhoneTrait
      *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me",
      *      "api_lead_organization_list",
-     *      "api_lead_organization_get"
+     *      "api_lead_organization_get",
+     *      "api_lead_referral_list",
+     *      "api_lead_referral_get"
      * })
      */
     private $number;
@@ -108,7 +118,9 @@ trait PhoneTrait
      *      "api_admin_responsible_person_edit",
      *      "api_profile_edit",
      *      "api_lead_organization_add",
-     *      "api_lead_organization_edit"
+     *      "api_lead_organization_edit",
+     *      "api_lead_referral_organization_required_add",
+     *      "api_lead_referral_organization_required_edit"
      * })
      * @Groups({
      *      "api_admin_user_get",
@@ -122,7 +134,9 @@ trait PhoneTrait
      *      "api_admin_resident_responsible_person_list",
      *      "api_profile_me",
      *      "api_lead_organization_list",
-     *      "api_lead_organization_get"
+     *      "api_lead_organization_get",
+     *      "api_lead_referral_list",
+     *      "api_lead_referral_get"
      * })
      */
     private $primary = false;

@@ -49,6 +49,9 @@ persistence:
         referral:
           title: 'Referral'
           class: App\Entity\Lead\Referral
+        referral_phone:
+          title: 'ReferralPhone'
+          class: App\Entity\Lead\ReferralPhone
         organization:
           title: 'Organization'
           class: App\Entity\Lead\Organization

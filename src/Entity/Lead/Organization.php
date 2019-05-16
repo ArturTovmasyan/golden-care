@@ -3,6 +3,7 @@
 namespace App\Entity\Lead;
 
 use App\Entity\CityStateZip;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -63,7 +64,9 @@ class Organization
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get"
      * })
      */
     private $id;
@@ -85,7 +88,9 @@ class Organization
      * )
      * @Groups({
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get"
      * })
      */
     private $title;
@@ -214,6 +219,12 @@ class Organization
      * })
      */
     private $emails = [];
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Referral", mappedBy="organization", cascade={"remove", "persist"})
+     */
+    private $referrals;
 
     /**
      * @return int
@@ -358,6 +369,22 @@ class Organization
     public function setEmails(array $emails): void
     {
         $this->emails = $emails;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getReferrals(): ArrayCollection
+    {
+        return $this->referrals;
+    }
+
+    /**
+     * @param ArrayCollection $referrals
+     */
+    public function setReferrals(ArrayCollection $referrals): void
+    {
+        $this->referrals = $referrals;
     }
 
     /**
