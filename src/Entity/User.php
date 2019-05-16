@@ -445,6 +445,12 @@ class User implements UserInterface
     private $licenseAccepted;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="assignTo", cascade={"remove", "persist"})
+     */
+    private $leadActivities;
+
+    /**
      * Space constructor.
      */
     public function __construct()
@@ -895,4 +901,19 @@ class User implements UserInterface
         $this->licenseAccepted = $licenseAccepted;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadActivities(): ArrayCollection
+    {
+        return $this->leadActivities;
+    }
+
+    /**
+     * @param ArrayCollection $leadActivities
+     */
+    public function setLeadActivities(ArrayCollection $leadActivities): void
+    {
+        $this->leadActivities = $leadActivities;
+    }
 }

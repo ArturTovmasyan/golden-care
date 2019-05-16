@@ -2,6 +2,7 @@
 
 namespace App\Entity\Lead;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -185,6 +186,12 @@ class Referral
     private $emails = [];
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="referral", cascade={"remove", "persist"})
+     */
+    private $activities;
+
+    /**
      * @return int
      */
     public function getId()
@@ -310,6 +317,22 @@ class Referral
     public function setEmails(array $emails): void
     {
         $this->emails = $emails;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActivities(): ArrayCollection
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param ArrayCollection $activities
+     */
+    public function setActivities(ArrayCollection $activities): void
+    {
+        $this->activities = $activities;
     }
 
     /**

@@ -132,6 +132,12 @@ class ActivityStatus
      */
     private $types;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="status", cascade={"remove", "persist"})
+     */
+    private $activities;
+
     public function getId()
     {
         return $this->id;
@@ -199,5 +205,21 @@ class ActivityStatus
     public function setTypes(ArrayCollection $types): void
     {
         $this->types = $types;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActivities(): ArrayCollection
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param ArrayCollection $activities
+     */
+    public function setActivities(ArrayCollection $activities): void
+    {
+        $this->activities = $activities;
     }
 }

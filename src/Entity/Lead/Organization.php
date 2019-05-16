@@ -227,6 +227,12 @@ class Organization
     private $referrals;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="organization", cascade={"remove", "persist"})
+     */
+    private $activities;
+
+    /**
      * @return int
      */
     public function getId()
@@ -385,6 +391,22 @@ class Organization
     public function setReferrals(ArrayCollection $referrals): void
     {
         $this->referrals = $referrals;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActivities(): ArrayCollection
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param ArrayCollection $activities
+     */
+    public function setActivities(ArrayCollection $activities): void
+    {
+        $this->activities = $activities;
     }
 
     /**

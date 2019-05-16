@@ -4,6 +4,7 @@ namespace App\Entity\Lead;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -224,6 +225,12 @@ class ActivityType
      */
     private $deletable;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $activities;
+
     public function getId()
     {
         return $this->id;
@@ -387,5 +394,21 @@ class ActivityType
     public function setDeletable(bool $deletable): void
     {
         $this->deletable = $deletable;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActivities(): ArrayCollection
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param ArrayCollection $activities
+     */
+    public function setActivities(ArrayCollection $activities): void
+    {
+        $this->activities = $activities;
     }
 }
