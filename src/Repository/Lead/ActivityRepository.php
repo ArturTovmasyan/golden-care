@@ -2,6 +2,7 @@
 
 namespace App\Repository\Lead;
 
+use App\Api\V1\Common\Service\Exception\Lead\IncorrectOwnerTypeException;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
@@ -11,6 +12,7 @@ use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Model\Lead\ActivityOwnerType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -158,6 +160,85 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
 
         $qb
             ->addOrderBy('a.date', 'DESC');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $ownerType
+     * @param $id
+     * @return mixed
+     */
+    public function getBy(Space $space = null, array $entityGrants = null, $ownerType, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->innerJoin(
+                ActivityType::class,
+                'at',
+                Join::WITH,
+                'at = a.type'
+            );
+
+        switch ($ownerType) {
+            case ActivityOwnerType::TYPE_LEAD:
+
+                break;
+            case ActivityOwnerType::TYPE_REFERRAL:
+                $qb
+                    ->leftJoin(
+                        Referral::class,
+                        'r',
+                        Join::WITH,
+                        'r = a.referral'
+                    )
+                    ->where('r.id = :id')
+                    ->setParameter('id', $id);
+
+                break;
+            case ActivityOwnerType::TYPE_ORGANIZATION:
+                $qb
+                    ->leftJoin(
+                        Organization::class,
+                        'o',
+                        Join::WITH,
+                        'o = a.organization'
+                    )
+                    ->where('o.id = :id')
+                    ->setParameter('id', $id);
+
+                break;
+            default:
+                throw new IncorrectOwnerTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ActivityStatus::class,
+                    'ds',
+                    Join::WITH,
+                    'ds = at.defaultStatus'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ds.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
 
         return $qb
             ->getQuery()

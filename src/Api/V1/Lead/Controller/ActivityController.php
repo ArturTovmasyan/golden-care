@@ -78,7 +78,11 @@ class ActivityController extends BaseController
             $request,
             Activity::class,
             'api_lead_activity_list',
-            $activityService
+            $activityService,
+            [
+                'owner_type' => $request->get('owner_type'),
+                'owner_id' => $request->get('owner_id')
+            ]
         );
     }
 
