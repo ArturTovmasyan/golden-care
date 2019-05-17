@@ -117,7 +117,7 @@ class ActivityController extends BaseController
                 'owner_type' => $request->get('owner_type'),
                 'title' => $request->get('title'),
                 'date' => $request->get('date'),
-                'notes' => $request->get('date'),
+                'notes' => $request->get('notes'),
                 'status_id' => $request->get('status_id'),
                 'assign_to' => $request->get('assign_to'),
                 'due_date' => $request->get('due_date'),
@@ -153,7 +153,7 @@ class ActivityController extends BaseController
             [
                 'title' => $request->get('title'),
                 'date' => $request->get('date'),
-                'notes' => $request->get('date'),
+                'notes' => $request->get('notes'),
                 'status_id' => $request->get('status_id'),
                 'assign_to' => $request->get('assign_to'),
                 'due_date' => $request->get('due_date'),

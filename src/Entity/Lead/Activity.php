@@ -390,17 +390,17 @@ class Activity
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDate(): \DateTime
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime|null $date
      */
-    public function setDate(\DateTime $date): void
+    public function setDate(?\DateTime $date): void
     {
         $this->date = $date;
     }
@@ -454,33 +454,33 @@ class Activity
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDueDate(): \DateTime
+    public function getDueDate(): ?\DateTime
     {
         return $this->dueDate;
     }
 
     /**
-     * @param \DateTime $dueDate
+     * @param \DateTime|null $dueDate
      */
-    public function setDueDate(\DateTime $dueDate): void
+    public function setDueDate(?\DateTime $dueDate): void
     {
         $this->dueDate = $dueDate;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getReminderDate(): \DateTime
+    public function getReminderDate(): ?\DateTime
     {
         return $this->reminderDate;
     }
 
     /**
-     * @param \DateTime $reminderDate
+     * @param \DateTime|null $reminderDate
      */
-    public function setReminderDate(\DateTime $reminderDate): void
+    public function setReminderDate(?\DateTime $reminderDate): void
     {
         $this->reminderDate = $reminderDate;
     }
