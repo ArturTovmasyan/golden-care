@@ -65,7 +65,9 @@ class ActivityStatus
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_activity_status_list",
-     *     "api_lead_activity_status_get"
+     *     "api_lead_activity_status_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $id;
@@ -92,7 +94,9 @@ class ActivityStatus
      *     "api_lead_activity_status_list",
      *     "api_lead_activity_status_get",
      *     "api_lead_activity_type_list",
-     *     "api_lead_activity_type_get"
+     *     "api_lead_activity_type_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $title;

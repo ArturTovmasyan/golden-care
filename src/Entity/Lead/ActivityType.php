@@ -89,7 +89,9 @@ class ActivityType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_activity_type_list",
-     *     "api_lead_activity_type_get"
+     *     "api_lead_activity_type_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $id;
@@ -112,9 +114,10 @@ class ActivityType
      * )
      * @ORM\Column(name="title", type="string", length=60)
      * @Groups({
-     *     "api_lead_activity_type_grid",
      *     "api_lead_activity_type_list",
-     *     "api_lead_activity_type_get"
+     *     "api_lead_activity_type_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $title;

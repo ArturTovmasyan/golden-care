@@ -53,7 +53,9 @@ class Referral
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $id;
@@ -75,7 +77,9 @@ class Referral
      * )
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $firstName;
@@ -97,7 +101,9 @@ class Referral
      * )
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $lastName;
@@ -133,7 +139,9 @@ class Referral
      * })
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $organization;

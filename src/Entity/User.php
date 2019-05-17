@@ -104,7 +104,9 @@ class User implements UserInterface
      *     "api_admin_user_get",
      *     "api_profile_me",
      *     "api_admin_user_invite_list",
-     *     "api_admin_user_invite_get"
+     *     "api_admin_user_invite_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -117,7 +119,9 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
-     *     "api_profile_me"
+     *     "api_profile_me",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -135,7 +139,9 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
-     *     "api_profile_me"
+     *     "api_profile_me",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",

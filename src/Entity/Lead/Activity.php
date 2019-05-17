@@ -52,39 +52,10 @@ use App\Annotation\Grid;
  *              "field"      = "a.notes"
  *          },
  *          {
- *              "id"         = "status",
- *              "type"       = "string",
- *              "field"      = "st.title"
- *          },
- *          {
- *              "id"         = "assign_to",
- *              "type"       = "string",
- *              "field"      = "u.assignTo"
- *          },
- *          {
- *              "id"         = "due_date",
- *              "type"       = "datetime",
- *              "field"      = "a.dueDate"
- *          },
- *          {
- *              "id"         = "reminder_date",
- *              "type"       = "datetime",
- *              "field"      = "a.reminderDate"
- *          },
- *          {
- *              "id"         = "facility",
- *              "type"       = "string",
- *              "field"      = "f.name"
- *          },
- *          {
- *              "id"         = "referral",
- *              "type"       = "string",
- *              "field"      = "r.title"
- *          },
- *          {
- *              "id"         = "organization",
- *              "type"       = "string",
- *              "field"      = "o.title"
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )

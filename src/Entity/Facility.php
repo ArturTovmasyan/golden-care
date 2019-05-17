@@ -110,7 +110,9 @@ class Facility
      *     "api_admin_resident_admission_get",
      *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $id;
@@ -141,7 +143,9 @@ class Facility
      *     "api_admin_resident_admission_get",
      *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
      * })
      */
     private $name;
