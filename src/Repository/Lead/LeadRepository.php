@@ -3,20 +3,23 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\CityStateZip;
+use App\Entity\Facility;
+use App\Entity\Lead\CareType;
 use App\Entity\Lead\Lead;
-use App\Entity\Lead\Organization;
-use App\Entity\Lead\ReferrerType;
-use App\Entity\Lead\Referral;
+use App\Entity\Lead\StateChangeReason;
+use App\Entity\PaymentSource;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ReferralRepository
+ * Class LeadRepository
  * @package App\Repository\Lead
  */
-class ReferralRepository extends EntityRepository  implements RelatedInfoInterface
+class LeadRepository extends EntityRepository  implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -26,24 +29,44 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
-            ->from(Referral::class, 'r')
+            ->from(Lead::class, 'l')
             ->innerJoin(
-                Lead::class,
-                'l',
-                Join::WITH,
-                'l = r.lead'
-            )
-            ->innerJoin(
-                ReferrerType::class,
-                'rt',
-                Join::WITH,
-                'rt = r.type'
-            )
-            ->leftJoin(
-                Organization::class,
+                User::class,
                 'o',
                 Join::WITH,
-                'o = r.organization'
+                'o = l.owner'
+            )
+            ->leftJoin(
+                CareType::class,
+                'ct',
+                Join::WITH,
+                'ct = l.careType'
+            )
+            ->leftJoin(
+                PaymentSource::class,
+                'pt',
+                Join::WITH,
+                'pt = l.paymentType'
+            )
+            ->leftJoin(
+                StateChangeReason::class,
+                'scr',
+                Join::WITH,
+                'scr = l.stateChangeReason'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'csz = l.responsiblePersonCsz'
+            )
+            ->leftJoin('l.referral', 'r')
+            ->leftJoin('r.organization', 'ro')
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
             );
 
         if ($space !== null) {
@@ -52,7 +75,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                     Space::class,
                     's',
                     Join::WITH,
-                    's = rt.space'
+                    's = o.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -60,12 +83,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('r.id IN (:grantIds)')
+                ->andWhere('l.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         $queryBuilder
-            ->groupBy('r.id');
+            ->groupBy('l.id');
     }
 
     /**
@@ -76,12 +99,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
-            ->createQueryBuilder('r')
+            ->createQueryBuilder('l')
             ->innerJoin(
-                ReferrerType::class,
-                'rt',
+                User::class,
+                'o',
                 Join::WITH,
-                'rt = r.type'
+                'o = l.owner'
             );
 
         if ($space !== null) {
@@ -90,7 +113,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                     Space::class,
                     's',
                     Join::WITH,
-                    's = rt.space'
+                    's = o.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -98,9 +121,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('r.id IN (:grantIds)')
+                ->andWhere('l.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy('l.firstName', 'ASC');
 
         return $qb
             ->getQuery()
@@ -116,20 +142,20 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('r')
+            ->createQueryBuilder('l')
             ->innerJoin(
-                ReferrerType::class,
-                'rt',
+                User::class,
+                'o',
                 Join::WITH,
-                'rt = r.type'
+                'o = l.owner'
             )
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
-                's = rt.space'
+                's = o.space'
             )
-            ->where('r.id = :id')
+            ->where('l.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -140,7 +166,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('r.id IN (:grantIds)')
+                ->andWhere('l.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -158,23 +184,23 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('r')
-            ->where('r.id IN (:ids)')
+            ->createQueryBuilder('l')
+            ->where('l.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ReferrerType::class,
-                    'rt',
+                    User::class,
+                    'o',
                     Join::WITH,
-                    'rt = r.type'
+                    'o = l.owner'
                 )
                 ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
-                    's = rt.space'
+                    's = o.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -182,12 +208,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('r.id IN (:grantIds)')
+                ->andWhere('l.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
-            ->groupBy('r.id')
+            ->groupBy('l.id')
             ->getQuery()
             ->getResult();
     }
@@ -203,46 +229,40 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('r')
-            ->leftJoin(
-                Organization::class,
-                'o',
-                Join::WITH,
-                'o = r.organization'
-            )
-            ->select("CASE WHEN r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName) ELSE o.title END as name");
+            ->createQueryBuilder('l')
+            ->select("CONCAT(l.firstName, ' ', l.lastName) as fullName");
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('r.'.$mappedBy.'= :id')
+                ->where('l.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('r.id IN (:ids)')
+                ->andWhere('l.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('r.id IN (:array)')
+                ->andWhere('l.id IN (:array)')
                 ->setParameter('array', []);
         }
 
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ReferrerType::class,
-                    'rt',
+                    User::class,
+                    'o',
                     Join::WITH,
-                    'rt = r.type'
+                    'o = l.owner'
                 )
                 ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
-                    's = rt.space'
+                    's = o.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -250,7 +270,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('r.id IN (:grantIds)')
+                ->andWhere('l.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

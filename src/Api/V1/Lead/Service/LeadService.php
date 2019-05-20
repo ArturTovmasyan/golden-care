@@ -1,0 +1,527 @@
+<?php
+namespace App\Api\V1\Lead\Service;
+
+use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\StateChangeReasonNotFoundException;
+use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
+use App\Api\V1\Common\Service\IGridService;
+use App\Entity\CityStateZip;
+use App\Entity\Facility;
+use App\Entity\Lead\CareType;
+use App\Entity\Lead\Lead;
+use App\Entity\Lead\StateChangeReason;
+use App\Entity\PaymentSource;
+use App\Entity\User;
+use App\Model\Lead\State;
+use App\Repository\CityStateZipRepository;
+use App\Repository\FacilityRepository;
+use App\Repository\Lead\CareTypeRepository;
+use App\Repository\Lead\LeadRepository;
+use App\Repository\Lead\StateChangeReasonRepository;
+use App\Repository\PaymentSourceRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\QueryBuilder;
+
+/**
+ * Class LeadService
+ * @package App\Api\V1\Admin\Service
+ */
+class LeadService extends BaseService implements IGridService
+{
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $params
+     */
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    {
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function list($params)
+    {
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class));
+    }
+
+    /**
+     * @param $id
+     * @return Lead|null|object
+     */
+    public function getById($id)
+    {
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+    }
+
+    /**
+     * @param array $params
+     * @return int|null
+     * @throws \Exception
+     */
+    public function add(array $params) : ?int
+    {
+        $insert_id = null;
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $lead = new Lead();
+            $lead->setFirstName($params['first_name']);
+            $lead->setLastName($params['last_name']);
+
+            if (!empty($params['care_type_id'])) {
+                /** @var CareTypeRepository $careTypeRepo */
+                $careTypeRepo = $this->em->getRepository(CareType::class);
+
+                /** @var CareType $careType */
+                $careType = $careTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareType::class), $params['care_type_id']);
+
+                if ($careType === null) {
+                    throw new CareTypeNotFoundException();
+                }
+
+                $lead->setCareType($careType);
+            } else {
+                $lead->setCareType(null);
+            }
+
+            if (!empty($params['payment_type_id'])) {
+                /** @var PaymentSourceRepository $paymentTypeRepo */
+                $paymentTypeRepo = $this->em->getRepository(PaymentSource::class);
+
+                /** @var PaymentSource $paymentType */
+                $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(PaymentSource::class), $params['payment_type_id']);
+
+                if ($paymentType === null) {
+                    throw new PaymentSourceNotFoundException();
+                }
+
+                $lead->setPaymentType($paymentType);
+            } else {
+                $lead->setPaymentType(null);
+            }
+
+            $ownerId = $params['owner_id'] ?? 0;
+
+            /** @var UserRepository $ownerRepo */
+            $ownerRepo = $this->em->getRepository(User::class);
+
+            /** @var User $owner */
+            $owner = $ownerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $ownerId);
+
+            if ($owner === null) {
+                throw new UserNotFoundException();
+            }
+
+            $lead->setOwner($owner);
+            $lead->setState(State::TYPE_OPEN);
+
+            if (!empty($params['state_change_reason_id'])) {
+                /** @var StateChangeReasonRepository $stateChangeReasonRepo */
+                $stateChangeReasonRepo = $this->em->getRepository(StateChangeReason::class);
+
+                /** @var StateChangeReason $stateChangeReason */
+                $stateChangeReason = $stateChangeReasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $params['state_change_reason_id']);
+
+                if ($stateChangeReason === null) {
+                    throw new StateChangeReasonNotFoundException();
+                }
+
+                if ($stateChangeReason->getState() === State::TYPE_OPEN) {
+                    $lead->setStateChangeReason($stateChangeReason);
+                } else {
+                    $lead->setStateChangeReason(null);
+                }
+            } else {
+                $lead->setStateChangeReason(null);
+            }
+
+            if (!empty($params['state_effective_date'])) {
+                $stateEffectiveDate = new \DateTime($params['state_effective_date']);
+            } else {
+                $stateEffectiveDate = new \DateTime('now');
+            }
+
+            $lead->setStateEffectiveDate($stateEffectiveDate);
+
+            $lead->setResponsiblePersonFirstName($params['rp_first_name']);
+            $lead->setResponsiblePersonLastName($params['rp_last_name']);
+
+            if (!empty($params['rp_address_1'])) {
+                $lead->setResponsiblePersonAddress1($params['rp_address_1']);
+            } else {
+                $lead->setResponsiblePersonAddress1(null);
+            }
+
+            if (!empty($params['rp_address_2'])) {
+                $lead->setResponsiblePersonAddress2($params['rp_address_2']);
+            } else {
+                $lead->setResponsiblePersonAddress2(null);
+            }
+
+            if (!empty($params['rp_csz_id'])) {
+                /** @var CityStateZipRepository $cszRepo */
+                $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+                /** @var CityStateZip $csz */
+                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['rp_csz_id']);
+
+                if ($csz === null) {
+                    throw new CityStateZipNotFoundException();
+                }
+
+                $lead->setResponsiblePersonCsz($csz);
+            } else {
+                $lead->setResponsiblePersonCsz(null);
+            }
+
+            if (!empty($params['rp_phone'])) {
+                $lead->setResponsiblePersonPhone($params['rp_phone']);
+            } else {
+                $lead->setResponsiblePersonPhone(null);
+            }
+
+            if (!empty($params['rp_email'])) {
+                $lead->setResponsiblePersonEmail($params['rp_email']);
+            } else {
+                $lead->setResponsiblePersonEmail(null);
+            }
+
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(Facility::class);
+
+            if (!empty($params['facility_id'])) {
+                /** @var Facility $facility */
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
+
+                if ($facility === null) {
+                    throw new FacilityNotFoundException();
+                }
+
+                $lead->setPrimaryFacility($facility);
+            } else {
+                $lead->setPrimaryFacility(null);
+            }
+
+            if(!empty($params['facilities'])) {
+                $facilityIds = array_unique($params['facilities']);
+                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+
+                if (!empty($facilities)) {
+                    $lead->setFacilities($facilities);
+                }
+            }
+
+            $notes = $params['notes'] ?? '';
+
+            $lead->setNotes($notes);
+
+            $this->validate($lead, null, ['api_lead_lead_add']);
+
+            $this->em->persist($lead);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+
+            $insert_id = $lead->getId();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+
+        return $insert_id;
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Exception
+     */
+    public function edit($id, array $params) : void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $entity->setFirstName($params['first_name']);
+            $entity->setLastName($params['last_name']);
+
+            if (!empty($params['care_type_id'])) {
+                /** @var CareTypeRepository $careTypeRepo */
+                $careTypeRepo = $this->em->getRepository(CareType::class);
+
+                /** @var CareType $careType */
+                $careType = $careTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareType::class), $params['care_type_id']);
+
+                if ($careType === null) {
+                    throw new CareTypeNotFoundException();
+                }
+
+                $entity->setCareType($careType);
+            } else {
+                $entity->setCareType(null);
+            }
+
+            if (!empty($params['payment_type_id'])) {
+                /** @var PaymentSourceRepository $paymentTypeRepo */
+                $paymentTypeRepo = $this->em->getRepository(PaymentSource::class);
+
+                /** @var PaymentSource $paymentType */
+                $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(PaymentSource::class), $params['payment_type_id']);
+
+                if ($paymentType === null) {
+                    throw new PaymentSourceNotFoundException();
+                }
+
+                $entity->setPaymentType($paymentType);
+            } else {
+                $entity->setPaymentType(null);
+            }
+
+            $ownerId = $params['owner_id'] ?? 0;
+
+            /** @var UserRepository $ownerRepo */
+            $ownerRepo = $this->em->getRepository(User::class);
+
+            /** @var User $owner */
+            $owner = $ownerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $ownerId);
+
+            if ($owner === null) {
+                throw new UserNotFoundException();
+            }
+
+            $entity->setOwner($owner);
+
+            if (!empty($params['state_change_reason_id'])) {
+                /** @var StateChangeReasonRepository $stateChangeReasonRepo */
+                $stateChangeReasonRepo = $this->em->getRepository(StateChangeReason::class);
+
+                /** @var StateChangeReason $stateChangeReason */
+                $stateChangeReason = $stateChangeReasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $params['state_change_reason_id']);
+
+                if ($stateChangeReason === null) {
+                    throw new StateChangeReasonNotFoundException();
+                }
+
+                $entity->setStateChangeReason($stateChangeReason);
+                $entity->setState($stateChangeReason->getState());
+            } else {
+                $entity->setStateChangeReason(null);
+                $entity->setState(State::TYPE_OPEN);
+            }
+
+            if (!empty($params['state_effective_date'])) {
+                $stateEffectiveDate = new \DateTime($params['state_effective_date']);
+            } else {
+                $stateEffectiveDate = new \DateTime('now');
+            }
+
+            $entity->setStateEffectiveDate($stateEffectiveDate);
+
+            $entity->setResponsiblePersonFirstName($params['rp_first_name']);
+            $entity->setResponsiblePersonLastName($params['rp_last_name']);
+
+            if (!empty($params['rp_address_1'])) {
+                $entity->setResponsiblePersonAddress1($params['rp_address_1']);
+            } else {
+                $entity->setResponsiblePersonAddress1(null);
+            }
+
+            if (!empty($params['rp_address_2'])) {
+                $entity->setResponsiblePersonAddress2($params['rp_address_2']);
+            } else {
+                $entity->setResponsiblePersonAddress2(null);
+            }
+
+            if (!empty($params['rp_csz_id'])) {
+                /** @var CityStateZipRepository $cszRepo */
+                $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+                /** @var CityStateZip $csz */
+                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['rp_csz_id']);
+
+                if ($csz === null) {
+                    throw new CityStateZipNotFoundException();
+                }
+
+                $entity->setResponsiblePersonCsz($csz);
+            } else {
+                $entity->setResponsiblePersonCsz(null);
+            }
+
+            if (!empty($params['rp_phone'])) {
+                $entity->setResponsiblePersonPhone($params['rp_phone']);
+            } else {
+                $entity->setResponsiblePersonPhone(null);
+            }
+
+            if (!empty($params['rp_email'])) {
+                $entity->setResponsiblePersonEmail($params['rp_email']);
+            } else {
+                $entity->setResponsiblePersonEmail(null);
+            }
+
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(Facility::class);
+
+            if (!empty($params['facility_id'])) {
+                /** @var Facility $facility */
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
+
+                if ($facility === null) {
+                    throw new FacilityNotFoundException();
+                }
+
+                $entity->setPrimaryFacility($facility);
+            } else {
+                $entity->setPrimaryFacility(null);
+            }
+
+            $facilities = $entity->getFacilities();
+            foreach ($facilities as $facility) {
+                $entity->removeFacility($facility);
+            }
+
+            if(!empty($params['facilities'])) {
+                $facilityIds = array_unique($params['facilities']);
+                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+
+                if (!empty($facilities)) {
+                    $entity->setFacilities($facilities);
+                }
+            }
+
+            $notes = $params['notes'] ?? '';
+
+            $entity->setNotes($notes);
+
+            $this->validate($entity, null, ['api_lead_lead_edit']);
+
+            $this->em->persist($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @throws \Throwable
+     */
+    public function remove($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $this->em->remove($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $ids
+     * @throws \Throwable
+     */
+    public function removeBulk(array $ids)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (empty($ids)) {
+                throw new LeadNotFoundException();
+            }
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            $leads = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $ids);
+
+            if (empty($leads)) {
+                throw new LeadNotFoundException();
+            }
+
+            /**
+             * @var Lead $lead
+             */
+            foreach ($leads as $lead) {
+                $this->em->remove($lead);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getRelatedInfo(array $ids): array
+    {
+        if (empty($ids)) {
+            throw new LeadNotFoundException();
+        }
+
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $ids);
+
+        if (empty($entities)) {
+            throw new LeadNotFoundException();
+        }
+
+        return $this->getRelatedData(Lead::class, $entities);
+    }
+}

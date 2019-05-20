@@ -113,6 +113,7 @@ class ReferralController extends BaseController
     {
         $id = $referralService->add(
             [
+                'lead_id' => $request->get('lead_id'),
                 'type_id' => $request->get('type_id'),
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -146,6 +147,7 @@ class ReferralController extends BaseController
         $referralService->edit(
             $id,
             [
+                'lead_id' => $request->get('lead_id'),
                 'type_id' => $request->get('type_id'),
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),

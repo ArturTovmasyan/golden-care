@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\Lead\IncorrectOwnerTypeException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityStatusNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
@@ -15,6 +16,7 @@ use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
+use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\User;
@@ -23,6 +25,7 @@ use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityStatusRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
+use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferralRepository;
 use App\Repository\UserRepository;
@@ -215,6 +218,19 @@ class ActivityService extends BaseService implements IGridService
                 case ActivityOwnerType::TYPE_LEAD:
                     $validationGroup = 'api_lead_lead_activity_add';
 
+                    $leadId = $params['lead_id'] ?? 0;
+
+                    /** @var LeadRepository $leadRepo */
+                    $leadRepo = $this->em->getRepository(Lead::class);
+
+                    /** @var Lead $lead */
+                    $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+
+                    if ($lead === null) {
+                        throw new LeadNotFoundException();
+                    }
+
+                    $activity->setLead($lead);
                     $activity->setReferral(null);
                     $activity->setOrganization(null);
 
@@ -234,6 +250,7 @@ class ActivityService extends BaseService implements IGridService
                         throw new ReferralNotFoundException();
                     }
 
+                    $activity->setLead(null);
                     $activity->setReferral($referral);
                     $activity->setOrganization(null);
 
@@ -253,6 +270,7 @@ class ActivityService extends BaseService implements IGridService
                         throw new OrganizationNotFoundException();
                     }
 
+                    $activity->setLead(null);
                     $activity->setReferral(null);
                     $activity->setOrganization($organization);
 
@@ -410,6 +428,19 @@ class ActivityService extends BaseService implements IGridService
                 case ActivityOwnerType::TYPE_LEAD:
                     $validationGroup = 'api_lead_lead_activity_edit';
 
+                    $leadId = $params['lead_id'] ?? 0;
+
+                    /** @var LeadRepository $leadRepo */
+                    $leadRepo = $this->em->getRepository(Lead::class);
+
+                    /** @var Lead $lead */
+                    $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+
+                    if ($lead === null) {
+                        throw new LeadNotFoundException();
+                    }
+
+                    $entity->setLead($lead);
                     $entity->setReferral(null);
                     $entity->setOrganization(null);
 
@@ -429,6 +460,7 @@ class ActivityService extends BaseService implements IGridService
                         throw new ReferralNotFoundException();
                     }
 
+                    $entity->setLead(null);
                     $entity->setReferral($referral);
                     $entity->setOrganization(null);
 
@@ -448,6 +480,7 @@ class ActivityService extends BaseService implements IGridService
                         throw new OrganizationNotFoundException();
                     }
 
+                    $entity->setLead(null);
                     $entity->setReferral(null);
                     $entity->setOrganization($organization);
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Lead\Lead;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -112,7 +113,9 @@ class Facility
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -145,7 +148,9 @@ class Facility
      *     "api_admin_contract_get_active",
      *     "api_admin_contract_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $name;
@@ -394,6 +399,18 @@ class Facility
     private $leadActivities;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="primaryFacility", cascade={"remove", "persist"})
+     */
+    private $leads;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="facilities", cascade={"persist"})
+     */
+    protected $facilityLeads;
+
+    /**
      * @return int
      */
     public function getId()
@@ -575,6 +592,61 @@ class Facility
     public function setLeadActivities(ArrayCollection $leadActivities): void
     {
         $this->leadActivities = $leadActivities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacilityLeads()
+    {
+        return $this->facilityLeads;
+    }
+
+    /**
+     * @param mixed $facilityLeads
+     */
+    public function setFacilityLeads($facilityLeads): void
+    {
+        $this->facilityLeads = $facilityLeads;
+
+        /** @var Lead $lead */
+        foreach ($this->facilityLeads as $lead) {
+            $lead->addFacility($this);
+        }
+    }
+
+    /**
+     * @param Lead $lead
+     */
+    public function addLead(Lead $lead): void
+    {
+        $lead->addFacility($this);
+        $this->facilityLeads[] = $lead;
+    }
+
+    /**
+     * @param Lead $lead
+     */
+    public function removeLead(Lead $lead): void
+    {
+        $this->facilityLeads->removeElement($lead);
+        $lead->removeFacility($this);
     }
 
     /**

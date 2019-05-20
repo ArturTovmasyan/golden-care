@@ -8,6 +8,7 @@ use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
+use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\Space;
@@ -40,9 +41,11 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                     JSON_OBJECT('Due Date', a.dueDate),
                     JSON_OBJECT('Reminder Date', a.reminderDate),
                     JSON_OBJECT('Facility', f.name),
-                    
+
+                    JSON_OBJECT('Lead', CONCAT(l.firstName, ' ', l.lastName)),
+
                     JSON_OBJECT('Referral', CASE WHEN r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName) ELSE ro.title END),
-                    
+
                     JSON_OBJECT('Organization', o.title)
                 ) as info
             ")
@@ -70,6 +73,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'f',
                 Join::WITH,
                 'f = a.facility'
+            )
+            ->leftJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = a.lead'
             )
             ->leftJoin(
                 Referral::class,
@@ -115,7 +124,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
         }
 
         $queryBuilder
-            ->groupBy('at.id');
+            ->groupBy('a.id');
     }
 
     /**
@@ -186,6 +195,15 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
 
         switch ($ownerType) {
             case ActivityOwnerType::TYPE_LEAD:
+                $qb
+                    ->leftJoin(
+                        Lead::class,
+                        'l',
+                        Join::WITH,
+                        'l = a.lead'
+                    )
+                    ->where('l.id = :id')
+                    ->setParameter('id', $id);
 
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:

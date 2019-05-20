@@ -106,7 +106,9 @@ class User implements UserInterface
      *     "api_admin_user_invite_list",
      *     "api_admin_user_invite_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -121,7 +123,9 @@ class User implements UserInterface
      *     "api_admin_user_get",
      *     "api_profile_me",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -141,7 +145,9 @@ class User implements UserInterface
      *     "api_admin_user_get",
      *     "api_profile_me",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -455,6 +461,12 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="assignTo", cascade={"remove", "persist"})
      */
     private $leadActivities;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="owner", cascade={"remove", "persist"})
+     */
+    private $leads;
 
     /**
      * Space constructor.
@@ -921,5 +933,21 @@ class User implements UserInterface
     public function setLeadActivities(ArrayCollection $leadActivities): void
     {
         $this->leadActivities = $leadActivities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
     }
 }

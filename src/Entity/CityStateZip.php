@@ -87,7 +87,9 @@ class CityStateZip
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -145,7 +147,9 @@ class CityStateZip
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $stateAbbr;
@@ -179,7 +183,9 @@ class CityStateZip
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $zipMain;
@@ -235,7 +241,9 @@ class CityStateZip
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get",
      *     "api_lead_organization_list",
-     *     "api_lead_organization_get"
+     *     "api_lead_organization_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $city;
@@ -292,6 +300,12 @@ class CityStateZip
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Organization", mappedBy="csz", cascade={"remove", "persist"})
      */
     private $organizations;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="responsiblePersonCsz", cascade={"remove", "persist"})
+     */
+    private $leads;
 
     /**
      * @return int
@@ -472,5 +486,21 @@ class CityStateZip
     public function setOrganizations(ArrayCollection $organizations): void
     {
         $this->organizations = $organizations;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
     }
 }

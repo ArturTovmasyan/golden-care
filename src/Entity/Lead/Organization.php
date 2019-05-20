@@ -68,7 +68,9 @@ class Organization
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -94,7 +96,9 @@ class Organization
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $title;

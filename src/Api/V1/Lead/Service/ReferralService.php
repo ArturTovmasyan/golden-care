@@ -2,15 +2,18 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferralPhone;
 use App\Entity\Lead\ReferrerType;
+use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferralPhoneRepository;
 use App\Repository\Lead\ReferralRepository;
@@ -70,6 +73,18 @@ class ReferralService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $leadId = $params['lead_id'] ?? 0;
+
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $lead */
+            $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+
+            if ($lead === null) {
+                throw new LeadNotFoundException();
+            }
+
             $typeId = $params['type_id'] ?? 0;
 
             /** @var ReferrerTypeRepository $typeRepo */
@@ -83,6 +98,7 @@ class ReferralService extends BaseService implements IGridService
             }
 
             $referral = new Referral();
+            $referral->setLead($lead);
             $referral->setType($type);
 
             if ($type->isOrganizationRequired()) {
@@ -162,6 +178,18 @@ class ReferralService extends BaseService implements IGridService
                 throw new ReferralNotFoundException();
             }
 
+            $leadId = $params['lead_id'] ?? 0;
+
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $lead */
+            $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+
+            if ($lead === null) {
+                throw new LeadNotFoundException();
+            }
+
             $typeId = $params['type_id'] ?? 0;
 
             /** @var ReferrerTypeRepository $typeRepo */
@@ -174,6 +202,7 @@ class ReferralService extends BaseService implements IGridService
                 throw new ReferrerTypeNotFoundException();
             }
 
+            $entity->setLead($lead);
             $entity->setType($type);
 
             if ($type->isOrganizationRequired()) {

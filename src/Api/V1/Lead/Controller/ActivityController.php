@@ -127,6 +127,7 @@ class ActivityController extends BaseController
                 'due_date' => $request->get('due_date'),
                 'reminder_date' => $request->get('reminder_date'),
                 'facility_id' => $request->get('facility_id'),
+                'lead_id' => $request->get('lead_id'),
                 'referral_id' => $request->get('referral_id'),
                 'organization_id' => $request->get('organization_id')
             ]
@@ -163,6 +164,7 @@ class ActivityController extends BaseController
                 'due_date' => $request->get('due_date'),
                 'reminder_date' => $request->get('reminder_date'),
                 'facility_id' => $request->get('facility_id'),
+                'lead_id' => $request->get('lead_id'),
                 'referral_id' => $request->get('referral_id'),
                 'organization_id' => $request->get('organization_id')
             ]

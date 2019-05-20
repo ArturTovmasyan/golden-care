@@ -280,11 +280,6 @@ class ResponsiblePersonRole
     public function setResidentResponsiblePersons($residentResponsiblePersons): void
     {
         $this->residentResponsiblePersons = $residentResponsiblePersons;
-
-        /** @var ResponsiblePersonRole $residentResponsiblePerson */
-        foreach ($this->residentResponsiblePersons as $residentResponsiblePersons) {
-            $residentResponsiblePersons->addResidentResponsiblePerson($this);
-        }
     }
 
     /**

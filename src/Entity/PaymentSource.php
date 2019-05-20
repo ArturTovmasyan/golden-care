@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,7 +60,9 @@ class PaymentSource
      * @Groups({
      *     "api_admin_payment_source_grid",
      *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
+     *     "api_admin_payment_source_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -81,7 +84,9 @@ class PaymentSource
      * @Groups({
      *     "api_admin_payment_source_grid",
      *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
+     *     "api_admin_payment_source_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $title;
@@ -103,6 +108,12 @@ class PaymentSource
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="paymentType", cascade={"remove", "persist"})
+     */
+    private $leads;
 
     /**
      * @return int
@@ -150,5 +161,21 @@ class PaymentSource
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
     }
 }

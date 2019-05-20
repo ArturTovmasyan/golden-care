@@ -32,6 +32,11 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "rt.title"
  *          },
  *          {
+ *              "id"         = "lead",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))"
+ *          },
+ *          {
  *              "id"         = "organization",
  *              "type"       = "string",
  *              "field"      = "o.title"
@@ -55,7 +60,9 @@ class Referral
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -79,7 +86,9 @@ class Referral
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $firstName;
@@ -103,10 +112,31 @@ class Referral
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $lastName;
+
+    /**
+     * @var Lead
+     * @Assert\NotNull(message = "Please select a Lead", groups={
+     *          "api_lead_referral_organization_required_add",
+     *          "api_lead_referral_organization_required_edit",
+     *          "api_lead_referral_representative_required_add",
+     *          "api_lead_referral_representative_required_edit"
+     * })
+     * @ORM\OneToOne(targetEntity="App\Entity\Lead\Lead", inversedBy="referral", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get"
+     * })
+     */
+    private $lead;
 
     /**
      * @var ReferrerType
@@ -141,7 +171,9 @@ class Referral
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $organization;
@@ -245,6 +277,22 @@ class Referral
     public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
+    }
+
+    /**
+     * @return Lead|null
+     */
+    public function getLead(): ?Lead
+    {
+        return $this->lead;
+    }
+
+    /**
+     * @param Lead|null $lead
+     */
+    public function setLead(?Lead $lead): void
+    {
+        $this->lead = $lead;
     }
 
     /**

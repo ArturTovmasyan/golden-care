@@ -268,6 +268,23 @@ class Activity
     private $facility;
 
     /**
+     * @var Lead
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Lead", inversedBy="activities")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Assert\NotNull(message = "Please select a Lead", groups={
+     *          "api_lead_lead_activity_add",
+     *          "api_lead_lead_activity_edit"
+     * })
+     * @Groups({
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
+     * })
+     */
+    private $lead;
+
+    /**
      * @var Referral
      * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Referral", inversedBy="activities")
      * @ORM\JoinColumns({
@@ -470,6 +487,22 @@ class Activity
     public function setFacility(?Facility $facility): void
     {
         $this->facility = $facility;
+    }
+
+    /**
+     * @return Lead|null
+     */
+    public function getLead(): ?Lead
+    {
+        return $this->lead;
+    }
+
+    /**
+     * @param Lead|null $lead
+     */
+    public function setLead(?Lead $lead): void
+    {
+        $this->lead = $lead;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,7 +60,9 @@ class CareType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_care_type_list",
-     *     "api_lead_care_type_get"
+     *     "api_lead_care_type_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -82,9 +85,10 @@ class CareType
      * )
      * @ORM\Column(name="title", type="string", length=120)
      * @Groups({
-     *     "api_lead_care_type_grid",
      *     "api_lead_care_type_list",
-     *     "api_lead_care_type_get"
+     *     "api_lead_care_type_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $title;
@@ -106,6 +110,12 @@ class CareType
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careType", cascade={"remove", "persist"})
+     */
+    private $leads;
 
     public function getId()
     {
@@ -142,5 +152,21 @@ class CareType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
     }
 }
