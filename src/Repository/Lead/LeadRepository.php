@@ -88,6 +88,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
         }
 
         $queryBuilder
+            ->addOrderBy('l.createdAt', 'DESC')
             ->groupBy('l.id');
     }
 
@@ -126,7 +127,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
         }
 
         $qb
-            ->addOrderBy('l.firstName', 'ASC');
+            ->addOrderBy('l.createdAt', 'DESC');
 
         return $qb
             ->getQuery()

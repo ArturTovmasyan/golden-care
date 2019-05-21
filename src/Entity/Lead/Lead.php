@@ -6,6 +6,8 @@ use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\PaymentSource;
 use App\Entity\User;
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,20 +26,15 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "l.id"
  *          },
  *          {
+ *              "id"         = "date",
+ *              "type"       = "datetime",
+ *              "field"      = "l.createdAt"
+ *          },
+ *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))",
  *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "care_type",
- *              "type"       = "string",
- *              "field"      = "ct.title"
- *          },
- *          {
- *              "id"         = "payment_type",
- *              "type"       = "string",
- *              "field"      = "pt.title"
  *          },
  *          {
  *              "id"         = "owner",
@@ -56,60 +53,23 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "scr.title"
  *          },
  *          {
- *              "id"         = "state_effective_date",
+ *              "id"         = "effective_date",
  *              "type"       = "datetime",
  *              "field"      = "l.stateEffectiveDate"
- *          },
- *          {
- *              "id"         = "responsible_person",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(l.responsiblePersonFirstName, ''), ' ', COALESCE(l.responsiblePersonLastName, ''))"
- *          },
- *          {
- *              "id"         = "rp_address_1",
- *              "type"       = "string",
- *              "field"      = "l.responsiblePersonAddress_1"
- *          },
- *          {
- *              "id"         = "rp_address_2",
- *              "type"       = "string",
- *              "field"      = "l.responsiblePersonAddress_2"
- *          },
- *          {
- *              "id"         = "rp_csz_str",
- *              "type"       = "string",
- *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
- *          },
- *          {
- *              "id"         = "rp_phone",
- *              "type"       = "string",
- *              "field"      = "l.responsiblePersonPhone"
- *          },
- *          {
- *              "id"         = "rp_email",
- *              "type"       = "string",
- *              "field"      = "l.responsiblePersonEmail"
  *          },
  *          {
  *              "id"         = "referral",
  *              "type"       = "string",
  *              "field"      = "CASE WHEN r.firstName IS NOT NULL THEN CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, '')) ELSE ro.title END"
- *          },
- *          {
- *              "id"         = "primary_facility",
- *              "type"       = "string",
- *              "field"      = "f.name"
- *          },
- *          {
- *              "id"         = "notes",
- *              "type"       = "string",
- *              "field"      = "l.notes"
  *          }
  *     }
  * )
  */
 class Lead
 {
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")
