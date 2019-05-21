@@ -250,35 +250,8 @@ class LeadService extends BaseService implements IGridService
 
             $this->em->persist($lead);
 
-            /** @var ActivityTypeRepository $typeRepo */
-            $typeRepo = $this->em->getRepository(ActivityType::class);
-
-            /** @var ActivityType $type */
-            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 1);
-
-            if ($type === null) {
-                throw new ActivityTypeNotFoundException();
-            }
-
             // Creating initial contact activity
-            $activity = new Activity();
-            $activity->setLead($lead);
-            $activity->setType($type);
-            $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
-            $activity->setDate($lead->getInitialContactDate());
-            $activity->setStatus($type->getDefaultStatus());
-            $activity->setTitle($type->getTitle());
-            $activity->setNotes($type->getTitle());
-            $activity->setAssignTo(null);
-            $activity->setDueDate(null);
-            $activity->setReminderDate(null);
-            $activity->setFacility(null);
-            $activity->setReferral(null);
-            $activity->setOrganization(null);
-
-            $this->validate($activity, null, ['api_lead_lead_activity_add']);
-
-            $this->em->persist($activity);
+            $this->createLeadInitialContactActivity($lead, false);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -471,6 +444,20 @@ class LeadService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_lead_lead_edit']);
 
             $this->em->persist($entity);
+
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $leadChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
+
+            if (!empty($leadChangeSet) && array_key_exists('state', $leadChangeSet)) {
+                if ($leadChangeSet['state']['0'] === State::TYPE_CLOSED && $leadChangeSet['state']['1'] === State::TYPE_OPEN) {
+                    $this->createLeadInitialContactActivity($entity, true);
+                } elseif ($leadChangeSet['state']['0'] === State::TYPE_OPEN && $leadChangeSet['state']['1'] === State::TYPE_CLOSED) {
+                    $this->createLeadStateChangeReasonActivity($entity);
+                }
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -478,6 +465,82 @@ class LeadService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Lead $lead
+     * @param $isEdited
+     */
+    private function createLeadInitialContactActivity(Lead $lead, $isEdited)
+    {
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+
+        /** @var ActivityType $type */
+        $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 1);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        $date = $isEdited ? new \DateTime('now') : $lead->getInitialContactDate();
+
+        $activity = new Activity();
+        $activity->setLead($lead);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+        $activity->setDate($date);
+        $activity->setStatus($type->getDefaultStatus());
+        $activity->setTitle($type->getTitle());
+        $activity->setNotes($type->getTitle());
+        $activity->setAssignTo(null);
+        $activity->setDueDate(null);
+        $activity->setReminderDate(null);
+        $activity->setFacility(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+
+        $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
+    }
+
+    /**
+     * @param Lead $lead
+     */
+    private function createLeadStateChangeReasonActivity(Lead $lead)
+    {
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+
+        /** @var ActivityType $type */
+        $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 11);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        $date = $lead->getStateEffectiveDate() ?? new \DateTime('now');
+        $notes = $lead->getStateChangeReason() ? $lead->getStateChangeReason()->getTitle() : '';
+
+        $activity = new Activity();
+        $activity->setLead($lead);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+        $activity->setDate($date);
+        $activity->setStatus($type->getDefaultStatus());
+        $activity->setTitle($type->getTitle());
+        $activity->setNotes($notes);
+        $activity->setAssignTo(null);
+        $activity->setDueDate(null);
+        $activity->setReminderDate(null);
+        $activity->setFacility(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+
+        $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
     }
 
     /**
