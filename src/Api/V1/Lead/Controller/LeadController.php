@@ -3,6 +3,7 @@ namespace App\Api\V1\Lead\Controller;
 
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Lead\Service\ReferralService;
 use App\Entity\Lead\Lead;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,12 +107,14 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param LeadService $activityTypeService
+     * @param ReferralService $referralService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, LeadService $activityTypeService)
+    public function addAction(Request $request, LeadService $activityTypeService, ReferralService $referralService)
     {
         $id = $activityTypeService->add(
+            $referralService,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -130,7 +133,8 @@ class LeadController extends BaseController
                 'rp_email' => $request->get('rp_email'),
                 'facility_id' => $request->get('facility_id'),
                 'facilities' => $request->get('facilities'),
-                'notes' => $request->get('notes')
+                'notes' => $request->get('notes'),
+                'referral' => $request->get('referral')
             ]
         );
 
@@ -149,13 +153,15 @@ class LeadController extends BaseController
      * @param Request $request
      * @param $id
      * @param LeadService $activityTypeService
+     * @param ReferralService $referralService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService)
+    public function editAction(Request $request, $id, LeadService $activityTypeService, ReferralService $referralService)
     {
         $activityTypeService->edit(
             $id,
+            $referralService,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -173,7 +179,8 @@ class LeadController extends BaseController
                 'rp_email' => $request->get('rp_email'),
                 'facility_id' => $request->get('facility_id'),
                 'facilities' => $request->get('facilities'),
-                'notes' => $request->get('notes')
+                'notes' => $request->get('notes'),
+                'referral' => $request->get('referral')
             ]
         );
 

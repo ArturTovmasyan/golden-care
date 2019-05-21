@@ -261,7 +261,7 @@ class ReferralService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(Referral $referral, array $phones = []) : ?array
+    public function savePhones(Referral $referral, array $phones = []) : ?array
     {
         if($referral->getId() !== null) {
 

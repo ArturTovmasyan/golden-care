@@ -7,6 +7,9 @@ use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\LeadRpPhoneOrEmailNotBeBlankException;
+use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\StateChangeReasonNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
@@ -17,6 +20,9 @@ use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Lead;
+use App\Entity\Lead\Organization;
+use App\Entity\Lead\Referral;
+use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\User;
@@ -27,6 +33,8 @@ use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
 use App\Repository\Lead\LeadRepository;
+use App\Repository\Lead\OrganizationRepository;
+use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\StateChangeReasonRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\UserRepository;
@@ -75,11 +83,12 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
+     * @param ReferralService $referralService
      * @param array $params
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(ReferralService $referralService, array $params) : ?int
     {
         $insert_id = null;
         try {
@@ -217,6 +226,10 @@ class LeadService extends BaseService implements IGridService
                 $lead->setResponsiblePersonEmail(null);
             }
 
+            if ($lead->getResponsiblePersonPhone() === null && $lead->getResponsiblePersonEmail() === null) {
+                throw new LeadRpPhoneOrEmailNotBeBlankException();
+            }
+
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -250,6 +263,13 @@ class LeadService extends BaseService implements IGridService
 
             $this->em->persist($lead);
 
+            // Save Referral
+            if (!empty($params['referral'])) {
+                $newReferral = $params['referral'];
+
+                $this->saveReferral($lead, $referralService, $newReferral);
+            }
+
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
 
@@ -268,10 +288,11 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param ReferralService $referralService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, ReferralService $referralService, array $params) : void
     {
         try {
 
@@ -407,6 +428,10 @@ class LeadService extends BaseService implements IGridService
                 $entity->setResponsiblePersonEmail(null);
             }
 
+            if ($entity->getResponsiblePersonPhone() === null && $entity->getResponsiblePersonEmail() === null) {
+                throw new LeadRpPhoneOrEmailNotBeBlankException();
+            }
+
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -445,6 +470,13 @@ class LeadService extends BaseService implements IGridService
 
             $this->em->persist($entity);
 
+            // Save Referral
+            if (!empty($params['referral'])) {
+                $newReferral = $params['referral'];
+
+                $this->saveReferral($entity, $referralService, $newReferral);
+            }
+
             $uow = $this->em->getUnitOfWork();
             $uow->computeChangeSets();
 
@@ -465,6 +497,85 @@ class LeadService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Lead $lead
+     * @param ReferralService $referralService
+     * @param array $newReferral
+     */
+    private function saveReferral(Lead $lead, ReferralService $referralService, array $newReferral)
+    {
+        $oldReferral = $lead->getReferral();
+
+        if ($oldReferral) {
+            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_add';
+            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_add';
+
+            $referral = $oldReferral;
+        } else {
+            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_edit';
+            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_edit';
+
+            $referral = new Referral();
+        }
+
+        $typeId = $newReferral['type_id'] ?? 0;
+
+        /** @var ReferrerTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ReferrerType::class);
+
+        /** @var ReferrerType $type */
+        $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $typeId);
+
+        if ($type === null) {
+            throw new ReferrerTypeNotFoundException();
+        }
+
+        $referral->setLead($lead);
+        $referral->setType($type);
+
+        if ($type->isOrganizationRequired()) {
+
+            $organizationId = $newReferral['organization_id'] ?? 0;
+
+            /** @var OrganizationRepository $organizationRepo */
+            $organizationRepo = $this->em->getRepository(Organization::class);
+
+            /** @var Organization $organization */
+            $organization = $organizationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
+
+            if ($organization === null) {
+                throw new OrganizationNotFoundException();
+            }
+
+            $referral->setOrganization($organization);
+
+            $this->validate($referral, null, [$organizationRequiredValidationGroup]);
+        } else {
+            $referral->setOrganization(null);
+        }
+
+        if ($type->isRepresentativeRequired()) {
+            $emails = !empty($newReferral['emails']) ? $newReferral['emails'] : [];
+            $notes = $newReferral['notes'] ?? '';
+
+            $referral->setFirstName($newReferral['first_name']);
+            $referral->setLastName($newReferral['last_name']);
+            $referral->setNotes($notes);
+            $referral->setEmails($emails);
+            $referral->setPhones($referralService->savePhones($referral, $newReferral['phones'] ?? []));
+
+            $this->validate($referral, null, [$representativeRequiredValidationGroup]);
+        } else {
+            $referral->setFirstName(null);
+            $referral->setLastName(null);
+            $referral->setNotes(null);
+            $referral->setEmails([]);
+            $referral->setPhones($referralService->savePhones($referral, []));
+        }
+
+        $this->em->persist($referral);
     }
 
     /**

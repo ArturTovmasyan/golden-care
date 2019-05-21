@@ -113,6 +113,7 @@ class ResponseCode
     const LEAD_ACTIVITY_NOT_FOUND_EXCEPTION                      = 715;
     const INCORRECT_LEAD_OWNER_TYPE_EXCEPTION                    = 716;
     const LEAD_LEAD_NOT_FOUND_EXCEPTION                          = 717;
+    const LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION          = 718;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -224,6 +225,7 @@ class ResponseCode
         self::LEAD_ACTIVITY_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Activity not found.'],
         self::INCORRECT_LEAD_OWNER_TYPE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect owner type. Available types: Lead, Referral or Organization.'],
         self::LEAD_LEAD_NOT_FOUND_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead not found.'],
+        self::LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You must enter a Phone Number, OR an Email.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],
