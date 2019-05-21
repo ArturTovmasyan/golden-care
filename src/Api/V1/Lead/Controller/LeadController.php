@@ -118,6 +118,7 @@ class LeadController extends BaseController
                 'care_type_id' => $request->get('care_type_id'),
                 'payment_type_id' => $request->get('payment_type_id'),
                 'owner_id' => $request->get('owner_id'),
+                'initial_contact_date' => $request->get('initial_contact_date'),
                 'state_change_reason_id' => $request->get('state_change_reason_id'),
                 'state_effective_date' => $request->get('state_effective_date'),
                 'rp_first_name' => $request->get('rp_first_name'),

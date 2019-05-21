@@ -4,6 +4,7 @@ namespace App\Api\V1\Lead\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\StateChangeReasonNotFoundException;
@@ -12,14 +13,18 @@ use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\Lead\Activity;
+use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\User;
+use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Repository\CityStateZipRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\StateChangeReasonRepository;
@@ -133,6 +138,14 @@ class LeadService extends BaseService implements IGridService
             $lead->setOwner($owner);
             $lead->setState(State::TYPE_OPEN);
 
+            if (!empty($params['initial_contact_date'])) {
+                $initialContactDate = new \DateTime($params['initial_contact_date']);
+            } else {
+                $initialContactDate = null;
+            }
+
+            $lead->setInitialContactDate($initialContactDate);
+
             if (!empty($params['state_change_reason_id'])) {
                 /** @var StateChangeReasonRepository $stateChangeReasonRepo */
                 $stateChangeReasonRepo = $this->em->getRepository(StateChangeReason::class);
@@ -236,6 +249,37 @@ class LeadService extends BaseService implements IGridService
             $this->validate($lead, null, ['api_lead_lead_add']);
 
             $this->em->persist($lead);
+
+            /** @var ActivityTypeRepository $typeRepo */
+            $typeRepo = $this->em->getRepository(ActivityType::class);
+
+            /** @var ActivityType $type */
+            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 1);
+
+            if ($type === null) {
+                throw new ActivityTypeNotFoundException();
+            }
+
+            // Creating initial contact activity
+            $activity = new Activity();
+            $activity->setLead($lead);
+            $activity->setType($type);
+            $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+            $activity->setDate($lead->getInitialContactDate());
+            $activity->setStatus($type->getDefaultStatus());
+            $activity->setTitle($type->getTitle());
+            $activity->setNotes($type->getTitle());
+            $activity->setAssignTo(null);
+            $activity->setDueDate(null);
+            $activity->setReminderDate(null);
+            $activity->setFacility(null);
+            $activity->setReferral(null);
+            $activity->setOrganization(null);
+
+            $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+            $this->em->persist($activity);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 

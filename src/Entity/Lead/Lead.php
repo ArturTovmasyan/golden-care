@@ -461,6 +461,17 @@ class Lead
     private $activities;
 
     /**
+     * @var \DateTime
+     * @Assert\NotBlank(groups={
+     *     "api_lead_lead_add"
+     * })
+     * @Assert\DateTime(groups={
+     *     "api_lead_lead_add"
+     * })
+     */
+    private $initialContactDate;
+
+    /**
      * @return int
      */
     public function getId()
@@ -810,5 +821,21 @@ class Lead
     public function setActivities(ArrayCollection $activities): void
     {
         $this->activities = $activities;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getInitialContactDate(): ?\DateTime
+    {
+        return $this->initialContactDate;
+    }
+
+    /**
+     * @param \DateTime|null $initialContactDate
+     */
+    public function setInitialContactDate(?\DateTime $initialContactDate): void
+    {
+        $this->initialContactDate = $initialContactDate;
     }
 }
