@@ -152,7 +152,8 @@ class Referral
      * })
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $type;
@@ -190,7 +191,8 @@ class Referral
      * })
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $notes;
@@ -203,7 +205,8 @@ class Referral
      * })
      * @Groups({
      *      "api_lead_referral_list",
-     *      "api_lead_referral_get"
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $phones;
@@ -220,7 +223,8 @@ class Referral
      * })
      * @Groups({
      *     "api_lead_referral_list",
-     *     "api_lead_referral_get"
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $emails = [];

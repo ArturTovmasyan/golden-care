@@ -27,7 +27,8 @@ trait PhoneTrait
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
-     *      "api_lead_referral_get"
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $compatibility;
@@ -64,7 +65,8 @@ trait PhoneTrait
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
-     *      "api_lead_referral_get"
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $type;
@@ -101,7 +103,8 @@ trait PhoneTrait
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
-     *      "api_lead_referral_get"
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $number;
@@ -136,7 +139,8 @@ trait PhoneTrait
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
-     *      "api_lead_referral_get"
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $primary = false;
