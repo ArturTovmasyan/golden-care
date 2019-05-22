@@ -183,27 +183,27 @@ class LeadService extends BaseService implements IGridService
 
             $lead->setStateEffectiveDate($stateEffectiveDate);
 
-            $lead->setResponsiblePersonFirstName($params['rp_first_name']);
-            $lead->setResponsiblePersonLastName($params['rp_last_name']);
+            $lead->setResponsiblePersonFirstName($params['responsible_person_first_name']);
+            $lead->setResponsiblePersonLastName($params['responsible_person_last_name']);
 
-            if (!empty($params['rp_address_1'])) {
-                $lead->setResponsiblePersonAddress1($params['rp_address_1']);
+            if (!empty($params['responsible_person_address_1'])) {
+                $lead->setResponsiblePersonAddress1($params['responsible_person_address_1']);
             } else {
                 $lead->setResponsiblePersonAddress1(null);
             }
 
-            if (!empty($params['rp_address_2'])) {
-                $lead->setResponsiblePersonAddress2($params['rp_address_2']);
+            if (!empty($params['responsible_person_address_2'])) {
+                $lead->setResponsiblePersonAddress2($params['responsible_person_address_2']);
             } else {
                 $lead->setResponsiblePersonAddress2(null);
             }
 
-            if (!empty($params['rp_csz_id'])) {
+            if (!empty($params['responsible_person_csz_id'])) {
                 /** @var CityStateZipRepository $cszRepo */
                 $cszRepo = $this->em->getRepository(CityStateZip::class);
 
                 /** @var CityStateZip $csz */
-                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['rp_csz_id']);
+                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['responsible_person_csz_id']);
 
                 if ($csz === null) {
                     throw new CityStateZipNotFoundException();
@@ -214,14 +214,14 @@ class LeadService extends BaseService implements IGridService
                 $lead->setResponsiblePersonCsz(null);
             }
 
-            if (!empty($params['rp_phone'])) {
-                $lead->setResponsiblePersonPhone($params['rp_phone']);
+            if (!empty($params['responsible_person_phone'])) {
+                $lead->setResponsiblePersonPhone($params['responsible_person_phone']);
             } else {
                 $lead->setResponsiblePersonPhone(null);
             }
 
-            if (!empty($params['rp_email'])) {
-                $lead->setResponsiblePersonEmail($params['rp_email']);
+            if (!empty($params['responsible_person_email'])) {
+                $lead->setResponsiblePersonEmail($params['responsible_person_email']);
             } else {
                 $lead->setResponsiblePersonEmail(null);
             }
@@ -233,9 +233,9 @@ class LeadService extends BaseService implements IGridService
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
-            if (!empty($params['facility_id'])) {
+            if (!empty($params['primary_facility_id'])) {
                 /** @var Facility $facility */
-                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['primary_facility_id']);
 
                 if ($facility === null) {
                     throw new FacilityNotFoundException();
@@ -385,27 +385,27 @@ class LeadService extends BaseService implements IGridService
 
             $entity->setStateEffectiveDate($stateEffectiveDate);
 
-            $entity->setResponsiblePersonFirstName($params['rp_first_name']);
-            $entity->setResponsiblePersonLastName($params['rp_last_name']);
+            $entity->setResponsiblePersonFirstName($params['responsible_person_first_name']);
+            $entity->setResponsiblePersonLastName($params['responsible_person_last_name']);
 
-            if (!empty($params['rp_address_1'])) {
-                $entity->setResponsiblePersonAddress1($params['rp_address_1']);
+            if (!empty($params['responsible_person_address_1'])) {
+                $entity->setResponsiblePersonAddress1($params['responsible_person_address_1']);
             } else {
                 $entity->setResponsiblePersonAddress1(null);
             }
 
-            if (!empty($params['rp_address_2'])) {
-                $entity->setResponsiblePersonAddress2($params['rp_address_2']);
+            if (!empty($params['responsible_person_address_2'])) {
+                $entity->setResponsiblePersonAddress2($params['responsible_person_address_2']);
             } else {
                 $entity->setResponsiblePersonAddress2(null);
             }
 
-            if (!empty($params['rp_csz_id'])) {
+            if (!empty($params['responsible_person_csz_id'])) {
                 /** @var CityStateZipRepository $cszRepo */
                 $cszRepo = $this->em->getRepository(CityStateZip::class);
 
                 /** @var CityStateZip $csz */
-                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['rp_csz_id']);
+                $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['responsible_person_csz_id']);
 
                 if ($csz === null) {
                     throw new CityStateZipNotFoundException();
@@ -416,14 +416,14 @@ class LeadService extends BaseService implements IGridService
                 $entity->setResponsiblePersonCsz(null);
             }
 
-            if (!empty($params['rp_phone'])) {
-                $entity->setResponsiblePersonPhone($params['rp_phone']);
+            if (!empty($params['responsible_person_phone'])) {
+                $entity->setResponsiblePersonPhone($params['responsible_person_phone']);
             } else {
                 $entity->setResponsiblePersonPhone(null);
             }
 
-            if (!empty($params['rp_email'])) {
-                $entity->setResponsiblePersonEmail($params['rp_email']);
+            if (!empty($params['responsible_person_email'])) {
+                $entity->setResponsiblePersonEmail($params['responsible_person_email']);
             } else {
                 $entity->setResponsiblePersonEmail(null);
             }
@@ -435,9 +435,9 @@ class LeadService extends BaseService implements IGridService
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
-            if (!empty($params['facility_id'])) {
+            if (!empty($params['primary_facility_id'])) {
                 /** @var Facility $facility */
-                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['primary_facility_id']);
 
                 if ($facility === null) {
                     throw new FacilityNotFoundException();
