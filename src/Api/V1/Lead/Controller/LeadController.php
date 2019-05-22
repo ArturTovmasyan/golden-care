@@ -124,7 +124,7 @@ class LeadController extends BaseController
                 'initial_contact_date' => $request->get('initial_contact_date'),
                 'state_change_reason_id' => $request->get('state_change_reason_id'),
                 'state_effective_date' => $request->get('state_effective_date'),
-                'responsible_person_first_name' => $request->get('rp_first_name'),
+                'responsible_person_first_name' => $request->get('responsible_person_first_name'),
                 'responsible_person_last_name' => $request->get('responsible_person_last_name'),
                 'responsible_person_address_1' => $request->get('responsible_person_address_1'),
                 'responsible_person_address_2' => $request->get('responsible_person_address_2'),
