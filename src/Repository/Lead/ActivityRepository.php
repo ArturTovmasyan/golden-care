@@ -36,7 +36,6 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
 
             ->addSelect("
                 JSON_ARRAY(
-                    JSON_OBJECT('Status', st.title),
                     JSON_OBJECT('Assign To', CONCAT(u.firstName, ' ', u.lastName)),
                     JSON_OBJECT('Due Date', a.dueDate),
                     JSON_OBJECT('Reminder Date', a.reminderDate),
@@ -97,6 +96,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'o',
                 Join::WITH,
                 'o = a.organization'
+            )
+            ->leftJoin(
+                User::class,
+                'cb',
+                Join::WITH,
+                'cb = a.createdBy'
             );
 
         if ($space !== null) {
@@ -124,6 +129,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
         }
 
         $queryBuilder
+            ->addOrderBy('a.date', 'DESC')
             ->groupBy('a.id');
     }
 

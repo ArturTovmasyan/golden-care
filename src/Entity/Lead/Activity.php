@@ -47,6 +47,16 @@ use App\Annotation\Grid;
  *              "field"      = "a.date"
  *          },
  *          {
+ *              "id"         = "entered_by",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(cb.firstName, ''), ' ', COALESCE(cb.lastName, ''))"
+ *          },
+ *          {
+ *              "id"         = "status",
+ *              "type"       = "string",
+ *              "field"      = "st.title"
+ *          },
+ *          {
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "a.notes"
