@@ -70,9 +70,12 @@ class FileService
         }
 
         if (empty($this->extension)) {
-            // TODO(haykg): review regex
-            $this->extension = preg_replace('/^data:(.*);base64,(.*)$/', '$1', $base64);
-            $this->extension = preg_replace('/^(.*)\/(.*)$/', '$2', $this->extension);
+            $base64_items = explode(';base64,', $base64);
+
+            if (count($base64_items) === 2) {
+                $extension = preg_replace('/^data:(.*)\/(.*)$/', '$2', $base64_items[0]);
+                $this->extension = $extension;
+            }
         }
 
         if (empty($this->extension) || !in_array($this->extension, $this->extensions)) {

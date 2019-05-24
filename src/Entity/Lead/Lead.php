@@ -27,7 +27,7 @@ use App\Annotation\Grid as Grid;
  *          },
  *          {
  *              "id"         = "date",
- *              "type"       = "datetime",
+ *              "type"       = "date",
  *              "field"      = "l.createdAt"
  *          },
  *          {
