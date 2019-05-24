@@ -11,6 +11,7 @@ use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\Space;
 use App\Entity\User;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -278,5 +279,96 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getLeadList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'l', 'fs',
+                'csz.city as rpCity',
+                'csz.stateAbbr as rpStateAbbr',
+                'csz.zipMain as rpZipMain',
+                'ct.title as careType',
+                'pt.title as paymentType',
+                'scr.title as stateChangeReason',
+                "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
+                "(CASE
+                    WHEN r.id IS NOT NULL AND r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName)
+                    WHEN r.id IS NOT NULL AND r.firstName IS NULL THEN ro.title
+                    ELSE 'N/A' END) as referralFullName",
+                'f.name as primaryFacility'
+            )
+            ->innerJoin(
+                User::class,
+                'o',
+                Join::WITH,
+                'o = l.owner'
+            )
+            ->leftJoin(
+                CareType::class,
+                'ct',
+                Join::WITH,
+                'ct = l.careType'
+            )
+            ->leftJoin(
+                PaymentSource::class,
+                'pt',
+                Join::WITH,
+                'pt = l.paymentType'
+            )
+            ->leftJoin(
+                StateChangeReason::class,
+                'scr',
+                Join::WITH,
+                'scr = l.stateChangeReason'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'csz = l.responsiblePersonCsz'
+            )
+            ->leftJoin('l.referral', 'r')
+            ->leftJoin('r.organization', 'ro')
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->leftJoin('l.facilities', 'fs')
+            ->where('l.createdAt >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 }

@@ -285,6 +285,14 @@ lead:
   title: 'Lead Reports'
   show_in_list: false
   reports:
+    lead:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getLeadReport
+      title: 'Generate Lead List Report'
+      show_in_list: false
+      formats: ['csv']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
       title: 'Generate Referral List Report'

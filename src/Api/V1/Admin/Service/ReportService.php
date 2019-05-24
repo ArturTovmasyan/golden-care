@@ -235,6 +235,18 @@ class ReportService
         $configParameter['date_to'] = array_key_exists('date_to', $parameters);
         $configParameter['date_from'] = array_key_exists('date_from', $parameters);
 
+        if ($date === null && $configParameter['date'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date']]);
+        }
+
+        if ($dateFrom === null && $configParameter['date_from'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date_from']]);
+        }
+
+        if ($dateTo === null && $configParameter['date_to'] === true) {
+            throw new IncorrectReportParameterException([$request_param_map['date_to']]);
+        }
+
         // TODO: review temp solution
         if ($assessmentId !== null) {
             return;
@@ -287,18 +299,6 @@ class ReportService
                 $request_param_map['resident_id'],
                 $request_param_map['resident_all']
             ]);
-        }
-
-        if ($date === null && $configParameter['date'] === true) {
-            throw new IncorrectReportParameterException([$request_param_map['date']]);
-        }
-
-        if ($dateFrom === null && $configParameter['date_from'] === true) {
-            throw new IncorrectReportParameterException([$request_param_map['date_from']]);
-        }
-
-        if ($dateTo === null && $configParameter['date_to'] === true) {
-            throw new IncorrectReportParameterException([$request_param_map['date_to']]);
         }
     }
 }

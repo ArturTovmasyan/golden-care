@@ -12,14 +12,6 @@ class ReferralList extends Base
     private $referrals = [];
 
     /**
-     * ReferralList constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * @param $referrals
      */
     public function setReferrals($referrals): void
