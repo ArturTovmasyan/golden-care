@@ -258,4 +258,69 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getReferralList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'rt.title as typeTitle',
+                'o.title as orgTitle',
+                "CONCAT(l.firstName, ' ', l.lastName) AS leadName",
+                'r.emails as emails',
+                'r.notes as notes'
+            )
+            ->innerJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = r.lead'
+            )
+            ->innerJoin(
+                ReferrerType::class,
+                'rt',
+                Join::WITH,
+                'rt = r.type'
+            )
+            ->leftJoin(
+                Organization::class,
+                'o',
+                Join::WITH,
+                'o = r.organization'
+            )
+            ->where('r.createdAt >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('r.createdAt < :endDate')->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -67,6 +67,63 @@ class ReferralPhoneRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $referralIds
+     * @return mixed
+     */
+    public function getByReferralIds(Space $space = null, array $entityGrants = null, array $referralIds)
+    {
+        $qb = $this->createQueryBuilder('rp');
+
+        $qb
+            ->select('
+                    rp.id as id,
+                    r.id as rId,
+                    rp.primary as primary,
+                    rp.type as type,
+                    rp.number as number
+            ')
+            ->innerJoin(
+                Referral::class,
+                'r',
+                Join::WITH,
+                'r = rp.referral'
+            )
+            ->where('r.id IN (:referralIds)')
+            ->setParameter('referralIds', $referralIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ReferrerType::class,
+                    'rt',
+                    Join::WITH,
+                    'rt = r.type'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('rp.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

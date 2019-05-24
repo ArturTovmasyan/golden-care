@@ -3,6 +3,8 @@
 namespace App\Entity\Lead;
 
 use App\Entity\CityStateZip;
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -57,6 +59,9 @@ use App\Annotation\Grid as Grid;
  */
 class Organization
 {
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")
