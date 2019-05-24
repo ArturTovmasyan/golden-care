@@ -3,13 +3,16 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Entity\Lead\Activity;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferralPhone;
 use App\Model\Lead\State;
 use App\Model\Phone;
+use App\Model\Report\Lead\ActivityList;
 use App\Model\Report\Lead\LeadList;
 use App\Model\Report\Lead\ReferralList;
+use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\ReferralPhoneRepository;
 use App\Repository\Lead\ReferralRepository;
@@ -171,6 +174,47 @@ class LeadReportService extends BaseService
 
         $report = new ReferralList();
         $report->setReferrals($finalReferrals);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @return ActivityList
+     */
+    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        if (!empty($dateFrom)) {
+            $startDate = new \DateTime($dateFrom);
+        } else {
+            $startDate = $currentDate;
+        }
+
+        if (!empty($dateTo)) {
+            $endDate = new \DateTime($dateTo);
+        } else {
+            $endDate = date_modify($currentDate, '+1 day');
+        }
+
+        /** @var ActivityRepository $repo */
+        $repo = $this->em->getRepository(Activity::class);
+
+        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate);
+
+        $report = new ActivityList();
+        $report->setActivities($activities);
 
         return $report;
     }

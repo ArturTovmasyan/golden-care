@@ -14,6 +14,7 @@ use App\Entity\Lead\Referral;
 use App\Entity\Space;
 use App\Entity\User;
 use App\Model\Lead\ActivityOwnerType;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -431,5 +432,115 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getActivityList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->select(
+                'a.id as id',
+                'a.title as title',
+                'ds.title as status',
+                'f.name as facility',
+                "(CASE
+                    WHEN l.id IS NOT NULL THEN CONCAT('Lead : ', l.firstName, ' ', l.lastName)
+                    WHEN r.id IS NOT NULL AND r.firstName IS NOT NULL THEN CONCAT('Referral : ', r.firstName, ' ', r.lastName)
+                    WHEN r.id IS NOT NULL AND r.firstName IS NULL THEN CONCAT('Referral : ', ro.title)
+                    WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.title)
+                ELSE 'INVALID' END) as type",
+                "CONCAT(u.firstName, ' ', u.lastName) as assignToFullName",
+                "CONCAT(cb.firstName, ' ', cb.lastName) as enteredByFullName",
+                'a.date as date',
+                'a.dueDate as dueDate',
+                'a.reminderDate as reminderDate',
+                'a.notes as notes'
+            )
+            ->innerJoin(
+                ActivityType::class,
+                'at',
+                Join::WITH,
+                'at = a.type'
+            )
+            ->innerJoin(
+                ActivityStatus::class,
+                'ds',
+                Join::WITH,
+                'ds = at.defaultStatus'
+            )
+            ->leftJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = a.assignTo'
+            )
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = a.facility'
+            )
+            ->leftJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = a.lead'
+            )
+            ->leftJoin(
+                Referral::class,
+                'r',
+                Join::WITH,
+                'r = a.referral'
+            )
+            ->leftJoin(
+                Organization::class,
+                'ro',
+                Join::WITH,
+                'ro = r.organization'
+            )
+            ->leftJoin(
+                Organization::class,
+                'o',
+                Join::WITH,
+                'o = a.organization'
+            )
+            ->leftJoin(
+                User::class,
+                'cb',
+                Join::WITH,
+                'cb = a.createdBy'
+            )
+            ->where('a.date >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('a.date < :endDate')->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ds.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('a.date', 'DESC')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 }

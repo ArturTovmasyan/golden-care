@@ -1,0 +1,4 @@
+"ID", Activity, Date Entered, Entered By, Task Owner, Due Date, Reminder Date, Status, Type, Facility, Notes
+{% for activity in data.activities %}
+    {{ activity.id }},{% if activity.title %}"{{ activity.title|raw }}"{% else %}N/A{% endif %},{{ activity.date|date("m/d/Y") }},{% if activity.enteredByFullName %}"{{ activity.enteredByFullName|raw }}"{% else %}N/A{% endif %},{% if activity.assignToFullName %}"{{ activity.assignToFullName|raw }}"{% else %}N/A{% endif %},{% if activity.dueDate %}{{ activity.dueDate|date("m/d/Y") }}{% else %}N/A{% endif %},{% if activity.reminderDate %}{{ activity.reminderDate|date("m/d/Y") }}{% else %}N/A{% endif %},{% if activity.status %}"{{ activity.status|raw }}"{% else %}N/A{% endif %},{% if activity.type %}"{{ activity.type|raw }}"{% else %}N/A{% endif %},{% if activity.facility %}"{{ activity.facility|raw }}"{% else %}N/A{% endif %},{% if activity.notes %}"{{ activity.notes|raw }}"{% else %}N/A{% endif %},
+{% endfor %}

@@ -301,3 +301,11 @@ lead:
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+    activity:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
+      title: 'Generate Activity List Report'
+      show_in_list: false
+      formats: ['csv']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
