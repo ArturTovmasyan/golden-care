@@ -151,7 +151,7 @@ class ActivityService extends BaseService implements IGridService
             }
 
             if ($type->isAssignTo()) {
-                $userId = $params['assign_to'] ?? 0;
+                $userId = $params['assign_to_id'] ?? 0;
 
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
@@ -361,7 +361,7 @@ class ActivityService extends BaseService implements IGridService
             }
 
             if ($type->isAssignTo()) {
-                $userId = $params['assign_to'] ?? 0;
+                $userId = $params['assign_to_id'] ?? 0;
 
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
