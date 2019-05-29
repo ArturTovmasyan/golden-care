@@ -380,3 +380,12 @@ report:
           title: "Assessment Report (Blank)"
         filled:
           title: "Assessment Report (Filled)"
+    lead:
+      title: "Lead Reports"
+      children:
+        lead:
+          title: "Generate Lead List Report"
+        referral:
+          title: "Generate Referral List Report"
+        activity:
+          title: "Generate Activity List Report"
