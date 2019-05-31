@@ -46,7 +46,14 @@ class ActivityService extends BaseService implements IGridService
         /** @var ActivityRepository $repo */
         $repo = $this->em->getRepository(Activity::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Activity::class), $queryBuilder);
+        $ownerType = null;
+        $ownerId = null;
+        if (!empty($params) && !empty($params[0]['owner_type']) && !empty($params[0]['owner_id'])) {
+            $ownerType = $params[0]['owner_type'];
+            $ownerId = $params[0]['owner_id'];
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Activity::class), $queryBuilder, $ownerType, $ownerId);
     }
 
     /**

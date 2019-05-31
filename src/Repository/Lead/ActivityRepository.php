@@ -29,8 +29,10 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $ownerType
+     * @param null $id
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $ownerType = null, $id = null) : void
     {
         $queryBuilder
             ->from(Activity::class, 'a')
@@ -104,6 +106,31 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 Join::WITH,
                 'cb = a.createdBy'
             );
+
+        if ($ownerType !== null && $id !== null) {
+            switch ($ownerType) {
+                case ActivityOwnerType::TYPE_LEAD:
+                    $queryBuilder
+                        ->where('l.id = :id')
+                        ->setParameter('id', $id);
+
+                    break;
+                case ActivityOwnerType::TYPE_REFERRAL:
+                    $queryBuilder
+                        ->where('r.id = :id')
+                        ->setParameter('id', $id);
+
+                    break;
+                case ActivityOwnerType::TYPE_ORGANIZATION:
+                    $queryBuilder
+                        ->where('o.id = :id')
+                        ->setParameter('id', $id);
+
+                    break;
+                default:
+                    throw new IncorrectOwnerTypeException();
+            }
+        }
 
         if ($space !== null) {
             $queryBuilder
