@@ -22,8 +22,9 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $organizationId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $organizationId = null) : void
     {
         $queryBuilder
             ->from(Referral::class, 'r')
@@ -45,6 +46,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 Join::WITH,
                 'o = r.organization'
             );
+
+        if ($organizationId !== null) {
+            $queryBuilder
+                ->where('o.id = :organizationId')
+                ->setParameter('organizationId', $organizationId);
+        }
 
         if ($space !== null) {
             $queryBuilder
@@ -83,6 +90,54 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 Join::WITH,
                 'rt = r.type'
             );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $organizationId
+     * @return mixed
+     */
+    public function getBy(Space $space = null, array $entityGrants = null, $organizationId)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                ReferrerType::class,
+                'rt',
+                Join::WITH,
+                'rt = r.type'
+            )
+            ->leftJoin(
+                Organization::class,
+                'o',
+                Join::WITH,
+                'o = r.organization'
+            )
+            ->where('o.id = :organizationId')
+            ->setParameter('organizationId', $organizationId);
 
         if ($space !== null) {
             $qb

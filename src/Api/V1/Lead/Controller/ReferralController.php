@@ -48,7 +48,10 @@ class ReferralController extends BaseController
             $request,
             Referral::class,
             'api_lead_referral_grid',
-            $referralService
+            $referralService,
+            [
+                'organization_id' => $request->get('organization_id')
+            ]
         );
     }
 
@@ -78,7 +81,10 @@ class ReferralController extends BaseController
             $request,
             Referral::class,
             'api_lead_referral_list',
-            $referralService
+            $referralService,
+            [
+                'organization_id' => $request->get('organization_id')
+            ]
         );
     }
 

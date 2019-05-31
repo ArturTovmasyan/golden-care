@@ -35,7 +35,12 @@ class ReferralService extends BaseService implements IGridService
         /** @var ReferralRepository $repo */
         $repo = $this->em->getRepository(Referral::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Referral::class), $queryBuilder);
+        $organizationId = null;
+        if (!empty($params) && !empty($params[0]['organization_id'])) {
+            $organizationId = $params[0]['organization_id'];
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Referral::class), $queryBuilder, $organizationId);
     }
 
     /**
@@ -44,10 +49,19 @@ class ReferralService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+        $entityGrants = $this->grantService->getCurrentUserEntityGrants(Referral::class);
+
         /** @var ReferralRepository $repo */
         $repo = $this->em->getRepository(Referral::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Referral::class));
+        if (!empty($params) && !empty($params[0]['organization_id'])) {
+            $organizationId = $params[0]['organization_id'];
+
+            return $repo->getBy($currentSpace, $entityGrants, $organizationId);
+        }
+
+        return $repo->list($currentSpace, $entityGrants);
     }
 
     /**
