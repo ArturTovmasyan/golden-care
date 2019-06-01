@@ -34,7 +34,7 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))",
- *              "link"       = ":edit"
+ *              "link"       = "/lead/lead/:id"
  *          },
  *          {
  *              "id"         = "owner",

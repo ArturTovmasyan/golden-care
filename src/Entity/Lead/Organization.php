@@ -27,7 +27,7 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "title",
  *              "type"       = "string",
  *              "field"      = "o.title",
- *              "link"       = ":edit"
+ *              "link"       = "/lead/referral/organization/:id"
  *          },
  *          {
  *              "id"         = "category",
