@@ -78,7 +78,10 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
+     *
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",
@@ -96,7 +99,8 @@ class ResidentAdmission
      *     groups={
      *          "api_admin_facility_add",
      *          "api_admin_apartment_add",
-     *          "api_admin_region_add"
+     *          "api_admin_region_add",
+     *          "api_admin_discharge_add",
      *     }
      * )
      * @Groups({
@@ -118,7 +122,9 @@ class ResidentAdmission
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit",
      *          "api_admin_region_add",
-     *          "api_admin_region_edit"
+     *          "api_admin_region_edit",
+     *          "api_admin_discharge_add",
+     *          "api_admin_discharge_edit"
      *     }
      * )
      * @Groups({
@@ -138,7 +144,9 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_facility_add",
@@ -146,7 +154,9 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
@@ -166,7 +176,9 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_facility_add",
@@ -174,7 +186,9 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
@@ -194,7 +208,9 @@ class ResidentAdmission
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit"
      * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
      * @Groups({
@@ -421,7 +437,9 @@ class ResidentAdmission
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit",
      *          "api_admin_region_add",
-     *          "api_admin_region_edit"
+     *          "api_admin_region_edit",
+     *          "api_admin_discharge_add",
+     *          "api_admin_discharge_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",

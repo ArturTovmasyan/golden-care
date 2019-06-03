@@ -327,18 +327,22 @@ class ResidentAdmissionService extends BaseService implements IGridService
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_add';
-                    $entity = $this->saveAsFacility($entity, $params, $addMode);
+                    $entity = $this->saveAsFacility($entity, $params, $addMode, $admissionType);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_add';
-                    $entity = $this->saveAsApartment($entity, $params, $addMode);
+                    $entity = $this->saveAsApartment($entity, $params, $addMode, $admissionType);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_add';
-                    $entity = $this->saveAsRegion($entity, $params, $addMode);
+                    $entity = $this->saveAsRegion($entity, $params, $addMode, $admissionType);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
+            }
+
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+                $validationGroup = 'api_admin_discharge_add';
             }
 
             $this->validate($entity, null, [$validationGroup]);
@@ -411,18 +415,22 @@ class ResidentAdmissionService extends BaseService implements IGridService
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_edit';
-                    $entity = $this->saveAsFacility($entity, $params, $addMode);
+                    $entity = $this->saveAsFacility($entity, $params, $addMode, $admissionType);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_edit';
-                    $entity = $this->saveAsApartment($entity, $params, $addMode);
+                    $entity = $this->saveAsApartment($entity, $params, $addMode, $admissionType);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_edit';
-                    $entity = $this->saveAsRegion($entity, $params, $addMode);
+                    $entity = $this->saveAsRegion($entity, $params, $addMode, $admissionType);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
+            }
+
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+                $validationGroup = 'api_admin_discharge_edit';
             }
 
             $this->validate($entity, null, [$validationGroup]);
@@ -561,69 +569,80 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param boolean $addMode
-     * @return ResidentAdmission|null|object
+     * @param bool $addMode
+     * @param int $admissionType
+     * @return ResidentAdmission
      */
-    private function saveAsFacility(ResidentAdmission $entity, array $params, bool $addMode)
+    private function saveAsFacility(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        /** @var DiningRoomRepository $diningRoomRepo */
-        $diningRoomRepo = $this->em->getRepository(DiningRoom::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-        /** @var DiningRoom $diningRoom */
-        $diningRoom = $diningRoomRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $params['dining_room_id']);
+        /** @var ResidentAdmission $lastAction */
+        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-        /** @var FacilityBedRepository $facilityBedRepo */
-        $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
-
-        /** @var FacilityBed $facilityBed */
-        $facilityBed = $facilityBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $params['facility_bed_id']);
-
-        /** @var CareLevelRepository $careLevelRepo */
-        $careLevelRepo = $this->em->getRepository(CareLevel::class);
-
-        /** @var CareLevel $careLevel */
-        $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
-
-        if ($diningRoom === null) {
-            throw new DiningRoomNotFoundException();
+        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+            $entity->setDiningRoom($lastAction->getDiningRoom() ?? null);
+            $entity->setFacilityBed($lastAction->getFacilityBed() ?? null);
+            $entity->setDnr($lastAction->isDnr() ?? null);
+            $entity->setPolst($lastAction->isPolst() ?? null);
+            $entity->setAmbulatory($lastAction->isAmbulatory() ?? null);
+            $entity->setCareGroup($lastAction->getCareGroup() ?? null);
+            $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($facilityBed === null) {
-            throw new FacilityBedNotFoundException();
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+            /** @var DiningRoomRepository $diningRoomRepo */
+            $diningRoomRepo = $this->em->getRepository(DiningRoom::class);
+
+            /** @var DiningRoom $diningRoom */
+            $diningRoom = $diningRoomRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $params['dining_room_id']);
+
+            /** @var FacilityBedRepository $facilityBedRepo */
+            $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+
+            /** @var FacilityBed $facilityBed */
+            $facilityBed = $facilityBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $params['facility_bed_id']);
+
+            /** @var CareLevelRepository $careLevelRepo */
+            $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+            /** @var CareLevel $careLevel */
+            $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+            if ($diningRoom === null) {
+                throw new DiningRoomNotFoundException();
+            }
+
+            if ($facilityBed === null) {
+                throw new FacilityBedNotFoundException();
+            }
+
+            if ($careLevel === null) {
+                throw new CareLevelNotFoundException();
+            }
+
+            $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
+
+            $entity->setDiningRoom($diningRoom);
+            $entity->setFacilityBed($facilityBed);
+            $entity->setDnr($params['dnr'] ?? false);
+            $entity->setPolst($params['polst'] ?? false);
+            $entity->setAmbulatory($params['ambulatory'] ?? false);
+            $entity->setCareGroup($careGroup);
+            $entity->setCareLevel($careLevel);
         }
-
-        if ($careLevel === null) {
-            throw new CareLevelNotFoundException();
-        }
-
-        $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
-
-        $entity->setDiningRoom($diningRoom);
-        $entity->setFacilityBed($facilityBed);
-        $entity->setDnr($params['dnr'] ?? false);
-        $entity->setPolst($params['polst'] ?? false);
-        $entity->setAmbulatory($params['ambulatory'] ?? false);
-        $entity->setCareGroup($careGroup);
-        $entity->setCareLevel($careLevel);
 
         $now = new \DateTime('now');
 
         $entity->setStart($now);
 
-        if ($addMode) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        if ($addMode && $lastAction !== null) {
+            $lastAction->setEnd($now);
 
-            /** @var ResidentAdmission $lastAction */
-            $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
-
-            if ($lastAction !== null) {
-                $lastAction->setEnd($now);
-
-                $this->em->persist($lastAction);
-            }
+            $this->em->persist($lastAction);
         }
 
         return $entity;
@@ -632,41 +651,46 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param boolean $addMode
-     * @return ResidentAdmission|null|object
+     * @param bool $addMode
+     * @param int $admissionType
+     * @return ResidentAdmission
      */
-    private function saveAsApartment(ResidentAdmission $entity, array $params, bool $addMode)
+    private function saveAsApartment(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        /** @var ApartmentBedRepository $apartmentBedRepo */
-        $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-        /** @var ApartmentBed $apartmentBed */
-        $apartmentBed = $apartmentBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $params['apartment_bed_id']);
+        /** @var ResidentAdmission $lastAction */
+        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-        if ($apartmentBed === null) {
-            throw new ApartmentBedNotFoundException();
+        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+            $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
         }
 
-        $entity->setApartmentBed($apartmentBed);
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+            /** @var ApartmentBedRepository $apartmentBedRepo */
+            $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+
+            /** @var ApartmentBed $apartmentBed */
+            $apartmentBed = $apartmentBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $params['apartment_bed_id']);
+
+            if ($apartmentBed === null) {
+                throw new ApartmentBedNotFoundException();
+            }
+
+            $entity->setApartmentBed($apartmentBed);
+        }
 
         $now = new \DateTime('now');
 
         $entity->setStart($now);
 
-        if ($addMode) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        if ($addMode && $lastAction !== null) {
+            $lastAction->setEnd($now);
 
-            /** @var ResidentAdmission $lastAction */
-            $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
-
-            if ($lastAction !== null) {
-                $lastAction->setEnd($now);
-
-                $this->em->persist($lastAction);
-            }
+            $this->em->persist($lastAction);
         }
 
         return $entity;
@@ -675,70 +699,82 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param boolean $addMode
-     * @return ResidentAdmission|null|object
+     * @param bool $addMode
+     * @param int $admissionType
+     * @return ResidentAdmission
      */
-    private function saveAsRegion(ResidentAdmission $entity, array $params, bool $addMode)
+    private function saveAsRegion(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        /** @var RegionRepository $regionRepo */
-        $regionRepo = $this->em->getRepository(Region::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-        /** @var Region $region */
-        $region = $regionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Region::class), $params['region_id']);
+        /** @var ResidentAdmission $lastAction */
+        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-        /** @var CityStateZipRepository $cszRepo */
-        $cszRepo = $this->em->getRepository(CityStateZip::class);
-
-        /** @var CityStateZip $csz */
-        $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['csz_id']);
-
-        /** @var CareLevelRepository $careLevelRepo */
-        $careLevelRepo = $this->em->getRepository(CareLevel::class);
-
-        /** @var CareLevel $careLevel */
-        $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
-
-        if ($region === null) {
-            throw new RegionNotFoundException();
+        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+            $entity->setRegion($lastAction->getRegion() ?? null);
+            $entity->setCsz($lastAction->getCsz() ?? null);
+            $entity->setAddress($lastAction->getAddress() ?? null);
+            $entity->setDnr($lastAction->isDnr() ?? null);
+            $entity->setPolst($lastAction->isPolst() ?? null);
+            $entity->setAmbulatory($lastAction->isAmbulatory() ?? null);
+            $entity->setCareGroup($lastAction->getCareGroup() ?? null);
+            $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($csz === null) {
-            throw new CityStateZipNotFoundException();
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+            /** @var RegionRepository $regionRepo */
+            $regionRepo = $this->em->getRepository(Region::class);
+
+            /** @var Region $region */
+            $region = $regionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Region::class), $params['region_id']);
+
+            /** @var CityStateZipRepository $cszRepo */
+            $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+            /** @var CityStateZip $csz */
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['csz_id']);
+
+            /** @var CareLevelRepository $careLevelRepo */
+            $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+            /** @var CareLevel $careLevel */
+            $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+            if ($region === null) {
+                throw new RegionNotFoundException();
+            }
+
+            if ($csz === null) {
+                throw new CityStateZipNotFoundException();
+            }
+
+            if ($careLevel === null) {
+                throw new CareLevelNotFoundException();
+            }
+
+            $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
+
+            $entity->setRegion($region);
+            $entity->setCsz($csz);
+            $entity->setAddress($params['address']);
+            $entity->setDnr($params['dnr'] ?? false);
+            $entity->setPolst($params['polst'] ?? false);
+            $entity->setAmbulatory($params['ambulatory'] ?? false);
+            $entity->setCareGroup($careGroup);
+            $entity->setCareLevel($careLevel);
         }
-
-        if ($careLevel === null) {
-            throw new CareLevelNotFoundException();
-        }
-
-        $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
-
-        $entity->setRegion($region);
-        $entity->setCsz($csz);
-        $entity->setAddress($params['address']);
-        $entity->setDnr($params['dnr'] ?? false);
-        $entity->setPolst($params['polst'] ?? false);
-        $entity->setAmbulatory($params['ambulatory'] ?? false);
-        $entity->setCareGroup($careGroup);
-        $entity->setCareLevel($careLevel);
 
         $now = new \DateTime('now');
 
         $entity->setStart($now);
 
-        if ($addMode) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        if ($addMode && $lastAction !== null) {
+            $lastAction->setEnd($now);
 
-            /** @var ResidentAdmission $lastAction */
-            $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
-
-            if ($lastAction !== null) {
-                $lastAction->setEnd($now);
-
-                $this->em->persist($lastAction);
-            }
+            $this->em->persist($lastAction);
         }
 
         return $entity;
