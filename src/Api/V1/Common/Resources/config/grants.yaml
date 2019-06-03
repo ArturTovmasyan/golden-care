@@ -30,9 +30,6 @@ persistence:
         user_invite:
           title: 'UserInvite'
           class: App\Entity\UserInvite
-        user_attempt:
-          title: 'UserAttempt'
-          class: App\Entity\UserAttempt
         user_log:
           title: 'UserLog'
           class: App\Entity\UserLog

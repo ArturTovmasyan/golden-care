@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Table(name="tbl_user_attempt")
- * @ORM\Entity(repositoryClass="App\Repository\UserAttemptRepository")
+ * @ORM\Table(name="tbl_login_attempt")
+ * @ORM\Entity(repositoryClass="App\Repository\LoginAttemptRepository")
  */
-class UserAttempt
+class LoginAttempt
 {
     use TimeAwareTrait;
 
@@ -28,12 +28,10 @@ class UserAttempt
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @var string
+     * @ORM\Column(name="login", type="string", nullable=false)
      */
-    private $user;
+    private $login;
 
     /**
      * @var string
@@ -58,19 +56,19 @@ class UserAttempt
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUser()
+    public function getLogin(): string
     {
-        return $this->user;
+        return $this->login;
     }
 
     /**
-     * @param mixed $user
+     * @param string $login
      */
-    public function setUser($user): void
+    public function setLogin(string $login): void
     {
-        $this->user = $user;
+        $this->login = $login;
     }
 
     /**

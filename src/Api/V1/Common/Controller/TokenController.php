@@ -3,11 +3,11 @@
 namespace App\Api\V1\Common\Controller;
 
 use App\Api\V1\Common\Controller\Exception\UserBlockedException;
+use App\Entity\LoginAttempt;
 use App\Entity\User;
-use App\Entity\UserAttempt;
 use App\Entity\UserLog;
 use App\Model\Log;
-use App\Repository\UserAttemptRepository;
+use App\Repository\LoginAttemptRepository;
 use Doctrine\ORM\EntityManager;
 use OAuth2\OAuth2;
 use Symfony\Component\HttpFoundation\Request;
@@ -108,9 +108,10 @@ class TokenController extends BaseController
         /**
          * @var User $user
          */
-        $user = $this->em->getRepository(User::class)->findUserByUsername($request->get('username'));
 
         if ($response->getStatusCode() == Response::HTTP_OK) {
+            $user = $this->em->getRepository(User::class)->findUserByUsername($request->get('username'));
+
             if ($user) {
                 // create log
                 $log = new UserLog();
@@ -124,40 +125,25 @@ class TokenController extends BaseController
                 $this->em->flush();
             }
         } else {
-            if ($user) {
-                /**
-                 * @var UserAttemptRepository $userAttemptRepository
-                 */
-                $userAttemptRepository = $this->em->getRepository(UserAttempt::class);
+            $username = $request->get('username');
 
-                $attemptsCount = $userAttemptRepository->getAttemptsCount($user, $this->getClientIp());
+            /**
+             * @var LoginAttemptRepository $loginAttemptRepository
+             */
+            $loginAttemptRepository = $this->em->getRepository(LoginAttempt::class);
+            $attemptsCount = $loginAttemptRepository->getAttemptsCount($username, $this->getClientIp());
 
-                if ($attemptsCount >= UserAttempt::PASSWORD_ATTEMPT_LIMIT) {
-                    throw new UserBlockedException('User blocked, please try after 30 minutes');
-                }
-
-                // create attempt
-                $userAttempt = new UserAttempt();
-                $userAttempt->setCreatedAt(new \DateTime());
-                $userAttempt->setUser($user);
-                $userAttempt->setIp($this->getClientIp());
-                $this->em->persist($userAttempt);
-
-                if ($attemptsCount == User::PASSWORD_MISTAKES_LIMIT - 1) {
-                    // create log
-                    $log = new UserLog();
-                    $log->setCreatedAt(new \DateTime());
-                    $log->setUser($user);
-                    $log->setType(UserLog::LOG_TYPE_BLOCK_USER_PASSWORD);
-                    $log->setLevel(Log::LOG_LEVEL_HIGH);
-                    $log->setMessage(sprintf("User %s (%s) blocked for bad password request.", $user->getFullName(), $user->getUsername()));
-                    $this->em->persist($log);
-                }
-
-                $this->em->persist($user);
-
-                $this->em->flush();
+            if ($attemptsCount >= LoginAttempt::PASSWORD_ATTEMPT_LIMIT) {
+                throw new UserBlockedException('Username blocked for your IP address, please try after 30 minutes.');
             }
+
+            // create attempt
+            $loginAttempt = new LoginAttempt();
+            $loginAttempt->setCreatedAt(new \DateTime());
+            $loginAttempt->setLogin($username);
+            $loginAttempt->setIp($this->getClientIp());
+            $this->em->persist($loginAttempt);
+            $this->em->flush();
 
             $content = json_decode($response->getContent(), 1);
             $message = '';
