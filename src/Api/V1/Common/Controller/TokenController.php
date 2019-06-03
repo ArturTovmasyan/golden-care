@@ -113,6 +113,13 @@ class TokenController extends BaseController
             $user = $this->em->getRepository(User::class)->findUserByUsername($request->get('username'));
 
             if ($user) {
+                $attempts = $this->em->getRepository(LoginAttempt::class)
+                    ->findBy(['login'=>$request->get('username')]);
+
+                foreach ($attempts as $attempt) {
+                    $this->em->remove($attempt);
+                }
+
                 // create log
                 $log = new UserLog();
                 $log->setCreatedAt(new \DateTime());
