@@ -61,6 +61,11 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "referral",
  *              "type"       = "string",
  *              "field"      = "CASE WHEN r.firstName IS NOT NULL THEN CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, '')) ELSE ro.title END"
+ *          },
+ *          {
+ *              "id"         = "primary_facility",
+ *              "type"       = "string",
+ *              "field"      = "CASE WHEN l.primaryFacility IS NOT NULL THEN CONCAT(f.name, ' (', f.shorthand, ')') ELSE '-' END"
  *          }
  *     }
  * )
