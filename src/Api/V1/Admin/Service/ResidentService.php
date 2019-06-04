@@ -21,6 +21,9 @@ use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Liip\ImagineBundle\Imagine\Filter\FilterManager;
+use Liip\ImagineBundle\Model\Binary;
 
 /**
  * Class ResidentService
@@ -28,6 +31,8 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ResidentService extends BaseService implements IGridService
 {
+    public const IMAGE_DEFAULT_TITLE = 'original';
+
     /**
      * @var ResidentPhotoHelper
      */
@@ -154,15 +159,21 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($resident);
 
             // save photo
+            $fullPaths = [];
             if (!empty($params['photo'])) {
                 $image = new ResidentImage();
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
+                $image->setTitle(self::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_add']);
 
                 $this->em->persist($image);
+
+                if ($image) {
+                    $fullPaths = $this->base64ToCache($image->getPhoto(), $resident);
+                }
             }
 
             $this->em->flush();
@@ -172,6 +183,12 @@ class ResidentService extends BaseService implements IGridService
 //                $this->residentPhotoHelper->remove($resident->getId());
 //                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
 //            }
+
+            if (!empty($fullPaths)) {
+                foreach ($fullPaths as $fullPath) {
+                    unlink($fullPath);
+                }
+            }
 
             $this->em->getConnection()->commit();
 
@@ -241,6 +258,7 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($resident);
 
             // save photo
+            $fullPaths = [];
             if (!empty($params['photo'])) {
                 /** @var ResidentImageRepository $imageRepo */
                 $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -253,10 +271,15 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
+                $image->setTitle(self::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_edit']);
 
                 $this->em->persist($image);
+
+                if ($image) {
+                    $fullPaths = $this->base64ToCache($image->getPhoto(), $resident);
+                }
             }
 
 //            // save photo
@@ -266,12 +289,99 @@ class ResidentService extends BaseService implements IGridService
 //            }
 
             $this->em->flush();
+
+            if (!empty($fullPaths)) {
+                foreach ($fullPaths as $fullPath) {
+                    unlink($fullPath);
+                }
+            }
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $base64
+     * @param Resident $resident
+     * @return array
+     */
+    public function base64ToCache($base64, Resident $resident):array
+    {
+        $base64Items = explode(';base64,', $base64);
+        $base64Image = $base64Items[1];
+
+        $base64FirstPart = explode(':', $base64Items[0]);
+        $mimeType = $base64FirstPart[1];
+
+        $mimeTypeParts = explode('/', $mimeType);
+        $format = $mimeTypeParts[1];
+
+        $filePath = 'resident';
+        $fileName = 'image_'.$resident->getId().'.'.$format;
+
+        if (!file_exists($fileName)) {
+            mkdir($filePath.'/', 0777, true);
+        }
+
+        $imgPath = $filePath.'/'.$fileName;
+
+        $ifp = fopen($imgPath, 'wb');
+        fwrite($ifp, base64_decode($base64Image));
+        fclose($ifp);
+
+        $content = file_get_contents($imgPath);
+
+        //create binary
+        $binary = new Binary($content, $mimeType, $format);
+
+        //create all filter images
+        /** @var CacheManager $cacheManager */
+        $cacheManager = $this->container->get('liip_imagine.cache.manager');
+
+        /** @var FilterManager $filterManager */
+        $filterManager = $this->container->get('liip_imagine.filter.manager');
+
+        //get all image filters
+        $filters = $filterManager->getFilterConfiguration()->all();
+        $filters = array_keys($filters);
+        unset($filters[0]);
+
+        $filterService = $this->container->getParameter('filter_service');
+        $filterPath = $filterService['path'];
+
+        $fullPaths[] = $filterPath.'/'.$imgPath;
+        //create cache versions for files
+        foreach ($filters as $filter) {
+            //create cache images
+            $cacheManager->store(
+                $filterManager->applyFilter($binary, $filter),
+                $imgPath,
+                $filter);
+
+            $fullPath = $filterPath.'/media/cache/'.$filter.'/'.$imgPath;
+
+            $type = pathinfo($imgPath, PATHINFO_EXTENSION);
+            $data = file_get_contents($fullPath);
+
+            if($data) {
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+                $filterImage = new ResidentImage();
+                $filterImage->setResident($resident);
+                $filterImage->setPhoto($base64);
+                $filterImage->setTitle($filter);
+
+                $this->em->persist($filterImage);
+
+                $fullPaths[] = $fullPath;
+            }
+        }
+
+        return $fullPaths;
     }
 
     /**

@@ -66,6 +66,21 @@ class ResidentImage
     private $photo;
 
     /**
+     * @var string $title
+     * @ORM\Column(name="title", type="string")
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_image_add",
+     *     "api_admin_resident_image_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_image_list",
+     *     "api_admin_resident_image_get",
+     *     "api_admin_resident_get"
+     * })
+     */
+    private $title;
+
+    /**
      * @return int
      */
     public function getId()
@@ -111,5 +126,21 @@ class ResidentImage
     public function setPhoto(?string $photo): void
     {
         $this->photo = $photo;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param null|string $title
+     */
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
     }
 }
