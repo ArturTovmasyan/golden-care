@@ -8,9 +8,13 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Common\Service\Exception\LastResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyAdmitException;
+use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyReadmitException;
+use App\Api\V1\Common\Service\Exception\ResidentAdmissionTwoTimeARowException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
@@ -305,37 +309,76 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $type = $params['group_type'] ? (int)$params['group_type'] : 0;
             $admissionType = isset($params['admission_type']) ? (int)$params['admission_type'] : 0;
+
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            /** @var ResidentAdmission $lastAction */
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+
+            if ($lastAction === null && $admissionType !== AdmissionType::ADMIT) {
+                throw new ResidentAdmissionOnlyAdmitException();
+            }
 
             $entity = new ResidentAdmission();
             $entity->setResident($resident);
-            $entity->setGroupType($type);
+
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+                if ($lastAction === null) {
+                    throw new LastResidentAdmissionNotFoundException();
+                }
+
+                $lastActionAdmissionType = $lastAction->getAdmissionType();
+
+                if ($lastActionAdmissionType === AdmissionType::DISCHARGE) {
+                    throw new ResidentAdmissionOnlyReadmitException();
+                }
+
+                if (($lastActionAdmissionType === $admissionType) === AdmissionType::TEMPORARY_DISCHARGE) {
+                    throw new ResidentAdmissionTwoTimeARowException();
+                }
+
+                $entity->setGroupType($lastAction->getGroupType());
+            } else {
+                if ($lastAction !== null && ($lastAction->getAdmissionType() === $admissionType) === AdmissionType::ADMIT) {
+                    throw new ResidentAdmissionTwoTimeARowException();
+                }
+
+                $type = $params['group_type'] ? (int)$params['group_type'] : 0;
+                $entity->setGroupType($type);
+            }
+
             $entity->setAdmissionType($admissionType);
             $entity->setNotes($params['notes']);
 
             $date = $params['date'];
-
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
             }
-
             $entity->setDate($date);
 
-            $addMode = true;
+            $now = new \DateTime('now');
+            $entity->setStart($now);
+
+            if ($lastAction !== null) {
+                $lastAction->setEnd($now);
+
+                $this->em->persist($lastAction);
+            }
 
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_add';
-                    $entity = $this->saveAsFacility($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_add';
-                    $entity = $this->saveAsApartment($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_add';
-                    $entity = $this->saveAsRegion($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
@@ -396,10 +439,15 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $admissionType = isset($params['admission_type']) ? (int)$params['admission_type'] : 0;
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            /** @var ResidentAdmission $lastAction */
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+
+            $admissionType = $entity->getAdmissionType();
 
             $entity->setResident($resident);
-            $entity->setAdmissionType($admissionType);
             $entity->setNotes($params['notes']);
 
             $date = $params['date'];
@@ -410,20 +458,18 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             $entity->setDate($date);
 
-            $addMode = false;
-
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_edit';
-                    $entity = $this->saveAsFacility($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_edit';
-                    $entity = $this->saveAsApartment($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_edit';
-                    $entity = $this->saveAsRegion($entity, $params, $addMode, $admissionType);
+                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
@@ -569,19 +615,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param bool $addMode
      * @param int $admissionType
+     * @param ResidentAdmission $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsFacility(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
+    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
-
-        /** @var ResidentAdmissionRepository $admissionRepo */
-        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-
-        /** @var ResidentAdmission $lastAction */
-        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
         if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setDiningRoom($lastAction->getDiningRoom() ?? null);
@@ -635,35 +675,19 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setCareLevel($careLevel);
         }
 
-        $now = new \DateTime('now');
-
-        $entity->setStart($now);
-
-        if ($addMode && $lastAction !== null) {
-            $lastAction->setEnd($now);
-
-            $this->em->persist($lastAction);
-        }
-
         return $entity;
     }
 
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param bool $addMode
      * @param int $admissionType
+     * @param ResidentAdmission $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsApartment(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
+    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
-
-        /** @var ResidentAdmissionRepository $admissionRepo */
-        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-
-        /** @var ResidentAdmission $lastAction */
-        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
         if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
@@ -683,35 +707,19 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setApartmentBed($apartmentBed);
         }
 
-        $now = new \DateTime('now');
-
-        $entity->setStart($now);
-
-        if ($addMode && $lastAction !== null) {
-            $lastAction->setEnd($now);
-
-            $this->em->persist($lastAction);
-        }
-
         return $entity;
     }
 
     /**
      * @param ResidentAdmission $entity
      * @param array $params
-     * @param bool $addMode
      * @param int $admissionType
+     * @param ResidentAdmission $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsRegion(ResidentAdmission $entity, array $params, bool $addMode, int $admissionType)
+    private function saveAsRegion(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
-
-        /** @var ResidentAdmissionRepository $admissionRepo */
-        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-
-        /** @var ResidentAdmission $lastAction */
-        $lastAction = $admissionRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
         if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setRegion($lastAction->getRegion() ?? null);
@@ -765,16 +773,6 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setAmbulatory($params['ambulatory'] ?? false);
             $entity->setCareGroup($careGroup);
             $entity->setCareLevel($careLevel);
-        }
-
-        $now = new \DateTime('now');
-
-        $entity->setStart($now);
-
-        if ($addMode && $lastAction !== null) {
-            $lastAction->setEnd($now);
-
-            $this->em->persist($lastAction);
         }
 
         return $entity;

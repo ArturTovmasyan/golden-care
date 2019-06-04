@@ -100,7 +100,6 @@ class ResidentAdmission
      *          "api_admin_facility_add",
      *          "api_admin_apartment_add",
      *          "api_admin_region_add",
-     *          "api_admin_discharge_add",
      *     }
      * )
      * @Groups({
@@ -482,11 +481,17 @@ class ResidentAdmission
         $this->resident = $resident;
     }
 
+    /**
+     * @return int|null
+     */
     public function getGroupType(): ?int
     {
         return $this->groupType;
     }
 
+    /**
+     * @param $groupType
+     */
     public function setGroupType($groupType): void
     {
         $this->groupType = $groupType;

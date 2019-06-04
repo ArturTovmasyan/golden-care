@@ -114,6 +114,10 @@ class ResponseCode
     const INCORRECT_LEAD_OWNER_TYPE_EXCEPTION                    = 716;
     const LEAD_LEAD_NOT_FOUND_EXCEPTION                          = 717;
     const LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION          = 718;
+    const RESIDENT_ADMISSION_ONLY_ADMIT_EXCEPTION                = 719;
+    const LAST_RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION            = 720;
+    const RESIDENT_ADMISSION_TWO_TIME_A_ROW_EXCEPTION            = 721;
+    const RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION              = 722;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -226,6 +230,10 @@ class ResponseCode
         self::INCORRECT_LEAD_OWNER_TYPE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect owner type. Available types: Lead, Referral or Organization.'],
         self::LEAD_LEAD_NOT_FOUND_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead not found.'],
         self::LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You must enter a Phone Number, OR an Email.'],
+        self::RESIDENT_ADMISSION_ONLY_ADMIT_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'First time You must only Admit resident.'],
+        self::LAST_RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Last ResidentAdmission not found.'],
+        self::RESIDENT_ADMISSION_TWO_TIME_A_ROW_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Can\'t add same type of ResidentAdmission two time a row.'],
+        self::RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You must only Re-admit resident.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],

@@ -448,7 +448,6 @@ class ResidentAdmissionController extends BaseController
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
      * @apiParam {Int}     resident_id         The unique identifier of the resident
-     * @apiParam {Int}     admission_type      The admission type of the admission
      * @apiParam {String}  date                The date of the admission
      * @apiParam {Int}     facility_bed_id     The unique identifier of the facility bed
      * @apiParam {Int}     apartment_bed_id    The unique identifier of the apartment bed
@@ -466,7 +465,6 @@ class ResidentAdmissionController extends BaseController
      * @apiParamExample {json} Facility Request:
      *     {
      *          "resident_id": 1,
-     *          "admission_type": 1,
      *          "date": "2016-10-01",
      *          "dining_room_id": 1,
      *          "facility_bed_id": 1,
@@ -480,7 +478,6 @@ class ResidentAdmissionController extends BaseController
      * @apiParamExample {json} Apartment Request:
      *     {
      *          "resident_id": 1,
-     *          "admission_type": 1,
      *          "date": "2016-10-01",
      *          "apartment_bed_id": 1,
      *          "notes": "some notes"
@@ -488,7 +485,6 @@ class ResidentAdmissionController extends BaseController
      * @apiParamExample {json} Region Request:
      *     {
      *          "resident_id": 1,
-     *          "admission_type": 1,
      *          "date": "2016-10-01",
      *          "region_id": 1,
      *          "csz_id": 1,
@@ -529,7 +525,6 @@ class ResidentAdmissionController extends BaseController
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
-                'admission_type' => $request->get('admission_type'),
                 'date' => $request->get('date'),
                 'facility_bed_id' => $request->get('facility_bed_id'),
                 'apartment_bed_id' => $request->get('apartment_bed_id'),
