@@ -239,6 +239,15 @@ class Resident
     private $phones;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentImage", mappedBy="resident", cascade={"remove", "persist"})
+     * @Groups({
+     *      "api_admin_resident_get"
+     * })
+     */
+    private $images;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="resident")
      */
     private $assessments;
@@ -483,6 +492,22 @@ class Resident
     public function setPhones($phones): void
     {
         $this->phones = $phones;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param mixed $images
+     */
+    public function setImages($images): void
+    {
+        $this->images = $images;
     }
 
     /**

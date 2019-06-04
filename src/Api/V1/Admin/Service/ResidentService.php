@@ -11,10 +11,12 @@ use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
@@ -150,13 +152,26 @@ class ResidentService extends BaseService implements IGridService
 
             $this->validate($resident, null, ['api_admin_resident_add']);
             $this->em->persist($resident);
-            $this->em->flush();
 
             // save photo
             if (!empty($params['photo'])) {
-                $this->residentPhotoHelper->remove($resident->getId());
-                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+                $image = new ResidentImage();
+
+                $image->setResident($resident);
+                $image->setPhoto($params['photo']);
+
+                $this->validate($resident, null, ['api_admin_resident_image_add']);
+
+                $this->em->persist($image);
             }
+
+            $this->em->flush();
+
+//            // save photo
+//            if (!empty($params['photo'])) {
+//                $this->residentPhotoHelper->remove($resident->getId());
+//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+//            }
 
             $this->em->getConnection()->commit();
 
@@ -227,9 +242,28 @@ class ResidentService extends BaseService implements IGridService
 
             // save photo
             if (!empty($params['photo'])) {
-                $this->residentPhotoHelper->remove($resident->getId());
-                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+                /** @var ResidentImageRepository $imageRepo */
+                $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+                $image = $imageRepo->getBy($resident->getId());
+
+                if ($image === null) {
+                    $image = new ResidentImage();
+                }
+
+                $image->setResident($resident);
+                $image->setPhoto($params['photo']);
+
+                $this->validate($resident, null, ['api_admin_resident_image_edit']);
+
+                $this->em->persist($image);
             }
+
+//            // save photo
+//            if (!empty($params['photo'])) {
+//                $this->residentPhotoHelper->remove($resident->getId());
+//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+//            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();

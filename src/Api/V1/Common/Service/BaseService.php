@@ -3,6 +3,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Annotation\ValidationSerializedName;
 use App\Api\V1\Common\Service\Exception\ValidationException;
+use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Model\Grant;
@@ -180,7 +181,11 @@ class BaseService
 
                             $targetEntityRepo = $this->em->getRepository($associationMapping['targetEntity']);
 
-                            $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), null, $mappedBy, $id, $ids);
+                            $targetEntities = [];
+                            if($targetEntityRepo instanceof RelatedInfoInterface) {
+                                $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), null, $mappedBy, $id, $ids);
+                            }
+
                             $count = 0;
                             if (!empty($targetEntities)) {
                                 $count = \count($targetEntities);
@@ -189,7 +194,10 @@ class BaseService
                             $hasAccessToView = $this->grantService->hasCurrentUserEntityGrant($associationMapping['targetEntity'], Grant::$LEVEL_VIEW);
 
                             if ($hasAccessToView) {
-                                $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($associationMapping['targetEntity']), $mappedBy, $id, $ids);
+                                $targetEntities = [];
+                                if($targetEntityRepo instanceof RelatedInfoInterface) {
+                                    $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($associationMapping['targetEntity']), $mappedBy, $id, $ids);
+                                }
                             } else {
                                 $targetEntities = [];
                             }
