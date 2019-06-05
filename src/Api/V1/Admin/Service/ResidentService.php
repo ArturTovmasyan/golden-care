@@ -2,6 +2,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -278,7 +279,15 @@ class ResidentService extends BaseService implements IGridService
                 $this->em->persist($image);
 
                 if ($image) {
-                    $fullPaths = $this->base64ToCache($image->getPhoto(), $resident);
+                    $filterImages = $imageRepo->getFiltersBy($resident->getId(), $image->getId());
+
+                    if (!empty($filterImages)) {
+                        foreach ($filterImages as $filterImage) {
+                            $this->em->remove($filterImage);
+                        }
+                    }
+
+                    $fullPaths = $this->createAllFilterVersion($image->getPhoto(), $resident);
                 }
             }
 
@@ -309,8 +318,10 @@ class ResidentService extends BaseService implements IGridService
      * @param Resident $resident
      * @return array
      */
-    public function base64ToCache($base64, Resident $resident):array
+    public function createAllFilterVersion($base64, Resident $resident):array
     {
+        $filterService = $this->container->getParameter('filter_service');
+
         $base64Items = explode(';base64,', $base64);
         $base64Image = $base64Items[1];
 
@@ -320,10 +331,15 @@ class ResidentService extends BaseService implements IGridService
         $mimeTypeParts = explode('/', $mimeType);
         $format = $mimeTypeParts[1];
 
+        if (!\in_array($format, $filterService['extensions'], false)) {
+            throw new FileExtensionException();
+        }
+
         $filePath = 'resident';
         $fileName = 'image_'.$resident->getId().'.'.$format;
 
-        if (!file_exists($fileName)) {
+//        if (!file_exists($fileName)) {
+        if (!is_dir( $filePath) ) {
             mkdir($filePath.'/', 0777, true);
         }
 
@@ -350,7 +366,6 @@ class ResidentService extends BaseService implements IGridService
         $filters = array_keys($filters);
         unset($filters[0]);
 
-        $filterService = $this->container->getParameter('filter_service');
         $filterPath = $filterService['path'];
 
         $fullPaths[] = $filterPath.'/'.$imgPath;
