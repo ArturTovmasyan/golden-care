@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -25,9 +26,6 @@ class UserImage
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({
-     *     "api_profile_me"
-     * })
      */
     private $id;
 
@@ -65,6 +63,7 @@ class UserImage
      * @Groups({
      *     "api_profile_me"
      * })
+     * @Serializer\SerializedName("avatar")
      */
     private $photo_35_35;
 
@@ -75,6 +74,10 @@ class UserImage
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
      * })
+     * @Groups({
+     *     "api_profile_view"
+     * })
+     * @Serializer\SerializedName("avatar")
      */
     private $photo_150_150;
 

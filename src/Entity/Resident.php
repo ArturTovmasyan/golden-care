@@ -174,14 +174,6 @@ class Resident
 
     /**
      * @var string
-     * @Groups({
-     *      "api_admin_resident_get"
-     * })
-     */
-    private $photo = "";
-
-    /**
-     * @var string
      * @Assert\Image(
      *     maxSize="6000000",
      *     mimeTypes = {
@@ -413,22 +405,6 @@ class Resident
     public function setMiddleName($middleName): void
     {
         $this->middleName = $middleName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    /**
-     * @param string $photo
-     */
-    public function setPhoto($photo): void
-    {
-        $this->photo = $photo;
     }
 
     /**

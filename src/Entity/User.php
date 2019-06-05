@@ -375,16 +375,6 @@ class User implements UserInterface
     private $activationHash = '';
 
     /**
-     * @var string
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_view",
-     *     "api_profile_me"
-     * })
-     */
-    private $avatar;
-
-    /**
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"persist"})
      * @ORM\JoinTable(
      *      name="tbl_user_role",
@@ -470,6 +460,10 @@ class User implements UserInterface
     /**
      * @var UserImage
      * @ORM\OneToOne(targetEntity="App\Entity\UserImage", mappedBy="user", cascade={"remove", "persist"})
+     * @Groups({
+     *     "api_profile_view",
+     *     "api_profile_me"
+     * })
      */
     private $image;
 
@@ -825,22 +819,6 @@ class User implements UserInterface
     public function getRoles()
     {
         // TODO: Implement getRoles() method.
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * @param string $avatar
-     */
-    public function setAvatar($avatar)
-    {
-        $this->avatar = $avatar;
     }
 
     /**

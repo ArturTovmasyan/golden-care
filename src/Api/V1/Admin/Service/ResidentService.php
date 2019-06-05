@@ -109,16 +109,6 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
-        if ($resident !== null) {
-            $photo = $this->residentPhotoHelper->get($resident->getId());
-
-            if (!empty($photo)) {
-                $resident->setPhoto($photo);
-            }
-        } else {
-            throw new ResidentNotFoundException();
-        }
-
         return $resident;
     }
 

@@ -100,19 +100,6 @@ class ProfileController extends BaseController
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
-
-        /** @var UserImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(UserImage::class);
-        /** @var UserImage $image */
-        $image = $imageRepo->getBy($user->getId());
-
-        if ($image !== null) {
-            if ($type === 'me') {
-                $user->setAvatar($image->getPhoto3535());
-            } else {
-                $user->setAvatar($image->getPhoto150150());
-            }
-        }
         $user->setPermissions($grantService->getEffectiveGrants($user->getRoleObjects()));
 
         return $this->respondSuccess(

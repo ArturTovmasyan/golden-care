@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -90,6 +91,7 @@ class ResidentImage
      *     "api_admin_resident_image_get",
      *     "api_admin_resident_list"
      * })
+     * @Serializer\SerializedName("photo")
      */
     private $photo_150_150;
 
@@ -105,6 +107,7 @@ class ResidentImage
      *     "api_admin_resident_image_get",
      *     "api_admin_resident_get"
      * })
+     * @Serializer\SerializedName("photo")
      */
     private $photo_300_300;
 
