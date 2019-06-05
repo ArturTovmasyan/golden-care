@@ -2283,15 +2283,19 @@ UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `fax`       
 
 
 ### Resident Photo
-SELECT `cc_old`.`residents`.`Resident_ID` COLLATE utf8_general_ci AS 'id',
-       CONCAT('https://ccdb.ciminocare.com/uploads/documents/', `cc_old`.`residents`.`Photo`) COLLATE
-       utf8_general_ci                                            AS 'photo'
+SELECT JSON_OBJECT(
+           'id', `cc_old`.`residents`.`Resident_ID` COLLATE utf8_general_ci,
+           'photo', CONCAT('https://ccdb.ciminocare.com/uploads/documents/', `cc_old`.`residents`.`Photo`) COLLATE
+                    utf8_general_ci
+         ) AS 'item'
 FROM `cc_old`.`residents`
 WHERE `cc_old`.`residents`.`Photo` != ''
 UNION
-SELECT (`alms`.`base_resident`.`id` + 10000) COLLATE utf8_general_ci AS 'id',
-       CONCAT('https://alms.ciminocare.com/uploads/documents/', `alms`.`base_resident`.`photo`) COLLATE
-       utf8_general_ci                                               AS 'photo'
+SELECT JSON_OBJECT(
+           'id', (`alms`.`base_resident`.`id` + 10000) COLLATE utf8_general_ci,
+           'photo', CONCAT('https://alms.ciminocare.com/uploads/documents/', `alms`.`base_resident`.`photo`) COLLATE
+                    utf8_general_ci
+         ) AS 'item'
 FROM `alms`.`base_resident`
 WHERE `alms`.`base_resident`.`photo` != '';
 
