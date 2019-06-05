@@ -2296,3 +2296,244 @@ FROM `alms`.`base_resident`
 WHERE `alms`.`base_resident`.`photo` != '';
 
 # Use app:migrate:photos command to import these photos to SeniorCare.
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_state_change_reason` (`id_space`,
+                                                                      `id`,
+                                                                      `title`,
+                                                                      `state`)
+SELECT 1       AS 'id_space',
+       `cc_old`.`ltc_state_change_reason`.`id`    AS 'id',
+       `cc_old`.`ltc_state_change_reason`.`name`  AS 'title',
+       `cc_old`.`ltc_state_change_reason`.`state` AS 'state'
+FROM `cc_old`.`ltc_state_change_reason`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_referrer_type` (`id_space`,
+                                                                `id`,
+                                                                `title`,
+                                                                `organization_required`,
+                                                                `representative_required`)
+SELECT 1                            AS 'id_space',
+       `cc_old`.`ltc_copo_category`.`id`                         AS 'id',
+       `cc_old`.`ltc_copo_category`.`title`                      AS 'title',
+       `cc_old`.`ltc_copo_category`.`organization_name_required` AS 'organization_required',
+       `cc_old`.`ltc_copo_category`.`representative_required`    AS 'representative_required'
+FROM `cc_old`.`ltc_copo_category`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_care_type` (`id_space`,
+                                                            `id`,
+                                                            `title`)
+SELECT 1      AS 'id_space',
+       `cc_old`.`type_of_care`.`id`   AS 'id',
+       `cc_old`.`type_of_care`.`name` AS 'title'
+FROM `cc_old`.`type_of_care`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_activity_status` (`id_space`,
+                                                                  `id`,
+                                                                  `title`,
+                                                                  `done`)
+SELECT 1      AS 'id_space',
+       `cc_old`.`ltc_events_event_status`.`id`   AS 'id',
+       `cc_old`.`ltc_events_event_status`.`name` AS 'title',
+       `cc_old`.`ltc_events_event_status`.`done` AS 'done'
+FROM `cc_old`.`ltc_events_event_status`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_activity_type` (`id`,
+                                                                `id_default_status`,
+                                                                `title`,
+                                                                `assign_to`,
+                                                                `due_date`,
+                                                                `reminder_date`,
+                                                                `cc`,
+                                                                `sms`,
+                                                                `facility`,
+                                                                `is_editable`,
+                                                                `is_deletable`)
+SELECT `cc_old`.`ltc_events_event_definition`.`id`                AS 'id',
+       `cc_old`.`ltc_events_event_definition`.`id_default_status` AS 'id_default_status',
+       `cc_old`.`ltc_events_event_definition`.`name`              AS 'title',
+       `cc_old`.`ltc_events_event_definition`.`assign_to`         AS 'assign_to',
+       `cc_old`.`ltc_events_event_definition`.`due_date`          AS 'due_date',
+       `cc_old`.`ltc_events_event_definition`.`reminder_date`     AS 'reminder_date',
+       `cc_old`.`ltc_events_event_definition`.`cc`                AS 'cc',
+       `cc_old`.`ltc_events_event_definition`.`sms`               AS 'sms',
+       `cc_old`.`ltc_events_event_definition`.`facility`          AS 'facility',
+       `cc_old`.`ltc_events_event_definition`.`is_editable`       AS 'is_editable',
+       `cc_old`.`ltc_events_event_definition`.`is_deletable`      AS 'is_deletable'
+FROM `cc_old`.`ltc_events_event_definition`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_activity` (`id`,
+                                                           `id_type`,
+                                                           `id_status`,
+                                                           `assign_to`,
+                                                           `id_facility`,
+                                                           `id_referral`,
+                                                           `id_organization`,
+                                                           `id_lead`,
+                                                           `title`,
+                                                           `due_date`,
+                                                           `reminder_date`,
+                                                           `notes`,
+                                                           `date`,
+                                                           `owner_type`)
+SELECT `cc_old`.`ltc_events_event`.`id`                            AS 'id',
+       `cc_old`.`ltc_events_event`.`id_definition`                 AS 'id_type',
+       `cc_old`.`ltc_events_event`.`id_status`                     AS 'id_status',
+       `cc_old`.`ltc_events_event`.`assign_to`                     AS 'assign_to',
+       `cc_old`.`ltc_events_event`.`id_facility`                   AS 'id_facility',
+       `cc_old`.`ltc_events_event`.`id_referrer`                   AS 'id_referral',
+       `cc_old`.`ltc_events_event`.`id_copo`                       AS 'id_organization',
+       `cc_old`.`ltc_events_event`.`id_lead`                       AS 'id_lead',
+       `cc_old`.`ltc_events_event`.`title`                         AS 'title',
+       `cc_old`.`ltc_events_event`.`due_date`                      AS 'due_date',
+       `cc_old`.`ltc_events_event`.`reminder_date`                 AS 'reminder_date',
+       `cc_old`.`ltc_events_event`.`notes`                         AS 'notes',
+       `cc_old`.`ltc_events_event`.`date`                          AS 'date',
+       CASE
+         WHEN `cc_old`.`ltc_events_event`.`discriminator` = 1 THEN 2
+         WHEN `cc_old`.`ltc_events_event`.`discriminator` = 2 THEN 3
+         WHEN `cc_old`.`ltc_events_event`.`discriminator` = 3 THEN 1
+         ELSE (-1 * `cc_old`.`ltc_events_event`.`discriminator`) END AS ''
+FROM `cc_old`.`ltc_events_event`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_organization` (`id`,
+                                                               `id_category`,
+                                                               `id_csz`,
+                                                               `title`,
+                                                               `address_1`,
+                                                               `address_2`,
+                                                               `website_url`,
+                                                               `emails`)
+SELECT `cc_old`.`ltc_copo`.`id`               AS 'id',
+       `cc_old`.`ltc_copo`.`id_copo_category` AS 'id_category',
+       `cc_old`.`ltc_copo`.`csz_id`           AS 'id_csz',
+       `cc_old`.`ltc_copo`.`name`             AS 'title',
+       `cc_old`.`ltc_copo`.`address_1`        AS 'address_1',
+       `cc_old`.`ltc_copo`.`address_2`        AS 'address_2',
+       `cc_old`.`ltc_copo`.`website`          AS 'website_url',
+       `cc_old`.`ltc_copo`.`emails`           AS 'emails'
+FROM `cc_old`.`ltc_copo`;
+
+# CALL `cc_old`.`json_row_data`('tmp_lead_copo_phone_data', 'ltc_copo', 'phones');
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_organization_phone`(`id_organization`,
+                                                                    `compatibility`,
+                                                                    `type`,
+                                                                    `number`,
+                                                                    `extension`,
+                                                                    `is_primary`,
+                                                                    `is_sms_enabled`)
+SELECT `cc_old`.`ltc_copo`.`id`                             AS 'id_organization',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`, CONCAT('$[', idx, '].c'))) = '"US"', 1,
+          2)                                                AS 'compatibility',
+       JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`,
+                                 CONCAT('$[', idx, '].t'))) AS 'type',
+       JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`,
+                                 CONCAT('$[', idx, '].n'))) AS 'number',
+       NULLIF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`, CONCAT('$[', idx, '].e'))),
+              '')                                           AS 'extension',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`, CONCAT('$[', idx, '].p'))) = 'true', 1,
+          0)                                                AS 'is_primary',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`, CONCAT('$[', idx, '].s'))) = 'true', 1,
+          0)                                                AS 'is_sms_enabled'
+FROM `cc_old`.`ltc_copo`
+       -- Inline table of sequential values to index into JSON array
+       JOIN (SELECT `cc_old`.`tmp_lead_copo_phone_data`.`seq` AS idx
+             FROM `cc_old`.`tmp_lead_copo_phone_data`) AS INDEXES
+WHERE `cc_old`.`ltc_copo`.`phones` IS NOT NULL
+  AND `cc_old`.`ltc_copo`.`phones` != '[]'
+  AND JSON_EXTRACT(`cc_old`.`ltc_copo`.`phones`, CONCAT('$[', idx, ']')) IS NOT NULL;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_referral` (`id`,
+                                                           `id_type`,
+                                                           `id_organization`,
+                                                           `id_lead`,
+                                                           `first_name`,
+                                                           `last_name`,
+                                                           `emails`,
+                                                           `notes`)
+SELECT `cc_old`.`ltc_referrer`.`id`               AS 'id',
+       `cc_old`.`ltc_referrer`.`id_copo_category` AS 'id_type',
+       `cc_old`.`ltc_referrer`.`id_copo`          AS 'id_organization',
+       `cc_old`.`ltc_referrer`.`id_lead`          AS 'id_lead',
+       `cc_old`.`ltc_referrer`.`first_name`       AS 'first_name',
+       `cc_old`.`ltc_referrer`.`last_name`        AS 'last_name',
+       `cc_old`.`ltc_referrer`.`emails`           AS 'emails',
+       `cc_old`.`ltc_referrer`.`notes`            AS 'notes'
+FROM `cc_old`.`ltc_referrer`;
+
+# CALL `cc_old`.`json_row_data`('tmp_lead_referral_phone_data', 'ltc_referrer', 'phones');
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_referral_phone`(`id_referral`,
+                                                                `compatibility`,
+                                                                `type`,
+                                                                `number`,
+                                                                `extension`,
+                                                                `is_primary`,
+                                                                `is_sms_enabled`)
+SELECT `cc_old`.`ltc_referrer`.`id`                         AS 'id_referral',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`, CONCAT('$[', idx, '].c'))) = '"US"', 1,
+          2)                                                AS 'compatibility',
+       JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`,
+                                 CONCAT('$[', idx, '].t'))) AS 'type',
+       JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`,
+                                 CONCAT('$[', idx, '].n'))) AS 'number',
+       NULLIF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`, CONCAT('$[', idx, '].e'))),
+              '')                                           AS 'extension',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`, CONCAT('$[', idx, '].p'))) = 'true', 1,
+          0)                                                AS 'is_primary',
+       IF(JSON_UNQUOTE(JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`, CONCAT('$[', idx, '].s'))) = 'true', 1,
+          0)                                                AS 'is_sms_enabled'
+FROM `cc_old`.`ltc_referrer`
+       -- Inline table of sequential values to index into JSON array
+       JOIN (SELECT `cc_old`.`tmp_lead_referral_phone_data`.`seq` AS idx
+             FROM `cc_old`.`tmp_lead_referral_phone_data`) AS INDEXES
+WHERE `cc_old`.`ltc_referrer`.`phones` IS NOT NULL
+  AND `cc_old`.`ltc_referrer`.`phones` != '[]'
+  AND JSON_EXTRACT(`cc_old`.`ltc_referrer`.`phones`, CONCAT('$[', idx, ']')) IS NOT NULL;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_lead` (`id`,
+                                                       `id_care_type`,
+                                                       `id_payment_type`,
+                                                       `id_owner`,
+                                                       `id_state_change_reason`,
+                                                       `state`,
+                                                       `state_effective_date`,
+                                                       `id_facility`,
+                                                       `first_name`,
+                                                       `last_name`,
+                                                       `rp_csz_id`,
+                                                       `rp_first_name`,
+                                                       `rp_last_name`,
+                                                       `rp_address_1`,
+                                                       `rp_address_2`,
+                                                       `rp_phone`,
+                                                       `rp_email`,
+                                                       `notes`)
+SELECT `cc_old`.`potentialresident`.`id`                     AS 'id',
+       `cc_old`.`potentialresident`.`id_type_of_care`        AS 'id_care_type',
+       `cc_old`.`potentialresident`.`id_payment_type`        AS 'id_payment_type',
+       `cc_old`.`potentialresident`.`id_owner`               AS 'id_owner',
+       `cc_old`.`potentialresident`.`id_state_change_reason` AS 'id_state_change_reason',
+       `cc_old`.`potentialresident`.`state`                  AS 'state',
+       `cc_old`.`potentialresident`.`state_effective_date`   AS 'state_effective_date',
+       `cc_old`.`potentialresident`.`id_facility`            AS 'id_facility',
+       `cc_old`.`potentialresident`.`first_name`             AS 'first_name',
+       `cc_old`.`potentialresident`.`last_name`              AS 'last_name',
+       IF(`cc_old`.`potentialresident`.`rp_csz_id` >= 2817,
+          (`cc_old`.`potentialresident`.`rp_csz_id` + 10000),
+          `cc_old`.`potentialresident`.`rp_csz_id`)          AS 'rp_csz_id',
+       `cc_old`.`potentialresident`.`rp_first_name`          AS 'rp_first_name',
+       `cc_old`.`potentialresident`.`rp_last_name`           AS 'rp_last_name',
+       `cc_old`.`potentialresident`.`rp_phone`               AS 'rp_address_1',
+       `cc_old`.`potentialresident`.`rp_street_address`      AS 'rp_address_2',
+       `cc_old`.`potentialresident`.`rp_second_address`      AS 'rp_phone',
+       `cc_old`.`potentialresident`.`rp_email`               AS 'rp_email',
+       `cc_old`.`potentialresident`.`note`                   AS 'notes'
+FROM `cc_old`.`potentialresident`;
+
+INSERT INTO `db_seniorcare_migration`.`tbl_lead_facilities` (`id_lead`,
+                                                             `id_facility`)
+SELECT `cc_old`.`potentialresident_facilities`.`potentialresident_id` AS 'id_lead',
+       `cc_old`.`potentialresident_facilities`.`facility_id`          AS 'id_facility'
+FROM `cc_old`.`potentialresident_facilities`;
+

@@ -5,13 +5,18 @@ liip_imagine:
             web_path: ~
     filter_sets:
         cache: ~
-        thumb_400x400:
+        thumb_35x35:
             quality: 100
             filters:
-                upscale: { min: [400, 400] }
-                thumbnail: { size: [400, 400], mode: outbound }
-        thumb_600x600:
+                upscale: { min: [35, 35] }
+                thumbnail: { size: [35, 35], mode: outbound }
+        thumb_150x150:
             quality: 100
             filters:
-                upscale: { min: [600, 600] }
-                thumbnail: { size: [600, 600], mode: outbound }
+                upscale: { min: [150, 150] }
+                thumbnail: { size: [150, 150], mode: outbound }
+        thumb_300x300:
+            quality: 100
+            filters:
+                upscale: { min: [300, 300] }
+                thumbnail: { size: [300, 300], mode: outbound }

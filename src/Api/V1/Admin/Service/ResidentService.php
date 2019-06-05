@@ -160,7 +160,6 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($resident);
 
             // save photo
-            $fullPaths = [];
             if (!empty($params['photo'])) {
                 $image = new ResidentImage();
 
@@ -173,7 +172,7 @@ class ResidentService extends BaseService implements IGridService
                 $this->em->persist($image);
 
                 if ($image) {
-                    $fullPaths = $this->base64ToCache($image->getPhoto(), $resident);
+                    $this->createAllFilterVersion($image->getPhoto(), $resident);
                 }
             }
 
@@ -184,12 +183,6 @@ class ResidentService extends BaseService implements IGridService
 //                $this->residentPhotoHelper->remove($resident->getId());
 //                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
 //            }
-
-            if (!empty($fullPaths)) {
-                foreach ($fullPaths as $fullPath) {
-                    unlink($fullPath);
-                }
-            }
 
             $this->em->getConnection()->commit();
 
@@ -259,7 +252,6 @@ class ResidentService extends BaseService implements IGridService
             $this->em->persist($resident);
 
             // save photo
-            $fullPaths = [];
             if (!empty($params['photo'])) {
                 /** @var ResidentImageRepository $imageRepo */
                 $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -287,7 +279,7 @@ class ResidentService extends BaseService implements IGridService
                         }
                     }
 
-                    $fullPaths = $this->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->createAllFilterVersion($image->getPhoto(), $resident);
                 }
             }
 
@@ -298,12 +290,6 @@ class ResidentService extends BaseService implements IGridService
 //            }
 
             $this->em->flush();
-
-            if (!empty($fullPaths)) {
-                foreach ($fullPaths as $fullPath) {
-                    unlink($fullPath);
-                }
-            }
 
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -318,7 +304,7 @@ class ResidentService extends BaseService implements IGridService
      * @param Resident $resident
      * @return array
      */
-    public function createAllFilterVersion($base64, Resident $resident):array
+    public function createAllFilterVersion($base64, Resident $resident)
     {
         $filterService = $this->container->getParameter('filter_service');
 
@@ -335,24 +321,8 @@ class ResidentService extends BaseService implements IGridService
             throw new FileExtensionException();
         }
 
-        $filePath = 'resident';
-        $fileName = 'image_'.$resident->getId().'.'.$format;
-
-//        if (!file_exists($fileName)) {
-        if (!is_dir( $filePath) ) {
-            mkdir($filePath.'/', 0777, true);
-        }
-
-        $imgPath = $filePath.'/'.$fileName;
-
-        $ifp = fopen($imgPath, 'wb');
-        fwrite($ifp, base64_decode($base64Image));
-        fclose($ifp);
-
-        $content = file_get_contents($imgPath);
-
         //create binary
-        $binary = new Binary($content, $mimeType, $format);
+        $binary = new Binary(base64_decode($base64Image), $mimeType, $format);
 
         //create all filter images
         /** @var CacheManager $cacheManager */
@@ -366,24 +336,11 @@ class ResidentService extends BaseService implements IGridService
         $filters = array_keys($filters);
         unset($filters[0]);
 
-        $filterPath = $filterService['path'];
-
-        $fullPaths[] = $filterPath.'/'.$imgPath;
         //create cache versions for files
         foreach ($filters as $filter) {
-            //create cache images
-            $cacheManager->store(
-                $filterManager->applyFilter($binary, $filter),
-                $imgPath,
-                $filter);
-
-            $fullPath = $filterPath.'/media/cache/'.$filter.'/'.$imgPath;
-
-            $type = pathinfo($imgPath, PATHINFO_EXTENSION);
-            $data = file_get_contents($fullPath);
-
+            $data = $filterManager->applyFilter($binary, $filter)->getContent();
             if($data) {
-                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
 
                 $filterImage = new ResidentImage();
                 $filterImage->setResident($resident);
@@ -391,12 +348,8 @@ class ResidentService extends BaseService implements IGridService
                 $filterImage->setTitle($filter);
 
                 $this->em->persist($filterImage);
-
-                $fullPaths[] = $fullPath;
             }
         }
-
-        return $fullPaths;
     }
 
     /**
