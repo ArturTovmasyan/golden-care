@@ -3,7 +3,6 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Entity\ResidentAdmission;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -721,15 +720,14 @@ class ResidentAdmissionController extends BaseController
      * @Route("/active/first", name="api_admin_resident_admission_get_active_first_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
-     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return JsonResponse
      */
-    public function getActiveFirstResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService, ResidentPhotoHelper $residentPhotoHelper)
+    public function getActiveFirstResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getActiveResidents($residentPhotoHelper),
+            $residentAdmissionService->getActiveResidents(),
             ['api_admin_resident_get_active']
         );
     }

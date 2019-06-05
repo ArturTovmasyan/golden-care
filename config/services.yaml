@@ -3,9 +3,6 @@
 parameters:
     filter_service:
         extensions: ['jpg','jpeg','png','gif']
-    file_service:
-        extensions: ['jpg','jpeg','png','gif', 'doc','odt','docx']
-        path: '%env(resolve:CDN_PATH)%'
     locale: 'en'
 
 services:

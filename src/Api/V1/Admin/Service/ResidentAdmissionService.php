@@ -16,7 +16,6 @@ use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyAdmitException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyReadmitException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionTwoTimeARowException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
-use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -113,10 +112,9 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
-     * @param ResidentPhotoHelper $residentPhotoHelper
      * @return array
      */
-    public function getActiveResidents(ResidentPhotoHelper $residentPhotoHelper)
+    public function getActiveResidents()
     {
         $limit = 6;
 

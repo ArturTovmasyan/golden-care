@@ -45,11 +45,6 @@ class ProfileService extends BaseService
 
             $this->validate($user, null, ['api_profile_edit']);
 
-//            if (!empty($params['avatar'])) {
-//                $this->userAvatarHelper->remove($user->getId());
-//                $this->userAvatarHelper->save($user->getId(), $params['avatar']);
-//            }
-
             $this->em->persist($user);
 
             // save photo

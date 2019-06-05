@@ -7,7 +7,6 @@ use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
-use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Resident;
@@ -40,19 +39,6 @@ class ResidentService extends BaseService implements IGridService
     public function setImageFilterService(ImageFilterService $imageFilterService)
     {
         $this->imageFilterService = $imageFilterService;
-    }
-
-    /**
-     * @var ResidentPhotoHelper
-     */
-    private $residentPhotoHelper;
-
-    /**
-     * @param ResidentPhotoHelper $residentPhotoHelper
-     */
-    public function setResidentPhotoHelper(ResidentPhotoHelper $residentPhotoHelper)
-    {
-        $this->residentPhotoHelper = $residentPhotoHelper;
     }
 
     /**
@@ -175,12 +161,6 @@ class ResidentService extends BaseService implements IGridService
 
             $this->em->flush();
 
-//            // save photo
-//            if (!empty($params['photo'])) {
-//                $this->residentPhotoHelper->remove($resident->getId());
-//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
-//            }
-
             $this->em->getConnection()->commit();
 
             $insert_id = $resident->getId();
@@ -271,12 +251,6 @@ class ResidentService extends BaseService implements IGridService
                 }
             }
 
-//            // save photo
-//            if (!empty($params['photo'])) {
-//                $this->residentPhotoHelper->remove($resident->getId());
-//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
-//            }
-
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -357,8 +331,6 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $this->residentPhotoHelper->remove($resident->getId());
-
             $this->em->remove($resident);
             $this->em->flush();
 
@@ -391,11 +363,6 @@ class ResidentService extends BaseService implements IGridService
 
             if (empty($residents)) {
                 throw new ResidentNotFoundException();
-            }
-
-            foreach ($residents as $resident) {
-                $this->residentPhotoHelper->remove($resident->getId());
-                $this->em->remove($resident);
             }
 
             $this->em->flush();
@@ -449,9 +416,6 @@ class ResidentService extends BaseService implements IGridService
                 if ($image) {
                     $this->imageFilterService->createAllFilterVersion($image);
                 }
-
-//                $this->residentPhotoHelper->remove($resident->getId());
-//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
             $this->em->flush();

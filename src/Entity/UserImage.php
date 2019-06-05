@@ -7,8 +7,6 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
-use App\Annotation\Grid;
 
 /**
  * Class UserImage
