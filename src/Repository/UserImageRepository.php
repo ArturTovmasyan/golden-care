@@ -30,33 +30,7 @@ class UserImageRepository extends EntityRepository
             ->setParameter('id', $id);
 
         return $qb
-            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    /**
-     * @param $id
-     * @param $originalId
-     * @return mixed
-     */
-    public function getFiltersBy($id, $originalId)
-    {
-        $qb = $this
-            ->createQueryBuilder('ui')
-            ->innerJoin(
-                User::class,
-                'u',
-                Join::WITH,
-                'u = ui.user'
-            )
-            ->where('u.id = :id')
-            ->andWhere('ui.id != :originalId')
-            ->setParameter('id', $id)
-            ->setParameter('originalId', $originalId);
-
-        return $qb
-            ->getQuery()
-            ->getResult();
     }
 }

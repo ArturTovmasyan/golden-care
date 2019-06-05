@@ -173,14 +173,13 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
-                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_add']);
 
                 $this->em->persist($image);
 
                 if ($image) {
-                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->imageFilterService->createAllFilterVersion($image);
                 }
             }
 
@@ -272,22 +271,13 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
-                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_edit']);
 
                 $this->em->persist($image);
 
                 if ($image) {
-                    $filterImages = $imageRepo->getFiltersBy($resident->getId(), $image->getId());
-
-                    if (!empty($filterImages)) {
-                        foreach ($filterImages as $filterImage) {
-                            $this->em->remove($filterImage);
-                        }
-                    }
-
-                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->imageFilterService->createAllFilterVersion($image);
                 }
             }
 
@@ -461,22 +451,13 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
-                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_edit']);
 
                 $this->em->persist($image);
 
                 if ($image) {
-                    $filterImages = $imageRepo->getFiltersBy($resident->getId(), $image->getId());
-
-                    if (!empty($filterImages)) {
-                        foreach ($filterImages as $filterImage) {
-                            $this->em->remove($filterImage);
-                        }
-                    }
-
-                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->imageFilterService->createAllFilterVersion($image);
                 }
 
 //                $this->residentPhotoHelper->remove($resident->getId());

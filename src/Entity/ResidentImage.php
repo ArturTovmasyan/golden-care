@@ -39,7 +39,7 @@ class ResidentImage
      *     "api_admin_resident_image_add",
      *     "api_admin_resident_image_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="images")
+     * @ORM\OneToOne(targetEntity="App\Entity\Resident", inversedBy="image")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -66,8 +66,8 @@ class ResidentImage
     private $photo;
 
     /**
-     * @var string $title
-     * @ORM\Column(name="title", type="string")
+     * @var string $photo
+     * @ORM\Column(name="photo_35_35", type="text")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add",
      *     "api_admin_resident_image_edit"
@@ -78,7 +78,37 @@ class ResidentImage
      *     "api_admin_resident_get"
      * })
      */
-    private $title;
+    private $photo_35_35;
+
+    /**
+     * @var string $photo
+     * @ORM\Column(name="photo_150_150", type="text")
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_image_add",
+     *     "api_admin_resident_image_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_image_list",
+     *     "api_admin_resident_image_get",
+     *     "api_admin_resident_get"
+     * })
+     */
+    private $photo_150_150;
+
+    /**
+     * @var string $photo
+     * @ORM\Column(name="photo_300_300", type="text")
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_image_add",
+     *     "api_admin_resident_image_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_image_list",
+     *     "api_admin_resident_image_get",
+     *     "api_admin_resident_get"
+     * })
+     */
+    private $photo_300_300;
 
     /**
      * @return int
@@ -131,16 +161,48 @@ class ResidentImage
     /**
      * @return null|string
      */
-    public function getTitle(): ?string
+    public function getPhoto3535(): ?string
     {
-        return $this->title;
+        return $this->photo_35_35;
     }
 
     /**
-     * @param null|string $title
+     * @param null|string $photo_35_35
      */
-    public function setTitle(?string $title): void
+    public function setPhoto3535(?string $photo_35_35): void
     {
-        $this->title = $title;
+        $this->photo_35_35 = $photo_35_35;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPhoto150150(): ?string
+    {
+        return $this->photo_150_150;
+    }
+
+    /**
+     * @param null|string $photo_150_150
+     */
+    public function setPhoto150150(?string $photo_150_150): void
+    {
+        $this->photo_150_150 = $photo_150_150;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPhoto300300(): ?string
+    {
+        return $this->photo_300_300;
+    }
+
+    /**
+     * @param null|string $photo_300_300
+     */
+    public function setPhoto300300(?string $photo_300_300): void
+    {
+        $this->photo_300_300 = $photo_300_300;
     }
 }

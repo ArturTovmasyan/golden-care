@@ -2,10 +2,7 @@
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
-use App\Api\V1\Common\Service\Exception\UnhandledImageOwnerException;
-use App\Entity\Resident;
 use App\Entity\ResidentImage;
-use App\Entity\User;
 use App\Entity\UserImage;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
@@ -18,8 +15,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ImageFilterService
 {
-    public const IMAGE_DEFAULT_TITLE = 'original';
-
     /**
      * @var EntityManagerInterface
      */
@@ -44,12 +39,13 @@ class ImageFilterService
     }
 
     /**
-     * @param $base64
-     * @param $entity
+     * @param ResidentImage|UserImage $image
      */
-    public function createAllFilterVersion($base64, $entity): void
+    public function createAllFilterVersion($image): void
     {
         $filterService = $this->container->getParameter('filter_service');
+
+        $base64 = $image->getPhoto();
 
         $base64Items = explode(';base64,', $base64);
         $base64Image = $base64Items[1];
@@ -77,26 +73,21 @@ class ImageFilterService
         unset($filters[0]);
 
         //create cache versions for files
-        foreach ($filters as $filter) {
+        foreach ($filters as $key => $filter) {
             $data = $filterManager->applyFilter($binary, $filter)->getContent();
             if($data) {
                 $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
 
-                if ($entity instanceof Resident) {
-                    $filterImage = new ResidentImage();
-                    $filterImage->setResident($entity);
-                } elseif ($entity instanceof User) {
-                    $filterImage = new UserImage();
-                    $filterImage->setUser($entity);
-                } else {
-                    throw new UnhandledImageOwnerException();
+                if($key === 1) {
+                    $image->setPhoto3535($base64);
+                } elseif ($key === 2) {
+                    $image->setPhoto150150($base64);
+                } elseif ($key === 3) {
+                    $image->setPhoto300300($base64);
                 }
-
-                $filterImage->setPhoto($base64);
-                $filterImage->setTitle($filter);
-
-                $this->em->persist($filterImage);
             }
         }
+
+        $this->em->persist($image);
     }
 }

@@ -74,22 +74,13 @@ class ProfileService extends BaseService
 
                 $image->setUser($user);
                 $image->setPhoto($params['photo']);
-                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($user, null, ['api_admin_user_image_edit']);
 
                 $this->em->persist($image);
 
                 if ($image) {
-                    $filterImages = $imageRepo->getFiltersBy($user->getId(), $image->getId());
-
-                    if (!empty($filterImages)) {
-                        foreach ($filterImages as $filterImage) {
-                            $this->em->remove($filterImage);
-                        }
-                    }
-
-                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $user);
+                    $this->imageFilterService->createAllFilterVersion($image);
                 }
             }
 

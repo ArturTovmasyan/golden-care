@@ -457,14 +457,14 @@ class User implements UserInterface
     private $licenseAccepted;
 
     /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\UserImage", mappedBy="user", cascade={"remove", "persist"})
+     * @var UserImage
+     * @ORM\OneToOne(targetEntity="App\Entity\UserImage", mappedBy="user", cascade={"remove", "persist"})
      * @Groups({
      *     "api_profile_edit",
      *     "api_profile_me"
      * })
      */
-    private $images;
+    private $image;
 
     /**
      * @var ArrayCollection
@@ -930,19 +930,19 @@ class User implements UserInterface
     }
 
     /**
-     * @return ArrayCollection
+     * @return UserImage|null
      */
-    public function getImages(): ArrayCollection
+    public function getImage(): ?UserImage
     {
-        return $this->images;
+        return $this->image;
     }
 
     /**
-     * @param ArrayCollection $images
+     * @param UserImage|null $image
      */
-    public function setImages(ArrayCollection $images): void
+    public function setImage(?UserImage $image): void
     {
-        $this->images = $images;
+        $this->image = $image;
     }
 
     /**
