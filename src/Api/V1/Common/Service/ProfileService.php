@@ -2,7 +2,6 @@
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
-use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Entity\User;
 use App\Entity\UserImage;
 use App\Entity\UserPhone;
@@ -25,14 +24,6 @@ class ProfileService extends BaseService
     public function setImageFilterService(ImageFilterService $imageFilterService): void
     {
         $this->imageFilterService = $imageFilterService;
-    }
-
-    /** @var UserAvatarHelper */
-    private $userAvatarHelper;
-
-    public function setUserAvatarHelper(UserAvatarHelper $userAvatarHelper)
-    {
-        $this->userAvatarHelper = $userAvatarHelper;
     }
 
     /**

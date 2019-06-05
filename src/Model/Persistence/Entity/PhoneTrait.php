@@ -23,6 +23,7 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
+     *      "api_profile_view",
      *      "api_profile_me",
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
@@ -61,6 +62,7 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
+     *      "api_profile_view",
      *      "api_profile_me",
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
@@ -99,6 +101,7 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
+     *      "api_profile_view",
      *      "api_profile_me",
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
@@ -135,6 +138,7 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
+     *      "api_profile_view",
      *      "api_profile_me",
      *      "api_lead_organization_list",
      *      "api_lead_organization_get",
@@ -158,6 +162,7 @@ trait PhoneTrait
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",
      *      "api_admin_resident_responsible_person_list",
+     *      "api_profile_view",
      *      "api_profile_me"
      * })
      */

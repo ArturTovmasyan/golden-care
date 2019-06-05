@@ -7,6 +7,8 @@ use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Api\V1\Common\Service\ProfileService;
 use App\Entity\User;
+use App\Entity\UserImage;
+use App\Repository\UserImageRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,13 +96,23 @@ class ProfileController extends BaseController
      * @var Request $request
      * @return JsonResponse
      */
-    public function getAction(Request $request, $type, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, GrantService $grantService)
+    public function getAction(Request $request, $type, ProfileService $profileService, GrantService $grantService)
     {
-        $profileService->setUserAvatarHelper($userAvatarHelper);
-
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $user->setAvatar($userAvatarHelper->get($user->getId()));
+
+        /** @var UserImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(UserImage::class);
+        /** @var UserImage $image */
+        $image = $imageRepo->getBy($user->getId());
+
+        if ($image !== null) {
+            if ($type === 'me') {
+                $user->setAvatar($image->getPhoto3535());
+            } else {
+                $user->setAvatar($image->getPhoto150150());
+            }
+        }
         $user->setPermissions($grantService->getEffectiveGrants($user->getRoleObjects()));
 
         return $this->respondSuccess(

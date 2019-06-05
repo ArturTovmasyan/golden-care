@@ -102,6 +102,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me",
      *     "api_admin_user_invite_list",
      *     "api_admin_user_invite_get",
@@ -121,6 +122,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me",
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
@@ -143,6 +145,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me",
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
@@ -165,6 +168,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      * @Assert\NotBlank(groups={
@@ -181,6 +185,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      * @Assert\NotBlank(groups={
@@ -222,6 +227,7 @@ class User implements UserInterface
      * })
      * @Groups({
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me",
      *     "api_profile_edit"
      * })
@@ -372,6 +378,7 @@ class User implements UserInterface
      * @var string
      * @Groups({
      *     "api_profile_edit",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      */
@@ -415,6 +422,7 @@ class User implements UserInterface
      * })
      * @Groups({
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      */
@@ -423,7 +431,8 @@ class User implements UserInterface
     /* PermissionDTO */
     /** @var array|mixed
      * @Groups({
-     *     "api_profile_me",
+     *     "api_profile_view",
+     *     "api_profile_me"
      * })
      */
     private $permissions;
@@ -435,6 +444,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      * @Assert\GreaterThanOrEqual(value=0, groups={
@@ -451,6 +461,7 @@ class User implements UserInterface
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
+     *     "api_profile_view",
      *     "api_profile_me"
      * })
      */
@@ -459,10 +470,6 @@ class User implements UserInterface
     /**
      * @var UserImage
      * @ORM\OneToOne(targetEntity="App\Entity\UserImage", mappedBy="user", cascade={"remove", "persist"})
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_me"
-     * })
      */
     private $image;
 

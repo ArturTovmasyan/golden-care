@@ -26,7 +26,6 @@ class UserImage
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_profile_edit",
      *     "api_profile_me"
      * })
      */
@@ -42,10 +41,6 @@ class UserImage
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_me"
-     * })
      */
     private $user;
 
@@ -55,10 +50,6 @@ class UserImage
      * @Assert\NotBlank(groups={
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
-     * })
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_me"
      * })
      */
     private $photo;
@@ -72,7 +63,6 @@ class UserImage
      *     "api_admin_user_image_edit"
      * })
      * @Groups({
-     *     "api_profile_edit",
      *     "api_profile_me"
      * })
      */
@@ -85,10 +75,6 @@ class UserImage
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
      * })
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_me"
-     * })
      */
     private $photo_150_150;
 
@@ -98,10 +84,6 @@ class UserImage
      * @Assert\NotBlank(groups={
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
-     * })
-     * @Groups({
-     *     "api_profile_edit",
-     *     "api_profile_me"
      * })
      */
     private $photo_300_300;
