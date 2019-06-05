@@ -59,8 +59,7 @@ class ResidentImage
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
-     *     "api_admin_resident_image_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_image_get"
      * })
      */
     private $photo;
@@ -74,8 +73,7 @@ class ResidentImage
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
-     *     "api_admin_resident_image_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_image_get"
      * })
      */
     private $photo_35_35;
@@ -90,7 +88,7 @@ class ResidentImage
      * @Groups({
      *     "api_admin_resident_image_list",
      *     "api_admin_resident_image_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_list"
      * })
      */
     private $photo_150_150;
