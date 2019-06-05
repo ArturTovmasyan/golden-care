@@ -2,7 +2,6 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -10,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
 use App\Api\V1\Common\Service\IGridService;
+use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentImage;
@@ -22,9 +22,6 @@ use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
 use Doctrine\ORM\QueryBuilder;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Liip\ImagineBundle\Imagine\Filter\FilterManager;
-use Liip\ImagineBundle\Model\Binary;
 
 /**
  * Class ResidentService
@@ -32,7 +29,18 @@ use Liip\ImagineBundle\Model\Binary;
  */
 class ResidentService extends BaseService implements IGridService
 {
-    public const IMAGE_DEFAULT_TITLE = 'original';
+    /**
+     * @var ImageFilterService
+     */
+    private $imageFilterService;
+
+    /**
+     * @param ImageFilterService $imageFilterService
+     */
+    public function setImageFilterService(ImageFilterService $imageFilterService)
+    {
+        $this->imageFilterService = $imageFilterService;
+    }
 
     /**
      * @var ResidentPhotoHelper
@@ -165,14 +173,14 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
-                $image->setTitle(self::IMAGE_DEFAULT_TITLE);
+                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_add']);
 
                 $this->em->persist($image);
 
                 if ($image) {
-                    $this->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
                 }
             }
 
@@ -264,7 +272,7 @@ class ResidentService extends BaseService implements IGridService
 
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
-                $image->setTitle(self::IMAGE_DEFAULT_TITLE);
+                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
 
                 $this->validate($resident, null, ['api_admin_resident_image_edit']);
 
@@ -279,7 +287,7 @@ class ResidentService extends BaseService implements IGridService
                         }
                     }
 
-                    $this->createAllFilterVersion($image->getPhoto(), $resident);
+                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
                 }
             }
 
@@ -296,59 +304,6 @@ class ResidentService extends BaseService implements IGridService
             $this->em->getConnection()->rollBack();
 
             throw $e;
-        }
-    }
-
-    /**
-     * @param $base64
-     * @param Resident $resident
-     * @return array
-     */
-    public function createAllFilterVersion($base64, Resident $resident)
-    {
-        $filterService = $this->container->getParameter('filter_service');
-
-        $base64Items = explode(';base64,', $base64);
-        $base64Image = $base64Items[1];
-
-        $base64FirstPart = explode(':', $base64Items[0]);
-        $mimeType = $base64FirstPart[1];
-
-        $mimeTypeParts = explode('/', $mimeType);
-        $format = $mimeTypeParts[1];
-
-        if (!\in_array($format, $filterService['extensions'], false)) {
-            throw new FileExtensionException();
-        }
-
-        //create binary
-        $binary = new Binary(base64_decode($base64Image), $mimeType, $format);
-
-        //create all filter images
-        /** @var CacheManager $cacheManager */
-        $cacheManager = $this->container->get('liip_imagine.cache.manager');
-
-        /** @var FilterManager $filterManager */
-        $filterManager = $this->container->get('liip_imagine.filter.manager');
-
-        //get all image filters
-        $filters = $filterManager->getFilterConfiguration()->all();
-        $filters = array_keys($filters);
-        unset($filters[0]);
-
-        //create cache versions for files
-        foreach ($filters as $filter) {
-            $data = $filterManager->applyFilter($binary, $filter)->getContent();
-            if($data) {
-                $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
-
-                $filterImage = new ResidentImage();
-                $filterImage->setResident($resident);
-                $filterImage->setPhoto($base64);
-                $filterImage->setTitle($filter);
-
-                $this->em->persist($filterImage);
-            }
         }
     }
 
@@ -495,8 +450,37 @@ class ResidentService extends BaseService implements IGridService
             }
 
             if (!empty($params['photo'])) {
-                $this->residentPhotoHelper->remove($resident->getId());
-                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
+                /** @var ResidentImageRepository $imageRepo */
+                $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+                $image = $imageRepo->getBy($resident->getId());
+
+                if ($image === null) {
+                    $image = new ResidentImage();
+                }
+
+                $image->setResident($resident);
+                $image->setPhoto($params['photo']);
+                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
+
+                $this->validate($resident, null, ['api_admin_resident_image_edit']);
+
+                $this->em->persist($image);
+
+                if ($image) {
+                    $filterImages = $imageRepo->getFiltersBy($resident->getId(), $image->getId());
+
+                    if (!empty($filterImages)) {
+                        foreach ($filterImages as $filterImage) {
+                            $this->em->remove($filterImage);
+                        }
+                    }
+
+                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $resident);
+                }
+
+//                $this->residentPhotoHelper->remove($resident->getId());
+//                $this->residentPhotoHelper->save($resident->getId(), $params['photo']);
             }
 
             $this->em->flush();

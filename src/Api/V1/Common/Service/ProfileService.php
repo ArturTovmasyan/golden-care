@@ -4,7 +4,9 @@ namespace App\Api\V1\Common\Service;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
 use App\Entity\User;
+use App\Entity\UserImage;
 use App\Entity\UserPhone;
+use App\Repository\UserImageRepository;
 
 /**
  * Class ProfileService
@@ -12,6 +14,19 @@ use App\Entity\UserPhone;
  */
 class ProfileService extends BaseService
 {
+    /**
+     * @var ImageFilterService
+     */
+    private $imageFilterService;
+
+    /**
+     * @param ImageFilterService $imageFilterService
+     */
+    public function setImageFilterService(ImageFilterService $imageFilterService): void
+    {
+        $this->imageFilterService = $imageFilterService;
+    }
+
     /** @var UserAvatarHelper */
     private $userAvatarHelper;
 
@@ -23,7 +38,7 @@ class ProfileService extends BaseService
     /**
      * @param User $user
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function edit(User $user, array $params): void
     {
@@ -37,14 +52,47 @@ class ProfileService extends BaseService
 
             $user->setPhones($this->savePhones($user, $params['phones'] ?? []));
 
-            $this->validate($user, null, ["api_profile_edit"]);
+            $this->validate($user, null, ['api_profile_edit']);
 
-            if (!empty($params['avatar'])) {
-                $this->userAvatarHelper->remove($user->getId());
-                $this->userAvatarHelper->save($user->getId(), $params['avatar']);
-            }
+//            if (!empty($params['avatar'])) {
+//                $this->userAvatarHelper->remove($user->getId());
+//                $this->userAvatarHelper->save($user->getId(), $params['avatar']);
+//            }
 
             $this->em->persist($user);
+
+            // save photo
+            if (!empty($params['avatar'])) {
+                /** @var UserImageRepository $imageRepo */
+                $imageRepo = $this->em->getRepository(UserImage::class);
+
+                $image = $imageRepo->getBy($user->getId());
+
+                if ($image === null) {
+                    $image = new UserImage();
+                }
+
+                $image->setUser($user);
+                $image->setPhoto($params['photo']);
+                $image->setTitle($this->imageFilterService::IMAGE_DEFAULT_TITLE);
+
+                $this->validate($user, null, ['api_admin_user_image_edit']);
+
+                $this->em->persist($image);
+
+                if ($image) {
+                    $filterImages = $imageRepo->getFiltersBy($user->getId(), $image->getId());
+
+                    if (!empty($filterImages)) {
+                        foreach ($filterImages as $filterImage) {
+                            $this->em->remove($filterImage);
+                        }
+                    }
+
+                    $this->imageFilterService->createAllFilterVersion($image->getPhoto(), $user);
+                }
+            }
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -56,11 +104,9 @@ class ProfileService extends BaseService
     }
 
     /**
-     * Change User Password
-     *
-     * @param User $user
+     * @param User $loggedUser
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function changePassword(User $loggedUser, array $params)
     {
@@ -75,7 +121,7 @@ class ProfileService extends BaseService
             $user->setPlainPassword($params['new_password']);
             $user->setConfirmPassword($params['re_new_password']);
 
-            $this->validate($user, null, ["api_profile_change_password"]);
+            $this->validate($user, null, ['api_profile_change_password']);
 
             $encoded = $this->encoder->encodePassword($user, $params['new_password']);
             $user->setPassword($encoded);
@@ -114,13 +160,16 @@ class ProfileService extends BaseService
         $userPhones = [];
 
         foreach($phones as $phone) {
+            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+
             $userPhone = new UserPhone();
             $userPhone->setUser($user);
             $userPhone->setCompatibility($phone['compatibility'] ?? null);
             $userPhone->setType($phone['type']);
             $userPhone->setNumber($phone['number']);
-            $userPhone->setPrimary((bool) $phone['primary'] ?? false);
-            $userPhone->setSmsEnabled((bool) $phone['sms_enabled'] ?? false);
+            $userPhone->setPrimary($primary);
+            $userPhone->setSmsEnabled($smsEnabled);
 
             if ($userPhone->isPrimary()) {
                 if ($hasPrimary) {
@@ -140,7 +189,7 @@ class ProfileService extends BaseService
 
     /**
      * @param User $loggedUser
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function acceptLicense(User $loggedUser)
     {
@@ -166,7 +215,7 @@ class ProfileService extends BaseService
 
     /**
      * @param User $loggedUser
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function declineLicense(User $loggedUser)
     {

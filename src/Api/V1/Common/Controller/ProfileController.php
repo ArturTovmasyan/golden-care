@@ -4,6 +4,7 @@ namespace App\Api\V1\Common\Controller;
 
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\Helper\UserAvatarHelper;
+use App\Api\V1\Common\Service\ImageFilterService;
 use App\Api\V1\Common\Service\ProfileService;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -148,11 +149,14 @@ class ProfileController extends BaseController
      *
      * @param Request $request
      * @param ProfileService $profileService
+     * @param UserAvatarHelper $userAvatarHelper
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper)
+    public function editAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, ImageFilterService $imageFilterService)
     {
+        $profileService->setImageFilterService($imageFilterService);
         $profileService->setUserAvatarHelper($userAvatarHelper);
 
         $profileService->edit(

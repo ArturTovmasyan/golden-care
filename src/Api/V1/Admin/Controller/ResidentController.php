@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
+use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Resident;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -285,11 +286,13 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param ResidentService $residentService
      * @param ResidentPhotoHelper $residentPhotoHelper
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
+    public function addAction(Request $request, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper, ImageFilterService $imageFilterService)
     {
+        $residentService->setImageFilterService($imageFilterService);
         $residentService->setResidentPhotoHelper($residentPhotoHelper);
 
         $id = $residentService->add(
@@ -367,11 +370,13 @@ class ResidentController extends BaseController
      * @param $id
      * @param ResidentService $residentService
      * @param ResidentPhotoHelper $residentPhotoHelper
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
+    public function editAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper, ImageFilterService $imageFilterService)
     {
+        $residentService->setImageFilterService($imageFilterService);
         $residentService->setResidentPhotoHelper($residentPhotoHelper);
 
         $residentService->edit(
@@ -523,17 +528,19 @@ class ResidentController extends BaseController
      * @param $id
      * @param ResidentService $residentService
      * @param ResidentPhotoHelper $residentPhotoHelper
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function photoAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper)
+    public function photoAction(Request $request, $id, ResidentService $residentService, ResidentPhotoHelper $residentPhotoHelper, ImageFilterService $imageFilterService)
     {
+        $residentService->setImageFilterService($imageFilterService);
         $residentService->setResidentPhotoHelper($residentPhotoHelper);
 
         $residentService->photo(
             $id,
             [
-                'photo'         => $request->get('photo'),
+                'photo' => $request->get('photo'),
             ]
         );
 
