@@ -28,6 +28,7 @@ use App\Entity\FacilityBed;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentImage;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
@@ -37,6 +38,7 @@ use App\Repository\DiningRoomRepository;
 use App\Repository\FacilityBedRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -152,6 +154,17 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                 $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
 
+                $images = [];
+                if (!empty($groupResidents)) {
+                    $residentIds = array_map(function($item){return $item['id'];} , $groupResidents);
+
+                    /** @var ResidentImageRepository $imageRepo */
+                    $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+                    $images = $imageRepo->findByIds($residentIds);
+                    $images = array_column($images, 'photo_150_150', 'id');
+                }
+
                 foreach ($groupArray as $group) {
                     $currentGroup = [
                         'id' => $group['id'],
@@ -161,7 +174,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     $i = 0;
                     foreach ($groupResidents as $groupResident) {
                         if ($groupResident['type_id'] === $group['id']) {
-                            $groupResident['photo'] = $residentPhotoHelper->get($groupResident['id']) ?? null;
+
+                            if (array_key_exists($groupResident['id'], $images)) {
+                                $groupResident['photo'] = $images[$groupResident['id']];
+                            } else {
+                                $groupResident['photo'] = null;
+                            }
 
                             ++$i;
                             $currentGroup['residents'][] = $groupResident;
