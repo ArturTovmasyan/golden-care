@@ -2,7 +2,12 @@
 
 namespace App\Command;
 
-use App\Api\V1\Common\Service\Helper\ResidentPhotoHelper;
+use App\Api\V1\Common\Service\ImageFilterService;
+use App\Entity\Resident;
+use App\Entity\ResidentImage;
+use App\Repository\ResidentImageRepository;
+use App\Repository\ResidentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,16 +17,20 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class MigrateResidentPhotosCommand extends ContainerAwareCommand
 {
-    /** @var ResidentPhotoHelper */
-    private $photoHelper;
+    /** @var ImageFilterService */
+    private $imageFilterService;
+    /** @var EntityManagerInterface */
+    private $em;
 
     /**
      * MigrateResidentPhotosCommand constructor.
      */
-    public function __construct(ResidentPhotoHelper $photoHelper)
+    public function __construct(EntityManagerInterface $em, ImageFilterService $imageFilterService)
     {
         parent::__construct();
-        $this->photoHelper = $photoHelper;
+
+        $this->em = $em;
+        $this->imageFilterService = $imageFilterService;
     }
 
     protected function configure()
@@ -35,6 +44,11 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var ResidentRepository $resident_repo */
+        $resident_repo = $this->em->getRepository(Resident::class);
+        /** @var ResidentImageRepository $image_repo */
+        $image_repo = $this->em->getRepository(ResidentImage::class);
+
         $file_system = new Filesystem();
         $json_filename = $input->getOption('json');
         if ($file_system->exists($json_filename)) {
@@ -45,15 +59,32 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
             $progressBar->start();
 
             foreach ($data as $item) {
-                $data = file_get_contents($item['photo']);
+                $resident = $resident_repo->find($item['id']);
+                if ($resident) {
+                    $data = file_get_contents($item['photo']);
 
-                if ($data) {
-                    $type = pathinfo($item['photo'], PATHINFO_EXTENSION);
-                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                    $this->photoHelper->save($item['id'], $base64);
+                    if ($data) {
+                        $type = pathinfo($item['photo'], PATHINFO_EXTENSION);
+                        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+                        /** @var Resident $resident */
+                        $image = $image_repo->getBy($resident->getId());
+                        if ($image === null) {
+                            $image = new ResidentImage();
+                        }
+
+                        $image->setResident($resident);
+                        $image->setPhoto($base64);
+
+                        $this->imageFilterService->createAllFilterVersion($image);
+                        $this->em->flush();
+                    } else {
+                        $output->writeln(sprintf("Download of '%s' for resident '%d' failed.", $item['photo'], $item['id']));
+                    }
                 } else {
-                    $output->writeln(sprintf("Download of '%s' for resident '%d' failed.", $item['photo'], $item['id']));
+                    $output->writeln(sprintf("Resident '%d' not found.", $item['id']));
                 }
+
                 $progressBar->advance();
             }
 

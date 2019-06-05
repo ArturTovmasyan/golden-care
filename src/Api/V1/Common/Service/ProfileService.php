@@ -64,7 +64,7 @@ class ProfileService extends BaseService
                 }
 
                 $image->setUser($user);
-                $image->setPhoto($params['photo']);
+                $image->setPhoto($params['avatar']);
 
                 $this->validate($user, null, ['api_admin_user_image_edit']);
 

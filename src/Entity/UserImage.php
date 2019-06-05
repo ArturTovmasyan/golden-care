@@ -63,7 +63,6 @@ class UserImage
      * @Groups({
      *     "api_profile_me"
      * })
-     * @Serializer\SerializedName("avatar")
      */
     private $photo_35_35;
 
@@ -77,7 +76,6 @@ class UserImage
      * @Groups({
      *     "api_profile_view"
      * })
-     * @Serializer\SerializedName("avatar")
      */
     private $photo_150_150;
 

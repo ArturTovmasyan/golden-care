@@ -156,7 +156,6 @@ class ProfileController extends BaseController
     public function editAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, ImageFilterService $imageFilterService)
     {
         $profileService->setImageFilterService($imageFilterService);
-        $profileService->setUserAvatarHelper($userAvatarHelper);
 
         $profileService->edit(
             $this->get('security.token_storage')->getToken()->getUser(),

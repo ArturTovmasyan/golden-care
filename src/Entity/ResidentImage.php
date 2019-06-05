@@ -91,7 +91,6 @@ class ResidentImage
      *     "api_admin_resident_image_get",
      *     "api_admin_resident_list"
      * })
-     * @Serializer\SerializedName("photo")
      */
     private $photo_150_150;
 
@@ -107,7 +106,6 @@ class ResidentImage
      *     "api_admin_resident_image_get",
      *     "api_admin_resident_get"
      * })
-     * @Serializer\SerializedName("photo")
      */
     private $photo_300_300;
 
