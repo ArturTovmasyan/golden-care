@@ -651,7 +651,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var DiningRoomRepository $diningRoomRepo */
             $diningRoomRepo = $this->em->getRepository(DiningRoom::class);
 
@@ -711,7 +711,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var ApartmentBedRepository $apartmentBedRepo */
             $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
 
@@ -750,7 +750,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE || $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var RegionRepository $regionRepo */
             $regionRepo = $this->em->getRepository(Region::class);
 
