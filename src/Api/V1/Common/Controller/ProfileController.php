@@ -89,12 +89,12 @@ class ProfileController extends BaseController
      *          }
      *     }
      *
-     * @Route("/me", name="api_profile_me", methods={"GET"})
+     * @Route("/{type}", name="api_profile_me", methods={"GET"}, requirements={"page": "(me|view)"})
      *
      * @var Request $request
      * @return JsonResponse
      */
-    public function getAction(Request $request, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, GrantService $grantService)
+    public function getAction(Request $request, $type, ProfileService $profileService, UserAvatarHelper $userAvatarHelper, GrantService $grantService)
     {
         $profileService->setUserAvatarHelper($userAvatarHelper);
 
@@ -107,7 +107,7 @@ class ProfileController extends BaseController
             Response::HTTP_OK,
             '',
             $user,
-            ['api_profile_me']
+            ['api_profile_'.$type]
         );
     }
 
