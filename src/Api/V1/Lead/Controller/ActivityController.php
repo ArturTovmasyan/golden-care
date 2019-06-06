@@ -4,6 +4,7 @@ namespace App\Api\V1\Lead\Controller;
 use App\Api\V1\Lead\Service\ActivityService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Activity;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,6 +79,9 @@ class ActivityController extends BaseController
      */
     public function listAction(Request $request, ActivityService $activityService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondList(
             $request,
             Activity::class,
@@ -85,7 +89,9 @@ class ActivityController extends BaseController
             $activityService,
             [
                 'owner_type' => $request->get('owner_type'),
-                'owner_id' => $request->get('owner_id')
+                'owner_id' => $request->get('owner_id'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }

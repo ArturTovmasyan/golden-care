@@ -300,6 +300,67 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $userId
+     * @return mixed
+     */
+    public function getMy(Space $space = null, array $entityGrants = null, $userId)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->innerJoin(
+                ActivityType::class,
+                'at',
+                Join::WITH,
+                'at = a.type'
+            )
+            ->innerJoin(
+                ActivityStatus::class,
+                'st',
+                Join::WITH,
+                'st = a.status'
+            )
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = a.assignTo'
+            )
+            ->where('st.done = 0 AND u.id = :userId')
+            ->setParameter('userId', $userId);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ActivityStatus::class,
+                    'ds',
+                    Join::WITH,
+                    'ds = at.defaultStatus'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ds.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->addOrderBy('a.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $id
      * @return mixed
      */
