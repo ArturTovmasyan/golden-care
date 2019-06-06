@@ -31,8 +31,9 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
      * @param QueryBuilder $queryBuilder
      * @param null $ownerType
      * @param null $id
+     * @param null $userId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $ownerType = null, $id = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $ownerType = null, $id = null, $userId = null) : void
     {
         $queryBuilder
             ->from(Activity::class, 'a')
@@ -130,6 +131,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 default:
                     throw new IncorrectOwnerTypeException();
             }
+        }
+
+        if ($userId !== null) {
+            $queryBuilder
+                ->andWhere('st.done = 0 AND u.id = :userId')
+                ->setParameter('userId', $userId);
         }
 
         if ($space !== null) {

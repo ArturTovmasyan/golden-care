@@ -45,6 +45,9 @@ class ActivityController extends BaseController
      */
     public function gridAction(Request $request, ActivityService $activityService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondGrid(
             $request,
             Activity::class,
@@ -52,7 +55,9 @@ class ActivityController extends BaseController
             $activityService,
             [
                 'owner_type' => $request->get('owner_type'),
-                'owner_id' => $request->get('owner_id')
+                'owner_id' => $request->get('owner_id'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }
