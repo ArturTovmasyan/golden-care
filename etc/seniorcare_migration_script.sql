@@ -2266,22 +2266,6 @@ CALL `db_seniorcare_migration`.ValidateAll();
 
 #------------------------------------------------------------------------------------------------------------------------
 
-# Validate Phone numbers
-UPDATE `db_seniorcare_migration`.`tbl_resident_phone`           SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_responsible_person_phone` SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_physician_phone`          SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_user_phone`               SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-
-UPDATE `db_seniorcare_migration`.`tbl_apartment`                SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_apartment`                SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-
-UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-
-UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-
-
 ### Resident Photo
 SELECT JSON_OBJECT(
            'id', `cc_old`.`residents`.`Resident_ID` COLLATE utf8_general_ci,
@@ -2541,3 +2525,24 @@ SELECT `cc_old`.`potentialresident_facilities`.`potentialresident_id` AS 'id_lea
        `cc_old`.`potentialresident_facilities`.`facility_id`          AS 'id_facility'
 FROM `cc_old`.`potentialresident_facilities`;
 
+
+
+# Validate Phone numbers
+UPDATE `db_seniorcare_migration`.`tbl_resident_phone`           SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_responsible_person_phone` SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_physician_phone`          SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_user_phone`               SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+
+UPDATE `db_seniorcare_migration`.`tbl_apartment`                SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_apartment`                SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+
+UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+
+UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_region`                   SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+
+
+UPDATE `db_seniorcare_migration`.`tbl_lead_referral_phone`      SET `number`          = REGEXP_REPLACE(`number`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_lead_organization_phone`  SET `number`          = REGEXP_REPLACE(`number`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_lead_lead`                SET `rp_phone`        = REGEXP_REPLACE(`rp_phone`,         '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
