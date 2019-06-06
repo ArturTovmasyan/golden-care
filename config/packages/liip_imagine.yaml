@@ -5,6 +5,11 @@ liip_imagine:
             web_path: ~
     filter_sets:
         cache: ~
+        initial_optimize:
+            quality: 100
+            post_processors:
+                jpegoptim: { strip_all: true, max: 25, progressive: true }
+                pngquant: { quality: "25" }
         thumb_35x35:
             quality: 100
             filters:

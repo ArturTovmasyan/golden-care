@@ -70,7 +70,11 @@ class ImageFilterService
         //get all image filters
         $filters = $filterManager->getFilterConfiguration()->all();
         $filters = array_keys($filters);
-        unset($filters[0]);
+
+        $binary = $filterManager->applyFilter($binary, $filters[1]);
+        $image->setPhoto($binary->getContent());
+
+        unset($filters[0], $filters[1]);
 
         //create cache versions for files
         foreach ($filters as $key => $filter) {
@@ -78,11 +82,11 @@ class ImageFilterService
             if($data) {
                 $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
 
-                if($key === 1) {
+                if($key === 2) {
                     $image->setPhoto3535($base64);
-                } elseif ($key === 2) {
-                    $image->setPhoto150150($base64);
                 } elseif ($key === 3) {
+                    $image->setPhoto150150($base64);
+                } elseif ($key === 4) {
                     $image->setPhoto300300($base64);
                 }
             }
