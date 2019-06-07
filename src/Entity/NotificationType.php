@@ -6,6 +6,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -15,8 +16,17 @@ use App\Annotation\Grid;
  *
  * @ORM\Entity(repositoryClass="App\Repository\NotificationTypeRepository")
  * @ORM\Table(name="tbl_notification_type")
+ * @UniqueEntity(
+ *     fields={"space", "title"},
+ *     errorPath="title",
+ *     message="This title is already in use on that space.",
+ *     groups={
+ *          "api_admin_notification_type_add",
+ *          "api_admin_notification_type_edit"
+ *     }
+ * )
  * @Grid(
- *     api_notification_type_grid={
+ *     api_admin_notification_type_grid={
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
@@ -26,7 +36,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "at.title",
+ *              "field"      = "nt.title",
  *              "link"       = ":edit"
  *          },
  *          {
