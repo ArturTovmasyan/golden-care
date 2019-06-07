@@ -94,6 +94,10 @@ persistence:
           title: 'PaymentSource'
           class: App\Entity\PaymentSource
           route: api_admin_payment_source_list
+        notification_type:
+          title: 'NotificationType'
+          class: App\Entity\NotificationType
+          route: api_admin_notification_type_list
 #        report:
 #          title: 'ReportNotification'
 #          class: App\Entity\ReportNotification

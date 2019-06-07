@@ -118,7 +118,9 @@ class Space
      *     "api_lead_activity_status_list",
      *     "api_lead_activity_status_get",
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_admin_notification_type_list",
+     *     "api_admin_notification_type_get"
      * })
      */
     private $id;
@@ -177,7 +179,9 @@ class Space
      *     "api_lead_activity_status_list",
      *     "api_lead_activity_status_get",
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_admin_notification_type_list",
+     *     "api_admin_notification_type_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -354,6 +358,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\ReferrerType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadReferrerTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\NotificationType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $notificationTypes;
 
     /**
      * Space constructor.
@@ -841,5 +851,21 @@ class Space
     public function setLeadReferrerTypes(ArrayCollection $leadReferrerTypes): void
     {
         $this->leadReferrerTypes = $leadReferrerTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNotificationTypes(): ArrayCollection
+    {
+        return $this->notificationTypes;
+    }
+
+    /**
+     * @param ArrayCollection $notificationTypes
+     */
+    public function setNotificationTypes(ArrayCollection $notificationTypes): void
+    {
+        $this->notificationTypes = $notificationTypes;
     }
 }
