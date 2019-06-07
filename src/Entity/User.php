@@ -109,7 +109,9 @@ class User implements UserInterface
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_notification_list",
+     *     "api_admin_notification_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -127,7 +129,9 @@ class User implements UserInterface
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_notification_list",
+     *     "api_admin_notification_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -150,7 +154,9 @@ class User implements UserInterface
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_notification_list",
+     *     "api_admin_notification_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -478,6 +484,12 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="owner", cascade={"remove", "persist"})
      */
     private $leads;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Notification", mappedBy="users", cascade={"persist"})
+     */
+    protected $notifications;
 
     /**
      * Space constructor.
@@ -960,5 +972,44 @@ class User implements UserInterface
     public function setLeads(ArrayCollection $leads): void
     {
         $this->leads = $leads;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param mixed $notifications
+     */
+    public function setNotifications($notifications): void
+    {
+        $this->notifications = $notifications;
+
+        /** @var Notification $notification */
+        foreach ($this->notifications as $notification) {
+            $notification->addUser($this);
+        }
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function addNotification(Notification $notification): void
+    {
+        $notification->addUser($this);
+        $this->notifications[] = $notification;
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function removeNotification(Notification $notification): void
+    {
+        $this->notifications->removeElement($notification);
+        $notification->removeUser($this);
     }
 }

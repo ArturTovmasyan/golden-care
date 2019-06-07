@@ -119,6 +119,7 @@ class ResponseCode
     const RESIDENT_ADMISSION_TWO_TIME_A_ROW_EXCEPTION            = 721;
     const RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION              = 722;
     const NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION                  = 723;
+    const NOTIFICATION_NOT_FOUND_EXCEPTION                       = 724;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -236,6 +237,7 @@ class ResponseCode
         self::RESIDENT_ADMISSION_TWO_TIME_A_ROW_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Can\'t add same type of ResidentAdmission two time a row.'],
         self::RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You must only Re-admit resident.'],
         self::NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'NotificationType not found.'],
+        self::NOTIFICATION_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Notification not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],

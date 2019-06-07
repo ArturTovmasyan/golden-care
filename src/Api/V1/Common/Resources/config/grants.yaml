@@ -98,6 +98,10 @@ persistence:
           title: 'NotificationType'
           class: App\Entity\NotificationType
           route: api_admin_notification_type_list
+        notification:
+          title: 'Notification'
+          class: App\Entity\Notification
+          route: api_admin_notification_list
 #        report:
 #          title: 'ReportNotification'
 #          class: App\Entity\ReportNotification

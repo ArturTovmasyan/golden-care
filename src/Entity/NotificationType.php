@@ -139,11 +139,11 @@ class NotificationType
      */
     private $space;
 
-//    /**
-//     * @var ArrayCollection
-//     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="type", cascade={"remove", "persist"})
-//     */
-//    private $notifications;
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $notifications;
 
     public function getId()
     {
@@ -212,5 +212,21 @@ class NotificationType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNotifications(): ArrayCollection
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param ArrayCollection $notifications
+     */
+    public function setNotifications(ArrayCollection $notifications): void
+    {
+        $this->notifications = $notifications;
     }
 }
