@@ -11,6 +11,7 @@ use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Model\Lead\State;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -26,8 +27,9 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
+     * @param $all
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all) : void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -70,6 +72,12 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'f = l.primaryFacility'
             );
 
+        if (!$all) {
+            $queryBuilder
+                ->where('l.state = :state')
+                ->setParameter('state', State::TYPE_OPEN);
+        }
+
         if ($space !== null) {
             $queryBuilder
                 ->innerJoin(
@@ -96,9 +104,10 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $all
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $all)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -108,6 +117,12 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 Join::WITH,
                 'o = l.owner'
             );
+
+        if (!$all) {
+            $qb
+                ->where('l.state = :state')
+                ->setParameter('state', State::TYPE_OPEN);
+        }
 
         if ($space !== null) {
             $qb

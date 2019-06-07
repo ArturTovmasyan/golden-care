@@ -49,7 +49,10 @@ class LeadController extends BaseController
             $request,
             Lead::class,
             'api_lead_lead_grid',
-            $activityTypeService
+            $activityTypeService,
+            [
+                'all' => $request->get('all')
+            ]
         );
     }
 
@@ -79,7 +82,10 @@ class LeadController extends BaseController
             $request,
             Lead::class,
             'api_lead_lead_list',
-            $activityTypeService
+            $activityTypeService,
+            [
+                'all' => $request->get('all')
+            ]
         );
     }
 
