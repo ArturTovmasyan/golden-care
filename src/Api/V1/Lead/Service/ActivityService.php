@@ -12,6 +12,7 @@ use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ChangeLog;
 use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\Activity;
@@ -20,6 +21,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\User;
+use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityStatusRepository;
@@ -30,6 +32,7 @@ use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferralRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class ActivityService
@@ -110,11 +113,12 @@ class ActivityService extends BaseService implements IGridService
     }
 
     /**
+     * @param RouterInterface $router
      * @param array $params
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(RouterInterface $router, array $params) : ?int
     {
         $insert_id = null;
         try {
@@ -308,6 +312,11 @@ class ActivityService extends BaseService implements IGridService
             $this->validate($activity, null, [$validationGroup]);
 
             $this->em->persist($activity);
+
+            if ($activity->getType() !== null && $activity->getType()->isAssignTo()) {
+                $this->taskActivityAddChangeLog($activity, $router);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -323,10 +332,11 @@ class ActivityService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param RouterInterface $router
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, RouterInterface $router, array $params) : void
     {
         try {
 
@@ -518,6 +528,16 @@ class ActivityService extends BaseService implements IGridService
             $this->validate($entity, null, [$validationGroup]);
 
             $this->em->persist($entity);
+
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $activityChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
+
+            if (!empty($activityChangeSet) && array_key_exists('status', $activityChangeSet) && $entity->getType() !== null && $entity->getType()->isAssignTo()) {
+                $this->taskActivityStatusEditChangeLog($activityChangeSet['status']['0'], $activityChangeSet['status']['1'], $entity, $router);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -525,6 +545,164 @@ class ActivityService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param Activity $activity
+     * @param RouterInterface $router
+     */
+    private function taskActivityAddChangeLog(Activity $activity, RouterInterface $router)
+    {
+        $ownerTitle = 'New Activity Task.';
+        $owner = '';
+
+        switch ($activity->getOwnerType()) {
+            case ActivityOwnerType::TYPE_LEAD:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_LEAD];
+                $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
+                $routeName = 'api_lead_lead_get';
+                $routeId = $activity->getLead()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_REFERRAL:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_REFERRAL];;
+                if ($activity->getReferral() !== null) {
+                    if ($activity->getReferral()->getFirstName() === null) {
+                        $owner = $activity->getReferral()->getFirstName() . ' ' . $activity->getReferral()->getLastName();
+                    } else {
+                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
+                    }
+                }
+                $routeName = 'api_lead_referral_get';
+                $routeId = $activity->getReferral()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_ORGANIZATION:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_ORGANIZATION];;
+                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
+                $routeName = 'api_lead_organization_get';
+                $routeId = $activity->getOrganization()->getId();
+
+                break;
+            default:
+                throw new IncorrectOwnerTypeException();
+        }
+
+        $userName = $activity->getUpdatedBy() ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
+        $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
+        $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
+
+        $content = '<b>' . $ownerTitle . '</b><br> User <b>' . $userName .
+            '</b> added new task <b>&quot;' . $activity->getTitle() . '&quot;</b> activity.<br>' .
+            'Name : <b>' . $activity->getTitle() . '</b><br>' .
+            'Owner : <b>' . $assignToName . '</b><br>' .
+            'Due Date : <b>' . $dueDate .  '</b><br>' .
+            $ownerName . ' : <b>' . $owner . '</b>';
+
+        $title = $ownerName . ' : ' . '<a href="' . $router->generate($routeName, ['id' => $routeId]) .'">'. $owner . '</a>';
+
+        $changeLog = new ChangeLog();
+        $changeLog->setType(ChangeLogType::TYPE_NEW_TASK);
+        $changeLog->setTitle($title);
+        $changeLog->setContent($content);
+        $changeLog->setOwner($activity->getAssignTo() ?? null);
+
+        $space = $activity->getStatus() ? $activity->getStatus()->getSpace() : null;
+        $changeLog->setSpace($space);
+
+        $this->validate($changeLog, null, ['api_admin_change_log_add']);
+
+        $this->em->persist($changeLog);
+    }
+
+    /**
+     * @param $oldStatusId
+     * @param $newStatusId
+     * @param Activity $activity
+     * @param RouterInterface $router
+     */
+    private function taskActivityStatusEditChangeLog($oldStatusId, $newStatusId, Activity $activity, RouterInterface $router)
+    {
+        $ownerTitle = 'Modified Activity Task Status.';
+        $owner = '';
+
+        switch ($activity->getOwnerType()) {
+            case ActivityOwnerType::TYPE_LEAD:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_LEAD];
+                $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
+                $routeName = 'api_lead_lead_get';
+                $routeId = $activity->getLead()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_REFERRAL:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_REFERRAL];;
+                if ($activity->getReferral() !== null) {
+                    if ($activity->getReferral()->getFirstName() === null) {
+                        $owner = $activity->getReferral()->getFirstName() . ' ' . $activity->getReferral()->getLastName();
+                    } else {
+                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
+                    }
+                }
+                $routeName = 'api_lead_referral_get';
+                $routeId = $activity->getReferral()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_ORGANIZATION:
+                $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_ORGANIZATION];;
+                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
+                $routeName = 'api_lead_organization_get';
+                $routeId = $activity->getOrganization()->getId();
+
+                break;
+            default:
+                throw new IncorrectOwnerTypeException();
+        }
+
+        $userName = $activity->getUpdatedBy() ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
+        $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
+        $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
+
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ActivityStatusRepository $statusRepo */
+        $statusRepo = $this->em->getRepository(ActivityStatus::class);
+
+        /** @var ActivityStatus $oldStatus */
+        $oldStatus = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $oldStatusId);
+
+        if ($oldStatus === null) {
+            throw new ActivityStatusNotFoundException();
+        }
+
+        /** @var ActivityStatus $newStatus */
+        $newStatus = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $newStatusId);
+
+        if ($newStatus === null) {
+            throw new ActivityStatusNotFoundException();
+        }
+
+        $content = '<b>' . $ownerTitle . '</b><br> User <b>' . $userName .
+            '</b> changed status in <b>&quot;' . $activity->getTitle() . '&quot;</b> from <b>' .
+            $oldStatus->getTitle() . '</b> to <b>' . $newStatus->getTitle() . '</b>.<br>' .
+            'Name : <b>' . $activity->getTitle() . '</b><br>' .
+            'Owner : <b>' . $assignToName . '</b><br>' .
+            'Due Date : <b>' . $dueDate .  '</b><br>' .
+            $ownerName . ' : <b>' . $owner . '</b>';
+
+        $title = $ownerName . ' : ' . '<a href="' . $router->generate($routeName, ['id' => $routeId]) .'">'. $owner . '</a>';
+
+        $changeLog = new ChangeLog();
+        $changeLog->setType(ChangeLogType::TYPE_TASK_UPDATED);
+        $changeLog->setTitle($title);
+        $changeLog->setContent($content);
+        $changeLog->setOwner($activity->getAssignTo() ?? null);
+
+        $space = $activity->getStatus() ? $activity->getStatus()->getSpace() : null;
+        $changeLog->setSpace($space);
+
+        $this->validate($changeLog, null, ['api_admin_change_log_edit']);
+
+        $this->em->persist($changeLog);
     }
 
     /**

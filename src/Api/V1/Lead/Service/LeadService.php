@@ -14,6 +14,7 @@ use App\Api\V1\Common\Service\Exception\Lead\StateChangeReasonNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ChangeLog;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\Lead\Activity;
@@ -26,6 +27,7 @@ use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\User;
+use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Repository\CityStateZipRepository;
@@ -39,6 +41,7 @@ use App\Repository\Lead\StateChangeReasonRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class LeadService
@@ -94,11 +97,12 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param ReferralService $referralService
+     * @param RouterInterface $router
      * @param array $params
      * @return int|null
      * @throws \Exception
      */
-    public function add(ReferralService $referralService, array $params) : ?int
+    public function add(ReferralService $referralService, RouterInterface $router, array $params) : ?int
     {
         $insert_id = null;
         try {
@@ -284,6 +288,11 @@ class LeadService extends BaseService implements IGridService
             $this->createLeadInitialContactActivity($lead, false);
 
             $this->em->flush();
+
+            // Creating change log
+            $this->leadAddChangeLog($lead, $router);
+
+            $this->em->flush();
             $this->em->getConnection()->commit();
 
             $insert_id = $lead->getId();
@@ -299,10 +308,11 @@ class LeadService extends BaseService implements IGridService
     /**
      * @param $id
      * @param ReferralService $referralService
+     * @param RouterInterface $router
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, ReferralService $referralService, array $params) : void
+    public function edit($id, ReferralService $referralService, RouterInterface $router, array $params) : void
     {
         try {
 
@@ -498,6 +508,8 @@ class LeadService extends BaseService implements IGridService
                 } elseif ($leadChangeSet['state']['0'] === State::TYPE_OPEN && $leadChangeSet['state']['1'] === State::TYPE_CLOSED) {
                     $this->createLeadStateChangeReasonActivity($entity);
                 }
+
+                $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity, $router);
             }
 
             $this->em->flush();
@@ -662,6 +674,78 @@ class LeadService extends BaseService implements IGridService
         $this->validate($activity, null, ['api_lead_lead_activity_add']);
 
         $this->em->persist($activity);
+    }
+
+    /**
+     * @param Lead $lead
+     * @param RouterInterface $router
+     */
+    private function leadAddChangeLog(Lead $lead, RouterInterface $router)
+    {
+        $routeName = 'api_lead_lead_get';
+        $name = $lead->getFirstName() .' '. $lead->getLastName()  ;
+        $id = $lead->getId();
+        $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
+        $userName = $lead->getUpdatedBy() ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';
+        $primaryFacility = $lead->getPrimaryFacility() ? $lead->getPrimaryFacility()->getName() : '';
+
+        $content = '<b>' . ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD] . '.</b><br> User <b>' . $userName .
+            '</b> added new lead <b>&quot;' . $name . '&quot;</b>.<br>' .
+            'Name : <b>' . $name . '</b><br>' .
+            'Owner : <b>' . $ownerName . '</b><br>' .
+            'Primary Facility : <b>' . $primaryFacility . '</b>';
+
+        $title =  '<a href="' . $router->generate($routeName, ['id' => $id]) .'">'. $name . '</a>';
+
+        $changeLog = new ChangeLog();
+        $changeLog->setType(ChangeLogType::TYPE_NEW_LEAD);
+        $changeLog->setTitle($title);
+        $changeLog->setContent($content);
+        $changeLog->setOwner($lead->getOwner());
+        $changeLog->setSpace($lead->getOwner()->getSpace());
+
+        $this->validate($changeLog, null, ['api_admin_change_log_add']);
+
+        $this->em->persist($changeLog);
+    }
+
+    /**
+     * @param $oldState
+     * @param $newState
+     * @param Lead $lead
+     * @param RouterInterface $router
+     */
+    private function leadStateEditChangeLog($oldState, $newState, Lead $lead, RouterInterface $router)
+    {
+        $routeName = 'api_lead_lead_get';
+        $name = $lead->getFirstName() .' '. $lead->getLastName()  ;
+        $id = $lead->getId();
+        $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
+        $userName = $lead->getUpdatedBy() ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';
+        $primaryFacility = $lead->getPrimaryFacility() ? $lead->getPrimaryFacility()->getName() : '';
+
+        $oldState = State::getTypes()[$oldState];
+        $newState = State::getTypes()[$newState];
+
+        $content = '<b>' . ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED] . '.</b><br> User <b>' . $userName .
+            '</b> modified state in  <b>&quot;' . $name . '&quot;</b> from <b>' .
+            $oldState . '</b> to <b>' . $newState . '</b>.<br>' .
+            'Name : <b>' . $name . '</b><br>' .
+            'Owner : <b>' . $ownerName . '</b><br>' .
+            'Primary Facility : <b>' . $primaryFacility . '</b>';
+
+        $title = '<a href="' . $router->generate($routeName, ['id' => $id]) . '">' . $name . '</a>';
+
+        $changeLog = new ChangeLog();
+        $changeLog->setType(ChangeLogType::TYPE_LEAD_UPDATED);
+        $changeLog->setTitle($title);
+        $changeLog->setContent($content);
+        $changeLog->setOwner($lead->getOwner());
+        $changeLog->setSpace($lead->getOwner()->getSpace());
+
+        $this->validate($changeLog, null, ['api_admin_change_log_edit']);
+
+        $this->em->persist($changeLog);
     }
 
     /**

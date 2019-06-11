@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use App\Annotation\Grant as Grant;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @IgnoreAnnotation("api")
@@ -114,13 +115,15 @@ class LeadController extends BaseController
      * @param Request $request
      * @param LeadService $activityTypeService
      * @param ReferralService $referralService
+     * @param RouterInterface $router
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, LeadService $activityTypeService, ReferralService $referralService)
+    public function addAction(Request $request, LeadService $activityTypeService, ReferralService $referralService, RouterInterface $router)
     {
         $id = $activityTypeService->add(
             $referralService,
+            $router,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -160,14 +163,16 @@ class LeadController extends BaseController
      * @param $id
      * @param LeadService $activityTypeService
      * @param ReferralService $referralService
+     * @param RouterInterface $router
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService, ReferralService $referralService)
+    public function editAction(Request $request, $id, LeadService $activityTypeService, ReferralService $referralService, RouterInterface $router)
     {
         $activityTypeService->edit(
             $id,
             $referralService,
+            $router,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),

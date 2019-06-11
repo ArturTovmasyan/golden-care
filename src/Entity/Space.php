@@ -120,7 +120,9 @@ class Space
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
      *     "api_admin_notification_type_list",
-     *     "api_admin_notification_type_get"
+     *     "api_admin_notification_type_get",
+     *     "api_admin_change_log_list",
+     *     "api_admin_change_log_get"
      * })
      */
     private $id;
@@ -181,7 +183,9 @@ class Space
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
      *     "api_admin_notification_type_list",
-     *     "api_admin_notification_type_get"
+     *     "api_admin_notification_type_get",
+     *     "api_admin_change_log_list",
+     *     "api_admin_change_log_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -364,6 +368,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\NotificationType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $notificationTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ChangeLog", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $changeLogs;
 
     /**
      * Space constructor.
@@ -867,5 +877,21 @@ class Space
     public function setNotificationTypes(ArrayCollection $notificationTypes): void
     {
         $this->notificationTypes = $notificationTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChangeLogs(): ArrayCollection
+    {
+        return $this->changeLogs;
+    }
+
+    /**
+     * @param ArrayCollection $changeLogs
+     */
+    public function setChangeLogs(ArrayCollection $changeLogs): void
+    {
+        $this->changeLogs = $changeLogs;
     }
 }

@@ -111,7 +111,9 @@ class User implements UserInterface
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
      *     "api_admin_notification_list",
-     *     "api_admin_notification_get"
+     *     "api_admin_notification_get",
+     *     "api_admin_change_log_list",
+     *     "api_admin_change_log_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -131,7 +133,9 @@ class User implements UserInterface
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
      *     "api_admin_notification_list",
-     *     "api_admin_notification_get"
+     *     "api_admin_notification_get",
+     *     "api_admin_change_log_list",
+     *     "api_admin_change_log_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -156,7 +160,9 @@ class User implements UserInterface
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
      *     "api_admin_notification_list",
-     *     "api_admin_notification_get"
+     *     "api_admin_notification_get",
+     *     "api_admin_change_log_list",
+     *     "api_admin_change_log_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
@@ -490,6 +496,12 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity="App\Entity\Notification", mappedBy="users", cascade={"persist"})
      */
     protected $notifications;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ChangeLog", mappedBy="owner", cascade={"remove", "persist"})
+     */
+    private $changeLogs;
 
     /**
      * Space constructor.
@@ -1011,5 +1023,21 @@ class User implements UserInterface
     {
         $this->notifications->removeElement($notification);
         $notification->removeUser($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChangeLogs(): ArrayCollection
+    {
+        return $this->changeLogs;
+    }
+
+    /**
+     * @param ArrayCollection $changeLogs
+     */
+    public function setChangeLogs(ArrayCollection $changeLogs): void
+    {
+        $this->changeLogs = $changeLogs;
     }
 }
