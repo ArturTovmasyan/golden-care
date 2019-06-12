@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\ChangeLog;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -29,6 +30,12 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
                 's',
                 Join::WITH,
                 's = cl.space'
+            )
+            ->leftJoin(
+                User::class,
+                'o',
+                Join::WITH,
+                'o = cl.owner'
             );
 
         if ($space !== null) {
@@ -44,6 +51,7 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
         }
 
         $queryBuilder
+            ->orderBy('cl.createdAt', 'DESC')
             ->groupBy('cl.id');
     }
 
@@ -76,6 +84,7 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
         }
 
         return $qb
+            ->orderBy('cl.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
