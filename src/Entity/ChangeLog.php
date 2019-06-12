@@ -29,18 +29,6 @@ use App\Annotation\Grid;
  *              "values"     = "\App\Model\ChangeLogType::getTypeDefaultNames"
  *          },
  *          {
- *              "id"         = "title",
- *              "type"       = "string",
- *              "field"      = "cl.title",
- *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "content",
- *              "type"       = "string",
- *              "field"      = "cl.content",
- *              "link"       = ":edit"
- *          },
- *          {
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(o.firstName, ''), ' ', COALESCE(o.lastName, ''))"
@@ -88,32 +76,21 @@ class ChangeLog
     private $type;
 
     /**
-     * @var string
-     * @Assert\Length(
-     *      max = 512,
-     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
+     * @var array $content
+     * @ORM\Column(name="content", type="json_array", nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot specify more than {{ limit }} contents",
      *      groups={
      *          "api_admin_change_log_add",
      *          "api_admin_change_log_edit"
-     *      }
-     * )
-     * @ORM\Column(name="title", type="string", length=512, nullable=true)
+     * })
      * @Groups({
      *     "api_admin_change_log_list",
      *     "api_admin_change_log_get"
      * })
      */
-    private $title;
-
-    /**
-     * @var string $content
-     * @ORM\Column(name="content", type="text", nullable=true)
-     * @Groups({
-     *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
-     * })
-     */
-    private $content;
+    private $content = [];
 
     /**
      * @var User
@@ -155,16 +132,6 @@ class ChangeLog
         $this->id = $id;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(?string $title): void
-    {
-        $this->title = $title;
-    }
-
     /**
      * @return int|null
      */
@@ -182,17 +149,17 @@ class ChangeLog
     }
 
     /**
-     * @return null|string
+     * @return array
      */
-    public function getContent(): ?string
+    public function getContent(): array
     {
         return $this->content;
     }
 
     /**
-     * @param null|string $content
+     * @param array $content
      */
-    public function setContent(?string $content): void
+    public function setContent(array $content): void
     {
         $this->content = $content;
     }

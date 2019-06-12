@@ -682,24 +682,23 @@ class LeadService extends BaseService implements IGridService
      */
     private function leadAddChangeLog(Lead $lead, RouterInterface $router)
     {
-        $routeName = 'api_lead_lead_get';
-        $name = $lead->getFirstName() .' '. $lead->getLastName()  ;
+        $name = $lead->getFirstName() .' '. $lead->getLastName();
         $id = $lead->getId();
         $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
         $userName = $lead->getUpdatedBy() ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';
         $primaryFacility = $lead->getPrimaryFacility() ? $lead->getPrimaryFacility()->getName() : '';
 
-        $content = '<b>' . ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD] . '.</b><br> User <b>' . $userName .
-            '</b> added new lead <b>&quot;' . $name . '&quot;</b>.<br>' .
-            'Name : <b>' . $name . '</b><br>' .
-            'Owner : <b>' . $ownerName . '</b><br>' .
-            'Primary Facility : <b>' . $primaryFacility . '</b>';
-
-        $title =  '<a href="' . $router->generate($routeName, ['id' => $id]) .'">'. $name . '</a>';
+        $content = [
+            'lead_name' => $name,
+            'lead_id' => $id,
+            'owner' => $ownerName,
+            'primary_facility' => $primaryFacility,
+            'note' => ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD].".\r\n".'User '.$userName.' added new lead \''.
+                $name.'\'.'."\r\n".'Name : '.$name."\r\n".'Owner : '.$ownerName."\r\n".'Primary Facility : '.$primaryFacility
+        ];
 
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_NEW_LEAD);
-        $changeLog->setTitle($title);
         $changeLog->setContent($content);
         $changeLog->setOwner($lead->getOwner());
         $changeLog->setSpace($lead->getOwner()->getSpace());
@@ -717,7 +716,6 @@ class LeadService extends BaseService implements IGridService
      */
     private function leadStateEditChangeLog($oldState, $newState, Lead $lead, RouterInterface $router)
     {
-        $routeName = 'api_lead_lead_get';
         $name = $lead->getFirstName() .' '. $lead->getLastName()  ;
         $id = $lead->getId();
         $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
@@ -727,18 +725,18 @@ class LeadService extends BaseService implements IGridService
         $oldState = State::getTypes()[$oldState];
         $newState = State::getTypes()[$newState];
 
-        $content = '<b>' . ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED] . '.</b><br> User <b>' . $userName .
-            '</b> modified state in  <b>&quot;' . $name . '&quot;</b> from <b>' .
-            $oldState . '</b> to <b>' . $newState . '</b>.<br>' .
-            'Name : <b>' . $name . '</b><br>' .
-            'Owner : <b>' . $ownerName . '</b><br>' .
-            'Primary Facility : <b>' . $primaryFacility . '</b>';
-
-        $title = '<a href="' . $router->generate($routeName, ['id' => $id]) . '">' . $name . '</a>';
+        $content = [
+            'lead_name' => $name,
+            'lead_id' => $id,
+            'owner' => $ownerName,
+            'primary_facility' => $primaryFacility,
+            'note' => ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED].".\r\n".'User '.$userName.
+                ' modified state in \''.$name.'\' from '.$oldState.' to '.$newState.".\r\n".'Name : '.$name.
+                "\r\n".'Owner : '.$ownerName."\r\n".'Primary Facility : '.$primaryFacility
+        ];
 
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_LEAD_UPDATED);
-        $changeLog->setTitle($title);
         $changeLog->setContent($content);
         $changeLog->setOwner($lead->getOwner());
         $changeLog->setSpace($lead->getOwner()->getSpace());

@@ -173,7 +173,7 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
     {
         $qb = $this
             ->createQueryBuilder('cl')
-            ->select('cl.title');
+            ->select('cl.id');
 
         if ($mappedBy !== null && $id !== null) {
             $qb

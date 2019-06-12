@@ -553,15 +553,14 @@ class ActivityService extends BaseService implements IGridService
      */
     private function taskActivityAddChangeLog(Activity $activity, RouterInterface $router)
     {
-        $ownerTitle = 'New Activity Task.';
+        $ownerTitle = 'New Activity Task';
         $owner = '';
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
                 $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_LEAD];
                 $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
-                $routeName = 'api_lead_lead_get';
-                $routeId = $activity->getLead()->getId();
+                $id = $activity->getLead()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
@@ -573,15 +572,13 @@ class ActivityService extends BaseService implements IGridService
                         $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
                     }
                 }
-                $routeName = 'api_lead_referral_get';
-                $routeId = $activity->getReferral()->getId();
+                $id = $activity->getReferral()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
                 $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_ORGANIZATION];;
                 $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
-                $routeName = 'api_lead_organization_get';
-                $routeId = $activity->getOrganization()->getId();
+                $id = $activity->getOrganization()->getId();
 
                 break;
             default:
@@ -592,18 +589,20 @@ class ActivityService extends BaseService implements IGridService
         $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
 
-        $content = '<b>' . $ownerTitle . '</b><br> User <b>' . $userName .
-            '</b> added new task <b>&quot;' . $activity->getTitle() . '&quot;</b> activity.<br>' .
-            'Name : <b>' . $activity->getTitle() . '</b><br>' .
-            'Owner : <b>' . $assignToName . '</b><br>' .
-            'Due Date : <b>' . $dueDate .  '</b><br>' .
-            $ownerName . ' : <b>' . $owner . '</b>';
-
-        $title = $ownerName . ' : ' . '<a href="' . $router->generate($routeName, ['id' => $routeId]) .'">'. $owner . '</a>';
+        $content = [
+            'type' => $activity->getOwnerType(),
+            'owner_name' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
+            'owner' => $owner,
+            'id' => $id,
+            'assign_to' => $assignToName,
+            'due_date' => $dueDate,
+            'note' => $ownerTitle.".\r\n".'User '.$userName.' added new task \''.
+                $activity->getTitle().'\' activity.'."\r\n".'Name : '.$activity->getTitle()."\r\n".'Owner : '.
+                $assignToName."\r\n".'Due Date : '.$dueDate."\r\n".$ownerName.' : '.$owner
+        ];
 
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_NEW_TASK);
-        $changeLog->setTitle($title);
         $changeLog->setContent($content);
         $changeLog->setOwner($activity->getAssignTo() ?? null);
 
@@ -623,15 +622,14 @@ class ActivityService extends BaseService implements IGridService
      */
     private function taskActivityStatusEditChangeLog($oldStatusId, $newStatusId, Activity $activity, RouterInterface $router)
     {
-        $ownerTitle = 'Modified Activity Task Status.';
+        $ownerTitle = 'Modified Activity Task Status';
         $owner = '';
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
                 $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_LEAD];
                 $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
-                $routeName = 'api_lead_lead_get';
-                $routeId = $activity->getLead()->getId();
+                $id = $activity->getLead()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
@@ -643,15 +641,13 @@ class ActivityService extends BaseService implements IGridService
                         $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
                     }
                 }
-                $routeName = 'api_lead_referral_get';
-                $routeId = $activity->getReferral()->getId();
+                $id = $activity->getReferral()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
                 $ownerName = ActivityOwnerType::getTypes()[ActivityOwnerType::TYPE_ORGANIZATION];;
                 $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
-                $routeName = 'api_lead_organization_get';
-                $routeId = $activity->getOrganization()->getId();
+                $id = $activity->getOrganization()->getId();
 
                 break;
             default:
@@ -681,19 +677,20 @@ class ActivityService extends BaseService implements IGridService
             throw new ActivityStatusNotFoundException();
         }
 
-        $content = '<b>' . $ownerTitle . '</b><br> User <b>' . $userName .
-            '</b> changed status in <b>&quot;' . $activity->getTitle() . '&quot;</b> from <b>' .
-            $oldStatus->getTitle() . '</b> to <b>' . $newStatus->getTitle() . '</b>.<br>' .
-            'Name : <b>' . $activity->getTitle() . '</b><br>' .
-            'Owner : <b>' . $assignToName . '</b><br>' .
-            'Due Date : <b>' . $dueDate .  '</b><br>' .
-            $ownerName . ' : <b>' . $owner . '</b>';
-
-        $title = $ownerName . ' : ' . '<a href="' . $router->generate($routeName, ['id' => $routeId]) .'">'. $owner . '</a>';
+        $content = [
+            'type' => $activity->getOwnerType(),
+            'owner_name' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
+            'owner' => $owner,
+            'id' => $id,
+            'assign_to' => $assignToName,
+            'due_date' => $dueDate,
+            'note' => $ownerTitle.".\r\n".'User '.$userName.' changed status in \''.$activity->getTitle().
+                '\' from '.$oldStatus->getTitle().' to '.$newStatus->getTitle().".\r\n".'Name : '.$activity->getTitle().
+                "\r\n".'Owner : '.$assignToName."\r\n".'Due Date : '.$dueDate."\r\n".$ownerName.' : '.$owner
+        ];
 
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_TASK_UPDATED);
-        $changeLog->setTitle($title);
         $changeLog->setContent($content);
         $changeLog->setOwner($activity->getAssignTo() ?? null);
 
