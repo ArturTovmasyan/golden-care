@@ -345,6 +345,12 @@ class Apartment
     private $rooms;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Notification", mappedBy="apartments", cascade={"persist"})
+     */
+    protected $notifications;
+
+    /**
      * @return int
      */
     public function getId()
@@ -484,6 +490,45 @@ class Apartment
     public function setRooms(ArrayCollection $rooms): void
     {
         $this->rooms = $rooms;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param mixed $notifications
+     */
+    public function setNotifications($notifications): void
+    {
+        $this->notifications = $notifications;
+
+        /** @var Notification $notification */
+        foreach ($this->notifications as $notification) {
+            $notification->addApartment($this);
+        }
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function addNotification(Notification $notification): void
+    {
+        $notification->addApartment($this);
+        $this->notifications[] = $notification;
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function removeNotification(Notification $notification): void
+    {
+        $this->notifications->removeElement($notification);
+        $notification->removeApartment($this);
     }
 
     /**

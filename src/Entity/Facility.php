@@ -411,6 +411,12 @@ class Facility
     protected $facilityLeads;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Notification", mappedBy="facilities", cascade={"persist"})
+     */
+    protected $notifications;
+
+    /**
      * @return int
      */
     public function getId()
@@ -647,6 +653,45 @@ class Facility
     {
         $this->facilityLeads->removeElement($lead);
         $lead->removeFacility($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param mixed $notifications
+     */
+    public function setNotifications($notifications): void
+    {
+        $this->notifications = $notifications;
+
+        /** @var Notification $notification */
+        foreach ($this->notifications as $notification) {
+            $notification->addFacility($this);
+        }
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function addNotification(Notification $notification): void
+    {
+        $notification->addFacility($this);
+        $this->notifications[] = $notification;
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function removeNotification(Notification $notification): void
+    {
+        $this->notifications->removeElement($notification);
+        $notification->removeFacility($this);
     }
 
     /**

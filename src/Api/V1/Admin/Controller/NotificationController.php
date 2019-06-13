@@ -114,9 +114,13 @@ class NotificationController extends BaseController
         $id = $activityService->add(
             [
                 'type_id' => $request->get('type_id'),
+                'enabled' => $request->get('enabled'),
                 'schedule' => $request->get('schedule'),
-                'parameters' => $request->get('parameters'),
-                'users' => $request->get('users')
+                'emails' => $request->get('emails'),
+                'users' => $request->get('users'),
+                'facilities' => $request->get('facilities'),
+                'apartments' => $request->get('apartments'),
+                'regions' => $request->get('regions')
             ]
         );
 
@@ -144,9 +148,13 @@ class NotificationController extends BaseController
             $id,
             [
                 'type_id' => $request->get('type_id'),
+                'enabled' => $request->get('enabled'),
                 'schedule' => $request->get('schedule'),
-                'parameters' => $request->get('parameters'),
-                'users' => $request->get('users')
+                'emails' => $request->get('emails'),
+                'users' => $request->get('users'),
+                'facilities' => $request->get('facilities'),
+                'apartments' => $request->get('apartments'),
+                'regions' => $request->get('regions')
             ]
         );
 

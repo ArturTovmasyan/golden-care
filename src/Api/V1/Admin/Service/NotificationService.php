@@ -5,11 +5,17 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\NotificationNotFoundException;
 use App\Api\V1\Common\Service\Exception\NotificationTypeNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Apartment;
+use App\Entity\Facility;
 use App\Entity\Notification;
 use App\Entity\NotificationType;
+use App\Entity\Region;
 use App\Entity\User;
+use App\Repository\ApartmentRepository;
+use App\Repository\FacilityRepository;
 use App\Repository\NotificationRepository;
 use App\Repository\NotificationTypeRepository;
+use App\Repository\RegionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -81,12 +87,13 @@ class NotificationService extends BaseService implements IGridService
             }
 
             $schedule = !empty($params['schedule']) ? $params['schedule'] : [];
-            $parameters = !empty($params['parameters']) ? $params['parameters'] : [];
+            $emails = !empty($params['emails']) ? $params['emails'] : [];
 
             $notification = new Notification();
             $notification->setType($type);
+            $notification->setEnabled($params['enabled']);
             $notification->setSchedule($schedule);
-            $notification->setParameters($parameters);
+            $notification->setEmails($emails);
 
             if(!empty($params['users'])) {
                 /** @var UserRepository $userRepo */
@@ -98,6 +105,54 @@ class NotificationService extends BaseService implements IGridService
                 if (!empty($users)) {
                     $notification->setUsers($users);
                 }
+            }
+
+            if ($type->isFacility()) {
+                if(!empty($params['facilities'])) {
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
+
+                    $facilityIds = array_unique($params['facilities']);
+                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+
+                    if (!empty($facilities)) {
+                        $notification->setFacilities($facilities);
+                    }
+                }
+            } else {
+                $notification->setFacilities(null);
+            }
+
+            if ($type->isApartment()) {
+                if(!empty($params['apartments'])) {
+                    /** @var ApartmentRepository $apartmentRepo */
+                    $apartmentRepo = $this->em->getRepository(Apartment::class);
+
+                    $apartmentIds = array_unique($params['apartments']);
+                    $apartments = $apartmentRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Apartment::class), $apartmentIds);
+
+                    if (!empty($apartments)) {
+                        $notification->setApartments($apartments);
+                    }
+                }
+            } else {
+                $notification->setApartments(null);
+            }
+
+            if ($type->isRegion()) {
+                if(!empty($params['regions'])) {
+                    /** @var RegionRepository $regionRepo */
+                    $regionRepo = $this->em->getRepository(Region::class);
+
+                    $regionIds = array_unique($params['regions']);
+                    $regions = $regionRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Region::class), $regionIds);
+
+                    if (!empty($regions)) {
+                        $notification->setRegions($regions);
+                    }
+                }
+            } else {
+                $notification->setRegions(null);
             }
 
             $this->validate($notification, null, ['api_admin_notification_add']);
@@ -152,11 +207,12 @@ class NotificationService extends BaseService implements IGridService
             }
 
             $schedule = !empty($params['schedule']) ? $params['schedule'] : [];
-            $parameters = !empty($params['parameters']) ? $params['parameters'] : [];
+            $emails = !empty($params['emails']) ? $params['emails'] : [];
 
             $entity->setType($type);
+            $entity->setEnabled($params['enabled']);
             $entity->setSchedule($schedule);
-            $entity->setParameters($parameters);
+            $entity->setEmails($emails);
 
             $users = $entity->getUsers();
             foreach ($users as $user) {
@@ -173,6 +229,69 @@ class NotificationService extends BaseService implements IGridService
                 if (!empty($users)) {
                     $entity->setUsers($users);
                 }
+            }
+
+            $facilities = $entity->getFacilities();
+            foreach ($facilities as $facility) {
+                $entity->removeFacility($facility);
+            }
+
+            if ($type->isFacility()) {
+                if(!empty($params['facilities'])) {
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
+
+                    $facilityIds = array_unique($params['facilities']);
+                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+
+                    if (!empty($facilities)) {
+                        $entity->setFacilities($facilities);
+                    }
+                }
+            } else {
+                $entity->setFacilities(null);
+            }
+
+            $apartments = $entity->getApartments();
+            foreach ($apartments as $apartment) {
+                $entity->removeApartment($apartment);
+            }
+
+            if ($type->isApartment()) {
+                if(!empty($params['apartments'])) {
+                    /** @var ApartmentRepository $apartmentRepo */
+                    $apartmentRepo = $this->em->getRepository(Apartment::class);
+
+                    $apartmentIds = array_unique($params['apartments']);
+                    $apartments = $apartmentRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Apartment::class), $apartmentIds);
+
+                    if (!empty($apartments)) {
+                        $entity->setApartments($apartments);
+                    }
+                }
+            } else {
+                $entity->setApartments(null);
+            }
+
+            $regions = $entity->getRegions();
+            foreach ($regions as $region) {
+                $entity->removeRegion($region);
+            }
+
+            if ($type->isRegion()) {
+                if(!empty($params['regions'])) {
+                    /** @var RegionRepository $regionRepo */
+                    $regionRepo = $this->em->getRepository(Region::class);
+
+                    $regionIds = array_unique($params['regions']);
+                    $regions = $regionRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Region::class), $regionIds);
+
+                    if (!empty($regions)) {
+                        $entity->setRegions($regions);
+                    }
+                }
+            } else {
+                $entity->setRegions(null);
             }
 
             $this->validate($entity, null, ['api_admin_notification_edit']);

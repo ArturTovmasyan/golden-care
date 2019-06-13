@@ -209,6 +209,12 @@ class Region
     private $residentAdmissions;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Notification", mappedBy="regions", cascade={"persist"})
+     */
+    protected $notifications;
+
+    /**
      * @return int
      */
     public function getId()
@@ -298,5 +304,44 @@ class Region
     public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
     {
         $this->residentAdmissions = $residentAdmissions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * @param mixed $notifications
+     */
+    public function setNotifications($notifications): void
+    {
+        $this->notifications = $notifications;
+
+        /** @var Notification $notification */
+        foreach ($this->notifications as $notification) {
+            $notification->addRegion($this);
+        }
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function addNotification(Notification $notification): void
+    {
+        $notification->addRegion($this);
+        $this->notifications[] = $notification;
+    }
+
+    /**
+     * @param Notification $notification
+     */
+    public function removeNotification(Notification $notification): void
+    {
+        $this->notifications->removeElement($notification);
+        $notification->removeRegion($this);
     }
 }
