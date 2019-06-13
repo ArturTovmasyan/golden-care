@@ -86,13 +86,12 @@ class NotificationService extends BaseService implements IGridService
                 throw new NotificationTypeNotFoundException();
             }
 
-            $schedule = !empty($params['schedule']) ? $params['schedule'] : [];
             $emails = !empty($params['emails']) ? $params['emails'] : [];
 
             $notification = new Notification();
             $notification->setType($type);
             $notification->setEnabled($params['enabled']);
-            $notification->setSchedule($schedule);
+            $notification->setSchedule($params['schedule'] ?? '');
             $notification->setEmails($emails);
 
             if(!empty($params['users'])) {
@@ -206,12 +205,11 @@ class NotificationService extends BaseService implements IGridService
                 throw new NotificationTypeNotFoundException();
             }
 
-            $schedule = !empty($params['schedule']) ? $params['schedule'] : [];
             $emails = !empty($params['emails']) ? $params['emails'] : [];
 
             $entity->setType($type);
             $entity->setEnabled($params['enabled']);
-            $entity->setSchedule($schedule);
+            $entity->setSchedule($params['schedule'] ?? '');
             $entity->setEmails($emails);
 
             $users = $entity->getUsers();

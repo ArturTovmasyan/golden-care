@@ -77,21 +77,22 @@ class Notification
     private $enabled;
 
     /**
-     * @var array $schedule
-     * @ORM\Column(name="schedule", type="json_array", nullable=true)
-     * @Assert\Count(
-     *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} schedules",
+     * @var string
+     * @Assert\Length(
+     *      max = 120,
+     *      maxMessage = "Schedule cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_notification_add",
      *          "api_admin_notification_edit"
-     * })
+     *      }
+     * )
+     * @ORM\Column(name="schedule", type="string", length=120, nullable=true)
      * @Groups({
      *     "api_admin_notification_list",
      *     "api_admin_notification_get"
      * })
      */
-    private $schedule = [];
+    private $schedule;
 
     /**
      * @var array $emails
@@ -229,17 +230,17 @@ class Notification
     }
 
     /**
-     * @return array
+     * @return null|string
      */
-    public function getSchedule(): array
+    public function getSchedule(): ?string
     {
         return $this->schedule;
     }
 
     /**
-     * @param array $schedule
+     * @param null|string $schedule
      */
-    public function setSchedule(array $schedule): void
+    public function setSchedule(?string $schedule): void
     {
         $this->schedule = $schedule;
     }
