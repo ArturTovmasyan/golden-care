@@ -22,12 +22,27 @@ use App\Annotation\Grid;
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "nt.id"
+ *              "field"      = "n.id"
  *          },
  *          {
  *              "id"         = "type",
  *              "type"       = "string",
  *              "field"      = "nt.title"
+ *          },
+ *          {
+ *              "id"         = "enabled",
+ *              "type"       = "boolean",
+ *              "field"      = "n.enabled"
+ *          },
+ *          {
+ *              "id"         = "schedule",
+ *              "type"       = "string",
+ *              "field"      = "n.schedule"
+ *          },
+ *          {
+ *              "id"         = "emails",
+ *              "type"       = "string",
+ *              "field"      = "n.emails"
  *          }
  *     }
  * )
