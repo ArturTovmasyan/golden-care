@@ -70,10 +70,20 @@ class NotificationTypeService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $category = $params['category'] ? (int)$params['category'] : 0;
+
             $notificationType = new NotificationType();
+            $notificationType->setCategory($category);
             $notificationType->setTitle($params['title']);
             $notificationType->setEmail($params['email']);
             $notificationType->setSms($params['sms']);
+            $notificationType->setFacility($params['facility']);
+            $notificationType->setApartment($params['apartment']);
+            $notificationType->setRegion($params['region']);
+            $notificationType->setEmailSubject($params['email_subject'] ?? '');
+            $notificationType->setEmailMessage($params['email_message'] ?? '');
+            $notificationType->setSmsSubject($params['sms_subject'] ?? '');
+            $notificationType->setSmsMessage($params['sms_message'] ?? '');
             $notificationType->setSpace($space);
 
             $this->validate($notificationType, null, ['api_admin_notification_type_add']);
@@ -123,6 +133,13 @@ class NotificationTypeService extends BaseService implements IGridService
             $entity->setTitle($params['title']);
             $entity->setEmail($params['email']);
             $entity->setSms($params['sms']);
+            $entity->setFacility($params['facility']);
+            $entity->setApartment($params['apartment']);
+            $entity->setRegion($params['region']);
+            $entity->setEmailSubject($params['email_subject'] ?? '');
+            $entity->setEmailMessage($params['email_message'] ?? '');
+            $entity->setSmsSubject($params['sms_subject'] ?? '');
+            $entity->setSmsMessage($params['sms_message'] ?? '');
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_notification_type_edit']);

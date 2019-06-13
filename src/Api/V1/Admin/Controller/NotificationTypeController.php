@@ -113,9 +113,17 @@ class NotificationTypeController extends BaseController
     {
         $id = $activityTypeService->add(
             [
+                'category' => $request->get('category'),
                 'title' => $request->get('title'),
                 'email' => $request->get('email'),
                 'sms' => $request->get('sms'),
+                'facility' => $request->get('facility'),
+                'apartment' => $request->get('apartment'),
+                'region' => $request->get('region'),
+                'email_subject' => $request->get('email_subject'),
+                'email_message' => $request->get('email_message'),
+                'sms_subject' => $request->get('sms_subject'),
+                'sms_message' => $request->get('sms_message'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -146,6 +154,13 @@ class NotificationTypeController extends BaseController
                 'title' => $request->get('title'),
                 'email' => $request->get('email'),
                 'sms' => $request->get('sms'),
+                'facility' => $request->get('facility'),
+                'apartment' => $request->get('apartment'),
+                'region' => $request->get('region'),
+                'email_subject' => $request->get('email_subject'),
+                'email_message' => $request->get('email_message'),
+                'sms_subject' => $request->get('sms_subject'),
+                'sms_message' => $request->get('sms_message'),
                 'space_id' => $request->get('space_id')
             ]
         );
