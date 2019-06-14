@@ -101,7 +101,7 @@ class NotificationType
      * @var int
      * @ORM\Column(name="category", type="smallint")
      * @Assert\Choice(
-     *     callback={"App\Model\NotificationTypeCategoryType","getTypeValues"},
+     *     callback={"\App\Model\NotificationTypeCategoryType","getTypeValues"},
      *     groups={
      *          "api_admin_notification_type_add",
      *          "api_admin_notification_type_edit"

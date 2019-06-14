@@ -151,6 +151,7 @@ class NotificationTypeController extends BaseController
         $activityTypeService->edit(
             $id,
             [
+                'category' => $request->get('category'),
                 'title' => $request->get('title'),
                 'email' => $request->get('email'),
                 'sms' => $request->get('sms'),

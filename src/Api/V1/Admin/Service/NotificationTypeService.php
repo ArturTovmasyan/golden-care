@@ -130,6 +130,9 @@ class NotificationTypeService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $category = $params['category'] ? (int)$params['category'] : 0;
+
+            $entity->setCategory($category);
             $entity->setTitle($params['title']);
             $entity->setEmail($params['email']);
             $entity->setSms($params['sms']);
