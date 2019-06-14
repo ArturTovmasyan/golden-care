@@ -36,7 +36,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "schedule",
- *              "type"       = "string",
+ *              "type"       = "cron",
  *              "field"      = "n.schedule"
  *          },
  *          {

@@ -37,6 +37,7 @@ class Grid
     const FIELD_TYPE_JSON               = 'json';
     const FIELD_TYPE_ICON               = 'icon';
     const FIELD_TYPE_COLOR              = 'color';
+    const FIELD_TYPE_CRON               = 'cron';
 
     /**
      * Field options listing
