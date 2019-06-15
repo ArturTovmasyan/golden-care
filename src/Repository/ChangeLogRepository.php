@@ -215,4 +215,43 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getChangeLogsForCrontabNotification(Space $space = null, array $entityGrants = null)
+    {
+        // get - 24 hr
+        $date = new \DateTime();
+        $date->modify('-24 hours');
+
+        $qb = $this->createQueryBuilder('cl')
+            ->select('cl')
+            ->where("cl.createdAt >= '" . $date->format('Y-m-d 06:00:00') . "'");
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = cl.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('cl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('cl.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

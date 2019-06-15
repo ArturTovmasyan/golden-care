@@ -280,4 +280,22 @@ class Mailer
             ])
             ->send();
     }
+
+    /**
+     * @param $emails
+     * @param $subject
+     * @param $body
+     * @return mixed
+     */
+    public function sendNotification($emails, $subject, $body)
+    {
+        $mailer  = $this->container->get('mailer');
+        $message = (new \Swift_Message($subject))
+            ->setFrom(self::FROM)
+            ->setBcc($emails)
+            ->setBody($body, self::BODY)
+        ;
+
+        return $mailer->send($message);
+    }
 }

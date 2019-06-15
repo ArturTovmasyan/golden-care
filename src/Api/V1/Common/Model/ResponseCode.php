@@ -121,6 +121,7 @@ class ResponseCode
     const NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION                  = 723;
     const NOTIFICATION_NOT_FOUND_EXCEPTION                       = 724;
     const CHANGE_LOG_NOT_FOUND_EXCEPTION                         = 725;
+    const INCORRECT_CHANGE_LOG_TYPE_EXCEPTION                    = 726;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -240,6 +241,7 @@ class ResponseCode
         self::NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'NotificationType not found.'],
         self::NOTIFICATION_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Notification not found.'],
         self::CHANGE_LOG_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ChangeLog not found.'],
+        self::INCORRECT_CHANGE_LOG_TYPE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect ChangeLog type.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],

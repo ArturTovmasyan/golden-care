@@ -674,6 +674,7 @@ class ActivityService extends BaseService implements IGridService
         $content = [
             'type' => $activity->getOwnerType(),
             'owner' => $owner,
+            'name' => $activity->getTitle(),
             'id' => $id,
             'assign_to' => $assignToName,
             'due_date' => $dueDate,
