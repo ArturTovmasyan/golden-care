@@ -35,3 +35,4 @@ doctrine:
                 JSON_ARRAY:                   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
                 JSON_OBJECT:                  Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonObject
                 CAST:                         Oro\ORM\Query\AST\Functions\Cast
+                DATE_FORMAT:                  Oro\ORM\Query\AST\Functions\String\DateFormat

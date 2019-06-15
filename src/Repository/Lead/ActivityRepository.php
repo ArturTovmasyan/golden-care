@@ -41,8 +41,8 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
             ->addSelect("
                 JSON_ARRAY(
                     JSON_OBJECT('Assign To', CONCAT(u.firstName, ' ', u.lastName)),
-                    JSON_OBJECT('Due Date', a.dueDate),
-                    JSON_OBJECT('Reminder Date', a.reminderDate),
+                    JSON_OBJECT('Due Date', DATE_FORMAT(a.dueDate, '%m/%d/%Y')),
+                    JSON_OBJECT('Reminder Date', DATE_FORMAT(a.reminderDate, '%m/%d/%Y')),
                     JSON_OBJECT('Facility', f.name),
 
                     JSON_OBJECT('Lead', CONCAT(l.firstName, ' ', l.lastName)),
