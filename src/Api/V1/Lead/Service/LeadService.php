@@ -693,8 +693,8 @@ class LeadService extends BaseService implements IGridService
             'lead_id' => $id,
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
-            'note' => ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD].".\r\n".'User '.$userName.' added new lead \''.
-                $name.'\'.'."\r\n".'Name : '.$name."\r\n".'Owner : '.$ownerName."\r\n".'Primary Facility : '.$primaryFacility
+            'user_name' => $userName,
+            'created_At' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();
@@ -731,7 +731,9 @@ class LeadService extends BaseService implements IGridService
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
             'old_state' => $oldState,
-            'new_state' => $newState
+            'new_state' => $newState,
+            'user_name' => $userName,
+            'created_At' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();
