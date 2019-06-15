@@ -694,7 +694,7 @@ class LeadService extends BaseService implements IGridService
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
             'user_name' => $userName,
-            'created_At' => new \DateTime()
+            'created_at' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();
@@ -733,7 +733,7 @@ class LeadService extends BaseService implements IGridService
             'old_state' => $oldState,
             'new_state' => $newState,
             'user_name' => $userName,
-            'created_At' => new \DateTime()
+            'created_at' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();

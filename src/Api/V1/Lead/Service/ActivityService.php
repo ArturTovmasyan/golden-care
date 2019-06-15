@@ -593,7 +593,7 @@ class ActivityService extends BaseService implements IGridService
             'due_date' => $dueDate,
             'name' => $activity->getTitle(),
             'user_name' => $userName,
-            'created_At' => new \DateTime()
+            'created_at' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();
@@ -677,7 +677,7 @@ class ActivityService extends BaseService implements IGridService
             'user_name' => $userName,
             'old_status' => $oldStatus->getTitle(),
             'new_status' => $newStatus->getTitle(),
-            'created_At' => new \DateTime()
+            'created_at' => new \DateTime()
         ];
 
         $changeLog = new ChangeLog();
