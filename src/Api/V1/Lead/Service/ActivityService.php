@@ -584,6 +584,7 @@ class ActivityService extends BaseService implements IGridService
         $userName = $activity->getUpdatedBy() ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
         $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
+        $date = new \DateTime('now');
 
         $content = [
             'type' => $activity->getOwnerType(),
@@ -593,7 +594,7 @@ class ActivityService extends BaseService implements IGridService
             'due_date' => $dueDate,
             'name' => $activity->getTitle(),
             'user_name' => $userName,
-            'created_at' => new \DateTime()
+            'created_at' => $date->format('m/d/Y H:i')
         ];
 
         $changeLog = new ChangeLog();
@@ -668,6 +669,8 @@ class ActivityService extends BaseService implements IGridService
             throw new ActivityStatusNotFoundException();
         }
 
+        $date = new \DateTime('now');
+
         $content = [
             'type' => $activity->getOwnerType(),
             'owner' => $owner,
@@ -677,7 +680,7 @@ class ActivityService extends BaseService implements IGridService
             'user_name' => $userName,
             'old_status' => $oldStatus->getTitle(),
             'new_status' => $newStatus->getTitle(),
-            'created_at' => new \DateTime()
+            'created_at' => $date->format('m/d/Y H:i')
         ];
 
         $changeLog = new ChangeLog();

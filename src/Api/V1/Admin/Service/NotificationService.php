@@ -91,7 +91,7 @@ class NotificationService extends BaseService implements IGridService
             $notification = new Notification();
             $notification->setType($type);
             $notification->setEnabled($params['enabled']);
-            $notification->setSchedule($params['schedule'] ?? '');
+            $notification->setSchedule($params['schedule'] ?? null);
             $notification->setEmails($emails);
 
             if(!empty($params['users'])) {
@@ -209,7 +209,7 @@ class NotificationService extends BaseService implements IGridService
 
             $entity->setType($type);
             $entity->setEnabled($params['enabled']);
-            $entity->setSchedule($params['schedule'] ?? '');
+            $entity->setSchedule($params['schedule'] ?? null);
             $entity->setEmails($emails);
 
             $users = $entity->getUsers();

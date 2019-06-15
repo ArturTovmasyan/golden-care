@@ -687,6 +687,7 @@ class LeadService extends BaseService implements IGridService
         $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
         $userName = $lead->getUpdatedBy() ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';
         $primaryFacility = $lead->getPrimaryFacility() ? $lead->getPrimaryFacility()->getName() : '';
+        $date = new \DateTime('now');
 
         $content = [
             'lead_name' => $name,
@@ -694,7 +695,7 @@ class LeadService extends BaseService implements IGridService
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
             'user_name' => $userName,
-            'created_at' => new \DateTime()
+            'created_at' => $date->format('m/d/Y H:i')
         ];
 
         $changeLog = new ChangeLog();
@@ -724,6 +725,7 @@ class LeadService extends BaseService implements IGridService
 
         $oldState = State::getTypes()[$oldState];
         $newState = State::getTypes()[$newState];
+        $date = new \DateTime('now');
 
         $content = [
             'lead_name' => $name,
@@ -733,7 +735,7 @@ class LeadService extends BaseService implements IGridService
             'old_state' => $oldState,
             'new_state' => $newState,
             'user_name' => $userName,
-            'created_at' => new \DateTime()
+            'created_at' => $date->format('m/d/Y H:i')
         ];
 
         $changeLog = new ChangeLog();
