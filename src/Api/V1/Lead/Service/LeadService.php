@@ -730,9 +730,8 @@ class LeadService extends BaseService implements IGridService
             'lead_id' => $id,
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
-            'note' => ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED].".\r\n".'User '.$userName.
-                ' modified state in \''.$name.'\' from '.$oldState.' to '.$newState.".\r\n".'Name : '.$name.
-                "\r\n".'Owner : '.$ownerName."\r\n".'Primary Facility : '.$primaryFacility
+            'old_state' => $oldState,
+            'new_state' => $newState
         ];
 
         $changeLog = new ChangeLog();

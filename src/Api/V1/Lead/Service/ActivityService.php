@@ -591,14 +591,12 @@ class ActivityService extends BaseService implements IGridService
 
         $content = [
             'type' => $activity->getOwnerType(),
-            'owner_name' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
             'owner' => $owner,
             'id' => $id,
             'assign_to' => $assignToName,
             'due_date' => $dueDate,
-            'note' => $ownerTitle.".\r\n".'User '.$userName.' added new task \''.
-                $activity->getTitle().'\' activity.'."\r\n".'Name : '.$activity->getTitle()."\r\n".'Owner : '.
-                $assignToName."\r\n".'Due Date : '.$dueDate."\r\n".$ownerName.' : '.$owner
+            'name' => $activity->getTitle(),
+            'user_name' => $userName
         ];
 
         $changeLog = new ChangeLog();
@@ -679,14 +677,12 @@ class ActivityService extends BaseService implements IGridService
 
         $content = [
             'type' => $activity->getOwnerType(),
-            'owner_name' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
             'owner' => $owner,
             'id' => $id,
             'assign_to' => $assignToName,
             'due_date' => $dueDate,
-            'note' => $ownerTitle.".\r\n".'User '.$userName.' changed status in \''.$activity->getTitle().
-                '\' from '.$oldStatus->getTitle().' to '.$newStatus->getTitle().".\r\n".'Name : '.$activity->getTitle().
-                "\r\n".'Owner : '.$assignToName."\r\n".'Due Date : '.$dueDate."\r\n".$ownerName.' : '.$owner
+            'old_status' => $oldStatus->getTitle(),
+            'new_status' => $newStatus->getTitle()
         ];
 
         $changeLog = new ChangeLog();
