@@ -1,36 +1,77 @@
 {% extends "@api_email/base.html.twig" %}
-{% block title %}{{ subject }}{% endblock %}
-    {% block content %}
-        {% if logs|length > 0 %}
-            {% for log in logs %}
-                <table style="border-collapse:collapse;border-spacing:0" width="100%">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <span style="font-size: 16px;">{{ log['action'] }} | </span><span style="font-size: 14px;">{{ log['title']|raw }}<br>
-                            <span style="font-size: 14px;">Date : {{ log['date'] }}</span>
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{ log['content']|raw}}
-                            <br>
-                            <br>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-        {% else %}
+{% block title %}
+    {{ subject }}
+{% endblock %}
+{% block content %}
+    {% if logs|length > 0 %}
+        {% for log in logs %}
             <table style="border-collapse:collapse;border-spacing:0" width="100%">
                 <tbody>
                 <tr>
                     <td>
-                        No user activity logged!
+                        <p><span style="font-size: large;">{{ log['action'] }} | {{ log['title']|raw }}</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="margin-left: 25px;font-size: small;"><strong>Date:</strong> {{ log['date'] }}</p>
+                        <p style="margin-left: 25px;font-size: small;">
+                        {% if log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_LEAD' %}
+                            <p><strong>New Lead</strong></p>
+                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> added new lead
+                                <strong>{{ log['content']['lead_name'] }}</strong>.</p>
+                            <p><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
+                            <p><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
+                            <p><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                        {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_LEAD_UPDATED' %}
+                            <p><strong>Lead State Changed.</strong></p>
+                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> modified state in
+                                <strong>{{ log['content']['lead_name'] }}</strong> from
+                                <strong>{{ log['content']['old_state'] }}</strong> to
+                                <strong>{{ log['content']['new_state'] }}</strong>.</p>
+                            <p><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
+                            <p><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
+                            <p><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                        {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_TASK' %}
+                            <p><strong>New Activity Task</strong></p>
+                            <p>The user ser <strong>{{ log['content']['user_name'] }}</strong> added new task
+                                <strong>{{ log['content']['name'] }}</strong> activity.</p>
+                            <p><strong>Name:</strong> {{ log['content']['name'] }}</p>
+                            <p><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
+                            <p><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
+
+                            <p>
+                                <strong>{{ log['activity_type'] }}:</strong> {{ log['content']['owner'] }}
+                            </p>
+                        {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_TASK_UPDATED' %}
+                            <p><strong>Modified Activity Task Status</strong></p>
+                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> changed status in
+                                <strong>{{ log['content']['name'] }}</strong> from
+                                <strong>{{ log['content']['old_status'] }}</strong> to
+                                <strong>{{ log['content']['new_status'] }}</strong>.</p>
+                            <p><strong>Name:</strong> {{ log['content']['name'] }}</p>
+                            <p><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
+                            <p><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
+
+                            <p>
+                                <strong>{{ log['activity_type'] }}:</strong> {{ log['content']['owner'] }}
+                            </p>
+                        {% endif %}
+                        </p>
                     </td>
                 </tr>
                 </tbody>
             </table>
-        {% endif %}
-    {% endblock %}
+        {% endfor %}
+    {% else %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            <tr>
+                <td>
+                    <p style="text-align: center;">No user activity logged!</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

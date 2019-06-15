@@ -117,39 +117,23 @@ class NotifyCommand extends Command
                 $ownerEmails[] = $changeLog->getOwner()->getEmail();
             }
 
+            $activityType = '';
+
             switch ($changeLog->getType()) {
                 case ChangeLogType::TYPE_NEW_LEAD:
-                    $content = '<b>' . ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD] . '.</b><br> User <b>' . $changeLog->getContent()['user_name'] .
-                        '</b> added new lead <b>&quot;' . $changeLog->getContent()['lead_name'] . '&quot;</b>.<br>' .
-                        'Name : <b>' . $changeLog->getContent()['lead_name'] . '</b><br>' .
-                        'Owner : <b>' . $changeLog->getContent()['owner'] . '</b><br>' .
-                        'Primary Facility : <b>' . $changeLog->getContent()['primary_facility'] . '</b>';
-
                     $title = $changeLog->getContent()['lead_name'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD];
                     $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
 
                     break;
                 case ChangeLogType::TYPE_LEAD_UPDATED:
-                    $content = '<b>Lead State Changed.</b><br> User <b>' . $changeLog->getContent()['user_name'] .
-                        '</b> modified state in  <b>&quot;' . $changeLog->getContent()['lead_name'] . '&quot;</b> from <b>' .
-                        $changeLog->getContent()['old_state'] . '</b> to <b>' . $changeLog->getContent()['new_state'] . '</b>.<br>' .
-                        'Name : <b>' . $changeLog->getContent()['lead_name'] . '</b><br>' .
-                        'Owner : <b>' . $changeLog->getContent()['owner'] . '</b><br>' .
-                        'Primary Facility : <b>' . $changeLog->getContent()['primary_facility'] . '</b>';
-
                     $title = $changeLog->getContent()['lead_name'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED];
                     $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
 
                     break;
                 case ChangeLogType::TYPE_NEW_TASK:
-                    $content = '<b>New Activity Task.</b><br> User <b>' . $changeLog->getContent()['user_name'] .
-                        '</b> added new task <b>&quot;' . $changeLog->getContent()['name'] . '&quot;</b> activity.<br>' .
-                        'Name : <b>' . $changeLog->getContent()['name'] . '</b><br>' .
-                        'Owner : <b>' . $changeLog->getContent()['assign_to'] . '</b><br>' .
-                        'Due Date : <b>' . $changeLog->getContent()['due_date'] .  '</b><br>' .
-                        ActivityOwnerType::getTypes()[$changeLog->getContent()['type']] . ' : <b>' . $changeLog->getContent()['owner'] . '</b>';
+                    $activityType = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']];
 
                     $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']].': '.$changeLog->getContent()['owner'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_TASK];
@@ -157,13 +141,7 @@ class NotifyCommand extends Command
 
                     break;
                 case ChangeLogType::TYPE_TASK_UPDATED:
-                    $content = '<b>Modified Activity Task Status.</b><br> User <b>' . $changeLog->getContent()['user_name'] .
-                        '</b> changed status in <b>&quot;' . $changeLog->getContent()['name'] . '&quot;</b> from <b>' .
-                        $changeLog->getContent()['old_status'] . '</b> to <b>' . $changeLog->getContent()['new_status'] . '</b>.<br>' .
-                        'Name : <b>' . $changeLog->getContent()['name'] . '</b><br>' .
-                        'Owner : <b>' . $changeLog->getContent()['assign_to'] . '</b><br>' .
-                        'Due Date : <b>' . $changeLog->getContent()['due_date'] .  '</b><br>' .
-                        ActivityOwnerType::getTypes()[$changeLog->getContent()['type']] . ' : <b>' . $changeLog->getContent()['owner'] . '</b>';
+                    $activityType = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']];
 
                     $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']].': '.$changeLog->getContent()['owner'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_TASK_UPDATED];
@@ -175,7 +153,9 @@ class NotifyCommand extends Command
             }
 
             $logs[] = [
-                'content' => $content,
+                'type' => $changeLog->getType(),
+                'content' => $changeLog->getContent(),
+                'activity_type' => $activityType,
                 'title' => strip_tags($title),
                 'action' => $action,
                 'date' => $date,
