@@ -4,65 +4,59 @@
 {% endblock %}
 {% block content %}
     {% if logs|length > 0 %}
-        {% for log in logs %}
-            <table style="border-collapse:collapse;border-spacing:0" width="100%">
-                <tbody>
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            {% for log in logs %}
                 <tr>
                     <td>
-                        <p><span style="font-size: large;">{{ log['action'] }} | {{ log['title']|raw }}</span></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="margin-left: 25px;font-size: small;"><strong>Date:</strong> {{ log['date'] }}</p>
-                        <p style="margin-left: 25px;font-size: small;">
+                        <p style="margin-top: 15px;font-size: large;">{{ log['action'] }} | {{ log['title']|raw }}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Date:</strong> {{ log['date'] }}</p>
                         {% if log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_LEAD') %}
-                            <p><strong>New Lead</strong></p>
-                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> added new lead
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>New Lead</strong></p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user <strong>{{ log['content']['user_name'] }}</strong> added new lead
                                 <strong>{{ log['content']['lead_name'] }}</strong>.</p>
-                            <p><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
-                            <p><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
-                            <p><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
                         {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_LEAD_UPDATED') %}
-                            <p><strong>Lead State Changed.</strong></p>
-                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> modified state in
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Lead State Changed.</strong></p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user <strong>{{ log['content']['user_name'] }}</strong> modified state in
                                 <strong>{{ log['content']['lead_name'] }}</strong> from
                                 <strong>{{ log['content']['old_state'] }}</strong> to
                                 <strong>{{ log['content']['new_state'] }}</strong>.</p>
-                            <p><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
-                            <p><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
-                            <p><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> {{ log['content']['lead_name'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
                         {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_TASK') %}
-                            <p><strong>New Activity Task</strong></p>
-                            <p>The user ser <strong>{{ log['content']['user_name'] }}</strong> added new task
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>New Activity Task</strong></p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user ser <strong>{{ log['content']['user_name'] }}</strong> added new task
                                 <strong>{{ log['content']['name'] }}</strong> activity.</p>
-                            <p><strong>Name:</strong> {{ log['content']['name'] }}</p>
-                            <p><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
-                            <p><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> {{ log['content']['name'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
 
-                            <p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                                 <strong>{{ log['activity_type'] }}:</strong> {{ log['content']['owner'] }}
                             </p>
                         {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_TASK_UPDATED') %}
-                            <p><strong>Modified Activity Task Status</strong></p>
-                            <p>The user <strong>{{ log['content']['user_name'] }}</strong> changed status in
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Modified Activity Task Status</strong></p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user <strong>{{ log['content']['user_name'] }}</strong> changed status in
                                 <strong>{{ log['content']['name'] }}</strong> from
                                 <strong>{{ log['content']['old_status'] }}</strong> to
                                 <strong>{{ log['content']['new_status'] }}</strong>.</p>
-                            <p><strong>Name:</strong> {{ log['content']['name'] }}</p>
-                            <p><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
-                            <p><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> {{ log['content']['name'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Owner:</strong> {{ log['content']['assign_to'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Due Date:</strong> {{ log['content']['due_date'] }}</p>
 
-                            <p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                                 <strong>{{ log['activity_type'] }}:</strong> {{ log['content']['owner'] }}
                             </p>
                         {% endif %}
-                        </p>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-        {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <table style="border-collapse:collapse;border-spacing:0" width="100%">
             <tbody>
