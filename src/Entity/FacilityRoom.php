@@ -59,6 +59,11 @@ use App\Annotation\Grid;
  *              "id"         = "shorthand",
  *              "type"       = "string",
  *              "field"      = "f.shorthand"
+ *          },
+ *          {
+ *              "id"         = "bed_count",
+ *              "type"       = "number",
+ *              "field"      = "(SELECT COUNT(fb) FROM \App\Entity\FacilityBed fb WHERE fb.room=fr)"
  *          }
  *     }
  * )

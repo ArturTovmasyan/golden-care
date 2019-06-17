@@ -59,6 +59,11 @@ use App\Annotation\Grid;
  *              "id"         = "shorthand",
  *              "type"       = "string",
  *              "field"      = "a.shorthand"
+ *          },
+ *          {
+ *              "id"         = "bed_count",
+ *              "type"       = "number",
+ *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab WHERE ab.room=ar)"
  *          }
  *     }
  * )
