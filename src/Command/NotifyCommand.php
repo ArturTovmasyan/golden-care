@@ -129,6 +129,8 @@ class NotifyCommand extends Command
      */
     public function sendSixtyDaysReportNotifications(array $emails, $facilities, $apartments, $regions, $subjectText, $message): void
     {
+        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'],$message);
+
         $date = new \DateTime('now');
 
         if (!empty($facilities)) {
