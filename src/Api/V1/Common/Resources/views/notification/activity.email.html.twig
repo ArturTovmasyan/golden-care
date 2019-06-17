@@ -1,0 +1,72 @@
+{#{% extends '@notification/email.html.twig' %}#}
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.name }}{% endif %}{% endblock %}
+{% block subTitle %} |
+
+    {% if activity.getOwnerTypeName == 'lead' %}{{ activity.lead.firstName ~ ' ' ~ activity.lead.lastName }}{% endif %}
+    {% if activity.getOwnerTypeName == 'copo' %}{{ activity.copo.name }}{% endif %}
+    {% if activity.getOwnerTypeName == 'referrer' %}{{ activity.referrer.firstName ~ ' ' ~ activity.referrer.lastName }}{% endif %}
+{% endblock %}
+    {% block content %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">{{ ownerTitle }}:</td>
+                <td>
+                    {% if activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_LEAD') %}
+                        {{ activity.lead.firstName ~ ' ' ~ activity.lead.lastName }}
+                    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_REFERRAL') %}
+                        {% if activity.referral.firstName %}
+                            {{ activity.referral.firstName ~ ' ' ~ activity.referral.lastName }}
+                        {% else %}
+                            {{ activity.referral.organization.title }}
+                        {% endif %}
+                    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_ORGANIZATION') %}
+                        {{ activity.organization.title }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Status:</td>
+                <td>{{ activity.status.title }}</td>
+            </tr>
+            {% if activity.type.assignTo %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Assign To:</td>
+                    <td>
+                        {{ activity.assignTo.firstName ~ ' ' ~ activity.assignTo.lastName }}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if activity.type.dueDate %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Due Date:</td>
+                    <td>
+                        {{ activity.dueDate|date('m/d/Y') }}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if activity.type.reminderDate %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Reminder Date:</td>
+                    <td>
+                        {{ activity.reminderDate|date('m/d/Y') }}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if activity.type.facility %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Primary Facility:</td>
+                    <td>
+                        {% if activity.facility %}{{ activity.facility.name }}{% else %}N/A{% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Notes:</td>
+                <td>{{ activity.notes }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endblock %}

@@ -638,4 +638,55 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getActivitiesForCrontabNotification(Space $space = null, array $entityGrants = null)
+    {
+        $today = new \DateTime('now');
+        $todayStart = $today->format('Y-m-d 00:00:00');
+        $todayEnd = $today->format('Y-m-d 23:59:59');
+        $qb = $this->createQueryBuilder('a')
+            ->join('a.status', 'st')
+            ->where('(a.dueDate IS NOT NULL AND a.dueDate <= :todayEnd AND st.done=0 ) OR (a.reminderDate >= :todayStart AND a.reminderDate <= :todayEnd)')
+            ->setParameter('todayStart', $todayStart)
+            ->setParameter('todayEnd', $todayEnd);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ActivityType::class,
+                    'at',
+                    Join::WITH,
+                    'at = a.type'
+                )
+                ->innerJoin(
+                    ActivityStatus::class,
+                    'ds',
+                    Join::WITH,
+                    'ds = at.defaultStatus'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ds.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

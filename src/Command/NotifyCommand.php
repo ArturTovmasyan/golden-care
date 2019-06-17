@@ -5,12 +5,16 @@ namespace App\Command;
 use Ahc\Cron\Expression;
 use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
 use App\Entity\ChangeLog;
+use App\Entity\Lead\Activity;
 use App\Entity\Notification;
 use App\Entity\User;
+use App\Entity\UserPhone;
 use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
+use App\Model\Phone;
 use App\Repository\ChangeLogRepository;
+use App\Repository\Lead\ActivityRepository;
 use App\Repository\NotificationRepository;
 use App\Util\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -87,10 +91,14 @@ class NotifyCommand extends Command
                         //TODO
                         break;
                     case NotificationTypeCategoryType::TYPE_LEAD_ACTIVITY:
-                        //TODO
+                        if ($notification->getType()->isEmail() || $notification->getType()->isSms()) {
+                            $this->sendTodayLeadActivityNotifications($emails, $notification->getType()->isEmail(), $notification->getType()->isSms());
+                        }
                         break;
                     case NotificationTypeCategoryType::TYPE_LEAD_CHANGE_LOG:
-                        $this->sendTodayChangeLogNotifications($emails);
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendTodayLeadChangeLogNotifications($emails);
+                        }
                         break;
                 }
             }
@@ -101,8 +109,66 @@ class NotifyCommand extends Command
 
     /**
      * @param array $emails
+     * @param $isEmail
+     * @param $isSms
      */
-    public function sendTodayChangeLogNotifications(array $emails): void
+    public function sendTodayLeadActivityNotifications(array $emails, $isEmail, $isSms): void
+    {
+        /** @var ActivityRepository $activityRepo */
+        $activityRepo = $this->em->getRepository(Activity::class);
+        $activities = $activityRepo->getActivitiesForCrontabNotification();
+
+        /** @var Activity $activity */
+        foreach ($activities as $activity) {
+            // Sending notification per activity.
+            $allEmails = [];
+            $phones = [];
+
+            $subject = 'Activity Reminder ' . $activity->getTitle();
+
+            if ($activity->getAssignTo()) {
+                $assignToEmails[] = $activity->getAssignTo()->getEmail();
+                $allEmails = array_merge($emails, $assignToEmails);
+                $allEmails = array_unique($allEmails);
+
+                /** @var UserPhone $phone */
+                foreach ($activity->getAssignTo()->getPhones() as $phone) {
+                    if ($phone->getCompatibility() === Phone::US_COMPATIBLE && $phone->isSmsEnabled()) {
+                        $phones[] = $phone->getNumber();
+                    }
+                }
+            }
+
+            if ($activity->getType() !== null && $activity->getType()->isDueDate() && $activity->getDueDate() <= new \DateTime('now')) {
+                $subject = 'Past Due | Activity Reminder ' . $activity->getTitle();
+            }
+
+            if ($isEmail && !empty($allEmails)) {
+                $body = $this->container->get('templating')->render('@api_notification/activity.email.html.twig', array(
+                    'activity' => $activity,
+                    'ownerTitle' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
+                    'subject' => $subject
+                ));
+
+                $this->mailer->sendNotification($allEmails, $subject, $body);
+            }
+            //TODO
+//            if ($isSms && empty($phones)) {
+//                $body = $this->container->get('templating')->render('@api_notification/activity.email.html.twig', array(
+//                    'activity' => $activity,
+//                    'ownerTitle' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
+//                    'subject' => $subject
+//                ));
+//
+//                $this->mailer->sendNotification($allEmails, $subject, $body);
+//            }
+        }
+    }
+
+    /**
+     * @param array $emails
+     */
+    public function sendTodayLeadChangeLogNotifications(array $emails): void
     {
         /** @var ChangeLogRepository $logRepo */
         $logRepo = $this->em->getRepository(ChangeLog::class);
