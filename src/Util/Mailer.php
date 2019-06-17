@@ -298,4 +298,24 @@ class Mailer
 
         return $mailer->send($message);
     }
+
+    /**
+     * @param $emails
+     * @param $subject
+     * @param $body
+     * @param $path
+     * @return mixed
+     */
+    public function sendReportNotification($emails, $subject, $body, $path)
+    {
+        $mailer  = $this->container->get('mailer');
+        $message = (new \Swift_Message($subject))
+            ->setFrom(self::FROM)
+            ->setBcc($emails)
+            ->setBody($body, self::BODY)
+            ->attach(\Swift_Attachment::fromPath($path))
+        ;
+
+        return $mailer->send($message);
+    }
 }

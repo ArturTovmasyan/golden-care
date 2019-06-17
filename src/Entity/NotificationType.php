@@ -218,7 +218,7 @@ class NotificationType
      *          "api_admin_notification_type_edit"
      *      }
      * )
-     * @ORM\Column(name="email_message", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="email_message", type="text", length=1000, nullable=true)
      * @Groups({
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get"
@@ -254,7 +254,7 @@ class NotificationType
      *          "api_admin_notification_type_edit"
      *      }
      * )
-     * @ORM\Column(name="sms_message", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="sms_message", type="text", length=1000, nullable=true)
      * @Groups({
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get"

@@ -3,13 +3,18 @@
 namespace App\Command;
 
 use Ahc\Cron\Expression;
+use App\Api\V1\Admin\Service\Report\ResidentReportService;
 use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
+use App\Entity\Apartment;
 use App\Entity\ChangeLog;
+use App\Entity\Facility;
 use App\Entity\Lead\Activity;
 use App\Entity\Notification;
+use App\Entity\Region;
 use App\Entity\User;
 use App\Entity\UserPhone;
 use App\Model\ChangeLogType;
+use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
 use App\Model\Phone;
@@ -39,15 +44,20 @@ class NotifyCommand extends Command
     /** @var ContainerInterface */
     private $container;
 
+    /** @var ResidentReportService */
+    private $residentReportService;
+
     public function __construct (
         EntityManagerInterface $em,
         Mailer $mailer,
-        ContainerInterface $container
+        ContainerInterface $container,
+        ResidentReportService $residentReportService
     )
     {
         $this->em = $em;
         $this->mailer = $mailer;
         $this->container = $container;
+        $this->residentReportService = $residentReportService;
 
         parent::__construct();
     }
@@ -88,7 +98,9 @@ class NotifyCommand extends Command
 
                 switch ($notification->getType()->getCategory()) {
                     case NotificationTypeCategoryType::TYPE_SIXTY_DAYS_REPORT:
-                        //TODO
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendSixtyDaysReportNotifications($emails, $notification->getFacilities(), $notification->getApartments(), $notification->getRegions(), $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
+                        }
                         break;
                     case NotificationTypeCategoryType::TYPE_LEAD_ACTIVITY:
                         if ($notification->getType()->isEmail() || $notification->getType()->isSms()) {
@@ -105,6 +117,77 @@ class NotifyCommand extends Command
         }
 
         $this->release();
+    }
+
+    /**
+     * @param array $emails
+     * @param $facilities
+     * @param $apartments
+     * @param $regions
+     * @param $subjectText
+     * @param $message
+     */
+    public function sendSixtyDaysReportNotifications(array $emails, $facilities, $apartments, $regions, $subjectText, $message): void
+    {
+        $date = new \DateTime('now');
+
+        if (!empty($facilities)) {
+            /** @var Facility $facility */
+            foreach ($facilities as $facility) {
+                $groupId = $facility->getId();
+                $groupName = $facility->getName();
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_FACILITY, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null);
+
+                $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
+                    'data' => $data
+                ));
+
+                $path = '/tmp/60DaysRosterCsv-' . lcfirst(GroupType::getTypes()[GroupType::TYPE_FACILITY]) . '-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
+                file_put_contents($path, $report);
+
+                $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+            }
+        }
+        if (!empty($apartments)) {
+            /** @var Apartment $apartment */
+            foreach ($apartments as $apartment) {
+                $groupId = $apartment->getId();
+                $groupName = $apartment->getName();
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_APARTMENT, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null);
+
+                $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
+                    'data' => $data
+                ));
+
+                $path = '/tmp/60DaysRosterCsv-' . lcfirst(GroupType::getTypes()[GroupType::TYPE_APARTMENT]) . '-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
+                file_put_contents($path, $report);
+
+                $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+            }
+        }
+        if (!empty($regions)) {
+            /** @var Region $region */
+            foreach ($regions as $region) {
+                $groupId = $region->getId();
+                $groupName = $region->getName();
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_REGION, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null);
+
+                $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
+                    'data' => $data
+                ));
+
+                $path = '/tmp/60DaysRosterCsv-' . lcfirst(GroupType::getTypes()[GroupType::TYPE_REGION]) . '-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
+                file_put_contents($path, $report);
+
+                $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+            }
+        }
     }
 
     /**
