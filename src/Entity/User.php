@@ -480,6 +480,12 @@ class User implements UserInterface
     private $image;
 
     /**
+     * @var string
+     * @ORM\Column(name="topic", type="string", length=200, nullable=true)
+     */
+    private $topic;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="assignTo", cascade={"remove", "persist"})
      */
@@ -952,6 +958,22 @@ class User implements UserInterface
     public function setImage(?UserImage $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTopic(): ?string
+    {
+        return $this->topic;
+    }
+
+    /**
+     * @param null|string $topic
+     */
+    public function setTopic(?string $topic): void
+    {
+        $this->topic = $topic;
     }
 
     /**

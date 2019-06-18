@@ -4,6 +4,7 @@ namespace App\Command;
 
 use Ahc\Cron\Expression;
 use App\Api\V1\Admin\Service\Report\ResidentReportService;
+use App\Api\V1\Common\Service\AmazonSnsService;
 use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
 use App\Entity\Apartment;
 use App\Entity\ChangeLog;
@@ -12,12 +13,10 @@ use App\Entity\Lead\Activity;
 use App\Entity\Notification;
 use App\Entity\Region;
 use App\Entity\User;
-use App\Entity\UserPhone;
 use App\Model\ChangeLogType;
 use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
-use App\Model\Phone;
 use App\Repository\ChangeLogRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\NotificationRepository;
@@ -47,17 +46,22 @@ class NotifyCommand extends Command
     /** @var ResidentReportService */
     private $residentReportService;
 
+    /** @var AmazonSnsService */
+    private $amazonSnsService;
+
     public function __construct (
         EntityManagerInterface $em,
         Mailer $mailer,
         ContainerInterface $container,
-        ResidentReportService $residentReportService
+        ResidentReportService $residentReportService,
+        AmazonSnsService $amazonSnsService
     )
     {
         $this->em = $em;
         $this->mailer = $mailer;
         $this->container = $container;
         $this->residentReportService = $residentReportService;
+        $this->amazonSnsService = $amazonSnsService;
 
         parent::__construct();
     }
@@ -205,29 +209,42 @@ class NotifyCommand extends Command
 
         /** @var Activity $activity */
         foreach ($activities as $activity) {
-            // Sending notification per activity.
             $allEmails = [];
-            $phones = [];
 
             $subject = 'Activity Reminder ' . $activity->getTitle();
-
-            if ($activity->getAssignTo()) {
-                $assignToEmails[] = $activity->getAssignTo()->getEmail();
-                $allEmails = array_merge($emails, $assignToEmails);
-                $allEmails = array_unique($allEmails);
-
-                /** @var UserPhone $phone */
-                foreach ($activity->getAssignTo()->getPhones() as $phone) {
-                    if ($phone->getCompatibility() === Phone::US_COMPATIBLE && $phone->isSmsEnabled()) {
-                        $phones[] = $phone->getNumber();
-                    }
-                }
-            }
-
             if ($activity->getType() !== null && $activity->getType()->isDueDate() && $activity->getDueDate() <= new \DateTime('now')) {
                 $subject = 'Past Due | Activity Reminder ' . $activity->getTitle();
             }
 
+            if ($activity->getAssignTo()) {
+                //for email
+                $assignToEmails[] = $activity->getAssignTo()->getEmail();
+                $allEmails = array_merge($emails, $assignToEmails);
+                $allEmails = array_unique($allEmails);
+
+                //for sms
+                if ($isSms && $activity->getLead() !== null) {
+                    $message = 'Activity: ' . $activity->getType()->getTitle() . ', ';
+                    if ($activity->getType()->isDueDate()) {
+                        $dueDate = $activity->getDueDate() ? $activity->getDueDate()->format('m/d/Y') : '';
+                        $message .= 'Date: ' . $dueDate . ', ';
+                    }
+                    $message .= 'Lead: ' . $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() . ', ';
+                    $message .= 'Person: ' . $activity->getLead()->getResponsiblePersonFirstName() . ' ' . $activity->getLead()->getResponsiblePersonLastName() . ', ';
+                    if ($activity->getLead()->getResponsiblePersonPhone()) {
+                        $message .= 'Contact: ' . $activity->getLead()->getResponsiblePersonPhone() . ', ';
+                    }
+                    if ($activity->getStatus()) {
+                        $message .= 'Status: ' . $activity->getStatus()->getTitle() . ', ';
+                    }
+                    $message .= 'Notes: ' . $activity->getNotes();
+
+                    // Aws allows only 140 chars length text message.
+                    $this->amazonSnsService->sendMessageToUser($activity->getAssignTo(), $message);
+                }
+            }
+
+            // Sending email notification per activity
             if ($isEmail && !empty($allEmails)) {
                 $body = $this->container->get('templating')->render('@api_notification/activity.email.html.twig', array(
                     'activity' => $activity,
@@ -237,16 +254,6 @@ class NotifyCommand extends Command
 
                 $this->mailer->sendNotification($allEmails, $subject, $body);
             }
-            //TODO
-//            if ($isSms && empty($phones)) {
-//                $body = $this->container->get('templating')->render('@api_notification/activity.email.html.twig', array(
-//                    'activity' => $activity,
-//                    'ownerTitle' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
-//                    'subject' => $subject
-//                ));
-//
-//                $this->mailer->sendNotification($allEmails, $subject, $body);
-//            }
         }
     }
 

@@ -8,6 +8,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "adhocore/cron-expr": "^0.0.6",
+        "aws/aws-sdk-php": "3.100.4",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
         "gedmo/doctrine-extensions": "^2.4",
         "jms/serializer-bundle": "^2.4",
