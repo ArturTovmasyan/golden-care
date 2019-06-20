@@ -106,10 +106,6 @@ persistence:
           title: 'ChangeLog'
           class: App\Entity\ChangeLog
           route: api_admin_change_log_list
-#        report:
-#          title: 'ReportNotification'
-#          class: App\Entity\ReportNotification
-#          route: api_admin_report_notification_list
 
         relationship:
           title: 'Relationship'
