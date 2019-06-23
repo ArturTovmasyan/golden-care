@@ -632,10 +632,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param ResidentAdmission $entity
      * @param array $params
      * @param int $admissionType
-     * @param ResidentAdmission $lastAction
+     * @param ResidentAdmission|null $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
+    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -698,10 +698,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param ResidentAdmission $entity
      * @param array $params
      * @param int $admissionType
-     * @param ResidentAdmission $lastAction
+     * @param ResidentAdmission|null $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
+    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -730,10 +730,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param ResidentAdmission $entity
      * @param array $params
      * @param int $admissionType
-     * @param ResidentAdmission $lastAction
+     * @param ResidentAdmission|null $lastAction
      * @return ResidentAdmission
      */
-    private function saveAsRegion(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction)
+    private function saveAsRegion(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
