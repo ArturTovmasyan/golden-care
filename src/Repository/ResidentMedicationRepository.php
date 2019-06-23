@@ -305,7 +305,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
      * @param array $residentIds
      * @return mixed
      */
-    public function getNoTreatmentByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    public function getNoDiscontinuedByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
     {
         $qb = $this->createQueryBuilder('rm');
 
@@ -347,7 +347,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
                 'rm.resident = r'
             )
             ->where('r.id IN (:residentIds)')
-            ->andWhere('rm.treatment = 0')
+            ->andWhere('rm.discontinued = 0')
             ->setParameter('residentIds', $residentIds);
 
         if ($space !== null) {
@@ -369,7 +369,8 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
         }
 
         return $qb
-            ->orderBy('rm.am', 'DESC')
+            ->orderBy('rm.treatment', 'ASC')
+            ->addOrderBy('rm.am', 'DESC')
             ->addOrderBy('rm.nn', 'DESC')
             ->addOrderBy('rm.pm', 'DESC')
             ->addOrderBy('rm.hs', 'DESC')
