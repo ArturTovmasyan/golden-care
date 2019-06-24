@@ -36,8 +36,9 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      * @param array|null $ids
+     * @param array|null $notGrantResidentIds
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null, array $notGrantResidentIds = null) : void
     {
         $queryBuilder
             ->from(Resident::class, 'r')
@@ -72,6 +73,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('ids', $ids);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $queryBuilder
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         $queryBuilder
             ->groupBy('r.id');
     }
@@ -79,9 +86,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->createQueryBuilder('r')
@@ -108,6 +116,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         $qb

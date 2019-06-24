@@ -233,6 +233,38 @@ class ApartmentRepository extends EntityRepository implements RelatedInfoInterfa
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getNotEntityGrants(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id NOT IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

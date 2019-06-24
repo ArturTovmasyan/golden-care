@@ -9,12 +9,19 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
+use App\Entity\Apartment;
+use App\Entity\Facility;
+use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\GroupType;
+use App\Repository\ApartmentRepository;
+use App\Repository\FacilityRepository;
+use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
@@ -66,7 +73,7 @@ class ResidentService extends BaseService implements IGridService
             }
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids, $this->getNotGrantResidentIds());
     }
 
     /**
@@ -78,7 +85,80 @@ class ResidentService extends BaseService implements IGridService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class));
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $this->getNotGrantResidentIds());
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getNotGrantResidentIds(): ?array
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+        $facilityNotGrantResidents = [];
+        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+        if ($facilityEntityGrants !== null) {
+            /** @var FacilityRepository $facilityRepo */
+            $facilityRepo = $this->em->getRepository(Facility::class);
+
+            $facilities = $facilityRepo->getNotEntityGrants($currentSpace, $facilityEntityGrants);
+            if (!empty($facilities)) {
+                $tmpResidents = [];
+                /** @var Facility $facility */
+                foreach ($facilities as $facility) {
+                    $tmpResidents[] = array_column($admissionRepo->getActiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $facility->getId()), 'id');
+                    $tmpResidents[] = array_column($admissionRepo->getInactiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $facility->getId()), 'id');
+                }
+
+                $facilityNotGrantResidents = array_reduce($tmpResidents, 'array_merge', []);
+            }
+        }
+
+        $apartmentNotGrantResidents = [];
+        $apartmentEntityGrants = $this->grantService->getCurrentUserEntityGrants(Apartment::class);
+        if ($apartmentEntityGrants !== null) {
+            /** @var ApartmentRepository $apartmentRepo */
+            $apartmentRepo = $this->em->getRepository(Apartment::class);
+
+            $apartments = $apartmentRepo->getNotEntityGrants($currentSpace, $apartmentEntityGrants);
+            if (!empty($apartments)) {
+                $tmpResidents = [];
+                /** @var Apartment $apartment */
+                foreach ($apartments as $apartment) {
+                    $tmpResidents[] = array_column($admissionRepo->getActiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $apartment->getId()), 'id');
+                    $tmpResidents[] = array_column($admissionRepo->getInactiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $apartment->getId()), 'id');
+                }
+
+                $apartmentNotGrantResidents = array_reduce($tmpResidents, 'array_merge', []);
+            }
+        }
+
+        $regionNotGrantResidents = [];
+        $regionEntityGrants = $this->grantService->getCurrentUserEntityGrants(Region::class);
+        if ($regionEntityGrants !== null) {
+            /** @var RegionRepository $regionRepo */
+            $regionRepo = $this->em->getRepository(Region::class);
+
+            $regions = $regionRepo->getNotEntityGrants($currentSpace, $regionEntityGrants);
+            if (!empty($regions)) {
+                $tmpResidents = [];
+                /** @var Region $region */
+                foreach ($regions as $region) {
+                    $tmpResidents[] = array_column($admissionRepo->getActiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_REGION, $region->getId()), 'id');
+                    $tmpResidents[] = array_column($admissionRepo->getInactiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_REGION, $region->getId()), 'id');
+                }
+
+                $regionNotGrantResidents = array_reduce($tmpResidents, 'array_merge', []);
+            }
+        }
+
+        $notGrantResidents = array_merge($facilityNotGrantResidents, $apartmentNotGrantResidents, $regionNotGrantResidents);
+        $notGrantResidents = array_unique($notGrantResidents);
+
+        return !empty($notGrantResidents) ? $notGrantResidents : null;
     }
 
     /**
