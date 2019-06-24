@@ -115,7 +115,7 @@ form:
           select_all: true
     medication-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
-      title: 'Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
+      title: 'MAR - Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
       show_in_list: true
       formats: ['pdf']
       template: 'medication-chart'
