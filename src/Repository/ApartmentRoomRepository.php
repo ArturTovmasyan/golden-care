@@ -19,9 +19,10 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(ApartmentRoom::class, 'ar')
@@ -50,6 +51,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($apartmentEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
         $queryBuilder
             ->groupBy('ar.id');
     }
@@ -57,9 +64,10 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null)
     {
         $qb = $this->createQueryBuilder('ar');
 
@@ -87,6 +95,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($apartmentEntityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
         $qb
             ->addOrderBy('ar.number', 'ASC');
 
@@ -98,10 +112,11 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('ar')
@@ -132,6 +147,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($apartmentEntityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -140,10 +161,11 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, array $entityGrants = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('ar')
@@ -174,6 +196,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($apartmentEntityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -182,10 +210,11 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, $ids)
     {
         $qb = $this
             ->createQueryBuilder('ar')
@@ -214,6 +243,12 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
             $qb
                 ->andWhere('ar.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($apartmentEntityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
         }
 
         return $qb->groupBy('ar.id')

@@ -761,11 +761,11 @@ class RoomReportService extends BaseService
             $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
 
             if ($typeId) {
-                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $typeId);
+                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
             }
 
             if ($all) {
-                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class));
+                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
             }
 
             $occupancyBedIds = [];
@@ -801,11 +801,11 @@ class RoomReportService extends BaseService
             $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
 
             if ($typeId) {
-                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $typeId);
+                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $typeId);
             }
 
             if ($all) {
-                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class));
+                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
             }
 
             $occupancyBedIds = [];
@@ -883,12 +883,12 @@ class RoomReportService extends BaseService
             $facilityRepo = $this->em->getRepository(Facility::class);
 
             if ($typeId) {
-                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $typeId);
+                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
                 $types = $facilityRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
             }
 
             if ($all) {
-                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class));
+                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
                 $types = $facilityRepo->orderedFindAll($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
             }
 
@@ -941,12 +941,12 @@ class RoomReportService extends BaseService
             $apartmentRepo = $this->em->getRepository(Apartment::class);
 
             if ($typeId) {
-                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $typeId);
+                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $typeId);
                 $types = $apartmentRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(Apartment::class), $typeId);
             }
 
             if ($all) {
-                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class));
+                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
                 $types = $apartmentRepo->orderedFindAll($currentSpace, $this->grantService->getCurrentUserEntityGrants(Apartment::class));
             }
 

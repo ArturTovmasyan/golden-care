@@ -33,7 +33,7 @@ class FacilityRoomService extends BaseService implements IGridService
         /** @var FacilityRoomRepository $repo */
         $repo = $this->em->getRepository(FacilityRoom::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
     }
 
     /**
@@ -55,9 +55,9 @@ class FacilityRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $facilityId);
+            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
         } else {
-            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class));
+            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
         }
 
         if (!empty($rooms)) {
@@ -138,7 +138,7 @@ class FacilityRoomService extends BaseService implements IGridService
         /** @var FacilityRoomRepository $repo */
         $repo = $this->em->getRepository(FacilityRoom::class);
 
-        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
+        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
         if ($room !== null) {
             /** @var ArrayCollection $beds */
@@ -245,7 +245,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(FacilityRoom::class);
 
             /** @var FacilityRoom $entity */
-            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -343,7 +343,7 @@ class FacilityRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(FacilityRoom::class);
 
             /** @var FacilityRoom $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new FacilityRoomNotFoundException();
@@ -375,7 +375,7 @@ class FacilityRoomService extends BaseService implements IGridService
             /** @var FacilityRoomRepository $repo */
             $repo = $this->em->getRepository(FacilityRoom::class);
 
-            $facilityRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $ids);
+            $facilityRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
             if (empty($facilityRooms)) {
                 throw new FacilityRoomNotFoundException();

@@ -654,7 +654,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $diningRoomRepo = $this->em->getRepository(DiningRoom::class);
 
             /** @var DiningRoom $diningRoom */
-            $diningRoom = $diningRoomRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $params['dining_room_id']);
+            $diningRoom = $diningRoomRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['dining_room_id']);
 
             /** @var FacilityBedRepository $facilityBedRepo */
             $facilityBedRepo = $this->em->getRepository(FacilityBed::class);

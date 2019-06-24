@@ -19,9 +19,10 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(DiningRoom::class, 'dr')
@@ -50,6 +51,12 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         $queryBuilder
             ->groupBy('dr.id');
     }
@@ -57,9 +64,10 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null)
     {
         $qb = $this->createQueryBuilder('dr');
 
@@ -87,6 +95,12 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         $qb
             ->addOrderBy('dr.title', 'ASC');
 
@@ -98,10 +112,11 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('dr')
@@ -132,6 +147,12 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
@@ -140,10 +161,11 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param $id
      * @return mixed
      */
-    public function getOne(Space $space = null, array $entityGrants = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id)
     {
         $qb = $this
             ->createQueryBuilder('dr')
@@ -174,6 +196,12 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         return $qb
             ->getQuery()
             ->getOneOrNullResult();
@@ -182,10 +210,11 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $ids)
     {
         $qb = $this
             ->createQueryBuilder('dr')
@@ -208,6 +237,12 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
         if ($entityGrants !== null) {

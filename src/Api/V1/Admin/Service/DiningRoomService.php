@@ -26,7 +26,7 @@ class DiningRoomService extends BaseService implements IGridService
         /** @var DiningRoomRepository $repo */
         $repo = $this->em->getRepository(DiningRoom::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
     }
 
     /**
@@ -37,6 +37,7 @@ class DiningRoomService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
         $entityGrants = $this->grantService->getCurrentUserEntityGrants(DiningRoom::class);
+        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
 
         /** @var DiningRoomRepository $repo */
         $repo = $this->em->getRepository(DiningRoom::class);
@@ -44,10 +45,10 @@ class DiningRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            return $repo->getBy($currentSpace, $entityGrants, $facilityId);
+            return $repo->getBy($currentSpace, $entityGrants, $facilityEntityGrants, $facilityId);
         }
 
-        return $repo->list($currentSpace, $entityGrants);
+        return $repo->list($currentSpace, $entityGrants, $facilityEntityGrants);
     }
 
     /**
@@ -59,7 +60,7 @@ class DiningRoomService extends BaseService implements IGridService
         /** @var DiningRoomRepository $repo */
         $repo = $this->em->getRepository(DiningRoom::class);
 
-        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
+        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
     }
 
     /**
@@ -122,7 +123,7 @@ class DiningRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(DiningRoom::class);
 
             /** @var DiningRoom $entity */
-            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -168,7 +169,7 @@ class DiningRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(DiningRoom::class);
 
             /** @var DiningRoom $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
 
             if ($entity === null) {
                 throw new DiningRoomNotFoundException();
@@ -200,7 +201,7 @@ class DiningRoomService extends BaseService implements IGridService
             /** @var DiningRoomRepository $repo */
             $repo = $this->em->getRepository(DiningRoom::class);
 
-            $diningRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $ids);
+            $diningRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
             if (empty($diningRooms)) {
                 throw new DiningRoomNotFoundException();

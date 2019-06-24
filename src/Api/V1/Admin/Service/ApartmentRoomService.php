@@ -33,7 +33,7 @@ class ApartmentRoomService extends BaseService implements IGridService
         /** @var ApartmentRoomRepository $repo */
         $repo = $this->em->getRepository(ApartmentRoom::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $queryBuilder);
     }
 
     public function list($params)
@@ -51,9 +51,9 @@ class ApartmentRoomService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['apartment_id'])) {
             $apartmentId = $params[0]['apartment_id'];
 
-            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $apartmentId);
+            $rooms = $repo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $apartmentId);
         } else {
-            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class));
+            $rooms = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
         }
 
         if (!empty($rooms)) {
@@ -133,7 +133,7 @@ class ApartmentRoomService extends BaseService implements IGridService
         /** @var ApartmentRoomRepository $repo */
         $repo = $this->em->getRepository(ApartmentRoom::class);
 
-        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
+        $room = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $id);
 
         if ($room !== null) {
             /** @var ArrayCollection $beds */
@@ -240,7 +240,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(ApartmentRoom::class);
 
             /** @var ApartmentRoom $entity */
-            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $id);
 
             if ($entity === null) {
                 throw new ApartmentRoomNotFoundException();
@@ -338,7 +338,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             $repo = $this->em->getRepository(ApartmentRoom::class);
 
             /** @var ApartmentRoom $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $id);
+            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $id);
 
             if ($entity === null) {
                 throw new ApartmentRoomNotFoundException();
@@ -370,7 +370,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             /** @var ApartmentRoomRepository $repo */
             $repo = $this->em->getRepository(ApartmentRoom::class);
 
-            $apartmentRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $ids);
+            $apartmentRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $ids);
 
             if (empty($apartmentRooms)) {
                 throw new ApartmentRoomNotFoundException();
