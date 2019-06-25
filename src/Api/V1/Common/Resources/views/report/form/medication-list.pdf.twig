@@ -27,38 +27,80 @@
                             <div style="clear: both"></div>
                         </th>
                     </tr>
-                    <tr>
-                        <td><b>Medication</b></td>
-                        <td><b>Dosage</b></td>
-                        <td><b>Instructions</b></td>
-                        <td><b>AM</b></td>
-                        <td><b>NN</b></td>
-                        <td><b>PM</b></td>
-                        <td><b>HS</b></td>
-                        <td><b>PRN</b></td>
-                        <td><b>TR</b></td>
-                        <td><b>Prescription #</b></td>
-                        <td><b>Prescribing Physician</b></td>
-                    </tr>
                 </thead>
                 <tbody>
-                    {% for medication in resident.medications %}
-
+                    {% if resident.medications.active is defined %}
                         <tr>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>
-                            <td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>
-                            <td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>
-                            <td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>
+                            <th colspan="11">
+                                <b style="float: left; font-size: 20px !important; text-align: left; margin-bottom: 5px;">Active Medications</b>
+                            </th>
                         </tr>
-
-                    {% endfor %}
+                        <tr>
+                            <td><b>Medication</b></td>
+                            <td><b>Dosage</b></td>
+                            <td><b>Instructions</b></td>
+                            <td><b>AM</b></td>
+                            <td><b>NN</b></td>
+                            <td><b>PM</b></td>
+                            <td><b>HS</b></td>
+                            <td><b>PRN</b></td>
+                            <td><b>TR</b></td>
+                            <td><b>Prescription #</b></td>
+                            <td><b>Prescribing Physician</b></td>
+                        </tr>
+                        {% for medication in resident.medications.active %}
+                            <tr>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>
+                                <td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="divider"></tr>
+                        <tr class="divider"></tr>
+                    {% endif %}
+                    {% if resident.medications.discontinued is defined %}
+                        <tr>
+                            <th colspan="11">
+                                <b style="float: left; font-size: 20px !important; text-align: left; margin-bottom: 5px;">Discontinued Medications</b>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td><b>Medication</b></td>
+                            <td><b>Dosage</b></td>
+                            <td><b>Instructions</b></td>
+                            <td><b>AM</b></td>
+                            <td><b>NN</b></td>
+                            <td><b>PM</b></td>
+                            <td><b>HS</b></td>
+                            <td><b>PRN</b></td>
+                            <td><b>TR</b></td>
+                            <td><b>Prescription #</b></td>
+                            <td><b>Prescribing Physician</b></td>
+                        </tr>
+                        {% for medication in resident.medications.discontinued %}
+                            <tr>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>
+                                <td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>
+                                <td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>
+                                <td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
 
@@ -68,3 +110,93 @@
 {% endblock %}
 {% block pageFooter %}
 {% endblock %}
+
+
+                {#{% if resident.medications.active is defined %}#}
+                    {#<table class="report-table main-table bordered">#}
+                        {#<tr class="divider"></tr>#}
+                        {#<thead>#}
+                        {#<tr>#}
+                            {#<th colspan="11">#}
+                                {#<b style="float: left; font-size: 20px !important; text-align: left; margin-bottom: 5px;">Active Medications</b>#}
+                            {#</th>#}
+                        {#</tr>#}
+                        {#<tr>#}
+                            {#<td><b>Medication</b></td>#}
+                            {#<td><b>Dosage</b></td>#}
+                            {#<td><b>Instructions</b></td>#}
+                            {#<td><b>AM</b></td>#}
+                            {#<td><b>NN</b></td>#}
+                            {#<td><b>PM</b></td>#}
+                            {#<td><b>HS</b></td>#}
+                            {#<td><b>PRN</b></td>#}
+                            {#<td><b>TR</b></td>#}
+                            {#<td><b>Prescription #</b></td>#}
+                            {#<td><b>Prescribing Physician</b></td>#}
+                        {#</tr>#}
+                        {#</thead>#}
+                        {#<tbody>#}
+                        {#{% for medication in resident.medications.active %}#}
+
+                            {#<tr>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>#}
+                                {#<td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>#}
+                            {#</tr>#}
+
+                        {#{% endfor %}#}
+                        {#</tbody>#}
+                    {#</table>#}
+                {#{% endif %}#}
+                {#{% if resident.medications.discontinued is defined %}#}
+                    {#<table class="report-table main-table bordered">#}
+                        {#<tr class="divider"></tr>#}
+                        {#<thead>#}
+                        {#<tr>#}
+                            {#<th colspan="11">#}
+                                {#<b style="font-size: 18px !important; text-align: left; margin-bottom: 5px;">Discontinued Medications</b>#}
+                            {#</th>#}
+                        {#</tr>#}
+                        {#<tr>#}
+                            {#<td><b>Medication</b></td>#}
+                            {#<td><b>Dosage</b></td>#}
+                            {#<td><b>Instructions</b></td>#}
+                            {#<td><b>AM</b></td>#}
+                            {#<td><b>NN</b></td>#}
+                            {#<td><b>PM</b></td>#}
+                            {#<td><b>HS</b></td>#}
+                            {#<td><b>PRN</b></td>#}
+                            {#<td><b>TR</b></td>#}
+                            {#<td><b>Prescription #</b></td>#}
+                            {#<td><b>Prescribing Physician</b></td>#}
+                        {#</tr>#}
+                        {#</thead>#}
+                        {#<tbody>#}
+                        {#{% for medication in resident.medications.discontinued %}#}
+
+                            {#<tr>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medication }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.dosage %}{{ medication.dosage }} ({{ medication.dosageUnit }}){% endif %}</td>#}
+                                {#<td style="width: 250px; height: 50px; vertical-align: middle;">{{ medication.notes }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationAm }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationNn }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationPm }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.medicationHs }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.prescriptionNumber }}</td>#}
+                                {#<td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>#}
+                            {#</tr>#}
+
+                        {#{% endfor %}#}
+                        {#</tbody>#}
+                    {#</table>#}
+                {#{% endif %}#}

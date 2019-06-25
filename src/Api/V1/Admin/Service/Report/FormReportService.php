@@ -313,7 +313,7 @@ class FormReportService extends BaseService
         /** @var ResidentMedicationRepository $medicationRepo */
         $medicationRepo = $this->em->getRepository(ResidentMedication::class);
 
-        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+        $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
         $report = new MedicationList();
         $report->setResidents($residentsById);

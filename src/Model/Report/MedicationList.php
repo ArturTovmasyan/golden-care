@@ -41,7 +41,11 @@ class MedicationList extends Base
     public function setMedications($medications): void
     {
         foreach ($medications as $medication) {
-            $this->residents[$medication['residentId']]['medications'][] = $medication;
+            if ($medication['medicationDiscont']) {
+                $this->residents[$medication['residentId']]['medications']['discontinued'][] = $medication;
+            } else {
+                $this->residents[$medication['residentId']]['medications']['active'][] = $medication;
+            }
         }
     }
 }
