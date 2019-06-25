@@ -15,6 +15,11 @@ class ResidentSimpleRoster extends Base
     private $typeIds = [];
 
     /**
+     * @var array
+     */
+    private $numberOfFloors = [];
+
+    /**
      * @var int
      */
     private $strategyId;
@@ -49,6 +54,22 @@ class ResidentSimpleRoster extends Base
     public function setTypeIds($typeIds): void
     {
         $this->typeIds = $typeIds;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfFloors()
+    {
+        return $this->numberOfFloors;
+    }
+
+    /**
+     * @param $numberOfFloors
+     */
+    public function setNumberOfFloors($numberOfFloors): void
+    {
+        $this->numberOfFloors = $numberOfFloors;
     }
 
     /**

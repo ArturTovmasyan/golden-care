@@ -321,7 +321,8 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.license as license,
                         fr.number as roomNumber,
                         fr.floor as floor,
-                        fb.number as bedNumber'
+                        fb.number as bedNumber,
+                        f.numberOfFloors as numberOfFloors'
                     )
                     ->innerJoin(
                         FacilityBed::class,

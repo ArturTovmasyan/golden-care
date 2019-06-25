@@ -323,15 +323,21 @@ class ResidentReportService extends BaseService
 
         $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
         $typeIds = [];
+        $numberOfFloors = [];
 
         if (!empty($residents)) {
             $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
             $typeIds = array_unique($typeIds);
+
+            if ($type === GroupType::TYPE_FACILITY) {
+                $numberOfFloors = array_column($residents, 'numberOfFloors', 'typeId');
+            }
         }
 
         $report = new ResidentSimpleRoster();
         $report->setResidents($residents);
         $report->setTypeIds($typeIds);
+        $report->setNumberOfFloors($numberOfFloors);
         $report->setStrategyId($type);
 
         return $report;

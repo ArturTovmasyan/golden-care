@@ -25,9 +25,9 @@
                 <div style="margin-bottom: 5px;">
                     <div style="float: left">
                         <div style="height: 5px;"></div>
-                        <b style="font-size: 18px !important">ROSTER&nbsp;SIMPLE</b>
+                        <b style="font-size: 20px !important">ROSTER&nbsp;SIMPLE</b>
                         <p style="margin-bottom: 5px;"></p>
-                        <b style="font-size: 14px !important">
+                        <b style="font-size: 16px !important">
                             {% set k = 0 %}
                             {% for resident in data.residents %}
                                 {% if renderedGroup == resident.typeId %}
@@ -45,26 +45,81 @@
         </tr>
         {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
             <tr>
-                <td><b style="width: 200px; text-align: left; font-size: 13px !important;">1st Floor</b></td>
-                <td><b style="width: 200px; text-align: left; font-size: 13px !important;">2nd Floor</b></td>
-                <td><b style="width: 200px; text-align: left; font-size: 13px !important;">3rd Floor</b></td>
+                {% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %}
+                    <td>
+                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                            {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 1 %}
+                                1st Floor
+                            {% endif %}
+                        </b>
+                    </td>
+                    <td>
+                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                            {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 2 %}
+                                2st Floor
+                            {% endif %}
+                        </b>
+                    </td>
+                    <td>
+                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                            {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 3 %}
+                                3st Floor
+                            {% endif %}
+                        </b>
+                    </td>
+                {% endif %}
+                {% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}
+                    <td>
+                        {% set i = 0 %}
+                        {% for resident in data.residents %}
+                            {% if resident.floor == 1 and renderedGroup == resident.typeId %}
+                                {% set i = i + 1 %}
+                                {% if i == 1 %}
+                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">1st Floor</b>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% set j = 0 %}
+                        {% for resident in data.residents %}
+                            {% if resident.floor == 2 and renderedGroup == resident.typeId %}
+                                {% set j = j + 1 %}
+                                {% if j == 1 %}
+                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">2st Floor</b>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% set l = 0 %}
+                        {% for resident in data.residents %}
+                            {% if resident.floor == 3 and renderedGroup == resident.typeId %}
+                                {% set l = l + 1 %}
+                                {% if l == 1 %}
+                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">3st Floor</b>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endif %}
             </tr>
             <tr>
-                <td style="width: 200px; font-size: 13px !important;">
+                <td style="width: 200px; font-size: 15px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 1 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 13px !important;">
+                <td style="width: 200px; font-size: 15px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 2 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 13px !important;">
+                <td style="width: 200px; font-size: 15px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 3 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
@@ -74,10 +129,10 @@
             </tr>
         {% else %}
             <tr>
-                <td><b style="width: 200px; text-align: left; font-size: 13px !important;">Resident</b></td>
+                <td><b style="width: 200px; text-align: left; font-size: 15px !important;">Resident</b></td>
             </tr>
             <tr>
-                <td style="font-size: 13px !important;">
+                <td style="font-size: 15px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {{ resident.firstName ~ ' ' ~ resident.lastName }}
