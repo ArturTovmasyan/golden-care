@@ -188,7 +188,7 @@ room:
         date: "m/d/Y"
     room-list:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomListReport
-      title: 'Room : List of Rooms, with occupants and room rent rates'
+      title: 'Room : Simple Rent Roster'
       show_in_list: true
       formats: ['pdf', 'csv']
       parameters:

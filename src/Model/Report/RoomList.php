@@ -11,6 +11,7 @@ class RoomList extends Base
     private $calcAmount = [];
     private $place = [];
     private $total = [];
+    private $vacants = [];
 
     /**
      * @var string
@@ -89,6 +90,22 @@ class RoomList extends Base
     public function getTotal(): ?array
     {
         return $this->total;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVacants()
+    {
+        return $this->vacants;
+    }
+
+    /**
+     * @param $vacants
+     */
+    public function setVacants($vacants): void
+    {
+        $this->vacants = $vacants;
     }
 
     /**

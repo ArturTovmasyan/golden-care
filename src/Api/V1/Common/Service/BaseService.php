@@ -4,17 +4,28 @@ namespace App\Api\V1\Common\Service;
 use App\Annotation\ValidationSerializedName;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\ApartmentBed;
+use App\Entity\ApartmentRoom;
+use App\Entity\FacilityBed;
+use App\Entity\FacilityRoom;
+use App\Entity\ResidentAdmission;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Model\Grant;
+use App\Model\GroupType;
+use App\Repository\ApartmentBedRepository;
+use App\Repository\ApartmentRoomRepository;
+use App\Repository\FacilityBedRepository;
+use App\Repository\FacilityRoomRepository;
+use App\Repository\ResidentAdmissionRepository;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 class BaseService
 {
@@ -216,5 +227,120 @@ class BaseService
         }
 
         return $relatedData;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @return array
+     */
+    public function getRoomVacancyList($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+        $all = $groupAll;
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $rooms = [];
+        $data = [];
+
+        if ($type === GroupType::TYPE_FACILITY) {
+            /** @var FacilityRoomRepository $facilityRoomRepo */
+            $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
+
+            if ($typeId) {
+                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+            }
+
+            if ($all) {
+                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+            }
+
+            $occupancyBedIds = [];
+            if (!empty($rooms)) {
+
+                $roomIds = array_map(function (FacilityRoom $item) {
+                    return $item->getId();
+                }, $rooms);
+
+                /** @var FacilityBedRepository $facilityBedRepo */
+                $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+
+                $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+
+                if (\count($facilityBeds)) {
+                    $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
+
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
+
+                    if (!empty($admissions)) {
+                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+                    }
+
+                    foreach ($facilityBeds as $bed) {
+                        if (!\in_array($bed['id'], $occupancyBedIds, false)) {
+                            $data[] = $bed;
+                        }
+                    }
+                }
+            }
+        } elseif ($type === GroupType::TYPE_APARTMENT) {
+            /** @var ApartmentRoomRepository $apartmentRoomRepo */
+            $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
+
+            if ($typeId) {
+                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $typeId);
+            }
+
+            if ($all) {
+                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
+            }
+
+            $occupancyBedIds = [];
+            if (!empty($rooms)) {
+
+                $roomIds = array_map(function (ApartmentRoom $item) {
+                    return $item->getId();
+                }, $rooms);
+
+                /** @var ApartmentBedRepository $apartmentBedRepo */
+                $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+
+                $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+
+                if (\count($apartmentBeds)) {
+                    $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
+
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
+
+                    if (!empty($admissions)) {
+                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+                    }
+
+                    foreach ($apartmentBeds as $bed) {
+                        if (!\in_array($bed['id'], $occupancyBedIds, false)) {
+                            $data[] = $bed;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $data;
     }
 }

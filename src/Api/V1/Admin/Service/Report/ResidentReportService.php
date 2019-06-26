@@ -325,6 +325,8 @@ class ResidentReportService extends BaseService
         $typeIds = [];
         $numberOfFloors = [];
 
+        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId);
+
         if (!empty($residents)) {
             $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
             $typeIds = array_unique($typeIds);
@@ -338,6 +340,7 @@ class ResidentReportService extends BaseService
         $report->setResidents($residents);
         $report->setTypeIds($typeIds);
         $report->setNumberOfFloors($numberOfFloors);
+        $report->setVacants($vacants);
         $report->setStrategyId($type);
 
         return $report;

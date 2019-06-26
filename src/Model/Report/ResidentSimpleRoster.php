@@ -20,6 +20,11 @@ class ResidentSimpleRoster extends Base
     private $numberOfFloors = [];
 
     /**
+     * @var array
+     */
+    private $vacants = [];
+
+    /**
      * @var int
      */
     private $strategyId;
@@ -70,6 +75,22 @@ class ResidentSimpleRoster extends Base
     public function setNumberOfFloors($numberOfFloors): void
     {
         $this->numberOfFloors = $numberOfFloors;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVacants()
+    {
+        return $this->vacants;
+    }
+
+    /**
+     * @param $vacants
+     */
+    public function setVacants($vacants): void
+    {
+        $this->vacants = $vacants;
     }
 
     /**

@@ -127,6 +127,42 @@
                     {% endfor %}
                 </td>
             </tr>
+            <tr>
+                <td colspan="3" style="text-align: center">
+                    {% set m = 0 %}
+                    {% for vacant in data.vacants %}
+                        {% if renderedGroup == vacant.typeId %}
+                            {% set m = m + 1 %}
+                            {% if m == 1 %}
+                                <b style="width: 100%; font-size: 15px !important;">Vacant Rooms</b>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 200px; font-size: 15px !important;">
+                    {% for vacant in data.vacants %}
+                        <div style="line-height: 20px;">
+                            {% if vacant.roomFloor == 1 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                        </div>
+                    {% endfor %}
+                </td>
+                <td style="width: 200px; font-size: 15px !important;">
+                    {% for vacant in data.vacants %}
+                        <div style="line-height: 20px;">
+                            {% if vacant.roomFloor == 2 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                        </div>
+                    {% endfor %}
+                </td>
+                <td style="width: 200px; font-size: 15px !important;">
+                    {% for vacant in data.vacants %}
+                        <div style="line-height: 20px;">
+                            {% if vacant.roomFloor == 3 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                        </div>
+                    {% endfor %}
+                </td>
+            </tr>
         {% else %}
             <tr>
                 <td><b style="width: 200px; text-align: left; font-size: 15px !important;">Resident</b></td>
