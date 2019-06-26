@@ -47,21 +47,21 @@
             <tr>
                 {% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %}
                     <td>
-                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                        <b style="width: 200px; text-align: left; font-size: 14px !important;">
                             {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 1 %}
                                 1st Floor
                             {% endif %}
                         </b>
                     </td>
                     <td>
-                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                        <b style="width: 200px; text-align: left; font-size: 14px !important;">
                             {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 2 %}
                                 2st Floor
                             {% endif %}
                         </b>
                     </td>
                     <td>
-                        <b style="width: 200px; text-align: left; font-size: 15px !important;">
+                        <b style="width: 200px; text-align: left; font-size: 14px !important;">
                             {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 3 %}
                                 3st Floor
                             {% endif %}
@@ -75,7 +75,7 @@
                             {% if resident.floor == 1 and renderedGroup == resident.typeId %}
                                 {% set i = i + 1 %}
                                 {% if i == 1 %}
-                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">1st Floor</b>
+                                    <b style="width: 200px; text-align: left; font-size: 14px !important;">1st Floor</b>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
@@ -86,7 +86,7 @@
                             {% if resident.floor == 2 and renderedGroup == resident.typeId %}
                                 {% set j = j + 1 %}
                                 {% if j == 1 %}
-                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">2st Floor</b>
+                                    <b style="width: 200px; text-align: left; font-size: 14px !important;">2st Floor</b>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
@@ -97,7 +97,7 @@
                             {% if resident.floor == 3 and renderedGroup == resident.typeId %}
                                 {% set l = l + 1 %}
                                 {% if l == 1 %}
-                                    <b style="width: 200px; text-align: left; font-size: 15px !important;">3st Floor</b>
+                                    <b style="width: 200px; text-align: left; font-size: 14px !important;">3st Floor</b>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
@@ -105,21 +105,21 @@
                 {% endif %}
             </tr>
             <tr>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 1 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 2 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {% if resident.floor == 3 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
@@ -134,28 +134,28 @@
                         {% if renderedGroup == vacant.typeId %}
                             {% set m = m + 1 %}
                             {% if m == 1 %}
-                                <b style="width: 100%; font-size: 15px !important;">Vacant Rooms</b>
+                                <b style="width: 100%; font-size: 14px !important;">Vacant Rooms</b>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
             </tr>
             <tr>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
                             {% if vacant.roomFloor == 1 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
                             {% if vacant.roomFloor == 2 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
                         </div>
                     {% endfor %}
                 </td>
-                <td style="width: 200px; font-size: 15px !important;">
+                <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
                             {% if vacant.roomFloor == 3 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
@@ -165,10 +165,10 @@
             </tr>
         {% else %}
             <tr>
-                <td><b style="width: 200px; text-align: left; font-size: 15px !important;">Resident</b></td>
+                <td><b style="width: 200px; text-align: left; font-size: 14px !important;">Resident</b></td>
             </tr>
             <tr>
-                <td style="font-size: 15px !important;">
+                <td style="font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
                             {{ resident.firstName ~ ' ' ~ resident.lastName }}
