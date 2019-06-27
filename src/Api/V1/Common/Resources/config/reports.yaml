@@ -2,22 +2,24 @@ resident:
   title: 'Resident Reports'
   show_in_list: true
   reports:
-#    profile-no-admission:
-#      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
-#      title: 'Profile : Profile for selected resident / all residents'
-#      show_in_list: false
-#      formats: ['pdf']
-#      parameters:
-#        resident:
-#          select_all: false
-#    face-sheet-no-admission:
-#      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
-#      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
-#      show_in_list: false
-#      formats: ['pdf']
-#      parameters:
-#        resident:
-#          select_all: false
+    profile-no-admission:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileNoAdmissionReport
+      title: 'Profile : Profile for selected resident / all residents'
+      show_in_list: false
+      formats: ['pdf']
+      template: 'profile'
+      parameters:
+        resident:
+          select_all: false
+    face-sheet-no-admission:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetNoAdmissionReport
+      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
+      show_in_list: false
+      formats: ['pdf']
+      template: 'face-sheet'
+      parameters:
+        resident:
+          select_all: false
     profile:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
       title: 'Profile : Profile for selected resident / all residents'

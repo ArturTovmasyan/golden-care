@@ -270,6 +270,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 'r.firstName AS firstName',
                 'r.lastName AS lastName',
                 'r.birthday AS birthday',
+                'r.gender AS gender',
                 'rs.title AS salutation'
             )
             ->innerJoin('r.salutation', 'rs')

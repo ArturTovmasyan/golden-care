@@ -502,6 +502,92 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
             ->getQuery()
             ->getResult();
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByNoAdmissionResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rp');
+
+        $qb
+            ->select('
+                    rp.id as id,
+                    r.id as residentId,
+                    rp.primary as primary,
+                    p.firstName as firstName,
+                    p.lastName as lastName,
+                    p.address_1 as address,
+                    p.email as email,
+                    p.websiteUrl as websiteUrl,
+                    csz.stateFull as state,
+                    csz.zipMain as zip,
+                    csz.city as city,
+                    sal.title as salutation,
+                    spc.title as speciality,
+                    p.id as pId
+            ')
+            ->innerJoin(
+                Physician::class,
+                'p',
+                Join::WITH,
+                'rp.physician = p'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rp.resident = r'
+            )
+            ->innerJoin(
+                Salutation::class,
+                'sal',
+                Join::WITH,
+                'p.salutation = sal'
+            )
+            //TODO will be change to innerJoin
+            ->leftJoin(
+                Speciality::class,
+                'spc',
+                Join::WITH,
+                'p.speciality = spc'
+            )
+            ->leftJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'p.csz = csz'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('rp.id')
+            ->getQuery()
+            ->getResult();
+    }
 
     /**
      * @param Space|null $space
