@@ -605,6 +605,117 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getInactiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'r.middleName AS middle_name',
+                'rs.title AS salutation'
+            )
+            ->join('ra.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->andWhere('r.id NOT IN (SELECT ar.id
+                        FROM App:ResidentAdmission ara
+                        JOIN ara.resident ar
+                        WHERE ara.admissionType < :admissionType AND ara.end IS NULL)'
+            )
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fb.number AS bed_number',
+                        'fbrf.id AS type_id'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->orderBy('fbr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('fbrf.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'ab.number AS bed_number',
+                        'abra.id AS type_id'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra')
+                    ->orderBy('abr.number')
+                    ->addOrderBy('ab.number');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('abra.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id AS type_id'
+                    )
+                    ->join('ra.region', 'reg')
+                    ->orderBy('reg.name');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('reg.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
      * @param $id
      * @return mixed
      */

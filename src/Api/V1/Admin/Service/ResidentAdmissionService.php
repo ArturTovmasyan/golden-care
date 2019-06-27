@@ -30,6 +30,7 @@ use App\Entity\ResidentAdmission;
 use App\Entity\ResidentImage;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
+use App\Model\ResidentState;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
@@ -40,6 +41,7 @@ use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Class ResidentAdmissionService
@@ -262,6 +264,108 @@ class ResidentAdmissionService extends BaseService implements IGridService
         return $result;
     }
 
+    /**
+     * @param $state
+     * @return Resident|array|null|object
+     */
+    public function getStateResidents($state)
+    {
+        if (!\in_array($state, ResidentState::getTypes(), false)) {
+            throw new InvalidParameterException('state');
+        }
+
+        $result = [];
+        $inactive = false;
+        if ($state === ResidentState::TYPE_ACTIVE) {
+            $result = $this->getActiveOrInactiveResidents($inactive);
+        }
+
+        if ($state === ResidentState::TYPE_INACTIVE) {
+            $inactive = true;
+            $result = $this->getActiveOrInactiveResidents($inactive);
+        }
+
+        if ($state === ResidentState::TYPE_NO_ADMISSION) {
+            $result = $this->getNoAdmissionResidents();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $inactive
+     * @return array
+     */
+    public function getActiveOrInactiveResidents($inactive)
+    {
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $data = [
+            [
+                'groupType' => GroupType::TYPE_FACILITY,
+                'entityClass' => Facility::class,
+                'title' => 'facility'
+            ],
+            [
+                'groupType' => GroupType::TYPE_APARTMENT,
+                'entityClass' => Apartment::class,
+                'title' => 'apartment'
+            ],
+            [
+                'groupType' => GroupType::TYPE_REGION,
+                'entityClass' => Region::class,
+                'title' => 'region'
+            ]
+        ];
+
+        $result = [];
+        foreach ($data as $strategy) {
+            $groupRepo = $this->em->getRepository($strategy['entityClass']);
+
+            $groupIds = null;
+            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
+            if (!empty($groupList)) {
+                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
+                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
+
+                if ($inactive) {
+                    $groupResidents = $repo->getInactiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
+                } else {
+                    $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
+                }
+
+                $images = [];
+                if (!empty($groupResidents)) {
+                    $residentIds = array_map(function($item){return $item['id'];} , $groupResidents);
+
+                    /** @var ResidentImageRepository $imageRepo */
+                    $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+                    $images = $imageRepo->findByIds($residentIds);
+                    $images = array_column($images, 'photo_150_150', 'id');
+                }
+
+                foreach ($groupArray as $group) {
+                    foreach ($groupResidents as $groupResident) {
+                        if ($groupResident['type_id'] === $group['id']) {
+                            $groupResident['type_name'] = $group['name'];
+
+                            if (array_key_exists($groupResident['id'], $images)) {
+                                $groupResident['photo'] = $images[$groupResident['id']];
+                            } else {
+                                $groupResident['photo'] = null;
+                            }
+
+                            $result[] = $groupResident;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
 
     /**
      * @param $type
