@@ -14,9 +14,11 @@
                                 <p style="font-size: 13px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                             </div>
                             <div style="float: left">
-                                <div style="height: 5px;"></div>
-                                <p style="font-size: 14px !important">{{ resident.typeName }}</p>
-                                {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
+                                {% if resident.typeName is defined %}
+                                    <div style="height: 5px;"></div>
+                                    <p style="font-size: 14px !important">{{ resident.typeName }}</p>
+                                    {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
+                                {% endif %}
                             </div>
                             <div style="clear: both"></div>
                         </th>
@@ -208,7 +210,9 @@
                                         <p>Comments: ____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
-                                        <p style="text-align: center">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
+                                        {% if resident.dnr is defined %}
+                                            <p style="text-align: center">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
+                                        {% endif %}
                                     </div>
                                     <div style="float: right; line-height: 1px;">
                                         <div style="float: left; border-right: solid 1px darkgray;">

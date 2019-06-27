@@ -285,6 +285,61 @@ class FormReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @return MedicationChart
+     */
+    public function getMedicationChartNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getNoAdmissionResidentById($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
+        $residentIds = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+        }
+
+        /** @var ResidentMedicationRepository $medicationRepo */
+        $medicationRepo = $this->em->getRepository(ResidentMedication::class);
+
+        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+
+        /** @var ResidentAllergenRepository $allergenRepo */
+        $allergenRepo = $this->em->getRepository(ResidentAllergen::class);
+
+        $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
+
+        $physicianPhones = [];
+        if (!empty($medications)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $medications);
+            $physicianIds = array_unique($physicianIds);
+
+            /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+            $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+            $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+        }
+
+        $report = new MedicationChart();
+        $report->setResidents($residents);
+        $report->setMedications($medications);
+        $report->setAllergens($allergens);
+        $report->setPhysicianPhones($physicianPhones);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
      * @return MedicationList
      */
     public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
@@ -302,6 +357,45 @@ class FormReportService extends BaseService
         $repo = $this->em->getRepository(Resident::class);
 
         $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
+        $residentIds = [];
+        $residentsById = [];
+
+        foreach ($residents as $resident) {
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        /** @var ResidentMedicationRepository $medicationRepo */
+        $medicationRepo = $this->em->getRepository(ResidentMedication::class);
+
+        $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+
+        $report = new MedicationList();
+        $report->setResidents($residentsById);
+        $report->setMedications($medications);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @return MedicationList
+     */
+    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getNoAdmissionResidentById($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
         $residentIds = [];
         $residentsById = [];
 

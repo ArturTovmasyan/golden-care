@@ -254,6 +254,52 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             ->getResult();
     }
 
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getNoAdmissionResidentById(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS firstName',
+                'r.lastName AS lastName',
+                'r.birthday AS birthday',
+                'rs.title AS salutation'
+            )
+            ->innerJoin('r.salutation', 'rs')
+            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)')
+            ->andWhere('r.id = :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
     ////////////////////////////Resident Admission Part///////////////////////////////////////////////////
     /**
      * @param Space|null $space
