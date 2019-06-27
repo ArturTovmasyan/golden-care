@@ -31,17 +31,14 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "form_factor",
  *              "type"       = "string",
- *              "field"      = "ff.title"
+ *              "field"      = "ff.title",
+ *              "sortable"   = false
  *          },
  *          {
  *              "id"         = "dosage",
  *              "type"       = "string",
- *              "field"      = "rm.dosage"
- *          },
- *          {
- *              "id"         = "dosage_unit",
- *              "type"       = "string",
- *              "field"      = "rm.dosageUnit"
+ *              "field"      = "CONCAT(rm.dosage, ' (', rm.dosageUnit, ')')",
+ *              "sortable"   = false
  *          },
  *          {
  *              "id"         = "am",
@@ -81,12 +78,14 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "field"      = "rm.notes"
+ *              "field"      = "rm.notes",
+ *              "sortable"   = false
  *          },
  *          {
  *              "id"         = "prescription_number",
  *              "type"       = "string",
- *              "field"      = "rm.prescriptionNumber"
+ *              "field"      = "rm.prescriptionNumber",
+ *              "sortable"   = false
  *          },
  *          {
  *              "id"         = "hidden_discontinued",
