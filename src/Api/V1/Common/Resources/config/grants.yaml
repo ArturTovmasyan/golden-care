@@ -314,11 +314,11 @@ report:
         profile:
           title: "Profile : Profile for selected resident / all residents"
         profile-no-admission:
-          title: "Profile : Profile for selected resident / all residents"
+          title: "Profile : Profile for selected resident / all residents (pre-admit)"
         face-sheet:
           title: "FACE Sheet : FACE Sheet for selected resident / all residents"
         face-sheet-no-admission:
-          title: "FACE Sheet : FACE Sheet for selected resident / all residents"
+          title: "FACE Sheet : FACE Sheet for selected resident / all residents (pre-admit)"
         detailed-roster:
           title: "Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
         simple-roster:
