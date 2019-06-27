@@ -968,6 +968,7 @@ class ResidentAdmissionController extends BaseController
      * @Route("/state/{state}", name="api_admin_resident_admission_get_state_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
+     * @param $state
      * @return JsonResponse
      */
     public function getStateResidentsAction(Request $request, $state, ResidentAdmissionService $residentAdmissionService)

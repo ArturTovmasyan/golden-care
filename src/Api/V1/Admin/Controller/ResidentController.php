@@ -1,6 +1,7 @@
 <?php
 namespace App\Api\V1\Admin\Controller;
 
+use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\ImageFilterService;
@@ -73,19 +74,21 @@ class ResidentController extends BaseController
      *
      * @param Request $request
      * @param ResidentService $residentService
+     * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, ResidentService $residentService)
+    public function gridAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService)
     {
+        $residentService->setResidentAdmissionService($residentAdmissionService);
+
         return $this->respondGrid(
             $request,
             Resident::class,
             'api_admin_resident_grid',
             $residentService,
             [
-                'type' => $request->get('type'),
-                'type_id' => $request->get('type_id')
+                'state' => $request->get('state')
             ]
         );
     }

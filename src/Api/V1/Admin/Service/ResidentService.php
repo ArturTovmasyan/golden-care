@@ -49,6 +49,19 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
+     * @var ResidentAdmissionService
+     */
+    private $residentAdmissionService;
+
+    /**
+     * @param ResidentAdmissionService $residentAdmissionService
+     */
+    public function setResidentAdmissionService(ResidentAdmissionService $residentAdmissionService)
+    {
+        $this->residentAdmissionService = $residentAdmissionService;
+    }
+
+    /**
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
@@ -58,14 +71,8 @@ class ResidentService extends BaseService implements IGridService
         $repo = $this->em->getRepository(Resident::class);
 
         $ids = null;
-        if (!empty($params) && !empty($params[0]['type']) && !empty($params[0]['type_id'])) {
-            $type = (int)$params[0]['type'];
-            $typeId = (int)$params[0]['type_id'];
-
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-
-            $residents = $admissionRepo->getActiveResidentsByStrategy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeId);
+        if (!empty($params) && !empty($params[0]['state'])) {
+            $residents = $this->residentAdmissionService->getStateResidents($params[0]['state']);
 
             $ids = [];
             if (!empty($residents)) {
