@@ -2,6 +2,22 @@ resident:
   title: 'Resident Reports'
   show_in_list: true
   reports:
+    profile-no-admission:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
+      title: 'Profile : Profile for selected resident / all residents'
+      show_in_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: false
+    face-sheet-no-admission:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
+      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
+      show_in_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: false
     profile:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
       title: 'Profile : Profile for selected resident / all residents'
@@ -113,6 +129,24 @@ form:
       parameters:
         group:
           select_all: true
+    medication-list-resident-no-admission:
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
+      title: 'Medications List Selected Resident : Medications list for selected resident'
+      show_in_list: false
+      formats: ['pdf']
+      template: 'medication-list'
+      parameters:
+        resident:
+          select_all: false
+    medication-chart-no-admission:
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
+      title: 'MAR - Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
+      show_in_list: false
+      formats: ['pdf']
+      template: 'medication-chart'
+      parameters:
+        resident:
+          select_all: false
     medication-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
       title: 'MAR - Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly'
