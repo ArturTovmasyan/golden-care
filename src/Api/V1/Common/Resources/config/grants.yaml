@@ -313,7 +313,11 @@ report:
       children:
         profile:
           title: "Profile : Profile for selected resident / all residents"
+        profile-no-admission:
+          title: "Profile : Profile for selected resident / all residents"
         face-sheet:
+          title: "FACE Sheet : FACE Sheet for selected resident / all residents"
+        face-sheet-no-admission:
           title: "FACE Sheet : FACE Sheet for selected resident / all residents"
         detailed-roster:
           title: "Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
@@ -342,7 +346,11 @@ report:
           title: "Meal Monitor : Meal Consumption Tracking Form, Weekly"
         medication-chart:
           title: "Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly"
+        medication-chart-no-admission:
+          title: "Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly"
         medication-list-resident:
+          title: "Medications List Selected Resident : Medications list for selected resident"
+        medication-list-resident-no-admission:
           title: "Medications List Selected Resident : Medications list for selected resident"
         medication-list-all:
           title: "Medications List All Residents : Medications list for all residents."
