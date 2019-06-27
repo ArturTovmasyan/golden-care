@@ -40,6 +40,11 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "in_chooser",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.inChooser"
+ *          },
+ *          {
  *              "id"         = "ffc",
  *              "type"       = "boolean",
  *              "field"      = "ed.ffc"
@@ -158,6 +163,17 @@ class EventDefinition
      * })
      */
     private $space;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_in_chooser", type="boolean", options={"default" = 1})
+     * @Groups({
+     *     "api_admin_event_definition_grid",
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $inChooser;
 
     /**
      * @var bool
@@ -321,6 +337,22 @@ class EventDefinition
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInChooser(): bool
+    {
+        return $this->inChooser;
+    }
+
+    /**
+     * @param bool $inChooser
+     */
+    public function setInChooser(bool $inChooser): void
+    {
+        $this->inChooser = $inChooser;
     }
 
     /**

@@ -2055,7 +2055,7 @@ SELECT `cc_old`.`hosting`.`owner`                                               
        IF(`cc_old`.`hosting`.`owner_type` != 3, `cc_old`.`residents`.`Care_Group`, NULL)    AS 'care_group',
        IF(`cc_old`.`hosting`.`owner_type` != 3, `cc_old`.`residents`.`DNR`, NULL)           AS 'dnr',
        IF(`cc_old`.`hosting`.`owner_type` != 3, `cc_old`.`residents`.`POLST`, NULL)         AS 'polst',
-       IF(`cc_old`.`hosting`.`owner_type` != 3, `cc_old`.`residents`.`Ambulatory`, NULL)    AS 'ambulatory',
+       IF(`cc_old`.`hosting`.`owner_type` != 3, IF(`cc_old`.`residents`.`Ambulatory`=1, 1, 0), NULL)    AS 'ambulatory',
        ''                                                                                   AS 'notes'
 FROM `cc_old`.`hosting`
        INNER JOIN `cc_old`.`residents` ON `cc_old`.`residents`.`Resident_ID` = `cc_old`.`hosting`.`owner`

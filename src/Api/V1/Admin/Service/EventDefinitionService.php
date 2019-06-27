@@ -71,6 +71,7 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $entity = new EventDefinition();
+            $entity->setInChooser($params['in_chooser']);
             $entity->setTitle($params['title']);
             $entity->setFfc($params['ffc']);
             $entity->setIhc($params['ihc']);
@@ -129,6 +130,7 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $entity->setTitle($params['title']);
+            $entity->setInChooser($params['in_chooser']);
             $entity->setFfc($params['ffc']);
             $entity->setIhc($params['ihc']);
             $entity->setIl($params['il']);

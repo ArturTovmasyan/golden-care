@@ -303,6 +303,7 @@ class EventDefinitionController extends BaseController
         $id = $eventDefinitionService->add(
             [
                 'title' => $request->get('title'),
+                'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
                 'ihc' => $request->get('ihc'),
                 'il' => $request->get('il'),
@@ -383,6 +384,7 @@ class EventDefinitionController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
+                'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
                 'ihc' => $request->get('ihc'),
                 'il' => $request->get('il'),

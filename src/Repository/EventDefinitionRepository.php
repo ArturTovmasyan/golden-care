@@ -76,6 +76,10 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
         }
 
         $qb
+            ->andWhere('ed.inChooser=:inChooser')
+            ->setParameter('inChooser', true);
+
+        $qb
             ->addOrderBy('ed.title', 'ASC');
 
         return $qb
