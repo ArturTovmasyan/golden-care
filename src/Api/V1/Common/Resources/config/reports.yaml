@@ -2,6 +2,15 @@ resident:
   title: 'Resident Reports'
   show_in_list: true
   reports:
+    profile:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
+      title: 'Profile : Profile for selected resident / all residents'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        discontinued: true
+        resident:
+          select_all: true
     profile-no-admission:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileNoAdmissionReport
       title: 'Profile : Profile for selected resident / all residents'
@@ -9,8 +18,17 @@ resident:
       formats: ['pdf']
       template: 'profile'
       parameters:
+        discontinued: true
         resident:
           select_all: false
+    face-sheet:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
+      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
+      show_in_list: true
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
     face-sheet-no-admission:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetNoAdmissionReport
       title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
@@ -20,22 +38,6 @@ resident:
       parameters:
         resident:
           select_all: false
-    profile:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
-      title: 'Profile : Profile for selected resident / all residents'
-      show_in_list: true
-      formats: ['pdf']
-      parameters:
-        resident:
-          select_all: true
-    face-sheet:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
-      title: 'FACE Sheet : FACE Sheet for selected resident / all residents'
-      show_in_list: true
-      formats: ['pdf']
-      parameters:
-        resident:
-          select_all: true
     detailed-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
       title: 'Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
@@ -138,6 +140,7 @@ form:
       formats: ['pdf']
       template: 'medication-list'
       parameters:
+        discontinued: true
         resident:
           select_all: false
     medication-chart-no-admission:
@@ -165,6 +168,7 @@ form:
       formats: ['pdf']
       template: 'medication-list'
       parameters:
+          discontinued: true
           resident:
               select_all: true
     medication-list-all:
@@ -174,6 +178,7 @@ form:
       formats: ['pdf']
       template: 'medication-list'
       parameters:
+          discontinued: true
           group:
               select_all: true
     night-activity:
