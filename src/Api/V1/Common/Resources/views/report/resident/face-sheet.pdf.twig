@@ -234,8 +234,15 @@
                 <td colspan="9" style="font-size: 12px !important;">
                     <div style="float: left; width: 50%">
                         {% if resident['diagnosis'] is defined %}
+                            {% set g = 0 %}
                             {% for diagnosis in resident['diagnosis'] %}
-                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::PRIMARY') %}<b>{{ diagnosis.diagnosisTitle }}</b><br/>{% endif %}
+                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::PRIMARY') %}
+                                    {% set g = g + 1 %}
+                                    <b>{{ diagnosis.diagnosisTitle }}</b><br/>
+                                {% endif %}
+                                {% if g == 0 %}
+                                    No&nbsp;Primary&nbsp;diagnosis
+                                {% endif %}
                             {% endfor %}
                         {% else %}
                             No&nbsp;Primary&nbsp;diagnosis
@@ -243,8 +250,15 @@
                     </div>
                     <div style="float: left; width: 50%">
                         {% if resident['diagnosis'] is defined %}
+                            {% set h = 0 %}
                             {% for diagnosis in resident['diagnosis'] %}
-                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::SECONDARY') %}<b>{{ diagnosis.diagnosisTitle }}</b><br/>{% endif %}
+                                {% if diagnosis.diagnosisType == constant('App\\Model\\DiagnosisType::SECONDARY') %}
+                                    {% set h = h + 1 %}
+                                    <b>{{ diagnosis.diagnosisTitle }}</b><br/>
+                                {% endif %}
+                                {% if h == 0 %}
+                                    No&nbsp;Secondary&nbsp;diagnosis
+                                {% endif %}
                             {% endfor %}
                         {% else %}
                             No&nbsp;Secondary&nbsp;diagnosis
