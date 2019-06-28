@@ -91,7 +91,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
 
-        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+        $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
@@ -178,7 +178,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
 
-        $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+        $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
