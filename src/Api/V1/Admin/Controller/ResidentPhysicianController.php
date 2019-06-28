@@ -480,4 +480,28 @@ class ResidentPhysicianController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/reorder", name="api_admin_resident_physician_reorder", methods={"POST"})
+     *
+     * @Grant(grant="persistence-resident-resident_physician", level="EDIT")
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentPhysicianService $residentPhysicianService
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function reorderAction(Request $request, ResidentPhysicianService $residentPhysicianService)
+    {
+        $residentPhysicianService->reorder(
+            [
+                'physicians' => $request->get('physicians')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }

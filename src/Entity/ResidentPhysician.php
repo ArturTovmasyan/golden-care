@@ -43,6 +43,12 @@ class ResidentPhysician
     private $id;
 
     /**
+     * @var int
+     * @ORM\Column(name="sort_order", type="integer", nullable=false, options={"default" = 0})
+     */
+    private $sortOrder;
+
+    /**
      * @var Resident
      * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentPhysicians")
      * @ORM\JoinColumns({
@@ -164,5 +170,21 @@ class ResidentPhysician
     public function setPrimary(bool $primary): void
     {
         $this->primary = $primary;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder(): ?int
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder(?int $sortOrder): void
+    {
+        $this->sortOrder = $sortOrder;
     }
 }

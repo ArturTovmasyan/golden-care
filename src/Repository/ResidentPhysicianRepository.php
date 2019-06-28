@@ -128,6 +128,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
         }
 
         $qb
+            ->addOrderBy('rp.sortOrder', 'ASC')
             ->addOrderBy("CONCAT(
             CASE WHEN ps IS NOT NULL THEN CONCAT(ps.title, ' ') ELSE '' END,
             p.firstName, ' ', p.lastName)", 'ASC');
@@ -499,6 +500,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
 
         return $qb
             ->groupBy('rp.id')
+            ->orderBy('rp.sortOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -585,6 +587,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
 
         return $qb
             ->groupBy('rp.id')
+            ->orderBy('rp.sortOrder', 'ASC')
             ->getQuery()
             ->getResult();
     }

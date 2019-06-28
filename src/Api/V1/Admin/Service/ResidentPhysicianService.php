@@ -136,6 +136,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
             }
 
             $residentPhysician = new ResidentPhysician();
+            $residentPhysician->setSortOrder(0);
             $residentPhysician->setResident($resident);
             $residentPhysician->setPhysician($physician);
             $residentPhysician->setPrimary($primary);
@@ -321,5 +322,44 @@ class ResidentPhysicianService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(ResidentPhysician::class, $entities);
+    }
+
+    /**
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function reorder(array $params)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (!empty($params) && !empty($params['physicians'])) {
+                /** @var ResidentPhysicianRepository $repo */
+                $repo = $this->em->getRepository(ResidentPhysician::class);
+
+                foreach ($params['physicians'] as $idx => $value) {
+                    /** @var ResidentPhysician $rp */
+                    $rp = $repo->getOne(
+                        $this->grantService->getCurrentSpace(),
+                        $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class),
+                        $value['id']
+                    );
+
+                    if (!empty($rp)) {
+                        $rp->setSortOrder($idx);
+                        $this->em->persist($rp);
+                    }
+                }
+
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
     }
 }
