@@ -16,6 +16,11 @@ class Profile extends Base
     private $responsiblePersonPhones = [];
 
     /**
+     * @var boolean
+     */
+    private $discontinued;
+
+    /**
      * Profile constructor.
      */
     public function __construct()
@@ -200,6 +205,22 @@ class Profile extends Base
         foreach ($rents as $rent) {
             $this->residents[$rent['residentId']]['rents'][] = $rent;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDiscontinued(): bool
+    {
+        return $this->discontinued;
+    }
+
+    /**
+     * @param bool $discontinued
+     */
+    public function setDiscontinued(bool $discontinued): void
+    {
+        $this->discontinued = $discontinued;
     }
 }
 

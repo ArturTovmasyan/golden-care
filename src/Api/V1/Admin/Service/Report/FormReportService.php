@@ -340,9 +340,11 @@ class FormReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $discontinued)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -373,6 +375,7 @@ class FormReportService extends BaseService
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
+        $report->setDiscontinued($discontinued);
 
         return $report;
     }
@@ -386,9 +389,11 @@ class FormReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $discontinued)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -412,6 +417,7 @@ class FormReportService extends BaseService
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
+        $report->setDiscontinued($discontinued);
 
         return $report;
     }

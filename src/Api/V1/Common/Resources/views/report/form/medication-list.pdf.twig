@@ -65,10 +65,10 @@
                                 <td style="height: 50px; vertical-align: middle;">{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}</td>
                             </tr>
                         {% endfor %}
-                        <tr class="divider"></tr>
-                        <tr class="divider"></tr>
                     {% endif %}
-                    {% if resident.medications.discontinued is defined %}
+                    {% if data.discontinued and resident.medications.discontinued is defined %}
+                        <tr class="divider"></tr>
+                        <tr class="divider"></tr>
                         <tr>
                             <th colspan="11">
                                 <b style="float: left; font-size: 20px !important; text-align: left; margin-bottom: 5px;">Discontinued Medications</b>

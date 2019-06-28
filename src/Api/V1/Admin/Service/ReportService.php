@@ -178,6 +178,8 @@ class ReportService
 
         $request_assessmentId = $request->get('assessment_id') ? (int)$request->get('assessment_id') : null;
 
+        $discontinued = $request->get('discontinued') ? (bool)$request->get('discontinued') : false;
+
         return $service->$action(
             $request_group,
             $request_groupAll,
@@ -187,7 +189,8 @@ class ReportService
             $request_date,
             $request_dateFrom,
             $request_dateTo,
-            $request_assessmentId
+            $request_assessmentId,
+            $discontinued
         );
     }
 

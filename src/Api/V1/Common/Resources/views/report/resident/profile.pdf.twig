@@ -496,10 +496,10 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr class="divider"></tr>
-                    <tr class="divider"></tr>
                 {% endif %}
-                {% if resident.medications.discontinued is defined %}
+                {% if data.discontinued and resident.medications.discontinued is defined %}
+                    <tr class="divider"></tr>
+                    <tr class="divider"></tr>
                     {% set g = 0 %}
                     {% for medication in resident.medications.discontinued %}
                         {% set g = g + 1 %}
@@ -648,10 +648,10 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr class="divider"></tr>
-                    <tr class="divider"></tr>
                 {% endif %}
-                {% if resident.medications.discontinued is defined %}
+                {% if data.discontinued and resident.medications.discontinued is defined %}
+                    <tr class="divider"></tr>
+                    <tr class="divider"></tr>
                     {% set h = 0 %}
                     {% for medication in resident.medications.discontinued %}
                         {% set h = h + 1 %}

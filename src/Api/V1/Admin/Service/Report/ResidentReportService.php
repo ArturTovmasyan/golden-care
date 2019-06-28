@@ -51,9 +51,11 @@ class ResidentReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $discontinued
      * @return Profile
      */
-    public function getProfileReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getProfileReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $discontinued)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -132,6 +134,7 @@ class ResidentReportService extends BaseService
         $report->setPhysicianPhones($physicianPhones);
         $report->setEvents($events);
         $report->setRents($rents);
+        $report->setDiscontinued($discontinued);
 
         return $report;
     }
@@ -145,9 +148,11 @@ class ResidentReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $discontinued
      * @return Profile
      */
-    public function getProfileNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getProfileNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $discontinued)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -219,6 +224,7 @@ class ResidentReportService extends BaseService
         $report->setPhysicianPhones($physicianPhones);
         $report->setEvents($events);
         $report->setRents($rents);
+        $report->setDiscontinued($discontinued);
 
         return $report;
     }

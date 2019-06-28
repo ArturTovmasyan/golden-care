@@ -10,6 +10,11 @@ class MedicationList extends Base
     private $residents = [];
 
     /**
+     * @var boolean
+     */
+    private $discontinued;
+
+    /**
      * MealMonitor constructor.
      */
     public function __construct()
@@ -47,6 +52,22 @@ class MedicationList extends Base
                 $this->residents[$medication['residentId']]['medications']['active'][] = $medication;
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDiscontinued(): bool
+    {
+        return $this->discontinued;
+    }
+
+    /**
+     * @param bool $discontinued
+     */
+    public function setDiscontinued(bool $discontinued): void
+    {
+        $this->discontinued = $discontinued;
     }
 }
 
