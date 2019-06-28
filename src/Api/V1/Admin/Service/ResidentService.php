@@ -452,6 +452,13 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
+            /**
+             * @var Resident $resident
+             */
+            foreach ($residents as $resident) {
+                $this->em->remove($resident);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
