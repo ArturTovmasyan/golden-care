@@ -240,10 +240,10 @@
                                     {% set g = g + 1 %}
                                     <b>{{ diagnosis.diagnosisTitle }}</b><br/>
                                 {% endif %}
-                                {% if g == 0 %}
-                                    No&nbsp;Primary&nbsp;diagnosis
-                                {% endif %}
                             {% endfor %}
+                            {% if g == 0 %}
+                                No&nbsp;Primary&nbsp;diagnosis
+                            {% endif %}
                         {% else %}
                             No&nbsp;Primary&nbsp;diagnosis
                         {% endif %}
@@ -256,10 +256,10 @@
                                     {% set h = h + 1 %}
                                     <b>{{ diagnosis.diagnosisTitle }}</b><br/>
                                 {% endif %}
-                                {% if h == 0 %}
-                                    No&nbsp;Secondary&nbsp;diagnosis
-                                {% endif %}
                             {% endfor %}
+                            {% if h == 0 %}
+                                No&nbsp;Secondary&nbsp;diagnosis
+                            {% endif %}
                         {% else %}
                             No&nbsp;Secondary&nbsp;diagnosis
                         {% endif %}
