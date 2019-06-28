@@ -32,6 +32,10 @@
                                     <b style="font-size: 14px !important">{{ data.strategy }}:&nbsp;{{ datum.typeName }}</b><br/>
                                     <b style="font-size: 14px !important">{{ data.date }}</b>
                                 </div>
+                                <div style="float: right">
+                                    <div style="height: 5px;"></div>
+                                    <b style="font-size: 18px !important">Total&nbsp;Of&nbsp;All:&nbsp;{{ data.sum|number_format(2, '.', ',') }}</b>
+                                </div>
                                 <div style="clear: both"></div>
                             </div>
                         </th>

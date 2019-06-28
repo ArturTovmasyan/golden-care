@@ -29,14 +29,21 @@
                         <p style="margin-bottom: 5px;"></p>
                         <b style="font-size: 16px !important">
                             {% set k = 0 %}
+                            {% set count = 0 %}
                             {% for resident in data.residents %}
                                 {% if renderedGroup == resident.typeId %}
                                     {% set k = k + 1 %}
+                                    {% set count = count + 1 %}
                                     {% if k == 1 %}
                                         {{ resident.typeName }}
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
+                        </b>
+                    </div>
+                    <div style="float: right;">
+                        <b style="font-size: 16px !important">
+                            Resident Count: {{ count }}
                         </b>
                     </div>
                     <div style="clear: both"></div>

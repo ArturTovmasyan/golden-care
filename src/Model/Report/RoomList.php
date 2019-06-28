@@ -29,6 +29,11 @@ class RoomList extends Base
     private $date;
 
     /**
+     * @var string
+     */
+    private $sum;
+
+    /**
      * @param $data
      */
     public function setData($data): void
@@ -154,6 +159,22 @@ class RoomList extends Base
     public function setDate(string $date): void
     {
         $this->date = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSum(): string
+    {
+        return $this->sum;
+    }
+
+    /**
+     * @param string $sum
+     */
+    public function setSum(string $sum): void
+    {
+        $this->sum = $sum;
     }
 }
 

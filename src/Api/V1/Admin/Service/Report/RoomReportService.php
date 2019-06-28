@@ -209,6 +209,7 @@ class RoomReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
+        $report->setSum(array_sum($total));
 
         return $report;
     }
