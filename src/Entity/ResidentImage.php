@@ -58,7 +58,8 @@ class ResidentImage
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
-     *     "api_admin_resident_image_get"
+     *     "api_admin_resident_image_get",
+     *     "api_admin_resident_get"
      * })
      */
     private $photo;
@@ -101,8 +102,7 @@ class ResidentImage
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
-     *     "api_admin_resident_image_get",
-     *     "api_admin_resident_get"
+     *     "api_admin_resident_image_get"
      * })
      */
     private $photo_300_300;
