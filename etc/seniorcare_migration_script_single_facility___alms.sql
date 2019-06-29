@@ -971,13 +971,13 @@ WHERE `alms`.`base_resident`.`photo` != '' AND `alms`.`base_resident`.`id_group`
 
 # Use app:migrate:photos command to import these photos to SeniorCare.
 # Validate Phone numbers
-UPDATE `db_seniorcare_migration`.`tbl_resident_phone`           SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_responsible_person_phone` SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_physician_phone`          SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_user_phone`               SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_resident_phone`           SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
+UPDATE `db_seniorcare_migration`.`tbl_responsible_person_phone` SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
+UPDATE `db_seniorcare_migration`.`tbl_physician_phone`          SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
+UPDATE `db_seniorcare_migration`.`tbl_user_phone`               SET `number`          = REGEXP_REPLACE(`number`,          '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
 
-UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
-UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) ($4)-($6)');
+UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `phone`           = REGEXP_REPLACE(`phone`,           '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
+UPDATE `db_seniorcare_migration`.`tbl_facility`                 SET `fax`             = REGEXP_REPLACE(`fax`,             '(.*)([0-9]{3})(.*)([0-9]{3})(.*)([0-9]{4})(.*)', '($2) $4-$6');
 
 
 DELETE FROM `sc_0015_db`.`oauth2_access_token`;

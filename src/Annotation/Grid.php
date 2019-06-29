@@ -200,34 +200,6 @@ class Grid
      */
     public function renderByGroup(array $params, $groupName)
     {
-        /** @todo remove **/
-        /*$params = array_merge($params, [
-            'sort' => [
-               'name'  => 'asc',
-            ],
-            'filter' => [
-                'name' => [
-                    'c' => 1,
-                    'v' => [
-                        ''
-                    ]
-                ],
-                'default' => [
-                    'c' => 3,
-                    'v' => [
-                        1
-                    ]
-                ],
-                'last_activity_at' => [
-                    'c' => 3,
-                    'v' => [
-                        '2018-11-07T17:21:22',
-                        '2018-11-21T17:21:24',
-                    ]
-                ]
-            ]
-        ]);*/
-
         $this->queryBuilder = $this->em->createQueryBuilder();
         $options            = $this->getGroupOptionsById($groupName);
         $fields             = $this->getGroupOptions($groupName);
@@ -279,6 +251,17 @@ class Grid
                     }
                 } else {
                     $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                }
+            }
+        }
+
+        if(!empty($params['query'])) {
+            foreach ($fields as $field) {
+                switch ($field['type']) {
+                    case self::FIELD_TYPE_TEXT:
+                        $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
+                        $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $params['query']));
+                        break;
                 }
             }
         }
