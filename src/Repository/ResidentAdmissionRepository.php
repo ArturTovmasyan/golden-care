@@ -149,6 +149,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         }
 
         $queryBuilder
+            ->orderBy('ra.start', 'DESC')
             ->groupBy('ra.id');
     }
 
