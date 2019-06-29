@@ -72,7 +72,6 @@ class ImageFilterService
         $filters = array_keys($filters);
 
         $binary = $filterManager->applyFilter($binary, $filters[1]);
-        $image->setPhoto('data:image/' . $format . ';base64,' . base64_encode($binary->getContent()));
 
         unset($filters[0], $filters[1]);
 
