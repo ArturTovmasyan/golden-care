@@ -308,9 +308,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param $type
      * @param null $typeId
      * @param null $residentId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionResidentsInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    public function getAdmissionResidentsInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null, array $notGrantResidentIds = null)
     {
         /**
          * @var ResidentAdmission $admission
@@ -499,6 +500,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         if ($residentId) {
             $qb
                 ->andWhere('r.id = :id')
@@ -517,9 +524,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param $type
      * @param null $typeId
      * @param null $residentId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionResidentsInfoWithCareGroupByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    public function getAdmissionResidentsInfoWithCareGroupByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null, array $notGrantResidentIds = null)
     {
         /**
          * @var ResidentAdmission $admission
@@ -672,6 +680,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         if ($residentId) {
             $qb
                 ->andWhere('r.id = :id')
@@ -690,9 +704,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param $type
      * @param null $typeId
      * @param null $residentId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionDietaryRestrictionsInfo(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    public function getAdmissionDietaryRestrictionsInfo(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null, array $notGrantResidentIds = null)
     {
         /**
          * @var ResidentAdmission $admission
@@ -864,6 +879,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         if ($residentId) {
             $qb
                 ->andWhere('r.id = :id')
@@ -882,9 +903,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param $type
      * @param null $typeId
      * @param null $residentId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionResidentsFullInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null)
+    public function getAdmissionResidentsFullInfoByTypeOrId(Space $space = null, array $entityGrants = null, $type, $typeId = null, $residentId = null, array $notGrantResidentIds = null)
     {
         /**
          * @var ResidentAdmission $admission
@@ -1046,6 +1068,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         if ($residentId) {

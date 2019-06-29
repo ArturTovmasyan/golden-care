@@ -50,7 +50,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new ResidentBirthdayList();
         $report->setResidents($residents);
@@ -81,7 +81,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
@@ -113,7 +113,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new BowelMovement();
         $report->setResidents($residents);
@@ -144,7 +144,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new ChangeoverNotes();
         $report->setResidents($residents);
@@ -175,7 +175,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new Manicure();
         $report->setTitle('MANICURE REPORT');
@@ -207,7 +207,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new MealMonitor();
         $report->setResidents($residents);
@@ -231,6 +231,7 @@ class FormReportService extends BaseService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         $type = $group;
+        $typeId = $groupId;
 
         if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
             throw new InvalidParameterException('group');
@@ -239,7 +240,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, null, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
         $residentIds = [];
 
         foreach ($residents as $resident) {
@@ -358,7 +359,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
         $residentIds = [];
         $residentsById = [];
 
@@ -445,7 +446,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new NightActivity();
         $report->setResidents($residents);
@@ -476,7 +477,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new RoomAudit();
         $report->setTitle('ROOM AUDIT REPORT');
@@ -508,7 +509,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, null, $this->getNotGrantResidentIds());
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);

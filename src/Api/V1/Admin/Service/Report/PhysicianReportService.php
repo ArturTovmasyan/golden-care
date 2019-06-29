@@ -41,7 +41,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
         $residentIds = [];
 
         if (!empty($residents)) {
@@ -111,7 +111,7 @@ class PhysicianReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId);
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
         $residentIds = [];
 
         if (!empty($residents)) {

@@ -1345,9 +1345,10 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getResidents60DaysRosterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getResidents60DaysRosterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
@@ -1373,6 +1374,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         return $qb

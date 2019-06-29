@@ -416,9 +416,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRentsWithSources(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getAdmissionRentsWithSources(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
@@ -482,6 +483,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         return $qb
@@ -680,9 +687,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param $type
      * @param ImtDateTimeInterval $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRoomListData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null)
+    public function getAdmissionRoomListData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getRoomListResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
@@ -724,6 +732,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
@@ -735,9 +749,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRoomRentData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getAdmissionRoomRentData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
@@ -771,6 +786,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
@@ -782,9 +803,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRoomRentMasterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getAdmissionRoomRentMasterData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
@@ -818,6 +840,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
         return $qb
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
@@ -829,9 +857,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRoomRentMasterNewData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null)
+    public function getAdmissionRoomRentMasterNewData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
@@ -863,6 +892,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         return $qb

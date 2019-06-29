@@ -78,7 +78,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
+        $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
@@ -164,7 +164,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $data = $repo->getAdmissionRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId);
+        $data = $repo->getAdmissionRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
@@ -252,7 +252,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
         $residentIds = array_map(function($item){return $item['id'];} , $data);
@@ -445,7 +445,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $rents = $repo->getAdmissionRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $rents = $repo->getAdmissionRoomRentMasterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
 
@@ -651,7 +651,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $rents = $repo->getAdmissionRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId);
+        $rents = $repo->getAdmissionRoomRentMasterNewData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
         $data = [];
 
