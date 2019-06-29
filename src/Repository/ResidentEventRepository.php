@@ -105,6 +105,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
         }
 
         $queryBuilder
+            ->orderBy('re.data', 'DESC')
             ->groupBy('re.id');
     }
 
