@@ -61,7 +61,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $id;
@@ -105,7 +106,8 @@ class ResidentAdmission
      * @Groups({
      *      "api_admin_resident_admission_list",
      *      "api_admin_resident_admission_get",
-     *      "api_admin_resident_admission_get_active"
+     *      "api_admin_resident_admission_get_active",
+     *      "api_admin_resident_get_last_admission"
      * })
      */
     private $groupType;
@@ -235,7 +237,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $facilityBed;
@@ -254,7 +257,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $apartmentBed;
@@ -273,7 +277,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $region;
@@ -292,7 +297,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $csz;
@@ -315,7 +321,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $address;
@@ -334,7 +341,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $diningRoom;
@@ -346,7 +354,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $dnr;
@@ -358,7 +367,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $polst;
@@ -370,7 +380,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $ambulatory;
@@ -398,7 +409,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $careGroup;
@@ -419,7 +431,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $careLevel;

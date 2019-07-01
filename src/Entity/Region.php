@@ -75,7 +75,8 @@ class Region
      *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $id;
@@ -103,7 +104,8 @@ class Region
      *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
-     *     "api_admin_contract_get_active"
+     *     "api_admin_contract_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $name;

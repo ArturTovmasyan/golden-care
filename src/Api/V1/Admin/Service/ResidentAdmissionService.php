@@ -103,6 +103,18 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @return mixed
+     */
+    public function getResidentLastAdmission($id)
+    {
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        return $repo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
+    }
+
+    /**
+     * @param $id
      * @return ResidentAdmission|null|object
      */
     public function getActiveByResidentId($id)

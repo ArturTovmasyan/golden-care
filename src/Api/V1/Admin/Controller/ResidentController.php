@@ -478,7 +478,6 @@ class ResidentController extends BaseController
         );
     }
 
-
     /**
      * @api {put} /api/v1.0/admin/resident/{id}/photo Edit Resident Photo
      * @apiVersion 1.0.0
@@ -579,6 +578,23 @@ class ResidentController extends BaseController
             Response::HTTP_OK,
             '',
             [$relatedData]
+        );
+    }
+
+    /**
+     * @Route("/last/admission/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_last_admission", methods={"GET"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getResidentLastAdmissionAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getResidentLastAdmission($id),
+            ['api_admin_resident_get_last_admission']
         );
     }
 }
