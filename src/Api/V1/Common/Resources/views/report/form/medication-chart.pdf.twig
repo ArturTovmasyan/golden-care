@@ -11,12 +11,12 @@
                     <tr>
                         <th colspan="34">
                             <div style="float: right">
-                                <p style="font-size: 13px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                <p style="font-size: 14px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                             </div>
                             <div style="float: left">
                                 {% if resident.typeName is defined %}
                                     <div style="height: 5px;"></div>
-                                    <p style="font-size: 14px !important">{{ resident.typeName }}</p>
+                                    <p style="font-size: 15px !important">{{ resident.typeName }}</p>
                                     {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
                                 {% endif %}
                             </div>
@@ -26,15 +26,15 @@
                     <tr>
                         <td colspan="34">
                             <div style="float: left;">
-                                <b style="font-size: 14px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
+                                <b style="font-size: 15px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                             </div>
                             <div style="clear: both"></div>
                         </td>
                     </tr>
-                    <tr style="line-height: 2px; font-size: 12px!important;">
-                        <td style="text-align: center"><div style="width: 200px;"><b style="font-size: 12px !important;">Medication</b></div></td>
-                        <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 12px !important;">Pass</b></div></td>
-                        <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 12px !important;">Qty</b></div></td>
+                    <tr style="line-height: 2px; font-size: 13px!important;">
+                        <td style="text-align: center"><div style="width: 200px;"><b style="font-size: 13px !important;">Medication</b></div></td>
+                        <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 13px !important;">Pass</b></div></td>
+                        <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 13px !important;">Qty</b></div></td>
                         <td><div style="width: 9px; text-align: center">1</div></td>
                         <td><div style="width: 9px; text-align: center">2</div></td>
                         <td><div style="width: 9px; text-align: center">3</div></td>
@@ -76,7 +76,7 @@
                         <tr style="margin: 0 !important;">
                             <td rowspan="6" style="height: 150px !important; border: solid 1px black;">
                                 <b>{{ medication.medication }}</b><br>
-                                <div style="width: 300px; font-size: 10px;">
+                                <div style="width: 300px; font-size: 11px;">
                                     {% if medication.dosage %}{{ medication.dosage }} {{ medication.dosageUnit }}{% endif %}<br>
                                     {{ medication.notes }}
                                 </div>
@@ -179,8 +179,8 @@
 
                         {% if (key % 3 == 0 and key >= 3) or (key == medCount or key == 1 + medCount) %}
                             <tr style="border: none; margin: 0 !important;">
-                                <td colspan="34" style="border: none; font-size: 12px !important;">
-                                    <div style="float:left; width: 300px;">
+                                <td colspan="34" style="border: none; font-size: 13px !important;">
+                                    <div style="float:left; width: 400px;">
                                         <p>
                                             Physician: Dr. {{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}&nbsp;
                                             {% for physicianPhone in data.physicianPhones %}
@@ -244,11 +244,11 @@
                                 <tr>
                                     <th colspan="34">
                                         <div style="float: right">
-                                            <p style="font-size: 13px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                            <p style="font-size: 14px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                                         </div>
                                         <div style="float: left">
                                             <div style="height: 5px;"></div>
-                                            <p style="font-size: 14px !important">{{ resident.typeName }}</p>
+                                            <p style="font-size: 15px !important">{{ resident.typeName }}</p>
                                             {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
                                         </div>
                                         <div style="clear: both"></div>
@@ -257,15 +257,15 @@
                                 <tr>
                                     <td colspan="34">
                                         <div style="float: left;">
-                                            <b style="font-size: 14px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
+                                            <b style="font-size: 15px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                                         </div>
                                         <div style="clear: both"></div>
                                     </td>
                                 </tr>
-                                <tr style="line-height: 2px; font-size: 12px!important;">
-                                    <td style="text-align: center"><div style="width: 300px;"><b style="font-size: 12px !important;">Medication</b></div></td>
-                                    <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 12px !important;">Pass</b></div></td>
-                                    <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 12px !important;">Qty</b></div></td>
+                                <tr style="line-height: 2px; font-size: 13px!important;">
+                                    <td style="text-align: center"><div style="width: 300px;"><b style="font-size: 13px !important;">Medication</b></div></td>
+                                    <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 13px !important;">Pass</b></div></td>
+                                    <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 13px !important;">Qty</b></div></td>
                                     <td><div style="width: 9px; text-align: center">1</div></td>
                                     <td><div style="width: 9px; text-align: center">2</div></td>
                                     <td><div style="width: 9px; text-align: center">3</div></td>
