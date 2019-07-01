@@ -11,13 +11,13 @@
                     <tr>
                         <th colspan="34">
                             <div style="float: right">
-                                <p style="font-size: 15px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                <p style="font-size: 16px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                             </div>
                             <div style="float: left">
                                 {% if resident.typeName is defined %}
                                     <div style="height: 5px;"></div>
                                     <p style="font-size: 16px !important">{{ resident.typeName }}</p>
-                                    {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
+                                    {% if resident.address is defined and resident.address %}<p style="font-size: 13px !important">{{ resident.address }}</p>{% endif %}
                                 {% endif %}
                             </div>
                             <div style="clear: both"></div>
@@ -73,7 +73,7 @@
                     {% set key = 1 %}
                     {% set medCount = data.medications[resident.id] | length %}
                     {% for  medication in data.medications[resident.id] %}
-                        <tr style="margin: 0 !important; font-size: 12px;">
+                        <tr style="margin: 0 !important; font-size: 13px !important;">
                             <td rowspan="6" style="height: 150px !important; border: solid 1px black;">
                                 <b>{{ medication.medication }}</b><br>
                                 <div style="width: 300px; font-size: 12px;">
@@ -206,7 +206,7 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div style="float:left;">
+                                    <div style="float:left; font-size: 14px !important;">
                                         <p>Comments: ____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                         <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
@@ -215,7 +215,7 @@
                                         {% endif %}
                                     </div>
                                     <div style="float: right; line-height: 1px;">
-                                        <div style="float: left; border-right: solid 1px darkgray;">
+                                        <div style="float: left; border-right: solid 1px darkgray; font-size: 14px !important;">
                                             <p>L</p>
                                             <p>E</p>
                                             <p>G</p>
@@ -223,7 +223,7 @@
                                             <p>N</p>
                                             <p>D</p>
                                         </div>
-                                        <div style="float: left; margin-left: 5px; line-height: 2px; padding-top: 3px;">
+                                        <div style="float: left; margin-left: 5px; line-height: 2px; padding-top: 3px; font-size: 14px !important;">
                                             <p>R - Refused</p>
                                             <p>A - Absent</p>
                                             <p>H - Hospital</p>
@@ -249,7 +249,7 @@
                                         <div style="float: left">
                                             <div style="height: 5px;"></div>
                                             <p style="font-size: 16px !important">{{ resident.typeName }}</p>
-                                            {% if resident.address is defined and resident.address %}<p>{{ resident.address }}</p>{% endif %}
+                                            {% if resident.address is defined and resident.address %}<p style="font-size: 13px !important">{{ resident.address }}</p>{% endif %}
                                         </div>
                                         <div style="clear: both"></div>
                                     </th>
