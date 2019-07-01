@@ -135,7 +135,8 @@ class ApartmentBed
      *     "api_admin_apartment_bed_get",
      *     "api_admin_resident_admission_get_active",
      *     "api_admin_contract_get_active",
-     *     "api_admin_contract_get"
+     *     "api_admin_contract_get",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $room;
