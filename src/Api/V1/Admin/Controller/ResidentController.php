@@ -88,6 +88,8 @@ class ResidentController extends BaseController
             'api_admin_resident_grid',
             $residentService,
             [
+                'type' => $request->get('type'),
+                'type_id' => $request->get('type_id'),
                 'state' => $request->get('state')
             ]
         );

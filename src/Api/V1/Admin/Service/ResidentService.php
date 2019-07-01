@@ -10,10 +10,12 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
 use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
@@ -62,13 +64,33 @@ class ResidentService extends BaseService implements IGridService
         $repo = $this->em->getRepository(Resident::class);
 
         $ids = null;
+        $activeIds = null;
+        if (!empty($params) && !empty($params[0]['type']) && !empty($params[0]['type_id'])) {
+                $type = (int)$params[0]['type'];
+                $typeId = (int)$params[0]['type_id'];
+
+                /** @var ResidentAdmissionRepository $admissionRepo */
+                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+                $residents = $admissionRepo->getActiveResidentsByStrategy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeId);
+
+                $activeIds = [];
+                if (!empty($residents)) {
+                    $activeIds = array_map(function(array $item){return $item['id'];} , $residents);
+                }
+
+            $ids = $activeIds;
+        }
+
+        $stateIds = null;
         if (!empty($params) && !empty($params[0]['state'])) {
             $residents = $this->residentAdmissionService->getStateResidents($params[0]['state']);
 
-            $ids = [];
+            $stateIds = [];
             if (!empty($residents)) {
-                $ids = array_map(function(array $item){return $item['id'];} , $residents);
+                $stateIds = array_map(function(array $item){return $item['id'];} , $residents);
             }
+
+            $ids = $stateIds;
         }
 
         $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids, $this->getNotGrantResidentIds());
