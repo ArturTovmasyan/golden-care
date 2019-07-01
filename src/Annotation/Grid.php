@@ -257,13 +257,9 @@ class Grid
 
         if(!empty($params['query'])) {
             foreach ($fields as $field) {
-                if($field['id'] !== 'space') {
-                    switch ($field['type']) {
-                        case self::FIELD_TYPE_TEXT:
-                            $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
-                            $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $params['query']));
-                            break;
-                    }
+                if ($field['id'] !== 'space' && $field['type'] === self::FIELD_TYPE_TEXT) {
+                    $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
+                    $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $params['query']));
                 }
             }
         }
