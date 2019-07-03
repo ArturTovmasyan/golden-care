@@ -27,7 +27,8 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->addSelect("GROUP_CONCAT(r.name SEPARATOR ', ') AS roles")
             ->addSelect(
                 "(SELECT
-                          GROUP_CONCAT(f.name SEPARATOR ', ')
+                          CASE WHEN JSON_CONTAINS(JSON_ARRAYAGG(r.id), '0')=1 THEN
+                          'All' ELSE GROUP_CONCAT(f.name SEPARATOR ', ') END
                         FROM
                           App\\Entity\\Facility f
                         WHERE JSON_CONTAINS(
