@@ -122,6 +122,13 @@ class FacilityRoom
      *     "api_admin_facility_room_add",
      *     "api_admin_facility_room_edit"
      * })
+     * @Assert\Regex(
+     *     pattern="/^[A-Za-z0-9]+$/",
+     *     message="The value should be alphanumeric.",
+     *     groups={
+     *         "api_admin_facility_room_add",
+     *         "api_admin_facility_room_edit"
+     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Number cannot be longer than {{ limit }} characters",

@@ -85,6 +85,7 @@ class ApartmentRoom
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
      *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get",
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_get_last_admission"
      * })
@@ -121,6 +122,13 @@ class ApartmentRoom
      *     "api_admin_apartment_room_add",
      *     "api_admin_apartment_room_edit"
      * })
+     * @Assert\Regex(
+     *     pattern="/^[A-Za-z0-9]+$/",
+     *     message="The value should be alphanumeric.",
+     *     groups={
+     *         "api_admin_apartment_room_add",
+     *         "api_admin_apartment_room_edit"
+     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Number cannot be longer than {{ limit }} characters",
@@ -134,6 +142,7 @@ class ApartmentRoom
      *     "api_admin_apartment_room_list",
      *     "api_admin_apartment_room_get",
      *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get",
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_get_last_admission"
      * })
