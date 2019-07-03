@@ -64,23 +64,23 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  *              "field"      = "u.enabled"
  *          },
  *          {
- *              "id"         = "completed",
- *              "type"       = "boolean",
- *              "field"      = "u.completed"
- *          },
- *          {
  *              "id"         = "last_activity_at",
  *              "type"       = "datetime",
  *              "field"      = "u.lastActivityAt"
+ *          },
+ *          {
+ *              "id"         = "roles",
+ *              "type"       = "string",
+ *              "field"      = ""
+ *          },
+ *          {
+ *              "id"         = "facilities",
+ *              "type"       = "string",
+ *              "field"      = ""
  *          }
  *     }
  * )
  */
-//*          {
-//    *              "id"         = "owner",
-// *              "type"       = "boolean",
-// *              "field"      = "u.owner"
-//        *          }
 class User implements UserInterface
 {
     use TimeAwareTrait;

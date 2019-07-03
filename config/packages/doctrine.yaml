@@ -34,5 +34,8 @@ doctrine:
                 JSON_ARRAYAGG:                App\Util\MySQL\JsonArrayAgg
                 JSON_ARRAY:                   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
                 JSON_OBJECT:                  Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonObject
+                JSON_EXTRACT:                 Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                JSON_CONTAINS:                Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
                 CAST:                         Oro\ORM\Query\AST\Functions\Cast
                 DATE_FORMAT:                  Oro\ORM\Query\AST\Functions\String\DateFormat
+                GROUP_CONCAT:                 Oro\ORM\Query\AST\Functions\String\GroupConcat

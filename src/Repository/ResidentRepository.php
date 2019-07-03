@@ -89,7 +89,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null)
+    public function list(Space $space = null, array $entityGrants = null, array $ids = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->createQueryBuilder('r')
@@ -116,6 +116,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             $qb
                 ->andWhere('r.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('r.id IN (:ids)')
+                ->setParameter('ids', $ids);
         }
 
         if ($notGrantResidentIds !== null) {

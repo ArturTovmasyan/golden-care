@@ -3,13 +3,11 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\Facility;
 use App\Entity\Space;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use PhpParser\Node\Expr\AssignOp\Concat;
 
 /**
  * Class UserRepository
@@ -26,6 +24,20 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     {
         $queryBuilder
             ->from(User::class, 'u')
+            ->addSelect("GROUP_CONCAT(r.name SEPARATOR ', ') AS roles")
+            ->addSelect(
+                "(SELECT
+                          GROUP_CONCAT(f.name SEPARATOR ', ')
+                        FROM
+                          App\\Entity\\Facility f
+                        WHERE JSON_CONTAINS(
+                            JSON_EXTRACT(
+                              u.grants,
+                              '$.\"persistence-facility\"'
+                            ),
+                            CAST(f.id AS JSON)
+                          ) = 1) AS facilities")
+            ->innerJoin('u.roles', 'r')
             ->innerJoin(
                 Space::class,
                 's',

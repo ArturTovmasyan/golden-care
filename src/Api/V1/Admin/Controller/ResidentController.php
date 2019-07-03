@@ -172,13 +172,20 @@ class ResidentController extends BaseController
      * @return JsonResponse|PdfResponse
      * @throws \Exception
      */
-    public function listAction(Request $request, ResidentService $residentService)
+    public function listAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService)
     {
+        $residentService->setResidentAdmissionService($residentAdmissionService);
+
         return $this->respondList(
             $request,
             Resident::class,
             'api_admin_resident_list',
-            $residentService
+            $residentService,
+            [
+                'type' => $request->get('type'),
+                'type_id' => $request->get('type_id'),
+                'state' => $request->get('state')
+            ]
         );
     }
 
