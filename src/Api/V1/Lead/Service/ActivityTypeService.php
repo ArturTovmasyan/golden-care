@@ -68,7 +68,7 @@ class ActivityTypeService extends BaseService implements IGridService
             $statusRepo = $this->em->getRepository(ActivityStatus::class);
 
             /** @var ActivityStatus $status */
-            $status = $statusRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $params['status_id']);
+            $status = $statusRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $params['default_status_id']);
 
             if ($status === null) {
                 throw new ActivityStatusNotFoundException();
@@ -129,7 +129,7 @@ class ActivityTypeService extends BaseService implements IGridService
             $statusRepo = $this->em->getRepository(ActivityStatus::class);
 
             /** @var ActivityStatus $status */
-            $status = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $params['status_id']);
+            $status = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $params['default_status_id']);
 
             if ($status === null) {
                 throw new ActivityStatusNotFoundException();

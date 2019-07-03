@@ -114,7 +114,7 @@ class ActivityTypeController extends BaseController
         $id = $activityTypeService->add(
             [
                 'title' => $request->get('title'),
-                'status_id' => $request->get('status_id'),
+                'default_status_id' => $request->get('default_status_id'),
                 'assign_to' => $request->get('assign_to'),
                 'due_date' => $request->get('due_date'),
                 'reminder_date' => $request->get('reminder_date'),
@@ -150,7 +150,7 @@ class ActivityTypeController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'status_id' => $request->get('status_id'),
+                'default_status_id' => $request->get('default_status_id'),
                 'assign_to' => $request->get('assign_to'),
                 'due_date' => $request->get('due_date'),
                 'reminder_date' => $request->get('reminder_date'),
