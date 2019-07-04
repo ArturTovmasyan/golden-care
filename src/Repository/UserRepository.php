@@ -28,7 +28,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->addSelect(
                 "(SELECT
                           CASE WHEN JSON_CONTAINS(JSON_ARRAYAGG(r.id), '0')=1
-                                AND JSON_CONTAINS(JSON_ARRAYAGG(r.id), '1')=1 THEN
+                                OR JSON_CONTAINS(JSON_ARRAYAGG(r.id), '1')=1 THEN
                           'All' ELSE GROUP_CONCAT(f.name SEPARATOR ', ') END
                         FROM
                           App\\Entity\\Facility f
