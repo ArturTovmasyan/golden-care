@@ -33,8 +33,8 @@ doctrine:
                 NATURAL_SORT:                 App\Util\MySQL\NaturalSort
                 FIRST:                        App\Util\MySQL\First
                 JSON_ARRAYAGG:                App\Util\MySQL\JsonArrayAgg
+                JSON_OBJECT:                  App\Util\MySQL\JsonObject
                 JSON_ARRAY:                   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
-                JSON_OBJECT:                  Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonObject
                 JSON_EXTRACT:                 Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
                 JSON_CONTAINS:                Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
                 CAST:                         Oro\ORM\Query\AST\Functions\Cast
