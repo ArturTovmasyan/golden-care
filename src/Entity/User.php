@@ -423,6 +423,7 @@ class User implements UserInterface
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
+     *     "api_admin_user_list",
      *     "api_admin_user_get",
      *     "api_profile_view",
      *     "api_profile_me"

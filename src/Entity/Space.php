@@ -52,6 +52,8 @@ class Space
      *     "api_admin_role_grid",
      *     "api_admin_role_list",
      *     "api_admin_role_get",
+     *     "api_admin_user_list",
+     *     "api_admin_user_get",
      *     "api_admin_space_grid",
      *     "api_admin_space_list",
      *     "api_admin_space_get",
