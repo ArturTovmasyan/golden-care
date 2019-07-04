@@ -31,6 +31,7 @@ doctrine:
             string_functions:
                 SC_PAYMENT_SOURCE_DECORATOR:  App\Util\MySQL\PaymentSourceDecorator
                 NATURAL_SORT:                 App\Util\MySQL\NaturalSort
+                FIRST:                        App\Util\MySQL\First
                 JSON_ARRAYAGG:                App\Util\MySQL\JsonArrayAgg
                 JSON_ARRAY:                   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
                 JSON_OBJECT:                  Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonObject

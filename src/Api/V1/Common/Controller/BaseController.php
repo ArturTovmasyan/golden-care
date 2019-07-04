@@ -144,6 +144,7 @@ class BaseController extends Controller
         $service->gridSelect($queryBuilder, $params);
 
         $paginator = new Paginator($queryBuilder);
+        $paginator->setUseOutputWalkers(false);
 
         $page    = $request->get('page') ?: 1;
         $perPage = $request->get('per_page');

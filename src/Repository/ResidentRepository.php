@@ -42,6 +42,29 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     {
         $queryBuilder
             ->from(Resident::class, 'r')
+
+            ->addSelect('
+                  (JSON_ARRAY(
+                    FIRST(SELECT JSON_OBJECT(raf.name, CONCAT(rafr.number, \' (\', rafb.number, \')\'))
+                    FROM App\\Entity\\ResidentAdmission ra1
+                    INNER JOIN App\\Entity\\FacilityBed  rafb WITH rafb.id = ra1.facilityBed
+                    INNER JOIN App\\Entity\\FacilityRoom rafr WITH rafr.id = rafb.room
+                    INNER JOIN App\\Entity\\Facility     raf  WITH raf.id  = rafr.facility
+                    WHERE ra1.end IS NULL AND ra1.resident = r.id ORDER BY ra1.start DESC, ra1.id DESC),
+                    FIRST(SELECT JSON_OBJECT(raa.name, CONCAT(raar.number, \' (\', raab.number, \')\'))
+                    FROM App\\Entity\\ResidentAdmission ra2
+                    INNER JOIN App\\Entity\\ApartmentBed  raab WITH raab.id = ra2.facilityBed
+                    INNER JOIN App\\Entity\\ApartmentRoom raar WITH raar.id = raab.room
+                    INNER JOIN App\\Entity\\Apartment     raa  WITH raa.id  = raar.apartment
+                    WHERE ra2.end IS NULL AND ra2.resident = r.id ORDER BY ra2.start DESC, ra2.id DESC),
+                    FIRST(SELECT JSON_OBJECT(rar.name, CONCAT(\'(\', CONCAT(racsz.city, \' \', racsz.stateAbbr, \', \', racsz.zipMain), \') \', ra3.address))
+                    FROM App\\Entity\\ResidentAdmission ra3
+                    INNER JOIN App\\Entity\\Region       rar   WITH rar.id   = ra3.region
+                    INNER JOIN App\\Entity\\CityStateZip racsz WITH racsz.id = ra3.csz
+                    WHERE ra3.end IS NULL AND ra3.resident = r.id ORDER BY ra3.start DESC, ra3.id DESC)
+                  )) AS info
+            ')
+
             ->innerJoin(
                 Space::class,
                 's',

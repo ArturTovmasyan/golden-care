@@ -42,6 +42,12 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
+ *          },
+ *          {
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )
