@@ -47,7 +47,7 @@
                                     <div style="float: left">
                                         {% for datum in data.data %}
                                             {% if (loop.index is odd) %}
-                                                <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                                <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
                                             {% endif %}
                                         {% endfor %}
                                     </div>
@@ -55,7 +55,7 @@
                                 <div style="float: right">
                                     {% for datum in data.data %}
                                         {% if (loop.index is even) %}
-                                            <div style="width: 130px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                            <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
