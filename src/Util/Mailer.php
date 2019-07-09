@@ -11,6 +11,7 @@ class Mailer
      * Default params
      */
     const FROM = 'noreply@seniorcare.com';
+    const TO = 'support@seniorcaresw.com';
     const BODY = 'text/html';
 
     /**
@@ -154,7 +155,7 @@ class Mailer
 
         return $this
             ->setRecipient($user->getEmail())
-            ->setTemplate("@api_email/credentials.html.twig")
+            ->setTemplate('@api_email/credentials.html.twig')
             ->setSubject('Sign In Details')
             ->setVars([
                 'subject' => $this->subject,
@@ -177,7 +178,7 @@ class Mailer
 
         return $this
             ->setRecipient($user->getEmail())
-            ->setTemplate("@api_email/password-recovery.html.twig")
+            ->setTemplate('@api_email/password-recovery.html.twig')
             ->setSubject('Password Recovery')
             ->setVars([
                 'subject' => $this->subject,
@@ -201,7 +202,7 @@ class Mailer
 
         return $this
             ->setRecipient($user->getEmail())
-            ->setTemplate("@api_email/activation.html.twig")
+            ->setTemplate('@api_email/activation.html.twig')
             ->setSubject('Welcome to SeniorCare')
             ->setVars([
                 'subject' => $this->subject,
@@ -317,5 +318,23 @@ class Mailer
         ;
 
         return $mailer->send($message);
+    }
+
+    /**
+     * @param $subject
+     * @param $body
+     * @return mixed
+     */
+    public function sendHandledCustomerException($subject, $body)
+    {
+        return $this
+            ->setRecipient(self::TO)
+            ->setTemplate('@api_email/handle-customer-exception.html.twig')
+            ->setSubject($subject)
+            ->setVars([
+                'subject' => $subject,
+                'body' => $body,
+            ])
+            ->send();
     }
 }

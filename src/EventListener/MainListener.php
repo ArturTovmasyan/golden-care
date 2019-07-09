@@ -7,6 +7,7 @@ use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\User;
+use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,18 +42,25 @@ class MainListener
     private $grantService;
 
     /**
-     * ActivityListener constructor.
+     * @var Mailer
+     */
+    protected $mailer;
+
+    /**
+     * MainListener constructor.
      * @param EntityManagerInterface $em
      * @param Security $security
      * @param Reader $reader
      * @param GrantService $grantService
+     * @param Mailer $mailer
      */
-    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService)
+    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService, Mailer $mailer)
     {
         $this->em           = $em;
         $this->security     = $security;
         $this->reader       = $reader;
         $this->grantService = $grantService;
+        $this->mailer       = $mailer;
     }
 
     /**
@@ -75,23 +83,49 @@ class MainListener
             );
         }  else if ($exception instanceof AccessDeniedHttpException) {
             $response = $this->respondError(
-                "Access denied to resource.",
+                'Access denied to resource.',
                 $exception->getStatusCode()
             );
         } else if ($exception instanceof \ErrorException) {
             $response = $this->respondError(
                 sprintf(
-                    "%s:%d %s",
+                    '%s:%d %s',
                     $exception->getFile(),
                     $exception->getLine(),
                     $exception->getMessage()
                 ),
                 $exception->getCode()
             );
+
+            // send email when handled customer exception
+            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
+
+            $this->mailer->sendHandledCustomerException(
+                'Handle '.$customer.' exception',
+                [
+                    'customer' => $customer,
+                    'code' => $exception->getCode(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'message' => $exception->getMessage()
+                ]
+            );
         } else {
             $response = $this->respondError(
                 $exception->getMessage(),
                 $exception->getCode()
+            );
+
+            // send email when handled customer exception
+            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
+
+            $this->mailer->sendHandledCustomerException(
+                'Handle '.$customer.' exception',
+                [
+                    'customer' => $customer,
+                    'code' => $exception->getCode(),
+                    'message' => $exception->getMessage()
+                ]
             );
         }
 
