@@ -3,7 +3,9 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Entity\Facility;
 use App\Entity\PhysicianPhone;
+use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
@@ -14,12 +16,15 @@ use App\Model\Report\ChangeoverNotes;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
 use App\Model\Report\MedicationChart;
+use App\Model\Report\MedicationChartBlank;
 use App\Model\Report\MedicationList;
 use App\Model\Report\NightActivity;
 use App\Model\Report\ResidentBirthdayList;
 use App\Model\Report\RoomAudit;
 use App\Model\Report\ShowerSkinInspection;
+use App\Repository\FacilityRepository;
 use App\Repository\PhysicianPhoneRepository;
+use App\Repository\RegionRepository;
 use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentRepository;
@@ -273,6 +278,53 @@ class FormReportService extends BaseService
         $report->setMedications($medications);
         $report->setAllergens($allergens);
         $report->setPhysicianPhones($physicianPhones);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @return MedicationChartBlank
+     */
+    public function getMedicationChartBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $object = null;
+        if ($type === GroupType::TYPE_FACILITY) {
+            /** @var FacilityRepository $repo */
+            $repo = $this->em->getRepository(Facility::class);
+
+            if ($typeId) {
+                $object = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+            }
+        }
+
+        if ($type === GroupType::TYPE_REGION) {
+            /** @var RegionRepository $repo */
+            $repo = $this->em->getRepository(Region::class);
+
+            if ($typeId) {
+                $object = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Region::class), $typeId);
+            }
+        }
+
+        $report = new MedicationChartBlank();
+        $report->setObject($object);
 
         return $report;
     }
