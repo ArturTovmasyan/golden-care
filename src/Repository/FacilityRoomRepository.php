@@ -58,6 +58,8 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
         }
 
         $queryBuilder
+            ->orderBy('f.shorthand', 'ASC')
+            ->addOrderBy('fr.number', 'ASC')
             ->groupBy('fr.id');
     }
 
@@ -101,10 +103,9 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
-        $qb
-            ->addOrderBy('fr.number', 'ASC');
-
         return $qb
+            ->orderBy('f.shorthand', 'ASC')
+            ->addOrderBy('fr.number', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -154,6 +155,8 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
         }
 
         return $qb
+            ->orderBy('f.shorthand', 'ASC')
+            ->addOrderBy('fr.number', 'ASC')
             ->getQuery()
             ->getResult();
     }

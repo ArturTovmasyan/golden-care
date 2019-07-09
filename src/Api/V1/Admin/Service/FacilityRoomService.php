@@ -123,10 +123,6 @@ class FacilityRoomService extends BaseService implements IGridService
             }
         }
 
-        \usort($rooms, function($a, $b) {
-            return (int)$a->getNumber()  > (int)$b->getNumber();
-        });
-
         return $rooms;
 
     }

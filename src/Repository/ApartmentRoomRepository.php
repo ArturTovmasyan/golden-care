@@ -58,6 +58,8 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
         }
 
         $queryBuilder
+            ->orderBy('a.shorthand', 'ASC')
+            ->addOrderBy('ar.number', 'ASC')
             ->groupBy('ar.id');
     }
 
@@ -101,10 +103,9 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
                 ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
         }
 
-        $qb
-            ->addOrderBy('ar.number', 'ASC');
-
         return $qb
+            ->orderBy('a.shorthand', 'ASC')
+            ->addOrderBy('ar.number', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -154,6 +155,8 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
         }
 
         return $qb
+            ->orderBy('a.shorthand', 'ASC')
+            ->addOrderBy('ar.number', 'ASC')
             ->getQuery()
             ->getResult();
     }
