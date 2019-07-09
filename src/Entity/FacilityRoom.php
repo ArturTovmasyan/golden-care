@@ -244,7 +244,6 @@ class FacilityRoom
 
     /**
      * @param Facility|null $facility
-     * @return FacilityRoom
      */
     public function setFacility(?Facility $facility): void
     {
@@ -347,6 +346,24 @@ class FacilityRoom
                         ->addViolation();
                 }
             }
+        }
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={
+     *     "api_admin_facility_room_add",
+     *     "api_admin_facility_room_edit"
+     * })
+     */
+    public function areFloorValid(ExecutionContextInterface $context): void
+    {
+        $floor = $this->getFloor();
+        $facility = $this->getFacility();
+        if ($floor !== null && $facility !== null && $floor > $facility->getNumberOfFloors()) {
+            $context->buildViolation('The floor can not be more than "'.$facility->getNumberOfFloors().'".')
+                ->atPath('floor')
+                ->addViolation();
         }
     }
 }

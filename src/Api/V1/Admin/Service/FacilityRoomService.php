@@ -124,7 +124,7 @@ class FacilityRoomService extends BaseService implements IGridService
         }
 
         \usort($rooms, function($a, $b) {
-            return intval($a->getNumber()) > intval($b->getNumber());
+            return (int)$a->getNumber()  > (int)$b->getNumber();
         });
 
         return $rooms;
@@ -198,10 +198,12 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
+            $floor = !empty($params['floor']) ? $params['floor'] : null;
+
             $facilityRoom = new FacilityRoom();
             $facilityRoom->setFacility($facility);
             $facilityRoom->setNumber($params['number']);
-            $facilityRoom->setFloor($params['floor']);
+            $facilityRoom->setFloor($floor);
             $facilityRoom->setNotes($params['notes']);
 
             if (!empty($params['beds'])) {
@@ -267,9 +269,11 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
+            $floor = !empty($params['floor']) ? $params['floor'] : null;
+
             $entity->setFacility($facility);
             $entity->setNumber($params['number']);
-            $entity->setFloor($params['floor']);
+            $entity->setFloor($floor);
             $entity->setNotes($params['notes']);
 
             $addedBeds = [];
