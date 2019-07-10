@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\Exception\ApartmentBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
+use App\Api\V1\Common\Service\Exception\DiningRoomNotValidException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\LastResidentAdmissionNotFoundException;
@@ -794,6 +795,22 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             if ($careLevel === null) {
                 throw new CareLevelNotFoundException();
+            }
+
+            $roomFacility = $facilityBed->getRoom() ? $facilityBed->getRoom()->getFacility() : null;
+            $roomFacilityId = 0;
+            if ($roomFacility !== null) {
+                $roomFacilityId = $roomFacility->getId();
+            }
+
+            $diningRoomFacility = $diningRoom->getFacility();
+            $diningRoomFacilityId = 0;
+            if ($diningRoomFacility !== null) {
+                $diningRoomFacilityId = $diningRoomFacility->getId();
+            }
+
+            if ($roomFacilityId > 0 && $diningRoomFacilityId > 0 && $diningRoomFacilityId !== $roomFacilityId) {
+                throw new DiningRoomNotValidException();
             }
 
             $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
