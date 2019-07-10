@@ -12,6 +12,7 @@ class Mailer
      */
     const FROM = 'noreply@seniorcare.com';
     const TO = 'support@seniorcaresw.com';
+    const BCC = ['armenv@intermotionllc.com', 'haykg@intermotionllc.com'];
     const BODY = 'text/html';
 
     /**
@@ -32,7 +33,7 @@ class Mailer
     /**
      * @var array
      */
-    private $bbc = [];
+    private $bcc = [];
 
     /**
      * @var string
@@ -76,12 +77,12 @@ class Mailer
     }
 
     /**
-     * @param array $bbc
+     * @param array $bcc
      * @return $this
      */
-    public function setBbc(array $bbc)
+    public function setBcc(array $bcc)
     {
-        $this->bbc = $bbc;
+        $this->bcc = $bcc;
 
         return $this;
     }
@@ -135,7 +136,7 @@ class Mailer
         $message = (new \Swift_Message($this->subject))
             ->setFrom(self::FROM)
             ->setTo($this->recipient)
-            ->setBcc($this->bbc)
+            ->setBcc($this->bcc)
             ->setBody($body, self::BODY)
         ;
 
@@ -329,6 +330,7 @@ class Mailer
     {
         return $this
             ->setRecipient(self::TO)
+            ->setBcc(self::BCC)
             ->setTemplate('@api_email/handle-customer-exception.html.twig')
             ->setSubject($subject)
             ->setVars([
