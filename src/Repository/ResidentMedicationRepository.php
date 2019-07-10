@@ -370,13 +370,13 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
 
         return $qb
             ->orderBy('rm.discontinued', 'ASC')
+            ->addOrderBy('m.title')
             ->addOrderBy('rm.treatment', 'ASC')
             ->addOrderBy('rm.am', 'DESC')
             ->addOrderBy('rm.nn', 'DESC')
             ->addOrderBy('rm.pm', 'DESC')
             ->addOrderBy('rm.hs', 'DESC')
             ->addOrderBy('rm.prn', 'DESC')
-            ->addOrderBy('m.title')
             ->groupBy('rm.id')
             ->getQuery()
             ->getResult();
