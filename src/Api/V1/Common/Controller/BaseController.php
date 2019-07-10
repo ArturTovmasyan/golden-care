@@ -303,9 +303,9 @@ class BaseController extends Controller
         }
 
         if (!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
-            $options = array_filter($options, function ($value) {
+            $options = array_values(array_filter($options, function ($value) {
                 return $value['id'] !== 'space';
-            });
+            }));
         }
 
         $options = ArrayUtil::remove_keys($options, ['field']);
