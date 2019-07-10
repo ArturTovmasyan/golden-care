@@ -322,11 +322,12 @@ class Mailer
     }
 
     /**
+     * @param $customer
      * @param $subject
      * @param $body
      * @return mixed
      */
-    public function sendHandledCustomerException($subject, $body)
+    public function sendHandledCustomerException($customer, $subject, $body)
     {
         return $this
             ->setRecipient(self::TO)
@@ -334,6 +335,7 @@ class Mailer
             ->setTemplate('@api_email/handle-customer-exception.html.twig')
             ->setSubject($subject)
             ->setVars([
+                'customer' => $customer,
                 'subject' => $subject,
                 'body' => $body,
             ])

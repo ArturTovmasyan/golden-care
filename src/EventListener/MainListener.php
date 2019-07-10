@@ -68,6 +68,9 @@ class MainListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        $sendEmail = false;
+        $body = [];
+
         $exception = $event->getException();
 
         if ($exception instanceof ValidationException) {
@@ -97,36 +100,34 @@ class MainListener
                 $exception->getCode()
             );
 
-            // send email when handled customer exception
-            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
+            $sendEmail = true;
 
-            $this->mailer->sendHandledCustomerException(
-                'Handle '.$customer.' exception',
-                [
-                    'customer' => $customer,
-                    'code' => $exception->getCode(),
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'message' => $exception->getMessage()
-                ]
-            );
+            $body = [
+                'code' => $exception->getCode(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'message' => $exception->getMessage()
+            ];
         } else {
             $response = $this->respondError(
                 $exception->getMessage(),
                 $exception->getCode()
             );
 
-            // send email when handled customer exception
-            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
+            $sendEmail = true;
 
-            $this->mailer->sendHandledCustomerException(
-                'Handle '.$customer.' exception',
-                [
-                    'customer' => $customer,
-                    'code' => $exception->getCode(),
-                    'message' => $exception->getMessage()
-                ]
-            );
+            $body = [
+                'code' => $exception->getCode(),
+                'message' => $exception->getMessage()
+            ];
+        }
+
+        // send email when handled customer exception
+        if ($sendEmail) {
+            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
+            $subject = 'Handle '.$customer.' exception';
+
+            $this->mailer->sendHandledCustomerException($customer, $subject, $body);
         }
 
         $event->setResponse($response);
