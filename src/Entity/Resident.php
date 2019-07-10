@@ -39,15 +39,15 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "r.birthday"
  *          },
  *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
- *          },
- *          {
  *              "id"         = "info",
  *              "sortable"   = false,
  *              "type"       = "json",
  *              "field"      = "info"
+ *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "field"      = "s.name"
  *          }
  *     }
  * )

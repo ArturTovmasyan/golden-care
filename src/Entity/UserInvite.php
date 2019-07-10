@@ -44,16 +44,16 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "ui.owner"
  *          },
  *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
- *          },
- *          {
  *              "id"         = "invited_by",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))",
  *              "link"       = ":edit"
  *          },
+ *          {
+ *              "id"         = "space",
+ *              "type"       = "string",
+ *              "field"      = "s.name"
+ *          }
  *     }
  * )
  */
