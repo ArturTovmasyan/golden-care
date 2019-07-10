@@ -34,23 +34,6 @@ use App\Annotation\Grid;
  *              "field"      = "fr.id"
  *          },
  *          {
- *              "id"         = "number",
- *              "type"       = "string",
- *              "field"      = "fr.number",
- *              "sort_type"  = "natural",
- *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "floor",
- *              "type"       = "number",
- *              "field"      = "fr.floor"
- *          },
- *          {
- *              "id"         = "notes",
- *              "type"       = "string",
- *              "field"      = "fr.notes"
- *          },
- *          {
  *              "id"         = "facility",
  *              "type"       = "string",
  *              "field"      = "f.name"
@@ -61,9 +44,26 @@ use App\Annotation\Grid;
  *              "field"      = "f.shorthand"
  *          },
  *          {
+ *              "id"         = "floor",
+ *              "type"       = "number",
+ *              "field"      = "fr.floor"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "field"      = "fr.number",
+ *              "sort_type"  = "natural",
+ *              "link"       = ":edit"
+ *          },
+ *          {
  *              "id"         = "bed_count",
  *              "type"       = "number",
  *              "field"      = "(SELECT COUNT(fb) FROM \App\Entity\FacilityBed fb WHERE fb.room=fr)"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "field"      = "fr.notes"
  *          }
  *     }
  * )

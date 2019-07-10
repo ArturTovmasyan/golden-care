@@ -34,23 +34,6 @@ use App\Annotation\Grid;
  *              "field"      = "ar.id"
  *          },
  *          {
- *              "id"         = "number",
- *              "type"       = "string",
- *              "field"      = "ar.number",
- *              "sort_type"  = "natural",
- *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "floor",
- *              "type"       = "number",
- *              "field"      = "ar.floor"
- *          },
- *          {
- *              "id"         = "notes",
- *              "type"       = "string",
- *              "field"      = "ar.notes"
- *          },
- *          {
  *              "id"         = "apartment",
  *              "type"       = "string",
  *              "field"      = "a.name"
@@ -61,9 +44,26 @@ use App\Annotation\Grid;
  *              "field"      = "a.shorthand"
  *          },
  *          {
+ *              "id"         = "floor",
+ *              "type"       = "number",
+ *              "field"      = "ar.floor"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "field"      = "ar.number",
+ *              "sort_type"  = "natural",
+ *              "link"       = ":edit"
+ *          },
+ *          {
  *              "id"         = "bed_count",
  *              "type"       = "number",
  *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab WHERE ab.room=ar)"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "field"      = "ar.notes"
  *          }
  *     }
  * )
