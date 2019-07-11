@@ -7,6 +7,7 @@ use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Lead;
+use App\Entity\Lead\Referral;
 use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\Space;
@@ -105,9 +106,10 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $all
+     * @param $free
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all)
+    public function list(Space $space = null, array $entityGrants = null, $all, $free)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -122,6 +124,12 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
             $qb
                 ->where('l.state = :state')
                 ->setParameter('state', State::TYPE_OPEN);
+        }
+
+        if ($free) {
+            $qb
+                ->leftJoin('l.referral', 'r')
+                ->andWhere('r.id IS NULL');
         }
 
         if ($space !== null) {

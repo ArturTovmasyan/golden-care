@@ -85,7 +85,8 @@ class LeadController extends BaseController
             'api_lead_lead_list',
             $activityTypeService,
             [
-                'all' => $request->get('all')
+                'all' => $request->get('all'),
+                'free' => $request->get('free')
             ]
         );
     }

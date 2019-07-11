@@ -75,12 +75,17 @@ class LeadService extends BaseService implements IGridService
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
 
+        $free = false;
+        if (!empty($params) && isset($params[0]['free'])) {
+            $free = true;
+        }
+
         $all = false;
         if (!empty($params) && isset($params[0]['all'])) {
             $all = true;
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all);
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free);
     }
 
     /**
