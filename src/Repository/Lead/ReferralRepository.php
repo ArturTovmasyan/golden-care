@@ -250,6 +250,62 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $leadId
+     * @param null $id
+     * @return mixed
+     */
+    public function getByLeadWithoutCurrent(Space $space = null, array $entityGrants = null, $leadId, $id = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = r.lead'
+            )
+            ->where('l.id = :leadId')
+            ->setParameter('leadId', $leadId);
+
+        if ($id !== null) {
+            $qb
+                ->andWhere('r.id != :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ReferrerType::class,
+                    'rt',
+                    Join::WITH,
+                    'rt = r.type'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

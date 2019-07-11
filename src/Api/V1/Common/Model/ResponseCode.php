@@ -123,6 +123,7 @@ class ResponseCode
     const CHANGE_LOG_NOT_FOUND_EXCEPTION                         = 725;
     const INCORRECT_CHANGE_LOG_TYPE_EXCEPTION                    = 726;
     const DINING_ROOM_NOT_VALID_EXCEPTION                        = 727;
+    const LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION              = 728;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -244,6 +245,7 @@ class ResponseCode
         self::CHANGE_LOG_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'ChangeLog not found.'],
         self::INCORRECT_CHANGE_LOG_TYPE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect ChangeLog type.'],
         self::DINING_ROOM_NOT_VALID_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'DiningRoom not valid.'],
+        self::LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead already joined in referral.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default role not found.'],

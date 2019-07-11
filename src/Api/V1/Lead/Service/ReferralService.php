@@ -2,6 +2,7 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\LeadAlreadyJoinedInReferralException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
@@ -87,16 +88,26 @@ class ReferralService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $leadId = $params['lead_id'] ?? 0;
 
             /** @var LeadRepository $leadRepo */
             $leadRepo = $this->em->getRepository(Lead::class);
 
             /** @var Lead $lead */
-            $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+            $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
             if ($lead === null) {
                 throw new LeadNotFoundException();
+            }
+
+            /** @var ReferralRepository $repo */
+            $repo = $this->em->getRepository(Referral::class);
+
+            $referrals = $repo->getByLeadWithoutCurrent($currentSpace, $this->grantService->getCurrentUserEntityGrants(Referral::class), $leadId);
+            if (\count($referrals) > 0) {
+                throw new LeadAlreadyJoinedInReferralException();
             }
 
             $typeId = $params['type_id'] ?? 0;
@@ -105,7 +116,7 @@ class ReferralService extends BaseService implements IGridService
             $typeRepo = $this->em->getRepository(ReferrerType::class);
 
             /** @var ReferrerType $type */
-            $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $typeId);
+            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $typeId);
 
             if ($type === null) {
                 throw new ReferrerTypeNotFoundException();
@@ -123,7 +134,7 @@ class ReferralService extends BaseService implements IGridService
                 $organizationRepo = $this->em->getRepository(Organization::class);
 
                 /** @var Organization $organization */
-                $organization = $organizationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
+                $organization = $organizationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
 
                 if ($organization === null) {
                     throw new OrganizationNotFoundException();
@@ -198,10 +209,15 @@ class ReferralService extends BaseService implements IGridService
             $leadRepo = $this->em->getRepository(Lead::class);
 
             /** @var Lead $lead */
-            $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+            $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
             if ($lead === null) {
                 throw new LeadNotFoundException();
+            }
+
+            $referrals = $repo->getByLeadWithoutCurrent($currentSpace, $this->grantService->getCurrentUserEntityGrants(Referral::class), $leadId, $id);
+            if (\count($referrals) > 0) {
+                throw new LeadAlreadyJoinedInReferralException();
             }
 
             $typeId = $params['type_id'] ?? 0;
@@ -210,7 +226,7 @@ class ReferralService extends BaseService implements IGridService
             $typeRepo = $this->em->getRepository(ReferrerType::class);
 
             /** @var ReferrerType $type */
-            $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $typeId);
+            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $typeId);
 
             if ($type === null) {
                 throw new ReferrerTypeNotFoundException();
@@ -227,7 +243,7 @@ class ReferralService extends BaseService implements IGridService
                 $organizationRepo = $this->em->getRepository(Organization::class);
 
                 /** @var Organization $organization */
-                $organization = $organizationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
+                $organization = $organizationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
 
                 if ($organization === null) {
                     throw new OrganizationNotFoundException();
