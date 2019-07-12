@@ -11,6 +11,6 @@ class ResidentAdmissionOnlyAdmitException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_ADMISSION_ONLY_ADMIT_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_ADMISSION_ONLY_ADMIT_EXCEPTION]['message'], ResponseCode::RESIDENT_ADMISSION_ONLY_ADMIT_EXCEPTION);
     }
 }

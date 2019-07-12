@@ -11,6 +11,6 @@ class AssessmentRowNotAvailableException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION]['message'], ResponseCode::ASSESSMENT_ROW_NOT_AVAILABLE_EXCEPTION);
     }
 }

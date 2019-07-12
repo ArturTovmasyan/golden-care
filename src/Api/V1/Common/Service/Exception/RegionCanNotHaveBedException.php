@@ -11,6 +11,6 @@ class RegionCanNotHaveBedException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::REGION_CAN_NOT_HAVE_BED_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::REGION_CAN_NOT_HAVE_BED_EXCEPTION]['message'], ResponseCode::REGION_CAN_NOT_HAVE_BED_EXCEPTION);
     }
 }

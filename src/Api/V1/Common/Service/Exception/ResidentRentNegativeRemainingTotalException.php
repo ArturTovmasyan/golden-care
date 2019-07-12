@@ -11,6 +11,6 @@ class ResidentRentNegativeRemainingTotalException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL]['message'], ResponseCode::RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL);
     }
 }

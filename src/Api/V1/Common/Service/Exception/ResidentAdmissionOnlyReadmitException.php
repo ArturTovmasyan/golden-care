@@ -11,6 +11,6 @@ class ResidentAdmissionOnlyReadmitException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION]['message'], ResponseCode::RESIDENT_ADMISSION_ONLY_READMIT_EXCEPTION);
     }
 }

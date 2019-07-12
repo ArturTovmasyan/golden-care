@@ -11,6 +11,6 @@ class UnhandledRentPeriodException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::UNHANDLED_RENT_PERIOD_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::UNHANDLED_RENT_PERIOD_EXCEPTION]['message'], ResponseCode::UNHANDLED_RENT_PERIOD_EXCEPTION);
     }
 }

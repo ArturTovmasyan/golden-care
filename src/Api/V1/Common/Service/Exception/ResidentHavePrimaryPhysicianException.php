@@ -11,6 +11,6 @@ class ResidentHavePrimaryPhysicianException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION]['message'], ResponseCode::RESIDENT_HAVE_PRIMARY_PHYSICIAN_EXCEPTION);
     }
 }

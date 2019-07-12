@@ -11,6 +11,6 @@ class CityStateZipNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION]['message'], ResponseCode::CITY_STATE_ZIP_NOT_FOUND_EXCEPTION);
     }
 }

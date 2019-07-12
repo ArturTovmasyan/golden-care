@@ -11,6 +11,6 @@ class DuplicateUserException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::DUPLICATE_USER_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::DUPLICATE_USER_EXCEPTION]['message'], ResponseCode::DUPLICATE_USER_EXCEPTION);
     }
 }

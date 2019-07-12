@@ -11,6 +11,6 @@ class PhysicianNotBeBlankException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PHYSICIAN_NOT_BE_BLANK_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::PHYSICIAN_NOT_BE_BLANK_EXCEPTION]['message'], ResponseCode::PHYSICIAN_NOT_BE_BLANK_EXCEPTION);
     }
 }

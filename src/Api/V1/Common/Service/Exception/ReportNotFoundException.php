@@ -11,6 +11,6 @@ class ReportNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::REPORT_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::REPORT_NOT_FOUND_EXCEPTION]['message'], ResponseCode::REPORT_NOT_FOUND_EXCEPTION);
     }
 }

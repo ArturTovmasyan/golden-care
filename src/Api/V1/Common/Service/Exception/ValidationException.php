@@ -18,7 +18,7 @@ class ValidationException extends \RuntimeException
     public function __construct(array $errors)
     {
         $this->errors = $errors;
-        parent::__construct('', ResponseCode::VALIDATION_ERROR_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::VALIDATION_ERROR_EXCEPTION]['message'], ResponseCode::VALIDATION_ERROR_EXCEPTION);
     }
 
     /**

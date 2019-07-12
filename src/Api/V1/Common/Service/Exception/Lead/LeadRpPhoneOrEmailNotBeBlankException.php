@@ -11,6 +11,6 @@ class LeadRpPhoneOrEmailNotBeBlankException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION]['message'], ResponseCode::LEAD_RP_PHONE_OR_EMAIL_NOT_BE_BLANK_EXCEPTION);
     }
 }

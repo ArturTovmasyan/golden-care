@@ -11,6 +11,6 @@ class InvalidActivationLinkException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ACTIVATION_LINK_INVALID);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ACTIVATION_LINK_INVALID]['message'], ResponseCode::ACTIVATION_LINK_INVALID);
     }
 }

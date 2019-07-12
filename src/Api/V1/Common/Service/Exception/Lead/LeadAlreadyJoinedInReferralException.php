@@ -11,6 +11,6 @@ class LeadAlreadyJoinedInReferralException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION]['message'], ResponseCode::LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION);
     }
 }

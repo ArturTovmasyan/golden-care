@@ -11,6 +11,6 @@ class LastResidentAdmissionNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::LAST_RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::LAST_RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION]['message'], ResponseCode::LAST_RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION);
     }
 }

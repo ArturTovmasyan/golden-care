@@ -11,6 +11,6 @@ class StartGreaterEndDateException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::START_GREATER_END_DATE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::START_GREATER_END_DATE_EXCEPTION]['message'], ResponseCode::START_GREATER_END_DATE_EXCEPTION);
     }
 }

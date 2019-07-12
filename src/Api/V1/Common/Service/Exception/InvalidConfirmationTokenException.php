@@ -11,6 +11,6 @@ class InvalidConfirmationTokenException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::INVALID_CONFIRMATION_TOKEN_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::INVALID_CONFIRMATION_TOKEN_EXCEPTION]['message'], ResponseCode::INVALID_CONFIRMATION_TOKEN_EXCEPTION);
     }
 }

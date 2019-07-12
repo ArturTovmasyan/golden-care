@@ -11,6 +11,6 @@ class AssessmentCategoryNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION]['message'], ResponseCode::ASSESSMENT_CATEGORY_NOT_FOUND_EXCEPTION);
     }
 }

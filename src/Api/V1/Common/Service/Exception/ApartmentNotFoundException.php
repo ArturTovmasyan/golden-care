@@ -11,6 +11,6 @@ class ApartmentNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::APARTMENT_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::APARTMENT_NOT_FOUND_EXCEPTION]['message'], ResponseCode::APARTMENT_NOT_FOUND_EXCEPTION);
     }
 }

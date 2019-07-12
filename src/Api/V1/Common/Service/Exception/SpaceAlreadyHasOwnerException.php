@@ -11,6 +11,6 @@ class SpaceAlreadyHasOwnerException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::SPACE_ALREADY_HAS_OWNER_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::SPACE_ALREADY_HAS_OWNER_EXCEPTION]['message'], ResponseCode::SPACE_ALREADY_HAS_OWNER_EXCEPTION);
     }
 }

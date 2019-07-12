@@ -11,6 +11,6 @@ class AdditionalDateNotBeBlankException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION]['message'], ResponseCode::ADDITIONAL_DATE_NOT_BE_BLANK_EXCEPTION);
     }
 }

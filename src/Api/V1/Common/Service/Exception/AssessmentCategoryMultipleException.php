@@ -11,6 +11,6 @@ class AssessmentCategoryMultipleException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION]['message'], ResponseCode::ASSESSMENT_CATEGORY_MULTIPLE_EXCEPTION);
     }
 }

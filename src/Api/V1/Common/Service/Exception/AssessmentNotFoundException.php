@@ -11,6 +11,6 @@ class AssessmentNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_NOT_FOUND_EXCEPTION]['message'], ResponseCode::ASSESSMENT_NOT_FOUND_EXCEPTION);
     }
 }

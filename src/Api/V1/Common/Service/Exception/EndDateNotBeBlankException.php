@@ -11,6 +11,6 @@ class EndDateNotBeBlankException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::END_DATE_NOT_BE_BLANK_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::END_DATE_NOT_BE_BLANK_EXCEPTION]['message'], ResponseCode::END_DATE_NOT_BE_BLANK_EXCEPTION);
     }
 }

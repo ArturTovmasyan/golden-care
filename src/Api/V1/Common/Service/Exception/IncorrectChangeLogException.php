@@ -11,6 +11,6 @@ class IncorrectChangeLogException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::INCORRECT_CHANGE_LOG_TYPE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::INCORRECT_CHANGE_LOG_TYPE_EXCEPTION]['message'], ResponseCode::INCORRECT_CHANGE_LOG_TYPE_EXCEPTION);
     }
 }

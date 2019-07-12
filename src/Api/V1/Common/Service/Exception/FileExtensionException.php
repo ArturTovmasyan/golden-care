@@ -11,6 +11,6 @@ class FileExtensionException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::FILE_EXTENSION_NOT_SUPPORTED);
+        parent::__construct(ResponseCode::$titles[ResponseCode::FILE_EXTENSION_NOT_SUPPORTED]['message'], ResponseCode::FILE_EXTENSION_NOT_SUPPORTED);
     }
 }

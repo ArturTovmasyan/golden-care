@@ -11,6 +11,6 @@ class EventDefinitionNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::EVENT_DEFINITION_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::EVENT_DEFINITION_NOT_FOUND_EXCEPTION]['message'], ResponseCode::EVENT_DEFINITION_NOT_FOUND_EXCEPTION);
     }
 }

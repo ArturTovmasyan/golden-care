@@ -11,6 +11,6 @@ class PaymentSourceNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION]['message'], ResponseCode::PAYMENT_SOURCE_NOT_FOUND_EXCEPTION);
     }
 }

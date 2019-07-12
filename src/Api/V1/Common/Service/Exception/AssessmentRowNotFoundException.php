@@ -11,6 +11,6 @@ class AssessmentRowNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_ROW_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_ROW_NOT_FOUND_EXCEPTION]['message'], ResponseCode::ASSESSMENT_ROW_NOT_FOUND_EXCEPTION);
     }
 }

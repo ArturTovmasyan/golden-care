@@ -11,6 +11,6 @@ class PhoneSinglePrimaryException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PHONE_SINGLE_PRIMARY_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::PHONE_SINGLE_PRIMARY_EXCEPTION]['message'], ResponseCode::PHONE_SINGLE_PRIMARY_EXCEPTION);
     }
 }

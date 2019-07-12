@@ -11,6 +11,6 @@ class ResidentAllergenNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_ALLERGEN_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_ALLERGEN_NOT_FOUND_EXCEPTION]['message'], ResponseCode::RESIDENT_ALLERGEN_NOT_FOUND_EXCEPTION);
     }
 }

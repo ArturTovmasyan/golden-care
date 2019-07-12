@@ -11,6 +11,6 @@ class InvalidRecoveryLinkException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RECOVERY_LINK_INVALID);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RECOVERY_LINK_INVALID]['message'], ResponseCode::RECOVERY_LINK_INVALID);
     }
 }

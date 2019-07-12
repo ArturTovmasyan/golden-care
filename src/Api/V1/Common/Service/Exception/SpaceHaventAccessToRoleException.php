@@ -11,6 +11,6 @@ class SpaceHaventAccessToRoleException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION]['message'], ResponseCode::SPACE_HAVE_NOT_ACCESS_TO_ROLE_EXCEPTION);
     }
 }

@@ -11,6 +11,6 @@ class AllergenNotSingleException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ALLERGEN_NOT_SINGLE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ALLERGEN_NOT_SINGLE_EXCEPTION]['message'], ResponseCode::ALLERGEN_NOT_SINGLE_EXCEPTION);
     }
 }

@@ -11,6 +11,6 @@ class DiningRoomNotValidException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::DINING_ROOM_NOT_VALID_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::DINING_ROOM_NOT_VALID_EXCEPTION]['message'], ResponseCode::DINING_ROOM_NOT_VALID_EXCEPTION);
     }
 }

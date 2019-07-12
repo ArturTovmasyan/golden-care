@@ -11,6 +11,6 @@ class SystemErrorException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::SYSTEM_ERROR);
+        parent::__construct(ResponseCode::$titles[ResponseCode::SYSTEM_ERROR]['message'], ResponseCode::SYSTEM_ERROR);
     }
 }

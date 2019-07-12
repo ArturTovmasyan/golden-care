@@ -11,6 +11,6 @@ class DuplicateSpecialityRequestException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION]['message'], ResponseCode::PHYSICIAN_SPECIALITY_DUPLICATE_REQUEST_EXCEPTION);
     }
 }

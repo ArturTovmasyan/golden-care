@@ -11,6 +11,6 @@ class FolderNotDefinedException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::FOLDER_NOT_DEFINED_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::FOLDER_NOT_DEFINED_EXCEPTION]['message'], ResponseCode::FOLDER_NOT_DEFINED_EXCEPTION);
     }
 }

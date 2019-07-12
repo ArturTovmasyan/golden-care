@@ -11,6 +11,6 @@ class ReportMisconfigurationException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::REPORT_MISCONFIGURATION_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::REPORT_MISCONFIGURATION_EXCEPTION]['message'], ResponseCode::REPORT_MISCONFIGURATION_EXCEPTION);
     }
 }

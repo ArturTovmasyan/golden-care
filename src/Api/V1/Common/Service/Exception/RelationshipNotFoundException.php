@@ -11,6 +11,6 @@ class RelationshipNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RELATIONSHIP_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RELATIONSHIP_NOT_FOUND_EXCEPTION]['message'], ResponseCode::RELATIONSHIP_NOT_FOUND_EXCEPTION);
     }
 }

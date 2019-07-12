@@ -11,6 +11,6 @@ class InvalidGrantConfigException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::INVALID_GRANT_CONFIG);
+        parent::__construct(ResponseCode::$titles[ResponseCode::INVALID_GRANT_CONFIG]['message'], ResponseCode::INVALID_GRANT_CONFIG);
     }
 }

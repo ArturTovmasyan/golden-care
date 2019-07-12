@@ -11,6 +11,6 @@ class AssessmentCareLevelGroupNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION]['message'], ResponseCode::ASSESSMENT_CARE_LEVEL_GROUP_NOT_FOUND_EXCEPTION);
     }
 }

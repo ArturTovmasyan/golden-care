@@ -11,6 +11,6 @@ class MedicalHistoryConditionNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION]['message'], ResponseCode::MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION);
     }
 }

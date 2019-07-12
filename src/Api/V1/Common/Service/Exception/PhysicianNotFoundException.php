@@ -11,6 +11,6 @@ class PhysicianNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::PHYSICIAN_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::PHYSICIAN_NOT_FOUND_EXCEPTION]['message'], ResponseCode::PHYSICIAN_NOT_FOUND_EXCEPTION);
     }
 }

@@ -11,6 +11,6 @@ class ResidentMedicationNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_MEDICATION_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_MEDICATION_NOT_FOUND_EXCEPTION]['message'], ResponseCode::RESIDENT_MEDICATION_NOT_FOUND_EXCEPTION);
     }
 }

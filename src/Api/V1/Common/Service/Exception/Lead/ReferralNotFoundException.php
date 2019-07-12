@@ -11,6 +11,6 @@ class ReferralNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::LEAD_REFERRAL_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::LEAD_REFERRAL_NOT_FOUND_EXCEPTION]['message'], ResponseCode::LEAD_REFERRAL_NOT_FOUND_EXCEPTION);
     }
 }

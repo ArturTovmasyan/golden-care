@@ -11,6 +11,6 @@ class DietNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::DIET_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::DIET_NOT_FOUND_EXCEPTION]['message'], ResponseCode::DIET_NOT_FOUND_EXCEPTION);
     }
 }

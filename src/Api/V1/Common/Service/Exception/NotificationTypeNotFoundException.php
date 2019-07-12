@@ -11,6 +11,6 @@ class NotificationTypeNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION]['message'], ResponseCode::NOTIFICATION_TYPE_NOT_FOUND_EXCEPTION);
     }
 }

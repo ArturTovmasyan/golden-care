@@ -11,6 +11,6 @@ class FileException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::FILE_SYSTEM_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::FILE_SYSTEM_EXCEPTION]['message'], ResponseCode::FILE_SYSTEM_EXCEPTION);
     }
 }

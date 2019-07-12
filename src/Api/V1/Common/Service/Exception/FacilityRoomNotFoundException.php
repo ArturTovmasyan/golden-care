@@ -11,6 +11,6 @@ class FacilityRoomNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::FACILITY_ROOM_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::FACILITY_ROOM_NOT_FOUND_EXCEPTION]['message'], ResponseCode::FACILITY_ROOM_NOT_FOUND_EXCEPTION);
     }
 }

@@ -11,6 +11,6 @@ class ResidentRentNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::RESIDENT_RENT_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::RESIDENT_RENT_NOT_FOUND_EXCEPTION]['message'], ResponseCode::RESIDENT_RENT_NOT_FOUND_EXCEPTION);
     }
 }

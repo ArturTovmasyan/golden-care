@@ -11,6 +11,6 @@ class DifferentPasswordException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::NEW_PASSWORD_MUST_BE_DIFFERENT_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::NEW_PASSWORD_MUST_BE_DIFFERENT_EXCEPTION]['message'], ResponseCode::NEW_PASSWORD_MUST_BE_DIFFERENT_EXCEPTION);
     }
 }

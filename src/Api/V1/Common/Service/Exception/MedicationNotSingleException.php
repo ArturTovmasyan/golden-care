@@ -11,6 +11,6 @@ class MedicationNotSingleException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::MEDICATION_NOT_SINGLE_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::MEDICATION_NOT_SINGLE_EXCEPTION]['message'], ResponseCode::MEDICATION_NOT_SINGLE_EXCEPTION);
     }
 }

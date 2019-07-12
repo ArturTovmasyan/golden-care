@@ -11,6 +11,6 @@ class ChangeLogNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::CHANGE_LOG_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::CHANGE_LOG_NOT_FOUND_EXCEPTION]['message'], ResponseCode::CHANGE_LOG_NOT_FOUND_EXCEPTION);
     }
 }

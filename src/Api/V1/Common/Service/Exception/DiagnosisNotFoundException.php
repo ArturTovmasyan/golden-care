@@ -11,6 +11,6 @@ class DiagnosisNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::DIAGNOSIS_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::DIAGNOSIS_NOT_FOUND_EXCEPTION]['message'], ResponseCode::DIAGNOSIS_NOT_FOUND_EXCEPTION);
     }
 }

@@ -11,6 +11,6 @@ class UserHaventConfirmationTokenException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::INVALID_USER_CONFIRMATION_TOKEN);
+        parent::__construct(ResponseCode::$titles[ResponseCode::INVALID_USER_CONFIRMATION_TOKEN]['message'], ResponseCode::INVALID_USER_CONFIRMATION_TOKEN);
     }
 }

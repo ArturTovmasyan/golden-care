@@ -11,6 +11,6 @@ class StateChangeReasonNotFoundException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION]['message'], ResponseCode::LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION);
     }
 }

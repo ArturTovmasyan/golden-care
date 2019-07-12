@@ -11,6 +11,6 @@ class CanNotRemoveBadException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::CAN_NOT_REMOVE_BED_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::CAN_NOT_REMOVE_BED_EXCEPTION]['message'], ResponseCode::CAN_NOT_REMOVE_BED_EXCEPTION);
     }
 }

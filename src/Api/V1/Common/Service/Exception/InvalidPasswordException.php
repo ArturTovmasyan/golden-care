@@ -11,6 +11,6 @@ class InvalidPasswordException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('', ResponseCode::INVALID_PASSWORD_EXCEPTION);
+        parent::__construct(ResponseCode::$titles[ResponseCode::INVALID_PASSWORD_EXCEPTION]['message'], ResponseCode::INVALID_PASSWORD_EXCEPTION);
     }
 }
