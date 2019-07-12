@@ -124,7 +124,9 @@ class Space
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
+     *     "api_admin_change_log_get",
+     *     "api_admin_insurance_company_list",
+     *     "api_admin_insurance_company_get"
      * })
      */
     private $id;
@@ -187,7 +189,9 @@ class Space
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
+     *     "api_admin_change_log_get",
+     *     "api_admin_insurance_company_list",
+     *     "api_admin_insurance_company_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -376,6 +380,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\ChangeLog", mappedBy="space", cascade={"remove", "persist"})
      */
     private $changeLogs;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\InsuranceCompany", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $insuranceCompanies;
 
     /**
      * Space constructor.
@@ -895,5 +905,21 @@ class Space
     public function setChangeLogs(ArrayCollection $changeLogs): void
     {
         $this->changeLogs = $changeLogs;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getInsuranceCompanies(): ArrayCollection
+    {
+        return $this->insuranceCompanies;
+    }
+
+    /**
+     * @param ArrayCollection $insuranceCompanies
+     */
+    public function setInsuranceCompanies(ArrayCollection $insuranceCompanies): void
+    {
+        $this->insuranceCompanies = $insuranceCompanies;
     }
 }

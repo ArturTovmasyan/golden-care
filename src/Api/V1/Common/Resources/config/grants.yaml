@@ -162,6 +162,11 @@ persistence:
           class: App\Entity\ResponsiblePersonPhone
           route: api_admin_responsible_person_phone_list
 
+        insurance_company:
+          title: 'InsuranceCompany'
+          class: App\Entity\InsuranceCompany
+          route: api_admin_insurance_company_list
+
     assessment:
       title: 'Assessment'
       children:
