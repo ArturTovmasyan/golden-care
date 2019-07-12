@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -58,7 +59,9 @@ class InsuranceCompany
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_insurance_company_list",
-     *     "api_admin_insurance_company_get"
+     *     "api_admin_insurance_company_get",
+     *     "api_admin_health_insurance_list",
+     *     "api_admin_health_insurance_get"
      * })
      */
     private $id;
@@ -79,7 +82,9 @@ class InsuranceCompany
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_insurance_company_list",
-     *     "api_admin_insurance_company_get"
+     *     "api_admin_insurance_company_get",
+     *     "api_admin_health_insurance_list",
+     *     "api_admin_health_insurance_get"
      * })
      */
     private $title;
@@ -100,6 +105,12 @@ class InsuranceCompany
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\HealthInsurance", mappedBy="company", cascade={"remove", "persist"})
+     */
+    private $healthInsurances;
 
     public function getId()
     {
@@ -136,5 +147,21 @@ class InsuranceCompany
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHealthInsurances(): ArrayCollection
+    {
+        return $this->healthInsurances;
+    }
+
+    /**
+     * @param ArrayCollection $healthInsurances
+     */
+    public function setHealthInsurances(ArrayCollection $healthInsurances): void
+    {
+        $this->healthInsurances = $healthInsurances;
     }
 }

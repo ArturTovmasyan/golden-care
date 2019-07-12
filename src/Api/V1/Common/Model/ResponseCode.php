@@ -125,6 +125,7 @@ class ResponseCode
     const DINING_ROOM_NOT_VALID_EXCEPTION                        = 727;
     const LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION              = 728;
     const INSURANCE_COMPANY_NOT_FOUND_EXCEPTION                  = 729;
+    const HEALTH_INSURANCE_NOT_FOUND_EXCEPTION                   = 730;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -248,6 +249,7 @@ class ResponseCode
         self::DINING_ROOM_NOT_VALID_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Dining Room not valid.'],
         self::LEAD_ALREADY_JOINED_IN_REFERRAL_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead already has a joined referral.'],
         self::INSURANCE_COMPANY_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Insurance Company not found.'],
+        self::HEALTH_INSURANCE_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Health Insurance not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

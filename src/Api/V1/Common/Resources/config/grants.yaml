@@ -281,6 +281,10 @@ persistence:
           title: 'ResidentResponsiblePerson'
           class: App\Entity\ResidentResponsiblePerson
           route: api_admin_resident_responsible_person_list
+        health_insurance:
+          title: 'HealthInsurance'
+          class: App\Entity\HealthInsurance
+          route: api_admin_health_insurance_list
 
         admission:
           title: 'ResidentAdmission'
