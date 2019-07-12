@@ -41,6 +41,16 @@ class FaceSheet extends Base
     }
 
     /**
+     * @param $insurances
+     */
+    public function setInsurances($insurances): void
+    {
+        foreach ($insurances as $insurance) {
+            $this->residents[$insurance['residentId']]['insurances'][] = $insurance;
+        }
+    }
+
+    /**
      * @param $medications
      */
     public function setMedications($medications): void

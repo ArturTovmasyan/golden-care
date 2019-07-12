@@ -93,7 +93,41 @@
                 </tr>
             </thead>
             <tbody>
+
+            <tr>
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Health Insurance</b></td>
+            </tr>
+            {% if resident['insurances'] is defined %}
+                {% set v = 0 %}
+                {% for insurance in resident['insurances'] %}
+                    {% set v = v + 1 %}
+                    {% if v == 1  %}
+                        <tr style="">
+                            <td colspan="9" style="font-size: 13px !important;">
+                                <div style="float: left; width: 30% !important;">Company</div>
+                                <div style="float: left; width: 20% !important;">Medical Record Number</div>
+                                <div style="float: left; width: 15% !important;">GRP Number</div>
+                                <div style="float: left; width: 35% !important;">Notes</div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr style="">
+                        <td colspan="9">
+                            <div style="float: left; width: 30% !important;"><b style="font-size: 11px !important;">{% if insurance.company %}{{ insurance.company }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20% !important;"><b style="font-size: 11px !important;">{% if insurance.medicalRecordNumber %}{{ insurance.medicalRecordNumber }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 15% !important;"><b style="font-size: 11px !important;">{% if insurance.groupNumber %}{{ insurance.groupNumber }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 35% !important;"><b style="font-size: 11px !important;">{% if insurance.notes %}{{ insurance.notes }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else  %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Health&nbsp;Insurance</td>
+                </tr>
+            {% endif %}
+
             {% if resident['responsiblePersons'] is defined %}
+                <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
                 {% set y = 0 %}
                 {% for responsiblePerson in resident['responsiblePersons'] %}
                     {% if (responsiblePerson.emergency == false and responsiblePerson.financially == true)
