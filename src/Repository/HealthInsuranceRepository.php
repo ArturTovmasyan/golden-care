@@ -182,7 +182,7 @@ class HealthInsuranceRepository extends EntityRepository implements RelatedInfoI
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        return $qb->groupBy('ra.id')
+        return $qb->groupBy('hi.id')
             ->getQuery()
             ->getResult();
     }
