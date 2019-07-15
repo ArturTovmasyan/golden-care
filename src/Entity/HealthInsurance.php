@@ -33,12 +33,6 @@ use App\Annotation\Grid;
  *              "field"      = "hi.id"
  *          },
  *          {
- *              "id"         = "resident",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, ''))",
- *              "link"       = ":edit"
- *          },
- *          {
  *              "id"         = "insurance_company",
  *              "type"       = "string",
  *              "field"      = "ic.title"
