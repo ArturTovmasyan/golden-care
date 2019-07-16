@@ -355,16 +355,16 @@ report:
           title: "Meal Monitor : Meal Consumption Tracking Form, Weekly"
         medication-chart:
           title: "MAR - Medication Chart : Medication Chart for Selected Resident, Monthly"
+        medication-chart-no-admission:
+          title: "MAR - Medication Chart : Medication Chart for Selected Resident, Monthly (pre-admit)"
         medication-chart-all:
           title: "MAR - Medication Chart : Medication Charts for all Resident, Monthly"
         medication-chart-blank:
           title: "MAR - Medication Chart : Blank Medication Chart"
-        medication-chart-no-admission:
-          title: "Medication Chart : Medication Chart / Medical Charts for Selected Resident / all residents, Monthly"
         medication-list-resident:
           title: "Medications List Selected Resident : Medications list for selected resident"
         medication-list-resident-no-admission:
-          title: "Medications List Selected Resident : Medications list for selected resident"
+          title: "Medications List Selected Resident : Medications list for selected resident (pre-admit)"
         medication-list-all:
           title: "Medications List All Residents : Medications list for all residents."
         night-activity:
