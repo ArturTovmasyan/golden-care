@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"resident", "allergen"},
  *     errorPath="allergen_id",
- *     message="This value is already in use for this resident.",
+ *     message="The value is already in use for this Resident.",
  *     groups={
  *          "api_admin_resident_allergen_add",
  *          "api_admin_resident_allergen_edit"
@@ -84,7 +84,7 @@ class ResidentAllergen
 
     /**
      * @var Allergen
-     * @Assert\NotNull(message = "Please select a Allergen", groups={
+     * @Assert\NotNull(message = "Please select an Allergen", groups={
      *     "api_admin_resident_allergen_add",
      *     "api_admin_resident_allergen_edit"
      * })

@@ -18,7 +18,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"room", "number"},
  *     errorPath="number",
- *     message="This number is already in use on that room.",
+ *     message="The number is already in use for this room.",
  *     groups={
  *          "api_admin_apartment_bed_add",
  *          "api_admin_apartment_bed_edit"
@@ -117,7 +117,7 @@ class ApartmentBed
     /**
      * @var ApartmentRoom
      * @Assert\NotNull(
-     *     message = "Please select a ApartmentRoom",
+     *     message = "Please select an Apartment Room",
      *     groups={
      *          "api_admin_apartment_bed_add",
      *          "api_admin_apartment_bed_edit",

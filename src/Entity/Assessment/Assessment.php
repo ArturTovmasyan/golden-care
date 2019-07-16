@@ -132,7 +132,7 @@ class Assessment
      * @var string
      * @ORM\Column(name="performed_by", type="string", nullable=false)
      * @Assert\NotBlank(
-     *     message = "This value can't be blank",
+     *     message = "Value cannot be blank",
      *     groups={
      *          "api_admin_resident_assessment_edit",
      *          "api_admin_resident_assessment_add"

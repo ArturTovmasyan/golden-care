@@ -114,7 +114,7 @@ class Notification
      * @ORM\Column(name="emails", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} emails",
+     *      maxMessage = "You cannot enter more than {{ limit }} email addresses",
      *      groups={
      *          "api_admin_notification_add",
      *          "api_admin_notification_edit"

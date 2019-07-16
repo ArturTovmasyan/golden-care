@@ -13,7 +13,7 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_user_invite")
  * @ORM\Entity(repositoryClass="App\Repository\UserInviteRepository")
- * @UniqueEntity(fields="email", message="This email address was already in use.", groups={
+ * @UniqueEntity(fields="email", message="This Email address is already in use.", groups={
  *     "api_admin_user_invite"
  * })
  * @UniqueEntity(
@@ -119,7 +119,7 @@ class UserInvite
 
     /**
      * @var User
-     * @Assert\NotNull(message = "Please select an User", groups={
+     * @Assert\NotNull(message = "Please select a User", groups={
      *     "api_admin_user_invite"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\User")

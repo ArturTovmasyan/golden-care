@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"space", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that space.",
+ *     message="The title is already in use in this space.",
  *     groups={
  *          "api_admin_notification_type_add",
  *          "api_admin_notification_type_edit"
@@ -194,7 +194,7 @@ class NotificationType
      * @var string
      * @Assert\Length(
      *      max = 120,
-     *      maxMessage = "Email subject cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Email Subject cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_notification_type_add",
      *          "api_admin_notification_type_edit"
@@ -212,7 +212,7 @@ class NotificationType
      * @var string
      * @Assert\Length(
      *      max = 1000,
-     *      maxMessage = "Email message cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Email Message cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_notification_type_add",
      *          "api_admin_notification_type_edit"
@@ -230,7 +230,7 @@ class NotificationType
      * @var string
      * @Assert\Length(
      *      max = 120,
-     *      maxMessage = "SMS subject cannot be longer than {{ limit }} characters",
+     *      maxMessage = "SMS Subject cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_notification_type_add",
      *          "api_admin_notification_type_edit"
@@ -248,7 +248,7 @@ class NotificationType
      * @var string
      * @Assert\Length(
      *      max = 1000,
-     *      maxMessage = "SMS message cannot be longer than {{ limit }} characters",
+     *      maxMessage = "SMS Message cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_notification_type_add",
      *          "api_admin_notification_type_edit"

@@ -80,7 +80,7 @@ class ChangeLog
      * @ORM\Column(name="content", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} contents",
+     *      maxMessage = "You cannot enter more than {{ limit }} contents",
      *      groups={
      *          "api_admin_change_log_add",
      *          "api_admin_change_log_edit"

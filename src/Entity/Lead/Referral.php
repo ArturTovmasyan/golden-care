@@ -81,7 +81,7 @@ class Referral
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "FirstName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_referral_representative_required_add",
      *          "api_lead_referral_representative_required_edit"
@@ -107,7 +107,7 @@ class Referral
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "LastName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_referral_representative_required_add",
      *          "api_lead_referral_representative_required_edit"
@@ -221,7 +221,7 @@ class Referral
      * @ORM\Column(name="emails", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} emails",
+     *      maxMessage = "You cannot enter more than {{ limit }} email addresses",
      *      groups={
      *          "api_lead_referral_representative_required_add",
      *          "api_lead_referral_representative_required_edit"

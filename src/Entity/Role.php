@@ -15,7 +15,7 @@ use App\Annotation\Grid as Grid;
  * @UniqueEntity(
  *     fields={"name"},
  *     errorPath="name",
- *     message="This name is already in use.",
+ *     message="This Name is already in use.",
  *     groups={
  *          "api_admin_role_add",
  *          "api_admin_role_edit"
@@ -25,7 +25,7 @@ use App\Annotation\Grid as Grid;
  *     fields={"default"},
  *     repositoryMethod="getRoleByDefaultCriteria",
  *     errorPath="default",
- *     message="Default role is already in use.",
+ *     message="Default Role is already in use.",
  *     groups={
  *          "api_admin_role_add",
  *          "api_admin_role_edit"

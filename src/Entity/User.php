@@ -16,11 +16,11 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
 /**
  * @ORM\Table(name="tbl_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="This email address was already in use.", groups={
+ * @UniqueEntity(fields="email", message="This Email address is already in use.", groups={
  *     "api_admin_user_add",
  *     "api_account_signup"
  * })
- * @UniqueEntity(fields="username", message="This username was already taken.", groups={
+ * @UniqueEntity(fields="username", message="This Username is already taken.", groups={
  *     "api_admin_user_add",
  *     "api_account_signup"
  * })
@@ -310,11 +310,11 @@ class User implements UserInterface
      *     groups={
      *         "api_profile_change_password"
      *     },
-     *     message="This value should not be equal to current password."
+     *     message="The value entered cannot be the same as the current password."
      * )
      * @Assert\Regex(
      *     pattern="/(\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*)/",
-     *     message="The password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character (non-word characters).",
+     *     message="The password must be at least 8 characters long and contain at least one lowercase and one uppercase letter, one number and one special(non-word) character.",
      *     groups={
      *         "api_profile_change_password",
      *         "api_admin_user_add",
@@ -350,7 +350,7 @@ class User implements UserInterface
      *         "api_account_signup",
      *         "api_account_reset_password"
      *     },
-     *     message="This value should match new password."
+     *     message="The value entered must be the same as the new password."
      * )
      * @ValidationSerializedName(
      *     api_profile_change_password="re_new_password",

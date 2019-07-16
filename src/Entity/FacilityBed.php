@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @UniqueEntity(
  *     fields={"room", "number"},
  *     errorPath="number",
- *     message="This number is already in use on that room.",
+ *     message="The number is already in use for this room.",
  *     groups={
  *          "api_admin_facility_bed_add",
  *          "api_admin_facility_bed_edit"
@@ -118,7 +118,7 @@ class FacilityBed
     /**
      * @var FacilityRoom
      * @Assert\NotNull(
-     *     message = "Please select a FacilityRoom",
+     *     message = "Please select a Facility Room",
      *     groups={
      *          "api_admin_facility_bed_add",
      *          "api_admin_facility_bed_edit",

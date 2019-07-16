@@ -37,7 +37,7 @@ class AssessmentRow
      *      @ORM\JoinColumn(name="id_assessment", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
-     *      message = "Please select a Assessment",
+     *      message = "Please select an Assessment",
      *      groups={
      *          "api_admin_resident_assessment_edit",
      *          "api_admin_resident_assessment_add"

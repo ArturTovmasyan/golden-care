@@ -18,7 +18,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
  * @UniqueEntity(
  *     fields={"space", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that space.",
+ *     message="The title is already in use in this space.",
  *     groups={
  *          "api_admin_assessment_category_add",
  *          "api_admin_assessment_category_edit"
@@ -95,7 +95,7 @@ class Category
      * @var string
      * @ORM\Column(name="title", type="string", nullable=false)
      * @Assert\NotBlank(
-     *     message="Assessment category title should not be blank.",
+     *     message="Assessment Category title cannot be blank.",
      *     groups={
      *          "api_admin_assessment_category_add",
      *          "api_admin_assessment_category_edit"

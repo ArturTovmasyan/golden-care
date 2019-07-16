@@ -160,7 +160,7 @@ class ResidentRent
      * })
      * @Assert\Regex(
      *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
-     *      message="The value {{ value }} is not a valid type. Try to add something like '2000, 0.55, 100.34'.",
+     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
      *          "api_admin_resident_rent_add",
      *          "api_admin_resident_rent_edit"
@@ -203,7 +203,7 @@ class ResidentRent
      * @ORM\Column(name="source", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} sources",
+     *      maxMessage = "You cannot enter more than {{ limit }} sources",
      *      groups={
      *          "api_admin_resident_rent_add",
      *          "api_admin_resident_rent_edit"

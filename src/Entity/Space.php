@@ -16,7 +16,7 @@ use App\Annotation\Grid as Grid;
  * @UniqueEntity(
  *     fields={"name"},
  *     errorPath="name",
- *     message="This name is already in use.",
+ *     message="This Name is already in use.",
  *     groups={
  *          "api_admin_space_add",
  *          "api_admin_space_edit"

@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation\Groups;
  * @UniqueEntity(
  *     fields={"space", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that space.",
+ *     message="The title is already in use in this space.",
  *     groups={
  *          "api_admin_medication_add",
  *          "api_admin_medication_edit"

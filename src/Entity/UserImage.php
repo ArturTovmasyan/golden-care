@@ -29,7 +29,7 @@ class UserImage
 
     /**
      * @var User
-     * @Assert\NotNull(message = "Please select an User", groups={
+     * @Assert\NotNull(message = "Please select a User", groups={
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
      * })

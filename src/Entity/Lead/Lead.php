@@ -100,7 +100,7 @@ class Lead
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "FirstName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"
@@ -126,7 +126,7 @@ class Lead
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "LastName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"
@@ -239,7 +239,7 @@ class Lead
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "RP firstName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "RP First Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"
@@ -263,7 +263,7 @@ class Lead
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "RP lastName cannot be longer than {{ limit }} characters",
+     *      maxMessage = "RP Last Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"
@@ -283,7 +283,7 @@ class Lead
      * @ORM\Column(name="rp_address_1", type="string", length=100, nullable=true)
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "RP address cannot be longer than {{ limit }} characters",
+     *      maxMessage = "RP Address cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"
@@ -301,7 +301,7 @@ class Lead
      * @ORM\Column(name="rp_address_2", type="string", length=100, nullable=true)
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "RP address (optional) cannot be longer than {{ limit }} characters",
+     *      maxMessage = "RP Address (optional) cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
      *          "api_lead_lead_edit"

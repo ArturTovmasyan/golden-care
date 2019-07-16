@@ -229,7 +229,7 @@ class ResidentAdmission
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_facility_bed", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Assert\NotNull(message = "Please select a FacilityBed", groups={
+     * @Assert\NotNull(message = "Please select a Facility Bed", groups={
      *     "api_admin_facility_add",
      *     "api_admin_facility_edit"
      * })
@@ -249,7 +249,7 @@ class ResidentAdmission
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_apartment_bed", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @Assert\NotNull(message = "Please select a ApartmentBed", groups={
+     * @Assert\NotNull(message = "Please select an Apartment Bed", groups={
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit"
      * })
@@ -391,7 +391,7 @@ class ResidentAdmission
      * @ORM\Column(name="care_group", type="smallint", nullable=true)
      * @Assert\Regex(
      *     pattern = "/(^[1-9][0-9]*$)/",
-     *     message="Please provide a valid care group.",
+     *     message="Please provide a valid Care Group.",
      *     groups={
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit",

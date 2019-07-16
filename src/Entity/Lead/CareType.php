@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"space", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that space.",
+ *     message="The title is already in use in this space.",
  *     groups={
  *          "api_lead_care_type_add",
  *          "api_lead_care_type_edit"

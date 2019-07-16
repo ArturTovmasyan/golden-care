@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"careLevelGroup", "title"},
  *     errorPath="title",
- *     message="This title is already in use on that care level group.",
+ *     message="The title is already in use in this Care Level Group.",
  *     groups={
  *          "api_admin_assessment_care_level_add",
  *          "api_admin_assessment_care_level_edit"
@@ -81,7 +81,7 @@ class CareLevel
      *   @ORM\JoinColumn(name="id_care_level_group", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
-     *      message = "Please select a CareLevelGroup",
+     *      message = "Please select a Care Level Group",
      *      groups={
      *          "api_admin_assessment_care_level_add",
      *          "api_admin_assessment_care_level_edit"
@@ -98,7 +98,7 @@ class CareLevel
      * @var string
      * @Assert\Length(
      *      max = 255,
-     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
+     *      maxMessage = "The title cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_assessment_care_level_edit",
      *          "api_admin_assessment_care_level_add"
@@ -120,7 +120,7 @@ class CareLevel
     /**
      * @var int
      * @ORM\Column(name="level_low", type="integer", nullable=false)
-     * @Assert\Type(type="integer",message="The value {{ value }} is not a valid {{ type }}.")
+     * @Assert\Type(type="integer",message="The value entered is not a(n) {{ type }}.")
      * @Groups({
      *     "api_admin_assessment_care_level_list",
      *     "api_admin_assessment_care_level_get",

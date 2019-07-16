@@ -3,7 +3,7 @@
 {% block content %}
     <p>Dear {{ user.fullName }},</p>
     <p>Welcome to SeniorCare!</p>
-    <p>To activate you account, please click
-        <a href="{{ baseUrl }}/activate?key={{ user.activationHash }}">here</a>.
+    <p>To activate your account, please click on
+        <a href="{{ baseUrl }}/activate?key={{ user.activationHash }}">link</a>.
     </p>
 {% endblock %}

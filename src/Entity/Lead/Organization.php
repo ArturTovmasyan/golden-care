@@ -172,7 +172,7 @@ class Organization
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
-     *     message = "Please select a City State & Zip",
+     *     message = "Please select a City, State & Zip",
      *     groups={
      *          "api_lead_organization_add",
      *          "api_organization_edit"
@@ -190,7 +190,7 @@ class Organization
      * @ORM\Column(name="website_url", type="string", length=100, nullable=true)
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "Website url cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Website URL cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_organization_add",
      *          "api_lead_organization_edit"
@@ -221,7 +221,7 @@ class Organization
      * @ORM\Column(name="emails", type="json_array", nullable=true)
      * @Assert\Count(
      *      max = 10,
-     *      maxMessage = "You cannot specify more than {{ limit }} emails",
+     *      maxMessage = "You cannot enter more than {{ limit }} email addresses",
      *      groups={
      *          "api_lead_organization_add",
      *          "api_lead_organization_edit"

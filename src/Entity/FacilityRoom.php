@@ -19,7 +19,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"facility", "number"},
  *     errorPath="number",
- *     message="This number is already in use on that facility.",
+ *     message="The number is already in use for this Facility.",
  *     groups={
  *         "api_admin_facility_room_add",
  *         "api_admin_facility_room_edit"
@@ -157,7 +157,7 @@ class FacilityRoom
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]?$)/",
-     *      message="The value should be numeric and more than zero and no longer than 2 characters.",
+     *      message="The value can take numbers from 1 to 99.",
      *      groups={
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"

@@ -277,7 +277,7 @@ class Facility
 
     /**
      * @var CityStateZip
-     * @Assert\NotNull(message = "Please select a City State & Zip", groups={
+     * @Assert\NotNull(message = "Please select a City, State & Zip", groups={
      *     "api_admin_facility_add",
      *     "api_admin_facility_edit"
      * })
@@ -345,7 +345,7 @@ class Facility
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9]?$)/",
-     *      message="The value should be numeric and more than zero and no longer than 1 characters.",
+     *      message="The value can take numbers from 1 to 9.",
      *      groups={
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"

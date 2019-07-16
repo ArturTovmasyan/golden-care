@@ -152,7 +152,7 @@ class ResidentMedication
 
     /**
      * @var Medication
-     * @Assert\NotNull(message = "Please select a Medication", groups={
+     * @Assert\NotNull(message = "Please select Medication", groups={
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
@@ -170,7 +170,7 @@ class ResidentMedication
 
     /**
      * @var MedicationFormFactor
-     * @Assert\NotNull(message = "Please select a MedicationFormFactor", groups={
+     * @Assert\NotNull(message = "Please select a Medication Form Factor", groups={
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
@@ -194,7 +194,7 @@ class ResidentMedication
      *     "api_admin_resident_medication_edit"
      * })
      * @Assert\Regex(pattern= "/[0-9\.\-\/]+/",
-     *     message="The value {{ value }} is not a valid type. Try to add something like '2, 0.5, 10/15, 0.4-4'.",
+     *     message="The value entered is not a valid type. Examples of valid entries: '2, 0.5, 10/15, 0.4-4'.",
      *     groups={
      *         "api_admin_resident_medication_add",
      *         "api_admin_resident_medication_edit"
@@ -222,14 +222,14 @@ class ResidentMedication
      *     "api_admin_resident_medication_edit"
      * })
      * @Assert\Regex(pattern= "/[a-zA-Z0-9\%\+\/]+/",
-     *     message="The value {{ value }} is not a valid type. Available symbols are: '%, +, /'.",
+     *     message="The value entered is not a valid type. Allowed symbols are: '%, +, /'.",
      *     groups={
      *         "api_admin_resident_medication_add",
      *         "api_admin_resident_medication_edit"
      * })
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "Dosage unit cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Dosage Unit cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
@@ -248,7 +248,7 @@ class ResidentMedication
      * @ORM\Column(name="prescription_number", type="string", length=40, nullable=true)
      * @Assert\Length(
      *      max = 40,
-     *      maxMessage = "Prescription number cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Prescription Number cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
@@ -284,7 +284,7 @@ class ResidentMedication
      * @ORM\Column(name="medication_am", type="string", length=10, nullable=true)
      * @Assert\Length(
      *      max = 10,
-     *      maxMessage = "Am cannot be longer than {{ limit }} characters",
+     *      maxMessage = "AM cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
@@ -302,7 +302,7 @@ class ResidentMedication
      * @ORM\Column(name="medication_nn", type="string", length=10, nullable=true)
      * @Assert\Length(
      *      max = 10,
-     *      maxMessage = "Nn cannot be longer than {{ limit }} characters",
+     *      maxMessage = "NN cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
@@ -320,7 +320,7 @@ class ResidentMedication
      * @ORM\Column(name="medication_pm", type="string", length=10, nullable=true)
      * @Assert\Length(
      *      max = 10,
-     *      maxMessage = "Pm cannot be longer than {{ limit }} characters",
+     *      maxMessage = "PM cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"
@@ -338,7 +338,7 @@ class ResidentMedication
      * @ORM\Column(name="medication_hs", type="string", nullable=true)
      * @Assert\Length(
      *      max = 10,
-     *      maxMessage = "Hs cannot be longer than {{ limit }} characters",
+     *      maxMessage = "HS cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
      *          "api_admin_resident_medication_edit"

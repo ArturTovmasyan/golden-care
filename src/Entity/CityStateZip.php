@@ -103,7 +103,7 @@ class CityStateZip
      * })
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "State Full cannot be longer than {{ limit }} characters",
+     *      maxMessage = "State Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_city_state_zip_add",
      *          "api_admin_city_state_zip_edit"
@@ -221,7 +221,7 @@ class CityStateZip
      * })
      * @Assert\Length(
      *      max = 100,
-     *      maxMessage = "City cannot be longer than {{ limit }} characters",
+     *      maxMessage = "City Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_city_state_zip_add",
      *          "api_admin_city_state_zip_edit"

@@ -257,7 +257,7 @@ class Apartment
 
     /**
      * @var CityStateZip
-     * @Assert\NotNull(message = "Please select a City State & Zip", groups={
+     * @Assert\NotNull(message = "Please select a City, State & Zip", groups={
      *     "api_admin_apartment_add",
      *     "api_admin_apartment_edit"
      * })
