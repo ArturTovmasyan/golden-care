@@ -182,6 +182,10 @@ class HealthInsurance
     /**
      * @var HealthInsuranceFile
      * @ORM\OneToOne(targetEntity="App\Entity\HealthInsuranceFile", mappedBy="insurance", cascade={"remove", "persist"})
+     * @Groups({
+     *     "api_admin_health_insurance_list",
+     *     "api_admin_health_insurance_get"
+     * })
      */
     private $file;
 

@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class HealthInsuranceFile
@@ -27,6 +28,8 @@ class HealthInsuranceFile
      * @Groups({
      *     "api_admin_health_insurance_file_list",
      *     "api_admin_health_insurance_file_get",
+     *     "api_admin_health_insurance_list",
+     *     "api_admin_health_insurance_get"
      * })
      */
     private $id;
@@ -69,6 +72,26 @@ class HealthInsuranceFile
     private $secondFile;
 
     /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("first_file")
+     * @Serializer\Groups({"api_admin_health_insurance_get", "api_admin_health_insurance_list"})
+     */
+    public function getFirst()
+    {
+        return stream_get_contents($this->getFirstFile());
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("second_file")
+     * @Serializer\Groups({"api_admin_health_insurance_get", "api_admin_health_insurance_list"})
+     */
+    public function getSecond()
+    {
+        return stream_get_contents($this->getSecondFile());
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -100,10 +123,7 @@ class HealthInsuranceFile
         $this->insurance = $insurance;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getFirstFile(): ?string
+    public function getFirstFile()
     {
         return $this->firstFile;
     }
@@ -116,10 +136,7 @@ class HealthInsuranceFile
         $this->firstFile = $firstFile;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getSecondFile(): ?string
+    public function getSecondFile()
     {
         return $this->secondFile;
     }
