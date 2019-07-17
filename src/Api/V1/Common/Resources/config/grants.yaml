@@ -321,84 +321,84 @@ report:
       title: "Resident Reports"
       children:
         profile:
-          title: "Profile : Profile for selected resident / all residents"
+          title: "Profile: Profile for selected resident / all residents"
         profile-no-admission:
-          title: "Profile : Profile for selected resident / all residents (pre-admit)"
+          title: "Profile: Profile for selected resident / all residents (pre-admit)"
         face-sheet:
-          title: "FACE Sheet : FACE Sheet for selected resident / all residents"
+          title: "FACE Sheet: FACE Sheet for selected resident / all residents"
         face-sheet-no-admission:
-          title: "FACE Sheet : FACE Sheet for selected resident / all residents (pre-admit)"
+          title: "FACE Sheet: FACE Sheet for selected resident / all residents (pre-admit)"
         detailed-roster:
-          title: "Detailed Roster : Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
+          title: "Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
         simple-roster:
-          title: "Simple Roster : Simple list of Residents, sorted by Room Number"
+          title: "Simple Roster: Simple list of Residents, sorted by Room Number"
         dietary-restrictions:
-          title: "Dietary Restrictions : Dietary Restrictions Report"
+          title: "Dietary Restrictions: Dietary Restrictions Report"
         sixty-days-roster:
-          title: "60 Days Roster : 60 Days Roster Report"
+          title: "60 Days Roster: 60 Days Roster Report"
         event-list:
-          title: "Events : List of Residents Events"
+          title: "Events: List of Residents Events"
     form:
       title: "Forms Reports"
       children:
         birthday-list:
-          title: "Birthday list : List of all residents birthdays, Monthly"
+          title: "Birthday list: List of all residents birthdays, Monthly"
         blood-pressure:
-          title: "Blood Pressure : Blood pressure charting"
+          title: "Blood Pressure: Blood pressure charting"
         bowel-movement:
-          title: "Bowel movement : Bowel Movement tracking form, Weekly"
+          title: "Bowel movement: Bowel Movement tracking form, Weekly"
         changeover-notes:
-          title: "Changeover notes : Shift Changeover Notes, Daily"
+          title: "Changeover notes: Shift Changeover Notes, Daily"
         manicure:
-          title: "Manicure : Manicure Tracking Form, Monthly"
+          title: "Manicure: Manicure Tracking Form, Monthly"
         meal-monitor:
-          title: "Meal Monitor : Meal Consumption Tracking Form, Weekly"
+          title: "Meal Monitor: Meal Consumption Tracking Form, Weekly"
         medication-chart:
-          title: "MAR - Medication Chart : Medication Chart for Selected Resident, Monthly"
+          title: "MAR - Medication Chart: Medication Chart for selected resident, Monthly"
         medication-chart-no-admission:
-          title: "MAR - Medication Chart : Medication Chart for Selected Resident, Monthly (pre-admit)"
+          title: "MAR - Medication Chart: Medication Chart for selected resident, Monthly (pre-admit)"
         medication-chart-all:
-          title: "MAR - Medication Chart : Medication Charts for all Resident, Monthly"
+          title: "MAR - Medication Chart: Medication Charts for all residents, Monthly"
         medication-chart-blank:
-          title: "MAR - Medication Chart : Blank Medication Chart"
+          title: "MAR - Medication Chart: Blank Medication Chart"
         medication-list-resident:
-          title: "Medications List Selected Resident : Medications list for selected resident"
+          title: "Medications List Selected Resident: Medications list for selected resident"
         medication-list-resident-no-admission:
-          title: "Medications List Selected Resident : Medications list for selected resident (pre-admit)"
+          title: "Medications List Selected Resident: Medications list for selected resident (pre-admit)"
         medication-list-all:
-          title: "Medications List All Residents : Medications list for all residents."
+          title: "Medications List All Residents: Medications list for all residents."
         night-activity:
-          title: "Night activity : Night Activity Tracking Form, Daily"
+          title: "Night activity: Night Activity Tracking Form, Daily"
         room-audit:
-          title: "Room Audit : Resident Room Audit form"
+          title: "Room Audit: Resident Room Audit form"
         shower-skin-inspection:
-          title: "Shower Skin Inspection Selected Resident : Shower Skin Inspection for current selected resident"
+          title: "Shower Skin Inspection Selected Resident: Shower Skin Inspection for current selected resident"
         shower-skin-list:
-          title: "Shower Skin Inspection All : Shower Skin Inspection for current selected facility residents, ordered by Room Number."
+          title: "Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number."
     room:
       title: "Room Reports"
       children:
         payor:
-          title: "Payor Report : Monthly Payor Report."
+          title: "Payor Report: Monthly Payor Report."
         room-list:
-          title: "Room : List of Rooms, with occupants and room rent rates."
+          title: "Room: List of Rooms, with occupants and room rent rates."
         room-rent:
-          title: "Room Rent : Monthly Rent Report."
+          title: "Room Rent: Monthly Rent Report."
         room-rent-master:
-          title: "Room Rent Master : Historical Rent Graphs, Data - for Finance Use only."
+          title: "Room Rent Master: Historical Rent Graphs, Data - for Finance Use only."
         room-rent-master-new:
-          title: "Room Rent Master: New! : Monthly Rent Master Report."
+          title: "Room Rent Master: New!: Monthly Rent Master Report."
         room-vacancy:
-          title: "Room Vacancy List : List of Vacant Rooms, by Facility. Calculated as of today"
+          title: "Room Vacancy List: List of Vacant Rooms, by Facility. Calculated as of today"
         room-occupancy:
-          title: "Room Occupancy Rates : Facility Occupancy Rate Summary (calculated as of today)"
+          title: "Room Occupancy Rates: Facility Occupancy Rate Summary (calculated as of today)"
     physician:
       title: "Physicians Reports"
       children:
         simple:
-          title: "Physician Roster Simple : List of physicians, with contact information and resident count"
+          title: "Physician Roster Simple: List of physicians, with contact information and resident count"
         full:
-          title: "Physician Roster Full : List of physicians, with contact information and resident count"
+          title: "Physician Roster Full: List of physicians, with contact information and resident count"
     assessment:
       title: "Assessment Reports"
       children:
