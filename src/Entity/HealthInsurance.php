@@ -17,7 +17,7 @@ use App\Annotation\Grid;
  * @UniqueEntity(
  *     fields={"resident", "company"},
  *     errorPath="company_id",
- *     message="This value is already in use for this Resident.",
+ *     message="The value is already in use for this Resident.",
  *     groups={
  *          "api_admin_health_insurance_add",
  *          "api_admin_health_insurance_edit"
@@ -122,7 +122,7 @@ class HealthInsurance
      * })
      * @Assert\Length(
      *      max = 32,
-     *      maxMessage = "Medical record number cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Medical Record Number cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_health_insurance_add",
      *          "api_admin_health_insurance_edit"
@@ -150,7 +150,7 @@ class HealthInsurance
      * })
      * @Assert\Length(
      *      max = 32,
-     *      maxMessage = "Group number cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Group Number cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_health_insurance_add",
      *          "api_admin_health_insurance_edit"
@@ -178,6 +178,12 @@ class HealthInsurance
      * })
      */
     private $notes;
+
+    /**
+     * @var HealthInsuranceFile
+     * @ORM\OneToOne(targetEntity="App\Entity\HealthInsuranceFile", mappedBy="insurance", cascade={"remove", "persist"})
+     */
+    private $file;
 
     /**
      * @return int
@@ -267,5 +273,21 @@ class HealthInsurance
     public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @return HealthInsuranceFile|null
+     */
+    public function getFile(): ?HealthInsuranceFile
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param HealthInsuranceFile|null $file
+     */
+    public function setFile(?HealthInsuranceFile $file): void
+    {
+        $this->file = $file;
     }
 }

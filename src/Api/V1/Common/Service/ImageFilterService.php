@@ -2,6 +2,7 @@
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
+use App\Entity\HealthInsuranceFile;
 use App\Entity\ResidentImage;
 use App\Entity\UserImage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -92,5 +93,42 @@ class ImageFilterService
         }
 
         $this->em->persist($image);
+    }
+
+    /**
+     * @param HealthInsuranceFile $file
+     */
+    public function validateFile($file): void
+    {
+        $filterService = $this->container->getParameter('filter_service');
+        $fileService = $this->container->getParameter('file_service');
+
+        $firstBase64 = $file->getFirstFile();
+        $secondBase64 = $file->getSecondFile();
+
+        $firstBase64Items = explode(';base64,', $firstBase64);
+        $secondBase64Items = explode(';base64,', $secondBase64);
+
+        $firstBase64FirstPart = explode(':', $firstBase64Items[0]);
+        $secondBase64FirstPart = explode(':', $secondBase64Items[0]);
+
+        $firstMimeType = $firstBase64FirstPart[1];
+        $secondMimeType = $secondBase64FirstPart[1];
+
+        $firstMimeTypeParts = explode('/', $firstMimeType);
+        $firstFormat = $firstMimeTypeParts[1];
+
+        $secondMimeTypeParts = explode('/', $secondMimeType);
+        $secondFormat = $secondMimeTypeParts[1];
+
+        if (($firstMimeType === 'application/pdf' && !\in_array($firstFormat, $fileService['extensions'], false))
+            || ($secondMimeType === 'application/pdf' && !\in_array($secondFormat, $fileService['extensions'], false))) {
+            throw new FileExtensionException();
+        }
+
+        if (($firstMimeType !== 'application/pdf' && !\in_array($firstFormat, $filterService['extensions'], false))
+            || ($secondMimeType !== 'application/pdf' && !\in_array($secondFormat, $filterService['extensions'], false))) {
+            throw new FileExtensionException();
+        }
     }
 }

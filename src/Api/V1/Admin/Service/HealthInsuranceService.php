@@ -6,9 +6,12 @@ use App\Api\V1\Common\Service\Exception\HealthInsuranceNotFoundException;
 use App\Api\V1\Common\Service\Exception\InsuranceCompanyNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Api\V1\Common\Service\ImageFilterService;
+use App\Entity\HealthInsuranceFile;
 use App\Entity\InsuranceCompany;
 use App\Entity\Resident;
 use App\Entity\HealthInsurance;
+use App\Repository\HealthInsuranceFileRepository;
 use App\Repository\HealthInsuranceRepository;
 use App\Repository\InsuranceCompanyRepository;
 use App\Repository\ResidentRepository;
@@ -20,6 +23,19 @@ use Doctrine\ORM\QueryBuilder;
  */
 class HealthInsuranceService extends BaseService implements IGridService
 {
+    /**
+     * @var ImageFilterService
+     */
+    private $imageFilterService;
+
+    /**
+     * @param ImageFilterService $imageFilterService
+     */
+    public function setImageFilterService(ImageFilterService $imageFilterService)
+    {
+        $this->imageFilterService = $imageFilterService;
+    }
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
@@ -115,6 +131,27 @@ class HealthInsuranceService extends BaseService implements IGridService
             $this->validate($healthInsurance, null, ['api_admin_health_insurance_add']);
 
             $this->em->persist($healthInsurance);
+
+            $firstFile = !empty($params['first_file']) ? $params['first_file'] : null;
+            $secondFile = !empty($params['second_file']) ? $params['second_file'] : null;
+
+            // save file
+            if ($firstFile !== null || $secondFile !== null) {
+                $file = new HealthInsuranceFile();
+
+                $file->setInsurance($healthInsurance);
+                $file->setFirstFile($firstFile);
+                $file->setSecondFile($secondFile);
+
+                $this->validate($resident, null, ['api_admin_health_insurance_file_add']);
+
+                if ($file) {
+                    $this->imageFilterService->validateFile($file);
+                }
+
+                $this->em->persist($file);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -180,6 +217,34 @@ class HealthInsuranceService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_admin_health_insurance_edit']);
 
             $this->em->persist($entity);
+
+            $firstFile = !empty($params['first_file']) ? $params['first_file'] : null;
+            $secondFile = !empty($params['second_file']) ? $params['second_file'] : null;
+
+            // save file
+            if ($firstFile !== null || $secondFile !== null) {
+                /** @var HealthInsuranceFileRepository $fileRepo */
+                $fileRepo = $this->em->getRepository(HealthInsuranceFile::class);
+
+                $file = $fileRepo->getBy($entity->getId());
+
+                if ($file === null) {
+                    $file = new HealthInsuranceFile();
+                }
+
+                $file->setInsurance($entity);
+                $file->setFirstFile($firstFile);
+                $file->setSecondFile($secondFile);
+
+                $this->validate($resident, null, ['api_admin_health_insurance_file_edit']);
+
+                if ($file) {
+                    $this->imageFilterService->validateFile($file);
+                }
+
+                $this->em->persist($file);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

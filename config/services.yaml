@@ -3,6 +3,8 @@
 parameters:
     filter_service:
         extensions: ['jpg','jpeg','png']
+    file_service:
+        extensions: ['pdf']
     locale: 'en'
 
 services:

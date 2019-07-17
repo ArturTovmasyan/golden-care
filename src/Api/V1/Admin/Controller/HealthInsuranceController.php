@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\HealthInsuranceService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\HealthInsurance;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,17 +39,17 @@ class HealthInsuranceController extends BaseController
      * @Route("/grid", name="api_admin_health_insurance_grid", methods={"GET"})
      *
      * @param Request $request
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function gridAction(Request $request, HealthInsuranceService $residentAllergenService)
+    public function gridAction(Request $request, HealthInsuranceService $healthInsuranceService)
     {
         return $this->respondGrid(
             $request,
             HealthInsurance::class,
             'api_admin_health_insurance_grid',
-            $residentAllergenService,
+            $healthInsuranceService,
             ['resident_id' => $request->get('resident_id')]
         );
     }
@@ -69,17 +70,17 @@ class HealthInsuranceController extends BaseController
      * @Route("", name="api_admin_health_insurance_list", methods={"GET"})
      *
      * @param Request $request
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, HealthInsuranceService $residentAllergenService)
+    public function listAction(Request $request, HealthInsuranceService $healthInsuranceService)
     {
         return $this->respondList(
             $request,
             HealthInsurance::class,
             'api_admin_health_insurance_list',
-            $residentAllergenService,
+            $healthInsuranceService,
             ['resident_id' => $request->get('resident_id')]
         );
     }
@@ -87,16 +88,16 @@ class HealthInsuranceController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_health_insurance_get", methods={"GET"})
      *
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @param $id
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, HealthInsuranceService $residentAllergenService)
+    public function getAction(Request $request, $id, HealthInsuranceService $healthInsuranceService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAllergenService->getById($id),
+            $healthInsuranceService->getById($id),
             ['api_admin_health_insurance_get']
         );
     }
@@ -107,19 +108,24 @@ class HealthInsuranceController extends BaseController
      * @Grant(grant="persistence-resident-health_insurance", level="ADD")
      *
      * @param Request $request
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, HealthInsuranceService $residentAllergenService)
+    public function addAction(Request $request, HealthInsuranceService $healthInsuranceService, ImageFilterService $imageFilterService)
     {
-        $id = $residentAllergenService->add(
+        $healthInsuranceService->setImageFilterService($imageFilterService);
+
+        $id = $healthInsuranceService->add(
             [
                 'resident_id' => $request->get('resident_id'),
                 'company_id' => $request->get('company_id'),
                 'medical_record_number' => $request->get('medical_record_number'),
                 'group_number' => $request->get('group_number'),
-                'notes' => $request->get('notes') ?? ''
+                'notes' => $request->get('notes') ?? '',
+                'first_file' => $request->get('first_file'),
+                'second_file' => $request->get('second_file')
             ]
         );
 
@@ -137,20 +143,25 @@ class HealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param $id
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
+     * @param ImageFilterService $imageFilterService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, HealthInsuranceService $residentAllergenService)
+    public function editAction(Request $request, $id, HealthInsuranceService $healthInsuranceService, ImageFilterService $imageFilterService)
     {
-        $residentAllergenService->edit(
+        $healthInsuranceService->setImageFilterService($imageFilterService);
+
+        $healthInsuranceService->edit(
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
                 'company_id' => $request->get('company_id'),
                 'medical_record_number' => $request->get('medical_record_number'),
                 'group_number' => $request->get('group_number'),
-                'notes' => $request->get('notes') ?? ''
+                'notes' => $request->get('notes') ?? '',
+                'first_file' => $request->get('first_file'),
+                'second_file' => $request->get('second_file')
             ]
         );
 
@@ -165,14 +176,14 @@ class HealthInsuranceController extends BaseController
      * @Grant(grant="persistence-resident-health_insurance", level="DELETE")
      *
      * @param $id
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, HealthInsuranceService $residentAllergenService)
+    public function deleteAction(Request $request, $id, HealthInsuranceService $healthInsuranceService)
     {
-        $residentAllergenService->remove($id);
+        $healthInsuranceService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -185,14 +196,14 @@ class HealthInsuranceController extends BaseController
      * @Grant(grant="persistence-resident-health_insurance", level="DELETE")
      *
      * @param Request $request
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, HealthInsuranceService $residentAllergenService)
+    public function deleteBulkAction(Request $request, HealthInsuranceService $healthInsuranceService)
     {
-        $residentAllergenService->removeBulk($request->get('ids'));
+        $healthInsuranceService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -203,14 +214,14 @@ class HealthInsuranceController extends BaseController
      * @Route("/related/info", name="api_admin_health_insurance_related_info", methods={"POST"})
      *
      * @param Request $request
-     * @param HealthInsuranceService $residentAllergenService
+     * @param HealthInsuranceService $healthInsuranceService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, HealthInsuranceService $residentAllergenService)
+    public function relatedInfoAction(Request $request, HealthInsuranceService $healthInsuranceService)
     {
-        $relatedData = $residentAllergenService->getRelatedInfo($request->get('ids'));
+        $relatedData = $healthInsuranceService->getRelatedInfo($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_OK,
