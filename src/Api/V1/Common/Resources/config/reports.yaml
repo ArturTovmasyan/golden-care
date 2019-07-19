@@ -297,6 +297,16 @@ room:
       parameters:
         group:
           select_all: true
+    room-occupancy-monthly:
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomOccupancyRateByMonthReport
+      title: 'Room Occupancy Rates By Month'
+      show_in_list: true
+      formats: ['csv']
+      parameters:
+        month_from: true
+        month_to: true
+        group:
+          select_all: true
 
 physician:
   title: 'Physicians Reports'

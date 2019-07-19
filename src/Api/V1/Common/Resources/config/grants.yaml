@@ -392,6 +392,8 @@ report:
           title: "Room Vacancy List: List of Vacant Rooms, by Facility. Calculated as of today"
         room-occupancy:
           title: "Room Occupancy Rates: Facility Occupancy Rate Summary (calculated as of today)"
+        room-occupancy-monthly:
+          title: "Room Occupancy Rates By Month"
     physician:
       title: "Physicians Reports"
       children:
