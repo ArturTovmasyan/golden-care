@@ -303,8 +303,8 @@ room:
       show_in_list: true
       formats: ['csv']
       parameters:
-        month_from: true
-        month_to: true
+        date_from: "m/Y"
+        date_to: "m/Y"
         group:
           select_all: true
 
