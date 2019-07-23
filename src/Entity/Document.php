@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Document
@@ -154,12 +155,18 @@ class Document
     /**
      * @var DocumentFile
      * @ORM\OneToOne(targetEntity="App\Entity\DocumentFile", mappedBy="document", cascade={"remove", "persist"})
-     * @Groups({
-     *     "api_admin_document_list",
-     *     "api_admin_document_get"
-     * })
      */
     private $file;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("file")
+     * @Serializer\Groups({"api_admin_document_get", "api_admin_document_list"})
+     */
+    public function getDocumentFile()
+    {
+        return $this->getFile() !== null ? stream_get_contents($this->getFile()->getFile()) : null;
+    }
 
     public function getId()
     {

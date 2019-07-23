@@ -7,7 +7,6 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class DocumentFile
@@ -28,8 +27,6 @@ class DocumentFile
      * @Groups({
      *     "api_admin_document_file_list",
      *     "api_admin_document_file_get",
-     *     "api_admin_document_list",
-     *     "api_admin_document_get"
      * })
      */
     private $id;
@@ -64,16 +61,6 @@ class DocumentFile
      * })
      */
     private $file;
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_document_get", "api_admin_document_list"})
-     */
-    public function getDocumentFile()
-    {
-        return stream_get_contents($this->getFile());
-    }
 
     /**
      * @return int
