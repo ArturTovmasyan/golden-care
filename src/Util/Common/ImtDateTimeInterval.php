@@ -124,9 +124,9 @@ class ImtDateTimeInterval
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getEnd(): \DateTime
+    public function getEnd(): ?\DateTime
     {
         return $this->end;
     }

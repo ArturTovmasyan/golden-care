@@ -88,4 +88,43 @@ class RentPeriodFactory
         }
         return $this->periods[$period];
     }
+
+    /**
+     * @param ImtDateTimeInterval $rentInterval
+     * @param ImtDateTimeInterval $subInterval
+     * @return array
+     */
+    public function calculateForReportInterval(ImtDateTimeInterval $rentInterval, ImtDateTimeInterval $subInterval): array
+    {
+        $dateTimeStart = $subIntervalStart = $subInterval->getStart();
+        $dateTimeEnd = $subIntervalEnd = $subInterval->getEnd();
+        $rentIntervalStart = $rentInterval->getStart();
+        $rentIntervalEnd = $rentInterval->getEnd();
+
+        if ($subIntervalStart < $rentIntervalStart && $subIntervalStart->format('Y') === $rentIntervalStart->format('Y')
+            && $subIntervalStart->format('m') === $rentIntervalStart->format('m')) {
+
+            $dateTimeStart = $rentIntervalStart;
+        }
+
+        if ($rentIntervalEnd !== null && $subIntervalEnd > $rentIntervalEnd && $subIntervalEnd->format('Y') === $rentIntervalEnd->format('Y')
+            && $subIntervalEnd->format('m') === $rentIntervalEnd->format('m')) {
+
+            $dateTimeEnd = $rentIntervalEnd;
+        }
+
+        $days = 0;
+        if (($dateTimeStart >= $rentIntervalStart && (($rentIntervalEnd !== null && $dateTimeStart <= $rentIntervalEnd) || $rentIntervalEnd === null)) &&
+            ($dateTimeEnd >= $rentIntervalStart && (($rentIntervalEnd !== null && $dateTimeEnd <= $rentIntervalEnd) || $rentIntervalEnd === null))) {
+            $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
+                $dateTimeStart,
+                $dateTimeEnd
+            );
+            $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days : 0;
+        }
+
+        return array(
+            'days' => $days,
+        );
+    }
 }

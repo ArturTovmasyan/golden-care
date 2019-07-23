@@ -14,6 +14,7 @@ class Profile extends Base
     private $residents = [];
     private $physicianPhones = [];
     private $responsiblePersonPhones = [];
+    private $insuranceFiles = [];
 
     /**
      * @var boolean
@@ -155,6 +156,22 @@ class Profile extends Base
     public function getPhysicianPhones(): ?array
     {
         return $this->physicianPhones;
+    }
+
+    /**
+     * @param $insuranceFiles
+     */
+    public function setInsuranceFiles($insuranceFiles): void
+    {
+        $this->insuranceFiles = $insuranceFiles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInsuranceFiles(): ?array
+    {
+        return $this->insuranceFiles;
     }
 
     /**

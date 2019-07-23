@@ -4,6 +4,8 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
+use App\Api\V1\Common\Service\Exception\TimeSpanIsGreaterThan12MonthsException;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -19,9 +21,11 @@ use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePersonRole;
 use App\Model\GroupType;
+use App\Model\Month;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
 use App\Model\Report\RoomOccupancyRate;
+use App\Model\Report\RoomOccupancyRateByMonth;
 use App\Model\Report\RoomRent;
 use App\Model\Report\RoomRentMaster;
 use App\Model\Report\RoomRentMasterNew;
@@ -909,6 +913,170 @@ class RoomReportService extends BaseService
         $report = new RoomOccupancyRate();
         $report->setData($data);
         $report->setStrategy(GroupType::getTypes()[$type]);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @return RoomOccupancyRateByMonth
+     */
+    public function getRoomOccupancyRateByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if ($type !== GroupType::TYPE_FACILITY) {
+            throw new InvalidParameterException('group');
+        }
+
+        $dateStart = $dateEnd = new \DateTime('now');
+        $dateStartFormatted = $dateStart->format('m/d/Y');
+        $dateEndFormatted = $dateEnd->format('m/d/Y');
+
+        if (!empty($dateFrom)) {
+            $explodeDateFrom = explode('/', $dateFrom);
+
+            $dateStart = new \DateTime($explodeDateFrom[0].'/01/'.$explodeDateFrom[1]);
+            $dateStartFormatted = $dateStart->format('m/d/Y');
+        }
+
+        if (!empty($dateTo)) {
+            $explodeDateTo = explode('/', $dateTo);
+
+            $dateEnd = new \DateTime($explodeDateTo[0].'/01/'.$explodeDateTo[1]);
+            $dateEndFormatted = $dateEnd->format('m/d/Y');
+        }
+
+        $dateStart = date('Y-m-01', strtotime($dateStartFormatted));
+        $dateStart = new \DateTime($dateStart);
+        $dateStart->setTime(0, 0, 0);
+        $dateStartFormatted = $dateStart->format('m/d/Y');
+
+        $dateEnd = date('Y-m-t', strtotime($dateEndFormatted));
+        $dateEnd = new \DateTime($dateEnd);
+        $dateEnd->setTime(23, 59, 59);
+        $dateEndClone = clone $dateEnd;
+        $dateEndFormatted = $dateEnd->format('m/d/Y');
+
+        if ($dateStart > $dateEnd) {
+            throw new StartGreaterEndDateException();
+        }
+
+        $diff = $dateEnd->diff($dateStart);
+        $diffYear = (int)$diff->format('%Y');
+        $diffMonth = (int)$diff->format('%m');
+
+        if ($diffYear * 12 + $diffMonth >= 12) {
+            throw new TimeSpanIsGreaterThan12MonthsException();
+        }
+
+        $interval = [];
+        for ($i = 1; $i <= 12; $i++) {
+            if (($dateEndClone->format('Y') > $dateStart->format('Y')) || ($dateEndClone->format('Y') === $dateStart->format('Y') && $dateEndClone->format('m') >= $dateStart->format('m'))) {
+                $start = date('Y-m-01', strtotime($dateEndClone->format('Y-m-d')));
+                $start = new \DateTime($start);
+                $start->setTime(0, 0, 0);
+
+                $end = date('Y-m-t', strtotime($dateEndClone->format('Y-m-d')));
+                $end = new \DateTime($end);
+                $end->setTime(23, 59, 59);
+
+                $interval[] = [
+                    'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
+                    'monthNumber' => $start->format('n')
+                ];
+
+                $dateEndClone = new \DateTime(date('Y-m-d H:i:s', strtotime($start->format('Y-m-d') .' -1 month')));
+            }
+        }
+
+        $interval = array_reverse($interval);
+
+        $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
+
+        /** @var ResidentRentRepository $repo */
+        $repo = $this->em->getRepository(ResidentRent::class);
+
+        $allData = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
+
+        $allTypeIds = array_map(function($item){return $item['typeId'];} , $allData);
+        $allTypeIds = array_unique($allTypeIds);
+
+        $vacantBeds = $this->getRoomVacancyListReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null);
+        $typeNames = array_column($vacantBeds->getData(), 'typeName', 'typeId');
+        $typeNames = array_unique($typeNames);
+
+        $vacant = [];
+        $days = [];
+        $total = [];
+        foreach ($interval as $subVal) {
+            foreach ($allTypeIds as $allTypeId) {
+                $j = 0;
+                $k = 0;
+                foreach ($vacantBeds->getData() as $vacantBed) {
+                    if ($vacantBed['typeId'] === $allTypeId) {
+                        ++$j;
+                        $k = $j * $subVal['subInterval']->getEnd()->diff($subVal['subInterval']->getStart())->days;
+                    }
+                }
+
+                $vacant[$allTypeId] = $k;
+                $days[$allTypeId] = 0;
+            }
+
+            $total[$subVal['monthNumber']]['potential'] = $vacant;
+
+            $rentPeriodFactory = RentPeriodFactory::getFactory($subVal['subInterval']);
+
+            $totalDays = [];
+            foreach ($allTypeIds as $typeId) {
+
+                $sumDays = 0;
+                foreach ($allData as $rent) {
+                    if ($rent['typeId'] === $typeId) {
+                        $calculationResults = $rentPeriodFactory->calculateForReportInterval(
+                            ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : null),
+                            $subVal['subInterval']
+                        );
+
+                        $sumDays += $calculationResults['days'];
+                    }
+                }
+                $totalDays[$typeId] = $sumDays;
+            }
+            $total[$subVal['monthNumber']]['actual'] = !empty($totalDays) ? $totalDays : $days;
+        }
+
+        $data = [];
+        foreach ($allTypeIds as $allTypeId) {
+            foreach ($total as $key => $item) {
+                $data[$allTypeId][$key] = [
+                      'month' => Month::getTypes()[$key],
+                      'name' => $typeNames[$allTypeId],
+                      'potential' => $item['potential'][$allTypeId],
+                      'actual' => array_key_exists($allTypeId, $item['actual']) ?  $item['actual'][$allTypeId] : 0,
+                      'occupancy' => array_key_exists($allTypeId, $item['actual']) && $item['actual'][$allTypeId] > 0 ? number_format(($item['potential'][$allTypeId] / $item['actual'][$allTypeId]) * 100, 2) . '%' : '0%',
+                ];
+            }
+        }
+
+        $report = new RoomOccupancyRateByMonth();
+        $report->setData($data);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDateStart($dateStartFormatted);
+        $report->setDateEnd($dateEndFormatted);
 
         return $report;
     }
