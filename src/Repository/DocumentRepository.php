@@ -18,12 +18,14 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
             ->from(Document::class, 'd')
+            ->join('d.facilities', 'f')
             ->innerJoin(
                 Space::class,
                 's',
@@ -41,6 +43,12 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
             $queryBuilder
                 ->andWhere('d.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
         $queryBuilder
@@ -50,12 +58,14 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $facilityEntityGrants
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $facilityEntityGrants)
     {
         $qb = $this
             ->createQueryBuilder('d')
+            ->join('d.facilities', 'f')
             ->innerJoin(
                 Space::class,
                 's',
@@ -73,6 +83,12 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
             $qb
                 ->andWhere('d.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
         $qb

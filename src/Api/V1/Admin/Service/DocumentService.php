@@ -43,7 +43,9 @@ class DocumentService extends BaseService implements IGridService
         /** @var DocumentRepository $repo */
         $repo = $this->em->getRepository(Document::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $queryBuilder);
+        $facilityEntityGrants = !empty($this->grantService->getCurrentUserEntityGrants(Facility::class)) ? $this->grantService->getCurrentUserEntityGrants(Facility::class) : null;
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $queryBuilder);
     }
 
     /**
@@ -55,7 +57,9 @@ class DocumentService extends BaseService implements IGridService
         /** @var DocumentRepository $repo */
         $repo = $this->em->getRepository(Document::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class));
+        $facilityEntityGrants = !empty($this->grantService->getCurrentUserEntityGrants(Facility::class)) ? $this->grantService->getCurrentUserEntityGrants(Facility::class) : null;
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants);
     }
 
     /**
