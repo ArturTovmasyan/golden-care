@@ -113,12 +113,9 @@ class Document
 
     /**
      * @var ArrayCollection
-     * @Assert\Count(
-     *      min = 1,
-     *      minMessage = "You must specify at least one Facility.",
-     *      groups={
-     *          "api_admin_document_add",
-     *          "api_admin_document_edit"
+     * @Assert\NotNull(message = "Please select at least one Facility.", groups={
+     *     "api_admin_document_add",
+     *     "api_admin_document_edit"
      * })
      * @ORM\ManyToMany(targetEntity="App\Entity\Facility", inversedBy="documents", cascade={"persist"})
      * @ORM\JoinTable(

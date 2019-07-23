@@ -116,7 +116,9 @@ class Facility
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
-     *     "api_admin_resident_get_last_admission"
+     *     "api_admin_resident_get_last_admission",
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
      * })
      */
     private $id;

@@ -214,7 +214,7 @@ class DocumentService extends BaseService implements IGridService
             $this->validate($file, null, ['api_admin_document_file_edit']);
 
             if ($file) {
-                $this->imageFilterService->validateFile($file);
+                $this->imageFilterService->validateDocumentFile($file);
             }
 
             $this->em->persist($file);
