@@ -2,6 +2,7 @@
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
+use App\Entity\DocumentFile;
 use App\Entity\HealthInsuranceFile;
 use App\Entity\ResidentImage;
 use App\Entity\UserImage;
@@ -141,6 +142,31 @@ class ImageFilterService
             }
 
             if ($secondMimeType !== 'application/pdf' && !\in_array($secondFormat, $filterService['extensions'], false)) {
+                throw new FileExtensionException();
+            }
+        }
+    }
+
+    /**
+     * @param DocumentFile $file
+     */
+    public function validateDocumentFile($file): void
+    {
+        $fileService = $this->container->getParameter('file_service');
+
+        if ($file->getFile()) {
+            $base64 = $file->getFile();
+
+            $base64Items = explode(';base64,', $base64);
+
+            $base64FirstPart = explode(':', $base64Items[0]);
+
+            $mimeType = $base64FirstPart[1];
+
+            $mimeTypeParts = explode('/', $mimeType);
+            $format = $mimeTypeParts[1];
+
+            if (!\in_array($format, $fileService['extensions'], false)) {
                 throw new FileExtensionException();
             }
         }

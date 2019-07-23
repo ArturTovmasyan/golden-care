@@ -167,6 +167,11 @@ persistence:
           class: App\Entity\InsuranceCompany
           route: api_admin_insurance_company_list
 
+        document:
+          title: 'Document'
+          class: App\Entity\Document
+          route: api_admin_document_list
+
     assessment:
       title: 'Assessment'
       children:

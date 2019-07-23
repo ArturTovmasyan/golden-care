@@ -419,6 +419,12 @@ class Facility
     protected $notifications;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Document", mappedBy="facilities", cascade={"persist"})
+     */
+    protected $documents;
+
+    /**
      * @return int
      */
     public function getId()
@@ -694,6 +700,45 @@ class Facility
     {
         $this->notifications->removeElement($notification);
         $notification->removeFacility($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    /**
+     * @param mixed $documents
+     */
+    public function setDocuments($documents): void
+    {
+        $this->documents = $documents;
+
+        /** @var Document $document */
+        foreach ($this->documents as $document) {
+            $document->addFacility($this);
+        }
+    }
+
+    /**
+     * @param Document $document
+     */
+    public function addDocument(Document $document): void
+    {
+        $document->addFacility($this);
+        $this->documents[] = $document;
+    }
+
+    /**
+     * @param Document $document
+     */
+    public function removeDocument(Document $document): void
+    {
+        $this->documents->removeElement($document);
+        $document->removeFacility($this);
     }
 
     /**

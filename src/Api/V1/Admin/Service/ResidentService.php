@@ -188,7 +188,7 @@ class ResidentService extends BaseService implements IGridService
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
 
-                $this->validate($resident, null, ['api_admin_resident_image_add']);
+                $this->validate($image, null, ['api_admin_resident_image_add']);
 
                 $this->em->persist($image);
 
@@ -280,7 +280,7 @@ class ResidentService extends BaseService implements IGridService
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
 
-                $this->validate($resident, null, ['api_admin_resident_image_edit']);
+                $this->validate($image, null, ['api_admin_resident_image_edit']);
 
                 $this->em->persist($image);
 
@@ -454,7 +454,7 @@ class ResidentService extends BaseService implements IGridService
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
 
-                $this->validate($resident, null, ['api_admin_resident_image_edit']);
+                $this->validate($image, null, ['api_admin_resident_image_edit']);
 
                 $this->em->persist($image);
 

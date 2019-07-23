@@ -126,7 +126,9 @@ class Space
      *     "api_admin_change_log_list",
      *     "api_admin_change_log_get",
      *     "api_admin_insurance_company_list",
-     *     "api_admin_insurance_company_get"
+     *     "api_admin_insurance_company_get",
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
      * })
      */
     private $id;
@@ -191,7 +193,9 @@ class Space
      *     "api_admin_change_log_list",
      *     "api_admin_change_log_get",
      *     "api_admin_insurance_company_list",
-     *     "api_admin_insurance_company_get"
+     *     "api_admin_insurance_company_get",
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
      * })
      * @Assert\NotBlank(groups={
      *     "api_admin_space_add",
@@ -386,6 +390,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\InsuranceCompany", mappedBy="space", cascade={"remove", "persist"})
      */
     private $insuranceCompanies;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $documents;
 
     /**
      * Space constructor.
@@ -921,5 +931,21 @@ class Space
     public function setInsuranceCompanies(ArrayCollection $insuranceCompanies): void
     {
         $this->insuranceCompanies = $insuranceCompanies;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDocuments(): ArrayCollection
+    {
+        return $this->documents;
+    }
+
+    /**
+     * @param ArrayCollection $documents
+     */
+    public function setDocuments(ArrayCollection $documents): void
+    {
+        $this->documents = $documents;
     }
 }

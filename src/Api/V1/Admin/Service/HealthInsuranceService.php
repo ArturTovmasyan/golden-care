@@ -143,7 +143,7 @@ class HealthInsuranceService extends BaseService implements IGridService
                 $file->setFirstFile($firstFile);
                 $file->setSecondFile($secondFile);
 
-                $this->validate($resident, null, ['api_admin_health_insurance_file_add']);
+                $this->validate($file, null, ['api_admin_health_insurance_file_add']);
 
                 if ($file) {
                     $this->imageFilterService->validateFile($file);
@@ -236,7 +236,7 @@ class HealthInsuranceService extends BaseService implements IGridService
                 $file->setFirstFile($firstFile);
                 $file->setSecondFile($secondFile);
 
-                $this->validate($resident, null, ['api_admin_health_insurance_file_edit']);
+                $this->validate($file, null, ['api_admin_health_insurance_file_edit']);
 
                 if ($file) {
                     $this->imageFilterService->validateFile($file);

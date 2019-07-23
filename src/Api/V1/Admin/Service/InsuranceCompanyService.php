@@ -70,17 +70,17 @@ class InsuranceCompanyService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $careLevel = new InsuranceCompany();
-            $careLevel->setTitle($params['title']);
-            $careLevel->setSpace($space);
+            $insuranceCompany = new InsuranceCompany();
+            $insuranceCompany->setTitle($params['title']);
+            $insuranceCompany->setSpace($space);
 
-            $this->validate($careLevel, null, ['api_admin_insurance_company_add']);
+            $this->validate($insuranceCompany, null, ['api_admin_insurance_company_add']);
 
-            $this->em->persist($careLevel);
+            $this->em->persist($insuranceCompany);
             $this->em->flush();
             $this->em->getConnection()->commit();
 
-            $insert_id = $careLevel->getId();
+            $insert_id = $insuranceCompany->getId();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -178,17 +178,17 @@ class InsuranceCompanyService extends BaseService implements IGridService
             /** @var InsuranceCompanyRepository $repo */
             $repo = $this->em->getRepository(InsuranceCompany::class);
 
-            $careLevels = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(InsuranceCompany::class), $ids);
+            $insuranceCompanies = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(InsuranceCompany::class), $ids);
 
-            if (empty($careLevels)) {
+            if (empty($insuranceCompanies)) {
                 throw new InsuranceCompanyNotFoundException();
             }
 
             /**
-             * @var InsuranceCompany $careLevel
+             * @var InsuranceCompany $insuranceCompany
              */
-            foreach ($careLevels as $careLevel) {
-                $this->em->remove($careLevel);
+            foreach ($insuranceCompanies as $insuranceCompany) {
+                $this->em->remove($insuranceCompany);
             }
 
             $this->em->flush();
