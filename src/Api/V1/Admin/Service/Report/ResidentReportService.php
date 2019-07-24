@@ -4,7 +4,7 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Diet;
-use App\Entity\HealthInsurance;
+use App\Entity\ResidentHealthInsurance;
 use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -26,7 +26,7 @@ use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
-use App\Repository\HealthInsuranceRepository;
+use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentAllergenRepository;
@@ -80,8 +80,8 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        /** @var HealthInsuranceRepository $insuranceRepo */
-        $insuranceRepo = $this->em->getRepository(HealthInsurance::class);
+        /** @var ResidentHealthInsuranceRepository $insuranceRepo */
+        $insuranceRepo = $this->em->getRepository(ResidentHealthInsurance::class);
         /** @var ResidentMedicationRepository $medicationRepo */
         $medicationRepo = $this->em->getRepository(ResidentMedication::class);
         /** @var ResidentAllergenRepository $allergenRepo */
@@ -97,7 +97,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
 
-        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(HealthInsurance::class), $residentIds);
+        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
@@ -174,8 +174,8 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        /** @var HealthInsuranceRepository $insuranceRepo */
-        $insuranceRepo = $this->em->getRepository(HealthInsurance::class);
+        /** @var ResidentHealthInsuranceRepository $insuranceRepo */
+        $insuranceRepo = $this->em->getRepository(ResidentHealthInsurance::class);
         /** @var ResidentMedicationRepository $medicationRepo */
         $medicationRepo = $this->em->getRepository(ResidentMedication::class);
         /** @var ResidentAllergenRepository $allergenRepo */
@@ -191,7 +191,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
 
-        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(HealthInsurance::class), $residentIds);
+        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
@@ -273,8 +273,8 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        /** @var HealthInsuranceRepository $insuranceRepo */
-        $insuranceRepo = $this->em->getRepository(HealthInsurance::class);
+        /** @var ResidentHealthInsuranceRepository $insuranceRepo */
+        $insuranceRepo = $this->em->getRepository(ResidentHealthInsurance::class);
         /** @var ResidentMedicationRepository $medicationRepo */
         $medicationRepo = $this->em->getRepository(ResidentMedication::class);
         /** @var ResidentAllergenRepository $allergenRepo */
@@ -286,7 +286,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
-        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(HealthInsurance::class), $residentIds);
+        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
@@ -356,8 +356,8 @@ class ResidentReportService extends BaseService
             $residentsById[$resident['id']] = $resident;
         }
 
-        /** @var HealthInsuranceRepository $insuranceRepo */
-        $insuranceRepo = $this->em->getRepository(HealthInsurance::class);
+        /** @var ResidentHealthInsuranceRepository $insuranceRepo */
+        $insuranceRepo = $this->em->getRepository(ResidentHealthInsurance::class);
         /** @var ResidentMedicationRepository $medicationRepo */
         $medicationRepo = $this->em->getRepository(ResidentMedication::class);
         /** @var ResidentAllergenRepository $allergenRepo */
@@ -369,7 +369,7 @@ class ResidentReportService extends BaseService
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
 
-        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(HealthInsurance::class), $residentIds);
+        $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);

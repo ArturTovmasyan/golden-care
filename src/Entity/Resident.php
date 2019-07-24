@@ -94,8 +94,8 @@ class Resident
      *      "api_admin_facility_room_get",
      *      "api_admin_apartment_room_list",
      *      "api_admin_apartment_room_get",
-     *      "api_admin_health_insurance_list",
-     *      "api_admin_health_insurance_get"
+     *      "api_admin_resident_health_insurance_list",
+     *      "api_admin_resident_health_insurance_get"
      * })
      */
     private $id;
@@ -147,8 +147,8 @@ class Resident
      *      "api_admin_resident_responsible_person_get",
      *      "api_admin_resident_physician_list",
      *      "api_admin_resident_physician_get",
-     *      "api_admin_health_insurance_list",
-     *      "api_admin_health_insurance_get"
+     *      "api_admin_resident_health_insurance_list",
+     *      "api_admin_resident_health_insurance_get"
      * })
      */
     private $firstName;
@@ -168,8 +168,8 @@ class Resident
      *      "api_admin_resident_responsible_person_get",
      *      "api_admin_resident_physician_list",
      *      "api_admin_resident_physician_get",
-     *      "api_admin_health_insurance_list",
-     *      "api_admin_health_insurance_get"
+     *      "api_admin_resident_health_insurance_list",
+     *      "api_admin_resident_health_insurance_get"
      * })
      */
     private $lastName;
@@ -325,9 +325,9 @@ class Resident
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\HealthInsurance", mappedBy="resident", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="resident", cascade={"remove", "persist"})
      */
-    private $healthInsurances;
+    private $residentHealthInsurances;
 
     /**
      * @return int
@@ -700,16 +700,16 @@ class Resident
     /**
      * @return ArrayCollection
      */
-    public function getHealthInsurances(): ArrayCollection
+    public function getResidentHealthInsurances(): ArrayCollection
     {
-        return $this->healthInsurances;
+        return $this->residentHealthInsurances;
     }
 
     /**
-     * @param ArrayCollection $healthInsurances
+     * @param ArrayCollection $residentHealthInsurances
      */
-    public function setHealthInsurances(ArrayCollection $healthInsurances): void
+    public function setResidentHealthInsurances(ArrayCollection $residentHealthInsurances): void
     {
-        $this->healthInsurances = $healthInsurances;
+        $this->residentHealthInsurances = $residentHealthInsurances;
     }
 }

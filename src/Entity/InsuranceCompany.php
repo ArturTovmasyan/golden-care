@@ -60,8 +60,8 @@ class InsuranceCompany
      * @Groups({
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
-     *     "api_admin_health_insurance_list",
-     *     "api_admin_health_insurance_get"
+     *     "api_admin_resident_health_insurance_list",
+     *     "api_admin_resident_health_insurance_get"
      * })
      */
     private $id;
@@ -83,8 +83,8 @@ class InsuranceCompany
      * @Groups({
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
-     *     "api_admin_health_insurance_list",
-     *     "api_admin_health_insurance_get"
+     *     "api_admin_resident_health_insurance_list",
+     *     "api_admin_resident_health_insurance_get"
      * })
      */
     private $title;
@@ -108,9 +108,9 @@ class InsuranceCompany
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\HealthInsurance", mappedBy="company", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="company", cascade={"remove", "persist"})
      */
-    private $healthInsurances;
+    private $residentHealthInsurances;
 
     public function getId()
     {
@@ -152,16 +152,16 @@ class InsuranceCompany
     /**
      * @return ArrayCollection
      */
-    public function getHealthInsurances(): ArrayCollection
+    public function getResidentHealthInsurances(): ArrayCollection
     {
-        return $this->healthInsurances;
+        return $this->residentHealthInsurances;
     }
 
     /**
-     * @param ArrayCollection $healthInsurances
+     * @param ArrayCollection $residentHealthInsurances
      */
-    public function setHealthInsurances(ArrayCollection $healthInsurances): void
+    public function setResidentHealthInsurances(ArrayCollection $residentHealthInsurances): void
     {
-        $this->healthInsurances = $healthInsurances;
+        $this->residentHealthInsurances = $residentHealthInsurances;
     }
 }

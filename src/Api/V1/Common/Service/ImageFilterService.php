@@ -3,7 +3,7 @@ namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Entity\DocumentFile;
-use App\Entity\HealthInsuranceFile;
+use App\Entity\ResidentHealthInsuranceFile;
 use App\Entity\ResidentImage;
 use App\Entity\UserImage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,9 +97,9 @@ class ImageFilterService
     }
 
     /**
-     * @param HealthInsuranceFile $file
+     * @param ResidentHealthInsuranceFile $file
      */
-    public function validateFile($file): void
+    public function validateResidentHealthInsuranceFile($file): void
     {
         $filterService = $this->container->getParameter('filter_service');
         $fileService = $this->container->getParameter('file_service');
