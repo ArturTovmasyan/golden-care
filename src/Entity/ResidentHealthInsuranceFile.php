@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use DataURI\Data;
+use DataURI\Dumper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -52,36 +54,104 @@ class ResidentHealthInsuranceFile
     private $insurance;
 
     /**
-     * @var string $firstFile
+     * @var string|resource $firstFile
      * @ORM\Column(name="first_file", type="blob", nullable=true)
      */
     private $firstFile;
 
     /**
-     * @var string $secondFile
+     * @var string|resource $secondFile
      * @ORM\Column(name="second_file", type="blob", nullable=true)
      */
     private $secondFile;
 
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("first_file")
-     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
-     */
-    public function getFirst()
-    {
-        return $this->getFirstFile() !== null ? stream_get_contents($this->getFirstFile()) : null;
-    }
+//    /**
+//     * @Serializer\VirtualProperty()
+//     * @Serializer\SerializedName("first_file")
+//     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+//     */
+//    public function getFirst()
+//    {
+//        if(!empty($this->getFirstFile())) {
+//            $data = stream_get_contents($this->getFirstFile());
+//            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+//
+//            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+//        }
+//
+//        return null;
+//    }
+//
+//    /**
+//     * @Serializer\VirtualProperty()
+//     * @Serializer\SerializedName("second_file")
+//     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+//     */
+//    public function getSecond()
+//    {
+//        if(!empty($this->getSecondFile())) {
+//            $data = stream_get_contents($this->getSecondFile());
+//            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+//
+//            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+//        }
+//
+//        return null;
+//    }
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("second_file")
+     * @Serializer\SerializedName("single_file")
      * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+     *
+     * @throws \ImagickException
+     * @throws \Exception
      */
-    public function getSecond()
-    {
-        return $this->getSecondFile() !== null ? stream_get_contents($this->getSecondFile()) : null;
+    public function getSingleFile() {
+        $first = $this->getFirstFile();
+        $second = $this->getSecondFile();
+
+        $img = new \Imagick();
+        $img->setResolution(300, 300);
+        $img->setCompression(\Imagick::COMPRESSION_JPEG);
+        $img->setCompressionQuality(100);
+
+        if(!empty($first)) {
+            $img1 = new \Imagick();
+            $img1->setResolution(300, 300);
+            $img1->readImageBlob(stream_get_contents($first));
+
+            $img->addImage($img1);
+        }
+
+        if(!empty($second)) {
+            $img2 = new \Imagick();
+            $img2->setResolution(300, 300);
+            $img2->readImageBlob(stream_get_contents($second));
+
+            $img->addImage($img2);
+        }
+
+        $random_name = '/tmp/hif_' . md5($this->id) . '_' . md5((new \DateTime())->format('Ymd_His'));
+        $img->setImageFormat('pdf');
+        $img->writeImages($random_name, true);
+
+        $output = null;
+
+        if(file_exists($random_name)) {
+            $output = file_get_contents($random_name);
+            unlink($random_name);
+        }
+
+        if(!empty($output)) {
+            $output = 'data:application/pdf;base64,' . base64_encode($output);
+        } else {
+            $output = null;
+        }
+
+        return $output;
     }
+
 
     /**
      * @return int

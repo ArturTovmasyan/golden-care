@@ -15,6 +15,7 @@ use App\Repository\ResidentHealthInsuranceFileRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\InsuranceCompanyRepository;
 use App\Repository\ResidentRepository;
+use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -139,15 +140,18 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             if ($firstFile !== null || $secondFile !== null) {
                 $file = new ResidentHealthInsuranceFile();
 
+                $firstFile = Parser::parse($firstFile);
+                $secondFile = Parser::parse($secondFile);
+
                 $file->setInsurance($residentHealthInsurance);
-                $file->setFirstFile($firstFile);
-                $file->setSecondFile($secondFile);
+                $file->setFirstFile($firstFile->getData());
+                $file->setSecondFile($secondFile->getData());
 
                 $this->validate($file, null, ['api_admin_resident_health_insurance_file_add']);
 
-                if ($file) {
-                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
-                }
+//                if ($file) {
+//                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
+//                }
 
                 $this->em->persist($file);
             }
@@ -232,15 +236,18 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                     $file = new ResidentHealthInsuranceFile();
                 }
 
+                $firstFile = Parser::parse($firstFile);
+                $secondFile = Parser::parse($secondFile);
+
                 $file->setInsurance($entity);
-                $file->setFirstFile($firstFile);
-                $file->setSecondFile($secondFile);
+                $file->setFirstFile($firstFile->getData());
+                $file->setSecondFile($secondFile->getData());
 
                 $this->validate($file, null, ['api_admin_resident_health_insurance_file_edit']);
 
-                if ($file) {
-                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
-                }
+//                if ($file) {
+//                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
+//                }
 
                 $this->em->persist($file);
             }
