@@ -941,21 +941,17 @@ class RoomReportService extends BaseService
         }
 
         $dateStart = $dateEnd = new \DateTime('now');
-        $dateStartFormatted = $dateStart->format('m/d/Y');
-        $dateEndFormatted = $dateEnd->format('m/d/Y');
+        $dateStartFormatted = $dateStart->format('m/01/Y');
+        $dateEndFormatted = $dateEnd->format('m/t/Y');
 
         if (!empty($dateFrom)) {
-            $explodeDateFrom = explode('/', $dateFrom);
-
-            $dateStart = new \DateTime($dateFrom);//$explodeDateFrom);//[0].'/01/'.$explodeDateFrom[1]);
-            $dateStartFormatted = $dateStart->format('m/d/Y');
+            $dateStart = new \DateTime($dateFrom);
+            $dateStartFormatted = $dateStart->format('m/01/Y');
         }
 
         if (!empty($dateTo)) {
-            $explodeDateTo = explode('/', $dateTo);
-
-            $dateEnd = new \DateTime($dateTo);//$explodeDateTo);//[0].'/01/'.$explodeDateTo[1]);
-            $dateEndFormatted = $dateEnd->format('m/d/Y');
+            $dateEnd = new \DateTime($dateTo);
+            $dateEndFormatted = $dateEnd->format('m/t/Y');
         }
 
         $dateStart = date('Y-m-01', strtotime($dateStartFormatted));
