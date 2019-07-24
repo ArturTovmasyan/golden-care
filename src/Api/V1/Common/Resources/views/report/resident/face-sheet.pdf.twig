@@ -203,7 +203,7 @@
                             <div style="float: left; width: 20%"><b style="font-size: 12px !important;">
                                     {% set c = 0 %}
                                     {% for physicianPhone in data.physicianPhones %}
-                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_WORK') %}
+                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
                                             {% set c = c + 1 %}
                                             {{ physicianPhone.number }}<br/>
                                         {% endif %}
