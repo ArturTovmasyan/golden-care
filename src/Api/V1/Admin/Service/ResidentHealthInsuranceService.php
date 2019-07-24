@@ -2,18 +2,18 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\ResidentHealthInsuranceNotFoundException;
 use App\Api\V1\Common\Service\Exception\InsuranceCompanyNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentHealthInsuranceNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
-use App\Entity\ResidentHealthInsuranceFile;
 use App\Entity\InsuranceCompany;
 use App\Entity\Resident;
 use App\Entity\ResidentHealthInsurance;
+use App\Entity\ResidentHealthInsuranceFile;
+use App\Repository\InsuranceCompanyRepository;
 use App\Repository\ResidentHealthInsuranceFileRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
-use App\Repository\InsuranceCompanyRepository;
 use App\Repository\ResidentRepository;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
@@ -348,5 +348,60 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(ResidentHealthInsurance::class, $entities);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getSingleFile($id)
+    {
+        $result = [null, null];
+
+        try {
+            $entity = $this->getById($id);
+
+            $first = $entity->getFirstFile();
+            $second = $entity->getSecondFile();
+
+            $img = new \Imagick();
+            $img->setResolution(300, 300);
+            $img->setCompression(\Imagick::COMPRESSION_JPEG);
+            $img->setCompressionQuality(100);
+
+            if (!empty($first)) {
+                $img1 = new \Imagick();
+                $img1->setResolution(300, 300);
+                $img1->readImageBlob(stream_get_contents($first));
+
+                $img->addImage($img1);
+            }
+
+            if (!empty($second)) {
+                $img2 = new \Imagick();
+                $img2->setResolution(300, 300);
+                $img2->readImageBlob(stream_get_contents($second));
+
+                $img->addImage($img2);
+            }
+
+            $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . md5((new \DateTime())->format('Ymd_His'));
+            $img->setImageFormat('pdf');
+            $img->writeImages($random_name, true);
+
+            $output_resource = null;
+
+            if (file_exists($random_name)) {
+                $output_resource = fopen($random_name, 'r');
+            }
+
+            $result = ['insurance', $output_resource];
+        } catch (\ImagickException $e)  {
+
+        } catch (\Exception $e)  {
+
+        }
+
+        return $result;
     }
 }

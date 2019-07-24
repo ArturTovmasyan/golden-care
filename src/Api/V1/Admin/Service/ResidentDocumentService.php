@@ -11,6 +11,7 @@ use App\Entity\ResidentDocumentFile;
 use App\Repository\ResidentDocumentFileRepository;
 use App\Repository\ResidentDocumentRepository;
 use App\Repository\ResidentRepository;
+use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -104,7 +105,9 @@ class ResidentDocumentService extends BaseService implements IGridService
             $file = new ResidentDocumentFile();
 
             $file->setResidentDocument($residentDocument);
-            $file->setFile($params['file']);
+
+            $firstFile = Parser::parse($params['file']);
+            $file->setFile($firstFile->getData());
 
             $this->validate($file, null, ['api_admin_resident_document_file_add']);
 
@@ -174,7 +177,9 @@ class ResidentDocumentService extends BaseService implements IGridService
             }
 
             $file->setResidentDocument($entity);
-            $file->setFile($params['file']);
+
+            $firstFile = Parser::parse($params['file']);
+            $file->setFile($firstFile->getData());
 
             $this->validate($file, null, ['api_admin_resident_document_file_edit']);
 
@@ -276,5 +281,20 @@ class ResidentDocumentService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(ResidentDocument::class, $entities);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getSingleFile($id)
+    {
+        $entity = $this->getById($id);
+
+        if(!empty($entity) && !empty($entity->getFile())) {
+            return [$entity->getTitle(), $entity->getFile()->getFile()];
+        }
+
+        return [null, null];
     }
 }

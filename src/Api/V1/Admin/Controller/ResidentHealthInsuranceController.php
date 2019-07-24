@@ -229,4 +229,18 @@ class ResidentHealthInsuranceController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_health_insurance_download", methods={"GET"})
+     *
+     * @param ResidentHealthInsuranceService $residentHealthInsurance
+     * @param $id
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, ResidentHealthInsuranceService $residentDocumentService)
+    {
+        $data = $residentDocumentService->getSingleFile($id);
+
+        return $this->respondResource($data[0], $data[1]);
+    }
 }

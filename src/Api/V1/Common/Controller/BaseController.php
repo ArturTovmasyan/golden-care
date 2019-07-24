@@ -13,6 +13,8 @@ use App\Entity\UserInvite;
 use App\Model\Grant;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
+use App\Util\MimeUtil;
+use App\Util\StringUtil;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -22,6 +24,7 @@ use JMS\Serializer\Serializer;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -351,5 +354,26 @@ class BaseController extends Controller
         $reflectionClass = new \ReflectionClass($entityName);
 
         return $this->reader->getClassAnnotation($reflectionClass, Grid::class);
+    }
+
+    /**
+     * @param string $title
+     * @param resource $resource
+     * @return Response
+     */
+    protected function respondResource($title, $resource)
+    {
+        if(!empty($resource)) {
+            $data = stream_get_contents($resource);
+            $mime = MimeUtil::getMime($data);
+
+            return new Response($data, Response::HTTP_OK, [
+                'Content-Type' => $mime,
+                'Content-Length' => strlen($data),
+                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mime) . '"'
+            ]);
+        }
+
+        throw new FileNotFoundException("");
     }
 }

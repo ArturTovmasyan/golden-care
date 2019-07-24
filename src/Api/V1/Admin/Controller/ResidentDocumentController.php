@@ -214,4 +214,18 @@ class ResidentDocumentController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_document_download", methods={"GET"})
+     *
+     * @param ResidentDocumentService $residentDocumentService
+     * @param $id
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    {
+        $data = $residentDocumentService->getSingleFile($id);
+
+        return $this->respondResource($data[0], $data[1]);
+    }
 }
