@@ -14,7 +14,7 @@ class UserBlockedException extends ApiException
         parent::__construct(
             sprintf(
                 ResponseCode::$titles[ResponseCode::INCORRECT_REPORT_PARAMETER]['message'],
-                implode(',', $parameters)
+                $parameters[0], $parameters[1]
             ),
             ResponseCode::USER_BLOCKED_EXCEPTION);
     }
