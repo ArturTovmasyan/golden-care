@@ -393,7 +393,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $output_resource = null;
 
             if (file_exists($random_name)) {
-                $output_resource = fopen($random_name, 'r');
+                $output_resource = fopen($random_name, 'rb');
             }
 
             $result = ['insurance', $output_resource];
