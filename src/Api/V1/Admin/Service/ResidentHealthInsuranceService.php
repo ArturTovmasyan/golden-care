@@ -359,10 +359,11 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
         $result = [null, null];
 
         try {
+            /** @var ResidentHealthInsurance $entity */
             $entity = $this->getById($id);
 
-            $first = $entity->getFirstFile();
-            $second = $entity->getSecondFile();
+            $first = $entity->getFile()->getFirstFile();
+            $second = $entity->getFile()->getSecondFile();
 
             $img = new \Imagick();
             $img->setResolution(300, 300);
