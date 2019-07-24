@@ -109,7 +109,7 @@ class MainListener
             $sendEmail = true;
 
             $body = [
-                'code' => $exception->getCode(),
+                'code' => JsonResponse::HTTP_BAD_REQUEST,
                 'message' => $exception->getMessage(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine()
@@ -133,7 +133,7 @@ class MainListener
             $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : $event->getRequest()->getHost();
             $subject = '[SeniorCare] Exception from customer <'.$customer.'>';
 
-            $user = $user = $this->security->getToken()->getUser();
+            $user = $this->security->getToken() ? $this->security->getToken()->getUser() : null;
 
             $this->mailer->sendHandledCustomerException($user, $customer, $subject, $body);
         }
