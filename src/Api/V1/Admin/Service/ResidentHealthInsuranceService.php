@@ -389,6 +389,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . md5((new \DateTime())->format('Ymd_His'));
             $img->setImageFormat('pdf');
             $img->writeImages($random_name, true);
+            $img->destroy();
 
             $output_resource = null;
 
