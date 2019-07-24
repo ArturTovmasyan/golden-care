@@ -40,21 +40,22 @@
                             </div>
                         </th>
                     </tr>
-                    <tr>
-                        {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
-                        {% if datum.roomFloor is defined and datum.roomFloor %}<td><b>Floor</b></td>{% endif %}
-                        {% if datum.careLevel is defined and datum.careLevel %}<td><b>Level</b></td>{% endif %}
-                        <td><b>Resident</b></td>
-                        {% if datum.city is defined and datum.city %}<td><b>Address</b></td>{% endif %}
-                        <td><b>Rent</b></td>
-                        <td><b>Frequency</b></td>
-                        <td><b>Admitted</b></td>
-                        <td><b>Room&nbsp;Rent<br>Total&nbsp;for&nbsp;month</b></td>
-                    </tr>
                 </thead>
                 <tbody>
         {% endif %}
-
+        {% if newGroup %}
+            <tr>
+                {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
+                {% if datum.roomFloor is defined and datum.roomFloor %}<td><b>Floor</b></td>{% endif %}
+                {% if datum.careLevel is defined and datum.careLevel %}<td><b>Level</b></td>{% endif %}
+                <td><b>Resident</b></td>
+                {% if datum.city is defined and datum.city %}<td><b>Address</b></td>{% endif %}
+                <td><b>Rent</b></td>
+                <td><b>Frequency</b></td>
+                <td><b>Admitted</b></td>
+                <td><b>Room&nbsp;Rent<br>Total&nbsp;for&nbsp;month</b></td>
+            </tr>
+        {% endif %}
         <tr>
             {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
             {% if datum.roomFloor is defined and datum.roomFloor %}<td style="height: 40px; text-align: left;">{{ datum.roomFloor }}</td>{% endif %}
@@ -83,45 +84,39 @@
                 </td>
             </tr>
             {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
-                <tr>
-                    <td colspan="2" style="text-align: left; border: none">
-                        {% set m = 0 %}
-                        {% for vacant in data.vacants %}
-                            {% if renderedGroup == vacant.typeId %}
-                                {% set m = m + 1 %}
-                                {% if m == 1 %}
-                                    <div style="margin-bottom: 5px; text-align: center;">
-                                        <b style="width: 100%; font-size: 14px !important;">Vacant Rooms</b><br>
-                                    </div>
-                                    <div style="margin-bottom: 5px;">
-                                        <div style="float: left;">
-                                            <b style="width: 50%;">Room/Bed</b>
-                                        </div>
-                                        <div style="float: right;">
-                                            <b style="width: 50%;">Floor</b>
-                                        </div>
-                                        <div style="clear: both"></div>
-                                    </div>
+                {% set m = 0 %}
+                {% for vacant in data.vacants %}
+                    {% if renderedGroup == vacant.typeId %}
+                        {% set m = m + 1 %}
+                        {% if m == 1 %}
+                            <tr>
+                                <td colspan="2" style="margin-bottom: 5px; text-align: center; border: none;">
+                                    <b style="width: 100%; font-size: 14px !important;">Vacant Rooms</b><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="margin-bottom: 5px; border: none;">
+                                    <b>Room/Bed</b>
+                                </td>
+                                <td style="margin-bottom: 5px; border: none;">
+                                    <b>Floor</b>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td style="margin-bottom: 5px; border: none;">
+                                {% if vacant.roomNumber is defined and vacant.bedNumber is defined %}
+                                    {{ vacant.roomNumber }}&nbsp;{{ vacant.bedNumber }}
                                 {% endif %}
-                                <div style="margin-bottom: 5px; float: left;">
-                                    <span style="width: 50%;">
-                                        {% if vacant.roomNumber is defined and vacant.bedNumber is defined %}
-                                            {{ vacant.roomNumber }}&nbsp;{{ vacant.bedNumber }}
-                                        {% endif %}
-                                    </span>
-                                </div>
-                                <div style="margin-bottom: 5px; float: right;">
-                                    <span style="width: 50%;">
-                                        {% if vacant.roomFloor is defined and vacant.roomFloor %}
-                                            {{ vacant.roomFloor }}
-                                        {% endif %}
-                                    </span>
-                                </div>
-                                <div style="clear: both"></div>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                </tr>
+                            </td>
+                            <td style="margin-bottom: 5px; border: none;">
+                                {% if vacant.roomFloor is defined and vacant.roomFloor %}
+                                    {{ vacant.roomFloor }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         {% endif %}
     {% endfor %}
