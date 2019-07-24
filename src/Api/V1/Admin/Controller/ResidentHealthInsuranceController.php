@@ -237,9 +237,9 @@ class ResidentHealthInsuranceController extends BaseController
      * @param $id
      * @return Response
      */
-    public function downloadAction(Request $request, $id, ResidentHealthInsuranceService $residentDocumentService)
+    public function downloadAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $data = $residentDocumentService->getSingleFile($id);
+        $data = $residentHealthInsurance->getSingleFile($id);
 
         return $this->respondResource($data[0], $data[1]);
     }
