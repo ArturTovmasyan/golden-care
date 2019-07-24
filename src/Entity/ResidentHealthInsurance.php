@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use DataURI\Data;
+use DataURI\Dumper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -188,6 +191,40 @@ class ResidentHealthInsurance
      * })
      */
     private $file;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("first_file")
+     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+     */
+    public function getFirst()
+    {
+        if($this->getFile() !== null) {
+            $data = stream_get_contents($this->getFile()->getFirstFile());
+            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+
+            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("second_file")
+     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+     */
+    public function getSecond()
+    {
+        if($this->getFile() !== null) {
+            $data = stream_get_contents($this->getFile()->getSecondFile());
+            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+
+            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+        }
+
+        return null;
+    }
 
     /**
      * @return int
