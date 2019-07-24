@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class InsuranceCompanyNotFoundException extends \RuntimeException
+class InsuranceCompanyNotFoundException extends ApiException
 {
     /**
      * InsuranceCompanyNotFoundException constructor.

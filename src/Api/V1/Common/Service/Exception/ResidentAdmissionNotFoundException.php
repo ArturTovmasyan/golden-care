@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class ResidentAdmissionNotFoundException extends \RuntimeException
+class ResidentAdmissionNotFoundException extends ApiException
 {
     /**
      * ResidentAdmissionNotFoundException constructor.

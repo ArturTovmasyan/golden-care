@@ -4,6 +4,7 @@ namespace App\EventListener;
 
 use App\Annotation\Grant;
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Common\Service\Exception\ApiException;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\User;
@@ -79,6 +80,11 @@ class MainListener
                 $exception->getCode(),
                 $exception->getErrors()
             );
+        } else if ($exception instanceof ApiException) {
+            $response = $this->respondError(
+                $exception->getMessage(),
+                $exception->getCode()
+            );
         } else if ($exception instanceof UnauthorizedHttpException) {
             $response = $this->respondError(
                 $exception->getMessage(),
@@ -97,16 +103,16 @@ class MainListener
                     $exception->getLine(),
                     $exception->getMessage()
                 ),
-                $exception->getCode()
+                JsonResponse::HTTP_BAD_REQUEST
             );
 
             $sendEmail = true;
 
             $body = [
                 'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
                 'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-                'message' => $exception->getMessage()
+                'line' => $exception->getLine()
             ];
         } else {
             $response = $this->respondError(
@@ -124,10 +130,12 @@ class MainListener
 
         // send email when handled customer exception
         if ($sendEmail) {
-            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : 'customer';
-            $subject = 'Handle '.$customer.' exception';
+            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : $event->getRequest()->getHost();
+            $subject = '[SeniorCare] Exception from customer <'.$customer.'>';
 
-            $this->mailer->sendHandledCustomerException($customer, $subject, $body);
+            $user = $user = $this->security->getToken()->getUser();
+
+            $this->mailer->sendHandledCustomerException($user, $customer, $subject, $body);
         }
 
         $event->setResponse($response);

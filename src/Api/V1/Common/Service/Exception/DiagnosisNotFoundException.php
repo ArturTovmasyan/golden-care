@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class DiagnosisNotFoundException extends \RuntimeException
+class DiagnosisNotFoundException extends ApiException
 {
     /**
      * RoleNotFoundException constructor.

@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class UserNotYetInvitedException extends \RuntimeException
+class UserNotYetInvitedException extends ApiException
 {
     /**
      * UserNotYetInvitedException constructor.

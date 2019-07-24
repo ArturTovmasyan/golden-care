@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class InvalidRecoveryLinkException extends \RuntimeException
+class InvalidRecoveryLinkException extends ApiException
 {
     /**
      * InvalidRecoveryLinkException constructor.

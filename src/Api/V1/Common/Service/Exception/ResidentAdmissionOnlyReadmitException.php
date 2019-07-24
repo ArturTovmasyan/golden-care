@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class ResidentAdmissionOnlyReadmitException extends \RuntimeException
+class ResidentAdmissionOnlyReadmitException extends ApiException
 {
     /**
      * ResidentAdmissionOnlyReadmitException constructor.

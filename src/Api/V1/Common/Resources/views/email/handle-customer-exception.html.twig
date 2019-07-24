@@ -1,6 +1,9 @@
 {% extends "@api_email/base.html.twig" %}
 {% block title %}{{ subject }}{% endblock %}
 {% block content %}
+    {% if user %}
+        <p>User: {{ user.firstName }} {{ user.lastName }} &lt;{{ user.username}}&gt;</p>
+    {% endif %}
     <p>Customer: {{ customer }}</p>
     <p>Code: {{ body.code }}</p>
     {% if body.file is defined %}<p>File: {{ body.file }}</p>{% endif %}

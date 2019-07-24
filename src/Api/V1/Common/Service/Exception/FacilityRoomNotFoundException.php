@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class FacilityRoomNotFoundException extends \RuntimeException
+class FacilityRoomNotFoundException extends ApiException
 {
     /**
      * FacilityRoomNotFoundException constructor.

@@ -12,6 +12,7 @@ class ResponseCode
     const INVITATION_LINK_SENT_TO_EMAIL = 231;
     const RECOVERY_LINK_INVALID         = 232;
     const ACTIVATION_LINK_INVALID       = 233;
+    const USER_BLOCKED_EXCEPTION        = 234;
 
     /**
      * Error codes
@@ -137,6 +138,7 @@ class ResponseCode
      */
     public static $titles = [
         // success
+        self::USER_BLOCKED_EXCEPTION                                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The username "%s" blocked for 30 minutes from %s IP Address. Please, try again later...'],
         self::RECOVERY_LINK_SENT_TO_EMAIL                            => ['httpCode' => Response::HTTP_CREATED,     'message' => 'Password recovery link sent, please check your email.'],
         self::INVITATION_LINK_SENT_TO_EMAIL                          => ['httpCode' => Response::HTTP_CREATED,     'message' => 'Invitation sent to email address, please check your email.'],
         self::RECOVERY_LINK_INVALID                                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Recovery link invalid or expired.'],

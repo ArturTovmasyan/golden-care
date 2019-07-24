@@ -4,10 +4,10 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class IncorrectReportParameterException extends ApiException
+class UserBlockedException extends ApiException
 {
     /**
-     * IncorrectReportParameterException constructor.
+     * UserBlockedException constructor.
      */
     public function __construct(array $parameters)
     {
@@ -16,6 +16,7 @@ class IncorrectReportParameterException extends ApiException
                 ResponseCode::$titles[ResponseCode::INCORRECT_REPORT_PARAMETER]['message'],
                 implode(',', $parameters)
             ),
-            ResponseCode::INCORRECT_REPORT_PARAMETER);
+            ResponseCode::USER_BLOCKED_EXCEPTION);
     }
+
 }

@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class MedicationNotSingleException extends \RuntimeException
+class MedicationNotSingleException extends ApiException
 {
     /**
      * MedicationNotSingleException constructor.

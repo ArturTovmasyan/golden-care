@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class AssessmentRowNotAvailableException extends \RuntimeException
+class AssessmentRowNotAvailableException extends ApiException
 {
     /**
      * AssessmentRowNotAvailableException constructor.

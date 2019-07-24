@@ -2,7 +2,7 @@
 
 namespace App\Api\V1\Common\Controller;
 
-use App\Api\V1\Common\Controller\Exception\UserBlockedException;
+use App\Api\V1\Common\Service\Exception\UserBlockedException;
 use App\Entity\LoginAttempt;
 use App\Entity\User;
 use App\Entity\UserLog;
@@ -141,7 +141,7 @@ class TokenController extends BaseController
             $attemptsCount = $loginAttemptRepository->getAttemptsCount($username, $this->getClientIp());
 
             if ($attemptsCount >= LoginAttempt::PASSWORD_ATTEMPT_LIMIT) {
-                throw new UserBlockedException('Username blocked for your IP address, please try after 30 minutes.');
+                throw new UserBlockedException([$username, $this->getClientIp()]);
             }
 
             // create attempt

@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class DiningRoomNotValidException extends \RuntimeException
+class DiningRoomNotValidException extends ApiException
 {
     /**
      * DiningRoomNotValidException constructor.

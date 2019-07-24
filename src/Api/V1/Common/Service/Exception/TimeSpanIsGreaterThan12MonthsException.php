@@ -4,7 +4,7 @@ namespace App\Api\V1\Common\Service\Exception;
 
 use App\Api\V1\Common\Model\ResponseCode;
 
-class TimeSpanIsGreaterThan12MonthsException extends \RuntimeException
+class TimeSpanIsGreaterThan12MonthsException extends ApiException
 {
     /**
      * TimeSpanIsGreaterThan12MonthsException constructor.

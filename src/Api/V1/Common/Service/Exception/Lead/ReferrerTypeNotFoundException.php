@@ -3,8 +3,9 @@
 namespace App\Api\V1\Common\Service\Exception\Lead;
 
 use App\Api\V1\Common\Model\ResponseCode;
+use App\Api\V1\Common\Service\Exception\ApiException;
 
-class ReferrerTypeNotFoundException extends \RuntimeException
+class ReferrerTypeNotFoundException extends ApiException
 {
     /**
      * ReferrerTypeNotFoundException constructor.
