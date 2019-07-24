@@ -95,7 +95,9 @@ class Resident
      *      "api_admin_apartment_room_list",
      *      "api_admin_apartment_room_get",
      *      "api_admin_resident_health_insurance_list",
-     *      "api_admin_resident_health_insurance_get"
+     *      "api_admin_resident_health_insurance_get",
+     *      "api_admin_resident_document_list",
+     *      "api_admin_resident_document_get"
      * })
      */
     private $id;
@@ -148,7 +150,9 @@ class Resident
      *      "api_admin_resident_physician_list",
      *      "api_admin_resident_physician_get",
      *      "api_admin_resident_health_insurance_list",
-     *      "api_admin_resident_health_insurance_get"
+     *      "api_admin_resident_health_insurance_get",
+     *      "api_admin_resident_document_list",
+     *      "api_admin_resident_document_get"
      * })
      */
     private $firstName;
@@ -169,7 +173,9 @@ class Resident
      *      "api_admin_resident_physician_list",
      *      "api_admin_resident_physician_get",
      *      "api_admin_resident_health_insurance_list",
-     *      "api_admin_resident_health_insurance_get"
+     *      "api_admin_resident_health_insurance_get",
+     *      "api_admin_resident_document_list",
+     *      "api_admin_resident_document_get"
      * })
      */
     private $lastName;
@@ -328,6 +334,12 @@ class Resident
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="resident", cascade={"remove", "persist"})
      */
     private $residentHealthInsurances;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDocument", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentDocuments;
 
     /**
      * @return int
@@ -711,5 +723,21 @@ class Resident
     public function setResidentHealthInsurances(ArrayCollection $residentHealthInsurances): void
     {
         $this->residentHealthInsurances = $residentHealthInsurances;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentDocuments(): ArrayCollection
+    {
+        return $this->residentDocuments;
+    }
+
+    /**
+     * @param ArrayCollection $residentDocuments
+     */
+    public function setResidentDocuments(ArrayCollection $residentDocuments): void
+    {
+        $this->residentDocuments = $residentDocuments;
     }
 }

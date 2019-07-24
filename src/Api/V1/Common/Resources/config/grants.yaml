@@ -290,6 +290,10 @@ persistence:
           title: 'ResidentHealthInsurance'
           class: App\Entity\ResidentHealthInsurance
           route: api_admin_resident_health_insurance_list
+        resident_document:
+          title: 'ResidentDocument'
+          class: App\Entity\ResidentDocument
+          route: api_admin_resident_document_list
 
         admission:
           title: 'ResidentAdmission'

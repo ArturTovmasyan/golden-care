@@ -129,6 +129,7 @@ class ResponseCode
     const RESIDENT_HEALTH_INSURANCE_NOT_FOUND_EXCEPTION          = 730;
     const TIME_SPAN_IS_GREATHER_THAN_12_MONTHS_EXCEPTION         = 731;
     const DOCUMENT_NOT_FOUND_EXCEPTION                           = 732;
+    const RESIDENT_DOCUMENT_NOT_FOUND_EXCEPTION                  = 733;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -256,6 +257,7 @@ class ResponseCode
         self::RESIDENT_HEALTH_INSURANCE_NOT_FOUND_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Health Insurance not found.'],
         self::TIME_SPAN_IS_GREATHER_THAN_12_MONTHS_EXCEPTION         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Time span is greater than 12 months.'],
         self::DOCUMENT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Document not found.'],
+        self::RESIDENT_DOCUMENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Document not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

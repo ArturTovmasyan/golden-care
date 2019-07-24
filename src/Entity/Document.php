@@ -65,9 +65,7 @@ class Document
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_document_list",
-     *     "api_admin_document_get",
-     *     "api_admin_health_insurance_list",
-     *     "api_admin_health_insurance_get"
+     *     "api_admin_document_get"
      * })
      */
     private $id;
@@ -88,9 +86,7 @@ class Document
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_document_list",
-     *     "api_admin_document_get",
-     *     "api_admin_health_insurance_list",
-     *     "api_admin_health_insurance_get"
+     *     "api_admin_document_get"
      * })
      */
     private $title;
