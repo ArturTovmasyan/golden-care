@@ -40,6 +40,16 @@ use JMS\Serializer\Annotation as Serializer;
  *              "type"       = "string",
  *              "field"      = "rd.title",
  *              "link"       = ":edit"
+ *          },
+ *          {
+ *              "id"         = "date",
+ *              "type"       = "datetime",
+ *              "field"      = "rd.createdAt"
+ *          },
+ *          {
+ *              "id"         = "user",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
  *          }
  *     }
  * )

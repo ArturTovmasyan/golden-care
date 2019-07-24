@@ -6,6 +6,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Resident;
 use App\Entity\ResidentDocument;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -30,6 +31,12 @@ class ResidentDocumentRepository extends EntityRepository implements RelatedInfo
                 'r',
                 Join::WITH,
                 'r = rd.resident'
+            )
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = rd.createdBy'
             );
 
         if ($space !== null) {
