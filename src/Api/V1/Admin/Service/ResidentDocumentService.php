@@ -299,7 +299,7 @@ class ResidentDocumentService extends BaseService implements IGridService
     {
         $entity = $this->getById($id);
 
-        if(!empty($entity) && !empty($entity->getFile())) {
+        if(!empty($entity) && $entity->getFile() !== null) {
             return [$entity->getTitle(), $entity->getFile()->getFile()];
         }
 

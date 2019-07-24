@@ -362,15 +362,15 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             /** @var ResidentHealthInsurance $entity */
             $entity = $this->getById($id);
 
-            $first = $entity->getFile()->getFirstFile();
-            $second = $entity->getFile()->getSecondFile();
+            $first = $entity->getFile() !== null ? $entity->getFile()->getFirstFile() : null;
+            $second = $entity->getFile() !== null ? $entity->getFile()->getSecondFile() : null;
 
             $img = new \Imagick();
             $img->setResolution(300, 300);
             $img->setCompression(\Imagick::COMPRESSION_JPEG);
             $img->setCompressionQuality(100);
 
-            if (!empty($first)) {
+            if ($first !== null) {
                 $img1 = new \Imagick();
                 $img1->setResolution(300, 300);
                 $img1->readImageBlob(stream_get_contents($first));
@@ -378,7 +378,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                 $img->addImage($img1);
             }
 
-            if (!empty($second)) {
+            if ($second !== null) {
                 $img2 = new \Imagick();
                 $img2->setResolution(300, 300);
                 $img2->readImageBlob(stream_get_contents($second));
