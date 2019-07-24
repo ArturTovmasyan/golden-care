@@ -151,7 +151,7 @@ class MainListener
     private function respondError($message, $code = Response::HTTP_BAD_REQUEST, $data = [], $headers = [])
     {
         $responseCode    = $code ?: Response::HTTP_BAD_REQUEST;
-        $responseMessage = ResponseCode::$titles[$responseCode]['message']  ?? $message;
+        $responseMessage = $message ?? ResponseCode::$titles[$responseCode]['message'] ?? 'Unknown exception.';
         $headerCode      = ResponseCode::$titles[$responseCode]['httpCode'] ?? $responseCode;
 
         $responseData = [
