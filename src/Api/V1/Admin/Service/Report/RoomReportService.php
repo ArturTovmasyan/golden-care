@@ -947,14 +947,14 @@ class RoomReportService extends BaseService
         if (!empty($dateFrom)) {
             $explodeDateFrom = explode('/', $dateFrom);
 
-            $dateStart = new \DateTime($explodeDateFrom);//[0].'/01/'.$explodeDateFrom[1]);
+            $dateStart = new \DateTime($dateFrom);//$explodeDateFrom);//[0].'/01/'.$explodeDateFrom[1]);
             $dateStartFormatted = $dateStart->format('m/d/Y');
         }
 
         if (!empty($dateTo)) {
             $explodeDateTo = explode('/', $dateTo);
 
-            $dateEnd = new \DateTime($explodeDateTo);//[0].'/01/'.$explodeDateTo[1]);
+            $dateEnd = new \DateTime($dateTo);//$explodeDateTo);//[0].'/01/'.$explodeDateTo[1]);
             $dateEndFormatted = $dateEnd->format('m/d/Y');
         }
 
