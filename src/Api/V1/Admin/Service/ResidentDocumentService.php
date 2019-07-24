@@ -106,8 +106,12 @@ class ResidentDocumentService extends BaseService implements IGridService
 
             $file->setResidentDocument($residentDocument);
 
-            $firstFile = Parser::parse($params['file']);
-            $file->setFile($firstFile->getData());
+            if (!empty($params['file'])) {
+                $parseFile = Parser::parse($params['file']);
+                $file->setFile($parseFile->getData());
+            } else {
+                $file->setFile(null);
+            }
 
             $this->validate($file, null, ['api_admin_resident_document_file_add']);
 
@@ -178,8 +182,12 @@ class ResidentDocumentService extends BaseService implements IGridService
 
             $file->setResidentDocument($entity);
 
-            $firstFile = Parser::parse($params['file']);
-            $file->setFile($firstFile->getData());
+            if (!empty($params['file'])) {
+                $parseFile = Parser::parse($params['file']);
+                $file->setFile($parseFile->getData());
+            } else {
+                $file->setFile(null);
+            }
 
             $this->validate($file, null, ['api_admin_resident_document_file_edit']);
 
