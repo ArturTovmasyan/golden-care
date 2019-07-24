@@ -13,6 +13,7 @@ use App\Entity\Space;
 use App\Repository\DocumentFileRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
+use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -121,13 +122,19 @@ class DocumentService extends BaseService implements IGridService
             $file = new DocumentFile();
 
             $file->setDocument($document);
-            $file->setFile($params['file']);
+
+            if (!empty($params['file'])) {
+                $parseFile = Parser::parse($params['file']);
+                $file->setFile($parseFile->getData());
+            } else {
+                $file->setFile(null);
+            }
 
             $this->validate($file, null, ['api_admin_document_file_add']);
 
-            if ($file) {
-                $this->imageFilterService->validateDocumentFile($file);
-            }
+//            if ($file) {
+//                $this->imageFilterService->validateDocumentFile($file);
+//            }
 
             $this->em->persist($file);
 
@@ -213,13 +220,19 @@ class DocumentService extends BaseService implements IGridService
             }
 
             $file->setDocument($entity);
-            $file->setFile($params['file']);
+
+            if (!empty($params['file'])) {
+                $parseFile = Parser::parse($params['file']);
+                $file->setFile($parseFile->getData());
+            } else {
+                $file->setFile(null);
+            }
 
             $this->validate($file, null, ['api_admin_document_file_edit']);
 
-            if ($file) {
-                $this->imageFilterService->validateDocumentFile($file);
-            }
+//            if ($file) {
+//                $this->imageFilterService->validateDocumentFile($file);
+//            }
 
             $this->em->persist($file);
 
