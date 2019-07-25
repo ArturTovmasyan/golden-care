@@ -933,6 +933,7 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
+        $all = $groupAll;
         $type = $group;
         $typeId = $groupId;
 
@@ -995,29 +996,54 @@ class RoomReportService extends BaseService
         $allTypeIds = array_map(function($item){return $item['typeId'];} , $allData);
         $allTypeIds = array_unique($allTypeIds);
 
-        $vacantBeds = $this->getRoomVacancyListReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null);
-        $typeNames = array_column($vacantBeds->getData(), 'typeName', 'typeId');
-        $typeNames = array_unique($typeNames);
+        /** @var FacilityRoomRepository $facilityRoomRepo */
+        $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
 
-        $vacant = [];
+        $rooms = [];
+        $facilityBeds = [];
+        $typeNames = [];
+
+        if ($typeId) {
+            $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+        }
+
+        if ($all) {
+            $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+        }
+
+        if (!empty($rooms)) {
+            $roomIds = array_map(function (FacilityRoom $item) {
+                return $item->getId();
+            }, $rooms);
+
+            /** @var FacilityBedRepository $facilityBedRepo */
+            $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+
+            $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+
+            $typeNames = array_column($facilityBeds, 'typeName', 'typeId');
+            $typeNames = array_unique($typeNames);
+        }
+
+        $beds = [];
         $days = [];
         $total = [];
         foreach ($interval as $subVal) {
             foreach ($allTypeIds as $allTypeId) {
                 $j = 0;
                 $k = 0;
-                foreach ($vacantBeds->getData() as $vacantBed) {
-                    if ($vacantBed['typeId'] === $allTypeId) {
+                foreach ($facilityBeds as $bed) {
+                    if ($bed['typeId'] === $allTypeId) {
                         ++$j;
-                        $k = $j * $subVal['subInterval']->getEnd()->diff($subVal['subInterval']->getStart())->days;
+                        $k = $j * ($subVal['subInterval']->getEnd()->diff($subVal['subInterval']->getStart())->days + 1);
                     }
                 }
 
-                $vacant[$allTypeId] = $k;
+                $beds[$allTypeId] = $k;
                 $days[$allTypeId] = 0;
             }
 
-            $total[$subVal['monthNumber']]['potential'] = $vacant;
+            $total[$subVal['monthNumber']]['potential'] = $beds;
 
             $rentPeriodFactory = RentPeriodFactory::getFactory($subVal['subInterval']);
 
@@ -1045,10 +1071,10 @@ class RoomReportService extends BaseService
             foreach ($total as $key => $item) {
                 $data[$allTypeId][$key] = [
                       'month' => Month::getTypes()[$key],
-                      'name' => $typeNames[$allTypeId],
+                      'name' => array_key_exists($allTypeId, $typeNames) ? $typeNames[$allTypeId] : 'N/A',
                       'potential' => $item['potential'][$allTypeId],
                       'actual' => array_key_exists($allTypeId, $item['actual']) ?  $item['actual'][$allTypeId] : 0,
-                      'occupancy' => array_key_exists($allTypeId, $item['actual']) && $item['actual'][$allTypeId] > 0 ? number_format(($item['potential'][$allTypeId] / $item['actual'][$allTypeId]) * 100, 2, $dec_point = '.' , $thousands_sep = '') . '%' : '0%',
+                      'occupancy' => array_key_exists($allTypeId, $item['potential']) && $item['potential'][$allTypeId] > 0 ? number_format(($item['actual'][$allTypeId] / $item['potential'][$allTypeId]) * 100, 2, $dec_point = '.' , $thousands_sep = '') . '%' : '0%',
                 ];
             }
         }

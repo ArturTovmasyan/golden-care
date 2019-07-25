@@ -120,7 +120,7 @@ class RentPeriodFactory
                 $dateTimeStart,
                 $dateTimeEnd
             );
-            $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days : 0;
+            $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days + 1 : 0;
         }
 
         return array(
