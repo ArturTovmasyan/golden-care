@@ -1048,7 +1048,7 @@ class RoomReportService extends BaseService
                       'name' => $typeNames[$allTypeId],
                       'potential' => $item['potential'][$allTypeId],
                       'actual' => array_key_exists($allTypeId, $item['actual']) ?  $item['actual'][$allTypeId] : 0,
-                      'occupancy' => array_key_exists($allTypeId, $item['actual']) && $item['actual'][$allTypeId] > 0 ? number_format(($item['potential'][$allTypeId] / $item['actual'][$allTypeId]) * 100, 2) . '%' : '0%',
+                      'occupancy' => array_key_exists($allTypeId, $item['actual']) && $item['actual'][$allTypeId] > 0 ? number_format(($item['potential'][$allTypeId] / $item['actual'][$allTypeId]) * 100, 2, $dec_point = '.' , $thousands_sep = '') . '%' : '0%',
                 ];
             }
         }
