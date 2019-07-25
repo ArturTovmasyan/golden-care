@@ -941,29 +941,22 @@ class RoomReportService extends BaseService
         }
 
         $dateStart = $dateEnd = new \DateTime('now');
-        $dateStartFormatted = $dateStart->format('m/01/Y');
-        $dateEndFormatted = $dateEnd->format('m/t/Y');
+        $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
 
         if (!empty($dateFrom)) {
             $dateStart = new \DateTime($dateFrom);
-            $dateStartFormatted = $dateStart->format('m/01/Y');
+            $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
         }
 
         if (!empty($dateTo)) {
             $dateEnd = new \DateTime($dateTo);
-            $dateEndFormatted = $dateEnd->format('m/t/Y');
+            $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
         }
 
-        $dateStart = date('Y-m-01', strtotime($dateStartFormatted));
-        $dateStart = new \DateTime($dateStart);
-        $dateStart->setTime(0, 0, 0);
-        $dateStartFormatted = $dateStart->format('m/d/Y');
-
-        $dateEnd = date('Y-m-t', strtotime($dateEndFormatted));
-        $dateEnd = new \DateTime($dateEnd);
-        $dateEnd->setTime(23, 59, 59);
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
         $dateEndClone = clone $dateEnd;
-        $dateEndFormatted = $dateEnd->format('m/d/Y');
 
         if ($dateStart > $dateEnd) {
             throw new StartGreaterEndDateException();
@@ -978,23 +971,16 @@ class RoomReportService extends BaseService
         }
 
         $interval = [];
-        for ($i = 1; $i <= 12; $i++) {
-            if (($dateEndClone->format('Y') > $dateStart->format('Y')) || ($dateEndClone->format('Y') === $dateStart->format('Y') && $dateEndClone->format('m') >= $dateStart->format('m'))) {
-                $start = date('Y-m-01', strtotime($dateEndClone->format('Y-m-d')));
-                $start = new \DateTime($start);
-                $start->setTime(0, 0, 0);
+        while ($dateEndClone->diff($dateStart)->days > 0 && \count($interval) <= 12) {
+            $start = new \DateTime($dateEndClone->format('Y-m-01 00:00:00'));
+            $end = new \DateTime($dateEndClone->format('Y-m-t 23:59:59'));
 
-                $end = date('Y-m-t', strtotime($dateEndClone->format('Y-m-d')));
-                $end = new \DateTime($end);
-                $end->setTime(23, 59, 59);
+            $interval[] = [
+                'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
+                'monthNumber' => $start->format('n')
+            ];
 
-                $interval[] = [
-                    'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
-                    'monthNumber' => $start->format('n')
-                ];
-
-                $dateEndClone = new \DateTime(date('Y-m-d H:i:s', strtotime($start->format('Y-m-d') .' -1 month')));
-            }
+            $dateEndClone->modify('last day of previous month');
         }
 
         $interval = array_reverse($interval);
