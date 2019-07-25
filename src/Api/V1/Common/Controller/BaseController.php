@@ -364,7 +364,7 @@ class BaseController extends Controller
     protected function respondResource($title, $resource)
     {
         if(!empty($resource)) {
-            $data = stream_get_contents($resource);
+            $data = stream_get_contents($resource, -1, 0);
             $mime = MimeUtil::getMime($data);
 
             return new Response($data, Response::HTTP_OK, [

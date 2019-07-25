@@ -373,7 +373,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             if ($first !== null) {
                 $img1 = new \Imagick();
                 $img1->setResolution(300, 300);
-                $img1->readImageBlob(stream_get_contents($first));
+                $img1->readImageBlob(stream_get_contents($first, -1, 0));
 
                 $img->addImage($img1);
             }
@@ -381,7 +381,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             if ($second !== null) {
                 $img2 = new \Imagick();
                 $img2->setResolution(300, 300);
-                $img2->readImageBlob(stream_get_contents($second));
+                $img2->readImageBlob(stream_get_contents($second, -1, 0));
 
                 $img->addImage($img2);
             }
