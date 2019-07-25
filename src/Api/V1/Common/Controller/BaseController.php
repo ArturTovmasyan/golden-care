@@ -365,6 +365,15 @@ class BaseController extends Controller
     {
         if(!empty($resource)) {
             $data = stream_get_contents($resource, -1, 0);
+
+            $meta = stream_get_meta_data($resource);
+
+            fclose($resource);
+
+            if(StringUtil::starts_with($meta['uri'], '/tmp/hif_')) {
+                unlink($meta['uri']);
+            }
+
             $mime = MimeUtil::getMime($data);
 
             return new Response($data, Response::HTTP_OK, [

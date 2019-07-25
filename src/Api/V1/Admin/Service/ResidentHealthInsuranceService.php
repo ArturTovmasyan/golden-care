@@ -358,51 +358,43 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
     {
         $result = [null, null];
 
-        try {
-            /** @var ResidentHealthInsurance $entity */
-            $entity = $this->getById($id);
+        /** @var ResidentHealthInsurance $entity */
+        $entity = $this->getById($id);
 
-            $first = $entity->getFile() !== null ? $entity->getFile()->getFirstFile() : null;
-            $second = $entity->getFile() !== null ? $entity->getFile()->getSecondFile() : null;
+        $first = $entity->getFile() !== null ? $entity->getFile()->getFirstFile() : null;
+        $second = $entity->getFile() !== null ? $entity->getFile()->getSecondFile() : null;
 
-            $img = new \Imagick();
-            $img->setResolution(300, 300);
-            $img->setCompression(\Imagick::COMPRESSION_JPEG);
-            $img->setCompressionQuality(100);
+        $img = new \Imagick();
+        $img->setResolution(300, 300);
+        $img->setCompression(\Imagick::COMPRESSION_JPEG);
+        $img->setCompressionQuality(100);
 
-            if ($first !== null) {
-                $img1 = new \Imagick();
-                $img1->setResolution(300, 300);
-                $img1->readImageBlob(stream_get_contents($first, -1, 0));
-
-                $img->addImage($img1);
-            }
-
-            if ($second !== null) {
-                $img2 = new \Imagick();
-                $img2->setResolution(300, 300);
-                $img2->readImageBlob(stream_get_contents($second, -1, 0));
-
-                $img->addImage($img2);
-            }
-
-            $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . md5((new \DateTime())->format('Ymd_His'));
-            $img->setImageFormat('pdf');
-            $img->writeImages($random_name, true);
-            $img->destroy();
-
-            $output_resource = null;
-
-            if (file_exists($random_name)) {
-                $output_resource = fopen($random_name, 'rb');
-            }
-
-            $result = ['insurance', $output_resource];
-        } catch (\ImagickException $e)  {
-
-        } catch (\Exception $e)  {
-
+        if ($first !== null) {
+            $img1 = new \Imagick();
+            $img1->setResolution(300, 300);
+            $img1->readImageBlob(stream_get_contents($first, -1, 0));
+            $img->addImage($img1);
         }
+
+        if ($second !== null) {
+            $img2 = new \Imagick();
+            $img2->setResolution(300, 300);
+            $img2->readImageBlob(stream_get_contents($second, -1, 0));
+            $img->addImage($img2);
+        }
+
+        $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . (new \DateTime())->format('Ymd_His'). '.pdf';
+        $img->setImageFormat('pdf');
+        $img->writeImages($random_name, true);
+        $img->destroy();
+
+        $output_resource = null;
+
+        if (file_exists($random_name)) {
+            $output_resource = fopen($random_name, 'rb');
+        }
+
+        $result = ['insurance', $output_resource];
 
         return $result;
     }
