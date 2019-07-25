@@ -58,6 +58,7 @@ class ResidentDocumentRepository extends EntityRepository implements RelatedInfo
         }
 
         $queryBuilder
+            ->orderBy('rd.createdAt', 'DESC')
             ->groupBy('rd.id');
     }
 
@@ -99,6 +100,7 @@ class ResidentDocumentRepository extends EntityRepository implements RelatedInfo
         }
 
         return $qb
+            ->orderBy('rd.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

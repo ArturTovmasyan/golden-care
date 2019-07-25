@@ -378,11 +378,11 @@ class BaseController extends Controller
 
             return new Response($data, Response::HTTP_OK, [
                 'Content-Type' => $mime,
-                'Content-Length' => strlen($data),
+                'Content-Length' => \strlen($data),
                 'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mime) . '"'
             ]);
         }
 
-        throw new FileNotFoundException("");
+        throw new FileNotFoundException('');
     }
 }

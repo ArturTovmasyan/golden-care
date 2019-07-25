@@ -356,8 +356,6 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
      */
     public function getSingleFile($id)
     {
-        $result = [null, null];
-
         /** @var ResidentHealthInsurance $entity */
         $entity = $this->getById($id);
 
@@ -389,13 +387,13 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
         $img->destroy();
 
         $output_resource = null;
+        $output_name = null;
 
         if (file_exists($random_name)) {
+            $output_name = 'insurance';
             $output_resource = fopen($random_name, 'rb');
         }
 
-        $result = ['insurance', $output_resource];
-
-        return $result;
+        return [$output_name, $output_resource];
     }
 }
