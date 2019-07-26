@@ -988,10 +988,10 @@ class RoomReportService extends BaseService
 
         $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
 
-        /** @var ResidentRentRepository $repo */
-        $repo = $this->em->getRepository(ResidentRent::class);
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
 
-        $allData = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
+        $allData = $repo->getRoomOccupancyRateByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
 
         $allTypeIds = array_map(function($item){return $item['typeId'];} , $allData);
         $allTypeIds = array_unique($allTypeIds);
@@ -1051,10 +1051,10 @@ class RoomReportService extends BaseService
             foreach ($allTypeIds as $typeId) {
 
                 $sumDays = 0;
-                foreach ($allData as $rent) {
-                    if ($rent['typeId'] === $typeId) {
+                foreach ($allData as $admission) {
+                    if ($admission['typeId'] === $typeId) {
                         $calculationResults = $rentPeriodFactory->calculateForReportInterval(
-                            ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : null),
+                            ImtDateTimeInterval::getWithDateTimes($admission['admitted'], $admission['discharged']),
                             $subVal['subInterval']
                         );
 
