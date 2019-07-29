@@ -67,7 +67,14 @@ class Relationship
      *     "api_admin_relationship_add",
      *     "api_admin_relationship_edit"
      * })
-     * @ORM\Column(name="title", type="string", length=20, nullable=false)
+     * @Assert\Length(
+     *      max = 50,
+     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_relationship_add",
+     *          "api_admin_relationship_edit"
+     * })
+     * @ORM\Column(name="title", type="string", length=50)
      * @Groups({
      *     "api_admin_relationship_grid",
      *     "api_admin_relationship_list",
