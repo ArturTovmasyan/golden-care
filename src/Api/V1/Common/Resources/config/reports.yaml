@@ -1,7 +1,7 @@
 resident:
   title: 'Resident Reports'
   show_in_resident_list: true
-  show_in_group_list: false
+  show_in_group_list: true
   reports:
     profile:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
@@ -94,7 +94,7 @@ resident:
 form:
   title: 'Forms Reports'
   show_in_resident_list: true
-  show_in_group_list: false
+  show_in_group_list: true
   reports:
     birthday-list:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBirthdayListReport
@@ -262,7 +262,7 @@ form:
 room:
   title: 'Room Reports'
   show_in_resident_list: true
-  show_in_group_list: false
+  show_in_group_list: true
   reports:
     payor:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getPayorReport
@@ -346,7 +346,7 @@ room:
 physician:
   title: 'Physicians Reports'
   show_in_resident_list: true
-  show_in_group_list: false
+  show_in_group_list: true
   reports:
     simple:
       service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getSimpleReport
