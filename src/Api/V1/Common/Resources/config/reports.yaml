@@ -1,11 +1,12 @@
 resident:
   title: 'Resident Reports'
-  show_in_list: true
+  show_in_resident_list: true
   reports:
     profile:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
       title: 'Profile: Profile for selected resident / all residents'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: false
       formats: ['pdf']
       parameters:
         discontinued: true
@@ -14,7 +15,8 @@ resident:
     profile-no-admission:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileNoAdmissionReport
       title: 'Profile: Profile for selected resident / all residents'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       template: 'profile'
       parameters:
@@ -24,7 +26,8 @@ resident:
     face-sheet:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
       title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: false
       formats: ['pdf']
       parameters:
         resident:
@@ -32,7 +35,8 @@ resident:
     face-sheet-no-admission:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetNoAdmissionReport
       title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       template: 'face-sheet'
       parameters:
@@ -41,7 +45,8 @@ resident:
     detailed-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
       title: 'Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -49,7 +54,8 @@ resident:
     simple-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSimpleRosterReport
       title: 'Simple Roster: Simple list of Residents, sorted by Room Number'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -57,7 +63,8 @@ resident:
     dietary-restrictions:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDietaryRestrictionsReport
       title: 'Dietary Restrictions: Dietary Restrictions Report'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -65,7 +72,8 @@ resident:
     sixty-days-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
       title: '60 Days Roster: 60 Days Roster Report'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['csv']
       parameters:
         group:
@@ -74,7 +82,8 @@ resident:
     event-list:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getEventReport
       title: 'Events: List of Residents Events'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -83,12 +92,13 @@ resident:
         date_to: "m/d/Y"
 form:
   title: 'Forms Reports'
-  show_in_list: true
+  show_in_resident_list: true
   reports:
     birthday-list:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBirthdayListReport
       title: 'Birthday list: List of all residents birthdays, Monthly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -96,7 +106,8 @@ form:
     blood-pressure:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBloodPressureChartingReport
       title: 'Blood Pressure: Blood pressure charting'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -104,7 +115,8 @@ form:
     bowel-movement:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBowelMovementReport
       title: 'Bowel movement: Bowel Movement tracking form, Weekly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -112,7 +124,7 @@ form:
     changeover-notes:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getChangeoverNotesReport
       title: 'Changeover notes: Shift Changeover Notes, Daily'
-      show_in_list: true
+      show_in_resident_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -120,7 +132,8 @@ form:
     manicure:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getManicureReport
       title: 'Manicure: Manicure Tracking Form, Monthly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -128,7 +141,8 @@ form:
     meal-monitor:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMealMonitorReport
       title: 'Meal Monitor: Meal Consumption Tracking Form, Weekly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -136,7 +150,8 @@ form:
     medication-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
       title: 'MAR - Medication Chart: Medication Chart for selected resident, Monthly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: false
       formats: ['pdf']
       template: 'medication-chart'
       parameters:
@@ -145,7 +160,8 @@ form:
     medication-chart-no-admission:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartNoAdmissionReport
       title: 'MAR - Medication Chart: Medication Chart for selected resident, Monthly (pre-admit)'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       template: 'medication-chart'
       parameters:
@@ -154,7 +170,8 @@ form:
     medication-chart-all:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartReport
       title: 'MAR - Medication Chart: Medication Charts for all residents, Monthly'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       template: 'medication-chart'
       parameters:
@@ -163,7 +180,8 @@ form:
     medication-chart-blank:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationChartBlankReport
       title: 'MAR - Medication Chart: Blank Medication Chart'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       template: 'medication-chart-blank'
       parameters:
@@ -172,7 +190,8 @@ form:
     medication-list-resident:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
       title: 'Medications List Selected Resident: Medications list for selected resident'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: false
       formats: ['pdf']
       template: 'medication-list'
       parameters:
@@ -182,7 +201,8 @@ form:
     medication-list-resident-no-admission:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListNoAdmissionReport
       title: 'Medications List Selected Resident: Medications list for selected resident (pre-admit)'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       template: 'medication-list'
       parameters:
@@ -192,7 +212,8 @@ form:
     medication-list-all:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getMedicationListReport
       title: 'Medications List All Residents: Medications list for all residents.'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       template: 'medication-list'
       parameters:
@@ -202,7 +223,8 @@ form:
     night-activity:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getNightActivityReport
       title: 'Night activity: Night Activity Tracking Form, Daily'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -210,7 +232,8 @@ form:
     room-audit:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getRoomAuditReport
       title: 'Room Audit: Resident Room Audit form'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -218,7 +241,8 @@ form:
     shower-skin-inspection:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection Selected Resident: Shower Skin Inspection for current selected resident'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: false
       formats: ['pdf']
       parameters:
         resident:
@@ -226,7 +250,8 @@ form:
     shower-skin-list:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getShowerSkinInspectionReport
       title: 'Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       template: 'shower-skin-inspection'
       parameters:
@@ -234,12 +259,13 @@ form:
           select_all: true
 room:
   title: 'Room Reports'
-  show_in_list: true
+  show_in_resident_list: true
   reports:
     payor:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getPayorReport
       title: 'Payor Report: Monthly Payor Report'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -248,7 +274,8 @@ room:
     room-list:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomListReport
       title: 'Room: Simple Rent Roster'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -257,7 +284,8 @@ room:
     room-rent:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentReport
       title: 'Room Rent: Monthly Rent Report'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -266,7 +294,7 @@ room:
     room-rent-master:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
       title: 'Room Rent Master: Historical Rent Graphs, Data - for Finance Use only'
-      show_in_list: true
+      show_in_resident_list: true
       formats: ['pdf']
       parameters:
         group:
@@ -275,7 +303,8 @@ room:
     room-rent-master-new:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterNewReport
       title: 'Room Rent Master: New!: Monthly Rent Master Report'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -284,7 +313,8 @@ room:
     room-vacancy:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomVacancyListReport
       title: 'Room Vacancy List: List of Vacant Rooms, by Facility. Calculated as of today'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -292,7 +322,8 @@ room:
     room-occupancy:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomOccupancyRateReport
       title: 'Room Occupancy Rates: Facility Occupancy Rate Summary (calculated as of today)'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -300,7 +331,8 @@ room:
     room-occupancy-monthly:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomOccupancyRateByMonthReport
       title: 'Room Occupancy Rates By Month'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['csv']
       parameters:
         date_from: "m/Y"
@@ -310,12 +342,13 @@ room:
 
 physician:
   title: 'Physicians Reports'
-  show_in_list: true
+  show_in_resident_list: true
   reports:
     simple:
       service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getSimpleReport
       title: 'Physician Roster Simple: List of physicians, with contact information and resident count'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -323,7 +356,8 @@ physician:
     full:
       service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getFullReport
       title: 'Physician Roster Full: List of physicians, with contact information and resident count'
-      show_in_list: true
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf', 'csv']
       parameters:
         group:
@@ -331,12 +365,13 @@ physician:
 
 assessment:
   title: 'Assessment Reports'
-  show_in_list: false
+  show_in_resident_list: false
   reports:
     blank:
       service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getBlankReport
       title: 'Assessment Report (Blank)'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       parameters:
         resident:
@@ -344,7 +379,8 @@ assessment:
     filled:
       service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getFilledReport
       title: 'Assessment Report (Filled)'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['pdf']
       parameters:
         resident:
@@ -352,12 +388,13 @@ assessment:
 
 lead:
   title: 'Lead Reports'
-  show_in_list: false
+  show_in_resident_list: false
   reports:
     lead:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getLeadReport
       title: 'Generate Lead List Report'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['csv']
       parameters:
         date_from: "m/d/Y"
@@ -365,7 +402,8 @@ lead:
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
       title: 'Generate Referral List Report'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['csv']
       parameters:
         date_from: "m/d/Y"
@@ -373,7 +411,8 @@ lead:
     activity:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
       title: 'Generate Activity List Report'
-      show_in_list: false
+      show_in_resident_list: false
+      show_in_group_list: false
       formats: ['csv']
       parameters:
         date_from: "m/d/Y"
