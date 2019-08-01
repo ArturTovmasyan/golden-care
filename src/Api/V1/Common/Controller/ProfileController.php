@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Common\Controller;
 
+use App\Api\V1\Admin\Service\ReportService;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Api\V1\Common\Service\ProfileService;
@@ -93,11 +94,14 @@ class ProfileController extends BaseController
      * @var Request $request
      * @return JsonResponse
      */
-    public function getAction(Request $request, $type, ProfileService $profileService, GrantService $grantService)
+    public function getAction(Request $request, $type, ProfileService $profileService, GrantService $grantService, ReportService $reportService)
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $user->setPermissions($grantService->getEffectiveGrants($user->getRoleObjects()));
+
+        $permissions = $grantService->getEffectiveGrants($user->getRoleObjects());
+        $reportService->addGroupReportPermission($permissions);
+        $user->setPermissions($permissions);
 
         return $this->respondSuccess(
             Response::HTTP_OK,

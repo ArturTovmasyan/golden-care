@@ -304,4 +304,35 @@ class ReportService
             ]);
         }
     }
+
+    public function getGroupReportGrants() {
+        $group_grants = [];
+
+        foreach ($this->config as $group => $config) {
+            if($config['show_in_group_list'] === true) {
+                foreach ($config['reports'] as $alias => $report) {
+                    $grant = sprintf("report-%s-%s", $group, $alias);
+                    if ($this->grantService->hasCurrentUserGrant($grant) === true &&
+                        $report['show_in_group_list'] === true) {
+                        $group_grants[] = $grant;
+                    }
+                }
+            }
+        }
+
+        return $group_grants;
+    }
+
+    public function addGroupReportPermission(array &$permissions)
+    {
+        $group_grants = $this->getGroupReportGrants();
+
+        $report_test = array_filter($permissions, function($value, $key) use ($group_grants) {
+            return in_array($key, $group_grants) && $value['enabled'] === true;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if(count($report_test) > 0) {
+            $permissions['report-group'] = ['enabled' => true];
+        }
+    }
 }
