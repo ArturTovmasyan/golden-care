@@ -7,12 +7,15 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Document;
-use App\Entity\DocumentFile;
 use App\Entity\Facility;
+use App\Entity\File;
 use App\Entity\Space;
-use App\Repository\DocumentFileRepository;
+use App\Model\FileType;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\FileRepository;
+use Aws\S3\S3Client;
+use Aws\Sns\SnsClient;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -114,34 +117,73 @@ class DocumentService extends BaseService implements IGridService
                 $document->setFacilities(null);
             }
 
-            $this->validate($document, null, ['api_admin_document_add']);
-
-            $this->em->persist($document);
-
             //save file
-            $file = new DocumentFile();
-
-            $file->setDocument($document);
+            $file = new File();
 
             if (!empty($params['file'])) {
                 $parseFile = Parser::parse($params['file']);
                 $file->setFile($parseFile->getData());
+                $file->setMimeType($parseFile->getMimeType());
+                $file->setType(FileType::TYPE_DOCUMENT);
+                $file->setS3Id(uniqid('', false));
+
+                $this->validate($file, null, ['api_admin_file_add']);
+
+                $this->em->persist($file);
+
+                $document->setFile($file);
             } else {
-                $file->setFile(null);
+                $document->setFile(null);
             }
 
-            $this->validate($file, null, ['api_admin_document_file_add']);
+            $this->validate($document, null, ['api_admin_document_add']);
 
-//            if ($file) {
-//                $this->imageFilterService->validateDocumentFile($file);
-//            }
-
-            $this->em->persist($file);
+            $this->em->persist($document);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
 
             $insert_id = $document->getId();
+
+//            /** @var Document $entity */
+//            $entity = $this->getById(21);
+//
+//            $stream = $entity->getFile() !== null ? $entity->getFile()->getFile() : null;
+//
+//            $img = new \Imagick();
+//            $img->setResolution(300, 300);
+//            $img->setCompression(\Imagick::COMPRESSION_JPEG);
+//            $img->setCompressionQuality(100);
+//
+//
+//            if ($stream !== null) {
+//                $img1 = new \Imagick();
+//                $img1->setResolution(300, 300);
+//                $img1->readImageBlob(stream_get_contents($stream, -1, 0));
+//                $img->addImage($img1);
+//            }
+//
+//            $random_name = '/tmp/' . $entity->getFile()->getId() . '_' . (new \DateTime())->format('Ymd_His'). '.pdf';
+//            $img->setImageFormat('pdf');
+//            $img->writeImages($random_name, true);
+//            $img->destroy();
+//
+//            $client = new S3Client([
+//                'region' => getenv('AWS_REGION'),
+//                'version' => getenv('AWS_VERSION'),
+//                'credentials' => [
+//                    'key' => getenv('AWS_KEY'),
+//                    'secret' => getenv('AWS_SECRET'),
+//                    'region' => getenv('AWS_REGION'),
+//                ],
+//            ]);
+//
+//            $client->putObject(array(
+//                'Bucket' => getenv('AWS_BUCKET'),
+//                'Key'    => $entity->getFile()->getId().'.txt',
+//                'Body'   => fopen($random_name, 'rb+')
+//            ));
+
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -205,34 +247,30 @@ class DocumentService extends BaseService implements IGridService
                 $entity->setFacilities(null);
             }
 
-            $this->validate($entity, null, ['api_admin_document_edit']);
-
-            $this->em->persist($entity);
-
             // save file
-            /** @var DocumentFileRepository $fileRepo */
-            $fileRepo = $this->em->getRepository(DocumentFile::class);
-
-            $file = $fileRepo->getBy($entity->getId());
+            $file = $entity->getFile();
 
             if ($file === null) {
-                $file = new DocumentFile();
+                $file = new File();
             }
-
-            $file->setDocument($entity);
 
             if (!empty($params['file'])) {
                 $parseFile = Parser::parse($params['file']);
                 $file->setFile($parseFile->getData());
+                $file->setMimeType($parseFile->getMimeType());
+                $file->setType(FileType::TYPE_DOCUMENT);
+                $file->setS3Id(uniqid('', false));
+
+                $this->validate($file, null, ['api_admin_file_edit']);
+
+                $this->em->persist($file);
+
+                $entity->setFile($file);
             } else {
-                $file->setFile(null);
+                $entity->setFile(null);
             }
 
-            $this->validate($file, null, ['api_admin_document_file_edit']);
-
-//            if ($file) {
-//                $this->imageFilterService->validateDocumentFile($file);
-//            }
+            $this->validate($entity, null, ['api_admin_document_edit']);
 
             $this->em->persist($file);
 
@@ -262,6 +300,19 @@ class DocumentService extends BaseService implements IGridService
 
             if ($entity === null) {
                 throw new DocumentNotFoundException();
+            }
+
+            if ($entity->getFile() !== null) {
+                /** @var FileRepository $fileRepo */
+                $fileRepo = $this->em->getRepository(File::class);
+
+                $fileId = $entity->getFile()->getId();
+
+                $file = $fileRepo->find($fileId);
+
+                if ($file !== null) {
+                    $this->em->remove($file);
+                }
             }
 
             $this->em->remove($entity);
@@ -296,11 +347,31 @@ class DocumentService extends BaseService implements IGridService
                 throw new DocumentNotFoundException();
             }
 
+            $fileIds = [];
+
+            /** @var FileRepository $fileRepo */
+            $fileRepo = $this->em->getRepository(File::class);
+
             /**
              * @var Document $document
              */
             foreach ($documents as $document) {
+                if ($document->getFile() !== null) {
+                    $fileIds[] = $document->getFile()->getId();
+                }
+
                 $this->em->remove($document);
+            }
+
+            $fileIds = array_unique($fileIds);
+
+            $files = $fileRepo->findByIds($fileIds);
+
+            /**
+             * @var File $file
+             */
+            foreach ($files as $file) {
+                $this->em->remove($file);
             }
 
             $this->em->flush();

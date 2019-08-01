@@ -151,8 +151,15 @@ class Document
     private $space;
 
     /**
-     * @var DocumentFile
-     * @ORM\OneToOne(targetEntity="App\Entity\DocumentFile", mappedBy="document", cascade={"remove", "persist"})
+     * @var File
+     * @Assert\NotNull(message = "Please select a File", groups={
+     *     "api_admin_document_add",
+     *     "api_admin_document_edit"
+     * })
+     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="document")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_file", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $file;
 
@@ -259,19 +266,18 @@ class Document
     }
 
     /**
-     * @return DocumentFile|null
+     * @return File|null
      */
-    public function getFile(): ?DocumentFile
+    public function getFile(): ?File
     {
         return $this->file;
     }
 
     /**
-     * @param DocumentFile|null $file
+     * @param File|null $file
      */
-    public function setFile(?DocumentFile $file): void
+    public function setFile(?File $file): void
     {
         $this->file = $file;
     }
-
 }
