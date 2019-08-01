@@ -3,7 +3,7 @@
 parameters:
     filter_service:
         extensions: ['jpg','jpeg','png']
-    file_service:
+    pdf_file_service:
         extensions: ['pdf']
     locale: 'en'
 

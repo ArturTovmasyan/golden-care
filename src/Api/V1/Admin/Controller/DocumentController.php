@@ -3,7 +3,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\DocumentService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Common\Service\ImageFilterService;
+use App\Api\V1\Common\Service\S3Service;
 use App\Entity\Document;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -107,13 +107,13 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @param ImageFilterService $imageFilterService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, DocumentService $documentService, ImageFilterService $imageFilterService)
+    public function addAction(Request $request, DocumentService $documentService, S3Service $s3Service)
     {
-        $documentService->setImageFilterService($imageFilterService);
+        $documentService->setS3Service($s3Service);
 
         $id = $documentService->add(
             [
@@ -140,13 +140,13 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param $id
      * @param DocumentService $documentService
-     * @param ImageFilterService $imageFilterService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, DocumentService $documentService, ImageFilterService $imageFilterService)
+    public function editAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
     {
-        $documentService->setImageFilterService($imageFilterService);
+        $documentService->setS3Service($s3Service);
 
         $documentService->edit(
             $id,

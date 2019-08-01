@@ -5,24 +5,13 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid;
 
 /**
  * Class File
  *
  * @ORM\Entity(repositoryClass="App\Repository\FileRepository")
- * @UniqueEntity(
- *     fields={"s3Id"},
- *     errorPath="s3Id",
- *     message="The value is already in use for File.",
- *     groups={
- *          "api_admin_file_add",
- *          "api_admin_file_edit"
- *     }
- * )
  * @ORM\Table(name="tbl_file")
  */
 class File
@@ -84,11 +73,7 @@ class File
 
     /**
      * @var string $s3Id
-     * @ORM\Column(name="s3Id", type="string", unique=true, length=128)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_file_add",
-     *     "api_admin_file_edit"
-     * })
+     * @ORM\Column(name="s3Id", type="string", length=128, nullable=true)
      * @Assert\Length(
      *      max = 128,
      *      maxMessage = "S3 Id cannot be longer than {{ limit }} characters",
@@ -102,20 +87,20 @@ class File
      * })
      */
     private $s3Id;
-
-    /**
-     * @var string|resource $file
-     * @Assert\NotBlank(groups={
-     *     "api_admin_file_add",
-     *     "api_admin_file_edit"
-     * })
-     * @ORM\Column(name="file", type="blob")
-     * @Groups({
-     *     "api_admin_file_list",
-     *     "api_admin_file_get",
-     * })
-     */
-    private $file;
+//
+//    /**
+//     * @var string|resource $file
+//     * @Assert\NotBlank(groups={
+//     *     "api_admin_file_add",
+//     *     "api_admin_file_edit"
+//     * })
+//     * @ORM\Column(name="file", type="blob")
+//     * @Groups({
+//     *     "api_admin_file_list",
+//     *     "api_admin_file_get",
+//     * })
+//     */
+//    private $file;
 
     /**
      * @var Document
@@ -181,18 +166,18 @@ class File
         $this->s3Id = $s3Id;
     }
 
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param null|string $file
-     */
-    public function setFile(?string $file): void
-    {
-        $this->file = $file;
-    }
+//    public function getFile()
+//    {
+//        return $this->file;
+//    }
+//
+//    /**
+//     * @param null|string $file
+//     */
+//    public function setFile(?string $file): void
+//    {
+//        $this->file = $file;
+//    }
 
     /**
      * @return Document|null

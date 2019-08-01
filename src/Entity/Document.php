@@ -4,15 +4,12 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use DataURI\Data;
-use DataURI\Dumper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Document
@@ -162,23 +159,6 @@ class Document
      * })
      */
     private $file;
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_document_get", "api_admin_document_list"})
-     */
-    public function getDocumentFile()
-    {
-        if ($this->getFile() !== null) {
-            $data = stream_get_contents($this->getFile()->getFile());
-            $file_info = new \finfo(FILEINFO_MIME_TYPE);
-
-            return Dumper::dump(new Data($data, $file_info->buffer($data)));
-        }
-
-        return null;
-    }
 
     public function getId()
     {

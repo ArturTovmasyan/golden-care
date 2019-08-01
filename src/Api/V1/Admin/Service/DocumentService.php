@@ -5,7 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\DocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Api\V1\Common\Service\ImageFilterService;
+use App\Api\V1\Common\Service\S3Service;
 use App\Entity\Document;
 use App\Entity\Facility;
 use App\Entity\File;
@@ -14,8 +14,6 @@ use App\Model\FileType;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FileRepository;
-use Aws\S3\S3Client;
-use Aws\Sns\SnsClient;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -26,16 +24,16 @@ use Doctrine\ORM\QueryBuilder;
 class DocumentService extends BaseService implements IGridService
 {
     /**
-     * @var ImageFilterService
+     * @var S3Service
      */
-    private $imageFilterService;
+    private $s3Service;
 
     /**
-     * @param ImageFilterService $imageFilterService
+     * @param S3Service $s3Service
      */
-    public function setImageFilterService(ImageFilterService $imageFilterService)
+    public function setS3Service(S3Service $s3Service)
     {
-        $this->imageFilterService = $imageFilterService;
+        $this->s3Service = $s3Service;
     }
 
     /**
@@ -122,14 +120,14 @@ class DocumentService extends BaseService implements IGridService
 
             if (!empty($params['file'])) {
                 $parseFile = Parser::parse($params['file']);
-                $file->setFile($parseFile->getData());
                 $file->setMimeType($parseFile->getMimeType());
                 $file->setType(FileType::TYPE_DOCUMENT);
-                $file->setS3Id(uniqid('', false));
 
                 $this->validate($file, null, ['api_admin_file_add']);
 
                 $this->em->persist($file);
+
+                $this->s3Service->uploadDocumentFile($file, $params['file']);
 
                 $document->setFile($file);
             } else {
@@ -144,46 +142,6 @@ class DocumentService extends BaseService implements IGridService
             $this->em->getConnection()->commit();
 
             $insert_id = $document->getId();
-
-//            /** @var Document $entity */
-//            $entity = $this->getById(21);
-//
-//            $stream = $entity->getFile() !== null ? $entity->getFile()->getFile() : null;
-//
-//            $img = new \Imagick();
-//            $img->setResolution(300, 300);
-//            $img->setCompression(\Imagick::COMPRESSION_JPEG);
-//            $img->setCompressionQuality(100);
-//
-//
-//            if ($stream !== null) {
-//                $img1 = new \Imagick();
-//                $img1->setResolution(300, 300);
-//                $img1->readImageBlob(stream_get_contents($stream, -1, 0));
-//                $img->addImage($img1);
-//            }
-//
-//            $random_name = '/tmp/' . $entity->getFile()->getId() . '_' . (new \DateTime())->format('Ymd_His'). '.pdf';
-//            $img->setImageFormat('pdf');
-//            $img->writeImages($random_name, true);
-//            $img->destroy();
-//
-//            $client = new S3Client([
-//                'region' => getenv('AWS_REGION'),
-//                'version' => getenv('AWS_VERSION'),
-//                'credentials' => [
-//                    'key' => getenv('AWS_KEY'),
-//                    'secret' => getenv('AWS_SECRET'),
-//                    'region' => getenv('AWS_REGION'),
-//                ],
-//            ]);
-//
-//            $client->putObject(array(
-//                'Bucket' => getenv('AWS_BUCKET'),
-//                'Key'    => $entity->getFile()->getId().'.txt',
-//                'Body'   => fopen($random_name, 'rb+')
-//            ));
-
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
@@ -256,14 +214,15 @@ class DocumentService extends BaseService implements IGridService
 
             if (!empty($params['file'])) {
                 $parseFile = Parser::parse($params['file']);
-                $file->setFile($parseFile->getData());
+
                 $file->setMimeType($parseFile->getMimeType());
                 $file->setType(FileType::TYPE_DOCUMENT);
-                $file->setS3Id(uniqid('', false));
 
                 $this->validate($file, null, ['api_admin_file_edit']);
 
                 $this->em->persist($file);
+
+                $this->s3Service->uploadDocumentFile($file, $params['file']);
 
                 $entity->setFile($file);
             } else {
