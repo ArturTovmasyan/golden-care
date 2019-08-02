@@ -258,7 +258,7 @@ class DocumentService extends BaseService implements IGridService
 
             $this->validate($entity, null, ['api_admin_document_edit']);
 
-            $this->em->persist($file);
+            $this->em->persist($entity);
 
             $this->em->flush();
             $this->em->getConnection()->commit();

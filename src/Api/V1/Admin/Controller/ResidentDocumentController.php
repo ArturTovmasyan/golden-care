@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentDocumentService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Common\Service\S3Service;
 use App\Entity\ResidentDocument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,12 +88,23 @@ class ResidentDocumentController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_document_get", methods={"GET"})
      *
+     * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
      * @param $id
      * @return JsonResponse
      */
     public function getAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
     {
+        $entity = $residentDocumentService->getById($id);
+
+        if ($entity !== null && $entity->getFile() !== null) {
+            $downloadUrl = $request->getScheme().'://'. $request->getHttpHost().$this->generateUrl('api_admin_resident_document_download', ['id' => $entity->getId()]);
+
+            $entity->setDownloadUrl($downloadUrl);
+        } else {
+            $entity->setDownloadUrl(null);
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
@@ -108,11 +120,14 @@ class ResidentDocumentController extends BaseController
      *
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function addAction(Request $request, ResidentDocumentService $residentDocumentService, S3Service $s3Service)
     {
+        $residentDocumentService->setS3Service($s3Service);
+
         $id = $residentDocumentService->add(
             [
                 'resident_id' => $request->get('resident_id'),
@@ -136,11 +151,14 @@ class ResidentDocumentController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentDocumentService $residentDocumentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function editAction(Request $request, $id, ResidentDocumentService $residentDocumentService, S3Service $s3Service)
     {
+        $residentDocumentService->setS3Service($s3Service);
+
         $residentDocumentService->edit(
             $id,
             [
@@ -162,12 +180,15 @@ class ResidentDocumentController extends BaseController
      *
      * @param $id
      * @param ResidentDocumentService $residentDocumentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function deleteAction(Request $request, $id, ResidentDocumentService $residentDocumentService, S3Service $s3Service)
     {
+        $residentDocumentService->setS3Service($s3Service);
+
         $residentDocumentService->remove($id);
 
         return $this->respondSuccess(
@@ -182,12 +203,15 @@ class ResidentDocumentController extends BaseController
      *
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function deleteBulkAction(Request $request, ResidentDocumentService $residentDocumentService, S3Service $s3Service)
     {
+        $residentDocumentService->setS3Service($s3Service);
+
         $residentDocumentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
@@ -219,13 +243,16 @@ class ResidentDocumentController extends BaseController
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_document_download", methods={"GET"})
      *
      * @param ResidentDocumentService $residentDocumentService
+     * @param S3Service $s3Service
      * @param $id
      * @return Response
      */
-    public function downloadAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function downloadAction(Request $request, $id, ResidentDocumentService $residentDocumentService, S3Service $s3Service)
     {
-        $data = $residentDocumentService->getSingleFile($id);
+        $residentDocumentService->setS3Service($s3Service);
 
-        return $this->respondResource($data[0], $data[1]);
+        $data = $residentDocumentService->downloadFile($id);
+
+        return $this->respondStream($data[0], $data[1]);
     }
 }

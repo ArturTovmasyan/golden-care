@@ -95,6 +95,12 @@ class File
     private $document;
 
     /**
+     * @var ResidentDocument
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentDocument", mappedBy="file", cascade={"remove", "persist"})
+     */
+    private $residentDocument;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -166,5 +172,21 @@ class File
     public function setDocument(?Document $document): void
     {
         $this->document = $document;
+    }
+
+    /**
+     * @return ResidentDocument|null
+     */
+    public function getResidentDocument(): ?ResidentDocument
+    {
+        return $this->residentDocument;
+    }
+
+    /**
+     * @param ResidentDocument|null $residentDocument
+     */
+    public function setResidentDocument(?ResidentDocument $residentDocument): void
+    {
+        $this->residentDocument = $residentDocument;
     }
 }

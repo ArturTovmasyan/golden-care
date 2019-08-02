@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use DataURI\Data;
-use DataURI\Dumper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -110,23 +108,32 @@ class ResidentDocument
     private $title;
 
     /**
-     * @var ResidentDocumentFile
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentDocumentFile", mappedBy="residentDocument", cascade={"remove", "persist"})
+     * @var File
+     * @Assert\NotNull(message = "Please select a File", groups={
+     *     "api_admin_resident_document_add",
+     *     "api_admin_resident_document_edit"
+     * })
+     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="residentDocument")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_file", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
     private $file;
 
     /**
+     * @var string $downloadUrl
+     */
+    private $downloadUrl;
+
+    /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_resident_document_get", "api_admin_resident_document_list"})
+     * @Serializer\Groups({"api_admin_resident_document_get"})
      */
-    public function getResidentDocumentFile()
+    public function getResidentDocumentFile(): ?string
     {
         if ($this->getFile() !== null) {
-            $data = stream_get_contents($this->getFile()->getFile());
-            $file_info = new \finfo(FILEINFO_MIME_TYPE);
-
-            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+            return $this->getDownloadUrl();
         }
 
         return null;
@@ -170,18 +177,34 @@ class ResidentDocument
     }
 
     /**
-     * @return ResidentDocumentFile|null
+     * @return File|null
      */
-    public function getFile(): ?ResidentDocumentFile
+    public function getFile(): ?File
     {
         return $this->file;
     }
 
     /**
-     * @param ResidentDocumentFile|null $file
+     * @param File|null $file
      */
-    public function setFile(?ResidentDocumentFile $file): void
+    public function setFile(?File $file): void
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDownloadUrl(): ?string
+    {
+        return $this->downloadUrl;
+    }
+
+    /**
+     * @param null|string $downloadUrl
+     */
+    public function setDownloadUrl(?string $downloadUrl): void
+    {
+        $this->downloadUrl = $downloadUrl;
     }
 }

@@ -5,12 +5,16 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ResidentDocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Api\V1\Common\Service\S3Service;
+use App\Entity\File;
 use App\Entity\Resident;
 use App\Entity\ResidentDocument;
-use App\Entity\ResidentDocumentFile;
-use App\Repository\ResidentDocumentFileRepository;
+use App\Model\FileType;
+use App\Repository\FileRepository;
 use App\Repository\ResidentDocumentRepository;
 use App\Repository\ResidentRepository;
+use App\Util\MimeUtil;
+use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -20,6 +24,19 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ResidentDocumentService extends BaseService implements IGridService
 {
+    /**
+     * @var S3Service
+     */
+    private $s3Service;
+
+    /**
+     * @param S3Service $s3Service
+     */
+    public function setS3Service(S3Service $s3Service)
+    {
+        $this->s3Service = $s3Service;
+    }
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
@@ -97,25 +114,32 @@ class ResidentDocumentService extends BaseService implements IGridService
             $residentDocument->setResident($resident);
             $residentDocument->setTitle($params['title']);
 
-            $this->validate($residentDocument, null, ['api_admin_resident_document_add']);
-
-            $this->em->persist($residentDocument);
-
             //save file
-            $file = new ResidentDocumentFile();
-
-            $file->setResidentDocument($residentDocument);
+            $file = new File();
 
             if (!empty($params['file'])) {
                 $parseFile = Parser::parse($params['file']);
-                $file->setFile($parseFile->getData());
+                $file->setMimeType($parseFile->getMimeType());
+                $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
+
+                $this->validate($file, null, ['api_admin_file_add']);
+
+                $this->em->persist($file);
+
+                $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                $file->setS3Id($s3Id);
+                $this->em->persist($file);
+
+                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+
+                $residentDocument->setFile($file);
             } else {
-                $file->setFile(null);
+                $residentDocument->setFile(null);
             }
 
-            $this->validate($file, null, ['api_admin_resident_document_file_add']);
+            $this->validate($residentDocument, null, ['api_admin_resident_document_add']);
 
-            $this->em->persist($file);
+            $this->em->persist($residentDocument);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -166,32 +190,41 @@ class ResidentDocumentService extends BaseService implements IGridService
             $entity->setResident($resident);
             $entity->setTitle($params['title']);
 
+            // save file
+            $file = $entity->getFile();
+
+            if (!empty($params['file'])) {
+                if (!StringUtil::starts_with($params['file'], 'http')) {
+                    if ($file !== null) {
+                        $this->s3Service->removeFile($file->getS3Id(), $file->getType());
+                    } else {
+                        $file = new File();
+                    }
+
+                    $parseFile = Parser::parse($params['file']);
+
+                    $file->setMimeType($parseFile->getMimeType());
+                    $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
+
+                    $this->validate($file, null, ['api_admin_file_edit']);
+
+                    $this->em->persist($file);
+
+                    $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                    $file->setS3Id($s3Id);
+                    $this->em->persist($file);
+
+                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+
+                    $entity->setFile($file);
+                }
+            } else {
+                $entity->setFile(null);
+            }
+
             $this->validate($entity, null, ['api_admin_resident_document_edit']);
 
             $this->em->persist($entity);
-
-            // save file
-            /** @var ResidentDocumentFileRepository $fileRepo */
-            $fileRepo = $this->em->getRepository(ResidentDocumentFile::class);
-
-            $file = $fileRepo->getBy($entity->getId());
-
-            if ($file === null) {
-                $file = new ResidentDocumentFile();
-            }
-
-            $file->setResidentDocument($entity);
-
-            if (!empty($params['file'])) {
-                $parseFile = Parser::parse($params['file']);
-                $file->setFile($parseFile->getData());
-            } else {
-                $file->setFile(null);
-            }
-
-            $this->validate($file, null, ['api_admin_resident_document_file_edit']);
-
-            $this->em->persist($file);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -219,6 +252,14 @@ class ResidentDocumentService extends BaseService implements IGridService
 
             if ($entity === null) {
                 throw new ResidentDocumentNotFoundException();
+            }
+
+            $file = $entity->getFile();
+
+            if ($file !== null) {
+                $this->s3Service->removeFile($file->getS3Id(), $file->getType());
+
+                $this->em->remove($file);
             }
 
             $this->em->remove($entity);
@@ -253,11 +294,33 @@ class ResidentDocumentService extends BaseService implements IGridService
                 throw new ResidentDocumentNotFoundException();
             }
 
+            $fileIds = [];
+
+            /** @var FileRepository $fileRepo */
+            $fileRepo = $this->em->getRepository(File::class);
+
             /**
              * @var ResidentDocument $residentDocument
              */
             foreach ($residentDocuments as $residentDocument) {
+                if ($residentDocument->getFile() !== null) {
+                    $fileIds[] = $residentDocument->getFile()->getId();
+                }
+
                 $this->em->remove($residentDocument);
+            }
+
+            $fileIds = array_unique($fileIds);
+
+            $files = $fileRepo->findByIds($fileIds);
+
+            /**
+             * @var File $file
+             */
+            foreach ($files as $file) {
+                $this->s3Service->removeFile($file->getS3Id(), $file->getType());
+
+                $this->em->remove($file);
             }
 
             $this->em->flush();
@@ -295,12 +358,12 @@ class ResidentDocumentService extends BaseService implements IGridService
      * @param $id
      * @return array
      */
-    public function getSingleFile($id)
+    public function downloadFile($id): array
     {
         $entity = $this->getById($id);
 
         if(!empty($entity) && $entity->getFile() !== null) {
-            return [$entity->getTitle(), $entity->getFile()->getFile()];
+            return [$entity->getTitle(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
         }
 
         return [null, null];
