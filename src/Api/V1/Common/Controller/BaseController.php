@@ -22,20 +22,19 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use GuzzleHttp\Psr7\Stream;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class BaseController extends Controller
+class BaseController extends AbstractController
 {
     /** @var SerializerInterface */
     protected $serializer;
@@ -143,9 +142,6 @@ class BaseController extends Controller
      */
     protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
-        /** @var Serializer $serializer */
-        $serializer = $this->get('jms_serializer');
-
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
         $service->gridSelect($queryBuilder, $params);
 
@@ -168,11 +164,11 @@ class BaseController extends Controller
             'data' => $paginator->getQuery()->getArrayResult()
         ];
 
-        if (empty($groupName)) {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true));
-        } else {
-            $responseData = $serializer->serialize($data, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups([$groupName]));
+        $serializationContext = SerializationContext::create()->setSerializeNull(true);
+        if (!empty($groupName)) {
+            $serializationContext->setGroups([$groupName]);
         }
+        $responseData = $this->serializer->serialize($data, 'json', $serializationContext);
 
         return new JsonResponse($responseData, Response::HTTP_OK, [], true);
     }
@@ -187,9 +183,6 @@ class BaseController extends Controller
      */
     protected function respondSuccess($httpStatus = Response::HTTP_OK, $message = '', $data = [], $groups = [], $headers = [])
     {
-        /** @var Serializer $serializer */
-        $serializer = $this->get('jms_serializer');
-
         $responseData = [];
 
         if (!empty($message)) {
@@ -204,11 +197,11 @@ class BaseController extends Controller
             $responseData = $data;
         }
 
-        if (empty($groups)) {
-            $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setSerializeNull(true));
-        } else {
-            $responseData = $serializer->serialize($responseData, 'json', SerializationContext::create()->setSerializeNull(true)->setGroups($groups));
+        $serializationContext = SerializationContext::create()->setSerializeNull(true);
+        if (!empty($groups)) {
+            $serializationContext->setGroups($groups);
         }
+        $responseData = $this->serializer->serialize($data, 'json', $serializationContext);
 
         return new JsonResponse($responseData, $httpStatus, $headers, true);
     }
