@@ -64,7 +64,24 @@ class DocumentService extends BaseService implements IGridService
 
         $facilityEntityGrants = !empty($this->grantService->getCurrentUserEntityGrants(Facility::class)) ? $this->grantService->getCurrentUserEntityGrants(Facility::class) : null;
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants);
+        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants);
+
+        /** @var Document $entity */
+        foreach ($list as $entity) {
+            if ($entity !== null && $entity->getFile() !== null) {
+                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                    'Bucket' => getenv('AWS_BUCKET'),
+                    'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
+                ]);
+                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                $entity->setDownloadUrl((string)$request->getUri());
+            } else {
+                $entity->setDownloadUrl(null);
+            }
+        }
+
+        return $list;
     }
 
     /**

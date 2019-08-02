@@ -169,7 +169,10 @@ class Document
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_document_get"})
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
      */
     public function getDocumentFile(): ?string
     {

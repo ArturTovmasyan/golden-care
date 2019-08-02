@@ -73,8 +73,10 @@ class DocumentController extends BaseController
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, DocumentService $documentService)
+    public function listAction(Request $request, DocumentService $documentService, S3Service $s3Service)
     {
+        $documentService->setS3Service($s3Service);
+
         return $this->respondList(
             $request,
             Document::class,
@@ -87,18 +89,23 @@ class DocumentController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_document_get", methods={"GET"})
      *
      * @param Request $request
-     * @param DocumentService $documentService
      * @param $id
+     * @param DocumentService $documentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, DocumentService $documentService)
+    public function getAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
     {
         $entity = $documentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
-            $downloadUrl = $request->getScheme().'://'. $request->getHttpHost().$this->generateUrl('api_admin_document_download', ['id' => $entity->getId()]);
+            $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key'    => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
+            ]);
+            $request = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
-            $entity->setDownloadUrl($downloadUrl);
+            $entity->setDownloadUrl((string)$request->getUri());
         } else {
             $entity->setDownloadUrl(null);
         }
