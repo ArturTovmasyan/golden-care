@@ -171,12 +171,15 @@ class DocumentController extends BaseController
      *
      * @param $id
      * @param DocumentService $documentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DocumentService $documentService)
+    public function deleteAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
     {
+        $documentService->setS3Service($s3Service);
+
         $documentService->remove($id);
 
         return $this->respondSuccess(
@@ -191,12 +194,15 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
+     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DocumentService $documentService)
+    public function deleteBulkAction(Request $request, DocumentService $documentService, S3Service $s3Service)
     {
+        $documentService->setS3Service($s3Service);
+
         $documentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(

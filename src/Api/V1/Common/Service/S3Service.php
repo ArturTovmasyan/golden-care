@@ -104,4 +104,19 @@ class S3Service
 
         return $result;
     }
+
+    /**
+     * @param $s3Id
+     * @param $fileType
+     * @return Result
+     */
+    public function removeDocumentFile($s3Id, $fileType): Result
+    {
+        $result = $this->getS3Client()->deleteObject(array(
+            'Bucket' => getenv('AWS_BUCKET'),
+            'Key'    => $fileType.'/'.$s3Id,
+        ));
+
+        return $result;
+    }
 }

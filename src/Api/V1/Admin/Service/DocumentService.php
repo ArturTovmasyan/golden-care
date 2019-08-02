@@ -208,6 +208,10 @@ class DocumentService extends BaseService implements IGridService
             // save file
             $file = $entity->getFile();
 
+            if ($file !== null && empty($params['file'])) {
+                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+            }
+
             if ($file === null) {
                 $file = new File();
             }
@@ -261,17 +265,12 @@ class DocumentService extends BaseService implements IGridService
                 throw new DocumentNotFoundException();
             }
 
-            if ($entity->getFile() !== null) {
-                /** @var FileRepository $fileRepo */
-                $fileRepo = $this->em->getRepository(File::class);
+            $file = $entity->getFile();
 
-                $fileId = $entity->getFile()->getId();
+            if ($file !== null) {
+                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
 
-                $file = $fileRepo->find($fileId);
-
-                if ($file !== null) {
-                    $this->em->remove($file);
-                }
+                $this->em->remove($file);
             }
 
             $this->em->remove($entity);
@@ -330,6 +329,8 @@ class DocumentService extends BaseService implements IGridService
              * @var File $file
              */
             foreach ($files as $file) {
+                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+
                 $this->em->remove($file);
             }
 
