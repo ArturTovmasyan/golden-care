@@ -363,4 +363,19 @@ class DocumentService extends BaseService implements IGridService
 
         return $this->getRelatedData(Document::class, $entities);
     }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function downloadFile($id): array
+    {
+        $entity = $this->getById($id);
+
+        if(!empty($entity) && $entity->getFile() !== null) {
+            return [$entity->getTitle(), $this->s3Service->downloadDocumentFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
+        }
+
+        return [null, null];
+    }
 }

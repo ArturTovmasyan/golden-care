@@ -3,6 +3,8 @@ namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Entity\File;
+use App\Util\MimeUtil;
+use Aws\Result;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use DataURI\Parser;
@@ -63,17 +65,14 @@ class S3Service
     {
         $pdfFileService = $this->container->getParameter('pdf_file_service');
 
-        $mimeTypeParts = explode('/', $file->getMimeType());
-        $format = $mimeTypeParts[1];
-
-        if (!\in_array($format, $pdfFileService['extensions'], false)) {
+        if (!\in_array(MimeUtil::mime2ext($file->getMimeType()), $pdfFileService['extensions'], false)) {
             throw new FileExtensionException();
         }
 
         try {
             $parseFile = Parser::parse($base64);
 
-            $s3Id = $file->getId().'.'.$format;
+            $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
 
             $this->getS3Client()->putObject([
                 'Bucket'      => getenv('AWS_BUCKET'),
@@ -89,5 +88,20 @@ class S3Service
         } catch (S3Exception $e) {
             throw $e;
         }
+    }
+
+    /**
+     * @param $s3Id
+     * @param $fileType
+     * @return Result
+     */
+    public function downloadDocumentFile($s3Id, $fileType): Result
+    {
+        $result = $this->getS3Client()->getObject(array(
+            'Bucket' => getenv('AWS_BUCKET'),
+            'Key'    => $fileType.'/'.$s3Id,
+        ));
+
+        return $result;
     }
 }

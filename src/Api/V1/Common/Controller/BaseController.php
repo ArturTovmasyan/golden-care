@@ -15,10 +15,12 @@ use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use App\Util\MimeUtil;
 use App\Util\StringUtil;
+use Aws\Result;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use GuzzleHttp\Psr7\Stream;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
@@ -83,16 +85,17 @@ class BaseController extends Controller
         Mailer $mailer,
         Security $security,
         GrantService $grantService
-    ) {
+    )
+    {
         $this->serializer = $serializer;
-        $this->em         = $em;
-        $this->validator  = $validator;
-        $this->encoder    = $encoder;
-        $this->reader     = $reader;
-        $this->pdf        = $pdf;
-        $this->mailer     = $mailer;
-        $this->security   = $security;
-        $this->grantService   = $grantService;
+        $this->em = $em;
+        $this->validator = $validator;
+        $this->encoder = $encoder;
+        $this->reader = $reader;
+        $this->pdf = $pdf;
+        $this->mailer = $mailer;
+        $this->security = $security;
+        $this->grantService = $grantService;
     }
 
     /**
@@ -148,21 +151,21 @@ class BaseController extends Controller
 
         $paginator = new Paginator($queryBuilder);
 
-        $page    = $request->get('page') ?: 1;
+        $page = $request->get('page') ?: 1;
         $perPage = $request->get('per_page');
 
-        $total   = $paginator->count();
+        $total = $paginator->count();
 
         $paginator
             ->getQuery()
-            ->setFirstResult($perPage * ($page-1))
+            ->setFirstResult($perPage * ($page - 1))
             ->setMaxResults($perPage);
 
         $data = [
-            'page'      => $page,
-            'per_page'  => $perPage,
-            'total'     => $total,
-            'data'      => $paginator->getQuery()->getArrayResult()
+            'page' => $page,
+            'per_page' => $perPage,
+            'total' => $total,
+            'data' => $paginator->getQuery()->getArrayResult()
         ];
 
         if (empty($groupName)) {
@@ -192,9 +195,9 @@ class BaseController extends Controller
         if (!empty($message)) {
             $responseData['message'] = $message;
         } elseif (isset(ResponseCode::$titles[$httpStatus])) {
-            $responseData['code']    = $httpStatus;
+            $responseData['code'] = $httpStatus;
             $responseData['message'] = ResponseCode::$titles[$httpStatus]['message'];
-            $httpStatus              = ResponseCode::$titles[$httpStatus]['httpCode'];
+            $httpStatus = ResponseCode::$titles[$httpStatus]['httpCode'];
         }
 
         if (!empty($data)) {
@@ -224,9 +227,9 @@ class BaseController extends Controller
             'output',
             'pdf',
             [
-                'title'  => 'Title',
+                'title' => 'Title',
                 'fields' => $fields,
-                'data'   => $data
+                'data' => $data
             ]
         );
     }
@@ -250,14 +253,14 @@ class BaseController extends Controller
         $html = $this->renderView($template, $params);
 
         if ($format == 'pdf') {
-            return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName .'.pdf');
-        } elseif($format == 'csv') {
+            return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName . '.pdf');
+        } elseif ($format == 'csv') {
             return new Response($html, Response::HTTP_OK, [
-                'Content-Type'              => 'text/csv',
-                'Content-Disposition'       => 'attachment; filename="'. $actualName .'.csv"',
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $actualName . '.csv"',
                 'Content-Transfer-Encoding' => 'binary',
-                'Pragma'                    => 'no-cache',
-                'Expires'                   => '0',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
             ]);
         }
 
@@ -277,9 +280,9 @@ class BaseController extends Controller
         $report = $reportService->report($request, $group, $alias);
 
         if ($request->get('template')) {
-            $file = '@api_report/'. $group . '/' . $request->get('template') .'.' . $request->get('format') . '.twig';
+            $file = '@api_report/' . $group . '/' . $request->get('template') . '.' . $request->get('format') . '.twig';
         } else {
-            $file = '@api_report/'. $group . '/' . $alias .'.' . $request->get('format') . '.twig';
+            $file = '@api_report/' . $group . '/' . $alias . '.' . $request->get('format') . '.twig';
         }
 
         return $this->respondFile(
@@ -336,9 +339,9 @@ class BaseController extends Controller
     protected function getQueryBuilder(Request $request, string $entityName, string $groupName)
     {
         return $this->getGrid($entityName)
-             ->setEntityManager($this->em)
-             ->renderByGroup($request->query->all(), $groupName)
-             ->getQueryBuilder();
+            ->setEntityManager($this->em)
+            ->renderByGroup($request->query->all(), $groupName)
+            ->getQueryBuilder();
     }
 
     /**
@@ -363,16 +366,43 @@ class BaseController extends Controller
      */
     protected function respondResource($title, $resource)
     {
-        if(!empty($resource)) {
+        if (!empty($resource)) {
             $data = stream_get_contents($resource, -1, 0);
 
             $meta = stream_get_meta_data($resource);
 
             fclose($resource);
 
-            if(StringUtil::starts_with($meta['uri'], '/tmp/hif_')) {
+            if (StringUtil::starts_with($meta['uri'], '/tmp/hif_')) {
                 unlink($meta['uri']);
             }
+
+            $mime = MimeUtil::getMime($data);
+
+            return new Response($data, Response::HTTP_OK, [
+                'Content-Type' => $mime,
+                'Content-Length' => \strlen($data),
+                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mime) . '"'
+            ]);
+        }
+
+        throw new FileNotFoundException('');
+    }
+
+    /**
+     * @param string $title
+     * @param Result $awsData
+     * @return Response
+     */
+    protected function respondStream($title, $awsData)
+    {
+        /** @var Stream $stream */
+        $stream = $awsData['Body'];
+
+        if (!empty($awsData['Body'])) {
+            $data = $stream->getContents();
+
+            $stream->close();
 
             $mime = MimeUtil::getMime($data);
 

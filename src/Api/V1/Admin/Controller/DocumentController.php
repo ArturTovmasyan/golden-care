@@ -223,4 +223,21 @@ class DocumentController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_document_download", methods={"GET"})
+     *
+     * @param DocumentService $documentService
+     * @param S3Service $s3Service
+     * @param $id
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
+    {
+        $documentService->setS3Service($s3Service);
+
+        $data = $documentService->downloadFile($id);
+
+        return $this->respondStream($data[0], $data[1]);
+    }
 }
