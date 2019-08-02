@@ -32,6 +32,7 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BaseService
 {
@@ -71,6 +72,11 @@ class BaseService
     protected $grantService;
 
     /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * BaseService constructor.
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
@@ -79,6 +85,7 @@ class BaseService
      * @param Security $security
      * @param Reader $reader
      * @param GrantService $grantService
+     * @param ContainerInterface $container
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -87,7 +94,8 @@ class BaseService
         ValidatorInterface $validator,
         Security $security,
         Reader $reader,
-        GrantService $grantService
+        GrantService $grantService,
+        ContainerInterface $container
     ) {
         $this->em           = $em;
         $this->encoder      = $encoder;
@@ -96,6 +104,7 @@ class BaseService
         $this->security     = $security;
         $this->reader       = $reader;
         $this->grantService = $grantService;
+        $this->container = $container;
     }
 
     /**

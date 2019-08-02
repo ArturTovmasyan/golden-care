@@ -3,6 +3,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\DocumentNotFoundException;
+use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\S3Service;
@@ -14,6 +15,7 @@ use App\Model\FileType;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FileRepository;
+use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
@@ -128,7 +130,17 @@ class DocumentService extends BaseService implements IGridService
 
                 $this->em->persist($file);
 
-                $this->s3Service->uploadDocumentFile($file, $params['file']);
+                //validate file
+                $pdfFileService = $this->container->getParameter('pdf_file_service');
+                if (!\in_array(MimeUtil::mime2ext($file->getMimeType()), $pdfFileService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                $file->setS3Id($s3Id);
+                $this->em->persist($file);
+
+                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
 
                 $document->setFile($file);
             } else {
@@ -212,7 +224,7 @@ class DocumentService extends BaseService implements IGridService
             if (!empty($params['file'])) {
                 if (!StringUtil::starts_with($params['file'], 'http')) {
                     if ($file !== null) {
-                        $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+                        $this->s3Service->removeFile($file->getS3Id(), $file->getType());
                     } else {
                         $file = new File();
                     }
@@ -226,7 +238,17 @@ class DocumentService extends BaseService implements IGridService
 
                     $this->em->persist($file);
 
-                    $this->s3Service->uploadDocumentFile($file, $params['file']);
+                    //validate file
+                    $pdfFileService = $this->container->getParameter('pdf_file_service');
+                    if (!\in_array(MimeUtil::mime2ext($file->getMimeType()), $pdfFileService['extensions'], false)) {
+                        throw new FileExtensionException();
+                    }
+
+                    $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                    $file->setS3Id($s3Id);
+                    $this->em->persist($file);
+
+                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
 
                     $entity->setFile($file);
                 }
@@ -269,7 +291,7 @@ class DocumentService extends BaseService implements IGridService
             $file = $entity->getFile();
 
             if ($file !== null) {
-                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+                $this->s3Service->removeFile($file->getS3Id(), $file->getType());
 
                 $this->em->remove($file);
             }
@@ -330,7 +352,7 @@ class DocumentService extends BaseService implements IGridService
              * @var File $file
              */
             foreach ($files as $file) {
-                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+                $this->s3Service->removeFile($file->getS3Id(), $file->getType());
 
                 $this->em->remove($file);
             }
@@ -375,7 +397,7 @@ class DocumentService extends BaseService implements IGridService
         $entity = $this->getById($id);
 
         if(!empty($entity) && $entity->getFile() !== null) {
-            return [$entity->getTitle(), $this->s3Service->downloadDocumentFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
+            return [$entity->getTitle(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
         }
 
         return [null, null];
