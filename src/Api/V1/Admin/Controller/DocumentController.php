@@ -86,12 +86,23 @@ class DocumentController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_document_get", methods={"GET"})
      *
+     * @param Request $request
      * @param DocumentService $documentService
      * @param $id
      * @return JsonResponse
      */
     public function getAction(Request $request, $id, DocumentService $documentService)
     {
+        $entity = $documentService->getById($id);
+
+        if ($entity !== null && $entity->getFile() !== null) {
+            $downloadUrl = $request->getScheme().'://'. $request->getHttpHost().$this->generateUrl('api_admin_document_download', ['id' => $entity->getId()]);
+
+            $entity->setDownloadUrl($downloadUrl);
+        } else {
+            $entity->setDownloadUrl(null);
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',

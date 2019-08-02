@@ -14,6 +14,7 @@ use App\Model\FileType;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FileRepository;
+use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -208,27 +209,27 @@ class DocumentService extends BaseService implements IGridService
             // save file
             $file = $entity->getFile();
 
-            if ($file !== null && empty($params['file'])) {
-                $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
-            }
-
-            if ($file === null) {
-                $file = new File();
-            }
-
             if (!empty($params['file'])) {
-                $parseFile = Parser::parse($params['file']);
+                if (!StringUtil::starts_with($params['file'], 'http')) {
+                    if ($file !== null) {
+                        $this->s3Service->removeDocumentFile($file->getS3Id(), $file->getType());
+                    } else {
+                        $file = new File();
+                    }
 
-                $file->setMimeType($parseFile->getMimeType());
-                $file->setType(FileType::TYPE_DOCUMENT);
+                    $parseFile = Parser::parse($params['file']);
 
-                $this->validate($file, null, ['api_admin_file_edit']);
+                    $file->setMimeType($parseFile->getMimeType());
+                    $file->setType(FileType::TYPE_DOCUMENT);
 
-                $this->em->persist($file);
+                    $this->validate($file, null, ['api_admin_file_edit']);
 
-                $this->s3Service->uploadDocumentFile($file, $params['file']);
+                    $this->em->persist($file);
 
-                $entity->setFile($file);
+                    $this->s3Service->uploadDocumentFile($file, $params['file']);
+
+                    $entity->setFile($file);
+                }
             } else {
                 $entity->setFile(null);
             }

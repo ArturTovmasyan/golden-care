@@ -87,20 +87,6 @@ class File
      * })
      */
     private $s3Id;
-//
-//    /**
-//     * @var string|resource $file
-//     * @Assert\NotBlank(groups={
-//     *     "api_admin_file_add",
-//     *     "api_admin_file_edit"
-//     * })
-//     * @ORM\Column(name="file", type="blob")
-//     * @Groups({
-//     *     "api_admin_file_list",
-//     *     "api_admin_file_get",
-//     * })
-//     */
-//    private $file;
 
     /**
      * @var Document
@@ -165,19 +151,6 @@ class File
     {
         $this->s3Id = $s3Id;
     }
-
-//    public function getFile()
-//    {
-//        return $this->file;
-//    }
-//
-//    /**
-//     * @param null|string $file
-//     */
-//    public function setFile(?string $file): void
-//    {
-//        $this->file = $file;
-//    }
 
     /**
      * @return Document|null

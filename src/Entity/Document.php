@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -160,6 +161,25 @@ class Document
      */
     private $file;
 
+    /**
+     * @var string $downloadUrl
+     */
+    private $downloadUrl;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("file")
+     * @Serializer\Groups({"api_admin_document_get"})
+     */
+    public function getDocumentFile(): ?string
+    {
+        if ($this->getFile() !== null) {
+            return $this->getDownloadUrl();
+        }
+
+        return null;
+    }
+
     public function getId()
     {
         return $this->id;
@@ -259,5 +279,21 @@ class Document
     public function setFile(?File $file): void
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDownloadUrl(): ?string
+    {
+        return $this->downloadUrl;
+    }
+
+    /**
+     * @param null|string $downloadUrl
+     */
+    public function setDownloadUrl(?string $downloadUrl): void
+    {
+        $this->downloadUrl = $downloadUrl;
     }
 }
