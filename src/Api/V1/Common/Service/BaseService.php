@@ -104,7 +104,7 @@ class BaseService
         $this->security     = $security;
         $this->reader       = $reader;
         $this->grantService = $grantService;
-        $this->container = $container;
+        $this->container    = $container;
     }
 
     /**

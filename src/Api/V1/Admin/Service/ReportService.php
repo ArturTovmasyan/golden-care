@@ -162,7 +162,8 @@ class ReportService
             $this->validator,
             $this->security,
             $this->reader,
-            $this->grantService
+            $this->grantService,
+            $this->container
         );
 
         $request_group = $request->get('type') ? (int)$request->get('type') : null;
