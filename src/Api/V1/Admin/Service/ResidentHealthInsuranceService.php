@@ -162,6 +162,8 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $residentHealthInsurance->setGroupNumber($params['group_number']);
             $residentHealthInsurance->setNotes($params['notes']);
 
+            $this->validate($residentHealthInsurance, null, ['api_admin_resident_health_insurance_add']);
+
             $fileFirst = !empty($params['first_file']) ? $params['first_file'] : null;
             $fileSecond = !empty($params['second_file']) ? $params['second_file'] : null;
 
@@ -231,8 +233,6 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                 $residentHealthInsurance->setSecondFile(null);
             }
 
-            $this->validate($residentHealthInsurance, null, ['api_admin_resident_health_insurance_add']);
-
             $this->em->persist($residentHealthInsurance);
 
             $this->em->flush();
@@ -296,6 +296,8 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $entity->setMedicalRecordNumber($params['medical_record_number']);
             $entity->setGroupNumber($params['group_number']);
             $entity->setNotes($params['notes']);
+
+            $this->validate($entity, null, ['api_admin_resident_health_insurance_edit']);
 
             $fileFirst = !empty($params['first_file']) ? $params['first_file'] : null;
             $fileSecond = !empty($params['second_file']) ? $params['second_file'] : null;
@@ -380,8 +382,6 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             } else {
                 $entity->setSecondFile(null);
             }
-
-            $this->validate($entity, null, ['api_admin_resident_health_insurance_edit']);
 
             $this->em->persist($entity);
 

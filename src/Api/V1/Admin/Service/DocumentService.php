@@ -157,9 +157,10 @@ class DocumentService extends BaseService implements IGridService
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
-                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
-
                 $document->setFile($file);
+                $this->validate($document, null, ['api_admin_document_add']);
+
+                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
             } else {
                 $document->setFile(null);
             }
@@ -265,9 +266,10 @@ class DocumentService extends BaseService implements IGridService
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
-                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
-
                     $entity->setFile($file);
+                    $this->validate($entity, null, ['api_admin_document_edit']);
+
+                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
                 }
             } else {
                 $entity->setFile(null);
