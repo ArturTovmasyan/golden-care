@@ -242,7 +242,17 @@ class ResidentEventService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $definition = $entity->getDefinition();
+            $definitionId = $params['definition_id'] ?? 0;
+
+            /** @var EventDefinitionRepository $definitionRepo */
+            $definitionRepo = $this->em->getRepository(EventDefinition::class);
+
+            /** @var EventDefinition $definition */
+            $definition = $definitionRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $definitionId);
+
+            if ($definition === null) {
+                throw new EventDefinitionNotFoundException();
+            }
 
             $physician = null;
 
@@ -303,6 +313,7 @@ class ResidentEventService extends BaseService implements IGridService
             }
 
             $entity->setResident($resident);
+            $entity->setDefinition($definition);
             $entity->setPhysician($physician);
 
             if (!empty($rps)) {
