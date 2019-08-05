@@ -52,13 +52,13 @@ class File
 
     /**
      * @var string $mimeType
-     * @ORM\Column(name="mime_type", type="string", length=32)
+     * @ORM\Column(name="mime_type", type="string", length=255)
      * @Assert\NotBlank(groups={
      *     "api_admin_file_add",
      *     "api_admin_file_edit"
      * })
      * @Assert\Length(
-     *      max = 32,
+     *      max = 255,
      *      maxMessage = "MimeType cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_file_add",
