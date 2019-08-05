@@ -354,41 +354,11 @@ class BaseController extends AbstractController
 
     /**
      * @param string $title
-     * @param resource $resource
-     * @return Response
-     */
-    protected function respondResource($title, $resource)
-    {
-        if (!empty($resource)) {
-            $data = stream_get_contents($resource, -1, 0);
-
-            $meta = stream_get_meta_data($resource);
-
-            fclose($resource);
-
-            if (StringUtil::starts_with($meta['uri'], '/tmp/hif_')) {
-                unlink($meta['uri']);
-            }
-
-            $mime = MimeUtil::getMime($data);
-
-            return new Response($data, Response::HTTP_OK, [
-                'Content-Type' => $mime,
-                'Content-Length' => \strlen($data),
-                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mime) . '"'
-            ]);
-        }
-
-        throw new FileNotFoundException('');
-    }
-
-    /**
-     * @param string $title
      * @param string $mimeType
      * @param Result $awsData
      * @return Response
      */
-    protected function respondStream($title, $mimeType, $awsData)
+    protected function respondResource($title, $mimeType, $awsData)
     {
         /** @var Stream $stream */
         $stream = $awsData['Body'];

@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
-use DataURI\Data;
-use DataURI\Dumper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -183,27 +181,45 @@ class ResidentHealthInsurance
     private $notes;
 
     /**
-     * @var ResidentHealthInsuranceFile
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsuranceFile", mappedBy="insurance", cascade={"remove", "persist"})
-     * @Groups({
-     *     "api_admin_resident_health_insurance_list",
-     *     "api_admin_resident_health_insurance_get"
+     * @var File
+     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="insuranceFirstFile")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_first_file", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
-    private $file;
+    private $firstFile;
+
+    /**
+     * @var File
+     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="insuranceSecondFile")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_second_file", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     */
+    private $secondFile;
+
+    /**
+     * @var string $firstFileDownloadUrl
+     */
+    private $firstFileDownloadUrl;
+
+    /**
+     * @var string $secondFileDownloadUrl
+     */
+    private $secondFileDownloadUrl;
 
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("first_file")
-     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+     * @Serializer\Groups({
+     *     "api_admin_resident_health_insurance_list",
+     *     "api_admin_resident_health_insurance_get"
+     * })
      */
-    public function getFirst()
+    public function getInsuranceFirstFile(): ?string
     {
-        if($this->getFile() !== null) {
-            $data = stream_get_contents($this->getFile()->getFirstFile());
-            $file_info = new \finfo(FILEINFO_MIME_TYPE);
-
-            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+        if ($this->getFirstFile() !== null) {
+            return $this->getFirstFileDownloadUrl();
         }
 
         return null;
@@ -212,15 +228,15 @@ class ResidentHealthInsurance
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("second_file")
-     * @Serializer\Groups({"api_admin_resident_health_insurance_get", "api_admin_resident_health_insurance_list"})
+     * @Serializer\Groups({
+     *     "api_admin_resident_health_insurance_list",
+     *     "api_admin_resident_health_insurance_get"
+     * })
      */
-    public function getSecond()
+    public function getInsuranceSecondFile(): ?string
     {
-        if($this->getFile() !== null) {
-            $data = stream_get_contents($this->getFile()->getSecondFile());
-            $file_info = new \finfo(FILEINFO_MIME_TYPE);
-
-            return Dumper::dump(new Data($data, $file_info->buffer($data)));
+        if ($this->getSecondFile() !== null) {
+            return $this->getSecondFileDownloadUrl();
         }
 
         return null;
@@ -317,18 +333,66 @@ class ResidentHealthInsurance
     }
 
     /**
-     * @return ResidentHealthInsuranceFile|null
+     * @return File|null
      */
-    public function getFile(): ?ResidentHealthInsuranceFile
+    public function getFirstFile(): ?File
     {
-        return $this->file;
+        return $this->firstFile;
     }
 
     /**
-     * @param ResidentHealthInsuranceFile|null $file
+     * @param File|null $firstFile
      */
-    public function setFile(?ResidentHealthInsuranceFile $file): void
+    public function setFirstFile(?File $firstFile): void
     {
-        $this->file = $file;
+        $this->firstFile = $firstFile;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getSecondFile(): ?File
+    {
+        return $this->secondFile;
+    }
+
+    /**
+     * @param File|null $secondFile
+     */
+    public function setSecondFile(?File $secondFile): void
+    {
+        $this->secondFile = $secondFile;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFirstFileDownloadUrl(): ?string
+    {
+        return $this->firstFileDownloadUrl;
+    }
+
+    /**
+     * @param null|string $firstFileDownloadUrl
+     */
+    public function setFirstFileDownloadUrl(?string $firstFileDownloadUrl): void
+    {
+        $this->firstFileDownloadUrl = $firstFileDownloadUrl;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSecondFileDownloadUrl(): ?string
+    {
+        return $this->secondFileDownloadUrl;
+    }
+
+    /**
+     * @param null|string $secondFileDownloadUrl
+     */
+    public function setSecondFileDownloadUrl(?string $secondFileDownloadUrl): void
+    {
+        $this->secondFileDownloadUrl = $secondFileDownloadUrl;
     }
 }

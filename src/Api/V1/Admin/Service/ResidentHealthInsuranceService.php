@@ -2,19 +2,23 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\InsuranceCompanyNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentHealthInsuranceNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Api\V1\Common\Service\ImageFilterService;
+use App\Api\V1\Common\Service\S3Service;
+use App\Entity\File;
 use App\Entity\InsuranceCompany;
 use App\Entity\Resident;
 use App\Entity\ResidentHealthInsurance;
-use App\Entity\ResidentHealthInsuranceFile;
+use App\Model\FileType;
+use App\Repository\FileRepository;
 use App\Repository\InsuranceCompanyRepository;
-use App\Repository\ResidentHealthInsuranceFileRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\ResidentRepository;
+use App\Util\MimeUtil;
+use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -25,16 +29,16 @@ use Doctrine\ORM\QueryBuilder;
 class ResidentHealthInsuranceService extends BaseService implements IGridService
 {
     /**
-     * @var ImageFilterService
+     * @var S3Service
      */
-    private $imageFilterService;
+    private $s3Service;
 
     /**
-     * @param ImageFilterService $imageFilterService
+     * @param S3Service $s3Service
      */
-    public function setImageFilterService(ImageFilterService $imageFilterService)
+    public function setS3Service(S3Service $s3Service)
     {
-        $this->imageFilterService = $imageFilterService;
+        $this->s3Service = $s3Service;
     }
 
     /**
@@ -71,7 +75,36 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             /** @var ResidentHealthInsuranceRepository $repo */
             $repo = $this->em->getRepository(ResidentHealthInsurance::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentId);
+            $list = $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentId);
+
+            /** @var ResidentHealthInsurance $entity */
+            foreach ($list as $entity) {
+                if ($entity !== null && $entity->getFirstFile() !== null) {
+                    $cmdFirst = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                        'Bucket' => getenv('AWS_BUCKET'),
+                        'Key'    => $entity->getFirstFile()->getType() . '/' . $entity->getFirstFile()->getS3Id(),
+                    ]);
+                    $s3RequestFirst = $this->s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
+
+                    $entity->setFirstFileDownloadUrl((string)$s3RequestFirst->getUri());
+                } else {
+                    $entity->setFirstFileDownloadUrl(null);
+                }
+
+                if ($entity !== null && $entity->getSecondFile() !== null) {
+                    $cmdSecond = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                        'Bucket' => getenv('AWS_BUCKET'),
+                        'Key'    => $entity->getSecondFile()->getType() . '/' . $entity->getSecondFile()->getS3Id(),
+                    ]);
+                    $s3RequestSecond = $this->s3Service->getS3Client()->createPresignedRequest($cmdSecond, '+20 minutes');
+
+                    $entity->setSecondFileDownloadUrl((string)$s3RequestSecond->getUri());
+                } else {
+                    $entity->setSecondFileDownloadUrl(null);
+                }
+            }
+
+            return $list;
         }
 
         throw new ResidentNotFoundException();
@@ -129,32 +162,78 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $residentHealthInsurance->setGroupNumber($params['group_number']);
             $residentHealthInsurance->setNotes($params['notes']);
 
+            $fileFirst = !empty($params['first_file']) ? $params['first_file'] : null;
+            $fileSecond = !empty($params['second_file']) ? $params['second_file'] : null;
+
+            $filterService = $this->container->getParameter('filter_service');
+            $pdfFileService = $this->container->getParameter('pdf_file_service');
+
+            // save files
+            if ($fileFirst !== null) {
+                $firstFile = new File();
+
+                $parseFirstFile = Parser::parse($fileFirst);
+                $firstFile->setMimeType($parseFirstFile->getMimeType());
+                $firstFile->setType(FileType::TYPE_RESIDENT_INSURANCE);
+
+                $this->validate($firstFile, null, ['api_admin_file_add']);
+
+                $this->em->persist($firstFile);
+
+                //validate file
+                if ($firstFile->getMimeType() === 'application/pdf' && !\in_array(MimeUtil::mime2ext($firstFile->getMimeType()), $pdfFileService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                if ($firstFile->getMimeType() !== 'application/pdf' && !\in_array(MimeUtil::mime2ext($firstFile->getMimeType()), $filterService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                $s3Id = $firstFile->getId().'.'.MimeUtil::mime2ext($firstFile->getMimeType());
+                $firstFile->setS3Id($s3Id);
+                $this->em->persist($firstFile);
+
+                $this->s3Service->uploadFile($fileFirst, $s3Id, $firstFile->getType(), $firstFile->getMimeType());
+
+                $residentHealthInsurance->setFirstFile($firstFile);
+            } else {
+                $residentHealthInsurance->setFirstFile(null);
+            }
+
+            if ($fileSecond !== null) {
+                $secondFile = new File();
+
+                $parseSecondFile = Parser::parse($fileSecond);
+                $secondFile->setMimeType($parseSecondFile->getMimeType());
+                $secondFile->setType(FileType::TYPE_RESIDENT_INSURANCE);
+
+                $this->validate($secondFile, null, ['api_admin_file_add']);
+
+                $this->em->persist($secondFile);
+
+                //validate file
+                if ($secondFile->getMimeType() === 'application/pdf' && !\in_array(MimeUtil::mime2ext($secondFile->getMimeType()), $pdfFileService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                if ($secondFile->getMimeType() !== 'application/pdf' && !\in_array(MimeUtil::mime2ext($secondFile->getMimeType()), $filterService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                $s3Id = $secondFile->getId().'.'.MimeUtil::mime2ext($secondFile->getMimeType());
+                $secondFile->setS3Id($s3Id);
+                $this->em->persist($secondFile);
+
+                $this->s3Service->uploadFile($fileSecond, $s3Id, $secondFile->getType(), $secondFile->getMimeType());
+
+                $residentHealthInsurance->setSecondFile($secondFile);
+            } else {
+                $residentHealthInsurance->setSecondFile(null);
+            }
+
             $this->validate($residentHealthInsurance, null, ['api_admin_resident_health_insurance_add']);
 
             $this->em->persist($residentHealthInsurance);
-
-            $firstFile = !empty($params['first_file']) ? $params['first_file'] : null;
-            $secondFile = !empty($params['second_file']) ? $params['second_file'] : null;
-
-            // save file
-            if ($firstFile !== null || $secondFile !== null) {
-                $file = new ResidentHealthInsuranceFile();
-
-                $firstFile = Parser::parse($firstFile);
-                $secondFile = Parser::parse($secondFile);
-
-                $file->setInsurance($residentHealthInsurance);
-                $file->setFirstFile($firstFile->getData());
-                $file->setSecondFile($secondFile->getData());
-
-                $this->validate($file, null, ['api_admin_resident_health_insurance_file_add']);
-
-//                if ($file) {
-//                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
-//                }
-
-                $this->em->persist($file);
-            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -218,39 +297,93 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $entity->setGroupNumber($params['group_number']);
             $entity->setNotes($params['notes']);
 
+            $fileFirst = !empty($params['first_file']) ? $params['first_file'] : null;
+            $fileSecond = !empty($params['second_file']) ? $params['second_file'] : null;
+
+            $filterService = $this->container->getParameter('filter_service');
+            $pdfFileService = $this->container->getParameter('pdf_file_service');
+
+            $firstFile = $entity->getFirstFile();
+            if (!empty($fileFirst !== null)) {
+                if (!StringUtil::starts_with($fileFirst, 'http')) {
+                    if ($firstFile !== null) {
+                        $this->s3Service->removeFile($firstFile->getS3Id(), $firstFile->getType());
+                    } else {
+                        $firstFile = new File();
+                    }
+
+                    $parseFile = Parser::parse($fileFirst);
+
+                    $firstFile->setMimeType($parseFile->getMimeType());
+                    $firstFile->setType(FileType::TYPE_RESIDENT_INSURANCE);
+
+                    $this->validate($firstFile, null, ['api_admin_file_edit']);
+
+                    $this->em->persist($firstFile);
+
+                    //validate file
+                    if ($firstFile->getMimeType() === 'application/pdf' && !\in_array(MimeUtil::mime2ext($firstFile->getMimeType()), $pdfFileService['extensions'], false)) {
+                        throw new FileExtensionException();
+                    }
+
+                    if ($firstFile->getMimeType() !== 'application/pdf' && !\in_array(MimeUtil::mime2ext($firstFile->getMimeType()), $filterService['extensions'], false)) {
+                        throw new FileExtensionException();
+                    }
+
+                    $s3Id = $firstFile->getId().'.'.MimeUtil::mime2ext($firstFile->getMimeType());
+                    $firstFile->setS3Id($s3Id);
+                    $this->em->persist($firstFile);
+
+                    $this->s3Service->uploadFile($fileFirst, $s3Id, $firstFile->getType(), $firstFile->getMimeType());
+
+                    $entity->setFirstFile($firstFile);
+                }
+            } else {
+                $entity->setFirstFile(null);
+            }
+
+            $secondFile = $entity->getSecondFile();
+            if (!empty($fileSecond !== null)) {
+                if (!StringUtil::starts_with($fileSecond, 'http')) {
+                    if ($secondFile !== null) {
+                        $this->s3Service->removeFile($secondFile->getS3Id(), $secondFile->getType());
+                    } else {
+                        $secondFile = new File();
+                    }
+
+                    $parseFile = Parser::parse($fileSecond);
+
+                    $secondFile->setMimeType($parseFile->getMimeType());
+                    $secondFile->setType(FileType::TYPE_RESIDENT_INSURANCE);
+
+                    $this->validate($secondFile, null, ['api_admin_file_edit']);
+
+                    $this->em->persist($secondFile);
+
+                    //validate file
+                    if ($secondFile->getMimeType() === 'application/pdf' && !\in_array(MimeUtil::mime2ext($secondFile->getMimeType()), $pdfFileService['extensions'], false)) {
+                        throw new FileExtensionException();
+                    }
+
+                    if ($secondFile->getMimeType() !== 'application/pdf' && !\in_array(MimeUtil::mime2ext($secondFile->getMimeType()), $filterService['extensions'], false)) {
+                        throw new FileExtensionException();
+                    }
+
+                    $s3Id = $secondFile->getId().'.'.MimeUtil::mime2ext($secondFile->getMimeType());
+                    $secondFile->setS3Id($s3Id);
+                    $this->em->persist($secondFile);
+
+                    $this->s3Service->uploadFile($fileSecond, $s3Id, $secondFile->getType(), $secondFile->getMimeType());
+
+                    $entity->setSecondFile($secondFile);
+                }
+            } else {
+                $entity->setSecondFile(null);
+            }
+
             $this->validate($entity, null, ['api_admin_resident_health_insurance_edit']);
 
             $this->em->persist($entity);
-
-            $firstFile = !empty($params['first_file']) ? $params['first_file'] : null;
-            $secondFile = !empty($params['second_file']) ? $params['second_file'] : null;
-
-            // save file
-            if ($firstFile !== null || $secondFile !== null) {
-                /** @var ResidentHealthInsuranceFileRepository $fileRepo */
-                $fileRepo = $this->em->getRepository(ResidentHealthInsuranceFile::class);
-
-                $file = $fileRepo->getBy($entity->getId());
-
-                if ($file === null) {
-                    $file = new ResidentHealthInsuranceFile();
-                }
-
-                $firstFile = Parser::parse($firstFile);
-                $secondFile = Parser::parse($secondFile);
-
-                $file->setInsurance($entity);
-                $file->setFirstFile($firstFile->getData());
-                $file->setSecondFile($secondFile->getData());
-
-                $this->validate($file, null, ['api_admin_resident_health_insurance_file_edit']);
-
-//                if ($file) {
-//                    $this->imageFilterService->validateResidentHealthInsuranceFile($file);
-//                }
-
-                $this->em->persist($file);
-            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -278,6 +411,22 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
 
             if ($entity === null) {
                 throw new ResidentHealthInsuranceNotFoundException();
+            }
+
+            $firstFile = $entity->getFirstFile();
+
+            if ($firstFile !== null) {
+                $this->s3Service->removeFile($firstFile->getS3Id(), $firstFile->getType());
+
+                $this->em->remove($firstFile);
+            }
+
+            $secondFile = $entity->getSecondFile();
+
+            if ($secondFile !== null) {
+                $this->s3Service->removeFile($secondFile->getS3Id(), $secondFile->getType());
+
+                $this->em->remove($secondFile);
             }
 
             $this->em->remove($entity);
@@ -312,11 +461,40 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                 throw new ResidentHealthInsuranceNotFoundException();
             }
 
+            $firstFileIds = [];
+            $secondFileIds = [];
+
+            /** @var FileRepository $fileRepo */
+            $fileRepo = $this->em->getRepository(File::class);
+
             /**
              * @var ResidentHealthInsurance $residentHealthInsurance
              */
             foreach ($residentHealthInsurances as $residentHealthInsurance) {
+                if ($residentHealthInsurance->getFirstFile() !== null) {
+                    $firstFileIds[] = $residentHealthInsurance->getFirstFile()->getId();
+                }
+
+                if ($residentHealthInsurance->getSecondFile() !== null) {
+                    $secondFileIds[] = $residentHealthInsurance->getSecondFile()->getId();
+                }
+
                 $this->em->remove($residentHealthInsurance);
+            }
+
+            $firstFileIds = array_unique($firstFileIds);
+            $secondFileIds = array_unique($secondFileIds);
+            $fileIds = array_merge($firstFileIds, $secondFileIds);
+
+            $files = $fileRepo->findByIds($fileIds);
+
+            /**
+             * @var File $file
+             */
+            foreach ($files as $file) {
+                $this->s3Service->removeFile($file->getS3Id(), $file->getType());
+
+                $this->em->remove($file);
             }
 
             $this->em->flush();
@@ -352,48 +530,21 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param $number
      * @return array
      */
-    public function getSingleFile($id)
+    public function downloadFile($id, $number): array
     {
-        /** @var ResidentHealthInsurance $entity */
         $entity = $this->getById($id);
 
-        $first = $entity->getFile() !== null ? $entity->getFile()->getFirstFile() : null;
-        $second = $entity->getFile() !== null ? $entity->getFile()->getSecondFile() : null;
-
-        $img = new \Imagick();
-        $img->setResolution(300, 300);
-        $img->setCompression(\Imagick::COMPRESSION_JPEG);
-        $img->setCompressionQuality(100);
-
-        if ($first !== null) {
-            $img1 = new \Imagick();
-            $img1->setResolution(300, 300);
-            $img1->readImageBlob(stream_get_contents($first, -1, 0));
-            $img->addImage($img1);
+        if($number === 1 && !empty($entity) && $entity->getFirstFile() !== null) {
+            return [$entity->getTitle(), $entity->getFirstFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType())];
         }
 
-        if ($second !== null) {
-            $img2 = new \Imagick();
-            $img2->setResolution(300, 300);
-            $img2->readImageBlob(stream_get_contents($second, -1, 0));
-            $img->addImage($img2);
+        if($number === 2 && !empty($entity) && $entity->getSecondFile() !== null) {
+            return [$entity->getTitle(), $entity->getSecondFile()->getMimeType(), $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType())];
         }
 
-        $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . (new \DateTime())->format('Ymd_His'). '.pdf';
-        $img->setImageFormat('pdf');
-        $img->writeImages($random_name, true);
-        $img->destroy();
-
-        $output_resource = null;
-        $output_name = null;
-
-        if (file_exists($random_name)) {
-            $output_name = 'insurance';
-            $output_resource = fopen($random_name, 'rb');
-        }
-
-        return [$output_name, $output_resource];
+        return [null, null];
     }
 }

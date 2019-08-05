@@ -70,6 +70,7 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
+     * @param S3Service $s3Service
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
@@ -103,9 +104,9 @@ class DocumentController extends BaseController
                 'Bucket' => getenv('AWS_BUCKET'),
                 'Key'    => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
             ]);
-            $request = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            $s3Request = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
-            $entity->setDownloadUrl((string)$request->getUri());
+            $entity->setDownloadUrl((string)$s3Request->getUri());
         } else {
             $entity->setDownloadUrl(null);
         }
@@ -262,6 +263,6 @@ class DocumentController extends BaseController
 
         $data = $documentService->downloadFile($id);
 
-        return $this->respondStream($data[0], $data[1], $data[2]);
+        return $this->respondResource($data[0], $data[1], $data[2]);
     }
 }

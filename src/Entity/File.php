@@ -101,6 +101,18 @@ class File
     private $residentDocument;
 
     /**
+     * @var ResidentHealthInsurance
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="firstFile", cascade={"remove", "persist"})
+     */
+    private $insuranceFirstFile;
+
+    /**
+     * @var ResidentHealthInsurance
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="secondFile", cascade={"remove", "persist"})
+     */
+    private $insuranceSecondFile;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -188,5 +200,37 @@ class File
     public function setResidentDocument(?ResidentDocument $residentDocument): void
     {
         $this->residentDocument = $residentDocument;
+    }
+
+    /**
+     * @return ResidentHealthInsurance|null
+     */
+    public function getInsuranceFirstFile(): ?ResidentHealthInsurance
+    {
+        return $this->insuranceFirstFile;
+    }
+
+    /**
+     * @param ResidentHealthInsurance|null $insuranceFirstFile
+     */
+    public function setInsuranceFirstFile(?ResidentHealthInsurance $insuranceFirstFile): void
+    {
+        $this->insuranceFirstFile = $insuranceFirstFile;
+    }
+
+    /**
+     * @return ResidentHealthInsurance|null
+     */
+    public function getInsuranceSecondFile(): ?ResidentHealthInsurance
+    {
+        return $this->insuranceSecondFile;
+    }
+
+    /**
+     * @param ResidentHealthInsurance|null $insuranceSecondFile
+     */
+    public function setInsuranceSecondFile(?ResidentHealthInsurance $insuranceSecondFile): void
+    {
+        $this->insuranceSecondFile = $insuranceSecondFile;
     }
 }
