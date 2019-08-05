@@ -262,6 +262,6 @@ class DocumentController extends BaseController
 
         $data = $documentService->downloadFile($id);
 
-        return $this->respondStream($data[0], $data[1]);
+        return $this->respondStream($data[0], $data[1], $data[2]);
     }
 }

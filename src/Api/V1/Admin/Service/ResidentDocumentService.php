@@ -363,7 +363,7 @@ class ResidentDocumentService extends BaseService implements IGridService
         $entity = $this->getById($id);
 
         if(!empty($entity) && $entity->getFile() !== null) {
-            return [$entity->getTitle(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
+            return [$entity->getTitle(), $entity->getFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
         }
 
         return [null, null];

@@ -384,10 +384,11 @@ class BaseController extends AbstractController
 
     /**
      * @param string $title
+     * @param string $mimeType
      * @param Result $awsData
      * @return Response
      */
-    protected function respondStream($title, $awsData)
+    protected function respondStream($title, $mimeType, $awsData)
     {
         /** @var Stream $stream */
         $stream = $awsData['Body'];
@@ -397,12 +398,10 @@ class BaseController extends AbstractController
 
             $stream->close();
 
-            $mime = MimeUtil::getMime($data);
-
             return new Response($data, Response::HTTP_OK, [
-                'Content-Type' => $mime,
+                'Content-Type' => $mimeType,
                 'Content-Length' => \strlen($data),
-                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mime) . '"'
+                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mimeType) . '"'
             ]);
         }
 
