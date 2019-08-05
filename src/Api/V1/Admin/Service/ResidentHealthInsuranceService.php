@@ -341,6 +341,11 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                     $entity->setFirstFile($firstFile);
                 }
             } else {
+                if ($firstFile !== null) {
+                    $this->s3Service->removeFile($firstFile->getS3Id(), $firstFile->getType());
+                    $this->em->remove($firstFile);
+                }
+
                 $entity->setFirstFile(null);
             }
 
@@ -380,6 +385,11 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                     $entity->setSecondFile($secondFile);
                 }
             } else {
+                if ($secondFile !== null) {
+                    $this->s3Service->removeFile($secondFile->getS3Id(), $secondFile->getType());
+                    $this->em->remove($secondFile);
+                }
+
                 $entity->setSecondFile(null);
             }
 
@@ -545,6 +555,6 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             return [$entity->getTitle(), $entity->getSecondFile()->getMimeType(), $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType())];
         }
 
-        return [null, null];
+        return [null, null, null];
     }
 }
