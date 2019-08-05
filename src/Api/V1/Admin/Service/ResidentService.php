@@ -168,13 +168,15 @@ class ResidentService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
+            $gender = $params['gender'] ? (int)$params['gender'] : 0;
+
             $resident = new Resident();
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
-            $resident->setGender($params['gender'] ?? 0);
+            $resident->setGender($gender);
             $resident->setBirthday(new \DateTime($params['birthday']));
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
@@ -188,12 +190,12 @@ class ResidentService extends BaseService implements IGridService
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
 
-                $this->validate($image, null, ['api_admin_resident_image_add']);
-
                 $this->em->persist($image);
 
                 if ($image) {
                     $this->imageFilterService->createAllFilterVersion($image);
+
+                    $this->validate($image, null, ['api_admin_resident_image_add']);
                 }
             }
 
@@ -254,12 +256,14 @@ class ResidentService extends BaseService implements IGridService
                 throw new SalutationNotFoundException();
             }
 
+            $gender = $params['gender'] ? (int)$params['gender'] : 0;
+
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
-            $resident->setGender($params['gender'] ?? 0);
+            $resident->setGender($gender);
             $resident->setBirthday(new \DateTime($params['birthday']));
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
@@ -280,12 +284,12 @@ class ResidentService extends BaseService implements IGridService
                 $image->setResident($resident);
                 $image->setPhoto($params['photo']);
 
-                $this->validate($image, null, ['api_admin_resident_image_edit']);
-
                 $this->em->persist($image);
 
                 if ($image) {
                     $this->imageFilterService->createAllFilterVersion($image);
+
+                    $this->validate($image, null, ['api_admin_resident_image_edit']);
                 }
             }
 
