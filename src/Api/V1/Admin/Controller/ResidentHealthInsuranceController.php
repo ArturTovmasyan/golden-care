@@ -268,20 +268,19 @@ class ResidentHealthInsuranceController extends BaseController
     }
 
     /**
-     * @Route("/download/{id}/{number}", requirements={"id"="\d+", "number"="\d+"}, name="api_admin_resident_health_insurance_download", methods={"GET"})
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_health_insurance_download", methods={"GET"})
      *
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @param S3Service $s3Service
      * @param $id
-     * @param $number
      * @return Response
      */
-    public function downloadAction(Request $request, $id, $number, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function downloadAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
     {
         $residentHealthInsurance->setS3Service($s3Service);
 
-        $data = $residentHealthInsurance->downloadFile($id, $number);
+        $data = $residentHealthInsurance->getSingleFile($id);
 
-        return $this->respondResource($data[0], $data[1], $data[2]);
+        return $this->respondResource($data[0], $data[1]);
     }
 }

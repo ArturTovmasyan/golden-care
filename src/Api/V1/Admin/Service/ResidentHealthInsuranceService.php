@@ -21,6 +21,7 @@ use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
+use GuzzleHttp\Psr7\Stream;
 
 /**
  * Class ResidentHealthInsuranceService
@@ -540,21 +541,56 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param $number
      * @return array
      */
-    public function downloadFile($id, $number): array
+    public function getSingleFile($id)
     {
+        /** @var ResidentHealthInsurance $entity */
         $entity = $this->getById($id);
 
-        if($number === 1 && !empty($entity) && $entity->getFirstFile() !== null) {
-            return [$entity->getTitle(), $entity->getFirstFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType())];
+        $first = $entity->getFirstFile() !== null ? $this->s3Service->downloadFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType()) : null;
+        $second = $entity->getSecondFile() !== null ? $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType()) : null;
+
+        $img = new \Imagick();
+        $img->setResolution(300, 300);
+        $img->setCompression(\Imagick::COMPRESSION_JPEG);
+        $img->setCompressionQuality(100);
+
+        if ($first !== null) {
+            /** @var Stream $firstStream */
+            $firstStream = $first['Body'];
+
+            $a = $firstStream->getContents();
+
+            $img1 = new \Imagick();
+            $img1->setResolution(300, 300);
+            $img1->readImageBlob($firstStream->getContents());
+            $img->addImage($img1);
         }
 
-        if($number === 2 && !empty($entity) && $entity->getSecondFile() !== null) {
-            return [$entity->getTitle(), $entity->getSecondFile()->getMimeType(), $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType())];
+        if ($second !== null) {
+            /** @var Stream $secondStream */
+            $secondStream = $second['Body'];
+
+            $img2 = new \Imagick();
+            $img2->setResolution(300, 300);
+            $img2->readImageBlob($secondStream->getContents());
+            $img->addImage($img2);
         }
 
-        return [null, null, null];
+        $random_name = '/tmp/hif_' . md5($entity->getId()) . '_' . (new \DateTime())->format('Ymd_His'). '.pdf';
+        $img->setImageFormat('pdf');
+        $img->writeImages($random_name, true);
+        $img->destroy();
+
+        $output_resource = null;
+        $output_name = null;
+
+        if (file_exists($random_name)) {
+            $output_name = 'insurance';
+            $output_resource = fopen($random_name, 'rb');
+        }
+
+        return [$output_name, $output_resource];
     }
 }
