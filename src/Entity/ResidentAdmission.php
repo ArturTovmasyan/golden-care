@@ -649,17 +649,17 @@ class ResidentAdmission
     }
 
     /**
-     * @return DiningRoom
+     * @return DiningRoom|null
      */
-    public function getDiningRoom(): DiningRoom
+    public function getDiningRoom(): ?DiningRoom
     {
         return $this->diningRoom;
     }
 
     /**
-     * @param DiningRoom $diningRoom
+     * @param DiningRoom|null $diningRoom
      */
-    public function setDiningRoom($diningRoom): void
+    public function setDiningRoom(?DiningRoom $diningRoom): void
     {
         $this->diningRoom = $diningRoom;
     }
