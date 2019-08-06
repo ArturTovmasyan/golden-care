@@ -2,6 +2,8 @@
 
 namespace App\Entity\Assessment;
 
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -14,6 +16,9 @@ use JMS\Serializer\Annotation\Groups;
  */
 class FormCategory
 {
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")

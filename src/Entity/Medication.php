@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,6 +49,9 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Medication
 {
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")

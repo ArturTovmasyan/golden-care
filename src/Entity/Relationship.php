@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Model\Persistence\Entity\TimeAwareTrait;
+use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -46,6 +48,9 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Relationship
 {
+    use TimeAwareTrait;
+    use UserAwareTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")
