@@ -560,8 +560,6 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             /** @var Stream $firstStream */
             $firstStream = $first['Body'];
 
-            $a = $firstStream->getContents();
-
             $img1 = new \Imagick();
             $img1->setResolution(300, 300);
             $img1->readImageBlob($firstStream->getContents());
