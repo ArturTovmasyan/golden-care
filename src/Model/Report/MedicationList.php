@@ -20,8 +20,11 @@ class MedicationList extends Base
     public function __construct()
     {
         parent::__construct();
-
-        $this->addOption('orientation', self::ORIENTATION_LANDSCAPE);
+        $this
+            ->addOption('orientation', self::ORIENTATION_LANDSCAPE)
+            ->addOption('footer-spacing', 5)
+            ->addOption('footer-font-size', 12)
+            ->addOption('footer-center', 'MD Signature:______________________________');
     }
 
     /**
