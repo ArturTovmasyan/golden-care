@@ -252,7 +252,7 @@ class Grid
                 if (isset($options[$key][self::FIELD_OPTION_SORT_TYPE])) {
                     switch ($options[$key][self::FIELD_OPTION_SORT_TYPE]) {
                         case "natural":
-                            $this->queryBuilder->addOrderBy("NATURAL_SORT(".$options[$key]['id'] . ", 10, '.')", $sortType);
+                            $this->queryBuilder->addOrderBy("NATURAL_SORT(".$options[$key]['field'] . ", 10, '.')", $sortType);
                             break;
                         default:
                             $this->queryBuilder->addOrderBy($options[$key]['id'], $sortType);
