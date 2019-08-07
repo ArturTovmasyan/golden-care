@@ -6,6 +6,7 @@ use App\Annotation\Grid;
 use App\Api\V1\Admin\Service\ReportService;
 use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResourceNotFoundException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Space;
@@ -26,7 +27,6 @@ use JMS\Serializer\SerializerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -375,6 +375,6 @@ class BaseController extends AbstractController
             ]);
         }
 
-        throw new FileNotFoundException('');
+        throw new ResourceNotFoundException();
     }
 }
