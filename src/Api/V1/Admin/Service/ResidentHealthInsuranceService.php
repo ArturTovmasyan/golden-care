@@ -548,11 +548,15 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
         $entity = $this->getById($id);
 
         if ($number === 1 && !empty($entity) && $entity->getFirstFile() !== null) {
-            return [$entity->getTitle(), $entity->getFirstFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType())];
+            $title = $entity->getCompany() !== null ?  StringUtil::slugify($entity->getCompany()->getTitle()).'_card_front' : 'insurance_card_front';
+            
+            return [$title, $entity->getFirstFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType())];
         }
 
         if ($number === 2 && !empty($entity) && $entity->getSecondFile() !== null) {
-            return [$entity->getTitle(), $entity->getSecondFile()->getMimeType(), $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType())];
+            $title = $entity->getCompany() !== null ?  StringUtil::slugify($entity->getCompany()->getTitle()).'_card_back' : 'insurance_card_back';
+
+            return [$title, $entity->getSecondFile()->getMimeType(), $this->s3Service->downloadFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType())];
         }
 
         return [null, null, null];
