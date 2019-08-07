@@ -7,7 +7,6 @@ use App\Api\V1\Common\Service\Exception\InsuranceCompanyNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentHealthInsuranceNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Api\V1\Common\Service\S3Service;
 use App\Entity\File;
 use App\Entity\InsuranceCompany;
 use App\Entity\Resident;
@@ -28,19 +27,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ResidentHealthInsuranceService extends BaseService implements IGridService
 {
-    /**
-     * @var S3Service
-     */
-    private $s3Service;
-
-    /**
-     * @param S3Service $s3Service
-     */
-    public function setS3Service(S3Service $s3Service)
-    {
-        $this->s3Service = $s3Service;
-    }
-
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params

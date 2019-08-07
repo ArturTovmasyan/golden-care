@@ -77,6 +77,11 @@ class BaseService
     protected $container;
 
     /**
+     * @var S3Service
+     */
+    protected $s3Service;
+
+    /**
      * BaseService constructor.
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $encoder
@@ -86,6 +91,7 @@ class BaseService
      * @param Reader $reader
      * @param GrantService $grantService
      * @param ContainerInterface $container
+     * @param S3Service $s3Service
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -95,7 +101,8 @@ class BaseService
         Security $security,
         Reader $reader,
         GrantService $grantService,
-        ContainerInterface $container
+        ContainerInterface $container,
+        S3Service $s3Service
     ) {
         $this->em           = $em;
         $this->encoder      = $encoder;
@@ -105,6 +112,7 @@ class BaseService
         $this->reader       = $reader;
         $this->grantService = $grantService;
         $this->container    = $container;
+        $this->s3Service    = $s3Service;
     }
 
     /**
@@ -143,7 +151,7 @@ class BaseService
      */
     protected function generatePassword($length = 8)
     {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?';
 
         return substr(str_shuffle($chars), 0, $length);
     }

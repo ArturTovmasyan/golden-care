@@ -71,14 +71,11 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function listAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         return $this->respondList(
             $request,
             ResidentHealthInsurance::class,
@@ -140,14 +137,11 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function addAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         $id = $residentHealthInsurance->add(
             [
                 'resident_id' => $request->get('resident_id'),
@@ -175,14 +169,11 @@ class ResidentHealthInsuranceController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function editAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         $residentHealthInsurance->edit(
             $id,
             [
@@ -208,15 +199,12 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param $id
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function deleteAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         $residentHealthInsurance->remove($id);
 
         return $this->respondSuccess(
@@ -231,15 +219,12 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function deleteBulkAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         $residentHealthInsurance->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
@@ -271,15 +256,12 @@ class ResidentHealthInsuranceController extends BaseController
      * @Route("/download/{id}/{number}", requirements={"id"="\d+", "number"="\d+"}, name="api_admin_resident_health_insurance_download", methods={"GET"})
      *
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @param $id
      * @param $number
      * @return Response
      */
-    public function downloadAction(Request $request, $id, $number, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function downloadAction(Request $request, $id, $number, ResidentHealthInsuranceService $residentHealthInsurance)
     {
-        $residentHealthInsurance->setS3Service($s3Service);
-
         $data = $residentHealthInsurance->downloadFile($id, (int)$number);
 
         return $this->respondResource($data[0], $data[1], $data[2]);

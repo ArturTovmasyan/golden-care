@@ -5,7 +5,6 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ResidentDocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Api\V1\Common\Service\S3Service;
 use App\Entity\File;
 use App\Entity\Resident;
 use App\Entity\ResidentDocument;
@@ -24,19 +23,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ResidentDocumentService extends BaseService implements IGridService
 {
-    /**
-     * @var S3Service
-     */
-    private $s3Service;
-
-    /**
-     * @param S3Service $s3Service
-     */
-    public function setS3Service(S3Service $s3Service)
-    {
-        $this->s3Service = $s3Service;
-    }
-
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params

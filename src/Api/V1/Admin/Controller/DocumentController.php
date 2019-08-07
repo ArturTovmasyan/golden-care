@@ -70,14 +70,11 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
      */
-    public function listAction(Request $request, DocumentService $documentService, S3Service $s3Service)
+    public function listAction(Request $request, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         return $this->respondList(
             $request,
             Document::class,
@@ -126,14 +123,11 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, DocumentService $documentService, S3Service $s3Service)
+    public function addAction(Request $request, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         $id = $documentService->add(
             [
                 'title' => $request->get('title'),
@@ -159,14 +153,11 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param $id
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
+    public function editAction(Request $request, $id, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         $documentService->edit(
             $id,
             [
@@ -190,15 +181,12 @@ class DocumentController extends BaseController
      *
      * @param $id
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
+    public function deleteAction(Request $request, $id, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         $documentService->remove($id);
 
         return $this->respondSuccess(
@@ -213,15 +201,12 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DocumentService $documentService, S3Service $s3Service)
+    public function deleteBulkAction(Request $request, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         $documentService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
@@ -253,14 +238,11 @@ class DocumentController extends BaseController
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_document_download", methods={"GET"})
      *
      * @param DocumentService $documentService
-     * @param S3Service $s3Service
      * @param $id
      * @return Response
      */
-    public function downloadAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
+    public function downloadAction(Request $request, $id, DocumentService $documentService)
     {
-        $documentService->setS3Service($s3Service);
-
         $data = $documentService->downloadFile($id);
 
         return $this->respondResource($data[0], $data[1], $data[2]);

@@ -102,13 +102,13 @@ class File
 
     /**
      * @var ResidentHealthInsurance
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="firstFile", cascade={"remove", "persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="firstFile", cascade={"persist"})
      */
     private $insuranceFirstFile;
 
     /**
      * @var ResidentHealthInsurance
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="secondFile", cascade={"remove", "persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\ResidentHealthInsurance", mappedBy="secondFile", cascade={"persist"})
      */
     private $insuranceSecondFile;
 

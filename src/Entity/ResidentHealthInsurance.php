@@ -184,7 +184,7 @@ class ResidentHealthInsurance
      * @var File
      * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="insuranceFirstFile")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_first_file", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_first_file", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $firstFile;
@@ -193,7 +193,7 @@ class ResidentHealthInsurance
      * @var File
      * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="insuranceSecondFile")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_second_file", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_second_file", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $secondFile;

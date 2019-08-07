@@ -6,7 +6,6 @@ use App\Api\V1\Common\Service\Exception\DocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Api\V1\Common\Service\S3Service;
 use App\Entity\Document;
 use App\Entity\Facility;
 use App\Entity\File;
@@ -26,19 +25,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DocumentService extends BaseService implements IGridService
 {
-    /**
-     * @var S3Service
-     */
-    private $s3Service;
-
-    /**
-     * @param S3Service $s3Service
-     */
-    public function setS3Service(S3Service $s3Service)
-    {
-        $this->s3Service = $s3Service;
-    }
-
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params

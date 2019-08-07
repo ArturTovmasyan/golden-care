@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\ReportFormatNotFoundException;
 use App\Api\V1\Common\Service\Exception\ReportMisconfigurationException;
 use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Api\V1\Common\Service\GrantService;
+use App\Api\V1\Common\Service\S3Service;
 use App\Model\Report;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
@@ -56,6 +57,9 @@ class ReportService
     /** @var GrantService */
     protected $grantService;
 
+    /** @var  S3Service */
+    protected $s3Service;
+
     /**
      * ReportService constructor.
      * @param ContainerInterface $container
@@ -66,6 +70,7 @@ class ReportService
      * @param Mailer $mailer
      * @param Security $security
      * @param GrantService $grantService
+     * @param S3Service $s3Service
      */
     public function __construct(
         ContainerInterface $container,
@@ -75,7 +80,8 @@ class ReportService
         Reader $reader,
         Mailer $mailer,
         Security $security,
-        GrantService $grantService
+        GrantService $grantService,
+        S3Service $s3Service
     )
     {
         $this->container = $container;
@@ -86,6 +92,7 @@ class ReportService
         $this->mailer = $mailer;
         $this->security = $security;
         $this->grantService = $grantService;
+        $this->s3Service = $s3Service;
         $this->config = Yaml::parseFile($this->container->get('kernel')->getProjectDir() . self::$REPORT_CONFIG_PATH);
     }
 
@@ -95,13 +102,13 @@ class ReportService
 
         foreach ($config_filtered as $group => $config) {
             foreach ($config['reports'] as $alias => $report) {
-                $grant = sprintf("report-%s-%s", $group, $alias);
+                $grant = sprintf('report-%s-%s', $group, $alias);
                 if ($this->grantService->hasCurrentUserGrant($grant) === false) {
                     unset($config_filtered[$group]['reports'][$alias]);
                 }
             }
 
-            if (count($config_filtered[$group]['reports']) === 0) {
+            if (\count($config_filtered[$group]['reports']) === 0) {
                 unset($config_filtered[$group]);
             }
         }
@@ -132,7 +139,7 @@ class ReportService
             throw new ReportFormatNotFoundException();
         }
 
-        $grant = sprintf("report-%s-%s", $group, $alias);
+        $grant = sprintf('report-%s-%s', $group, $alias);
         if ($this->grantService->hasCurrentUserGrant($grant) === false) {
             throw new AccessDeniedHttpException();
         }
@@ -163,7 +170,8 @@ class ReportService
             $this->security,
             $this->reader,
             $this->grantService,
-            $this->container
+            $this->container,
+            $this->s3Service
         );
 
         $request_group = $request->get('type') ? (int)$request->get('type') : null;
@@ -312,9 +320,8 @@ class ReportService
         foreach ($this->config as $group => $config) {
             if($config['show_in_group_list'] === true) {
                 foreach ($config['reports'] as $alias => $report) {
-                    $grant = sprintf("report-%s-%s", $group, $alias);
-                    if ($this->grantService->hasCurrentUserGrant($grant) === true &&
-                        $report['show_in_group_list'] === true) {
+                    $grant = sprintf('report-%s-%s', $group, $alias);
+                    if ($report['show_in_group_list'] === true && $this->grantService->hasCurrentUserGrant($grant) === true) {
                         $group_grants[] = $grant;
                     }
                 }
@@ -329,10 +336,10 @@ class ReportService
         $group_grants = $this->getGroupReportGrants();
 
         $report_test = array_filter($permissions, function($value, $key) use ($group_grants) {
-            return in_array($key, $group_grants) && $value['enabled'] === true;
+            return \in_array($key, $group_grants, false) && $value['enabled'] === true;
         }, ARRAY_FILTER_USE_BOTH);
 
-        if(count($report_test) > 0) {
+        if(\count($report_test) > 0) {
             $permissions['report-group'] = ['enabled' => true];
         }
     }
