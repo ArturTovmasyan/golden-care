@@ -280,7 +280,7 @@ class ResidentHealthInsuranceController extends BaseController
     {
         $residentHealthInsurance->setS3Service($s3Service);
 
-        $data = $residentHealthInsurance->downloadFile($id, $number);
+        $data = $residentHealthInsurance->downloadFile($id, (int)$number);
 
         return $this->respondResource($data[0], $data[1], $data[2]);
     }
