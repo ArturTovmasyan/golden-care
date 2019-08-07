@@ -226,6 +226,8 @@ class Grid
 
         // set sorting
         if (!empty($params['sort'])) {
+            $this->queryBuilder->resetDQLPart('orderBy');
+
             foreach ($params['sort'] as $key => $sortType) {
                 if (!in_array(strtolower($sortType), ['asc', 'desc'])) {
                     continue;
@@ -243,14 +245,14 @@ class Grid
                 if (isset($options[$key][self::FIELD_OPTION_SORT_TYPE])) {
                     switch ($options[$key][self::FIELD_OPTION_SORT_TYPE]) {
                         case "natural":
-                            $this->queryBuilder->addOrderBy("NATURAL_SORT(".$options[$key]['field'] . ", 10, '.')", $sortType);
+                            $this->queryBuilder->addOrderBy("NATURAL_SORT(".$options[$key]['id'] . ", 10, '.')", $sortType);
                             break;
                         default:
-                            $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                            $this->queryBuilder->addOrderBy($options[$key]['id'], $sortType);
                             break;
                     }
                 } else {
-                    $this->queryBuilder->addOrderBy($options[$key]['field'], $sortType);
+                    $this->queryBuilder->addOrderBy($options[$key]['id'], $sortType);
                 }
             }
         }
