@@ -133,6 +133,7 @@ class ResponseCode
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
+    const RESOURCE_NOT_FOUND_EXCEPTION                           = 902;
 
     /**
      * @var array
@@ -261,5 +262,6 @@ class ResponseCode
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
+        self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],
     ];
 }
