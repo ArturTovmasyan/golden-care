@@ -253,6 +253,6 @@ class ResidentDocumentController extends BaseController
 
         $data = $residentDocumentService->downloadFile($id);
 
-        return $this->respondStream($data[0], $data[1], $data[2]);
+        return $this->respondResource($data[0], $data[1], $data[2]);
     }
 }
