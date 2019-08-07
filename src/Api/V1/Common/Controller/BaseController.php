@@ -144,6 +144,7 @@ class BaseController extends AbstractController
     {
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
         $service->gridSelect($queryBuilder, $params);
+        $this->getGrid($entityName)->renderByGroup($request->query->all(), $groupName);
 
         $paginator = new Paginator($queryBuilder);
 
@@ -333,7 +334,7 @@ class BaseController extends AbstractController
     {
         return $this->getGrid($entityName)
             ->setEntityManager($this->em)
-            ->renderByGroup($request->query->all(), $groupName)
+            ->setQueryBuilder($this->em->createQueryBuilder())
             ->getQueryBuilder();
     }
 

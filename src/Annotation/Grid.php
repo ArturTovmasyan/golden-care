@@ -167,7 +167,15 @@ class Grid
     public function setEntityManager(EntityManagerInterface $em)
     {
         $this->em = $em;
+        return $this;
+    }
 
+    /**
+     * @return $this
+     */
+    public function setQueryBuilder(QueryBuilder $queryBuilder)
+    {
+        $this->queryBuilder = $queryBuilder;
         return $this;
     }
 
@@ -200,7 +208,6 @@ class Grid
      */
     public function renderByGroup(array $params, $groupName)
     {
-        $this->queryBuilder = $this->em->createQueryBuilder();
         $options            = $this->getGroupOptionsById($groupName);
         $fields             = $this->getGroupOptions($groupName);
 
