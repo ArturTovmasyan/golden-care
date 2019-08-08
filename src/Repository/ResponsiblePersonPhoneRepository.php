@@ -23,12 +23,12 @@ class ResponsiblePersonPhoneRepository extends EntityRepository implements Relat
     public function getBy(Space $space = null, array $entityGrants = null, ResponsiblePerson $responsiblePerson)
     {
         $qb = $this
-            ->createQueryBuilder('rrp')
+            ->createQueryBuilder('rpp')
             ->innerJoin(
                 ResponsiblePerson::class,
                 'rp',
                 Join::WITH,
-                'rp = rrp.responsiblePerson'
+                'rp = rpp.responsiblePerson'
             )
             ->where('rp = :responsiblePerson')
             ->setParameter('responsiblePerson', $responsiblePerson);
@@ -47,7 +47,7 @@ class ResponsiblePersonPhoneRepository extends EntityRepository implements Relat
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('rrp.id IN (:grantIds)')
+                ->andWhere('rpp.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -98,7 +98,7 @@ class ResponsiblePersonPhoneRepository extends EntityRepository implements Relat
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('rrp.id IN (:grantIds)')
+                ->andWhere('rpp.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
