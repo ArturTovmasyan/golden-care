@@ -31,7 +31,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "date",
  *              "type"       = "datetime",
- *              "field"      = "ra.start"
+ *              "field"      = "ra.date"
  *          },
  *          {
  *              "id"         = "notes",
