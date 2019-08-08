@@ -16,6 +16,7 @@ use App\Api\V1\Common\Service\Exception\ResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyAdmitException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyReadmitException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionTwoTimeARowException;
+use App\Api\V1\Common\Service\Exception\ResidentAdmitOnlyOneTimeException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Apartment;
@@ -474,8 +475,11 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                 $entity->setGroupType($lastAction->getGroupType());
             } else {
-                if ($lastAction !== null && ($lastAction->getAdmissionType() === $admissionType) === AdmissionType::ADMIT) {
-                    throw new ResidentAdmissionTwoTimeARowException();
+                /** @var ResidentAdmission $admitAction */
+                $admitAction = $admissionRepo->getOneAdmitAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+
+                if ($lastAction !== null && $admitAction !== null && $admissionType === AdmissionType::ADMIT) {
+                    throw new ResidentAdmitOnlyOneTimeException();
                 }
 
                 $type = $params['group_type'] ? (int)$params['group_type'] : 0;

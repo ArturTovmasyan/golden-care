@@ -324,6 +324,47 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $id
      * @return mixed
      */
+    public function getOneAdmitAction(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('ra')
+            ->join('ra.resident', 'r')
+            ->where('r.id=:id')
+            ->andWhere('ra.admissionType=:admissionType')
+            ->setParameter('id', $id)
+            ->setParameter('admissionType', AdmissionType::ADMIT);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('ra.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
     public function getActiveByResident(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this->createQueryBuilder('ra');
