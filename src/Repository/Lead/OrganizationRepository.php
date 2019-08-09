@@ -32,7 +32,7 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
                 Join::WITH,
                 'c = o.category'
             )
-            ->join(
+            ->leftJoin(
                 CityStateZip::class,
                 'csz',
                 Join::WITH,
