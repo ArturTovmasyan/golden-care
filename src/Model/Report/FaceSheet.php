@@ -13,6 +13,7 @@ class FaceSheet extends Base
     private $residents = [];
     private $physicianPhones = [];
     private $responsiblePersonPhones = [];
+    private $insuranceFiles = [];
 
     /**
      * FaceSheet constructor.
@@ -48,6 +49,22 @@ class FaceSheet extends Base
         foreach ($insurances as $insurance) {
             $this->residents[$insurance['residentId']]['insurances'][] = $insurance;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getInsuranceFiles(): ?array
+    {
+        return $this->insuranceFiles;
+    }
+
+    /**
+     * @param $insuranceFiles
+     */
+    public function setInsuranceFiles($insuranceFiles): void
+    {
+        $this->insuranceFiles = $insuranceFiles;
     }
 
     /**
