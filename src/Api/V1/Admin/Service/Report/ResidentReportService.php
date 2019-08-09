@@ -197,6 +197,9 @@ class ResidentReportService extends BaseService
                     $img1 = new \Imagick();
                     $img1->setResolution(300, 300);
                     $img1->readImageBlob($firstStream->getContents());
+                    while ($img1->hasPreviousImage()) {
+                        $img1->removeImage();
+                    }
                     $img->addImage($img1);
                 }
 
@@ -248,6 +251,9 @@ class ResidentReportService extends BaseService
                     $img2 = new \Imagick();
                     $img2->setResolution(300, 300);
                     $img2->readImageBlob($secondStream->getContents());
+                    while ($img2->hasPreviousImage()) {
+                        $img2->removeImage();
+                    }
                     $img->addImage($img2);
                 }
 
