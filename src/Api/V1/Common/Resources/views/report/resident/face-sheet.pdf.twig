@@ -3,11 +3,17 @@
 {% endblock %}
 {% block pageContent %}
 
+    {% set i = 0 %}
     {% for residentId, resident in data.residents %}
+        {% set i = i + 1 %}
 
         <table style="margin: 0; padding: 0; page-break-inside: avoid !important;">
             <tr style="width:100%; clear: both; margin: 0; padding: 0; page-break-inside: avoid !important;"></tr>
         </table>
+        {% if i > 1 %}
+            <div class="page">
+            </div>
+        {% endif %}
 
         <table class="report-table main-table bordered">
             <tr class="divider"></tr>
