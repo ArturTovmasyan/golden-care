@@ -40,6 +40,9 @@ use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Repository\ResponsiblePersonPhoneRepository;
 use App\Util\Common\ImtDateTimeInterval;
+use DataURI\Data;
+use DataURI\Dumper;
+use GuzzleHttp\Psr7\Stream;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class ResidentReportService extends BaseService
@@ -128,9 +131,108 @@ class ResidentReportService extends BaseService
             $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
         }
 
+        $insuranceArray = [];
+        $insuranceFiles = [];
+        if (!empty($insurances)) {
+            /** @var ResidentHealthInsurance $insurance */
+            foreach ($insurances as $insurance) {
+                $insuranceArray[] = [
+                    'id' => $insurance->getId(),
+                    'medicalRecordNumber' => $insurance->getMedicalRecordNumber(),
+                    'groupNumber' => $insurance->getGroupNumber(),
+                    'notes' => $insurance->getNotes(),
+                    'company' => $insurance->getCompany() !== null ? $insurance->getCompany()->getTitle() : 'N/A',
+                    'residentId' => $insurance->getResident() !== null ? $insurance->getResident()->getId() : 0,
+                ];
+
+                if ($insurance->getResident()) {
+                    if ($insurance->getFirstFile() !== null) {
+                        if ($insurance->getFirstFile()->getMimeType() === 'application/pdf') {
+                            $first = $this->s3Service->downloadFile($insurance->getFirstFile()->getS3Id(), $insurance->getFirstFile()->getType());
+
+                            $img = new \Imagick();
+                            $img->setResolution(300, 300);
+                            $img->setCompression(\Imagick::COMPRESSION_JPEG);
+                            $img->setCompressionQuality(100);
+
+                            if ($first !== null) {
+                                /** @var Stream $firstStream */
+                                $firstStream = $first['Body'];
+
+                                $img1 = new \Imagick();
+                                $img1->setResolution(300, 300);
+                                $img1->readImageBlob($firstStream->getContents());
+                                $img->addImage($img1);
+                            }
+
+                            $random_name = '/tmp/hif_' . md5($insurance->getFirstFile()->getId()) . '_' . (new \DateTime())->format('Ymd_His'). '.jpeg';
+                            $img->setImageFormat('jpeg');
+                            $img->writeImages($random_name, true);
+                            $img->destroy();
+
+                            if (file_exists($random_name)) {
+                                $dataObject = Data::buildFromFile($random_name);
+
+                                $insuranceFiles[$insurance->getResident()->getId()][] = Dumper::dump($dataObject);
+                            }
+                        } else {
+                            $cmdFirst = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                                'Bucket' => getenv('AWS_BUCKET'),
+                                'Key'    => $insurance->getFirstFile()->getType() . '/' . $insurance->getFirstFile()->getS3Id(),
+                            ]);
+                            $s3RequestFirst = $this->s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
+
+                            $insuranceFiles[$insurance->getResident()->getId()][] = (string)$s3RequestFirst->getUri();
+                        }
+                    }
+
+                    if ($insurance->getSecondFile() !== null) {
+                        if ($insurance->getSecondFile()->getMimeType() === 'application/pdf') {
+                            $second = $this->s3Service->downloadFile($insurance->getSecondFile()->getS3Id(), $insurance->getSecondFile()->getType());
+
+                            $img = new \Imagick();
+                            $img->setResolution(300, 300);
+                            $img->setCompression(\Imagick::COMPRESSION_JPEG);
+                            $img->setCompressionQuality(100);
+
+                            if ($second !== null) {
+                                /** @var Stream $firstStream */
+                                $secondStream = $second['Body'];
+
+                                $img2 = new \Imagick();
+                                $img2->setResolution(300, 300);
+                                $img2->readImageBlob($secondStream->getContents());
+                                $img->addImage($img2);
+                            }
+
+                            $random_name = '/tmp/hif_' . md5($insurance->getSecondFile()->getId()) . '_' . (new \DateTime())->format('Ymd_His'). '.jpeg';
+                            $img->setImageFormat('jpeg');
+                            $img->writeImages($random_name, true);
+                            $img->destroy();
+
+                            if (file_exists($random_name)) {
+                                $dataObject = Data::buildFromFile($random_name);
+
+                                $insuranceFiles[$insurance->getResident()->getId()][] = Dumper::dump($dataObject);
+                            }
+                        } else {
+                            $cmdSecond = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                                'Bucket' => getenv('AWS_BUCKET'),
+                                'Key'    => $insurance->getSecondFile()->getType() . '/' . $insurance->getSecondFile()->getS3Id(),
+                            ]);
+                            $s3RequestSecond = $this->s3Service->getS3Client()->createPresignedRequest($cmdSecond, '+20 minutes');
+
+                            $insuranceFiles[$insurance->getResident()->getId()][] = (string)$s3RequestSecond->getUri();
+                        }
+                    }
+                }
+            }
+        }
+
         $report = new Profile();
         $report->setResidents($residentsById);
-        $report->setInsurances($insurances);
+        $report->setInsurances($insuranceArray);
+        $report->setInsuranceFiles($insuranceFiles);
         $report->setMedications($medications);
         $report->setAllergens($allergens);
         $report->setDiagnosis($diagnosis);

@@ -198,14 +198,6 @@ class ResidentHealthInsuranceRepository extends EntityRepository implements Rela
         $qb = $this->createQueryBuilder('rhi');
 
         $qb
-            ->select('
-                    rhi.id as id,
-                    rhi.medicalRecordNumber as medicalRecordNumber,
-                    rhi.groupNumber as groupNumber,
-                    rhi.notes as notes,
-                    ic.title as company,
-                    r.id as residentId
-            ')
             ->innerJoin(
                 InsuranceCompany::class,
                 'ic',
