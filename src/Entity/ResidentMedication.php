@@ -193,7 +193,7 @@ class ResidentMedication
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
-     * @Assert\Regex(pattern= "/[0-9\.\-\/]+/",
+     * @Assert\Regex(pattern= "/^[0-9\.\-\/]+$/",
      *     message="The value entered is not a valid type. Examples of valid entries: '2, 0.5, 10/15, 0.4-4'.",
      *     groups={
      *         "api_admin_resident_medication_add",
@@ -221,7 +221,7 @@ class ResidentMedication
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
      * })
-     * @Assert\Regex(pattern= "/[a-zA-Z0-9\%\+\/]+/",
+     * @Assert\Regex(pattern= "/^[a-zA-Z0-9\%\+\/]+$/",
      *     message="The value entered is not a valid type. Allowed symbols are: '%, +, /'.",
      *     groups={
      *         "api_admin_resident_medication_add",

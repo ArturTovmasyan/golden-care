@@ -126,7 +126,7 @@ class CityStateZip
      *     "api_admin_city_state_zip_edit"
      * })
      * @Assert\Regex(
-     *     pattern="/\b([A-Z]{2})\b/",
+     *     pattern="/^[A-Z]{2}$/",
      *     message="Invalid State abbreviation.",
      *     groups={
      *         "api_admin_city_state_zip_add",

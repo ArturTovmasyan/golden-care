@@ -390,7 +390,7 @@ class ResidentAdmission
      * @var int
      * @ORM\Column(name="care_group", type="smallint", nullable=true)
      * @Assert\Regex(
-     *     pattern = "/(^[1-9][0-9]*$)/",
+     *     pattern = "/^[1-9][0-9]*$/",
      *     message="Please provide a valid Care Group.",
      *     groups={
      *          "api_admin_facility_add",
