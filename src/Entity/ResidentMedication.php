@@ -188,7 +188,7 @@ class ResidentMedication
 
     /**
      * @var string $dosage
-     * @ORM\Column(name="dosage", type="string", length=10)
+     * @ORM\Column(name="dosage", type="string", length=25)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_medication_add",
      *     "api_admin_resident_medication_edit"
@@ -200,7 +200,7 @@ class ResidentMedication
      *         "api_admin_resident_medication_edit"
      * })
      * @Assert\Length(
-     *      max = 10,
+     *      max = 25,
      *      maxMessage = "Dosage cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_medication_add",
