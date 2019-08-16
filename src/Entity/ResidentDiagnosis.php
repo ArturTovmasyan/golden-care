@@ -53,7 +53,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "field"      = "rd.notes"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(rd.notes, 1, 100)), CASE WHEN LENGTH(rd.notes) > 100 THEN '…' ELSE '' END)"
  *          }
  *     }
  * )
