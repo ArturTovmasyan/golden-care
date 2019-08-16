@@ -42,7 +42,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "description",
  *              "type"       = "string",
- *              "field"      = "mhc.description"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(mhc.description, 1, 100)), CASE WHEN LENGTH(mhc.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
  *              "id"         = "space",

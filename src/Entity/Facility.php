@@ -35,7 +35,7 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "description",
  *              "type"       = "string",
- *              "field"      = "f.description"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(f.description, 1, 100)), CASE WHEN LENGTH(f.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
  *              "id"         = "shorthand",

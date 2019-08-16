@@ -32,7 +32,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "description",
  *              "type"       = "string",
- *              "field"      = "r.description"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(r.description, 1, 100)), CASE WHEN LENGTH(r.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
  *              "id"         = "shorthand",
