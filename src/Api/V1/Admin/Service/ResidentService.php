@@ -169,6 +169,7 @@ class ResidentService extends BaseService implements IGridService
             }
 
             $gender = $params['gender'] ? (int)$params['gender'] : 0;
+            $ssn = !empty($params['ssn']) ? $params['ssn'] : null;
 
             $resident = new Resident();
             $resident->setFirstName($params['first_name'] ?? '');
@@ -177,6 +178,7 @@ class ResidentService extends BaseService implements IGridService
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
             $resident->setGender($gender);
+            $resident->setSsn($ssn);
             $resident->setBirthday(new \DateTime($params['birthday']));
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
@@ -257,6 +259,7 @@ class ResidentService extends BaseService implements IGridService
             }
 
             $gender = $params['gender'] ? (int)$params['gender'] : 0;
+            $ssn = !empty($params['ssn']) ? $params['ssn'] : null;
 
             $resident->setFirstName($params['first_name'] ?? '');
             $resident->setLastName($params['last_name'] ?? '');
@@ -264,6 +267,7 @@ class ResidentService extends BaseService implements IGridService
             $resident->setSpace($space);
             $resident->setSalutation($salutation);
             $resident->setGender($gender);
+            $resident->setSsn($ssn);
             $resident->setBirthday(new \DateTime($params['birthday']));
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 

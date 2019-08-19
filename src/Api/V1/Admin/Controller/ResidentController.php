@@ -311,6 +311,7 @@ class ResidentController extends BaseController
                 'salutation_id' => $request->get('salutation_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'ssn'        => $request->get('ssn'),
                 'photo'         => $request->get('photo'),
                 'phones'        => $request->get('phones'),
             ]
@@ -394,6 +395,7 @@ class ResidentController extends BaseController
                 'salutation_id' => $request->get('salutation_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
+                'ssn'        => $request->get('ssn'),
                 'photo'         => $request->get('photo'),
                 'phones'        => $request->get('phones'),
             ]

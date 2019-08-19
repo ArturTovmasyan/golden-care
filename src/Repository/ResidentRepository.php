@@ -974,6 +974,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     cl.title as careLevel,
                     r.birthday as birthday,
                     r.gender as gender,
+                    r.ssn as ssn,
                     sal.title as salutation'
             )
             ->innerJoin(

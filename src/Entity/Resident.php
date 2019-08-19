@@ -35,6 +35,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "values"     = "\App\Model\User::genderValues"
  *          },
  *          {
+ *              "id"         = "social_security_number",
+ *              "type"       = "string",
+ *              "field"      = "r.ssn"
+ *          },
+ *          {
  *              "id"         = "birthday",
  *              "type"       = "date",
  *              "field"      = "r.birthday"
@@ -236,6 +241,27 @@ class Resident
      * })
      */
     private $gender;
+
+    /**
+     * @var string $ssn
+     * @ORM\Column(name="social_security_number", type="string", length=11, nullable=true)
+     * @Assert\Regex(
+     *      pattern="/^[\dX]{3}-?[\dX]{2}-?[\dX]{4}$/",
+     *      message="Invalid SSN number",
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     *      }
+     * )
+     * @Assert\Length(
+     *      max = 11,
+     *      maxMessage = "SSN number cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     * })
+     */
+    private $ssn;
 
     /**
      * @ORM\OneToMany(targetEntity="ResidentPhone", mappedBy="resident")
@@ -485,6 +511,22 @@ class Resident
     public function setGender($gender): void
     {
         $this->gender = $gender;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSsn()
+    {
+        return $this->ssn;
+    }
+
+    /**
+     * @param mixed $ssn
+     */
+    public function setSsn($ssn): void
+    {
+        $this->ssn = $ssn;
     }
 
     /**
