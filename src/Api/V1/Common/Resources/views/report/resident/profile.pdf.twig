@@ -523,7 +523,15 @@
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% else %}0{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% else %}0{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</b></div>
-                                <div style="float: left; width: 16% !important;"><b style="font-size: 10px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 16% !important;">
+                                    <b style="font-size: 10px !important;">
+                                        {% if medication.dosage or medication.dosageUnit %}
+                                            {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationDiscont %}Yes{% else %}No{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</b></div>
                                 <div style="float: left; width: 36% !important;"><b style="font-size: 9px !important;">{% if medication.notes %}{{ medication.notes }}{% else %}N/A{% endif %}</b></div>
@@ -564,7 +572,15 @@
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% else %}0{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% else %}0{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</b></div>
-                                <div style="float: left; width: 16% !important;"><b style="font-size: 10px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 16% !important;">
+                                    <b style="font-size: 10px !important;">
+                                        {% if medication.dosage or medication.dosageUnit %}
+                                            {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationDiscont %}Yes{% else %}No{% endif %}</b></div>
                                 <div style="float: left; width: 4% !important;"><b style="font-size: 10px !important;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</b></div>
                                 <div style="float: left; width: 36% !important;"><b style="font-size: 9px !important;">{% if medication.notes %}{{ medication.notes }}{% else %}N/A{% endif %}</b></div>
@@ -676,9 +692,25 @@
                         <tr style="">
                             <td colspan="9">
                                 <div style="float: left; width: 40% !important;"><b style="font-size: 12px !important;">{% if medication.medication %}{{ medication.medication }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20% !important;">
+                                    <b style="font-size: 12px !important;">
+                                        {% if medication.dosage or medication.dosageUnit %}
+                                            {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                                 <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.prescriptionNumber %}{{ medication.prescriptionNumber }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.physicianFirstName and medication.physicianLastName %}Dr.&nbsp;{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20% !important;">
+                                    <b style="font-size: 12px !important;">
+                                        {% if medication.physicianFirstName or medication.physicianLastName %}
+                                            Dr.{% if medication.physicianFirstName %}&nbsp;{{ medication.physicianFirstName }}{% endif %}{% if medication.physicianLastName %}&nbsp;{{ medication.physicianLastName }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -705,9 +737,25 @@
                         <tr style="">
                             <td colspan="9">
                                 <div style="float: left; width: 40% !important;"><b style="font-size: 12px !important;">{% if medication.medication %}{{ medication.medication }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.dosage %}{{ medication.dosage }}&nbsp;{{ medication.dosageUnit }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20% !important;">
+                                    <b style="font-size: 12px !important;">
+                                        {% if medication.dosage or medication.dosageUnit %}
+                                            {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                                 <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.prescriptionNumber %}{{ medication.prescriptionNumber }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 20% !important;"><b style="font-size: 12px !important;">{% if medication.physicianFirstName and medication.physicianLastName %}Dr.&nbsp;{{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}{% else %}N/A{% endif %}</b></div>
+                                <div style="float: left; width: 20% !important;">
+                                    <b style="font-size: 12px !important;">
+                                        {% if medication.physicianFirstName or medication.physicianLastName %}
+                                            Dr.{% if medication.physicianFirstName %}&nbsp;{{ medication.physicianFirstName }}{% endif %}{% if medication.physicianLastName %}&nbsp;{{ medication.physicianLastName }}{% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </b>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

@@ -374,7 +374,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                     p.address_1 as address,
                     p.email as email,
                     p.websiteUrl as websiteUrl,
-                    csz.stateFull as state,
+                    csz.stateAbbr as state,
                     csz.zipMain as zip,
                     csz.city as city,
                     sal.title as salutation,

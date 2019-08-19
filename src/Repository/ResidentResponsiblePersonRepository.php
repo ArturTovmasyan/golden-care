@@ -245,7 +245,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                     rp.firstName as firstName,
                     rp.lastName as lastName,
                     rp.address_1 as address,
-                    csz.stateFull as state,
+                    csz.stateAbbr as state,
                     csz.zipMain as zip,
                     csz.city as city,
                     rp.id as rpId,
