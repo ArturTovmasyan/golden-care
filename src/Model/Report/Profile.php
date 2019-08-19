@@ -17,6 +17,11 @@ class Profile extends Base
     private $insuranceFiles = [];
 
     /**
+     * @var string
+     */
+    private $strategy;
+
+    /**
      * @var boolean
      */
     private $discontinued;
@@ -29,6 +34,22 @@ class Profile extends Base
         parent::__construct();
 
         $this->addOption('footer-spacing', 4);
+    }
+
+    /**
+     * @param $strategy
+     */
+    public function setStrategy($strategy): void
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategy()
+    {
+        return $this->strategy;
     }
 
     /**
@@ -189,6 +210,16 @@ class Profile extends Base
     public function getResponsiblePersonPhones(): ?array
     {
         return $this->responsiblePersonPhones;
+    }
+
+    /**
+     * @param $admissions
+     */
+    public function setAdmissions($admissions): void
+    {
+        foreach ($admissions as $admission) {
+            $this->residents[$admission['residentId']]['admissions'][] = $admission;
+        }
     }
 
     /**

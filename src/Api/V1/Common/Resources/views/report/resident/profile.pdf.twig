@@ -602,6 +602,47 @@
 
             <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
             <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Admissions</b></td>
+            </tr>
+            {% if resident['admissions'] is defined %}
+                {% set s = 0 %}
+                {% for admission in resident['admissions'] %}
+                    {% set s = s + 1 %}
+                    {% if s == 1  %}
+                        <tr style="">
+                            <td colspan="9" style="font-size: 13px !important;">
+                                <div style="float: left; width: 11% !important;">Date</div>
+                                <div style="float: left; width: 20% !important;">Admission&nbsp;type</div>
+                                <div style="float: left; width: 35% !important;">Value</div>
+                                <div style="float: left; width: 34% !important;">Note</div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr style="">
+                        <td colspan="9">
+                            <div style="float: left; width: 11% !important;"><b style="font-size: 11px !important;">{% if admission.admitted %}{{ admission.admitted|date('m/d/Y') }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 20% !important;"><b style="font-size: 11px !important;">{% if admission.admissionType %}{{ admissionType(admission.admissionType) }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 35% !important;">
+                                <b style="font-size: 11px !important;">
+                                    {% if admission.typeName is defined %}{{ data.strategy }}&nbsp;:&nbsp;{{ admission.typeName }}{% endif %}
+                                    {% if admission['bedNumber'] is defined %}
+                                        <br>
+                                        Room/Bed&nbsp;:&nbsp;{% if admission['roomNumber'] %}{{ admission['roomNumber'] }}&nbsp;{% endif %}{% if admission['bedNumber'] %}{{ admission['bedNumber'] }}{% else %}N/A{% endif %}
+                                    {% endif %}
+                                </b>
+                            </div>
+                            <div style="float: left; width: 34% !important;"><b style="font-size: 11px !important;">{% if admission.notes %}{{ admission.notes }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else  %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Admissions</td>
+                </tr>
+            {% endif %}
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
                 <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Events</b></td>
             </tr>
             {% if resident['events'] is defined %}

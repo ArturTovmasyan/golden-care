@@ -1617,4 +1617,138 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array $residentIds
+     * @param $type
+     * @return mixed
+     */
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds, $type)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id as residentId',
+                'ra.id as id',
+                'ra.admissionType as admissionType',
+                'ra.notes as notes',
+                'ra.start as admitted',
+                'ra.end as discharged'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        fr.number as roomNumber,
+                        fb.number as bedNumber,
+                        fb.id as bedId'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    );
+
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ab.number as bedNumber
+                        ab.id as bedId'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    );
+
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('ra.start', 'DESC')
+            ->groupBy('ra.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

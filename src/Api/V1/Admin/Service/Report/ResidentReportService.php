@@ -95,6 +95,8 @@ class ResidentReportService extends BaseService
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
         /** @var ResidentEventRepository $eventRepo */
         $eventRepo = $this->em->getRepository(ResidentEvent::class);
         /** @var ResidentRentRepository $rentRepo */
@@ -106,6 +108,7 @@ class ResidentReportService extends BaseService
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+        $admissions = $admissionRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentIds, $type);
         $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
         $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
 
@@ -156,6 +159,7 @@ class ResidentReportService extends BaseService
         }
 
         $report = new Profile();
+        $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($residentsById);
         $report->setInsurances($insuranceArray);
         $report->setInsuranceFiles($insuranceFiles);
@@ -166,6 +170,7 @@ class ResidentReportService extends BaseService
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
         $report->setPhysicianPhones($physicianPhones);
+        $report->setAdmissions($admissions);
         $report->setEvents($events);
         $report->setRents($rents);
         $report->setDiscontinued($discontinued);
