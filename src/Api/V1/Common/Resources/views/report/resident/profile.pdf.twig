@@ -218,7 +218,15 @@
                     </tr>
                     <tr style="border-left: solid 1px darkgray; border-right: solid 1px darkgray;">
                         <td colspan="9" style="border-left: none; border-top: none; border-bottom: none">
-                            <div style="float: left; width: 40%"><b style="font-size: 12px !important;">{% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName }}&nbsp;{{ physician.lastName }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 40%">
+                                <b style="font-size: 12px !important;">
+                                    {% if physician.firstName or physician.lastName %}
+                                        {% if physician.firstName %}{{ physician.firstName }}&nbsp;{% endif %}{% if physician.lastName %}{{ physician.lastName }}{% endif %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </b>
+                            </div>
                             <div style="float: left; width: 20%"><b style="font-size: 12px !important;">
                                     {% set c = 0 %}
                                     {% for physicianPhone in data.physicianPhones %}

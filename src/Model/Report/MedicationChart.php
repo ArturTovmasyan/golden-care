@@ -22,6 +22,11 @@ class MedicationChart extends Base
     /**
      * @var array
      */
+    private $residentPhysicians = [];
+
+    /**
+     * @var array
+     */
     private $physicianPhones = [];
 
     /**
@@ -83,6 +88,24 @@ class MedicationChart extends Base
     {
         foreach ($allergens as $allergen) {
             $this->allergens[$allergen['residentId']][] = $allergen;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getResidentPhysicians(): ?array
+    {
+        return $this->residentPhysicians;
+    }
+
+    /**
+     * @param $physicians
+     */
+    public function setResidentPhysicians($physicians): void
+    {
+        foreach ($physicians as $physician) {
+            $this->residentPhysicians[$physician['residentId']][] = $physician;
         }
     }
 

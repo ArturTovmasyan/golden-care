@@ -9,6 +9,7 @@ use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
+use App\Entity\ResidentPhysician;
 use App\Model\GroupType;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
@@ -27,6 +28,7 @@ use App\Repository\PhysicianPhoneRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentMedicationRepository;
+use App\Repository\ResidentPhysicianRepository;
 use App\Repository\ResidentRepository;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
@@ -262,9 +264,14 @@ class FormReportService extends BaseService
 
         $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
 
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+
         $physicianPhones = [];
-        if (!empty($medications)) {
-            $physicianIds = array_map(function($item){return $item['pId'];} , $medications);
+        if (!empty($physicians)) {
+            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
             $physicianIds = array_unique($physicianIds);
 
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
@@ -277,6 +284,7 @@ class FormReportService extends BaseService
         $report->setResidents($residents);
         $report->setMedications($medications);
         $report->setAllergens($allergens);
+        $report->setResidentPhysicians($physicians);
         $report->setPhysicianPhones($physicianPhones);
 
         return $report;

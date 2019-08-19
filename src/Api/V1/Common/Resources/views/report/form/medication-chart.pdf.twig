@@ -77,7 +77,7 @@
                             <td rowspan="6" style="height: 150px !important; border: solid 1px black;">
                                 <b>{{ medication.medication }}</b><br>
                                 <div style="width: 300px; font-size: 12px;">
-                                    {% if medication.dosage %}{{ medication.dosage }} {{ medication.dosageUnit }}{% endif %}<br>
+                                    {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}<br>
                                     {{ medication.notes }}
                                 </div>
                             </td>
@@ -182,12 +182,16 @@
                                 <td colspan="34" style="border: none; font-size: 14px !important;">
                                     <div style="float:left; width: 400px;">
                                         <p>
-                                            Physician: Dr. {{ medication.physicianFirstName ~ ' ' ~ medication.physicianLastName }}&nbsp;
-                                            {% for physicianPhone in data.physicianPhones %}
-                                                {% if physicianPhone.pId == medication.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
-                                                    {{ physicianPhone.number }}<br/>
-                                                {% endif %}
-                                            {% endfor %}
+                                            {% if data.residentPhysicians[resident.id] is defined %}
+                                                {% for physician in data.residentPhysicians[resident.id] %}
+                                                    Physician: Dr. {% if physician.firstName %}{{ physician.firstName }}&nbsp;{% endif %}{% if physician.lastName %}{{ physician.lastName }}{% endif %}&nbsp;
+                                                    {% for physicianPhone in data.physicianPhones %}
+                                                        {% if physicianPhone.pId == physician.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
+                                                            {{ physicianPhone.number }}<br/>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            {% endif %}
                                         </p>
                                         <div style="margin-top: 10px !important;">
                                             {% if data.allergens[resident.id] is defined %}
@@ -200,9 +204,13 @@
                                                 {% endfor %}
                                                 {% if i == 0 %}
                                                     <div style="float: left; margin-right: 15px;">
-                                                        No allergies
+                                                        Allergies:&nbsp;No allergies
                                                     </div>
                                                 {% endif %}
+                                            {% else %}
+                                                <div style="float: left; margin-right: 15px;">
+                                                    Allergies:&nbsp;No allergies
+                                                </div>
                                             {% endif %}
                                         </div>
                                     </div>
