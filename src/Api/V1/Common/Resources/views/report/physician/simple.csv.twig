@@ -1,5 +1,5 @@
 {{ data.strategy }},Physician Name, Residents Count
 {% set groupName = null %}
 {% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}
-    {{ datum.typeName }}, {% if datum.salutation == true %}{{ datum.salutation }}{% endif %} {{ datum.firstName }} {{ datum.lastName }}, {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}{% else %}0{% endif %},
+    {{ datum.typeName }}, {% if datum.salutation is defined and datum.salutation %}{{ datum.salutation }} {% endif %}{% if datum.firstName %}{{ datum.firstName }} {% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}, {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}{% else %}0{% endif %},
 {% endfor %}

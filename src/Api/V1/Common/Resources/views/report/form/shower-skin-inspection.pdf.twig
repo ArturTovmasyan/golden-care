@@ -19,7 +19,9 @@
             <td style="width: 450px; margin-right: 100px">
                 <p style="text-align: left; font-size: 18px;"><b style="font-size: 18px !important;">SHOWER SKIN INSPECTION</b></p>
                 <h2 style="margin-bottom: 15px;"><b>{{ resident.typeName }}</b></h2>
-                <p style="margin: 15px 0">RESIDENT NAME: <b>{{ resident.salutation }} {{ resident.firstName ~ ' ' ~ resident.lastName }}</b></p>
+                <p style="margin: 15px 0">RESIDENT NAME: <b>
+                    {% if resident.salutation is defined and resident.salutation %}{{ resident.salutation }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                </b></p>
                 {% if resident.roomNumber is defined and resident.bedNumber is defined %}<p style="margin: 15px 0">ROOM/BED#: <b>{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</b></p>{% endif %}
                 <p style="margin: 15px 0">CAREGIVER NAME: ___________________________________</p>
                 <p style="margin: 15px 0">DATE: ____/____/________</p>

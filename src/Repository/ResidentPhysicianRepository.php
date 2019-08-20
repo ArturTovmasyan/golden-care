@@ -399,7 +399,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 Join::WITH,
                 '(ra.resident = r AND ra.admissionType<'. AdmissionType::DISCHARGE .' AND ra.end IS NULL)'
             )
-            ->innerJoin(
+            ->leftJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,

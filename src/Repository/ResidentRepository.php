@@ -377,7 +377,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'ra.resident = r'
             )
-            ->innerJoin(
+            ->leftJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,
@@ -592,7 +592,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'ra.resident = r'
             )
-            ->innerJoin(
+            ->leftJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,
@@ -783,7 +783,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'ra.resident = r'
             )
-            ->innerJoin(
+            ->leftJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,
@@ -983,7 +983,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'ra.resident = r'
             )
-            ->innerJoin(
+            ->leftJoin(
                 Salutation::class,
                 'sal',
                 Join::WITH,

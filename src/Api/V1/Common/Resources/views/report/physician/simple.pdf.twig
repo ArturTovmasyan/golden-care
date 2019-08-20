@@ -81,7 +81,7 @@
                             <div style="line-height: 20px; width: 280px;">
                                 <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
                                     {% if datum.firstName and datum.lastName %}
-                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                        {% if datum.salutation is defined and datum.salutation %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
                                     {% endif %}
                                 </span>
                                 <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
@@ -101,7 +101,7 @@
                             <div style="line-height: 20px; width: 280px;">
                                 <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
                                     {% if datum.firstName and datum.lastName %}
-                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                        {% if datum.salutation is defined and datum.salutation %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
                                     {% endif %}
                                 </span>
                                 <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
@@ -121,7 +121,7 @@
                             <div style="line-height: 20px; width: 280px;">
                                 <span style="float: left; width: 260px; text-align: left; font-size: 13px !important; line-height: 20px;">
                                     {% if datum.firstName and datum.lastName %}
-                                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                                        {% if datum.salutation is defined and datum.salutation %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
                                     {% endif %}
                                 </span>
                                 <span style=" float:right; width: 20px; text-align: right; font-size: 13px !important; line-height: 20px;">
