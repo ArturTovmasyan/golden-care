@@ -42,8 +42,8 @@
 
         <tr>
             <td>
-                {% if datum.firstName and datum.lastName %}
-                    {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{{ datum.firstName ~ ' ' ~ datum.lastName }}
+                {% if datum.firstName or datum.lastName %}
+                    {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
                 {% endif %}
             </td>
             <td>
