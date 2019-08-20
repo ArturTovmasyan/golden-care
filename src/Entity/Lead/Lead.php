@@ -54,7 +54,7 @@ use App\Annotation\Grid as Grid;
  *          },
  *          {
  *              "id"         = "effective_date",
- *              "type"       = "datetime",
+ *              "type"       = "date",
  *              "field"      = "l.stateEffectiveDate"
  *          },
  *          {
