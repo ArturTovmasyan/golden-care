@@ -764,7 +764,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     ra.groupType as type,
                     (SELECT mra.start FROM App:ResidentAdmission mra
                     WHERE mra.resident=r
-                    AND mra.id = (SELECT MIN(raMin.id) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
+                    AND mra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
                     )
                     as startDate,
                     ra.admissionType as state,
@@ -963,7 +963,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     ra.groupType as type,
                     (SELECT mra.start FROM App:ResidentAdmission mra
                     WHERE mra.resident=r
-                    AND mra.id = (SELECT MIN(raMin.id) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
+                    AND mra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
                     )
                     as startDate,
                     ra.admissionType as state,
