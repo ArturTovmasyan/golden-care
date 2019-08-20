@@ -35,7 +35,7 @@ use JMS\Serializer\Annotation as Serializer;
  *              "values"     = "\App\Model\User::genderValues"
  *          },
  *          {
- *              "id"         = "social_security_number",
+ *              "id"         = "ssn",
  *              "type"       = "string",
  *              "field"      = "r.ssn"
  *          },
