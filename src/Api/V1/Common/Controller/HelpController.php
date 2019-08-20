@@ -46,8 +46,8 @@ class HelpController extends BaseController
         ]];
 
         $result = file_get_contents(
-//            'https://seniorcare-mc.local/backend/api/5766d45bdba1152105abfd9662e55140',
-            'https://console.seniorcaresw.com/backend/api/5766d45bdba1152105abfd9662e55140',
+//            'http://seniorcare-mc.local/backend/api/5766d45bdba1152105abfd9662e55140/help',
+            'https://console.seniorcaresw.com/backend/api/5766d45bdba1152105abfd9662e55140/help',
             false,
             stream_context_create($opts)
         );
