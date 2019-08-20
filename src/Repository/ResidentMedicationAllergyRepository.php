@@ -190,6 +190,63 @@ class ResidentMedicationAllergyRepository extends EntityRepository implements Re
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rma');
+
+        $qb
+            ->select('
+                    m.id as id,
+                    m.title as title,
+                    rma.notes as notes,
+                    r.id as residentId
+            ')
+            ->innerJoin(
+                Medication::class,
+                'm',
+                Join::WITH,
+                'm = rma.medication'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rma.resident = r'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rma.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('m.title')
+            ->groupBy('rma.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

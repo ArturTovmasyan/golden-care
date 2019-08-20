@@ -9,6 +9,7 @@ use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
 use App\Entity\ResidentMedication;
+use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
 use App\Model\GroupType;
 use App\Model\Report\BloodPressureCharting;
@@ -27,6 +28,7 @@ use App\Repository\FacilityRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAllergenRepository;
+use App\Repository\ResidentMedicationAllergyRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentPhysicianRepository;
 use App\Repository\ResidentRepository;
@@ -259,10 +261,10 @@ class FormReportService extends BaseService
 
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
-        /** @var ResidentAllergenRepository $allergenRepo */
-        $allergenRepo = $this->em->getRepository(ResidentAllergen::class);
+        /** @var ResidentMedicationAllergyRepository $allergenRepo */
+        $allergenRepo = $this->em->getRepository(ResidentMedicationAllergy::class);
 
-        $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
+        $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $residentIds);
 
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
