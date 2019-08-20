@@ -45,7 +45,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 JSON_ARRAY(
                     JSON_OBJECT('Facility', f.name),
                     JSON_OBJECT('Room (Bed)', CONCAT(fr.number, ' (', fb.number, ')')),
-                    JSON_OBJECT('Dinning Room', dr.title),
+                    JSON_OBJECT('Dining Room', dr.title),
                     
                     JSON_OBJECT('Apartment', a.name),
                     JSON_OBJECT('Room (Bed)', CONCAT(ar.number, ' (', ab.number, ')')),
