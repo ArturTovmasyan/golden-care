@@ -61,7 +61,7 @@ class PhysicianReportService extends BaseService
             foreach ($physicians as $physician) {
                 foreach ($residents as $resident) {
                     if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
-                        $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? \count($count[$physician['typeId']][$physician['pId']]) + \count($resident['id']) : \count($resident['id']);
+                        $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? $count[$physician['typeId']][$physician['pId']] + 1 : 1;
                     }
                 }
 
@@ -139,7 +139,7 @@ class PhysicianReportService extends BaseService
             foreach ($physicians as $physician) {
                 foreach ($residents as $resident) {
                     if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
-                        $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? \count($count[$physician['typeId']][$physician['pId']]) + \count($resident['id']) : \count($resident['id']);
+                        $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? $count[$physician['typeId']][$physician['pId']] + 1 : 1;
                     }
                 }
 
