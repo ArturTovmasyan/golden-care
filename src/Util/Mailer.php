@@ -2,6 +2,7 @@
 
 namespace App\Util;
 
+use App\Api\V1\Common\Service\ConfigService;
 use App\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -10,15 +11,19 @@ class Mailer
     /**
      * Default params
      */
-    const FROM = 'noreply@seniorcare.com';
+    const FROM = 'support@seniorcaresw.com';
     const TO = 'support@seniorcaresw.com';
-    const BCC = ['armenv@intermotionllc.com', 'haykg@intermotionllc.com'];
     const BODY = 'text/html';
 
     /**
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * @var ConfigService
+     */
+    private $configService;
 
     /**
      * @var array
@@ -49,9 +54,10 @@ class Mailer
      * Mailer constructor.
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, ConfigService $configService)
     {
         $this->container = $container;
+        $this->configService = $configService;
     }
 
     /**
@@ -331,9 +337,12 @@ class Mailer
      */
     public function sendHandledCustomerException($user, $customer, $subject, $body)
     {
+        $bcc = \preg_split('/[\s,]+/', $this->configService->get('EXCEPTION_RECIPIENTS'))
+            ?? ['haykg@intermotionllc.com', 'armenv@intermotionllc.com'];
+
         return $this
             ->setRecipient(self::TO)
-            ->setBcc(self::BCC)
+            ->setBcc($bcc)
             ->setTemplate('@api_email/handle-customer-exception.html.twig')
             ->setSubject($subject)
             ->setVars([
