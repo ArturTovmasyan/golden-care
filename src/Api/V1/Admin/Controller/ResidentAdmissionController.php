@@ -537,7 +537,6 @@ class ResidentAdmissionController extends BaseController
                 'care_group' => $request->get('care_group'),
                 'care_level_id' => $request->get('care_level_id'),
                 'notes' => $request->get('notes') ?? ''
-
             ]
         );
 

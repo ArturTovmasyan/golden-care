@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotValidException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\LastResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
@@ -492,30 +493,41 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $date = $params['date'];
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
-            }
-            $entity->setDate($date);
 
-            $now = new \DateTime('now');
-            $entity->setStart($now);
+                $now = new \DateTime('now');
+                $date->setTime($now->format('H'), $now->format('i'), $now->format('s'));
+
+                $entity->setDate($date);
+
+                if ($lastAction !== null && $date <= $lastAction->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
+
+                $entity->setStart($date);
+            } else {
+                $entity->setDate(null);
+                $entity->setStart(null);
+            }
 
             if ($lastAction !== null) {
-                $lastAction->setEnd($now);
+                $lastAction->setEnd($entity->getStart());
 
                 $this->em->persist($lastAction);
             }
 
+            $addMode = true;
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_add';
-                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_add';
-                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_add';
-                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
@@ -588,25 +600,81 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setNotes($params['notes']);
 
             $date = $params['date'];
-
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
+
+                $now = new \DateTime('now');
+                $date->setTime($now->format('H'), $now->format('i'), $now->format('s'));
+
+                $entity->setDate($date);
+
+                /** @var ResidentAdmission|null $previousAdmission */
+                $previousAdmission = null;
+                /** @var ResidentAdmission|null $nextAdmission */
+                $nextAdmission = null;
+
+                $admissions = $admissionRepo->getByOrderedStartDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+
+                if(\count($admissions) <= 1) {
+                    $previousAdmission = null;
+                    $nextAdmission = null;
+                } else {
+                    $length = \count($admissions);
+
+                    /**
+                     * @var  $key
+                     * @var ResidentAdmission $admission
+                     */
+                    foreach ($admissions as $key => $admission) {
+                        if ($admission->getId() === $entity->getId()) {
+                            if($key >= $length - 1) {
+                                $previousAdmission = $admissions[$key - 1];
+                                $nextAdmission = null;
+                            } else {
+                                $nextAdmission = $admissions[$key + 1];
+                                if($key === 0) {
+                                    $previousAdmission = null;
+                                } else {
+                                    $previousAdmission = $admissions[$key - 1];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($previousAdmission !== null && $date <= $previousAdmission->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
+
+                if ($nextAdmission !== null && $date >= $nextAdmission->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
+
+                $entity->setStart($date);
+
+                if ($previousAdmission !== null) {
+                    $previousAdmission->setEnd($entity->getStart());
+
+                    $this->em->persist($previousAdmission);
+                }
+            } else {
+                $entity->setDate(null);
+                $entity->setStart(null);
             }
 
-            $entity->setDate($date);
-
+            $addMode = false;
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_edit';
-                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_edit';
-                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_edit';
-                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction);
+                    $entity = $this->saveAsRegion($entity, $params, $admissionType, $lastAction, $addMode);
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
@@ -754,13 +822,14 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param array $params
      * @param int $admissionType
      * @param ResidentAdmission|null $lastAction
+     * @param $addMode
      * @return ResidentAdmission
      */
-    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
+    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setDiningRoom($lastAction->getDiningRoom() ?? null);
             $entity->setFacilityBed($lastAction->getFacilityBed() ?? null);
             $entity->setDnr($lastAction->isDnr() ?? null);
@@ -836,13 +905,14 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param array $params
      * @param int $admissionType
      * @param ResidentAdmission|null $lastAction
+     * @param $addMode
      * @return ResidentAdmission
      */
-    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
+    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
         }
 
@@ -868,13 +938,14 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param array $params
      * @param int $admissionType
      * @param ResidentAdmission|null $lastAction
+     * @param $addMode
      * @return ResidentAdmission
      */
-    private function saveAsRegion(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null)
+    private function saveAsRegion(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setRegion($lastAction->getRegion() ?? null);
             $entity->setCsz($lastAction->getCsz() ?? null);
             $entity->setAddress($lastAction->getAddress() ?? null);

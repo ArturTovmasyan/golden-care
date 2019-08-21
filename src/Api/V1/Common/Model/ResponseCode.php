@@ -131,6 +131,7 @@ class ResponseCode
     const DOCUMENT_NOT_FOUND_EXCEPTION                           = 732;
     const RESIDENT_DOCUMENT_NOT_FOUND_EXCEPTION                  = 733;
     const RESIDENT_ADMIT_ONLY_ONE_TIME_EXCEPTION                 = 734;
+    const INVALID_EFFECTIVE_DATE_EXCEPTION                       = 735;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -261,6 +262,7 @@ class ResponseCode
         self::DOCUMENT_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Document not found.'],
         self::RESIDENT_DOCUMENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Document not found.'],
         self::RESIDENT_ADMIT_ONLY_ONE_TIME_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You are allowed to admit a Resident only one time.'],
+        self::INVALID_EFFECTIVE_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Effective date.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

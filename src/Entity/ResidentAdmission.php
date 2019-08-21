@@ -537,9 +537,9 @@ class ResidentAdmission
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getStart(): \DateTime
+    public function getStart(): ?\DateTime
     {
         return $this->start;
     }
@@ -553,9 +553,9 @@ class ResidentAdmission
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getEnd(): \DateTime
+    public function getEnd(): ?\DateTime
     {
         return $this->end;
     }
