@@ -46,7 +46,7 @@
                 </th>
             </tr>
             <tr>
-                {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
+                {% if datum.number is defined %}<td><b>Room/Bed</b></td>{% endif %}
                 <td><b>Resident</b></td>
                 <td><b>Billing</b></td>
                 <td><b>Rent</b></td>
@@ -61,7 +61,7 @@
         {% endif %}
 
         <tr>
-            {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
+            {% if datum.number is defined and datum.number %}<td style="height: 40px; text-align: left;">{{ datum.number }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.fullName }}</td>
             <td style="height: 40px; text-align: left;">
                 {% if datum.responsiblePerson|length > 0 %}
