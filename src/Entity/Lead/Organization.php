@@ -53,6 +53,11 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "website_url",
  *              "type"       = "string",
  *              "field"      = "o.websiteUrl"
+ *          },
+ *          {
+ *              "id"         = "referrals",
+ *              "type"       = "number",
+ *              "field"      = "(SELECT COUNT(r.id) FROM App\Entity\Lead\Referral r WHERE r.organization=o.id)"
  *          }
  *     }
  * )

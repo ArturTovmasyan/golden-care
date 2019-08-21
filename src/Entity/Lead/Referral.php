@@ -23,6 +23,18 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "r.id"
  *          },
  *          {
+ *              "id"         = "lead_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "l.id"
+ *          },
+ *          {
+ *              "id"         = "organization_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "o.id"
+ *          },
+ *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, ''))",
@@ -36,12 +48,14 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "lead",
  *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))"
+ *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))",
+ *              "link"       = "/lead/lead/:lead_id"
  *          },
  *          {
  *              "id"         = "organization",
  *              "type"       = "string",
- *              "field"      = "o.title"
+ *              "field"      = "o.title",
+ *              "link"       = "/lead/referral/organization/:organization_id"
  *          },
  *          {
  *              "id"         = "notes",

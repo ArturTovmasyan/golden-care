@@ -26,6 +26,12 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "l.id"
  *          },
  *          {
+ *              "id"         = "referral_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
  *              "id"         = "date",
  *              "type"       = "date",
  *              "field"      = "l.createdAt"
@@ -60,7 +66,8 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "referral",
  *              "type"       = "string",
- *              "field"      = "CASE WHEN r.firstName IS NOT NULL THEN CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, '')) ELSE ro.title END"
+ *              "field"      = "CASE WHEN r.firstName IS NOT NULL THEN CONCAT(COALESCE(r.firstName, ''), ' ', COALESCE(r.lastName, '')) ELSE ro.title END",
+ *              "link"       = "/lead/referral/:referral_id"
  *          },
  *          {
  *              "id"         = "primary_facility",

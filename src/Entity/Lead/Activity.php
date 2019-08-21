@@ -25,25 +25,38 @@ use App\Annotation\Grid;
  *              "field"      = "a.id"
  *          },
  *          {
- *              "id"         = "title",
+ *              "id"         = "owner_type",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "a.ownerType"
+ *          },
+ *          {
+ *              "id"         = "lead_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "l.id"
+ *          },
+ *          {
+ *              "id"         = "organization_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "o.id"
+ *          },
+ *          {
+ *              "id"         = "referral_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "activity",
  *              "type"       = "string",
  *              "field"      = "a.title",
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "owner_type",
- *              "type"       = "enum",
- *              "field"      = "a.ownerType",
- *              "values"     = "\App\Model\Lead\ActivityOwnerType::getTypeDefaultNames"
- *          },
- *          {
- *              "id"         = "type",
- *              "type"       = "string",
- *              "field"      = "at.title"
- *          },
- *          {
- *              "id"         = "date",
- *              "type"       = "datetime",
+ *              "id"         = "date_entered",
+ *              "type"       = "date",
  *              "field"      = "a.date"
  *          },
  *          {
@@ -52,20 +65,25 @@ use App\Annotation\Grid;
  *              "field"      = "CONCAT(COALESCE(cb.firstName, ''), ' ', COALESCE(cb.lastName, ''))"
  *          },
  *          {
+ *              "id"         = "task_owner",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
+ *          },
+ *          {
+ *              "id"         = "due_date",
+ *              "type"       = "date",
+ *              "field"      = "a.dueDate"
+ *          },
+ *          {
  *              "id"         = "status",
  *              "type"       = "string",
  *              "field"      = "st.title"
  *          },
  *          {
- *              "id"         = "notes",
+ *              "id"         = "type_info",
  *              "type"       = "string",
- *              "field"      = "CONCAT(TRIM(SUBSTRING(a.notes, 1, 100)), CASE WHEN LENGTH(a.notes) > 100 THEN '…' ELSE '' END)"
- *          },
- *          {
- *              "id"         = "info",
- *              "sortable"   = false,
- *              "type"       = "json",
- *              "field"      = "info"
+ *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND r.firstName IS NOT NULL THEN CONCAT('Referral: ', r.firstName, ' ', r.lastName) WHEN a.ownerType=2 AND r.firstName IS NULL THEN CONCAT('Referral: ', ro.title) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.title) ELSE '' END)",
+ *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id>"
  *          }
  *     }
  * )

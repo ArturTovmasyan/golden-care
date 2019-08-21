@@ -38,21 +38,6 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
         $queryBuilder
             ->from(Activity::class, 'a')
 
-            ->addSelect("
-                JSON_ARRAY(
-                    JSON_OBJECT('Assign To', CONCAT(u.firstName, ' ', u.lastName)),
-                    JSON_OBJECT('Due Date', DATE_FORMAT(a.dueDate, '%m/%d/%Y')),
-                    JSON_OBJECT('Reminder Date', DATE_FORMAT(a.reminderDate, '%m/%d/%Y')),
-                    JSON_OBJECT('Facility', f.name),
-
-                    JSON_OBJECT('Lead', CONCAT(l.firstName, ' ', l.lastName)),
-
-                    JSON_OBJECT('Referral', CASE WHEN r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName) ELSE ro.title END),
-
-                    JSON_OBJECT('Organization', o.title)
-                ) as info
-            ")
-
             ->innerJoin(
                 ActivityType::class,
                 'at',
