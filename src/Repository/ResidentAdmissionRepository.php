@@ -312,7 +312,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         }
 
         return $qb
-            ->orderBy('ra.id', 'DESC')
+            ->orderBy('ra.start', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
