@@ -226,6 +226,7 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
             ->join('ab.room', 'r')
             ->join('r.apartment', 'type')
             ->where('r.id IN (:ids)')
+            ->andWhere('ab.enabled=1')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {

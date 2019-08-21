@@ -226,6 +226,7 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
             ->join('fb.room', 'r')
             ->join('r.facility', 'type')
             ->where('r.id IN (:ids)')
+            ->andWhere('fb.enabled=1')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {

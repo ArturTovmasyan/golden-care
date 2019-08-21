@@ -58,7 +58,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "bed_count",
  *              "type"       = "number",
- *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab WHERE ab.room=ar)"
+ *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab WHERE ab.room=ar AND ab.enabled=1)"
  *          },
  *          {
  *              "id"         = "notes",

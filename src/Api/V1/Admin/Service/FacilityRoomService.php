@@ -91,7 +91,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     if (\count($beds)) {
                         /** @var FacilityBed $bed */
                         foreach ($beds as $bed) {
-                            if (\in_array($bed->getId(), $occupancyBedIds, false)) {
+                            if (!$bed->isEnabled() || \in_array($bed->getId(), $occupancyBedIds, false)) {
                                 $room->removeBed($bed);
                             }
                         }
