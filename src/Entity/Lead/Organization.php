@@ -80,7 +80,9 @@ class Organization
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_contact_list",
+     *     "api_lead_contact_get",
      * })
      */
     private $id;
@@ -108,7 +110,9 @@ class Organization
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_contact_list",
+     *     "api_lead_contact_get"
      * })
      */
     private $title;
@@ -249,6 +253,12 @@ class Organization
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="organization", cascade={"remove", "persist"})
      */
     private $activities;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Contact", mappedBy="organization", cascade={"remove", "persist"})
+     */
+    private $contacts;
 
     /**
      * @return int
@@ -425,6 +435,22 @@ class Organization
     public function setActivities(ArrayCollection $activities): void
     {
         $this->activities = $activities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getContacts(): ArrayCollection
+    {
+        return $this->contacts;
+    }
+
+    /**
+     * @param ArrayCollection $contacts
+     */
+    public function setContacts(ArrayCollection $contacts): void
+    {
+        $this->contacts = $contacts;
     }
 
     /**

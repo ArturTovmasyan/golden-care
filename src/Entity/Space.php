@@ -121,6 +121,8 @@ class Space
      *     "api_lead_activity_status_get",
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
+     *     "api_lead_contact_list",
+     *     "api_lead_contact_get",
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
@@ -188,6 +190,8 @@ class Space
      *     "api_lead_activity_status_get",
      *     "api_lead_referrer_type_list",
      *     "api_lead_referrer_type_get",
+     *     "api_lead_contact_list",
+     *     "api_lead_contact_get",
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
@@ -372,6 +376,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\ReferrerType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadReferrerTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Contact", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadContacts;
 
     /**
      * @var ArrayCollection
@@ -883,6 +893,22 @@ class Space
     public function setLeadReferrerTypes(ArrayCollection $leadReferrerTypes): void
     {
         $this->leadReferrerTypes = $leadReferrerTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadContacts(): ArrayCollection
+    {
+        return $this->leadContacts;
+    }
+
+    /**
+     * @param ArrayCollection $leadContacts
+     */
+    public function setLeadContacts(ArrayCollection $leadContacts): void
+    {
+        $this->leadContacts = $leadContacts;
     }
 
     /**

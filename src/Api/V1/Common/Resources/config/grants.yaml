@@ -73,6 +73,12 @@ persistence:
         state_change_reason:
           title: 'State Change Reason'
           class: App\Entity\Lead\StateChangeReason
+        contact:
+          title: 'Contact'
+          class: App\Entity\Lead\Contact
+        contact_phone:
+          title: 'ContactPhone'
+          class: App\Entity\Lead\ContactPhone
 
     common:
       title: 'Common'
