@@ -28,12 +28,6 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "c.id"
  *          },
  *          {
- *              "id"         = "organization_id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "o.id"
- *          },
- *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(c.firstName, ''), ' ', COALESCE(c.lastName, ''))",
@@ -49,11 +43,6 @@ use App\Annotation\Grid as Grid;
  *              "id"         = "email",
  *              "type"       = "string",
  *              "field"      = "c.email",
- *          },
- *          {
- *              "id"         = "emails",
- *              "type"       = "array",
- *              "field"      = "c.emails",
  *          },
  *          {
  *              "id"         = "notes",
