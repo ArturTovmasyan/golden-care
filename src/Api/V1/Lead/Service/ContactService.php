@@ -31,17 +31,12 @@ class ContactService extends BaseService implements IGridService
         /** @var ContactRepository $repo */
         $repo = $this->em->getRepository(Contact::class);
 
-        $organizationId = null;
-        if (!empty($params) && !empty($params[0]['organization_id'])) {
-            $organizationId = $params[0]['organization_id'];
-        }
-
         $userId = null;
         if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {
             $userId = $params[0]['user_id'];
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Contact::class), $queryBuilder, $organizationId, $userId);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Contact::class), $queryBuilder, $userId);
     }
 
     /**
@@ -55,12 +50,6 @@ class ContactService extends BaseService implements IGridService
 
         /** @var ContactRepository $repo */
         $repo = $this->em->getRepository(Contact::class);
-
-        if (!empty($params) && !empty($params[0]['organization_id'])) {
-            $organizationId = $params[0]['organization_id'];
-
-            return $repo->getBy($currentSpace, $entityGrants, $organizationId);
-        }
 
         $userId = null;
         if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {

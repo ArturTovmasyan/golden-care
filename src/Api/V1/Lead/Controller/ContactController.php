@@ -54,7 +54,6 @@ class ContactController extends BaseController
             'api_lead_contact_grid',
             $contactService,
             [
-                'organization_id' => $request->get('organization_id'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId()
             ]
@@ -92,7 +91,6 @@ class ContactController extends BaseController
             'api_lead_contact_list',
             $contactService,
             [
-                'organization_id' => $request->get('organization_id'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId()
             ]
