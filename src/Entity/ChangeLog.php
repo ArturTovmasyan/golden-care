@@ -23,12 +23,6 @@ use App\Annotation\Grid;
  *              "field"      = "cl.id"
  *          },
  *          {
- *              "id"         = "action",
- *              "type"       = "enum",
- *              "field"      = "cl.type",
- *              "values"     = "\App\Model\ChangeLogType::getTypeDefaultNames"
- *          },
- *          {
  *              "id"         = "title",
  *              "type"       = "json",
  *              "field"      = "title"
@@ -44,14 +38,10 @@ use App\Annotation\Grid;
  *              "field"      = "updated_by"
  *          },
  *          {
- *              "id"         = "owner",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(o.firstName, ''), ' ', COALESCE(o.lastName, ''))"
- *          },
- *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
+ *              "id"         = "action",
+ *              "type"       = "enum",
+ *              "field"      = "cl.type",
+ *              "values"     = "\App\Model\ChangeLogType::getTypeDefaultNames"
  *          }
  *     }
  * )
