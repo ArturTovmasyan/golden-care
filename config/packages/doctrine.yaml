@@ -37,6 +37,7 @@ doctrine:
                 JSON_ARRAY:                   Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
                 JSON_EXTRACT:                 Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
                 JSON_CONTAINS:                Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
+                JSON_UNQUOTE:                 Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
                 CAST:                         Oro\ORM\Query\AST\Functions\Cast
                 DATE_FORMAT:                  Oro\ORM\Query\AST\Functions\String\DateFormat
                 GROUP_CONCAT:                 Oro\ORM\Query\AST\Functions\String\GroupConcat

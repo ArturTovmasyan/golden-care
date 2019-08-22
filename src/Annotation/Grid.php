@@ -216,7 +216,7 @@ class Grid
         }
 
         foreach ($fields as $field) {
-            if($field['type'] !== self::FIELD_TYPE_JSON && $field['field'] !== "") {
+            if($field['type'] !== self::FIELD_TYPE_JSON && $field['field'] !== "" && $field['field'] !== $field['id']) {
                 $this->queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
             }
         }
