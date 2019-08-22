@@ -4,6 +4,7 @@ namespace App\Api\V1\Lead\Controller;
 use App\Api\V1\Lead\Service\ContactService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Contact;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,13 +45,18 @@ class ContactController extends BaseController
      */
     public function gridAction(Request $request, ContactService $contactService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondGrid(
             $request,
             Contact::class,
             'api_lead_contact_grid',
             $contactService,
             [
-                'organization_id' => $request->get('organization_id')
+                'organization_id' => $request->get('organization_id'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }
@@ -77,13 +83,18 @@ class ContactController extends BaseController
      */
     public function listAction(Request $request, ContactService $contactService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondList(
             $request,
             Contact::class,
             'api_lead_contact_list',
             $contactService,
             [
-                'organization_id' => $request->get('organization_id')
+                'organization_id' => $request->get('organization_id'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }
@@ -124,6 +135,7 @@ class ContactController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'notes' => $request->get('notes'),
                 'phones' => $request->get('phones'),
+                'email' => $request->get('email'),
                 'emails' => $request->get('emails'),
                 'space_id' => $request->get('space_id')
             ]
@@ -157,6 +169,7 @@ class ContactController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'notes' => $request->get('notes'),
                 'phones' => $request->get('phones'),
+                'email' => $request->get('email'),
                 'emails' => $request->get('emails'),
                 'space_id' => $request->get('space_id')
             ]

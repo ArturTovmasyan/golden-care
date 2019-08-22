@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid as Grid;
@@ -14,6 +15,10 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_lead_contact")
  * @ORM\Entity(repositoryClass="App\Repository\Lead\ContactRepository")
+ * @UniqueEntity(fields="email", message="This Email address is already in use.", groups={
+ *     "api_lead_contact_add",
+ *     "api_lead_contact_edit"
+ * })
  * @Grid(
  *     api_lead_contact_grid={
  *          {
@@ -41,9 +46,24 @@ use App\Annotation\Grid as Grid;
  *              "link"       = "/lead/referral/organization/:organization_id"
  *          },
  *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "field"      = "c.email",
+ *          },
+ *          {
+ *              "id"         = "emails",
+ *              "type"       = "array",
+ *              "field"      = "c.emails",
+ *          },
+ *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "field"      = "CONCAT(TRIM(SUBSTRING(cr.notes, 1, 100)), CASE WHEN LENGTH(c.notes) > 100 THEN '…' ELSE '' END)"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(c.notes, 1, 100)), CASE WHEN LENGTH(c.notes) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "created_by",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
  *          },
  *          {
  *              "id"         = "space",
@@ -156,6 +176,24 @@ class Contact
      * })
      */
     private $phones;
+
+    /**
+     * @var string
+     * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\NotBlank(groups={
+     *     "api_lead_contact_add",
+     *     "api_lead_contact_edit"
+     * })
+     * @Assert\Email(groups={
+     *     "api_lead_contact_add",
+     *     "api_lead_contact_edit"
+     * })
+     * @Groups({
+     *      "api_lead_contact_list",
+     *      "api_lead_contact_get"
+     * })
+     */
+    private $email;
 
     /**
      * @var array $emails
@@ -285,6 +323,22 @@ class Contact
     public function setPhones($phones): void
     {
         $this->phones = $phones;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param null|string $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
     }
 
     /**

@@ -29,6 +29,8 @@ trait PhoneTrait
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
      *      "api_lead_referral_get",
+     *      "api_lead_contact_list",
+     *      "api_lead_contact_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -48,6 +50,8 @@ trait PhoneTrait
      *          "api_profile_edit",
      *          "api_lead_organization_add",
      *          "api_lead_organization_edit",
+     *          "api_lead_contact_add",
+     *          "api_lead_contact_edit",
      *          "api_lead_referral_organization_required_add",
      *          "api_lead_referral_organization_required_edit"
      *      }
@@ -68,6 +72,8 @@ trait PhoneTrait
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
      *      "api_lead_referral_get",
+     *      "api_lead_contact_list",
+     *      "api_lead_contact_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -88,6 +94,8 @@ trait PhoneTrait
      *         "api_profile_edit",
      *         "api_lead_organization_add",
      *         "api_lead_organization_edit",
+     *         "api_lead_contact_add",
+     *         "api_lead_contact_edit",
      *         "api_lead_referral_organization_required_add",
      *         "api_lead_referral_organization_required_edit"
      * })
@@ -107,6 +115,8 @@ trait PhoneTrait
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
      *      "api_lead_referral_get",
+     *      "api_lead_contact_list",
+     *      "api_lead_contact_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -125,6 +135,8 @@ trait PhoneTrait
      *      "api_profile_edit",
      *      "api_lead_organization_add",
      *      "api_lead_organization_edit",
+     *      "api_lead_contact_add",
+     *      "api_lead_contact_edit",
      *      "api_lead_referral_organization_required_add",
      *      "api_lead_referral_organization_required_edit"
      * })
@@ -144,6 +156,8 @@ trait PhoneTrait
      *      "api_lead_organization_get",
      *      "api_lead_referral_list",
      *      "api_lead_referral_get",
+     *      "api_lead_contact_list",
+     *      "api_lead_contact_get",
      *      "api_lead_lead_get"
      * })
      */

@@ -36,7 +36,12 @@ class ContactService extends BaseService implements IGridService
             $organizationId = $params[0]['organization_id'];
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Contact::class), $queryBuilder, $organizationId);
+        $userId = null;
+        if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {
+            $userId = $params[0]['user_id'];
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Contact::class), $queryBuilder, $organizationId, $userId);
     }
 
     /**
@@ -57,7 +62,11 @@ class ContactService extends BaseService implements IGridService
             return $repo->getBy($currentSpace, $entityGrants, $organizationId);
         }
 
-        return $repo->list($currentSpace, $entityGrants);
+        $userId = null;
+        if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {
+            $userId = $params[0]['user_id'];
+        }
+        return $repo->list($currentSpace, $entityGrants, $userId);
     }
 
     /**
@@ -113,9 +122,11 @@ class ContactService extends BaseService implements IGridService
             $emails = !empty($params['emails']) ? $params['emails'] : [];
             $notes = $params['notes'] ?? '';
 
+            $contact->setSpace($space);
             $contact->setFirstName($params['first_name']);
             $contact->setLastName($params['last_name']);
             $contact->setNotes($notes);
+            $contact->setEmail($params['email']);
             $contact->setEmails($emails);
             $contact->setPhones($this->savePhones($contact, $params['phones'] ?? []));
 
@@ -184,9 +195,11 @@ class ContactService extends BaseService implements IGridService
             $emails = !empty($params['emails']) ? $params['emails'] : [];
             $notes = $params['notes'] ?? '';
 
+            $entity->setSpace($space);
             $entity->setFirstName($params['first_name']);
             $entity->setLastName($params['last_name']);
             $entity->setNotes($notes);
+            $entity->setEmail($params['email']);
             $entity->setEmails($emails);
             $entity->setPhones($this->savePhones($entity, $params['phones'] ?? []));
 

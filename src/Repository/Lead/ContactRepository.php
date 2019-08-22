@@ -6,6 +6,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Contact;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -21,8 +22,9 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      * @param null $organizationId
+     * @param null $userId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $organizationId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $organizationId = null, $userId = null) : void
     {
         $queryBuilder
             ->from(Contact::class, 'c')
@@ -31,12 +33,24 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
                 'o',
                 Join::WITH,
                 'o = c.organization'
+            )
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = c.createdBy'
             );
 
         if ($organizationId !== null) {
             $queryBuilder
                 ->where('o.id = :organizationId')
                 ->setParameter('organizationId', $organizationId);
+        }
+
+        if ($userId !== null) {
+            $queryBuilder
+                ->andWhere('u.id = :userId')
+                ->setParameter('userId', $userId);
         }
 
         if ($space !== null) {
@@ -64,12 +78,25 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param null $userId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $userId = null)
     {
         $qb = $this
-            ->createQueryBuilder('c');
+            ->createQueryBuilder('c')
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = c.createdBy'
+            );
+
+        if ($userId !== null) {
+            $qb
+                ->andWhere('u.id = :userId')
+                ->setParameter('userId', $userId);
+        }
 
         if ($space !== null) {
             $qb
