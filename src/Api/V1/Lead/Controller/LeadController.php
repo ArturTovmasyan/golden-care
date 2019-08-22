@@ -5,6 +5,7 @@ use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Lead\Service\ReferralService;
 use App\Entity\Lead\Lead;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,13 +47,18 @@ class LeadController extends BaseController
      */
     public function gridAction(Request $request, LeadService $activityTypeService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondGrid(
             $request,
             Lead::class,
             'api_lead_lead_grid',
             $activityTypeService,
             [
-                'all' => $request->get('all')
+                'all' => $request->get('all'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }
@@ -79,6 +85,9 @@ class LeadController extends BaseController
      */
     public function listAction(Request $request, LeadService $activityTypeService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         return $this->respondList(
             $request,
             Lead::class,
@@ -86,7 +95,9 @@ class LeadController extends BaseController
             $activityTypeService,
             [
                 'all' => $request->get('all'),
-                'free' => $request->get('free')
+                'free' => $request->get('free'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId()
             ]
         );
     }

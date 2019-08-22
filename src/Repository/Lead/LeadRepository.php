@@ -29,8 +29,9 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      * @param $all
+     * @param null $userId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null) : void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -79,6 +80,12 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 ->setParameter('state', State::TYPE_OPEN);
         }
 
+        if ($userId !== null) {
+            $queryBuilder
+                ->andWhere('o.id = :userId')
+                ->setParameter('userId', $userId);
+        }
+
         if ($space !== null) {
             $queryBuilder
                 ->innerJoin(
@@ -107,9 +114,10 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param $all
      * @param $free
+     * @param null $userId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all, $free)
+    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -130,6 +138,12 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
             $qb
                 ->leftJoin('l.referral', 'r')
                 ->andWhere('r.id IS NULL');
+        }
+
+        if ($userId !== null) {
+            $qb
+                ->andWhere('o.id = :userId')
+                ->setParameter('userId', $userId);
         }
 
         if ($space !== null) {
