@@ -25,6 +25,9 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
     {
         $queryBuilder
             ->from(ChangeLog::class, 'cl')
+            ->addSelect("JSON_EXTRACT(cl.content, '$.owner') AS title")
+            ->addSelect("JSON_EXTRACT(cl.content, '$.created_at') AS log_time")
+            ->addSelect("JSON_EXTRACT(cl.content, '$.user_name') AS updated_by")
             ->innerJoin(
                 Space::class,
                 's',

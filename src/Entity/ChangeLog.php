@@ -23,15 +23,25 @@ use App\Annotation\Grid;
  *              "field"      = "cl.id"
  *          },
  *          {
- *              "id"         = "type",
+ *              "id"         = "action",
  *              "type"       = "enum",
  *              "field"      = "cl.type",
  *              "values"     = "\App\Model\ChangeLogType::getTypeDefaultNames"
  *          },
  *          {
- *              "id"         = "content",
- *              "type"       = "array",
- *              "field"      = "cl.content"
+ *              "id"         = "title",
+ *              "type"       = "json",
+ *              "field"      = "title"
+ *          },
+ *          {
+ *              "id"         = "log_time",
+ *              "type"       = "json",
+ *              "field"      = "log_time"
+ *          },
+ *          {
+ *              "id"         = "updated_by",
+ *              "type"       = "json",
+ *              "field"      = "updated_by"
  *          },
  *          {
  *              "id"         = "owner",

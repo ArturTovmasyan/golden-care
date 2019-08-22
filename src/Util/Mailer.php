@@ -338,7 +338,7 @@ class Mailer
     public function sendHandledCustomerException($user, $customer, $subject, $body)
     {
         $bcc = \preg_split('/[\s,]+/', $this->configService->get('EXCEPTION_RECIPIENTS'))
-            ?? ['haykg@intermotionllc.com', 'armenv@intermotionllc.com'];
+            ?? [];
 
         return $this
             ->setRecipient(self::TO)
