@@ -24,17 +24,17 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "title",
- *              "type"       = "json",
+ *              "type"       = "string",
  *              "field"      = "title"
  *          },
  *          {
  *              "id"         = "log_time",
- *              "type"       = "json",
+ *              "type"       = "date",
  *              "field"      = "log_time"
  *          },
  *          {
  *              "id"         = "updated_by",
- *              "type"       = "json",
+ *              "type"       = "string",
  *              "field"      = "updated_by"
  *          },
  *          {
