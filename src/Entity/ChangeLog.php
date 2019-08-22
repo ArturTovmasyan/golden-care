@@ -29,6 +29,11 @@ use App\Annotation\Grid;
  *              "values"     = "\App\Model\ChangeLogType::getTypeDefaultNames"
  *          },
  *          {
+ *              "id"         = "content",
+ *              "type"       = "array",
+ *              "field"      = "cl.content"
+ *          },
+ *          {
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(o.firstName, ''), ' ', COALESCE(o.lastName, ''))"
