@@ -210,16 +210,16 @@ class Contact
     /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
-     *     "api_admin_contact_add",
-     *     "api_admin_contact_edit"
+     *     "api_lead_contact_add",
+     *     "api_lead_contact_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="leadContacts")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_contact_list",
-     *     "api_admin_contact_get"
+     *     "api_lead_contact_list",
+     *     "api_lead_contact_get"
      * })
      */
     private $space;
