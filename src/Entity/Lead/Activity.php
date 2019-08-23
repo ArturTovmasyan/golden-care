@@ -82,7 +82,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "type_info",
  *              "type"       = "string",
- *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND r.firstName IS NOT NULL THEN CONCAT('Referral: ', r.firstName, ' ', r.lastName) WHEN a.ownerType=2 AND r.firstName IS NULL THEN CONCAT('Referral: ', ro.title) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.title) ELSE '' END)",
+ *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND rc.id IS NOT NULL THEN CONCAT('Referral: ', rc.firstName, ' ', rc.lastName) WHEN a.ownerType=2 AND rc.id IS NULL THEN CONCAT('Referral: ', ro.title) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.title) ELSE '' END)",
  *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id>"
  *          }
  *     }
