@@ -5,9 +5,9 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid as Grid;
@@ -15,10 +15,6 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_lead_contact")
  * @ORM\Entity(repositoryClass="App\Repository\Lead\ContactRepository")
- * @UniqueEntity(fields="email", message="This Email address is already in use.", groups={
- *     "api_lead_contact_add",
- *     "api_lead_contact_edit"
- * })
  * @Grid(
  *     api_lead_contact_grid={
  *          {
@@ -46,9 +42,9 @@ use App\Annotation\Grid as Grid;
  *              "link"       = "/lead/referral/organization/:organization_id"
  *          },
  *          {
- *              "id"         = "email",
+ *              "id"         = "emails",
  *              "type"       = "string",
- *              "field"      = "c.email",
+ *              "field"      = "c.emails",
  *          },
  *          {
  *              "id"         = "notes",
@@ -80,7 +76,13 @@ class Contact
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_contact_list",
-     *     "api_lead_contact_get"
+     *     "api_lead_contact_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -97,7 +99,13 @@ class Contact
      *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_contact_add",
-     *          "api_lead_contact_edit"
+     *          "api_lead_contact_edit",
+     *          "api_lead_referral_list",
+     *          "api_lead_referral_get",
+     *          "api_lead_activity_list",
+     *          "api_lead_activity_get",
+     *          "api_lead_lead_list",
+     *          "api_lead_lead_get"
      *      }
      * )
      * @Groups({
@@ -119,7 +127,13 @@ class Contact
      *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_contact_add",
-     *          "api_lead_contact_edit"
+     *          "api_lead_contact_edit",
+     *          "api_lead_referral_list",
+     *          "api_lead_referral_get",
+     *          "api_lead_activity_list",
+     *          "api_lead_activity_get",
+     *          "api_lead_lead_list",
+     *          "api_lead_lead_get"
      *      }
      * )
      * @Groups({
@@ -167,28 +181,13 @@ class Contact
      * })
      * @Groups({
      *      "api_lead_contact_list",
-     *      "api_lead_contact_get"
+     *      "api_lead_contact_get",
+     *      "api_lead_referral_list",
+     *      "api_lead_referral_get",
+     *      "api_lead_lead_get"
      * })
      */
     private $phones;
-
-    /**
-     * @var string
-     * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank(groups={
-     *     "api_lead_contact_add",
-     *     "api_lead_contact_edit"
-     * })
-     * @Assert\Email(groups={
-     *     "api_lead_contact_add",
-     *     "api_lead_contact_edit"
-     * })
-     * @Groups({
-     *      "api_lead_contact_list",
-     *      "api_lead_contact_get"
-     * })
-     */
-    private $email;
 
     /**
      * @var array $emails
@@ -202,7 +201,10 @@ class Contact
      * })
      * @Groups({
      *     "api_lead_contact_list",
-     *     "api_lead_contact_get"
+     *     "api_lead_contact_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $emails = [];
@@ -223,6 +225,12 @@ class Contact
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Referral", mappedBy="contact", cascade={"remove", "persist"})
+     */
+    private $referrals;
 
     /**
      * @return int
@@ -321,22 +329,6 @@ class Contact
     }
 
     /**
-     * @return null|string
-     */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param null|string $email
-     */
-    public function setEmail(?string $email): void
-    {
-        $this->email = $email;
-    }
-
-    /**
      * @return array
      */
     public function getEmails(): array
@@ -366,6 +358,22 @@ class Contact
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getReferrals(): ArrayCollection
+    {
+        return $this->referrals;
+    }
+
+    /**
+     * @param ArrayCollection $referrals
+     */
+    public function setReferrals(ArrayCollection $referrals): void
+    {
+        $this->referrals = $referrals;
     }
 
     /**

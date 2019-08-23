@@ -563,8 +563,8 @@ class ActivityService extends BaseService implements IGridService
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
                 if ($activity->getReferral() !== null) {
-                    if ($activity->getReferral()->getFirstName() === null) {
-                        $owner = $activity->getReferral()->getFirstName() . ' ' . $activity->getReferral()->getLastName();
+                    if ($activity->getReferral()->getContact() !== null) {
+                        $owner = $activity->getReferral()->getContact()->getFirstName() . ' ' . $activity->getReferral()->getContact()->getLastName();
                     } else {
                         $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
                     }
@@ -628,8 +628,8 @@ class ActivityService extends BaseService implements IGridService
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
                 if ($activity->getReferral() !== null) {
-                    if ($activity->getReferral()->getFirstName() === null) {
-                        $owner = $activity->getReferral()->getFirstName() . ' ' . $activity->getReferral()->getLastName();
+                    if ($activity->getReferral()->getContact() !== null) {
+                        $owner = $activity->getReferral()->getContact()->getFirstName() . ' ' . $activity->getReferral()->getContact()->getLastName();
                     } else {
                         $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
                     }

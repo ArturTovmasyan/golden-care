@@ -115,7 +115,6 @@ class ContactService extends BaseService implements IGridService
             $contact->setFirstName($params['first_name']);
             $contact->setLastName($params['last_name']);
             $contact->setNotes($notes);
-            $contact->setEmail($params['email']);
             $contact->setEmails($emails);
             $contact->setPhones($this->savePhones($contact, $params['phones'] ?? []));
 
@@ -188,7 +187,6 @@ class ContactService extends BaseService implements IGridService
             $entity->setFirstName($params['first_name']);
             $entity->setLastName($params['last_name']);
             $entity->setNotes($notes);
-            $entity->setEmail($params['email']);
             $entity->setEmails($emails);
             $entity->setPhones($this->savePhones($entity, $params['phones'] ?? []));
 

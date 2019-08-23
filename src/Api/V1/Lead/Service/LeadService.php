@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadRpPhoneOrEmailNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
@@ -20,6 +21,7 @@ use App\Entity\Facility;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
@@ -34,6 +36,7 @@ use App\Repository\CityStateZipRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
+use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
@@ -111,13 +114,12 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
-     * @param ReferralService $referralService
      * @param RouterInterface $router
      * @param array $params
      * @return int|null
      * @throws \Exception
      */
-    public function add(ReferralService $referralService, RouterInterface $router, array $params) : ?int
+    public function add(RouterInterface $router, array $params) : ?int
     {
         $insert_id = null;
         try {
@@ -296,7 +298,7 @@ class LeadService extends BaseService implements IGridService
             if (!empty($params['referral'])) {
                 $newReferral = $params['referral'];
 
-                $this->saveReferral($lead, $referralService, $newReferral);
+                $this->saveReferral($lead, $newReferral);
             }
 
             // Creating initial contact activity
@@ -322,12 +324,11 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param ReferralService $referralService
      * @param RouterInterface $router
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, ReferralService $referralService, RouterInterface $router, array $params) : void
+    public function edit($id, RouterInterface $router, array $params) : void
     {
         try {
 
@@ -509,7 +510,7 @@ class LeadService extends BaseService implements IGridService
             if (!empty($params['referral'])) {
                 $newReferral = $params['referral'];
 
-                $this->saveReferral($entity, $referralService, $newReferral);
+                $this->saveReferral($entity, $newReferral);
             }
 
             $uow = $this->em->getUnitOfWork();
@@ -538,10 +539,9 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
-     * @param ReferralService $referralService
      * @param array $newReferral
      */
-    private function saveReferral(Lead $lead, ReferralService $referralService, array $newReferral)
+    private function saveReferral(Lead $lead, array $newReferral)
     {
         $oldReferral = $lead->getReferral();
 
@@ -594,22 +594,24 @@ class LeadService extends BaseService implements IGridService
         }
 
         if ($type->isRepresentativeRequired()) {
-            $emails = !empty($newReferral['emails']) ? $newReferral['emails'] : [];
-            $notes = $newReferral['notes'] ?? '';
 
-            $referral->setFirstName($newReferral['first_name']);
-            $referral->setLastName($newReferral['last_name']);
-            $referral->setNotes($notes);
-            $referral->setEmails($emails);
-            $referral->setPhones($referralService->savePhones($referral, $newReferral['phones'] ?? []));
+            $contactId = $newReferral['contact_id'] ?? 0;
+
+            /** @var ContactRepository $contactRepo */
+            $contactRepo = $this->em->getRepository(Contact::class);
+
+            /** @var Contact $contact */
+            $contact = $contactRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
+
+            if ($contact === null) {
+                throw new ContactNotFoundException();
+            }
+
+            $referral->setContact($contact);
 
             $this->validate($referral, null, [$representativeRequiredValidationGroup]);
         } else {
-            $referral->setFirstName(null);
-            $referral->setLastName(null);
-            $referral->setNotes(null);
-            $referral->setEmails([]);
-            $referral->setPhones($referralService->savePhones($referral, []));
+            $referral->setContact(null);
         }
 
         $this->em->persist($referral);

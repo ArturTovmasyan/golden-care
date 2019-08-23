@@ -121,12 +121,9 @@ class ReferralController extends BaseController
             [
                 'lead_id' => $request->get('lead_id'),
                 'type_id' => $request->get('type_id'),
-                'first_name' => $request->get('first_name'),
-                'last_name' => $request->get('last_name'),
                 'organization_id' => $request->get('organization_id'),
-                'notes' => $request->get('notes'),
-                'phones' => $request->get('phones'),
-                'emails' => $request->get('emails')
+                'contact_id' => $request->get('contact_id'),
+                'notes' => $request->get('notes')
             ]
         );
 
@@ -155,12 +152,9 @@ class ReferralController extends BaseController
             [
                 'lead_id' => $request->get('lead_id'),
                 'type_id' => $request->get('type_id'),
-                'first_name' => $request->get('first_name'),
-                'last_name' => $request->get('last_name'),
                 'organization_id' => $request->get('organization_id'),
-                'notes' => $request->get('notes'),
-                'phones' => $request->get('phones'),
-                'emails' => $request->get('emails')
+                'contact_id' => $request->get('contact_id'),
+                'notes' => $request->get('notes')
             ]
         );
 

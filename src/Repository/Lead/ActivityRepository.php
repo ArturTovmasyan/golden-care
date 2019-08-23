@@ -8,6 +8,7 @@ use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
@@ -79,6 +80,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'ro',
                 Join::WITH,
                 'ro = r.organization'
+            )
+            ->leftJoin(
+                Contact::class,
+                'rc',
+                Join::WITH,
+                'rc = r.contact'
             )
             ->leftJoin(
                 Organization::class,
@@ -532,8 +539,8 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'f.name as facility',
                 "(CASE
                     WHEN l.id IS NOT NULL THEN CONCAT('Lead : ', l.firstName, ' ', l.lastName)
-                    WHEN r.id IS NOT NULL AND r.firstName IS NOT NULL THEN CONCAT('Referral : ', r.firstName, ' ', r.lastName)
-                    WHEN r.id IS NOT NULL AND r.firstName IS NULL THEN CONCAT('Referral : ', ro.title)
+                    WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT('Referral : ', rc.firstName, ' ', rc.lastName)
+                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN CONCAT('Referral : ', ro.title)
                     WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.title)
                 ELSE 'INVALID' END) as type",
                 "CONCAT(u.firstName, ' ', u.lastName) as assignToFullName",
@@ -584,6 +591,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'ro',
                 Join::WITH,
                 'ro = r.organization'
+            )
+            ->leftJoin(
+                Contact::class,
+                'rc',
+                Join::WITH,
+                'rc = r.contact'
             )
             ->leftJoin(
                 Organization::class,

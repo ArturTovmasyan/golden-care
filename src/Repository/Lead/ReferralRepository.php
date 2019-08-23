@@ -3,6 +3,7 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\ReferrerType;
@@ -45,6 +46,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 'o',
                 Join::WITH,
                 'o = r.organization'
+            )
+            ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = r.contact'
             );
 
         if ($organizationId !== null) {
@@ -321,7 +328,13 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 Join::WITH,
                 'o = r.organization'
             )
-            ->select("CASE WHEN r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName) ELSE o.title END as name");
+            ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = r.contact'
+            )
+            ->select("CASE WHEN c.id IS NOT NULL THEN CONCAT(c.firstName, ' ', c.lastName) ELSE o.title END as name");
 
         if ($mappedBy !== null && $id !== null) {
             $qb
@@ -383,12 +396,13 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
             ->createQueryBuilder('r')
             ->select(
                 'r.id as id',
-                'r.firstName as firstName',
-                'r.lastName as lastName',
+                'c.id as cId',
+                'c.firstName as firstName',
+                'c.lastName as lastName',
                 'rt.title as typeTitle',
                 'o.title as orgTitle',
                 "CONCAT(l.firstName, ' ', l.lastName) AS leadName",
-                'r.emails as emails',
+                'c.emails as emails',
                 'r.notes as notes'
             )
             ->innerJoin(
@@ -408,6 +422,12 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 'o',
                 Join::WITH,
                 'o = r.organization'
+            )
+            ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = r.contact'
             )
             ->where('r.createdAt >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('r.createdAt < :endDate')->setParameter('endDate', $endDate);

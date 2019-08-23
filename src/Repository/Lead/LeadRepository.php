@@ -339,8 +339,8 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'scr.title as stateChangeReason',
                 "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
                 "(CASE
-                    WHEN r.id IS NOT NULL AND r.firstName IS NOT NULL THEN CONCAT(r.firstName, ' ', r.lastName)
-                    WHEN r.id IS NOT NULL AND r.firstName IS NULL THEN ro.title
+                    WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT(rc.firstName, ' ', rc.lastName)
+                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN ro.title
                     ELSE 'N/A' END) as referralFullName",
                 'f.name as primaryFacility'
             )
@@ -376,6 +376,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
             )
             ->leftJoin('l.referral', 'r')
             ->leftJoin('r.organization', 'ro')
+            ->leftJoin('r.contact', 'rc')
             ->leftJoin(
                 Facility::class,
                 'f',

@@ -2,21 +2,21 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadAlreadyJoinedInReferralException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
-use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
-use App\Entity\Lead\ReferralPhone;
 use App\Entity\Lead\ReferrerType;
+use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
-use App\Repository\Lead\ReferralPhoneRepository;
 use App\Repository\Lead\ReferralRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -148,22 +148,24 @@ class ReferralService extends BaseService implements IGridService
             }
 
             if ($type->isRepresentativeRequired()) {
-                $emails = !empty($params['emails']) ? $params['emails'] : [];
-                $notes = $params['notes'] ?? '';
 
-                $referral->setFirstName($params['first_name']);
-                $referral->setLastName($params['last_name']);
-                $referral->setNotes($notes);
-                $referral->setEmails($emails);
-                $referral->setPhones($this->savePhones($referral, $params['phones'] ?? []));
+                $contactId = $params['contact_id'] ?? 0;
+
+                /** @var ContactRepository $contactRepo */
+                $contactRepo = $this->em->getRepository(Contact::class);
+
+                /** @var Contact $contact */
+                $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
+
+                if ($contact === null) {
+                    throw new ContactNotFoundException();
+                }
+
+                $referral->setContact($contact);
 
                 $this->validate($referral, null, ['api_lead_referral_representative_required_add']);
             } else {
-                $referral->setFirstName(null);
-                $referral->setLastName(null);
-                $referral->setNotes(null);
-                $referral->setEmails([]);
-                $referral->setPhones($this->savePhones($referral, []));
+                $referral->setContact(null);
             }
 
             $this->em->persist($referral);
@@ -257,24 +259,25 @@ class ReferralService extends BaseService implements IGridService
             }
 
             if ($type->isRepresentativeRequired()) {
-                $emails = !empty($params['emails']) ? $params['emails'] : [];
-                $notes = $params['notes'] ?? '';
 
-                $entity->setFirstName($params['first_name']);
-                $entity->setLastName($params['last_name']);
-                $entity->setNotes($notes);
-                $entity->setEmails($emails);
-                $entity->setPhones($this->savePhones($entity, $params['phones'] ?? []));
+                $contactId = $params['contact_id'] ?? 0;
+
+                /** @var ContactRepository $contactRepo */
+                $contactRepo = $this->em->getRepository(Contact::class);
+
+                /** @var Contact $contact */
+                $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
+
+                if ($contact === null) {
+                    throw new ContactNotFoundException();
+                }
+
+                $entity->setContact($contact);
 
                 $this->validate($entity, null, ['api_lead_referral_representative_required_edit']);
             } else {
-                $entity->setFirstName(null);
-                $entity->setLastName(null);
-                $entity->setNotes(null);
-                $entity->setEmails([]);
-                $entity->setPhones($this->savePhones($entity, []));
+                $entity->setContact(null);
             }
-
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -284,55 +287,6 @@ class ReferralService extends BaseService implements IGridService
 
             throw $e;
         }
-    }
-
-    /**
-     * @param Referral $referral
-     * @param array $phones
-     * @return array
-     */
-    public function savePhones(Referral $referral, array $phones = []) : ?array
-    {
-        if($referral->getId() !== null) {
-
-            /** @var ReferralPhoneRepository $referralPhoneRepo */
-            $referralPhoneRepo = $this->em->getRepository(ReferralPhone::class);
-
-            $oldPhones = $referralPhoneRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferralPhone::class), $referral);
-
-            foreach ($oldPhones as $phone) {
-                $this->em->remove($phone);
-            }
-        }
-
-        $hasPrimary = false;
-
-        $referralPhones = [];
-
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-
-            $referralPhone = new ReferralPhone();
-            $referralPhone->setReferral($referral);
-            $referralPhone->setCompatibility($phone['compatibility'] ?? null);
-            $referralPhone->setType($phone['type']);
-            $referralPhone->setNumber($phone['number']);
-            $referralPhone->setPrimary($primary);
-
-            if ($referralPhone->isPrimary()) {
-                if ($hasPrimary) {
-                    throw new PhoneSinglePrimaryException();
-                }
-
-                $hasPrimary = true;
-            }
-
-            $this->em->persist($referralPhone);
-
-            $referralPhones[] = $referralPhone;
-        }
-
-        return $referralPhones;
     }
 
     /**

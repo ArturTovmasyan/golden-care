@@ -4,17 +4,17 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Lead\Activity;
+use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Referral;
-use App\Entity\Lead\ReferralPhone;
 use App\Model\Lead\State;
 use App\Model\Phone;
 use App\Model\Report\Lead\ActivityList;
 use App\Model\Report\Lead\LeadList;
 use App\Model\Report\Lead\ReferralList;
 use App\Repository\Lead\ActivityRepository;
+use App\Repository\Lead\ContactPhoneRepository;
 use App\Repository\Lead\LeadRepository;
-use App\Repository\Lead\ReferralPhoneRepository;
 use App\Repository\Lead\ReferralRepository;
 
 class LeadReportService extends BaseService
@@ -137,19 +137,24 @@ class LeadReportService extends BaseService
 
         $finalReferrals = [];
         if (!empty($referrals)) {
-            $referralIds = array_map(function($item){return $item['id'];} , $referrals);
-            $referralIds = array_unique($referralIds);
+            $contactIds = [];
+            foreach ($referrals as $referral) {
+                if ($referral['cId'] !== null) {
+                    $contactIds[] =  $referral['cId'];
+                }
+            }
+            $contactIds = array_unique($contactIds);
 
-            /** @var ReferralPhoneRepository $referralPhoneRepo */
-            $referralPhoneRepo = $this->em->getRepository(ReferralPhone::class);
+            /** @var ContactPhoneRepository $contactPhoneRepo */
+            $contactPhoneRepo = $this->em->getRepository(ContactPhone::class);
 
-            $referralPhones = $referralPhoneRepo->getByReferralIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferralPhone::class), $referralIds);
+            $contactPhones = $contactPhoneRepo->getByContactIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContactPhone::class), $contactIds);
 
             foreach ($referrals as $referral) {
-                if (!empty($referralPhones)) {
+                if (!empty($contactPhones)) {
                     $finalPhones = [];
-                    foreach ($referralPhones as $phone) {
-                        if ($phone['rId'] === $referral['id']) {
+                    foreach ($contactPhones as $phone) {
+                        if ($phone['cId'] === $referral['cId']) {
                             $finalPhones[] = $phone['primary'] ? '(P)' . Phone::$typeNames[$phone['type']] . ' : ' .  $phone['number'] : Phone::$typeNames[$phone['type']] . ' : ' .  $phone['number'];
                         }
                     }

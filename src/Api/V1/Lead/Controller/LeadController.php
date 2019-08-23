@@ -3,7 +3,6 @@ namespace App\Api\V1\Lead\Controller;
 
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Api\V1\Lead\Service\ReferralService;
 use App\Entity\Lead\Lead;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,15 +125,13 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param LeadService $activityTypeService
-     * @param ReferralService $referralService
      * @param RouterInterface $router
      * @return JsonResponse
      * @throws \Exception
      */
-    public function addAction(Request $request, LeadService $activityTypeService, ReferralService $referralService, RouterInterface $router)
+    public function addAction(Request $request, LeadService $activityTypeService, RouterInterface $router)
     {
         $id = $activityTypeService->add(
-            $referralService,
             $router,
             [
                 'first_name' => $request->get('first_name'),
@@ -174,16 +171,14 @@ class LeadController extends BaseController
      * @param Request $request
      * @param $id
      * @param LeadService $activityTypeService
-     * @param ReferralService $referralService
      * @param RouterInterface $router
      * @return JsonResponse
      * @throws \Exception
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService, ReferralService $referralService, RouterInterface $router)
+    public function editAction(Request $request, $id, LeadService $activityTypeService, RouterInterface $router)
     {
         $activityTypeService->edit(
             $id,
-            $referralService,
             $router,
             [
                 'first_name' => $request->get('first_name'),

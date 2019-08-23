@@ -133,7 +133,6 @@ class ContactController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'notes' => $request->get('notes'),
                 'phones' => $request->get('phones'),
-                'email' => $request->get('email'),
                 'emails' => $request->get('emails'),
                 'space_id' => $request->get('space_id')
             ]
@@ -167,7 +166,6 @@ class ContactController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'notes' => $request->get('notes'),
                 'phones' => $request->get('phones'),
-                'email' => $request->get('email'),
                 'emails' => $request->get('emails'),
                 'space_id' => $request->get('space_id')
             ]

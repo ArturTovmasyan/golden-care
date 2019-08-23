@@ -1,11 +1,20 @@
-{#{% extends '@notification/email.html.twig' %}#}
 {% extends "@api_email/base.html.twig" %}
-{% block title %}{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.name }}{% endif %}{% endblock %}
+{% block title %}{% if activity.title %}{{ activity.title }}{% else %}{{ activity.type.title }}{% endif %}{% endblock %}
 {% block subTitle %} |
 
-    {% if activity.getOwnerTypeName == 'lead' %}{{ activity.lead.firstName ~ ' ' ~ activity.lead.lastName }}{% endif %}
-    {% if activity.getOwnerTypeName == 'copo' %}{{ activity.copo.name }}{% endif %}
-    {% if activity.getOwnerTypeName == 'referrer' %}{{ activity.referrer.firstName ~ ' ' ~ activity.referrer.lastName }}{% endif %}
+    {% if activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_LEAD') %}
+        {{ activity.lead.firstName ~ ' ' ~ activity.lead.lastName }}
+    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_REFERRAL') %}
+        {% if activity.referral.contact is defined %}
+            {{ activity.referral.contact.firstName ~ ' ' ~ activity.referral.contact.lastName }}
+        {% else %}
+            {% if activity.referral.organization is defined %}
+                {{ activity.referral.organization.title }}
+            {% endif %}
+        {% endif %}
+    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_ORGANIZATION') %}
+        {{ activity.organization.title }}
+    {% endif %}
 {% endblock %}
     {% block content %}
         <table style="border-collapse:collapse;border-spacing:0" width="100%">
@@ -16,10 +25,12 @@
                     {% if activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_LEAD') %}
                         {{ activity.lead.firstName ~ ' ' ~ activity.lead.lastName }}
                     {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_REFERRAL') %}
-                        {% if activity.referral.firstName %}
-                            {{ activity.referral.firstName ~ ' ' ~ activity.referral.lastName }}
+                        {% if activity.referral.contact is defined %}
+                            {{ activity.referral.contact.firstName ~ ' ' ~ activity.referral.contact.lastName }}
                         {% else %}
-                            {{ activity.referral.organization.title }}
+                            {% if activity.referral.organization is defined %}
+                                {{ activity.referral.organization.title }}
+                            {% endif %}
                         {% endif %}
                     {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_ORGANIZATION') %}
                         {{ activity.organization.title }}
