@@ -24,6 +24,7 @@ class Base
     {
         $this->options = [
             'orientation'      => self::ORIENTATION_PORTRAIT,
+            'page-size'        => 'Letter',
             'header-left'      => '',
             'header-right'     => '',
             'footer-left'      => 'SeniorCare Reports',
