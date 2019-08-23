@@ -34,7 +34,7 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "o.id"
  *          },
  *          {
- *              "id"         = "full_name",
+ *              "id"         = "contact",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(c.firstName, ''), ' ', COALESCE(c.lastName, ''))",
  *              "link"       = "/lead/referral/:id"
