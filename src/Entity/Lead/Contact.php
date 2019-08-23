@@ -99,18 +99,18 @@ class Contact
      *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_contact_add",
-     *          "api_lead_contact_edit",
-     *          "api_lead_referral_list",
-     *          "api_lead_referral_get",
-     *          "api_lead_activity_list",
-     *          "api_lead_activity_get",
-     *          "api_lead_lead_list",
-     *          "api_lead_lead_get"
+     *          "api_lead_contact_edit"
      *      }
      * )
      * @Groups({
      *     "api_lead_contact_list",
-     *     "api_lead_contact_get"
+     *     "api_lead_contact_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $firstName;
@@ -127,18 +127,18 @@ class Contact
      *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_contact_add",
-     *          "api_lead_contact_edit",
-     *          "api_lead_referral_list",
-     *          "api_lead_referral_get",
-     *          "api_lead_activity_list",
-     *          "api_lead_activity_get",
-     *          "api_lead_lead_list",
-     *          "api_lead_lead_get"
+     *          "api_lead_contact_edit"
      *      }
      * )
      * @Groups({
      *     "api_lead_contact_list",
-     *     "api_lead_contact_get"
+     *     "api_lead_contact_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $lastName;
