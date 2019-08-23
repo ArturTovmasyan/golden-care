@@ -49,7 +49,7 @@ use App\Annotation\Grid as Grid;
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
- *              "field"      = "CONCAT(TRIM(SUBSTRING(c.notes, 1, 100)), CASE WHEN LENGTH(c.notes) > 100 THEN '…' ELSE '' END)"
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(r.notes, 1, 100)), CASE WHEN LENGTH(r.notes) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
  *              "id"         = "created_by",
