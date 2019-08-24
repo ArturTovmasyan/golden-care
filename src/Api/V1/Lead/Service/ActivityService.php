@@ -581,7 +581,7 @@ class ActivityService extends BaseService implements IGridService
                 throw new IncorrectOwnerTypeException();
         }
 
-        $userName = $activity->getUpdatedBy() ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
+        $userName = $activity->getUpdatedBy() !== null ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
         $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
         $date = new \DateTime('now');
@@ -646,7 +646,7 @@ class ActivityService extends BaseService implements IGridService
                 throw new IncorrectOwnerTypeException();
         }
 
-        $userName = $activity->getUpdatedBy() ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
+        $userName = $activity->getUpdatedBy() !== null ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
         $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
 

@@ -28,9 +28,9 @@ trait UserAwareTrait
      ** ======================================================== **/
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getCreatedBy() : User
+    public function getCreatedBy() : ?User
     {
         return $this->createdBy;
     }
@@ -44,9 +44,9 @@ trait UserAwareTrait
     }
 
     /**
-     * @return User
+     * @return User|null
      */
-    public function getUpdatedBy() : User
+    public function getUpdatedBy() : ?User
     {
         return $this->updatedBy;
     }
