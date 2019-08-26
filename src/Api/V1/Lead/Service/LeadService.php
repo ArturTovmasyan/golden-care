@@ -595,6 +595,7 @@ class LeadService extends BaseService implements IGridService
 
         if ($type->isRepresentativeRequired()) {
 
+            $notes = $newReferral['notes'] ?? '';
             $contactId = $newReferral['contact_id'] ?? 0;
 
             /** @var ContactRepository $contactRepo */
@@ -608,10 +609,12 @@ class LeadService extends BaseService implements IGridService
             }
 
             $referral->setContact($contact);
+            $referral->setNotes($notes);
 
             $this->validate($referral, null, [$representativeRequiredValidationGroup]);
         } else {
             $referral->setContact(null);
+            $referral->setNotes('');
         }
 
         $this->em->persist($referral);
