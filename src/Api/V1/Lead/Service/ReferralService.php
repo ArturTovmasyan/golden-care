@@ -149,6 +149,7 @@ class ReferralService extends BaseService implements IGridService
 
             if ($type->isRepresentativeRequired()) {
 
+                $notes = $params['notes'] ?? '';
                 $contactId = $params['contact_id'] ?? 0;
 
                 /** @var ContactRepository $contactRepo */
@@ -162,10 +163,12 @@ class ReferralService extends BaseService implements IGridService
                 }
 
                 $referral->setContact($contact);
+                $referral->setNotes($notes);
 
                 $this->validate($referral, null, ['api_lead_referral_representative_required_add']);
             } else {
                 $referral->setContact(null);
+                $referral->setNotes('');
             }
 
             $this->em->persist($referral);
@@ -260,6 +263,7 @@ class ReferralService extends BaseService implements IGridService
 
             if ($type->isRepresentativeRequired()) {
 
+                $notes = $params['notes'] ?? '';
                 $contactId = $params['contact_id'] ?? 0;
 
                 /** @var ContactRepository $contactRepo */
@@ -273,10 +277,12 @@ class ReferralService extends BaseService implements IGridService
                 }
 
                 $entity->setContact($contact);
+                $entity->setNotes($notes);
 
                 $this->validate($entity, null, ['api_lead_referral_representative_required_edit']);
             } else {
                 $entity->setContact(null);
+                $entity->setNotes('');
             }
 
             $this->em->persist($entity);
