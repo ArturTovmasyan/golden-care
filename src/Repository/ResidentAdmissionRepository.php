@@ -1292,6 +1292,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.firstName as firstName',
                 'r.lastName as lastName',
                 'ra.id as actionId',
+                'ra.admissionType as admissionType',
+                'ra.notes as notes',
                 'ra.start as admitted',
                 'ra.end as discharged'
             );
@@ -1490,6 +1492,99 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         JOIN ara.resident ar 
                         WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
             );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @param array|null $notGrantResidentIds
+     * @return mixed
+     */
+    public function getResidentMoveByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
+    {
+        $qb = $this
+            ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
+            ->andWhere('ra.admissionType ='. AdmissionType::ADMIT.' OR ra.admissionType='. AdmissionType::DISCHARGE)
+            ->andWhere('r.id IN (SELECT ar.id 
+                        FROM App:ResidentAdmission ara 
+                        JOIN ara.resident ar 
+                        WHERE ara.admissionType='. AdmissionType::ADMIT .' OR ara.admissionType='. AdmissionType::DISCHARGE .')'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param ImtDateTimeInterval|null $reportInterval
+     * @param null $typeId
+     * @param array|null $notGrantResidentIds
+     * @return mixed
+     */
+    public function getResidentMoveIntervalByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
+    {
+        $qb = $this
+            ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
+            ->andWhere('ra.admissionType !='. AdmissionType::DISCHARGE);
 
         if ($space !== null) {
             $qb

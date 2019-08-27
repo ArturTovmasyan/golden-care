@@ -91,6 +91,16 @@ resident:
           select_all: true
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+    move-monthly:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getResidentMoveByMonthReport
+      title: 'Move-in/Move-Out'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        date: "m/Y"
+        group:
+          select_all: true
 form:
   title: 'Forms Reports'
   show_in_resident_list: true

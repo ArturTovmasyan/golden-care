@@ -127,4 +127,35 @@ class RentPeriodFactory
             'days' => $days,
         );
     }
+
+    /**
+     * @param ImtDateTimeInterval $rentInterval
+     * @param ImtDateTimeInterval $subInterval
+     * @return array
+     */
+    public function calculateForMoveReportInterval(ImtDateTimeInterval $rentInterval, ImtDateTimeInterval $subInterval): array
+    {
+        $dateTimeStart = $subIntervalStart = $subInterval->getStart();
+        $dateTimeEnd = $subIntervalEnd = $subInterval->getEnd();
+        $rentIntervalStart = $rentInterval->getStart();
+        $rentIntervalEnd = $rentInterval->getEnd();
+
+        if ($subIntervalStart < $rentIntervalStart) {
+            $dateTimeStart = $rentIntervalStart;
+        }
+
+        if ($rentIntervalEnd !== null && $subIntervalEnd > $rentIntervalEnd) {
+            $dateTimeEnd = $rentIntervalEnd;
+        }
+
+        $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
+            $dateTimeStart,
+            $dateTimeEnd
+        );
+        $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days + 1 : 0;
+
+        return array(
+            'days' => $days,
+        );
+    }
 }

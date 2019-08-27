@@ -3,6 +3,8 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
+use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Diet;
 use App\Entity\ResidentHealthInsurance;
 use App\Entity\PhysicianPhone;
@@ -18,11 +20,13 @@ use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePersonPhone;
 use App\Entity\ResponsiblePersonRole;
+use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\FaceSheet;
 use App\Model\Report\Profile;
 use App\Model\Report\ResidentDetailedRoster;
+use App\Model\Report\ResidentMoveByMonth;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
@@ -1028,6 +1032,98 @@ class ResidentReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStartDate($dateStartFormatted);
         $report->setEndDate($dateEndFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @return ResidentMoveByMonth
+     */
+    public function getResidentMoveByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if ($type !== GroupType::TYPE_FACILITY) {
+            throw new InvalidParameterException('group');
+        }
+
+        $dateStart = $dateEnd = new \DateTime('now');
+        $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
+
+        if (!empty($date)) {
+            $dateStart = $dateEnd = new \DateTime($date);
+            $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
+        }
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        if ($dateStart > $dateEnd) {
+            throw new StartGreaterEndDateException();
+        }
+
+        $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
+
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $admissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
+
+        $minAdmitDate = $dateStart;
+        $dischargedAdmissions = [];
+        foreach ($admissions as $admission) {
+            if ($admission['admissionType'] === AdmissionType::ADMIT && $admission['admitted'] < $minAdmitDate) {
+             $minAdmitDate = $admission['admitted'];
+            }
+
+            if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
+                $dischargedAdmissions[] = $admission;
+            }
+        }
+
+        $interval = ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $dateEnd);
+
+        $intervalAdmissions = $repo->getResidentMoveIntervalByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
+
+        $totalDays = [];
+        foreach ($dischargedAdmissions as $admission) {
+            $calcInterval = ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $admission['admitted']);
+            $rentPeriodFactory = RentPeriodFactory::getFactory($calcInterval);
+
+            $sumDays = 0;
+            foreach ($intervalAdmissions as $intervalAdmission) {
+                if ($intervalAdmission['typeId'] === $admission['typeId'] && $intervalAdmission['id'] === $admission['id']) {
+                    $calculationResults = $rentPeriodFactory->calculateForReportInterval(
+                        ImtDateTimeInterval::getWithDateTimes($intervalAdmission['admitted'], $intervalAdmission['discharged']),
+                        $calcInterval
+                    );
+
+                    $sumDays += $calculationResults['days'];
+                }
+            }
+            $totalDays[$admission['actionId']] = $sumDays;
+        }
+
+        $report = new ResidentMoveByMonth();
+        $report->setData($admissions);
+        $report->setDays($totalDays);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDate($dateStartFormatted);
 
         return $report;
     }

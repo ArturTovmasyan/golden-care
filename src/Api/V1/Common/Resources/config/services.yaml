@@ -3,6 +3,7 @@ parameters:
     core.entity.user.class: App\Entity\User
     core.repository.user.class: App\Repository\UserRepository
     count.age.extension.class: App\Util\Twig\Extension\CountAgeExtension
+    format.day.extension.class: App\Util\Twig\Extension\FormatDayExtension
     rent.period.extension.class: App\Util\Twig\Extension\RentPeriodExtension
     phone.type.extension.class: App\Util\Twig\Extension\PhoneTypeExtension
     adission.type.extension.class: App\Util\Twig\Extension\AdmissionTypeExtension
@@ -21,6 +22,10 @@ services:
         factory: ['@core.user.manager', getRepository]
     count.age.extension:
         class: %count.age.extension.class%
+        tags:
+          - { name: twig.extension }
+    format.day.extension:
+        class: %format.day.extension.class%
         tags:
           - { name: twig.extension }
     rent.period.extension:
