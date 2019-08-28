@@ -177,14 +177,6 @@ class RoomReportService extends BaseService
         $residentIds = array_map(function($item){return $item['id'];} , $data);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
-        $countTypeIds = array_count_values($typeIds);
-        $place = [];
-        $i = 0;
-        foreach ($countTypeIds as $key => $value) {
-            $i += $value;
-            $place[$key] = $i;
-        }
-
         $typeIds = array_unique($typeIds);
 
         $calcAmount = [];
@@ -213,6 +205,15 @@ class RoomReportService extends BaseService
         $residentRepo = $this->em->getRepository(Resident::class);
 
         $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+
+        $residentTypeIds = array_map(function($item){return $item['typeId'];} , $residents);
+        $countTypeIds = array_count_values($residentTypeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
 
         $finalData = [];
         foreach ($residents as $resident) {
