@@ -965,13 +965,9 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     WHERE mra.resident=r
                     AND mra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
                     )
-                    as startDate,
+                    as admitted,
+                    ra.id as actionId,
                     ra.admissionType as state,
-                    ra.dnr as dnr,
-                    ra.polst as polst,
-                    ra.ambulatory as ambulatory,
-                    ra.careGroup as careGroup,
-                    cl.title as careLevel,
                     r.birthday as birthday,
                     r.gender as gender,
                     r.ssn as ssn,
@@ -989,12 +985,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'r.salutation = sal'
             )
-            ->innerJoin(
-                CareLevel::class,
-                'cl',
-                Join::WITH,
-                'ra.careLevel = cl'
-            )
             ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
             ->setParameter('type', $type)
@@ -1006,13 +996,20 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     ->addSelect(
                         'f.id as typeId,
                         f.name as typeName,
+                        f.shorthand as typeShorthand,
                         f.address as address,
                         f.license as license,
                         f.phone as typePhone,
                         f.fax as typeFax,
                         fr.number as roomNumber,
                         fr.floor as floor,
-                        fb.number as bedNumber'
+                        fb.id as bedId,
+                        fb.number as bedNumber,
+                        ra.dnr as dnr,
+                        ra.polst as polst,
+                        ra.ambulatory as ambulatory,
+                        ra.careGroup as careGroup,
+                        cl.title as careLevel'
                     )
                     ->innerJoin(
                         FacilityBed::class,
@@ -1031,6 +1028,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
                     );
 
                 $qb
@@ -1044,6 +1047,47 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         ->setParameter('typeId', $typeId);
                 }
                 break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ar.floor as floor,
+                        ab.number as bedNumber
+                        ab.id as bedId'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                $qb
+                    ->orderBy('a.name')
+                    ->addOrderBy('ar.number')
+                    ->addOrderBy('ab.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
             case GroupType::TYPE_REGION:
                 $qb
                     ->addSelect(
@@ -1054,7 +1098,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         reg.id as typeId,
                         reg.name as typeName,
                         reg.phone as typePhone,
-                        reg.fax as typeFax'
+                        reg.fax as typeFax,
+                        ra.dnr as dnr,
+                        ra.polst as polst,
+                        ra.ambulatory as ambulatory,
+                        ra.careGroup as careGroup,
+                        cl.title as careLevel'
                     )
                     ->innerJoin(
                         Region::class,
@@ -1067,6 +1116,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'csz',
                         Join::WITH,
                         'ra.csz = csz'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
                     );
 
                 $qb

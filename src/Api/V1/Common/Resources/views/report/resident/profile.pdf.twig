@@ -69,7 +69,7 @@
                 <tr>
                     <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%">Social&nbsp;Security&nbsp;#</div>{% endif %}
-                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
+                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
                         <div style="float: left; width: 15%">Rent</div>
                         <div style="float: left; width: 15%">Last&nbsp;increase</div>
                         <div style="float: left; width: 20%">Male&nbsp;/&nbsp;Female</div>
@@ -79,7 +79,7 @@
                 <tr>
                     <td colspan="9">
                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['ssn'] %}{{ resident['ssn'] }}{% else %}N/A{% endif %}</b></div>{% endif %}
-                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
                         {% if resident['rents'] is defined %}
                             {% for rent in resident['rents'] %}
                                 <div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</b></div>
@@ -385,7 +385,7 @@
                 <tr>
                     <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%">Social&nbsp;Security&nbsp;#</div>{% endif %}
-                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
+                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
                         <div style="float: left; width: 15%">Rent</div>
                         <div style="float: left; width: 15%">Last&nbsp;increase</div>
                         <div style="float: left; width: 20%">Male&nbsp;/&nbsp;Female</div>
@@ -395,7 +395,7 @@
                 <tr>
                     <td colspan="9">
                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['ssn'] %}{{ resident['ssn'] }}{% else %}N/A{% endif %}</b></div>{% endif %}
-                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
                         {% if resident['rents'] is defined %}
                             {% for rent in resident['rents'] %}
                                 <div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</b></div>
@@ -483,7 +483,7 @@
                                 <tr>
                                     <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
                                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%">Social&nbsp;Security&nbsp;#</div>{% endif %}
-                                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
+                                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%">Admitted</div>{% endif %}
                                         <div style="float: left; width: 15%">Rent</div>
                                         <div style="float: left; width: 15%">Last&nbsp;increase</div>
                                         <div style="float: left; width: 20%">Male&nbsp;/&nbsp;Female</div>
@@ -493,7 +493,7 @@
                                 <tr>
                                     <td colspan="9">
                                         {% if resident['ssn'] is defined %}<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['ssn'] %}{{ resident['ssn'] }}{% else %}N/A{% endif %}</b></div>{% endif %}
-                                        {% if resident['startDate'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                                        {% if resident['admitted'] is defined %}<div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
                                         {% if resident['rents'] is defined %}
                                             {% for rent in resident['rents'] %}
                                                 <div style="float: left; width: 15%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</b></div>
@@ -879,7 +879,7 @@
                     </tr>
                     <tr>
                         <td colspan="9" style="border-bottom: solid 0.5px darkgray; font-size: 13px !important;">
-                            {% if resident['startDate'] is defined %}<div style="float: left; width: 20%">Admitted</div>{% endif %}
+                            {% if resident['admitted'] is defined %}<div style="float: left; width: 20%">Admitted</div>{% endif %}
                             <div style="float: left; width: 20%">Rent</div>
                             <div style="float: left; width: 20%">Last&nbsp;increase</div>
                             <div style="float: left; width: 20%">Male&nbsp;/&nbsp;Female</div>
@@ -888,7 +888,7 @@
                     </tr>
                     <tr>
                         <td colspan="9">
-                            {% if resident['startDate'] is defined %}<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['startDate'] %}{{ resident['startDate']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
+                            {% if resident['admitted'] is defined %}<div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</b></div>{% endif %}
                             {% if resident['rents'] is defined %}
                                 {% for rent in resident['rents'] %}
                                     <div style="float: left; width: 20%"><b style="font-size: 12px !important;">{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</b></div>

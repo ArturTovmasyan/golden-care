@@ -526,9 +526,9 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 'r.firstName as firstName',
                 'r.lastName as lastName',
                 'ra.id as actionId',
-                '(SELECT minra.start FROM App:ResidentAdmission minra
+                '(SELECT DISTINCT minra.start FROM App:ResidentAdmission minra
                 WHERE minra.resident=r
-                AND minra.id = (SELECT MIN(raMin.id) FROM App:ResidentAdmission raMin WHERE raMin.resident=r)
+                AND minra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r)
                 ) as admitted',
                 'rr.id as rentId',
                 'rr.amount as amount',
@@ -552,7 +552,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fr.floor as roomFloor,
+                        fr.floor as floor,
                         fb.number as bedNumber,
                         fb.id as bedId,
                         cl.title as careLevel'
@@ -600,7 +600,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
-                        ar.floor as roomFloor,
+                        ar.floor as floor,
                         ab.number as bedNumber
                         ab.id as bedId'
                     )

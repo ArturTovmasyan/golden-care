@@ -40,6 +40,7 @@ use App\Repository\PaymentSourceRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentRentRepository;
+use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Util\Common\ImtDateTimeInterval;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -148,6 +149,8 @@ class RoomReportService extends BaseService
      */
     public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $type = $group;
         $typeId = $groupId;
 
@@ -168,8 +171,10 @@ class RoomReportService extends BaseService
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
 
-        $data = $repo->getAdmissionRoomListData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
+        $data = $repo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
+
+        $residentIds = array_map(function($item){return $item['id'];} , $data);
 
         $typeIds = array_map(function($item){return $item['typeId'];} , $data);
         $countTypeIds = array_count_values($typeIds);
@@ -184,10 +189,10 @@ class RoomReportService extends BaseService
 
         $calcAmount = [];
         $total = [];
-        foreach ($typeIds as $typeId) {
+        foreach ($typeIds as $currentTypeId) {
             $sum = 0.00;
             foreach ($data as $rent) {
-                if ($typeId === $rent['typeId']) {
+                if ($currentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')),
                         $rent['period'],
@@ -199,13 +204,35 @@ class RoomReportService extends BaseService
                     $sum += $calculationResults['amount'];
                 }
             }
-            $total[$typeId] = $sum;
+            $total[$currentTypeId] = $sum;
         }
 
         $vacants = $this->getRoomVacancyList($type, $groupAll, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId);
 
+        /** @var ResidentRepository $residentRepo */
+        $residentRepo = $this->em->getRepository(Resident::class);
+
+        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+
+        $finalData = [];
+        foreach ($residents as $resident) {
+            foreach ($data as $datum) {
+                if ($datum['id'] === $resident['id']) {
+                    $resident['rentId'] = $datum['rentId'];
+                    $resident['amount'] = $datum['amount'];
+                    $resident['period'] = $datum['period'];
+
+                    $finalData[] = $resident;
+                }
+            }
+
+            if(!\in_array($resident['id'], $residentIds, false)) {
+                $finalData[] = $resident;
+            }
+        }
+
         $report = new RoomList();
-        $report->setData($data);
+        $report->setData($finalData);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);

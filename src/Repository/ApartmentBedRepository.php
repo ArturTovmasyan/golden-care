@@ -219,7 +219,7 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
                 type.id AS typeId,
                 type.name AS typeName,
                 r.number AS roomNumber,
-                r.floor AS roomFloor,
+                r.floor AS floor,
                 r.notes AS notes,
                 ab.number AS bedNumber
             ')

@@ -46,7 +46,7 @@
         {% if newGroup %}
             <tr>
                 {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
-                {% if datum.roomFloor is defined and datum.roomFloor %}<td><b>Floor</b></td>{% endif %}
+                {% if datum.floor is defined and datum.floor %}<td><b>Floor</b></td>{% endif %}
                 {% if datum.careLevel is defined and datum.careLevel %}<td><b>Level</b></td>{% endif %}
                 <td><b>Resident</b></td>
                 {% if datum.city is defined and datum.city %}<td><b>Address</b></td>{% endif %}
@@ -58,7 +58,7 @@
         {% endif %}
         <tr>
             {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
-            {% if datum.roomFloor is defined and datum.roomFloor %}<td style="height: 40px; text-align: left;">{{ datum.roomFloor }}</td>{% endif %}
+            {% if datum.floor is defined and datum.floor %}<td style="height: 40px; text-align: left;">{{ datum.floor }}</td>{% endif %}
             {% if datum.careLevel is defined and datum.careLevel %}<td style="height: 40px; text-align: left;">{{ datum.careLevel }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
             {% if datum.city is defined and datum.city %}<td style="height: 40px; text-align: left;">{% if datum.address is defined and datum.address %}{{ datum.address }}<br>{% endif %}{{ datum.city }},&nbsp;{{ datum.state }}&nbsp;{{ datum.zip }}</td>{% endif %}
@@ -110,8 +110,8 @@
                                 {% endif %}
                             </td>
                             <td style="margin-bottom: 5px; border: none;">
-                                {% if vacant.roomFloor is defined and vacant.roomFloor %}
-                                    {{ vacant.roomFloor }}
+                                {% if vacant.floor is defined and vacant.floor %}
+                                    {{ vacant.floor }}
                                 {% endif %}
                             </td>
                         </tr>
