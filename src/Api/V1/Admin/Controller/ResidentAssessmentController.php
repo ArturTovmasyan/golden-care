@@ -4,8 +4,6 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\ResidentAssessmentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\Assessment;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
