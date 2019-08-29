@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
-use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -347,19 +346,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
          */
         $qb = $this->createQueryBuilder('r');
 
-        if ($residentId) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
-
-            $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
-
-            if ($admission === null) {
-                throw new ResidentNotFoundException();
-            }
-
-            $type = $admission->getGroupType() ?? 0 ;
-        }
-
         $qb
             ->select(
                 'r.id as id, 
@@ -563,19 +549,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
          */
         $qb = $this->createQueryBuilder('r');
 
-        if ($residentId) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
-
-            $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
-
-            if ($admission === null) {
-                throw new ResidentNotFoundException();
-            }
-
-            $type = $admission->getGroupType() ?? 0 ;
-        }
-
         $qb
             ->select(
                 'r.id as id, 
@@ -742,19 +715,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
          * @var ResidentAdmission $admission
          */
         $qb = $this->createQueryBuilder('r');
-
-        if ($residentId) {
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
-
-            $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
-
-            if ($admission === null) {
-                throw new ResidentNotFoundException();
-            }
-
-            $type = $admission->getGroupType() ?? 0 ;
-        }
 
         $qb
             ->select(
@@ -942,6 +902,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
          */
         $qb = $this->createQueryBuilder('r');
 
+        $active = true;
         if ($residentId) {
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
@@ -949,10 +910,8 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             $admission = $admissionRepo->getActiveByResident($space, $entityGrants, $residentId);
 
             if ($admission === null) {
-                throw new ResidentNotFoundException();
+                $active = false;
             }
-
-            $type = $admission->getGroupType() ?? 0 ;
         }
 
         $qb
@@ -985,10 +944,18 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'r.salutation = sal'
             )
-            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
-            ->andWhere('ra.groupType=:type')
-            ->setParameter('type', $type)
-            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+            ->where('ra.groupType=:type')
+            ->setParameter('type', $type);
+
+        if ($active) {
+            $qb
+                ->andWhere('ra.admissionType < :admissionType AND ra.end IS NULL')
+                ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        } else {
+            $qb
+                ->andWhere('ra.admissionType = :admissionType AND ra.end IS NULL')
+                ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        }
 
         switch ($type) {
             case GroupType::TYPE_FACILITY:
