@@ -213,8 +213,8 @@ class Resident
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="birthday", type="datetime", nullable=false)
-     * @Assert\DateTime(groups={
+     * @ORM\Column(name="birthday", type="date")
+     * @Assert\Date(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit"
      * })
