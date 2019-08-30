@@ -583,7 +583,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     );
 
                 $qb
-                    ->orderBy('f.shorthand')
+                    ->orderBy('f.name')
                     ->addOrderBy('fr.number')
                     ->addOrderBy('fb.number');
 
@@ -624,7 +624,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     );
 
                 $qb
-                    ->orderBy('a.shorthand')
+                    ->orderBy('a.name')
                     ->addOrderBy('ar.number')
                     ->addOrderBy('ab.number');
 
@@ -666,7 +666,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     );
 
                 $qb
-                    ->orderBy('reg.shorthand');
+                    ->orderBy('reg.name');
 
                 if ($typeId) {
                     $qb

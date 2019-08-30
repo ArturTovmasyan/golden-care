@@ -311,31 +311,85 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
-        $residentIds = array_map(function($item){return $item['id'];} , $data);
-        $residentIds = array_unique($residentIds);
+        $rentResidentIds = array_map(function($item){return $item['id'];} , $data);
+        $rentResidentIds = array_unique($rentResidentIds);
+
+        /** @var ResidentRepository $residentRepo */
+        $residentRepo = $this->em->getRepository(Resident::class);
+
+        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+
+        $residentTypeIds = array_map(function($item){return $item['typeId'];} , $residents);
+
+        $residentIds = array_map(function($item){return $item['id'];} , $residents);
 
         /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
 
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
-        $countTypeIds = array_count_values($typeIds);
+        $changedResidentData = [];
+        $changedResidentTypeIds = [];
+        foreach ($residents as $resident) {
+            if (!\in_array($resident['id'], $rentResidentIds, false)) {
+                $changedResidentTypeIds[] = $resident['typeId'];
+
+                $residentArray = [
+                    'fullName' => $resident['firstName'] . ' ' . $resident['lastName'],
+                    'number' => array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident) ? $resident['roomNumber'] . ' ' . $resident['bedNumber'] : null,
+                    'actionId' => $resident['actionId'],
+                    'id' => 0,
+                    'typeName' => $resident['typeName'],
+                    'typeId' => $resident['typeId'],
+                    'typeShorthand' => $resident['typeShorthand'],
+                    'responsiblePerson' => [],
+                ];
+                $rpResidentArray = array();
+                /** @var ResidentResponsiblePerson $responsiblePerson */
+                foreach ($responsiblePersons as $responsiblePerson) {
+                    $isFinancially = false;
+                    if (!empty($responsiblePerson->getRoles())) {
+                        /** @var ResponsiblePersonRole $role */
+                        foreach ($responsiblePerson->getRoles() as $role) {
+                            if ($role->isFinancially() === true) {
+                                $isFinancially = true;
+                            }
+                        }
+                    }
+
+                    $rpResidentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
+                    $rpId = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getId() : 0;
+                    $rpFullName = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getFirstName() . ' ' . $responsiblePerson->getResponsiblePerson()->getLastName() : '';
+                    $rpRelationship = $responsiblePerson->getRelationship() ? $responsiblePerson->getRelationship()->getTitle() : '';
+
+                    if ($isFinancially === true && $rpResidentId === $resident['id']) {
+                        $rpResidentArray['responsiblePerson'][$rpId] = $rpFullName . ' (' . $rpRelationship . ')';
+                    }
+                }
+                $changedResidentData[] = array_merge($residentArray, $rpResidentArray);
+            }
+        }
+
+        $rentTypeIds = array_map(function($item){return $item['typeId'];} , $data);
+
+        $mergedTypeIds = array_merge($rentTypeIds, $changedResidentTypeIds);
+
+        $countRentTypeIds = array_count_values($mergedTypeIds);
         $place = [];
         $i = 0;
-        foreach ($countTypeIds as $key => $value) {
+        foreach ($countRentTypeIds as $key => $value) {
             $i += $value;
             $place[$key] = $i;
         }
 
-        $typeIds = array_unique($typeIds);
+        $residentTypeIds = array_unique($residentTypeIds);
 
         $calcAmount = [];
         $total = [];
-        foreach ($typeIds as $typeId) {
+        foreach ($residentTypeIds as $residentTypeId) {
             $sum = 0.00;
             foreach ($data as $rent) {
-                if ($typeId === $rent['typeId']) {
+                if ($residentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
                         $rent['period'],
@@ -347,10 +401,9 @@ class RoomReportService extends BaseService
                     $sum += $calculationResults['amount'];
                 }
             }
-            $total[$typeId] = $sum;
+            $total[$residentTypeId] = $sum;
         }
 
-        //for CSV report
         $changedData = [];
         foreach ($data as $rent) {
             $rentArray = [
@@ -393,6 +446,18 @@ class RoomReportService extends BaseService
             $changedData[] = array_merge($rentArray, $rpArray);
         }
 
+        $changedData = array_merge($changedData, $changedResidentData);
+
+        $typeNames = [];
+        $numbers = [];
+        foreach ($changedData as $k => $changedDatum) {
+            $typeNames[$k][] = $changedDatum['typeName'] ?? '';
+            $numbers[$k][] = $changedDatum['number'] ?? '';
+        }
+
+        array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
+
+        //for CSV report
         $csvData = [];
         foreach ($changedData as $changedDatum) {
             $string_version = implode("\r\n", $changedDatum['responsiblePerson']);
