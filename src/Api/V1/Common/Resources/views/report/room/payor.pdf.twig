@@ -58,13 +58,17 @@
             {% for source in data.sources %}
                 {% set found=false %}
                 <td style="height: 40px; text-align: left;">
-                    {% for paymentSource in datum.sources %}
-                        {% if paymentSource.id == source.id %}
-                            {% set found=true %}
-                            {% if paymentSource.amount is defined and paymentSource.amount %}$ {{ paymentSource.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                    {% if datum.sources is defined %}
+                        {% for paymentSource in datum.sources %}
+                            {% if paymentSource.id == source.id %}
+                                {% set found=true %}
+                                {% if paymentSource.amount is defined and paymentSource.amount %}$ {{ paymentSource.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not found %}
+                            N/A
                         {% endif %}
-                    {% endfor %}
-                    {% if not found %}
+                    {% else %}
                         N/A
                     {% endif %}
                 </td>

@@ -86,7 +86,14 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+        $residentIds = array_map(function($item){return $item['id'];} , $data);
+
+        /** @var ResidentRepository $residentRepo */
+        $residentRepo = $this->em->getRepository(Resident::class);
+
+        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -99,10 +106,10 @@ class RoomReportService extends BaseService
 
         $calcAmount = [];
         $total = [];
-        foreach ($typeIds as $typeId) {
+        foreach ($typeIds as $currentTypeId) {
             $sum = 0.00;
             foreach ($data as $rent) {
-                if ($typeId === $rent['typeId']) {
+                if ($currentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         $interval,
                         $rent['period'],
@@ -114,7 +121,7 @@ class RoomReportService extends BaseService
                     $sum += $calculationResults['amount'];
                 }
             }
-            $total[$typeId] = $sum;
+            $total[$currentTypeId] = $sum;
         }
 
         /** @var PaymentSourceRepository $sourceRepo */
@@ -122,8 +129,26 @@ class RoomReportService extends BaseService
 
         $sources = $sourceRepo->getPaymentSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(PaymentSource::class));
 
+        $finalData = [];
+        foreach ($residents as $resident) {
+            foreach ($data as $datum) {
+                if ($datum['id'] === $resident['id']) {
+                    $resident['rentId'] = $datum['rentId'];
+                    $resident['amount'] = $datum['amount'];
+                    $resident['period'] = $datum['period'];
+                    $resident['sources'] = $datum['sources'];
+
+                    $finalData[] = $resident;
+                }
+            }
+
+            if(!\in_array($resident['id'], $residentIds, false)) {
+                $finalData[] = $resident;
+            }
+        }
+
         $report = new Payor();
-        $report->setData($data);
+        $report->setData($finalData);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
@@ -176,7 +201,20 @@ class RoomReportService extends BaseService
 
         $residentIds = array_map(function($item){return $item['id'];} , $data);
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+        /** @var ResidentRepository $residentRepo */
+        $residentRepo = $this->em->getRepository(Resident::class);
+
+        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
+
         $typeIds = array_unique($typeIds);
 
         $calcAmount = [];
@@ -200,20 +238,6 @@ class RoomReportService extends BaseService
         }
 
         $vacants = $this->getRoomVacancyList($type, $groupAll, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId);
-
-        /** @var ResidentRepository $residentRepo */
-        $residentRepo = $this->em->getRepository(Resident::class);
-
-        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
-
-        $residentTypeIds = array_map(function($item){return $item['typeId'];} , $residents);
-        $countTypeIds = array_count_values($residentTypeIds);
-        $place = [];
-        $i = 0;
-        foreach ($countTypeIds as $key => $value) {
-            $i += $value;
-            $place[$key] = $i;
-        }
 
         $finalData = [];
         foreach ($residents as $resident) {
