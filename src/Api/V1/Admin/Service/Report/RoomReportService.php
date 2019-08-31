@@ -329,11 +329,8 @@ class RoomReportService extends BaseService
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
 
         $changedResidentData = [];
-        $changedResidentTypeIds = [];
         foreach ($residents as $resident) {
             if (!\in_array($resident['id'], $rentResidentIds, false)) {
-                $changedResidentTypeIds[] = $resident['typeId'];
-
                 $residentArray = [
                     'fullName' => $resident['firstName'] . ' ' . $resident['lastName'],
                     'number' => array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident) ? $resident['roomNumber'] . ' ' . $resident['bedNumber'] : null,
@@ -368,18 +365,6 @@ class RoomReportService extends BaseService
                 }
                 $changedResidentData[] = array_merge($residentArray, $rpResidentArray);
             }
-        }
-
-        $rentTypeIds = array_map(function($item){return $item['typeId'];} , $data);
-
-        $mergedTypeIds = array_merge($rentTypeIds, $changedResidentTypeIds);
-
-        $countRentTypeIds = array_count_values($mergedTypeIds);
-        $place = [];
-        $i = 0;
-        foreach ($countRentTypeIds as $key => $value) {
-            $i += $value;
-            $place[$key] = $i;
         }
 
         $residentTypeIds = array_unique($residentTypeIds);
@@ -456,6 +441,15 @@ class RoomReportService extends BaseService
         }
 
         array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
+
+        $typeIds = array_map(function($item){return $item['typeId'];} , $changedData);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
 
         //for CSV report
         $csvData = [];
