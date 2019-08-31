@@ -20,6 +20,7 @@ use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
+use App\Model\ResidentState;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -327,6 +328,40 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         return $qb
             ->getQuery()
             ->getResult();
+    }
+    
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return null
+     */
+    public function getResidentStateById(Space $space = null, array $entityGrants = null, $id)
+    {
+        $state = null;
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->_em->getRepository(ResidentAdmission::class);
+
+        $activeResident = $admissionRepo->getActiveByResident($space, $entityGrants, $id);
+
+        if ($activeResident !== null) {
+            $state = ResidentState::TYPE_ACTIVE;
+        }
+
+        $inActiveResident = $admissionRepo->getInactiveByResident($space, $entityGrants, $id);
+
+        if ($inActiveResident !== null) {
+            $state = ResidentState::TYPE_INACTIVE;
+        }
+
+        $noAdmissionResident = $this->getNoAdmissionResidentById($space, $entityGrants, $id);
+
+        if (!empty($noAdmissionResident)) {
+            $state = ResidentState::TYPE_NO_ADMISSION;
+        }
+
+        return $state;
     }
 
     ////////////////////////////Resident Admission Part///////////////////////////////////////////////////

@@ -12,9 +12,9 @@ class ResidentState
      * @var array
      */
     private static $types = [
-        self::TYPE_ACTIVE  => 'active',
+        self::TYPE_ACTIVE => 'active',
         self::TYPE_INACTIVE => 'inactive',
-        self::TYPE_NO_ADMISSION    => 'no-admission',
+        self::TYPE_NO_ADMISSION => 'no-admission',
     ];
 
     /**

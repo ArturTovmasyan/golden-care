@@ -46,7 +46,7 @@
                 </th>
             </tr>
             <tr>
-                {% if datum.number is defined %}<td><b>Room/Bed</b></td>{% endif %}
+                {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}<td><b>Room/Bed</b></td>{% endif %}
                 <td><b>Resident</b></td>
                 <td><b>Billing</b></td>
                 <td><b>Rent</b></td>
