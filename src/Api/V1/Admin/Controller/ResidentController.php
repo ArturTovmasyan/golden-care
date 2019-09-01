@@ -243,6 +243,23 @@ class ResidentController extends BaseController
     }
 
     /**
+     * @Route("/state/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_state", methods={"GET"})
+     *
+     * @param ResidentService $residentService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getResidentStateAction(Request $request, $id, ResidentService $residentService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentService->getResidentStateById($id),
+            ['api_admin_resident_get_state']
+        );
+    }
+
+    /**
      * @api {post} /api/v1.0/admin/resident Add Resident
      * @apiVersion 1.0.0
      * @apiName Add Resident

@@ -137,6 +137,18 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
+     * @param $id
+     * @return null
+     */
+    public function getResidentStateById($id)
+    {
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        return $repo->getResidentStateById($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
+    }
+
+    /**
      * @param array $params
      * @return integer|null
      * @throws \Exception
