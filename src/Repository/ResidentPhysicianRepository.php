@@ -397,7 +397,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                 ResidentAdmission::class,
                 'ra',
                 Join::WITH,
-                '(ra.resident = r AND ra.admissionType<'. AdmissionType::DISCHARGE .' AND ra.end IS NULL)'
+                '(ra.resident = r AND ra.end IS NULL)'
             )
             ->leftJoin(
                 Salutation::class,

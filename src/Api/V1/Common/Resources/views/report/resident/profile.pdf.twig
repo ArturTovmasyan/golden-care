@@ -200,6 +200,14 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+            {% else %}
+                <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                <tr style="border-left: solid 1px darkgray; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">
+                    <td colspan="9" style="border-left: none; border-top: none; border-bottom: none;"><b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray;">Responsible&nbsp;Person</b></td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Responsible&nbsp;Persons</td>
+                </tr>
             {% endif %}
 
             {% if resident['physicians'] is defined %}
@@ -279,6 +287,14 @@
                         </td>
                     </tr>
                 {% endfor %}
+            {% else %}
+                <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+                <tr style="border-left: solid 1px darkgray; border-top: solid 1px darkgray; border-right: solid 1px darkgray;">
+                    <td colspan="9" style="border-left: none; border-top: none; border-bottom: none;"><b style="font-size: 14px !important; margin-left: 20px; border-bottom: solid 1px darkgray;">Physician</b></td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Physicians</td>
+                </tr>
             {% endif %}
 
             <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
