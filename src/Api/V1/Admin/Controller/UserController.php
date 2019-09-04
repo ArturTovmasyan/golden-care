@@ -419,6 +419,47 @@ class UserController extends BaseController
     }
 
     /**
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_delete", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-user", level="DELETE")
+     *
+     * @param Request $request
+     * @param $id
+     * @param UserService $userService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteAction(Request $request, $id, UserService $userService)
+    {
+        $userService->disable($id);
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @Route("", name="api_admin_user_delete_bulk", methods={"DELETE"})
+     *
+     * @Grant(grant="persistence-security-user", level="DELETE")
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, UserService $userService)
+    {
+        $userService->disableBulk($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
      * @api {post} /api/v1.0/admin/user/related/info User related info
      * @apiVersion 1.0.0
      * @apiName User Related Info

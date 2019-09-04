@@ -303,6 +303,79 @@ class UserService extends BaseService implements IGridService
     }
 
     /**
+     * @param $id
+     * @throws \Throwable
+     */
+    public function disable($id)
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var UserRepository $repo */
+            $repo = $this->em->getRepository(User::class);
+
+            /** @var User $user */
+            $user = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $id);
+
+            if ($user === null) {
+                throw new UserNotFoundException();
+            }
+
+            $user->setEnabled(false);
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $ids
+     * @throws \Throwable
+     */
+    public function disableBulk(array $ids): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if (empty($ids)) {
+                throw new UserNotFoundException();
+            }
+
+            /** @var UserRepository $repo */
+            $repo = $this->em->getRepository(User::class);
+
+            /** @var User $user */
+            $users = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $ids);
+
+            if (empty($users)) {
+                throw new UserNotFoundException();
+            }
+
+            /**
+             * @var User $user
+             */
+            foreach ($users as $user) {
+                $user->setEnabled(false);
+
+                $this->em->persist($user);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param array $ids
      * @return array
      */
