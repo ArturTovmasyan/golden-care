@@ -102,6 +102,11 @@
                                 </tr>
                             {% endfor %}
                         {% endif %}
+                        {% if resident.medications.active is not defined and data.discontinued == false and resident.medications.discontinued is not defined %}
+                            <tr>
+                                <td><b>No&nbsp;Medications</b></td>
+                            </tr>
+                        {% endif %}
                     {% else %}
                         <tr>
                             <td><b>No&nbsp;Medications</b></td>
