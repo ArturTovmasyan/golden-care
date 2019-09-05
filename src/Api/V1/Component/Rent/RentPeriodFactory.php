@@ -130,27 +130,13 @@ class RentPeriodFactory
 
     /**
      * @param ImtDateTimeInterval $rentInterval
-     * @param ImtDateTimeInterval $subInterval
      * @return array
      */
-    public function calculateForMoveReportInterval(ImtDateTimeInterval $rentInterval, ImtDateTimeInterval $subInterval): array
+    public function calculateForMoveReportInterval(ImtDateTimeInterval $rentInterval): array
     {
-        $dateTimeStart = $subIntervalStart = $subInterval->getStart();
-        $dateTimeEnd = $subIntervalEnd = $subInterval->getEnd();
-        $rentIntervalStart = $rentInterval->getStart();
-        $rentIntervalEnd = $rentInterval->getEnd();
-
-        if ($subIntervalStart < $rentIntervalStart) {
-            $dateTimeStart = $rentIntervalStart;
-        }
-
-        if ($rentIntervalEnd !== null && $subIntervalEnd > $rentIntervalEnd) {
-            $dateTimeEnd = $rentIntervalEnd;
-        }
-
         $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
-            $dateTimeStart,
-            $dateTimeEnd
+            $rentInterval->getStart(),
+            $rentInterval->getEnd()
         );
         $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days : 0;
 

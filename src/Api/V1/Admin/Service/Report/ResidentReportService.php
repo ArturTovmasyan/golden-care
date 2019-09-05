@@ -1129,8 +1129,7 @@ class ResidentReportService extends BaseService
             }
 
             $calculationResults = $rentPeriodFactory->calculateForMoveReportInterval(
-                ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $admission['admitted']),
-                $subInterval
+                ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $admission['admitted'])
             );
 
             $sumDays += $calculationResults['days'];
