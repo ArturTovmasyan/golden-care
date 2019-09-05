@@ -1586,18 +1586,25 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
+     * @param bool $filter
      * @return QueryBuilder
      */
-    public function getResidentAdmissionMoveByMonthReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
+    public function getResidentAdmissionMoveByMonthReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null, $filter = false) : QueryBuilder
     {
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
             ->getEntityManager()
             ->getRepository(ResidentAdmission::class);
 
-        /** @var QueryBuilder $qb */
-        $qb = $admissionRepo
-            ->getResidentAdmissionMoveByMonthIntervalQb($reportInterval);
+        if ($filter) {
+            /** @var QueryBuilder $qb */
+            $qb = $admissionRepo
+                ->getResidentAdmissionMoveByMonthIntervalQb($reportInterval);
+        } else {
+            /** @var QueryBuilder $qb */
+            $qb = $admissionRepo
+                ->getResidentAdmissionIntervalQb($reportInterval);
+        }
 
         $qb
             ->from(Resident::class, 'r')
@@ -1751,13 +1758,14 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @param array|null $notGrantResidentIds
-     * @param array|null $dischargedAdmissionEnds
+     * @param null $dischargedAdmissionEnds
+     * @param bool $filter
      * @return mixed
      */
-    public function getResidentMoveByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null, $dischargedAdmissionEnds = null)
+    public function getResidentMoveByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null, $dischargedAdmissionEnds = null, $filter = false)
     {
         $qb = $this
-            ->getResidentAdmissionMoveByMonthReportQb($type, $reportInterval, $typeId);
+            ->getResidentAdmissionMoveByMonthReportQb($type, $reportInterval, $typeId, $filter);
 
         if ($dischargedAdmissionEnds !== null) {
             $qb

@@ -1081,7 +1081,8 @@ class ResidentReportService extends BaseService
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
-        $admissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
+        $admissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(),null,true);
+        $admissionIds = array_map(function($item){return $item['actionId'];} , $admissions);
 
         $dischargedAdmissionEnds = null;
         foreach ($admissions as $admission) {
@@ -1090,16 +1091,28 @@ class ResidentReportService extends BaseService
             }
         }
 
-        $filteredAdmissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), $dischargedAdmissionEnds);
+        $filteredAdmissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), $dischargedAdmissionEnds, false);
 
         $dischargedAdmissions = [];
+        $filteredAdmissionIds = [];
         foreach ($filteredAdmissions as $key => $admission) {
             if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
                 if ($admission['id'] === $filteredAdmissions[$key - 1]['id']) {
                     $admission['minAdmitDate'] = $filteredAdmissions[$key - 1]['admitted'];
+
+                    $filteredAdmissionIds[] = $filteredAdmissions[$key - 1]['actionId'];
                 }
 
                 $dischargedAdmissions[] = $admission;
+            }
+        }
+
+        $finalAdmissionIds = array_merge($admissionIds, $filteredAdmissionIds);
+
+        $finalAdmissions = [];
+        foreach ($filteredAdmissions as $key => $admission) {
+            if (\in_array($admission['actionId'], $finalAdmissionIds, false)) {
+                $finalAdmissions[] = $admission;
             }
         }
 
@@ -1124,7 +1137,7 @@ class ResidentReportService extends BaseService
         }
 
         $report = new ResidentMoveByMonth();
-        $report->setData($filteredAdmissions);
+        $report->setData($finalAdmissions);
         $report->setDays($totalDays);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
