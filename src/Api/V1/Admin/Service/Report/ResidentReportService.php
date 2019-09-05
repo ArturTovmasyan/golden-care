@@ -1123,7 +1123,7 @@ class ResidentReportService extends BaseService
         foreach ($dischargedAdmissions as $admission) {
             $sumDays = 0;
             if (array_key_exists($admission['actionId'], $minAdmitDates) && $minAdmitDates[$admission['actionId']] !== null) {
-                $minAdmitDate = $admission['minAdmitDate'];
+                $minAdmitDate = $minAdmitDates[$admission['actionId']];
             } else {
                 $minAdmitDate = $subInterval->getStart();
             }
