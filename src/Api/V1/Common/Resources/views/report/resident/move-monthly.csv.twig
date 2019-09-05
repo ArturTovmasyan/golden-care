@@ -1,6 +1,6 @@
 Move-in/Move-Out: {{ data.date|date("m/Y") }}
 
-{{ data.strategy }},Room/Bed #,Resident,Type, Move-in, Move-out,Notes,"Total Time (Calculating based on 1 year = 365 days, 1 month = 30 days)"
+{{ data.strategy }},Resident, Move-in (Admit), Move-out (Discharge),Room/Bed #,Notes,"Total Time (Calculating based on 1 year = 365 days, 1 month = 30 days)"
 {% for datum in data.data %}
-    {{ datum.typeShorthand }},{% if datum.roomNumber is defined and datum.bedNumber is defined %}{{ datum.roomNumber }} {{ datum.bedNumber }}{% endif %},{{ datum.firstName }} {{ datum.lastName }},{{ admissionType(datum.admissionType) }},{% if datum.admissionType == constant('App\\Model\\AdmissionType::ADMIT')%}{{ datum.admitted|date("m/d/Y") }}{% endif %},{% if datum.admissionType == constant('App\\Model\\AdmissionType::DISCHARGE')%}{{ datum.admitted|date("m/d/Y") }}{% endif %},{% if datum.notes %}{{ datum.notes }}{% endif %},{% if data.days[datum['actionId']] is defined %}{{ formatDay(data.days[datum['actionId']]) }}{% endif %},
+    {{ datum.typeShorthand }},{{ datum.firstName }} {{ datum.lastName }},{% if datum.admissionType < constant('App\\Model\\AdmissionType::DISCHARGE') %}{{ datum.admitted|date("m/d/Y") }}{% endif %},{% if datum.admissionType == constant('App\\Model\\AdmissionType::DISCHARGE') %}{{ datum.admitted|date("m/d/Y") }}{% endif %},{% if datum.roomNumber is defined and datum.bedNumber is defined %}{{ datum.roomNumber }} {{ datum.bedNumber }}{% endif %},{% if datum.notes %}{{ datum.notes }}{% endif %},{% if data.days[datum['actionId']] is defined %}{{ formatDay(data.days[datum['actionId']]) }}{% endif %},
 {% endfor %}

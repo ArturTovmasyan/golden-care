@@ -1565,52 +1565,165 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     }
 
     /**
-     * @param Space|null $space
-     * @param array|null $entityGrants
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
-     * @param array|null $notGrantResidentIds
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getResidentMoveByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
+    public function getResidentAdmissionMoveByMonthReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
     {
-        $qb = $this
-            ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
-            ->andWhere('ra.admissionType ='. AdmissionType::ADMIT.' OR ra.admissionType='. AdmissionType::DISCHARGE)
-            ->andWhere('r.id IN (SELECT ar.id 
-                        FROM App:ResidentAdmission ara 
-                        JOIN ara.resident ar 
-                        WHERE ara.admissionType='. AdmissionType::ADMIT .' OR ara.admissionType='. AdmissionType::DISCHARGE .')'
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getResidentAdmissionIntervalQb($reportInterval);
+
+        $qb
+            ->from(Resident::class, 'r')
+            ->andWhere('r.id = rar.id')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'ra.id as actionId',
+                'ra.admissionType as admissionType',
+                'ra.notes as notes',
+                'ra.start as admitted',
+                'ra.end as discharged'
             );
 
-        if ($space !== null) {
-            $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = rar.space'
-                )
-                ->andWhere('s = :space')
-                ->setParameter('space', $space);
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        fr.number as roomNumber,
+                        fb.number as bedNumber,
+                        fb.id as bedId,
+                        ra.careGroup as careGroup,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
+                    );
+
+                $qb
+                    ->orderBy('f.shorthand')
+                    ->addOrderBy('r.id')
+                    ->addOrderBy('ra.start');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ab.number as bedNumber
+                        ab.id as bedId'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                $qb
+                    ->orderBy('a.shorthand')
+                    ->addOrderBy('r.id')
+                    ->addOrderBy('ra.start');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand,
+                        ra.careGroup as careGroup,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
+                    );
+
+                $qb
+                    ->orderBy('reg.shorthand')
+                    ->addOrderBy('r.id')
+                    ->addOrderBy('ra.start');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
         }
 
-        if ($entityGrants !== null) {
-            $qb
-                ->andWhere('r.id IN (:grantIds)')
-                ->setParameter('grantIds', $entityGrants);
-        }
-
-        if ($notGrantResidentIds !== null) {
-            $qb
-                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
-                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
-        }
-
-        return $qb
-            ->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+        return $qb;
     }
 
     /**
@@ -1620,13 +1733,19 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @param array|null $notGrantResidentIds
+     * @param array|null $dischargedAdmissionEnds
      * @return mixed
      */
-    public function getResidentMoveIntervalByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
+    public function getResidentMoveByMonthData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null, $dischargedAdmissionEnds = null)
     {
         $qb = $this
-            ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
-            ->andWhere('ra.admissionType !='. AdmissionType::DISCHARGE);
+            ->getResidentAdmissionMoveByMonthReportQb($type, $reportInterval, $typeId);
+
+        if ($dischargedAdmissionEnds !== null) {
+            $qb
+                ->andWhere('ra.admissionType ='. AdmissionType::ADMIT.' OR ra.admissionType='. AdmissionType::DISCHARGE. ' OR ra.start IN (:dischargedAdmissionEnds)')
+                ->setParameter('dischargedAdmissionEnds', $dischargedAdmissionEnds);
+        }
 
         if ($space !== null) {
             $qb
