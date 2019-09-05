@@ -1565,6 +1565,24 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     }
 
     /**
+     * @param ImtDateTimeInterval|null $dateTimeInterval
+     * @return QueryBuilder
+     */
+    public function getResidentAdmissionMoveByMonthIntervalQb(ImtDateTimeInterval $dateTimeInterval = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('ra');
+        if ($dateTimeInterval) {
+            $qb
+                ->join('ra.resident', 'rar')
+                ->where('ra.end IS NULL OR (ra.end > = :start AND ra.end < = :end)')
+                ->andWhere('ra.start < = :end AND ra.start > = :start')
+                ->setParameter('start', $dateTimeInterval->getStart())
+                ->setParameter('end', $dateTimeInterval->getEnd());
+        }
+        return $qb;
+    }
+
+    /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
@@ -1579,7 +1597,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         /** @var QueryBuilder $qb */
         $qb = $admissionRepo
-            ->getResidentAdmissionIntervalQb($reportInterval);
+            ->getResidentAdmissionMoveByMonthIntervalQb($reportInterval);
 
         $qb
             ->from(Resident::class, 'r')
