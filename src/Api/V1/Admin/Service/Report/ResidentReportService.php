@@ -1095,10 +1095,11 @@ class ResidentReportService extends BaseService
 
         $dischargedAdmissions = [];
         $filteredAdmissionIds = [];
+        $minAdmitDates = [];
         foreach ($filteredAdmissions as $key => $admission) {
             if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
                 if ($admission['id'] === $filteredAdmissions[$key - 1]['id']) {
-                    $admission['minAdmitDate'] = $filteredAdmissions[$key - 1]['admitted'];
+                    $minAdmitDates[$admission['actionId']] = $filteredAdmissions[$key - 1]['admitted'];
 
                     $filteredAdmissionIds[] = $filteredAdmissions[$key - 1]['actionId'];
                 }
@@ -1121,7 +1122,7 @@ class ResidentReportService extends BaseService
         $totalDays = [];
         foreach ($dischargedAdmissions as $admission) {
             $sumDays = 0;
-            if (array_key_exists('minAdmitDate', $admission) && $admission['minAdmitDate'] !== null) {
+            if (array_key_exists($admission['actionId'], $minAdmitDates) && $minAdmitDates[$admission['actionId']] !== null) {
                 $minAdmitDate = $admission['minAdmitDate'];
             } else {
                 $minAdmitDate = $subInterval->getStart();
