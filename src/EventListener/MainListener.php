@@ -181,13 +181,12 @@ class MainListener
 
         // normalize json
         if ($event->getRequest()->getMethod() !== 'GET' &&
-            ($event->getRequest()->getContentType() === 'application/json' || $event->getRequest()->getContentType() === 'json') &&
-            !empty($event->getRequest()->getContent())
+            !empty($event->getRequest()->getContent()) &&
+            ($event->getRequest()->getContentType() === 'application/json' || $event->getRequest()->getContentType() === 'json')
         ) {
             $content = $event->getRequest()->getContent();
             $event->getRequest()->request->add(json_decode($content, true));
         }
-
 
         // Check token authentication availability
         if ($this->security->getToken()) {
@@ -204,5 +203,4 @@ class MainListener
             }
         }
     }
-
 }

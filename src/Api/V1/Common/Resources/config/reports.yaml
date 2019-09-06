@@ -270,6 +270,16 @@ form:
       parameters:
         group:
           select_all: true
+    assessment-blank:
+      service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getBlankReport
+      title: 'Assessment Report (Blank)'
+      show_in_resident_list: true
+      show_in_group_list: false
+      formats: ['pdf']
+      template: 'blank'
+      parameters:
+        resident:
+          select_all: false
 room:
   title: 'Room Reports'
   show_in_resident_list: true
