@@ -278,7 +278,7 @@ form:
       formats: ['pdf']
       template: 'blank'
       parameters:
-        resident:
+        assessment:
           select_all: false
 room:
   title: 'Room Reports'
