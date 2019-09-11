@@ -57,35 +57,37 @@ class ResidentService extends BaseService implements IGridService
     private function getParameterizedIds(array $params)
     {
         $ids = null;
-        if (!empty($params) && !empty($params[0]['type']) && !empty($params[0]['type_id'])) {
-            $type = (int)$params[0]['type'];
-            $typeId = (int)$params[0]['type_id'];
+        if (!empty($params)) {
+            if (!empty($params[0]['type']) && !empty($params[0]['type_id'])) {
+                $type = (int)$params[0]['type'];
+                $typeId = (int)$params[0]['type_id'];
 
-            /** @var ResidentAdmissionRepository $admissionRepo */
-            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
-            $residents = $admissionRepo->getActiveResidentsByStrategy(
-                $this->grantService->getCurrentSpace(),
-                $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeId);
+                /** @var ResidentAdmissionRepository $admissionRepo */
+                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+                $residents = $admissionRepo->getActiveResidentsByStrategy(
+                    $this->grantService->getCurrentSpace(),
+                    $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeId);
 
-            $activeIds = [];
-            if (!empty($residents)) {
-                $activeIds = array_map(function (array $item) {
-                    return $item['id'];
-                }, $residents);
+                $activeIds = [];
+                if (!empty($residents)) {
+                    $activeIds = array_map(function (array $item) {
+                        return $item['id'];
+                    }, $residents);
+                }
+
+                $ids = $activeIds;
+            } elseif (!empty($params[0]['state'])) {
+                $residents = $this->residentAdmissionService->getStateResidents($params[0]['state']);
+
+                $stateIds = [];
+                if (!empty($residents)) {
+                    $stateIds = array_map(function (array $item) {
+                        return $item['id'];
+                    }, $residents);
+                }
+
+                $ids = $stateIds;
             }
-
-            $ids = $activeIds;
-        } elseif (!empty($params) && !empty($params[0]['state'])) {
-            $residents = $this->residentAdmissionService->getStateResidents($params[0]['state']);
-
-            $stateIds = [];
-            if (!empty($residents)) {
-                $stateIds = array_map(function (array $item) {
-                    return $item['id'];
-                }, $residents);
-            }
-
-            $ids = $stateIds;
         }
 
         return $ids;
