@@ -11,7 +11,7 @@
                         <div style="float: right">
                             <p style="font-size: 16px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                         </div>
-                        <div style="float: left">
+                        <div style="float: left; width: 250px;">
                             {% if resident.typeName is defined %}
                                 <div style="height: 5px;"></div>
                                 <p style="font-size: 16px !important">{{ resident.typeName }}</p>
@@ -23,7 +23,7 @@
                 </tr>
                 <tr>
                     <td colspan="34">
-                        <div style="float: left;">
+                        <div style="float: left; width: 250px;">
                             <b style="font-size: 16px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                         </div>
                         <div style="clear: both"></div>
@@ -34,37 +34,37 @@
                         <td style="text-align: center"><div style="width: 200px;"><b style="font-size: 14px !important;">Medication</b></div></td>
                         <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 14px !important;">Pass</b></div></td>
                         <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 14px !important;">Qty</b></div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">1</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">2</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">3</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">4</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">5</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">6</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">7</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">8</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">9</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">10</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">11</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">12</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">13</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">14</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">15</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">16</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">17</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">18</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">19</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">20</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">21</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">22</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">23</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">24</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">25</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">26</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">27</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">28</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">29</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">30</div></td>
-                        <td><div style="width: 9px; text-align: center; font-size: 13px !important;">31</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">1</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">2</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">3</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">4</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">5</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">6</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">7</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">8</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">9</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">10</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">11</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">12</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">13</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">14</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">15</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">16</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">17</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">18</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">19</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">20</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">21</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">22</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">23</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">24</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">25</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">26</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">27</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">28</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">29</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">30</div></td>
+                        <td><div style="width: 9px; text-align: center; font-size: 14px !important;">31</div></td>
                     </tr>
                 {% endif %}
             </thead>
@@ -73,18 +73,18 @@
                 {% set key = 1 %}
                 {% set medCount = data.medications[resident.id] | length %}
                 {% for  medication in data.medications[resident.id] %}
-                    <tr style="margin: 0 !important; font-size: 14px !important;">
-                        <td rowspan="6" style="height: 180px !important; border: solid 1px black;">
+                    <tr style="margin: 0 !important; font-size: 15px !important;">
+                        <td rowspan="6" style="height: 210px !important; border: solid 1px black;">
                             <b>{{ medication.medication }}</b><br>
                             <div style="width: 300px; font-size: 13px;">
                                 {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}<br>
                                 {{ medication.notes }}
                             </div>
                         </td>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 26px;">{% if medication.medicationAm %}AM{% endif %}</div>
                         </td>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationAm %}{{ medication.medicationAm }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -97,10 +97,10 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr style="margin: 0 !important;">
-                        <td style="height: 30px; border: solid 1px black;">
+                        <td style="height: 35px; border: solid 1px black;">
                             <div style="width: 26px;">{% if medication.medicationNn %}NN{% endif %}</div>
                         </td>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationNn %}{{ medication.medicationNn }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -113,10 +113,10 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr style="margin: 0 !important;">
-                        <td style="height: 30px; border: solid 1px black;">
+                        <td style="height: 35px; border: solid 1px black;">
                             <div style="width: 26px;">{% if medication.medicationPm %}PM{% endif %}</div>
                         </td>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -129,10 +129,10 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr style="margin: 0 !important;">
-                        <td style="height: 30px; border: solid 1px black;">
+                        <td style="height: 35px; border: solid 1px black;">
                             <div style="width: 26px;">{% if medication.medicationHs %}HS{% endif %}</div>
                         </td>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -145,10 +145,10 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 26px;">PRN</div>
                         </td>
-                        <td style="height: 30px; border: solid 1px black;">
+                        <td style="height: 35px; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -161,10 +161,10 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td style="height: 30px !important; border: solid 1px black;">
+                        <td style="height: 35px !important; border: solid 1px black;">
                             <div style="width: 26px;">TR</div>
                         </td>
-                        <td style="height: 30px; border: solid 1px black;">
+                        <td style="height: 35px; border: solid 1px black;">
                             <div style="width: 35px;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -179,7 +179,7 @@
 
                     {% if (key % 3 == 0 and key >= 3) or (key == medCount or key == 1 + medCount) %}
                         <tr style="border: none; margin: 0 !important;">
-                            <td colspan="34" style="border: none; font-size: 14px !important;">
+                            <td colspan="34" style="border: none; font-size: 15px !important;">
                                 <div style="float:left; width: 400px;">
                                     <p>
                                         {% if data.residentPhysicians[resident.id] is defined %}
@@ -214,16 +214,16 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                                <div style="float:left; font-size: 14px !important;">
+                                <div style="float:left; font-size: 15px !important;">
                                     <p>Comments: ____________________________________________________</p>
                                     <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                     <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                     {% if resident.dnr is defined %}
-                                        <p style="text-align: center;  font-size: 14px !important;">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
+                                        <p style="text-align: center;  font-size: 15px !important;">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
                                     {% endif %}
                                 </div>
                                 <div style="float: right; line-height: 1px;">
-                                    <div style="float: left; border-right: solid 1px darkgray; font-size: 14px !important;">
+                                    <div style="float: left; border-right: solid 1px darkgray; font-size: 15px !important;">
                                         <p>L</p>
                                         <p>E</p>
                                         <p>G</p>
@@ -231,7 +231,7 @@
                                         <p>N</p>
                                         <p>D</p>
                                     </div>
-                                    <div style="float: left; margin-left: 5px; line-height: 2px; padding-top: 3px; font-size: 14px !important;">
+                                    <div style="float: left; margin-left: 5px; line-height: 2px; padding-top: 3px; font-size: 15px !important;">
                                         <p>R&nbsp;-&nbsp;Refused</p>
                                         <p>A&nbsp;-&nbsp;Absent</p>
                                         <p>H&nbsp;-&nbsp;Hospital</p>
@@ -252,59 +252,61 @@
                             <tr>
                                 <th colspan="34">
                                     <div style="float: right">
-                                        <p style="font-size: 15px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
+                                        <p style="font-size: 16px !important">Monthly&nbsp;Medication&nbsp;Chart&nbsp;for&nbsp;___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</p>
                                     </div>
-                                    <div style="float: left">
-                                        <div style="height: 5px;"></div>
-                                        <p style="font-size: 16px !important">{{ resident.typeName }}</p>
-                                        {% if resident.address is defined and resident.address %}<p style="font-size: 13px !important">{{ resident.address }}</p>{% endif %}
+                                    <div style="float: left; width: 250px;">
+                                        {% if resident.typeName is defined %}
+                                            <div style="height: 5px;"></div>
+                                            <p style="font-size: 16px !important">{{ resident.typeName }}</p>
+                                            {% if resident.address is defined and resident.address %}<p style="font-size: 13px !important">{{ resident.address }}</p>{% endif %}
+                                        {% endif %}
                                     </div>
                                     <div style="clear: both"></div>
                                 </th>
                             </tr>
                             <tr>
                                 <td colspan="34">
-                                    <div style="float: left;">
+                                    <div style="float: left; width: 250px;">
                                         <b style="font-size: 16px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                                     </div>
                                     <div style="clear: both"></div>
                                 </td>
                             </tr>
                             <tr style="line-height: 2px; font-size: 14px!important;">
-                                <td style="text-align: center"><div style="width: 300px;"><b style="font-size: 14px !important;">Medication</b></div></td>
+                                <td style="text-align: center"><div style="width: 200px;"><b style="font-size: 14px !important;">Medication</b></div></td>
                                 <td style="text-align: center"><div style="width: 26px;"><b style="font-size: 14px !important;">Pass</b></div></td>
                                 <td style="text-align: center"><div style="width: 35px;"><b style="font-size: 14px !important;">Qty</b></div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">1</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">2</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">3</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">4</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">5</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">6</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">7</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">8</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">9</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">10</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">11</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">12</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">13</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">14</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">15</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">16</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">17</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">18</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">19</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">20</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">21</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">22</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">23</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">24</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">25</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">26</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">27</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">28</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">29</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">30</div></td>
-                                <td><div style="width: 9px; text-align: center; font-size: 12px !important;">31</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">1</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">2</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">3</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">4</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">5</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">6</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">7</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">8</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">9</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">10</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">11</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">12</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">13</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">14</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">15</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">16</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">17</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">18</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">19</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">20</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">21</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">22</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">23</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">24</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">25</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">26</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">27</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">28</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">29</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">30</div></td>
+                                <td><div style="width: 9px; text-align: center; font-size: 14px !important;">31</div></td>
                             </tr>
                             </thead>
                         {% endif %}
