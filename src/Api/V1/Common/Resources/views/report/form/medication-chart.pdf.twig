@@ -75,7 +75,7 @@
                 {% for  medication in data.medications[resident.id] %}
                     <tr style="margin: 0 !important; font-size: 15px !important;">
                         <td rowspan="6" style="height: 180px !important; border: solid 1px black;">
-                            <b>{{ medication.medication }}</b><br>
+                            <b style="font-size: 15px !important;">{{ medication.medication }}</b><br>
                             <div style="width: 300px; font-size: 14px !important;">
                                 {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}<br>
                                 {{ medication.notes }}
@@ -219,7 +219,7 @@
                                     <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                     <p style="margin-top: 15px; padding-left: 70px;">_____________________________________________________</p>
                                     {% if resident.dnr is defined %}
-                                        <p style="text-align: center;  font-size: 15px !important;">DNR Form on File: {% if resident.dnr == true %}<b>Yes</b>{% else %}<b>No</b>{% endif %}</p>
+                                        <p style="text-align: center;  font-size: 15px !important;">DNR Form on File: {% if resident.dnr == true %}<b style="font-size: 15px !important;">Yes</b>{% else %}<b style="font-size: 15px !important;">No</b>{% endif %}</p>
                                     {% endif %}
                                 </div>
                                 <div style="float: right; line-height: 1px;">
