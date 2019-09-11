@@ -74,34 +74,18 @@
                 {% set medCount = data.medications[resident.id] | length %}
                 {% for  medication in data.medications[resident.id] %}
                     <tr style="margin: 0 !important; font-size: 15px !important;">
-                        <td rowspan="6" style="height: 210px !important; border: solid 1px black;">
+                        <td rowspan="6" style="height: 180px !important; border: solid 1px black;">
                             <b>{{ medication.medication }}</b><br>
-                            <div style="width: 300px; font-size: 13px;">
+                            <div style="width: 300px; font-size: 14px !important;">
                                 {% if medication.dosage %}{{ medication.dosage }}&nbsp;{% endif %}{% if medication.dosageUnit %}{{ medication.dosageUnit }}{% endif %}<br>
                                 {{ medication.notes }}
                             </div>
                         </td>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 26px;">{% if medication.medicationAm %}AM{% endif %}</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">{% if medication.medicationAm %}AM{% endif %}</div>
                         </td>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationAm %}{{ medication.medicationAm }}{% endif %}</div>
-                        </td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
-                    </tr>
-                    <tr style="margin: 0 !important;">
-                        <td style="height: 35px; border: solid 1px black;">
-                            <div style="width: 26px;">{% if medication.medicationNn %}NN{% endif %}</div>
-                        </td>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationNn %}{{ medication.medicationNn }}{% endif %}</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationAm %}{{ medication.medicationAm }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -113,11 +97,11 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr style="margin: 0 !important;">
-                        <td style="height: 35px; border: solid 1px black;">
-                            <div style="width: 26px;">{% if medication.medicationPm %}PM{% endif %}</div>
+                        <td style="height: 30px; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">{% if medication.medicationNn %}NN{% endif %}</div>
                         </td>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% endif %}</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationNn %}{{ medication.medicationNn }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -129,11 +113,27 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr style="margin: 0 !important;">
-                        <td style="height: 35px; border: solid 1px black;">
-                            <div style="width: 26px;">{% if medication.medicationHs %}HS{% endif %}</div>
+                        <td style="height: 30px; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">{% if medication.medicationPm %}PM{% endif %}</div>
                         </td>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% endif %}</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationPm %}{{ medication.medicationPm }}{% endif %}</div>
+                        </td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                        <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
+                    </tr>
+                    <tr style="margin: 0 !important;">
+                        <td style="height: 30px; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">{% if medication.medicationHs %}HS{% endif %}</div>
+                        </td>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationHs %}{{ medication.medicationHs }}{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -145,11 +145,11 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 26px;">PRN</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">PRN</div>
                         </td>
-                        <td style="height: 35px; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</div>
+                        <td style="height: 30px; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationPrn %}Yes{% else %}No{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
@@ -161,11 +161,11 @@
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                     </tr>
                     <tr>
-                        <td style="height: 35px !important; border: solid 1px black;">
-                            <div style="width: 26px;">TR</div>
+                        <td style="height: 30px !important; border: solid 1px black;">
+                            <div style="width: 26px; font-size: 14px !important;">TR</div>
                         </td>
-                        <td style="height: 35px; border: solid 1px black;">
-                            <div style="width: 35px;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</div>
+                        <td style="height: 30px; border: solid 1px black;">
+                            <div style="width: 35px; font-size: 14px !important;">{% if medication.medicationTreatment %}Yes{% else %}No{% endif %}</div>
                         </td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
                         <td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="background-color: darkgray; border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td><td style="border: solid 1px black;"><div style="width: 9px;">&nbsp;</div></td>
