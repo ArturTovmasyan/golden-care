@@ -224,7 +224,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $typeId
      * @return array
      */
-    public function getPaginationResidents($state, $page, $limit, $type, $typeId)
+    public function getPaginationResidents($state, $page, $perPage, $type, $typeId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -268,15 +268,15 @@ class ResidentAdmissionService extends BaseService implements IGridService
             }
 
             $total = \count($finalResidents);
-            $totalPages = ceil( $total/ $limit );
+            $totalPages = ceil( $total/ $perPage );
 
             if ($page <= $totalPages) {
-                $offset = ($page - 1) * $limit;
+                $offset = ($page - 1) * $perPage;
                 if ($offset < 0) {
                     $offset = 0;
                 }
 
-                $result = \array_slice($finalResidents, $offset, $limit);
+                $result = \array_slice($finalResidents, $offset, $perPage);
             }
         }
 
