@@ -732,6 +732,27 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @Route("/pagination/{state}/{page}/{limit}/{type}/{typeId}", requirements={"page"="\d+", "limit"="\d+"}, name="api_admin_resident_admission_get_pagination_residents", methods={"GET"})
+     *
+     * @param $state
+     * @param $page
+     * @param $limit
+     * @param $type
+     * @param $typeId
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     */
+    public function getPaginationResidentsAction(Request $request, $state, $page, $limit, $type = null, $typeId = null, ResidentAdmissionService $residentAdmissionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getPaginationResidents($state, $page, $limit, $type, $typeId),
+            ['api_admin_resident_get_pagination']
+        );
+    }
+
+    /**
      * @Route("/active/count", name="api_admin_resident_admission_get_active_count_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService

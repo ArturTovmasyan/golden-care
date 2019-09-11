@@ -217,6 +217,73 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
+     * @param $state
+     * @param $page
+     * @param $limit
+     * @param $type
+     * @param $typeId
+     * @return array
+     */
+    public function getPaginationResidents($state, $page, $limit, $type, $typeId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $result = [];
+        $residents = [];
+        if ($state === ResidentState::TYPE_NO_ADMISSION) {
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
+            $residents = $repo->getNoAdmissionResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class));
+        } elseif ($state === ResidentState::TYPE_ACTIVE) {
+            /** @var ResidentAdmissionRepository $repo */
+            $repo = $this->em->getRepository(ResidentAdmission::class);
+
+            $residents = $repo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), (int)$type, [(int)$typeId]);
+        } elseif ($state === ResidentState::TYPE_INACTIVE) {
+            /** @var ResidentAdmissionRepository $repo */
+            $repo = $this->em->getRepository(ResidentAdmission::class);
+
+            $residents = $repo->getInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), (int)$type, [(int)$typeId]);
+        }
+
+        $finalResidents = [];
+        if (!empty($residents)) {
+            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+
+            /** @var ResidentImageRepository $imageRepo */
+            $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+            $images = $imageRepo->findByIds($residentIds);
+            $images = array_column($images, 'photo_150_150', 'id');
+
+            foreach ($residents as $resident) {
+                if (array_key_exists($resident['id'], $images)) {
+                    $resident['photo'] = $images[$resident['id']];
+                } else {
+                    $resident['photo'] = null;
+                }
+
+                $finalResidents[] = $resident;
+            }
+
+            $total = \count($finalResidents);
+            $totalPages = ceil( $total/ $limit );
+
+            if ($page <= $totalPages) {
+                $offset = ($page - 1) * $limit;
+                if ($offset < 0) {
+                    $offset = 0;
+                }
+
+                $result = \array_slice($finalResidents, $offset, $limit);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return array
      */
     public function getCountActiveResidents()
