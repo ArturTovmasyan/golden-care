@@ -219,7 +219,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param $state
      * @param $page
-     * @param $limit
+     * @param $perPage
      * @param $type
      * @param $typeId
      * @return array
@@ -270,13 +270,21 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $total = \count($finalResidents);
             $totalPages = ceil( $total/ $perPage );
 
-            if ($page <= $totalPages) {
+            if ($page <= (int)$totalPages) {
                 $offset = ($page - 1) * $perPage;
                 if ($offset < 0) {
                     $offset = 0;
                 }
 
-                $result = \array_slice($finalResidents, $offset, $perPage);
+                $data = \array_slice($finalResidents, $offset, $perPage);
+
+                $result = [
+                    'page' => $page,
+                    'per_page' => $perPage,
+                    'total_pages' => (int)$totalPages,
+                    'total' => \count($data),
+                    'data' => $data
+                ];
             }
         }
 
