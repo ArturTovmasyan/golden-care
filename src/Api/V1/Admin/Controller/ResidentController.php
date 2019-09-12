@@ -6,6 +6,8 @@ use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\Resident;
+use App\Model\GroupType;
+use App\Model\ResidentState;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -128,18 +130,33 @@ class ResidentController extends BaseController
     {
         $options = $this->getOptionsByGroupName(Resident::class, 'api_admin_resident_grid');
 
-        if (!empty($request->get('type') && !empty($request->get('typeId')))) {
+        if (!empty($request->get('state')) || (!empty($request->get('type')) && !empty($request->get('typeId')))) {
+            $state = $request->get('state');
+            $type = (int)$request->get('type');
 
-            $decodedContent = json_decode($options->getContent(), true);
-            foreach ($decodedContent['fields'] as $key => $field) {
-                if ($field['id'] === 'group') {
-                    unset($decodedContent['fields'][$key]);
+            $content = json_decode($options->getContent(), true);
+            foreach ($content['fields'] as $key => $field) {
+                if (!empty($request->get('type')) && !empty($request->get('typeId'))) {
+                    if ($field['id'] === 'group') {
+                        unset($content['fields'][$key]);
+                    }
+                    if (($type === GroupType::TYPE_FACILITY || $type === GroupType::TYPE_APARTMENT) && ($field['id'] === 'address' || $field['id'] === 'csz_str')) {
+                        unset($content['fields'][$key]);
+                    }
+                    if ($type === GroupType::TYPE_REGION && $field['id'] === 'room') {
+                        unset($content['fields'][$key]);
+                    }
+                }
+
+                if ($state === ResidentState::TYPE_NO_ADMISSION) {
+                    if ($field['id'] === 'group' || $field['id'] === 'address' || $field['id'] === 'csz_str' || $field['id'] === 'room') {
+                        unset($content['fields'][$key]);
+                    }
                 }
             }
-            $decodedContent['fields'] = array_values($decodedContent['fields']);
+            $content['fields'] = array_values($content['fields']);
 
-            $encodedContent = json_encode($decodedContent);
-            $options->setContent($encodedContent);
+            $options->setData($content);
         }
 
         return $options;

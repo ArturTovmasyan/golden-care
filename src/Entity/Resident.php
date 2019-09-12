@@ -50,11 +50,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "room"
  *          },
  *          {
- *              "id"         = "group",
- *              "type"       = "string",
- *              "field"      = "group"
- *          },
- *          {
  *              "id"         = "address",
  *              "type"       = "string",
  *              "field"      = "address"
@@ -63,6 +58,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "csz_str",
  *              "type"       = "string",
  *              "field"      = "csz_str"
+ *          },
+ *          {
+ *              "id"         = "group",
+ *              "type"       = "string",
+ *              "field"      = "group"
  *          },
  *          {
  *              "id"         = "space",
