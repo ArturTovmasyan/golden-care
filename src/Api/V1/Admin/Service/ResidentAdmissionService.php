@@ -275,15 +275,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 if ($offset < 0) {
                     $offset = 0;
                 }
-
-                $data = \array_slice($finalResidents, $offset, $perPage);
-
+                
                 $result = [
                     'page' => $page,
                     'per_page' => $perPage,
-                    'total_pages' => (int)$totalPages,
-                    'total' => \count($data),
-                    'data' => $data
+                    'total' => $total,
+                    'data' => \array_slice($finalResidents, $offset, $perPage)
                 ];
             }
         }
