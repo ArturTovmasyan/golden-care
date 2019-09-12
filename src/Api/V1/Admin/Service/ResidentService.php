@@ -57,6 +57,66 @@ class ResidentService extends BaseService implements IGridService
     private function getParameterizedIds(array $params)
     {
         $ids = null;
+        $state = null;
+        $type = null;
+        $typeId = null;
+        if (!empty($params) && !empty($params[0]['state'])) {
+            $state = $params[0]['state'];
+
+            $residents = $this->residentAdmissionService->getStateResidents($state);
+
+            $stateIds = [];
+            if (!empty($residents)) {
+                $stateIds = array_map(function (array $item) {
+                    return $item['id'];
+                }, $residents);
+            }
+
+            $ids = $stateIds;
+
+            if (!empty($params[0]['type']) && !empty($params[0]['type_id'])) {
+                $type = (int)$params[0]['type'];
+                $typeId = (int)$params[0]['type_id'];
+            }
+
+            return [
+                'ids' => $ids,
+                'state' => $state,
+                'type' => $type,
+                'typeId' => $typeId
+            ];
+        }
+
+        throw new ResidentNotFoundException();
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $params
+     */
+    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    {
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $ids = $this->getParameterizedIds($params)['ids'];
+        $state = $this->getParameterizedIds($params)['state'];
+        $type = $this->getParameterizedIds($params)['type'];
+        $typeId = $this->getParameterizedIds($params)['typeId'];
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids, $this->getNotGrantResidentIds(), $state, $type, $typeId);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function list($params)
+    {
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $ids = null;
         if (!empty($params)) {
             if (!empty($params[0]['type']) && !empty($params[0]['type_id'])) {
                 $type = (int)$params[0]['type'];
@@ -89,34 +149,6 @@ class ResidentService extends BaseService implements IGridService
                 $ids = $stateIds;
             }
         }
-
-        return $ids;
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param $params
-     */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
-    {
-        /** @var ResidentRepository $repo */
-        $repo = $this->em->getRepository(Resident::class);
-
-        $ids = $this->getParameterizedIds($params);
-
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $queryBuilder, $ids, $this->getNotGrantResidentIds());
-    }
-
-    /**
-     * @param $params
-     * @return mixed
-     */
-    public function list($params)
-    {
-        /** @var ResidentRepository $repo */
-        $repo = $this->em->getRepository(Resident::class);
-
-        $ids = $this->getParameterizedIds($params);
 
         return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $ids, $this->getNotGrantResidentIds());
     }

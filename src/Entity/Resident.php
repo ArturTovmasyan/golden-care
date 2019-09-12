@@ -45,10 +45,14 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "r.birthday"
  *          },
  *          {
- *              "id"         = "info",
- *              "sortable"   = false,
- *              "type"       = "json",
- *              "field"      = "info"
+ *              "id"         = "room",
+ *              "type"       = "string",
+ *              "field"      = "room"
+ *          },
+ *          {
+ *              "id"         = "group",
+ *              "type"       = "string",
+ *              "field"      = "group"
  *          },
  *          {
  *              "id"         = "space",

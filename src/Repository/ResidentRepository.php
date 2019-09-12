@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\IncorrectResidentStateException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Apartment;
@@ -37,34 +38,127 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param QueryBuilder $queryBuilder
      * @param array|null $ids
      * @param array|null $notGrantResidentIds
+     * @param $state
+     * @param null $type
+     * @param null $typeId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null, array $notGrantResidentIds = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null, array $notGrantResidentIds = null, $state, $type = null, $typeId = null) : void
     {
         $queryBuilder
-            ->from(Resident::class, 'r')
+            ->from(Resident::class, 'r');
 
-            ->addSelect('
-                  (JSON_ARRAY(
-                    FIRST(SELECT JSON_OBJECT(raf.name, CONCAT(rafr.number, \' (\', rafb.number, \')\'))
-                    FROM App\\Entity\\ResidentAdmission ra1
-                    INNER JOIN App\\Entity\\FacilityBed  rafb WITH rafb.id = ra1.facilityBed
-                    INNER JOIN App\\Entity\\FacilityRoom rafr WITH rafr.id = rafb.room
-                    INNER JOIN App\\Entity\\Facility     raf  WITH raf.id  = rafr.facility
-                    WHERE ra1.end IS NULL AND ra1.resident = r.id ORDER BY ra1.start DESC, ra1.id DESC),
-                    FIRST(SELECT JSON_OBJECT(raa.name, CONCAT(raar.number, \' (\', raab.number, \')\'))
-                    FROM App\\Entity\\ResidentAdmission ra2
-                    INNER JOIN App\\Entity\\ApartmentBed  raab WITH raab.id = ra2.facilityBed
-                    INNER JOIN App\\Entity\\ApartmentRoom raar WITH raar.id = raab.room
-                    INNER JOIN App\\Entity\\Apartment     raa  WITH raa.id  = raar.apartment
-                    WHERE ra2.end IS NULL AND ra2.resident = r.id ORDER BY ra2.start DESC, ra2.id DESC),
-                    FIRST(SELECT JSON_OBJECT(rar.name, CONCAT(\'(\', CONCAT(racsz.city, \' \', racsz.stateAbbr, \', \', racsz.zipMain), \') \', ra3.address))
-                    FROM App\\Entity\\ResidentAdmission ra3
-                    INNER JOIN App\\Entity\\Region       rar   WITH rar.id   = ra3.region
-                    INNER JOIN App\\Entity\\CityStateZip racsz WITH racsz.id = ra3.csz
-                    WHERE ra3.end IS NULL AND ra3.resident = r.id ORDER BY ra3.start DESC, ra3.id DESC)
-                  )) AS info
-            ')
+            switch ($state) {
+                case ResidentState::TYPE_NO_ADMISSION:
+                    break;
+                case ResidentState::TYPE_ACTIVE || ResidentState::TYPE_INACTIVE:
+                    $queryBuilder
+                        ->addSelect(
+                        '(CASE
+                                WHEN fb.id IS NOT NULL THEN CONCAT(fr.number, \' \',fb.number)
+                                WHEN ab.id IS NOT NULL THEN CONCAT(ar.number, \' \',ab.number)
+                                ELSE \'\' END) as room'
+                        )
+                        ->innerJoin(
+                            ResidentAdmission::class,
+                            'ra',
+                            Join::WITH,
+                            'ra.resident = r'
+                        )
+                        ->leftJoin(
+                            FacilityBed::class,
+                            'fb',
+                            Join::WITH,
+                            'ra.facilityBed = fb'
+                        )
+                        ->leftJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fb.room = fr'
+                        )
+                        ->leftJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'fr.facility = f'
+                        )
+                        ->leftJoin(
+                            ApartmentBed::class,
+                            'ab',
+                            Join::WITH,
+                            'ra.apartmentBed = ab'
+                        )
+                        ->leftJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ab.room = ar'
+                        )
+                        ->leftJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'ar.apartment = a'
+                        )
+                        ->leftJoin(
+                            Region::class,
+                            'reg',
+                            Join::WITH,
+                            'ra.region = reg'
+                        );
 
+                    if ($state === ResidentState::TYPE_ACTIVE) {
+                        $queryBuilder
+                            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+                            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+                    }
+
+                    if ($state === ResidentState::TYPE_INACTIVE) {
+                        $queryBuilder
+                            ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+                            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+                    }
+
+                    if ($type === null && $typeId === null) {
+                        $queryBuilder
+                            ->addSelect(
+                                '(CASE
+                                    WHEN fb.id IS NOT NULL THEN f.name
+                                    WHEN ab.id IS NOT NULL THEN a.name
+                                    WHEN reg.id IS NOT NULL THEN reg.name
+                                    ELSE \'\' END) as group'
+                            );
+                    } else {
+                        $queryBuilder
+                            ->andWhere('ra.groupType=:type')
+                            ->setParameter('type', $type);
+
+                        switch ($type) {
+                            case GroupType::TYPE_FACILITY:
+                                $queryBuilder
+                                    ->andWhere('f.id = :typeId')
+                                    ->setParameter('typeId', $typeId);
+                                break;
+                            case GroupType::TYPE_APARTMENT:
+                                $queryBuilder
+                                    ->andWhere('a.id = :typeId')
+                                    ->setParameter('typeId', $typeId);
+                                break;
+                            case GroupType::TYPE_REGION:
+                                $queryBuilder
+                                    ->andWhere('reg.id = :typeId')
+                                    ->setParameter('typeId', $typeId);
+                                break;
+                            default:
+                                throw new IncorrectStrategyTypeException();
+                        }
+                    }
+                    break;
+                default:
+                    throw new IncorrectResidentStateException();
+            }
+
+        $queryBuilder
             ->innerJoin(
                 Space::class,
                 's',
