@@ -534,9 +534,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param $type
      * @param array|null $ids
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    public function getActiveResidentsQb(Space $space = null, array $entityGrants = null, $type, array $ids = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -630,9 +630,124 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 throw new IncorrectStrategyTypeException();
         }
 
+        return $qb;
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    {
+        $qb = $this->getActiveResidentsQb($space, $entityGrants, $type, $ids);
+
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $page
+     * @param $perPage
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getPerPageActiveResidents(Space $space = null, array $entityGrants = null, $page, $perPage, $type, array $ids = null)
+    {
+        $qb = $this->getActiveResidentsQb($space, $entityGrants, $type, $ids);
+
+        return $qb
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getCountActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select('COUNT(r.id) AS total')
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('fbrf.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('abra.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->join('ra.region', 'reg');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('reg.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -733,9 +848,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param $type
      * @param array|null $ids
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getInactiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    public function getInactiveResidentsQb(Space $space = null, array $entityGrants = null, $type, array $ids = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -834,9 +949,129 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 throw new IncorrectStrategyTypeException();
         }
 
+        return $qb;
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getInactiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    {
+        $qb = $this->getInactiveResidentsQb($space, $entityGrants, $type, $ids);
+
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $page
+     * @param $perPage
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getPerPageInactiveResidents(Space $space = null, array $entityGrants = null, $page, $perPage, $type, array $ids = null)
+    {
+        $qb = $this->getInactiveResidentsQb($space, $entityGrants, $type, $ids);
+
+        return $qb
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
+     * @return mixed
+     */
+    public function getCountInactiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select('COUNT(r.id) AS total')
+            ->join('ra.resident', 'r')
+            ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->andWhere('r.id NOT IN (SELECT ar.id
+                        FROM App:ResidentAdmission ara
+                        JOIN ara.resident ar
+                        WHERE ara.admissionType < :admissionType AND ara.end IS NULL)'
+            )
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('fbrf.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('abra.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->join('ra.region', 'reg');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('reg.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

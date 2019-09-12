@@ -742,12 +742,12 @@ class ResidentAdmissionController extends BaseController
      * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      */
-    public function getPaginationResidentsAction(Request $request, $state, $page, $perPage, $type = null, $typeId = null, ResidentAdmissionService $residentAdmissionService)
+    public function getPerPageResidentsAction(Request $request, $state, $page, $perPage, $type = null, $typeId = null, ResidentAdmissionService $residentAdmissionService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getPaginationResidents($state, $page, $perPage, $type, $typeId),
+            $residentAdmissionService->getPerPageResidents($state, $page, $perPage, $type, $typeId),
             ['api_admin_resident_get_pagination']
         );
     }

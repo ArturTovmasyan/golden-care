@@ -238,9 +238,9 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getNoAdmissionResidents(Space $space = null, array $entityGrants = null)
+    public function getNoAdmissionResidentsQb(Space $space = null, array $entityGrants = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
 
@@ -278,9 +278,75 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
             r.firstName, ' ', r.lastName)", 'ASC');
 
+        return $qb;
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getNoAdmissionResidents(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants);
+
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $page
+     * @param $perPage
+     * @return mixed
+     */
+    public function getPerPageNoAdmissionResidents(Space $space = null, array $entityGrants = null, $page, $perPage)
+    {
+        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants);
+
+        return $qb
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getCountNoAdmissionResidents(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select('COUNT(r.id) AS total')
+            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
