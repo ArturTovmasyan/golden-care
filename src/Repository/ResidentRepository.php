@@ -53,10 +53,16 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 case ResidentState::TYPE_ACTIVE || ResidentState::TYPE_INACTIVE:
                     $queryBuilder
                         ->addSelect(
-                        '(CASE
-                                WHEN fb.id IS NOT NULL THEN CONCAT(fr.number, \' \',fb.number)
-                                WHEN ab.id IS NOT NULL THEN CONCAT(ar.number, \' \',ab.number)
-                                ELSE \'\' END) as room'
+                    '(CASE
+                                WHEN fb.id IS NOT NULL THEN CONCAT(fr.number, \' (\',fb.number, \')\')
+                                WHEN ab.id IS NOT NULL THEN CONCAT(ar.number, \' (\',ab.number, \')\')
+                                ELSE \'\' END) as room',
+                            '(CASE
+                                WHEN reg.id IS NOT NULL THEN ra.address
+                                ELSE \'\' END) as address',
+                            '(CASE
+                                WHEN reg.id IS NOT NULL THEN CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain)
+                                ELSE \'\' END) as csz_str'
                         )
                         ->innerJoin(
                             ResidentAdmission::class,
@@ -105,6 +111,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                             'reg',
                             Join::WITH,
                             'ra.region = reg'
+                        )
+                        ->leftJoin(
+                            CityStateZip::class,
+                            'csz',
+                            Join::WITH,
+                            'ra.csz = csz'
                         );
 
                     if ($state === ResidentState::TYPE_ACTIVE) {
@@ -122,7 +134,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     if ($type === null && $typeId === null) {
                         $queryBuilder
                             ->addSelect(
-                                '(CASE
+                        '(CASE
                                     WHEN fb.id IS NOT NULL THEN f.name
                                     WHEN ab.id IS NOT NULL THEN a.name
                                     WHEN reg.id IS NOT NULL THEN reg.name

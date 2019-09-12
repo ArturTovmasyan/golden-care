@@ -126,7 +126,23 @@ class ResidentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Resident::class, 'api_admin_resident_grid');
+        $options = $this->getOptionsByGroupName(Resident::class, 'api_admin_resident_grid');
+
+        if (!empty($request->get('type') && !empty($request->get('typeId')))) {
+
+            $decodedContent = json_decode($options->getContent(), true);
+            foreach ($decodedContent['fields'] as $key => $field) {
+                if ($field['id'] === 'group') {
+                    unset($decodedContent['fields'][$key]);
+                }
+            }
+            $decodedContent['fields'] = array_values($decodedContent['fields']);
+
+            $encodedContent = json_encode($decodedContent);
+            $options->setContent($encodedContent);
+        }
+
+        return $options;
     }
 
     /**

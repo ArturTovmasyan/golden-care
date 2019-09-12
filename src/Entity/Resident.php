@@ -55,6 +55,16 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "group"
  *          },
  *          {
+ *              "id"         = "address",
+ *              "type"       = "string",
+ *              "field"      = "address"
+ *          },
+ *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "field"      = "csz_str"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
