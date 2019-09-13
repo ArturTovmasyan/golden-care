@@ -701,16 +701,28 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         $qb
             ->addSelect(
         '(CASE
-                    WHEN fb.id IS NOT NULL THEN CONCAT(fr.number, \' (\',fb.number, \')\')
-                    WHEN ab.id IS NOT NULL THEN CONCAT(ar.number, \' (\',ab.number, \')\')
-                    ELSE \'\' END) as room',
+                    WHEN fb.id IS NOT NULL THEN fb.number
+                    WHEN ab.id IS NOT NULL THEN ab.number
+                    ELSE \'\' END) as bed_number',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN fr.number
+                    WHEN ab.id IS NOT NULL THEN ar.number
+                    ELSE \'\' END) as room_number',
                 '(CASE
                     WHEN reg.id IS NOT NULL THEN ra.address
                     ELSE \'\' END) as address',
                 '(CASE
                     WHEN reg.id IS NOT NULL THEN CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain)
-                    ELSE \'\' END) as csz_str'
-            );
+                    ELSE \'\' END) as csz_str',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN :facility_type
+                    WHEN ab.id IS NOT NULL THEN :apartment_type
+                    WHEN reg.id IS NOT NULL THEN :region_type
+                    ELSE \'\' END) as group_type'
+            )
+            ->setParameter('facility_type', GroupType::TYPE_FACILITY)
+            ->setParameter('apartment_type', GroupType::TYPE_APARTMENT)
+            ->setParameter('region_type', GroupType::TYPE_REGION);
 
         if ($type === null && $typeId === null) {
             $qb
@@ -723,8 +735,16 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 );
         } else {
             $qb
+                ->addSelect(
+                    '(CASE
+                        WHEN fb.id IS NOT NULL THEN :group
+                        WHEN ab.id IS NOT NULL THEN :group
+                        WHEN reg.id IS NOT NULL THEN :group
+                        ELSE :group END) as group'
+                )
                 ->andWhere('ra.groupType=:type')
-                ->setParameter('type', $type);
+                ->setParameter('type', $type)
+                ->setParameter('group', null);
 
             switch ($type) {
                 case GroupType::TYPE_FACILITY:
