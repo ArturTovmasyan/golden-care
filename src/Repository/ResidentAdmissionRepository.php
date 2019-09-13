@@ -731,20 +731,20 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         WHEN fb.id IS NOT NULL THEN f.name
                         WHEN ab.id IS NOT NULL THEN a.name
                         WHEN reg.id IS NOT NULL THEN reg.name
-                        ELSE \'\' END) as group'
+                        ELSE \'\' END) as group_name'
                 );
         } else {
             $qb
                 ->addSelect(
                     '(CASE
-                        WHEN fb.id IS NOT NULL THEN :group
-                        WHEN ab.id IS NOT NULL THEN :group
-                        WHEN reg.id IS NOT NULL THEN :group
-                        ELSE :group END) as group'
+                        WHEN fb.id IS NOT NULL THEN :groupName
+                        WHEN ab.id IS NOT NULL THEN :groupName
+                        WHEN reg.id IS NOT NULL THEN :groupName
+                        ELSE :groupName END) as group_name'
                 )
                 ->andWhere('ra.groupType=:type')
                 ->setParameter('type', $type)
-                ->setParameter('group', null);
+                ->setParameter('groupName', null);
 
             switch ($type) {
                 case GroupType::TYPE_FACILITY:

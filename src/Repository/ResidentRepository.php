@@ -138,7 +138,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                                     WHEN fb.id IS NOT NULL THEN f.name
                                     WHEN ab.id IS NOT NULL THEN a.name
                                     WHEN reg.id IS NOT NULL THEN reg.name
-                                    ELSE \'\' END) as group'
+                                    ELSE \'\' END) as group_name'
                             );
                     } else {
                         $queryBuilder

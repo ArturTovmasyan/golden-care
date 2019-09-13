@@ -137,7 +137,7 @@ class ResidentController extends BaseController
             $content = json_decode($options->getContent(), true);
             foreach ($content['fields'] as $key => $field) {
                 if (!empty($request->get('type')) && !empty($request->get('type_id'))) {
-                    if ($field['id'] === 'group') {
+                    if ($field['id'] === 'group_name') {
                         unset($content['fields'][$key]);
                     }
                     if (($type === GroupType::TYPE_FACILITY || $type === GroupType::TYPE_APARTMENT) && ($field['id'] === 'address' || $field['id'] === 'csz_str')) {
@@ -149,7 +149,7 @@ class ResidentController extends BaseController
                 }
 
                 if ($state === ResidentState::TYPE_NO_ADMISSION) {
-                    if ($field['id'] === 'group' || $field['id'] === 'address' || $field['id'] === 'csz_str' || $field['id'] === 'room') {
+                    if ($field['id'] === 'group_name' || $field['id'] === 'address' || $field['id'] === 'csz_str' || $field['id'] === 'room') {
                         unset($content['fields'][$key]);
                     }
                 }
