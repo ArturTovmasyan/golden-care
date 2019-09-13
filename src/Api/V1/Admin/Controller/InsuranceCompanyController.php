@@ -61,7 +61,7 @@ class InsuranceCompanyController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(InsuranceCompany::class, 'api_admin_insurance_company_grid');
+        return $this->getOptionsByGroupName($request, InsuranceCompany::class, 'api_admin_insurance_company_grid');
     }
 
     /**

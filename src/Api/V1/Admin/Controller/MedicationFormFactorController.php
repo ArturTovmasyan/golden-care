@@ -114,7 +114,7 @@ class MedicationFormFactorController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(MedicationFormFactor::class, 'api_admin_medication_form_factor_grid');
+        return $this->getOptionsByGroupName($request, MedicationFormFactor::class, 'api_admin_medication_form_factor_grid');
     }
 
     /**

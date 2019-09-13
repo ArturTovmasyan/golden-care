@@ -113,7 +113,7 @@ class MedicationController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Medication::class, 'api_admin_medication_grid');
+        return $this->getOptionsByGroupName($request, Medication::class, 'api_admin_medication_grid');
     }
 
     /**

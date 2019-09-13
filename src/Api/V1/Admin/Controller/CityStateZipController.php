@@ -130,7 +130,7 @@ class CityStateZipController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(CityStateZip::class, 'api_admin_city_state_zip_grid');
+        return $this->getOptionsByGroupName($request, CityStateZip::class, 'api_admin_city_state_zip_grid');
     }
 
     /**

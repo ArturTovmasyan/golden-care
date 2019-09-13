@@ -61,7 +61,7 @@ class OrganizationController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Organization::class, 'api_lead_organization_grid');
+        return $this->getOptionsByGroupName($request, Organization::class, 'api_lead_organization_grid');
     }
 
     /**

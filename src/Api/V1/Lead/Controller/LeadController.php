@@ -71,7 +71,7 @@ class LeadController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Lead::class, 'api_lead_lead_grid');
+        return $this->getOptionsByGroupName($request, Lead::class, 'api_lead_lead_grid');
     }
 
     /**

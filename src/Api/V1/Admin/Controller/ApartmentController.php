@@ -132,7 +132,7 @@ class ApartmentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Apartment::class, 'api_admin_apartment_grid');
+        return $this->getOptionsByGroupName($request, Apartment::class, 'api_admin_apartment_grid');
     }
 
     /**

@@ -140,7 +140,7 @@ class PhysicianController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Physician::class, 'api_admin_physician_grid');
+        return $this->getOptionsByGroupName($request, Physician::class, 'api_admin_physician_grid');
     }
 
     /**

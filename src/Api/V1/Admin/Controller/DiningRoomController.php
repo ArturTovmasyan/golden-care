@@ -114,7 +114,7 @@ class DiningRoomController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(DiningRoom::class, 'api_admin_dining_room_grid');
+        return $this->getOptionsByGroupName($request, DiningRoom::class, 'api_admin_dining_room_grid');
     }
 
     /**

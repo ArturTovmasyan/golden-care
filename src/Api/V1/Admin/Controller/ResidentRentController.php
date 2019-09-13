@@ -133,7 +133,7 @@ class ResidentRentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentRent::class, 'api_admin_resident_rent_grid');
+        return $this->getOptionsByGroupName($request, ResidentRent::class, 'api_admin_resident_rent_grid');
     }
 
     /**

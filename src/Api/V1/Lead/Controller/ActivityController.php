@@ -72,7 +72,7 @@ class ActivityController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Activity::class, 'api_lead_activity_grid');
+        return $this->getOptionsByGroupName($request, Activity::class, 'api_lead_activity_grid');
     }
 
     /**

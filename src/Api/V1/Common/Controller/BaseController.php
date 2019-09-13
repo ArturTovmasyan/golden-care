@@ -144,7 +144,7 @@ class BaseController extends AbstractController
     {
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
         $service->gridSelect($queryBuilder, $params);
-        $this->getGrid($entityName)->renderByGroup($request->query->all(), $groupName);
+        $this->getGrid($entityName)->renderByGroup($request->query->all(), $groupName, $this->gridIgnoreFields($request));
 
         $paginator = new Paginator($queryBuilder);
 
@@ -293,12 +293,24 @@ class BaseController extends AbstractController
      * @return JsonResponse
      * @throws \ReflectionException
      */
-    protected function getOptionsByGroupName(string $entityName, string $groupName)
+    protected function getOptionsByGroupName(Request $request, string $entityName, string $groupName)
     {
         $options = $this->getGrid($entityName)->getGroupOptions($groupName);
 
         if (!$options) {
             throw new GridOptionsNotFoundException();
+        }
+
+        $ignoreFields = $this->gridIgnoreFields($request);
+
+        if(!empty($ignoreFields)) {
+            foreach ($options as $key => $option) {
+                if (\in_array($option['id'], $ignoreFields, false)) {
+                    unset($options[$key]);
+                }
+            }
+
+            $options = \array_values($options);
         }
 
         if (!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
@@ -377,5 +389,10 @@ class BaseController extends AbstractController
         }
 
         throw new ResourceNotFoundException();
+    }
+
+    protected function gridIgnoreFields(Request $request) : array
+    {
+        return [];
     }
 }

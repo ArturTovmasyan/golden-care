@@ -116,7 +116,7 @@ class MedicalHistoryConditionController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(MedicalHistoryCondition::class, 'api_admin_medical_history_condition_grid');
+        return $this->getOptionsByGroupName($request, MedicalHistoryCondition::class, 'api_admin_medical_history_condition_grid');
     }
 
     /**

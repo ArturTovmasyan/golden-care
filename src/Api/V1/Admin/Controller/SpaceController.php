@@ -111,7 +111,7 @@ class SpaceController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Space::class, 'api_admin_space_grid');
+        return $this->getOptionsByGroupName($request, Space::class, 'api_admin_space_grid');
     }
 
     /**

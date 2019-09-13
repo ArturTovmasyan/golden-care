@@ -62,7 +62,7 @@ class ResidentDocumentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentDocument::class, 'api_admin_resident_document_grid');
+        return $this->getOptionsByGroupName($request, ResidentDocument::class, 'api_admin_resident_document_grid');
     }
 
     /**

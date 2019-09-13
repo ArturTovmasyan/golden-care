@@ -114,7 +114,7 @@ class SpecialityController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Speciality::class, 'api_admin_speciality_grid');
+        return $this->getOptionsByGroupName($request, Speciality::class, 'api_admin_speciality_grid');
     }
 
     /**

@@ -113,7 +113,7 @@ class AssessmentCategoryController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Category::class, 'api_admin_assessment_category_grid');
+        return $this->getOptionsByGroupName($request, Category::class, 'api_admin_assessment_category_grid');
     }
 
     /**

@@ -122,7 +122,7 @@ class RegionController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Region::class, 'api_admin_region_grid');
+        return $this->getOptionsByGroupName($request, Region::class, 'api_admin_region_grid');
     }
 
     /**

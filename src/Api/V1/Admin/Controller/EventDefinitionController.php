@@ -126,7 +126,7 @@ class EventDefinitionController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(EventDefinition::class, 'api_admin_event_definition_grid');
+        return $this->getOptionsByGroupName($request, EventDefinition::class, 'api_admin_event_definition_grid');
     }
 
     /**

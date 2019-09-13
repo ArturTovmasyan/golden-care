@@ -123,7 +123,7 @@ class UserController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(User::class, 'api_admin_user_grid');
+        return $this->getOptionsByGroupName($request, User::class, 'api_admin_user_grid');
     }
 
     /**

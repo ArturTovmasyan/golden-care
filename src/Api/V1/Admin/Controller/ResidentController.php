@@ -38,6 +38,37 @@ use App\Annotation\Grant as Grant;
  */
 class ResidentController extends BaseController
 {
+    protected function gridIgnoreFields(Request $request) : array {
+        $ignoreFields = [];
+
+        $state = $request->get('state');
+        $type = (int)$request->get('type');
+        $typeId = (int)$request->get('type_id');
+
+        if (!empty($state) || (!empty($type) && !empty($typeId))) {
+            if (!empty($type) && !empty($typeId)) {
+                $ignoreFields[] = 'group_name';
+
+                if ($type === GroupType::TYPE_FACILITY || $type === GroupType::TYPE_APARTMENT) {
+                    $ignoreFields[] = 'address';
+                    $ignoreFields[] = 'csz_str';
+                }
+                if ($type === GroupType::TYPE_REGION) {
+                    $ignoreFields[] = 'room';
+                }
+            }
+
+            if ($state === ResidentState::TYPE_NO_ADMISSION) {
+                $ignoreFields[] = 'group_name';
+                $ignoreFields[] = 'room';
+                $ignoreFields[] = 'address';
+                $ignoreFields[] = 'csz_str';
+            }
+        }
+
+        return $ignoreFields;
+    }
+
     /**
      * @api {get} /api/v1.0/admin/resident/grid Get Residents Grid
      * @apiVersion 1.0.0
@@ -128,38 +159,7 @@ class ResidentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        $options = $this->getOptionsByGroupName(Resident::class, 'api_admin_resident_grid');
-
-        if (!empty($request->get('state')) || (!empty($request->get('type')) && !empty($request->get('type_id')))) {
-            $state = $request->get('state');
-            $type = (int)$request->get('type');
-
-            $content = json_decode($options->getContent(), true);
-            foreach ($content['fields'] as $key => $field) {
-                if (!empty($request->get('type')) && !empty($request->get('type_id'))) {
-                    if ($field['id'] === 'group_name') {
-                        unset($content['fields'][$key]);
-                    }
-                    if (($type === GroupType::TYPE_FACILITY || $type === GroupType::TYPE_APARTMENT) && ($field['id'] === 'address' || $field['id'] === 'csz_str')) {
-                        unset($content['fields'][$key]);
-                    }
-                    if ($type === GroupType::TYPE_REGION && $field['id'] === 'room') {
-                        unset($content['fields'][$key]);
-                    }
-                }
-
-                if ($state === ResidentState::TYPE_NO_ADMISSION) {
-                    if ($field['id'] === 'group_name' || $field['id'] === 'address' || $field['id'] === 'csz_str' || $field['id'] === 'room') {
-                        unset($content['fields'][$key]);
-                    }
-                }
-            }
-            $content['fields'] = array_values($content['fields']);
-
-            $options->setData($content);
-        }
-
-        return $options;
+        return $this->getOptionsByGroupName($request, Resident::class, 'api_admin_resident_grid');
     }
 
     /**

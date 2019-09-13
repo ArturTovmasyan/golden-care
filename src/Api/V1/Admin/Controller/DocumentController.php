@@ -62,7 +62,7 @@ class DocumentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Document::class, 'api_admin_document_grid');
+        return $this->getOptionsByGroupName($request, Document::class, 'api_admin_document_grid');
     }
 
     /**

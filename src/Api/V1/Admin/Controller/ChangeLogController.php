@@ -61,7 +61,7 @@ class ChangeLogController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ChangeLog::class, 'api_admin_change_log_grid');
+        return $this->getOptionsByGroupName($request, ChangeLog::class, 'api_admin_change_log_grid');
     }
 
     /**

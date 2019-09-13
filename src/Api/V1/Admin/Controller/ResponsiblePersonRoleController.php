@@ -114,7 +114,7 @@ class ResponsiblePersonRoleController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResponsiblePersonRole::class, 'api_admin_responsible_person_role_grid');
+        return $this->getOptionsByGroupName($request, ResponsiblePersonRole::class, 'api_admin_responsible_person_role_grid');
     }
 
     /**

@@ -112,7 +112,7 @@ class AssessmentFormController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Form::class, 'api_admin_assessment_form_grid');
+        return $this->getOptionsByGroupName($request, Form::class, 'api_admin_assessment_form_grid');
     }
 
     /**

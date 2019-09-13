@@ -61,7 +61,7 @@ class StateChangeReasonController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(StateChangeReason::class, 'api_lead_state_change_reason_grid');
+        return $this->getOptionsByGroupName($request, StateChangeReason::class, 'api_lead_state_change_reason_grid');
     }
 
     /**

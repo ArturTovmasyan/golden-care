@@ -64,7 +64,7 @@ class ReferralController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Referral::class, 'api_lead_referral_grid');
+        return $this->getOptionsByGroupName($request, Referral::class, 'api_lead_referral_grid');
     }
 
     /**

@@ -113,7 +113,7 @@ class RelationshipController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Relationship::class, 'api_admin_relationship_grid');
+        return $this->getOptionsByGroupName($request, Relationship::class, 'api_admin_relationship_grid');
     }
 
     /**

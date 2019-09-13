@@ -116,7 +116,7 @@ class DietController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Diet::class, 'api_admin_diet_grid');
+        return $this->getOptionsByGroupName($request, Diet::class, 'api_admin_diet_grid');
     }
 
     /**

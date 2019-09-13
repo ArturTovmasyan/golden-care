@@ -114,7 +114,7 @@ class PaymentSourceController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(PaymentSource::class, 'api_admin_payment_source_grid');
+        return $this->getOptionsByGroupName($request, PaymentSource::class, 'api_admin_payment_source_grid');
     }
 
     /**

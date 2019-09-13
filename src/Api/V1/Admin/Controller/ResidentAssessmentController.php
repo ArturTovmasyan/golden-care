@@ -120,7 +120,7 @@ class ResidentAssessmentController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Assessment::class, 'api_admin_resident_assessment_grid');
+        return $this->getOptionsByGroupName($request, Assessment::class, 'api_admin_resident_assessment_grid');
     }
 
     /**

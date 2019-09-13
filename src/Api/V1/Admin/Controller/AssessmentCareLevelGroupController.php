@@ -111,7 +111,7 @@ class AssessmentCareLevelGroupController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(CareLevelGroup::class, 'api_admin_assessment_care_level_group_grid');
+        return $this->getOptionsByGroupName($request, CareLevelGroup::class, 'api_admin_assessment_care_level_group_grid');
     }
 
     /**

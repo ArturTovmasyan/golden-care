@@ -116,7 +116,7 @@ class ResidentAllergenController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentAllergen::class, 'api_admin_resident_allergen_grid');
+        return $this->getOptionsByGroupName($request, ResidentAllergen::class, 'api_admin_resident_allergen_grid');
     }
 
     /**

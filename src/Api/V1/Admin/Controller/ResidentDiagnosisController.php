@@ -118,7 +118,7 @@ class ResidentDiagnosisController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentDiagnosis::class, 'api_admin_resident_diagnosis_grid');
+        return $this->getOptionsByGroupName($request, ResidentDiagnosis::class, 'api_admin_resident_diagnosis_grid');
     }
 
     /**

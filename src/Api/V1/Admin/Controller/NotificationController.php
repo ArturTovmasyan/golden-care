@@ -61,7 +61,7 @@ class NotificationController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Notification::class, 'api_admin_notification_grid');
+        return $this->getOptionsByGroupName($request, Notification::class, 'api_admin_notification_grid');
     }
 
     /**

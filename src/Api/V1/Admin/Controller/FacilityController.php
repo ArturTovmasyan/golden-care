@@ -134,7 +134,7 @@ class FacilityController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Facility::class, 'api_admin_facility_grid');
+        return $this->getOptionsByGroupName($request, Facility::class, 'api_admin_facility_grid');
     }
 
     /**

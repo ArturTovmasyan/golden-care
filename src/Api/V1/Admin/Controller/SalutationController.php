@@ -122,7 +122,7 @@ class SalutationController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(Salutation::class, 'api_admin_salutation_grid');
+        return $this->getOptionsByGroupName($request, Salutation::class, 'api_admin_salutation_grid');
     }
 
     /**

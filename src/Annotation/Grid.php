@@ -204,12 +204,30 @@ class Grid
     /**
      * @param array $params
      * @param $groupName
+     * @param array $ignoreFields
      * @return $this|bool
+     * @throws \Throwable
      */
-    public function renderByGroup(array $params, $groupName)
+    public function renderByGroup(array $params, string $groupName, array $ignoreFields = [])
     {
         $options            = $this->getGroupOptionsById($groupName);
         $fields             = $this->getGroupOptions($groupName);
+
+        if(!empty($ignoreFields)) {
+            foreach ($ignoreFields as $ignoreField) {
+                if (\array_key_exists($ignoreField, $options)) {
+                    unset($options[$ignoreField]);
+                }
+            }
+
+            foreach ($fields as $key => $field) {
+                if (\in_array($field['id'], $ignoreFields, false)) {
+                    unset($fields[$key]);
+                }
+            }
+
+            $fields = \array_values($fields);
+        }
 
         if (!$fields || !$options) {
             return false;

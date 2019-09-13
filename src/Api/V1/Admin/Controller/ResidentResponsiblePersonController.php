@@ -116,7 +116,7 @@ class ResidentResponsiblePersonController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentResponsiblePerson::class, 'api_admin_resident_responsible_person_grid');
+        return $this->getOptionsByGroupName($request, ResidentResponsiblePerson::class, 'api_admin_resident_responsible_person_grid');
     }
 
     /**

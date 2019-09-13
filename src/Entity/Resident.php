@@ -55,9 +55,9 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "csz_str"
  *          },
  *          {
- *              "id"         = "group",
+ *              "id"         = "group_name",
  *              "type"       = "string",
- *              "field"      = "group"
+ *              "field"      = "group_name"
  *          },
  *          {
  *              "id"         = "space",

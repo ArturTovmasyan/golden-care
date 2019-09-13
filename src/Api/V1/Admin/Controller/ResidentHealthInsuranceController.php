@@ -63,7 +63,7 @@ class ResidentHealthInsuranceController extends BaseController
      */
     public function gridOptionAction(Request $request)
     {
-        return $this->getOptionsByGroupName(ResidentHealthInsurance::class, 'api_admin_resident_health_insurance_grid');
+        return $this->getOptionsByGroupName($request, ResidentHealthInsurance::class, 'api_admin_resident_health_insurance_grid');
     }
 
     /**
