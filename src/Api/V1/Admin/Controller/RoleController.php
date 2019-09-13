@@ -158,7 +158,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function listAction(Request $request, RoleService $roleService)
     {
@@ -254,7 +254,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, RoleService $roleService)
     {
@@ -318,7 +318,7 @@ class RoleController extends BaseController
      * @param RoleService $roleService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, RoleService $roleService)
     {

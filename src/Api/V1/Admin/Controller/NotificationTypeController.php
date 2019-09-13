@@ -107,7 +107,7 @@ class NotificationTypeController extends BaseController
      * @param Request $request
      * @param NotificationTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, NotificationTypeService $activityTypeService)
     {
@@ -144,7 +144,7 @@ class NotificationTypeController extends BaseController
      * @param $id
      * @param NotificationTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, NotificationTypeService $activityTypeService)
     {

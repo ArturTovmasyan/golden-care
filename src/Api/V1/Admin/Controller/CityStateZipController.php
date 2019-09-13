@@ -300,7 +300,7 @@ class CityStateZipController extends BaseController
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, CityStateZipService $cityStateZipService)
     {
@@ -369,7 +369,7 @@ class CityStateZipController extends BaseController
      * @param $id
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, CityStateZipService $cityStateZipService)
     {

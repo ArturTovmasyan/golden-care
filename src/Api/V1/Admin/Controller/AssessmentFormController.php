@@ -278,7 +278,7 @@ class AssessmentFormController extends BaseController
      * @param Request $request
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, AssessmentFormService $formService)
     {
@@ -339,7 +339,7 @@ class AssessmentFormController extends BaseController
      * @param $id
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, AssessmentFormService $formService)
     {

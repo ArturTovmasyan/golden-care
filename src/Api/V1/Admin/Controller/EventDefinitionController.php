@@ -296,7 +296,7 @@ class EventDefinitionController extends BaseController
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, EventDefinitionService $eventDefinitionService)
     {
@@ -376,7 +376,7 @@ class EventDefinitionController extends BaseController
      * @param $id
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, EventDefinitionService $eventDefinitionService)
     {

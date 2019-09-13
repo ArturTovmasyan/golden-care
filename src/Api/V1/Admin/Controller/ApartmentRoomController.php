@@ -317,7 +317,7 @@ class ApartmentRoomController extends BaseController
      * @param Request $request
      * @param ApartmentRoomService $apartmentRoomService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ApartmentRoomService $apartmentRoomService)
     {
@@ -400,7 +400,7 @@ class ApartmentRoomController extends BaseController
      * @param $id
      * @param ApartmentRoomService $apartmentRoomService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ApartmentRoomService $apartmentRoomService)
     {

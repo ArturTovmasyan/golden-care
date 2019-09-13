@@ -167,7 +167,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse|PdfResponse
      * @throws \ReflectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function listAction(Request $request, UserService $userService)
     {
@@ -280,7 +280,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, UserService $userService)
     {
@@ -353,7 +353,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, UserService $userService)
     {
@@ -407,7 +407,7 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function resetPasswordAction(Request $request, $id, UserService $userService)
     {

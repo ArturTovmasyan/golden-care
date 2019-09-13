@@ -309,7 +309,7 @@ class ResidentEventController extends BaseController
      * @param Request $request
      * @param ResidentEventService $residentEventService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentEventService $residentEventService)
     {
@@ -379,7 +379,7 @@ class ResidentEventController extends BaseController
      * @param $id
      * @param ResidentEventService $residentEventService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentEventService $residentEventService)
     {

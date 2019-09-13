@@ -138,7 +138,7 @@ class ResidentHealthInsuranceController extends BaseController
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
     {
@@ -170,7 +170,7 @@ class ResidentHealthInsuranceController extends BaseController
      * @param $id
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
     {

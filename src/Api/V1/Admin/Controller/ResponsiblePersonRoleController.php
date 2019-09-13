@@ -249,7 +249,7 @@ class ResponsiblePersonRoleController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
     {
@@ -309,7 +309,7 @@ class ResponsiblePersonRoleController extends BaseController
      * @param $id
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService)
     {

@@ -276,7 +276,7 @@ class CareLevelController extends BaseController
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, CareLevelService $careLevelService)
     {
@@ -336,7 +336,7 @@ class CareLevelController extends BaseController
      * @param $id
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, CareLevelService $careLevelService)
     {

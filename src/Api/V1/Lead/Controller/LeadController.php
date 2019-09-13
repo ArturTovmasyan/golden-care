@@ -127,7 +127,7 @@ class LeadController extends BaseController
      * @param LeadService $activityTypeService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, LeadService $activityTypeService, RouterInterface $router)
     {
@@ -173,7 +173,7 @@ class LeadController extends BaseController
      * @param LeadService $activityTypeService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, LeadService $activityTypeService, RouterInterface $router)
     {

@@ -120,7 +120,7 @@ class ResidentDocumentController extends BaseController
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentDocumentService $residentDocumentService)
     {
@@ -148,7 +148,7 @@ class ResidentDocumentController extends BaseController
      * @param $id
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
     {

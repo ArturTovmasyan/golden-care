@@ -364,7 +364,7 @@ class PhysicianController extends BaseController
      * @param PhysicianService $physicianService
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, PhysicianService $physicianService)
     {

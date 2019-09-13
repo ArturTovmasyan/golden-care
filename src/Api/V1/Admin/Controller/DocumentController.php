@@ -124,7 +124,7 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, DocumentService $documentService)
     {
@@ -154,7 +154,7 @@ class DocumentController extends BaseController
      * @param $id
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, DocumentService $documentService)
     {

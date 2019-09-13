@@ -107,7 +107,7 @@ class ReferrerTypeController extends BaseController
      * @param Request $request
      * @param ReferrerTypeService $referrerTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ReferrerTypeService $referrerTypeService)
     {
@@ -136,7 +136,7 @@ class ReferrerTypeController extends BaseController
      * @param $id
      * @param ReferrerTypeService $referrerTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ReferrerTypeService $referrerTypeService)
     {

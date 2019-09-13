@@ -75,7 +75,7 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
     /**
      * @param array $params
      * @return int|null
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function add(array $params) : ?int
     {
@@ -138,7 +138,7 @@ class ResidentMedicalHistoryConditionService extends BaseService implements IGri
     /**
      * @param $id
      * @param array $params
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function edit($id, array $params) : void
     {

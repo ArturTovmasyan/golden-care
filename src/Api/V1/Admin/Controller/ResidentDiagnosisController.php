@@ -277,7 +277,7 @@ class ResidentDiagnosisController extends BaseController
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
     {
@@ -346,7 +346,7 @@ class ResidentDiagnosisController extends BaseController
      * @param $id
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService)
     {

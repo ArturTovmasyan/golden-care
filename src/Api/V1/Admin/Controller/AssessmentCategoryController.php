@@ -247,7 +247,7 @@ class AssessmentCategoryController extends BaseController
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
     {
@@ -317,7 +317,7 @@ class AssessmentCategoryController extends BaseController
      * @param $id
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService)
     {

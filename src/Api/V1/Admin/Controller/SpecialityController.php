@@ -249,7 +249,7 @@ class SpecialityController extends BaseController
      * @param Request $request
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, SpecialityService $specialityService)
     {
@@ -306,7 +306,7 @@ class SpecialityController extends BaseController
      * @param $id
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, SpecialityService $specialityService)
     {

@@ -107,7 +107,7 @@ class InsuranceCompanyController extends BaseController
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
     {
@@ -134,7 +134,7 @@ class InsuranceCompanyController extends BaseController
      * @param $id
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService)
     {

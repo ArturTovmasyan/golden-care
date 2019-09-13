@@ -332,7 +332,7 @@ class ResidentAssessmentController extends BaseController
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
@@ -403,7 +403,7 @@ class ResidentAssessmentController extends BaseController
      * @param $id
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
     {

@@ -264,7 +264,7 @@ class ResidentDietController extends BaseController
      * @param Request $request
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentDietService $residentDietService)
     {
@@ -324,7 +324,7 @@ class ResidentDietController extends BaseController
      * @param $id
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentDietService $residentDietService)
     {

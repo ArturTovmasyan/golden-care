@@ -107,7 +107,7 @@ class CareTypeController extends BaseController
      * @param Request $request
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, CareTypeService $careTypeService)
     {
@@ -134,7 +134,7 @@ class CareTypeController extends BaseController
      * @param $id
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, CareTypeService $careTypeService)
     {

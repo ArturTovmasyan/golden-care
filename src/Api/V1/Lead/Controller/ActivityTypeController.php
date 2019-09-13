@@ -107,7 +107,7 @@ class ActivityTypeController extends BaseController
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ActivityTypeService $activityTypeService)
     {
@@ -142,7 +142,7 @@ class ActivityTypeController extends BaseController
      * @param $id
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ActivityTypeService $activityTypeService)
     {

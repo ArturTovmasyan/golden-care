@@ -64,7 +64,7 @@ class NotificationService extends BaseService implements IGridService
     /**
      * @param array $params
      * @return int|null
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function add(array $params) : ?int
     {
@@ -173,7 +173,7 @@ class NotificationService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function edit($id, array $params) : void
     {

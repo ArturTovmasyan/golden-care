@@ -330,7 +330,7 @@ class ApartmentController extends BaseController
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ApartmentService $apartmentService)
     {
@@ -414,7 +414,7 @@ class ApartmentController extends BaseController
      * @param $id
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ApartmentService $apartmentService)
     {

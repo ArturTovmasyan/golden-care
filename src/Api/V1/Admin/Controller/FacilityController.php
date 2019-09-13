@@ -338,7 +338,7 @@ class FacilityController extends BaseController
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, FacilityService $facilityService)
     {
@@ -425,7 +425,7 @@ class FacilityController extends BaseController
      * @param $id
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, FacilityService $facilityService)
     {

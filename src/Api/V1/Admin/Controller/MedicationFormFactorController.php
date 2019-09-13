@@ -248,7 +248,7 @@ class MedicationFormFactorController extends BaseController
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
     {
@@ -305,7 +305,7 @@ class MedicationFormFactorController extends BaseController
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService)
     {

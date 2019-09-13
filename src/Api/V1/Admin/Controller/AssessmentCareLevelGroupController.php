@@ -233,7 +233,7 @@ class AssessmentCareLevelGroupController extends BaseController
      * @param Request $request
      * @param AssessmentCareLevelGroupService $careLevelGroupService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, AssessmentCareLevelGroupService $careLevelGroupService)
     {
@@ -288,7 +288,7 @@ class AssessmentCareLevelGroupController extends BaseController
      * @param $id
      * @param AssessmentCareLevelGroupService $careLevelGroupService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, AssessmentCareLevelGroupService $careLevelGroupService)
     {

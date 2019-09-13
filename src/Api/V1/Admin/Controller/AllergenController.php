@@ -256,7 +256,7 @@ class AllergenController extends BaseController
      * @param Request $request
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, AllergenService $allergenService)
     {
@@ -316,7 +316,7 @@ class AllergenController extends BaseController
      * @param $id
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, AllergenService $allergenService)
     {

@@ -318,7 +318,7 @@ class ResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResponsiblePersonService $responsiblePersonService)
     {
@@ -397,7 +397,7 @@ class ResponsiblePersonController extends BaseController
      * @param $id
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService)
     {

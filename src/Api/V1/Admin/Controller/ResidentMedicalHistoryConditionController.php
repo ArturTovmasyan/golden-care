@@ -274,7 +274,7 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
     {
@@ -342,7 +342,7 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param $id
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
     {

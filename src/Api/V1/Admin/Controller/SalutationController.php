@@ -271,7 +271,7 @@ class SalutationController extends BaseController
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, SalutationService $salutationService)
     {
@@ -327,7 +327,7 @@ class SalutationController extends BaseController
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, SalutationService $salutationService)
     {

@@ -117,7 +117,7 @@ class LeadService extends BaseService implements IGridService
      * @param RouterInterface $router
      * @param array $params
      * @return int|null
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function add(RouterInterface $router, array $params) : ?int
     {
@@ -326,7 +326,7 @@ class LeadService extends BaseService implements IGridService
      * @param $id
      * @param RouterInterface $router
      * @param array $params
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function edit($id, RouterInterface $router, array $params) : void
     {

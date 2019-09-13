@@ -256,7 +256,7 @@ class MedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param MedicalHistoryConditionService $medicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, MedicalHistoryConditionService $medicalHistoryConditionService)
     {
@@ -316,7 +316,7 @@ class MedicalHistoryConditionController extends BaseController
      * @param $id
      * @param MedicalHistoryConditionService $medicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, MedicalHistoryConditionService $medicalHistoryConditionService)
     {

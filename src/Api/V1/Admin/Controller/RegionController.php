@@ -280,7 +280,7 @@ class RegionController extends BaseController
      * @param Request $request
      * @param RegionService $regionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, RegionService $regionService)
     {
@@ -349,7 +349,7 @@ class RegionController extends BaseController
      * @param $id
      * @param RegionService $regionService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, RegionService $regionService)
     {

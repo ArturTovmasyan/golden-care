@@ -122,7 +122,7 @@ class ContactController extends BaseController
      * @param Request $request
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ContactService $contactService)
     {
@@ -154,7 +154,7 @@ class ContactController extends BaseController
      * @param $id
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ContactService $contactService)
     {

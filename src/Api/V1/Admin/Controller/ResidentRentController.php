@@ -323,7 +323,7 @@ class ResidentRentController extends BaseController
      * @param Request $request
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentRentService $residentRentService)
     {
@@ -404,7 +404,7 @@ class ResidentRentController extends BaseController
      * @param $id
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentRentService $residentRentService)
     {

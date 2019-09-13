@@ -265,7 +265,7 @@ class ResidentResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
     {
@@ -326,7 +326,7 @@ class ResidentResponsiblePersonController extends BaseController
      * @param $id
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService)
     {
@@ -481,7 +481,7 @@ class ResidentResponsiblePersonController extends BaseController
      * @param $id
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function reorderAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
     {

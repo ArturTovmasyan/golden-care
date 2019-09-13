@@ -228,7 +228,7 @@ class SpaceController extends BaseController
      * @param Request $request
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, SpaceService $spaceService)
     {

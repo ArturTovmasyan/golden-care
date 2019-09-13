@@ -113,7 +113,7 @@ class ReferralController extends BaseController
      * @param Request $request
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ReferralService $referralService)
     {
@@ -143,7 +143,7 @@ class ReferralController extends BaseController
      * @param $id
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ReferralService $referralService)
     {

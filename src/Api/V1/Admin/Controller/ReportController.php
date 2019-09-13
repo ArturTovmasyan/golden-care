@@ -79,7 +79,7 @@ class ReportController extends BaseController
      * @param $alias
      * @param ReportService $reportService
      * @return PdfResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function getAction(Request $request, $group, $alias, ReportService $reportService)
     {

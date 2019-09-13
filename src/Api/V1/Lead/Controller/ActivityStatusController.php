@@ -107,7 +107,7 @@ class ActivityStatusController extends BaseController
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ActivityStatusService $activityStatusService)
     {
@@ -135,7 +135,7 @@ class ActivityStatusController extends BaseController
      * @param $id
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ActivityStatusService $activityStatusService)
     {

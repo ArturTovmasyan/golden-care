@@ -128,7 +128,7 @@ class ActivityController extends BaseController
      * @param ActivityService $activityService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ActivityService $activityService, RouterInterface $router)
     {
@@ -168,7 +168,7 @@ class ActivityController extends BaseController
      * @param ActivityService $activityService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ActivityService $activityService, RouterInterface $router)
     {

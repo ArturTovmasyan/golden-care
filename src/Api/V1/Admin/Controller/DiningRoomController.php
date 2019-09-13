@@ -249,7 +249,7 @@ class DiningRoomController extends BaseController
      * @param Request $request
      * @param DiningRoomService $diningRoomService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, DiningRoomService $diningRoomService)
     {
@@ -306,7 +306,7 @@ class DiningRoomController extends BaseController
      * @param $id
      * @param DiningRoomService $diningRoomService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, DiningRoomService $diningRoomService)
     {

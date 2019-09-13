@@ -107,7 +107,7 @@ class StateChangeReasonController extends BaseController
      * @param Request $request
      * @param StateChangeReasonService $stateChangeReasonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, StateChangeReasonService $stateChangeReasonService)
     {
@@ -135,7 +135,7 @@ class StateChangeReasonController extends BaseController
      * @param $id
      * @param StateChangeReasonService $stateChangeReasonService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, StateChangeReasonService $stateChangeReasonService)
     {

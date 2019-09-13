@@ -107,7 +107,7 @@ class OrganizationController extends BaseController
      * @param Request $request
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, OrganizationService $organizationService)
     {
@@ -140,7 +140,7 @@ class OrganizationController extends BaseController
      * @param $id
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, OrganizationService $organizationService)
     {

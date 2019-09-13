@@ -259,7 +259,7 @@ class ResidentPhysicianController extends BaseController
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentPhysicianService $residentPhysicianService)
     {
@@ -319,7 +319,7 @@ class ResidentPhysicianController extends BaseController
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService)
     {
@@ -490,7 +490,7 @@ class ResidentPhysicianController extends BaseController
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function reorderAction(Request $request, ResidentPhysicianService $residentPhysicianService)
     {

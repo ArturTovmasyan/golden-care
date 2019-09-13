@@ -130,13 +130,13 @@ class ResidentController extends BaseController
     {
         $options = $this->getOptionsByGroupName(Resident::class, 'api_admin_resident_grid');
 
-        if (!empty($request->get('state')) || (!empty($request->get('type')) && !empty($request->get('typeId')))) {
+        if (!empty($request->get('state')) || (!empty($request->get('type')) && !empty($request->get('type_id')))) {
             $state = $request->get('state');
             $type = (int)$request->get('type');
 
             $content = json_decode($options->getContent(), true);
             foreach ($content['fields'] as $key => $field) {
-                if (!empty($request->get('type')) && !empty($request->get('typeId'))) {
+                if (!empty($request->get('type')) && !empty($request->get('type_id'))) {
                     if ($field['id'] === 'group') {
                         unset($content['fields'][$key]);
                     }
@@ -203,7 +203,7 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param ResidentService $residentService
      * @return JsonResponse|PdfResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function listAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService)
     {
@@ -276,23 +276,6 @@ class ResidentController extends BaseController
     }
 
     /**
-     * @Route("/state/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_state", methods={"GET"})
-     *
-     * @param ResidentService $residentService
-     * @param $id
-     * @return JsonResponse
-     */
-    public function getResidentStateAction(Request $request, $id, ResidentService $residentService)
-    {
-        return $this->respondSuccess(
-            Response::HTTP_OK,
-            '',
-            $residentService->getResidentStateById($id),
-            ['api_admin_resident_get_state']
-        );
-    }
-
-    /**
      * @api {post} /api/v1.0/admin/resident Add Resident
      * @apiVersion 1.0.0
      * @apiName Add Resident
@@ -345,7 +328,7 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @param ImageFilterService $imageFilterService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService)
     {
@@ -540,6 +523,50 @@ class ResidentController extends BaseController
     }
 
     /**
+     * @api {post} /api/v1.0/admin/resident/related/info Resident related info
+     * @apiVersion 1.0.0
+     * @apiName Resident Related Info
+     * @apiGroup Admin Residents
+     * @apiDescription This function is used to get resident related info
+     *
+     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the facilities
+     *
+     * @apiParamExample {json} Request-Example:
+     *     ["2", "1", "5"]
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 624,
+     *          "error": "Resident not found"
+     *     }
+     *
+     * @Route("/related/info", name="api_admin_resident_related_info", methods={"POST"})
+     *
+     * @param Request $request
+     * @param ResidentService $residentService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function relatedInfoAction(Request $request, ResidentService $residentService)
+    {
+        $relatedData = $residentService->getRelatedInfo($request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$relatedData]
+        );
+    }
+
+    /**
      * @api {put} /api/v1.0/admin/resident/{id}/photo Edit Resident Photo
      * @apiVersion 1.0.0
      * @apiName Edit Resident Photo
@@ -599,46 +626,19 @@ class ResidentController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/related/info Resident related info
-     * @apiVersion 1.0.0
-     * @apiName Resident Related Info
-     * @apiGroup Admin Residents
-     * @apiDescription This function is used to get resident related info
+     * @Route("/state/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_state", methods={"GET"})
      *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Resident not found"
-     *     }
-     *
-     * @Route("/related/info", name="api_admin_resident_related_info", methods={"POST"})
-     *
-     * @param Request $request
      * @param ResidentService $residentService
+     * @param $id
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentService $residentService)
+    public function getResidentStateAction(Request $request, $id, ResidentService $residentService)
     {
-        $relatedData = $residentService->getRelatedInfo($request->get('ids'));
-
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            [$relatedData]
+            $residentService->getResidentStateById($id),
+            ['api_admin_resident_get_state']
         );
     }
 

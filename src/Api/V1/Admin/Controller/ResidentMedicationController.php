@@ -373,7 +373,7 @@ class ResidentMedicationController extends BaseController
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, ResidentMedicationService $residentMedicationService)
     {
@@ -469,7 +469,7 @@ class ResidentMedicationController extends BaseController
      * @param $id
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, ResidentMedicationService $residentMedicationService)
     {

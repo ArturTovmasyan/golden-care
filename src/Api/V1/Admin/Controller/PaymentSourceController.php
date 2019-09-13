@@ -248,7 +248,7 @@ class PaymentSourceController extends BaseController
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function addAction(Request $request, PaymentSourceService $paymentSourceService)
     {
@@ -305,7 +305,7 @@ class PaymentSourceController extends BaseController
      * @param $id
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function editAction(Request $request, $id, PaymentSourceService $paymentSourceService)
     {
