@@ -353,6 +353,8 @@ report:
           title: "60 Days Roster: 60 Days Roster Report"
         event-list:
           title: "Events: List of Residents Events"
+        move-monthly:
+          title: "Move-in/Move-Out"
     form:
       title: "Forms Reports"
       children:
