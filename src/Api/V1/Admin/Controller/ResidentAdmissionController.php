@@ -304,20 +304,22 @@ class ResidentAdmissionController extends BaseController
     /**
      * @Route("/paged/{state}/{page}/{perPage}", requirements={"page"="\d+", "perPage"="\d+"}, name="api_admin_resident_admission_get_pagination_residents", methods={"GET"})
      *
+     * @param Request $request
      * @param $state
      * @param $page
      * @param $perPage
-     * @param $type
-     * @param $typeId
      * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      */
     public function getPerPageResidentsAction(Request $request, $state, $page, $perPage, ResidentAdmissionService $residentAdmissionService)
     {
+        $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
+        $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getPerPageResidents($state, $page, $perPage, $request->get('type'), $request->get('type_id')),
+            $residentAdmissionService->getPerPageResidents($state, $page, $perPage, $type, $typeId),
             ['api_admin_resident_get_pagination']
         );
     }
