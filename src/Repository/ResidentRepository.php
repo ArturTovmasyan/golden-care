@@ -209,6 +209,11 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $queryBuilder
+            ->addOrderBy("CONCAT(
+            CASE WHEN sal IS NOT NULL THEN CONCAT(sal.title, ' ') ELSE '' END, 
+            r.firstName, ' ', r.lastName)", 'ASC');
+
+        $queryBuilder
             ->groupBy('r.id');
     }
 
