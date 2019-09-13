@@ -24,9 +24,9 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "o.id"
  *          },
  *          {
- *              "id"         = "title",
+ *              "id"         = "name",
  *              "type"       = "string",
- *              "field"      = "o.title",
+ *              "field"      = "o.name",
  *              "link"       = "/lead/referral/organization/:id"
  *          },
  *          {
@@ -89,14 +89,14 @@ class Organization
 
     /**
      * @var string
-     * @ORM\Column(name="title", type="string", length=60)
+     * @ORM\Column(name="name", type="string", length=60)
      * @Assert\NotBlank(groups={
      *     "api_lead_organization_add",
      *     "api_lead_organization_edit"
      * })
      * @Assert\Length(
      *      max = 60,
-     *      maxMessage = "Title cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_organization_add",
      *          "api_lead_organization_edit"
@@ -115,7 +115,7 @@ class Organization
      *     "api_lead_contact_get"
      * })
      */
-    private $title;
+    private $name;
 
     /**
      * @var ReferrerType
@@ -279,18 +279,18 @@ class Organization
     /**
      * @return null|string
      */
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * @param null|string $title
+     * @param null|string $name
      */
-    public function setTitle(?string $title): void
+    public function setName(?string $name): void
     {
-        $title = preg_replace('/\s\s+/', ' ', $title);
-        $this->title = $title;
+        $name = preg_replace('/\s\s+/', ' ', $name);
+        $this->name = $name;
     }
 
     /**

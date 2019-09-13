@@ -96,7 +96,7 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
         }
 
         $qb
-            ->addOrderBy('o.title', 'ASC');
+            ->addOrderBy('o.name', 'ASC');
 
         return $qb
             ->getQuery()
@@ -200,7 +200,7 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
     {
         $qb = $this
             ->createQueryBuilder('o')
-            ->select('o.title');
+            ->select('o.name');
 
         if ($mappedBy !== null && $id !== null) {
             $qb

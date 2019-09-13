@@ -97,7 +97,7 @@ class OrganizationService extends BaseService implements IGridService
             $emails = !empty($params['emails']) ? $params['emails'] : [];
 
             $organization = new Organization();
-            $organization->setTitle($params['title']);
+            $organization->setName($params['name']);
             $organization->setCategory($category);
             $organization->setAddress1($params['address_1']);
             $organization->setAddress2($params['address_2']);
@@ -171,8 +171,7 @@ class OrganizationService extends BaseService implements IGridService
 
             $emails = !empty($params['emails']) ? $params['emails'] : [];
 
-            $entity->setTitle($params['title']);
-            $entity->setTitle($params['title']);
+            $entity->setName($params['name']);
             $entity->setCategory($category);
             $entity->setAddress1($params['address_1']);
             $entity->setAddress2($params['address_2']);

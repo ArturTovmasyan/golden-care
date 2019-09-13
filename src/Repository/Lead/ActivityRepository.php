@@ -540,8 +540,8 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 "(CASE
                     WHEN l.id IS NOT NULL THEN CONCAT('Lead : ', l.firstName, ' ', l.lastName)
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT('Referral : ', rc.firstName, ' ', rc.lastName)
-                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN CONCAT('Referral : ', ro.title)
-                    WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.title)
+                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN CONCAT('Referral : ', ro.name)
+                    WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.name)
                 ELSE 'INVALID' END) as type",
                 "CONCAT(u.firstName, ' ', u.lastName) as assignToFullName",
                 "CONCAT(cb.firstName, ' ', cb.lastName) as enteredByFullName",

@@ -341,7 +341,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
                 "(CASE
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT(rc.firstName, ' ', rc.lastName)
-                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN ro.title
+                    WHEN r.id IS NOT NULL AND rc.id IS NULL THEN ro.name
                     ELSE 'N/A' END) as referralFullName",
                 'f.name as primaryFacility'
             )

@@ -113,7 +113,7 @@ class OrganizationController extends BaseController
     {
         $id = $organizationService->add(
             [
-                'title' => $request->get('title'),
+                'name' => $request->get('name'),
                 'category_id' => $request->get('category_id'),
                 'address_1' => $request->get('address_1'),
                 'address_2' => $request->get('address_2') ?? '',
@@ -147,7 +147,7 @@ class OrganizationController extends BaseController
         $organizationService->edit(
             $id,
             [
-                'title' => $request->get('title'),
+                'name' => $request->get('name'),
                 'category_id' => $request->get('category_id'),
                 'address_1' => $request->get('address_1'),
                 'address_2' => $request->get('address_2') ?? '',

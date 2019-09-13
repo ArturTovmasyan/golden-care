@@ -566,14 +566,14 @@ class ActivityService extends BaseService implements IGridService
                     if ($activity->getReferral()->getContact() !== null) {
                         $owner = $activity->getReferral()->getContact()->getFirstName() . ' ' . $activity->getReferral()->getContact()->getLastName();
                     } else {
-                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
+                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getName() : '';
                     }
                 }
                 $id = $activity->getReferral()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
-                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
+                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
 
                 break;
@@ -631,14 +631,14 @@ class ActivityService extends BaseService implements IGridService
                     if ($activity->getReferral()->getContact() !== null) {
                         $owner = $activity->getReferral()->getContact()->getFirstName() . ' ' . $activity->getReferral()->getContact()->getLastName();
                     } else {
-                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getTitle() : '';
+                        $owner = $activity->getReferral()->getOrganization() ? $activity->getReferral()->getOrganization()->getName() : '';
                     }
                 }
                 $id = $activity->getReferral()->getId();
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
-                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getTitle() : '';
+                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
 
                 break;

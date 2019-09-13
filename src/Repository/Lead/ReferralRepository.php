@@ -334,7 +334,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 Join::WITH,
                 'c = r.contact'
             )
-            ->select("CASE WHEN c.id IS NOT NULL THEN CONCAT(c.firstName, ' ', c.lastName) ELSE o.title END as name");
+            ->select("CASE WHEN c.id IS NOT NULL THEN CONCAT(c.firstName, ' ', c.lastName) ELSE o.name END as name");
 
         if ($mappedBy !== null && $id !== null) {
             $qb
@@ -400,7 +400,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
                 'c.firstName as firstName',
                 'c.lastName as lastName',
                 'rt.title as typeTitle',
-                'o.title as orgTitle',
+                'o.name as orgTitle',
                 "CONCAT(l.firstName, ' ', l.lastName) AS leadName",
                 'c.emails as emails',
                 'r.notes as notes'

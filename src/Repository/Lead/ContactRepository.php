@@ -305,7 +305,7 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
                 'c.id as id',
                 'c.firstName as firstName',
                 'c.lastName as lastName',
-                'o.title as orgTitle',
+                'o.name as orgTitle',
                 'c.emails as emails',
                 'c.notes as notes'
             )
