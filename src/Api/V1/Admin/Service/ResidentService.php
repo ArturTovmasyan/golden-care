@@ -2,6 +2,9 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
+use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -9,12 +12,17 @@ use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
+use App\Entity\CareLevel;
+use App\Entity\CityStateZip;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\GroupType;
+use App\Repository\CareLevelRepository;
+use App\Repository\CityStateZipRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
@@ -345,6 +353,35 @@ class ResidentService extends BaseService implements IGridService
                 }
             }
 
+            // save admission
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            /** @var ResidentAdmission $lastAction */
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
+
+            if ($lastAction !== null) {
+                switch ($lastAction->getGroupType()) {
+                    case GroupType::TYPE_FACILITY:
+                        $validationGroup = 'api_admin_facility_edit';
+                        $lastAction = $this->saveAsFacility($lastAction, $params);
+                        break;
+                    case GroupType::TYPE_APARTMENT:
+                        $validationGroup = 'api_admin_apartment_edit';
+                        $lastAction = $this->saveAsApartment($lastAction);
+                        break;
+                    case GroupType::TYPE_REGION:
+                        $validationGroup = 'api_admin_region_edit';
+                        $lastAction = $this->saveAsRegion($lastAction, $params);
+                        break;
+                    default:
+                        throw new IncorrectStrategyTypeException();
+                }
+
+                $this->validate($lastAction, null, [$validationGroup]);
+                $this->em->persist($lastAction);
+            }
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -404,6 +441,97 @@ class ResidentService extends BaseService implements IGridService
         }
 
         return $residentPhones;
+    }
+
+    /**
+     * @param ResidentAdmission $entity
+     * @param array $params
+     * @return ResidentAdmission
+     */
+    private function saveAsFacility(ResidentAdmission $entity, array $params): ResidentAdmission
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var CareLevelRepository $careLevelRepo */
+        $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+        /** @var CareLevel $careLevel */
+        $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+        if ($careLevel === null) {
+            throw new CareLevelNotFoundException();
+        }
+
+        $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
+
+        $entity->setDnr($params['dnr'] ?? false);
+        $entity->setPolst($params['polst'] ?? false);
+        $entity->setAmbulatory($params['ambulatory'] ?? false);
+        $entity->setCareGroup($careGroup);
+        $entity->setCareLevel($careLevel);
+        $entity->setAddress(null);
+        $entity->setCsz(null);
+
+        return $entity;
+    }
+
+    /**
+     * @param ResidentAdmission $entity
+     * @return ResidentAdmission
+     */
+    private function saveAsApartment(ResidentAdmission $entity): ResidentAdmission
+    {
+        $entity->setDnr(false);
+        $entity->setPolst(false);
+        $entity->setAmbulatory(false);
+        $entity->setCareGroup(null);
+        $entity->setCareLevel(null);
+        $entity->setAddress(null);
+        $entity->setCsz(null);
+
+        return $entity;
+    }
+
+    /**
+     * @param ResidentAdmission $entity
+     * @param array $params
+     * @return ResidentAdmission
+     */
+    private function saveAsRegion(ResidentAdmission $entity, array $params): ResidentAdmission
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var CityStateZipRepository $cszRepo */
+        $cszRepo = $this->em->getRepository(CityStateZip::class);
+
+        /** @var CityStateZip $csz */
+        $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $params['csz_id']);
+
+        /** @var CareLevelRepository $careLevelRepo */
+        $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+        /** @var CareLevel $careLevel */
+        $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+        if ($csz === null) {
+            throw new CityStateZipNotFoundException();
+        }
+
+        if ($careLevel === null) {
+            throw new CareLevelNotFoundException();
+        }
+
+        $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
+
+        $entity->setDnr($params['dnr'] ?? false);
+        $entity->setPolst($params['polst'] ?? false);
+        $entity->setAmbulatory($params['ambulatory'] ?? false);
+        $entity->setCareGroup($careGroup);
+        $entity->setCareLevel($careLevel);
+        $entity->setAddress($params['address']);
+        $entity->setCsz($csz);
+
+        return $entity;
     }
 
     /**

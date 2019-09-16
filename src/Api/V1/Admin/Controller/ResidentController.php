@@ -431,6 +431,13 @@ class ResidentController extends BaseController
                 'ssn'        => $request->get('ssn'),
                 'photo'         => $request->get('photo'),
                 'phones'        => $request->get('phones'),
+                'dnr' => $request->get('dnr'),
+                'polst' => $request->get('polst'),
+                'ambulatory' => $request->get('ambulatory'),
+                'care_group' => $request->get('care_group'),
+                'care_level_id' => $request->get('care_level_id'),
+                'address' => $request->get('address'),
+                'csz_id' => $request->get('csz_id'),
             ]
         );
 
