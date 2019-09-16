@@ -335,29 +335,31 @@ report:
     resident:
       title: "Resident Reports"
       children:
-        profile:
-          title: "Profile: Profile for selected resident / all residents"
-        profile-no-admission:
-          title: "Profile: Profile for selected resident / all residents (pre-admit)"
+        sixty-days-roster:
+          title: "60 Days Roster: 60 Days Roster Report"
+        detailed-roster:
+          title: "Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
+        dietary-restrictions:
+          title: "Dietary Restrictions: Dietary Restrictions Report"
+        event-list:
+          title: "Events: List of Residents Events"
         face-sheet:
           title: "FACE Sheet: FACE Sheet for selected resident / all residents"
         face-sheet-no-admission:
           title: "FACE Sheet: FACE Sheet for selected resident / all residents (pre-admit)"
-        detailed-roster:
-          title: "Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
-        simple-roster:
-          title: "Simple Roster: Simple list of Residents, sorted by Room Number"
-        dietary-restrictions:
-          title: "Dietary Restrictions: Dietary Restrictions Report"
-        sixty-days-roster:
-          title: "60 Days Roster: 60 Days Roster Report"
-        event-list:
-          title: "Events: List of Residents Events"
         move-monthly:
           title: "Move-in/Move-Out"
+        profile:
+          title: "Profile: Profile for selected resident / all residents"
+        profile-no-admission:
+          title: "Profile: Profile for selected resident / all residents (pre-admit)"
+        simple-roster:
+          title: "Simple Roster: Simple list of Residents, sorted by Room Number"
     form:
       title: "Forms Reports"
       children:
+        assessment-form-blank:
+          title: "Assessment Form Report (Blank)"
         birthday-list:
           title: "Birthday list: List of all residents birthdays, Monthly"
         blood-pressure:
@@ -392,8 +394,6 @@ report:
           title: "Shower Skin Inspection Selected Resident: Shower Skin Inspection for current selected resident"
         shower-skin-list:
           title: "Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number."
-        assessment-form-blank:
-          title: "Assessment Form Report (Blank)"
     room:
       title: "Room Reports"
       children:
@@ -430,9 +430,9 @@ report:
     lead:
       title: "Lead Reports"
       children:
+        activity:
+          title: "Generate Activity List Report"
         lead:
           title: "Generate Lead List Report"
         referral:
           title: "Generate Referral List Report"
-        activity:
-          title: "Generate Activity List Report"

@@ -3,6 +3,74 @@ resident:
   show_in_resident_list: true
   show_in_group_list: true
   reports:
+    sixty-days-roster:
+        service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
+        title: '60 Days Roster: 60 Days Roster Report'
+        show_in_resident_list: true
+        show_in_group_list: true
+        formats: ['csv']
+        parameters:
+          group:
+            select_all: true
+          date: "m/d/Y"
+    detailed-roster:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
+      title: 'Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    dietary-restrictions:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDietaryRestrictionsReport
+      title: 'Dietary Restrictions: Dietary Restrictions Report'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+    event-list:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getEventReport
+      title: 'Events: List of Residents Events'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
+    face-sheet:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
+      title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
+      show_in_resident_list: true
+      show_in_group_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
+    face-sheet-no-admission:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetNoAdmissionReport
+      title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
+      show_in_resident_list: false
+      show_in_group_list: false
+      formats: ['pdf']
+      template: 'face-sheet'
+      parameters:
+        resident:
+          select_all: false
+    move-monthly:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getResidentMoveByMonthReport
+      title: 'Move-in/Move-Out'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        date: "m/Y"
+        group:
+          select_all: true
     profile:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getProfileReport
       title: 'Profile: Profile for selected resident / all residents'
@@ -24,34 +92,6 @@ resident:
         discontinued: true
         resident:
           select_all: false
-    face-sheet:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
-      title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
-      show_in_resident_list: true
-      show_in_group_list: false
-      formats: ['pdf']
-      parameters:
-        resident:
-          select_all: true
-    face-sheet-no-admission:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetNoAdmissionReport
-      title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
-      show_in_resident_list: false
-      show_in_group_list: false
-      formats: ['pdf']
-      template: 'face-sheet'
-      parameters:
-        resident:
-          select_all: false
-    detailed-roster:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
-      title: 'Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['pdf']
-      parameters:
-        group:
-          select_all: true
     simple-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSimpleRosterReport
       title: 'Simple Roster: Simple list of Residents, sorted by Room Number'
@@ -61,51 +101,20 @@ resident:
       parameters:
         group:
           select_all: true
-    dietary-restrictions:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDietaryRestrictionsReport
-      title: 'Dietary Restrictions: Dietary Restrictions Report'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['pdf']
-      parameters:
-        group:
-          select_all: true
-    sixty-days-roster:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
-      title: '60 Days Roster: 60 Days Roster Report'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['csv']
-      parameters:
-        group:
-          select_all: true
-        date: "m/d/Y"
-    event-list:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getEventReport
-      title: 'Events: List of Residents Events'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['pdf', 'csv']
-      parameters:
-        group:
-          select_all: true
-        date_from: "m/d/Y"
-        date_to: "m/d/Y"
-    move-monthly:
-      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getResidentMoveByMonthReport
-      title: 'Move-in/Move-Out'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['csv']
-      parameters:
-        date: "m/Y"
-        group:
-          select_all: true
 form:
   title: 'Forms Reports'
   show_in_resident_list: true
   show_in_group_list: true
   reports:
+    assessment-form-blank:
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getAssessmentFormBlankReport
+      title: 'Assessment Form Report (Blank)'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf']
+      parameters:
+        form:
+          select_all: false
     birthday-list:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBirthdayListReport
       title: 'Birthday list: List of all residents birthdays, Monthly'
@@ -270,15 +279,6 @@ form:
       parameters:
         group:
           select_all: true
-    assessment-form-blank:
-      service: App\Api\V1\Admin\Service\Report\FormReportService::getAssessmentFormBlankReport
-      title: 'Assessment Form Report (Blank)'
-      show_in_resident_list: true
-      show_in_group_list: true
-      formats: ['pdf']
-      parameters:
-        form:
-          select_all: false
 room:
   title: 'Room Reports'
   show_in_resident_list: true
@@ -417,6 +417,15 @@ lead:
   show_in_resident_list: false
   show_in_group_list: false
   reports:
+    activity:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
+      title: 'Generate Activity List Report'
+      show_in_resident_list: false
+      show_in_group_list: false
+      formats: ['csv']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
     lead:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getLeadReport
       title: 'Generate Lead List Report'
@@ -429,15 +438,6 @@ lead:
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
       title: 'Generate Referral List Report'
-      show_in_resident_list: false
-      show_in_group_list: false
-      formats: ['csv']
-      parameters:
-        date_from: "m/d/Y"
-        date_to: "m/d/Y"
-    activity:
-      service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
-      title: 'Generate Activity List Report'
       show_in_resident_list: false
       show_in_group_list: false
       formats: ['csv']
