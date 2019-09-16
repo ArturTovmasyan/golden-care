@@ -128,7 +128,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
@@ -228,7 +227,6 @@ class Resident
      *     "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
@@ -245,7 +243,6 @@ class Resident
      *      }
      * )
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
@@ -270,7 +267,6 @@ class Resident
      *          "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
@@ -283,7 +279,6 @@ class Resident
      *      "api_admin_resident_edit"
      * })
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
@@ -293,7 +288,6 @@ class Resident
      * @var ResidentImage
      * @ORM\OneToOne(targetEntity="App\Entity\ResidentImage", mappedBy="resident", cascade={"remove", "persist"})
      * @Groups({
-     *      "api_admin_resident_list",
      *      "api_admin_resident_get"
      * })
      */
