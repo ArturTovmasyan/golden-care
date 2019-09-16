@@ -392,8 +392,8 @@ report:
           title: "Shower Skin Inspection Selected Resident: Shower Skin Inspection for current selected resident"
         shower-skin-list:
           title: "Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number."
-        assessment-blank:
-          title: "Assessment Report (Blank)"
+        assessment-form-blank:
+          title: "Assessment Form Report (Blank)"
     room:
       title: "Room Reports"
       children:

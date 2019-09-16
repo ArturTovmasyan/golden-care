@@ -1,0 +1,115 @@
+{% extends '@api_report/base.twig' %}
+
+{% block pageTitle %}
+    {{ data.title }}
+{% endblock %}
+{% block pageContent %}
+    <table class="report-table main-table">
+        <tr class="divider"></tr>
+        <tr>
+            <td colspan="3">
+                <table width="100%">
+                    <tr>
+                        <td width="60%">
+                            <table width="100%">
+                                <tr>
+                                    <td width="40%" align="right"><b>Resident Name: </b></td>
+                                    <td width="40%">{{ data.residentFullName }}</td>
+                                    <td width="20%"></td>
+                                </tr>
+                                <tr>
+                                    <td width="40%" align="right"><b>Performed By: </b></td>
+                                    <td width="40%">{{ data.performedBy }}</td>
+                                    <td width="20%"></td>
+                                </tr>
+                                <tr>
+                                    <td width="40%" align="right"><b>Date: </b></td>
+                                    <td width="40%">{{ data.date }}</td>
+                                    <td width="20%"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="40%" align="right">
+                            <b>Score: </b>
+                            {{ data.totalScore }}
+                            <br/>
+                            {% for group in data.groups %}
+                                <b>{{ group.group }}: </b>
+                                    _________________
+                                <br/>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td></td>
+        </tr>
+        <tr class="divider"></tr>
+        {% if data.table is defined %}
+            <tr>
+                <td width="20%">
+                    <b>Activity</b>
+                </td>
+                <td width="60%">
+                    <b>Criteria</b>
+                </td>
+                <td width="20%">
+                    <b>Score</b>
+                </td>
+            </tr>
+            {% for table in data.table %}
+                {% if table[3] == 'activity' %}
+                    <tr class="divider"></tr>
+                    <tr>
+                        <td colspan="3">
+                            <b>{{ table[0] }}</b>
+                        </td>
+                    </tr>
+                {% elseif table[3] == 'row' %}
+                    <tr>
+                        <td></td>
+                        <td>{{ table[0] }}</td>
+                        <td align="right">= &nbsp;{{ table[1] }}</td>
+                    </tr>
+                {% elseif table[3] == 'score' %}
+                    <tr class="divider"></tr>
+                    <tr>
+                        <td colspan="3" align="right"><b>Score: &nbsp;</b>{{ table[2] }} {{ table[1] }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </table>
+{% endblock %}
+{% block pageFooter %}
+    <table width="100%" class="report-table">
+        <tr class="divider"></tr>
+        {% for i, careLevelGroup in data.allGroups %}
+            {% if i % 3 == 0 %}
+                <tr>{% endif %}
+            <td width="50%">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <b>{{ careLevelGroup.title }}</b>
+                        </td>
+                    </tr>
+                    <tr class="divider"></tr>
+                    {% set isSelectedLevel = false %}
+                    {% for careLevel in careLevelGroup.careLevels %}
+                        <tr>
+                            <td style="width: 200px;">
+                                {{ careLevel.levelLow }} - {% if careLevel.levelHigh %}{{ careLevel.levelHigh }}{% else %}+{% endif %}
+                                ({{ careLevel.title|raw }})
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+            {% if (i + 1) % 3 == 2 or (i + 1) ==  data.allGroups|length %}</tr>{% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}
+

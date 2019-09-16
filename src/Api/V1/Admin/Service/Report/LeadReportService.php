@@ -29,9 +29,10 @@ class LeadReportService extends BaseService
      * @param $dateFrom
      * @param $dateTo
      * @param $assessmentId
+     * @param $assessmentFormId
      * @return LeadList
      */
-    public function getLeadReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getLeadReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -110,9 +111,10 @@ class LeadReportService extends BaseService
      * @param $dateFrom
      * @param $dateTo
      * @param $assessmentId
+     * @param $assessmentFormId
      * @return ReferralList
      */
-    public function getReferralReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getReferralReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -193,9 +195,10 @@ class LeadReportService extends BaseService
      * @param $dateFrom
      * @param $dateTo
      * @param $assessmentId
+     * @param $assessmentFormId
      * @return ActivityList
      */
-    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

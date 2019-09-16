@@ -270,13 +270,12 @@ form:
       parameters:
         group:
           select_all: true
-    assessment-blank:
-      service: App\Api\V1\Admin\Service\Report\AssessmentReportService::getBlankReport
-      title: 'Assessment Report (Blank)'
+    assessment-form-blank:
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getAssessmentFormBlankReport
+      title: 'Assessment Form Report (Blank)'
       show_in_resident_list: true
       show_in_group_list: false
       formats: ['pdf']
-      template: 'blank'
       parameters:
         assessment:
           select_all: false

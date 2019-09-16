@@ -25,9 +25,11 @@ class PhysicianReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
      * @return PhysicianSimple
      */
-    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -95,9 +97,11 @@ class PhysicianReportService extends BaseService
      * @param $date
      * @param $dateFrom
      * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
      * @return PhysicianFull
      */
-    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId)
+    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

@@ -186,6 +186,7 @@ class ReportService
         $request_dateTo = $request->get('date_to') ?? null;
 
         $request_assessmentId = $request->get('assessment_id') ? (int)$request->get('assessment_id') : null;
+        $request_assessmentFormId = $request->get('assessment_form_id') ? (int)$request->get('assessment_form_id') : null;
 
         $discontinued = $request->get('discontinued') ? (bool)$request->get('discontinued') : false;
 
@@ -199,6 +200,7 @@ class ReportService
             $request_dateFrom,
             $request_dateTo,
             $request_assessmentId,
+            $request_assessmentFormId,
             $discontinued
         );
     }
@@ -223,6 +225,7 @@ class ReportService
         $parameters = $this->config[$group]['reports'][$alias]['parameters'];
 
         $assessmentId = $request->get('assessment_id') ?? null;
+        $assessmentFormId = $request->get('assessment_form_id') ?? null;
 
         $group = $request->get('type') ?? null;
         $groupAll = $request->get('type_all') ?? null;
@@ -260,7 +263,7 @@ class ReportService
         }
 
         // TODO: review temp solution
-        if ($assessmentId !== null) {
+        if ($assessmentId !== null || $assessmentFormId !== null) {
             return;
         }
 
