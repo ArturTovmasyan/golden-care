@@ -277,7 +277,7 @@ form:
       show_in_group_list: false
       formats: ['pdf']
       parameters:
-        assessment:
+        form:
           select_all: false
 room:
   title: 'Room Reports'
