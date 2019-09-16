@@ -357,10 +357,8 @@ class ResidentService extends BaseService implements IGridService
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-            //TODO remove line $lastAction = null
             /** @var ResidentAdmission $lastAction */
-//            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
-            $lastAction = null;
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
 
             if ($lastAction !== null) {
                 switch ($lastAction->getGroupType()) {
