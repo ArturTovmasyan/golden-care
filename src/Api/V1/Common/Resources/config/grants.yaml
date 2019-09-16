@@ -359,7 +359,7 @@ report:
       title: "Forms Reports"
       children:
         assessment-form-blank:
-          title: "Assessment Form Report (Blank)"
+          title: "Assessment Report (Blank)"
         birthday-list:
           title: "Birthday list: List of all residents birthdays, Monthly"
         blood-pressure:

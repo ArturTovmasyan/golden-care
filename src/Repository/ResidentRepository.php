@@ -209,9 +209,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $queryBuilder
-            ->addOrderBy("CONCAT(
-            CASE WHEN sal IS NOT NULL THEN CONCAT(sal.title, ' ') ELSE '' END, 
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         $queryBuilder
             ->groupBy('r.id');
@@ -220,6 +218,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $ids
      * @param array|null $notGrantResidentIds
      * @return mixed
      */
@@ -265,9 +264,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
-            ->addOrderBy("CONCAT(
-            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END, 
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
             ->getQuery()
@@ -385,9 +382,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
-            ->addOrderBy("CONCAT(
-            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb;
     }

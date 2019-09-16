@@ -637,7 +637,7 @@ class FormReportService extends BaseService
         $careLevelGroups = $form->getCareLevelGroups();
 
         $report = new AssessmentForm();
-        $report->setTitle('Level of Care Assessment Form');
+        $report->setTitle('Level of Care Assessment');
         $report->setAllGroups($careLevelGroups);
         $report->setResidentFullName('_________________________');
         $report->setDate('_________________________');

@@ -108,7 +108,7 @@ form:
   reports:
     assessment-form-blank:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getAssessmentFormBlankReport
-      title: 'Assessment Form Report (Blank)'
+      title: 'Assessment Report (Blank)'
       show_in_resident_list: true
       show_in_group_list: true
       formats: ['pdf']

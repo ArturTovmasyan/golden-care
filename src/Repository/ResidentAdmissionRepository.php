@@ -792,9 +792,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         }
 
         $qb
-            ->addOrderBy("CONCAT(
-            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END, 
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
             ->getQuery()
@@ -981,9 +979,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         }
 
         $qb
-            ->addOrderBy("CONCAT(
-            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
             ->getQuery()
@@ -1205,9 +1201,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         }
 
         $qb
-            ->addOrderBy("CONCAT(
-            CASE WHEN rs IS NOT NULL THEN CONCAT(rs.title, ' ') ELSE '' END,
-            r.firstName, ' ', r.lastName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
             ->groupBy('r.id')
