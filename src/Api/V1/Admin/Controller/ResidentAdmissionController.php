@@ -3,7 +3,9 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Common\Controller\BaseController;
+use App\Api\V1\Common\Service\Exception\IncorrectResidentStateException;
 use App\Entity\ResidentAdmission;
+use App\Model\ResidentState;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -284,19 +286,34 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @Route("/active/{type}/{typeId}", requirements={"type"="\d+", "typeId"="\d+"}, name="api_admin_resident_admission_get_active_residents", methods={"GET"})
+     * @Route("/state/{state}/{type}/{typeId}", requirements={"type"="\d+", "typeId"="\d+"}, name="api_admin_resident_admission_get_state_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
+     * @param $state
      * @param $type
      * @param $typeId
      * @return JsonResponse
      */
-    public function getActiveResidentsAction(Request $request, $type, $typeId, ResidentAdmissionService $residentAdmissionService)
+    public function getStateResidentsAction(Request $request, $state, $type, $typeId, ResidentAdmissionService $residentAdmissionService)
     {
+        switch ($state) {
+            case ResidentState::TYPE_ACTIVE:
+                $data = $residentAdmissionService->getActiveResidentsByStrategy($type, $typeId);
+                break;
+            case ResidentState::TYPE_INACTIVE:
+                $data = $residentAdmissionService->getInactiveResidentsByStrategy($type, $typeId);
+                break;
+            case ResidentState::TYPE_NO_ADMISSION:
+                $data = $residentAdmissionService->getNoAdmissionResidents();
+                break;
+            default:
+                throw new IncorrectResidentStateException();
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getActiveResidentsByStrategy($type, $typeId),
+            $data,
             ['api_admin_resident_get_active']
         );
     }
