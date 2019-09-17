@@ -132,7 +132,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $admissionType;
@@ -164,7 +165,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $date;
@@ -196,7 +198,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $start;
@@ -218,7 +221,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $end;
@@ -466,7 +470,8 @@ class ResidentAdmission
      *     "api_admin_resident_admission_grid",
      *     "api_admin_resident_admission_list",
      *     "api_admin_resident_admission_get",
-     *     "api_admin_resident_admission_get_active"
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
      * })
      */
     private $notes;
