@@ -173,11 +173,19 @@ class Physician
 
     /**
      * @var string
-     * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="first_name", type="string", length=60)
      * @Assert\NotBlank(groups={
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
@@ -195,11 +203,19 @@ class Physician
 
     /**
      * @var string
-     * @ORM\Column(name="last_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="last_name", type="string", length=60)
      * @Assert\NotBlank(groups={
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
@@ -217,7 +233,15 @@ class Physician
 
     /**
      * @var string
-     * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
+     * @ORM\Column(name="middle_name", type="string", length=60, nullable=true)
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Middle Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
@@ -233,7 +257,15 @@ class Physician
      *     "api_admin_physician_add",
      *     "api_admin_physician_edit"
      * })
-     * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Address cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
+     * @ORM\Column(name="address_1", type="string", length=100)
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
@@ -247,6 +279,14 @@ class Physician
      * @var string
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Address (optional) cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",
@@ -259,24 +299,40 @@ class Physician
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Groups({
-     *     "api_admin_physician_list",
-     *     "api_admin_physician_get",
-     *     "api_admin_resident_physician_list",
-     *     "api_admin_resident_physician_get"
-     * })
      * @Assert\Email(
      *     groups={
      *          "api_admin_physician_add",
      *          "api_admin_physician_edit"
      *     }
      * )
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
+     * @Groups({
+     *     "api_admin_physician_list",
+     *     "api_admin_physician_get",
+     *     "api_admin_resident_physician_list",
+     *     "api_admin_resident_physician_get"
+     * })
      */
     private $email;
 
     /**
      * @var string
      * @ORM\Column(name="website_url", type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Website URL cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_physician_list",
      *     "api_admin_physician_get",

@@ -122,6 +122,22 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
+     *     "api_account_signup"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_user_add",
+     *          "api_admin_user_edit",
+     *          "api_profile_edit",
+     *          "api_account_signup"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
@@ -136,12 +152,6 @@ class User implements UserInterface
      *     "api_admin_notification_get",
      *     "api_admin_change_log_list",
      *     "api_admin_change_log_get"
-     * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_user_add",
-     *     "api_admin_user_edit",
-     *     "api_profile_edit",
-     *     "api_account_signup"
      * })
      */
     private $firstName;
@@ -149,6 +159,22 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
+     *     "api_account_signup"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_user_add",
+     *          "api_admin_user_edit",
+     *          "api_profile_edit",
+     *          "api_account_signup"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
@@ -164,28 +190,30 @@ class User implements UserInterface
      *     "api_admin_change_log_list",
      *     "api_admin_change_log_get"
      * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_user_add",
-     *     "api_admin_user_edit",
-     *     "api_profile_edit",
-     *     "api_account_signup"
-     * })
      */
     private $lastName;
 
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_user_add",
+     *     "api_account_signup"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "User Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_user_add",
+     *          "api_account_signup"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_user_grid",
      *     "api_admin_user_list",
      *     "api_admin_user_get",
      *     "api_profile_view",
      *     "api_profile_me"
-     * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_user_add",
-     *     "api_account_signup"
      * })
      */
     private $username;
@@ -193,13 +221,6 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Groups({
-     *     "api_admin_user_grid",
-     *     "api_admin_user_list",
-     *     "api_admin_user_get",
-     *     "api_profile_view",
-     *     "api_profile_me"
-     * })
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
      *     "api_account_signup",
@@ -209,6 +230,22 @@ class User implements UserInterface
      *     "api_admin_user_add",
      *     "api_account_signup",
      *     "api_user_invite"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_user_add",
+     *          "api_account_signup",
+     *          "api_user_invite"
+     *      }
+     * )
+     * @Groups({
+     *     "api_admin_user_grid",
+     *     "api_admin_user_list",
+     *     "api_admin_user_get",
+     *     "api_profile_view",
+     *     "api_profile_me"
      * })
      */
     private $email;

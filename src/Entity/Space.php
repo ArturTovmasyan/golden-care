@@ -138,6 +138,20 @@ class Space
     /**
      * @var string
      * @ORM\Column(name="name", type="string", unique=true, length=255)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_space_add",
+     *     "api_admin_space_edit",
+     *     "api_account_signup"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_space_add",
+     *          "api_admin_space_edit",
+     *          "api_account_signup"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_role_grid",
      *     "api_admin_role_list",
@@ -200,11 +214,6 @@ class Space
      *     "api_admin_insurance_company_get",
      *     "api_admin_document_list",
      *     "api_admin_document_get"
-     * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_space_add",
-     *     "api_admin_space_edit",
-     *     "api_account_signup"
      * })
      */
     private $name;

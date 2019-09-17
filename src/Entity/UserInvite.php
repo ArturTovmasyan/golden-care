@@ -83,6 +83,13 @@ class UserInvite
      * @Assert\Email(groups={
      *     "api_admin_user_invite"
      * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_user_invite"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_user_invite_grid",
      *     "api_admin_user_invite_list",

@@ -151,11 +151,19 @@ class Resident
 
     /**
      * @var string
-     * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="first_name", type="string", length=60)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     *      }
+     * )
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
@@ -174,11 +182,19 @@ class Resident
 
     /**
      * @var string
-     * @ORM\Column(name="last_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="last_name", type="string", length=60)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_add",
      *     "api_admin_resident_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     *      }
+     * )
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get",
@@ -197,7 +213,15 @@ class Resident
 
     /**
      * @var string
-     * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
+     * @ORM\Column(name="middle_name", type="string", length=60, nullable=true)
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Middle Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_add",
+     *          "api_admin_resident_edit"
+     *      }
+     * )
      * @Groups({
      *      "api_admin_resident_list",
      *      "api_admin_resident_get"

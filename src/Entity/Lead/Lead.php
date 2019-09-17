@@ -359,6 +359,14 @@ class Lead
      *          "api_lead_lead_edit"
      *     }
      * )
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_lead_add",
+     *          "api_lead_lead_edit"
+     *      }
+     * )
      * @ORM\Column(name="rp_email", type="string", length=255, nullable=true)
      * @Groups({
      *     "api_lead_lead_list",

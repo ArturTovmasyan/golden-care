@@ -78,15 +78,23 @@ class Role
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_role_add",
+     *     "api_admin_role_edit"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_role_add",
+     *          "api_admin_role_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_role_grid",
      *     "api_admin_role_list",
      *     "api_admin_role_get",
      *     "api_profile_me"
-     * })
-     * @Assert\NotBlank(groups={
-     *     "api_admin_role_add",
-     *     "api_admin_role_edit"
      * })
      */
     private $name;

@@ -79,11 +79,19 @@ class ResponsiblePerson
 
     /**
      * @var string
-     * @ORM\Column(name="first_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="first_name", type="string", length=60)
      * @Assert\NotBlank(groups={
-     *     "api_admin_responsible_person_edit",
-     *     "api_admin_responsible_person_add"
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "First Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
@@ -97,11 +105,19 @@ class ResponsiblePerson
 
     /**
      * @var string
-     * @ORM\Column(name="last_name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="last_name", type="string", length=60)
      * @Assert\NotBlank(groups={
-     *     "api_admin_responsible_person_edit",
-     *     "api_admin_responsible_person_add"
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Last Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
@@ -115,7 +131,15 @@ class ResponsiblePerson
 
     /**
      * @var string
-     * @ORM\Column(name="middle_name", type="string", length=40, nullable=true)
+     * @ORM\Column(name="middle_name", type="string", length=60, nullable=true)
+     * @Assert\Length(
+     *      max = 60,
+     *      maxMessage = "Middle Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
@@ -127,10 +151,18 @@ class ResponsiblePerson
     /**
      * @var string
      * @Assert\NotBlank(groups={
-     *     "api_admin_responsible_person_edit",
-     *     "api_admin_responsible_person_add"
+     *     "api_admin_responsible_person_add",
+     *     "api_admin_responsible_person_edit"
      * })
-     * @ORM\Column(name="address_1", type="string", length=100, nullable=false)
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Address cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
+     * @ORM\Column(name="address_1", type="string", length=100)
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
@@ -143,6 +175,14 @@ class ResponsiblePerson
      * @var string
      *
      * @ORM\Column(name="address_2", type="string", length=100, nullable=true)
+     * @Assert\Length(
+     *      max = 100,
+     *      maxMessage = "Address (optional) cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
@@ -154,17 +194,25 @@ class ResponsiblePerson
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @Assert\Email(
+     *     groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *     }
+     * )
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_responsible_person_list",
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_responsible_person_list"
      * })
-     * @Assert\Email(
-     *     groups={
-     *          "api_admin_responsible_person_edit",
-     *          "api_admin_responsible_person_add"
-     *     }
-     * )
      */
     private $email;
 
@@ -175,8 +223,8 @@ class ResponsiblePerson
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotBlank(groups={
-     *      "api_admin_responsible_person_edit",
-     *      "api_admin_responsible_person_add"
+     *      "api_admin_responsible_person_add",
+     *      "api_admin_responsible_person_edit"
      * })
      * @Groups({
      *     "api_admin_responsible_person_list",
@@ -196,7 +244,7 @@ class ResponsiblePerson
      *     message = "Please select a Space",
      *     groups={
      *          "api_admin_responsible_person_add",
-     *          "api_responsible_person_edit"
+     *          "api_admin_responsible_person_edit"
      *     }
      * )
      * @Groups({
@@ -238,12 +286,6 @@ class ResponsiblePerson
      * })
      */
     private $phones;
-
-//    /**
-//     * @var ArrayCollection
-//     * @ORM\ManyToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="responsiblePerson", cascade={"persist"})
-//     */
-//    private $residentEvents;
 
     /**
      * @var ArrayCollection

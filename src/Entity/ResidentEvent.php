@@ -152,20 +152,6 @@ class ResidentEvent
      */
     private $physician;
 
-//    /**
-//     * @var ResponsiblePerson
-//     * @ORM\ManyToOne(targetEntity="App\Entity\ResponsiblePerson", inversedBy="residentEvents")
-//     * @ORM\JoinColumns({
-//     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="CASCADE")
-//     * })
-//     * @Groups({
-//     *     "api_admin_resident_event_grid",
-//     *     "api_admin_resident_event_list",
-//     *     "api_admin_resident_event_get"
-//     * })
-//     */
-//    private $responsiblePerson;
-
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity="App\Entity\ResponsiblePerson", mappedBy="residentEvents", cascade={"persist"})
@@ -319,22 +305,6 @@ class ResidentEvent
         $this->responsiblePersons->removeElement($responsiblePerson);
         $responsiblePerson->removeResidentEvent($this);
     }
-
-//    /**
-//     * @return ResponsiblePerson|null
-//     */
-//    public function getResponsiblePerson(): ?ResponsiblePerson
-//    {
-//        return $this->responsiblePerson;
-//    }
-//
-//    /**
-//     * @param ResponsiblePerson|null $responsiblePerson
-//     */
-//    public function setResponsiblePerson(?ResponsiblePerson $responsiblePerson): void
-//    {
-//        $this->responsiblePerson = $responsiblePerson;
-//    }
 
     /**
      * @return \DateTime
