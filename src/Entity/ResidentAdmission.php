@@ -291,7 +291,8 @@ class ResidentAdmission
      * })
      * @Assert\NotNull(message = "Please select a City, State and Zip", groups={
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_resident_region_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",
@@ -308,14 +309,16 @@ class ResidentAdmission
      * @ORM\Column(name="address", type="string", length=256, nullable=true)
      * @Assert\NotBlank(groups={
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_resident_region_edit"
      * })
      * @Assert\Length(
      *      max = 200,
      *      maxMessage = "Address cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_region_add",
-     *          "api_admin_region_edit"
+     *          "api_admin_region_edit",
+     *          "api_admin_resident_region_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",
@@ -396,14 +399,18 @@ class ResidentAdmission
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit",
      *          "api_admin_region_add",
-     *          "api_admin_region_edit"
+     *          "api_admin_region_edit",
+     *          "api_admin_resident_facility_edit",
+     *          "api_admin_resident_region_edit"
      * }
      * )
      * @Assert\NotBlank(groups={
      *     "api_admin_facility_add",
      *     "api_admin_facility_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_resident_facility_edit",
+     *     "api_admin_resident_region_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",
@@ -425,7 +432,9 @@ class ResidentAdmission
      *     "api_admin_facility_add",
      *     "api_admin_facility_edit",
      *     "api_admin_region_add",
-     *     "api_admin_region_edit"
+     *     "api_admin_region_edit",
+     *     "api_admin_resident_facility_edit",
+     *     "api_admin_resident_region_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",

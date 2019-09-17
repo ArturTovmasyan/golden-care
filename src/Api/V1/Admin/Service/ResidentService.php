@@ -363,15 +363,15 @@ class ResidentService extends BaseService implements IGridService
             if ($lastAction !== null) {
                 switch ($lastAction->getGroupType()) {
                     case GroupType::TYPE_FACILITY:
-                        $validationGroup = 'api_admin_facility_edit';
+                        $validationGroup = 'api_admin_resident_facility_edit';
                         $lastAction = $this->saveAsFacility($lastAction, $params);
                         break;
                     case GroupType::TYPE_APARTMENT:
-                        $validationGroup = 'api_admin_apartment_edit';
+                        $validationGroup = 'api_admin_resident_apartment_edit';
                         $lastAction = $this->saveAsApartment($lastAction);
                         break;
                     case GroupType::TYPE_REGION:
-                        $validationGroup = 'api_admin_region_edit';
+                        $validationGroup = 'api_admin_resident_region_edit';
                         $lastAction = $this->saveAsRegion($lastAction, $params);
                         break;
                     default:
