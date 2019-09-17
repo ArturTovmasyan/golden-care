@@ -286,7 +286,7 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @Route("/state/{state}/{type}/{typeId}", requirements={"type"="\d+", "typeId"="\d+"}, name="api_admin_resident_admission_get_state_residents", methods={"GET"})
+     * @Route("/{state}/{type}/{typeId}", requirements={"type"="\d+", "typeId"="\d+"}, name="api_admin_resident_admission_get_state_residents", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
      * @param $state
