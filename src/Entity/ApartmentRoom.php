@@ -56,6 +56,11 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "private",
+ *              "type"       = "boolean",
+ *              "field"      = "ar.private"
+ *          },
+ *          {
  *              "id"         = "bed_count",
  *              "type"       = "number",
  *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab WHERE ab.room=ar AND ab.enabled=1)"
@@ -213,6 +218,17 @@ class ApartmentRoom
      */
     private $beds;
 
+    /**
+     * @var bool
+     * @ORM\Column(name="private", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_apartment_room_grid",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
+     */
+    private $private;
+
     public function __construct()
     {
         $this->beds = new ArrayCollection();
@@ -317,6 +333,22 @@ class ApartmentRoom
     public function removeBed($bed): void
     {
         $this->beds->removeElement($bed);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivate(): bool
+    {
+        return $this->private;
+    }
+
+    /**
+     * @param bool $private
+     */
+    public function setPrivate(bool $private): void
+    {
+        $this->private = $private;
     }
 
     /**
