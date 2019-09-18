@@ -723,15 +723,17 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         $qb
             ->addSelect(
         '(CASE
-                    WHEN fb.id IS NOT NULL AND fr.private = 1 THEN \' \'
-                    WHEN fb.id IS NOT NULL AND fr.private = 0 THEN fb.number
-                    WHEN ab.id IS NOT NULL AND ar.private = 1 THEN \' \'
-                    WHEN ab.id IS NOT NULL AND ar.private = 0 THEN ab.number
+                    WHEN fb.id IS NOT NULL THEN fb.number
+                    WHEN ab.id IS NOT NULL THEN ab.number
                     ELSE \'\' END) as bed_number',
                 '(CASE
                     WHEN fb.id IS NOT NULL THEN fr.number
                     WHEN ab.id IS NOT NULL THEN ar.number
                     ELSE \'\' END) as room_number',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN fr.private
+                    WHEN ab.id IS NOT NULL THEN ar.private
+                    ELSE false END) as private',
                 '(CASE
                     WHEN reg.id IS NOT NULL THEN ra.address
                     ELSE \'\' END) as address',
