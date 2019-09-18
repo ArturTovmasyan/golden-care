@@ -115,21 +115,39 @@
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
-                            {% if resident.floor == 1 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
+                            {% if resident.floor == 1 and renderedGroup == resident.typeId %}
+                                {% if resident.private %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% else %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
-                            {% if resident.floor == 2 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
+                            {% if resident.floor == 2 and renderedGroup == resident.typeId %}
+                                {% if resident.private %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% else %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for resident in data.residents %}
                         <div style="line-height: 20px;">
-                            {% if resident.floor == 3 and renderedGroup == resident.typeId %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>{% endif %}
+                            {% if resident.floor == 3 and renderedGroup == resident.typeId %}
+                                {% if resident.private %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% else %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>
@@ -151,21 +169,39 @@
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
-                            {% if vacant.floor == 1 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                            {% if vacant.floor == 1 and renderedGroup == vacant.typeId %}
+                                {% if vacant.private %}
+                                    {{ vacant.roomNumber }}&nbsp;<br/>
+                                {% else %}
+                                    {{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
-                            {% if vacant.floor == 2 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                            {% if vacant.floor == 2 and renderedGroup == vacant.typeId %}
+                                {% if vacant.private %}
+                                    {{ vacant.roomNumber }}&nbsp;<br/>
+                                {% else %}
+                                    {{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>
                 <td style="width: 200px; font-size: 14px !important;">
                     {% for vacant in data.vacants %}
                         <div style="line-height: 20px;">
-                            {% if vacant.floor == 3 and renderedGroup == vacant.typeId %}{{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>{% endif %}
+                            {% if vacant.floor == 3 and renderedGroup == vacant.typeId %}
+                                {% if vacant.private %}
+                                    {{ vacant.roomNumber }}&nbsp;<br/>
+                                {% else %}
+                                    {{ vacant.roomNumber ~ ' ' ~ vacant.bedNumber }}<br/>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </td>

@@ -42,7 +42,15 @@
         {% endif %}
 
         <tr>
-            {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</td>{% endif %}
+            {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                <td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">
+                    {% if resident.private %}
+                        {{ resident.roomNumber }}&nbsp;
+                    {% else %}
+                        {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}
+                    {% endif %}
+                </td>
+            {% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
             {% if resident.ambulatory is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">

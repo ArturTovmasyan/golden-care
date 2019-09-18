@@ -429,6 +429,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fb.number as bedNumber'
                     )
                     ->innerJoin(

@@ -51,7 +51,15 @@
         {% endif %}
 
         <tr>
-            {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
+            {% if datum.roomNumber is defined and datum.bedNumber is defined %}
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.private %}
+                        {{ datum.roomNumber }}&nbsp;
+                    {% else %}
+                        {{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}
+                    {% endif %}
+                </td>
+            {% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
             <td style="height: 40px; text-align: left;">{% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</td>
             <td style="height: 40px; text-align: left;">{% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}{% else %}N/A{% endif %}</td>

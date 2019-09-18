@@ -334,9 +334,19 @@ class RoomReportService extends BaseService
         $changedResidentData = [];
         foreach ($residents as $resident) {
             if (!\in_array($resident['id'], $rentResidentIds, false)) {
+                if (array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident)) {
+                    if ($resident['private']) {
+                        $number = $resident['roomNumber'] . ' ';
+                    } else {
+                        $number = $resident['roomNumber'] . ' ' . $resident['bedNumber'];
+                    }
+                } else {
+                    $number = null;
+                }
+
                 $residentArray = [
                     'fullName' => $resident['firstName'] . ' ' . $resident['lastName'],
-                    'number' => array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident) ? $resident['roomNumber'] . ' ' . $resident['bedNumber'] : null,
+                    'number' => $number,
                     'actionId' => $resident['actionId'],
                     'id' => 0,
                     'typeName' => $resident['typeName'],
@@ -394,9 +404,19 @@ class RoomReportService extends BaseService
 
         $changedData = [];
         foreach ($data as $rent) {
+            if (array_key_exists('roomNumber', $rent) && array_key_exists('bedNumber', $rent)) {
+                if ($rent['private']) {
+                    $number = $rent['roomNumber'] . ' ';
+                } else {
+                    $number = $rent['roomNumber'] . ' ' . $rent['bedNumber'];
+                }
+            } else {
+                $number = null;
+            }
+
             $rentArray = [
                 'fullName' => $rent['firstName'] . ' ' . $rent['lastName'],
-                'number' => array_key_exists('roomNumber', $rent) && array_key_exists('bedNumber', $rent) ? $rent['roomNumber'] . ' ' . $rent['bedNumber'] : null,
+                'number' => $number,
                 'period' => $rent['period'],
                 'rentId' => $rent['rentId'],
                 'actionId' => $rent['actionId'],

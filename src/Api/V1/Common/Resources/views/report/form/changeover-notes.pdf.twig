@@ -59,7 +59,15 @@
             <tbody>
             <tr>
                 <td style="height: 100px; width: 70px; font-size: 13px !important; border-right: none">
-                    {% if resident.roomNumber is defined and resident.bedNumber is defined %}<p>{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</p>{% endif %}
+                    {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                        <p>
+                            {% if resident.private %}
+                                {{ resident.roomNumber }}&nbsp;
+                            {% else %}
+                                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}
+                            {% endif %}
+                        </p>
+                    {% endif %}
                     <p class="square" style="margin-left: 4px;"></p>
                 </td>
                 <td style="height: 100px; width: 250px; font-size: 13px !important; border-right: none; border-left: none">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>

@@ -47,7 +47,13 @@
 
         <tr>
             <td style="height: 40px; border-right: hidden; vertical-align: middle;">
-                {% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}{% endif %}
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                    {% if resident.private %}
+                        {{ resident.roomNumber }}&nbsp;
+                    {% else %}
+                        {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}
+                    {% endif %}
+                {% endif %}
             </td>
             <td style="height: 40px; border-left: hidden; vertical-align: middle;">
                 {{ resident.firstName ~ ' ' ~ resident.lastName }}

@@ -44,7 +44,11 @@
                     <td colspan="3" style="width: 105px; margin: 0 !important; padding: 0 !important;text-align: center; background-color: lightgray;border: solid 1px black"><b>Saturday</b></td>
                 </tr>
                 <tr style="margin: 0; padding: 0;">
-                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;height: 60px; text-align: center; vertical-align: bottom; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none"><b style="font-size: 10px;">{% if resident.roomNumber is defined and resident.bedNumber is defined %}Room{% endif %}</b></td>
+                    <td style="width: 35px !important; margin: 0 !important; padding: 0 !important;height: 60px; text-align: center; vertical-align: bottom; border-left: solid 1px black; border-top: solid 1px black; border-bottom: solid 1px black; border-right: none">
+                        <b style="font-size: 10px;">
+                            {% if resident.roomNumber is defined and resident.bedNumber is defined %}Room{% endif %}
+                        </b>
+                    </td>
                     <td style="width: 105px !important; margin: 0 !important; padding: 0 !important;height: 60px;text-align: center; vertical-align: bottom; border-bottom: solid 1px black; border-right: solid 1px black; border-left: none"><b style="font-size: 12px;">Resident</b></td>
                     <td style="margin: 0; padding: 0 !important; border: solid 1px black; background-color: lightgray;">
                         <div class="rotate" style="width: 35px; height: 5px;"><b style="font-size: 10px !important;">Breakfast</b></div>
@@ -114,7 +118,17 @@
             {% endif %}
             <tbody style="border: solid 1px black; margin: 0; padding: 0;">
             <tr style="margin: 0; padding: 0;">
-                <td style="margin: 0 !important; padding: 0 !important;width: 35px !important; height: 38px; font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}{% endif %}</div></td>
+                <td style="margin: 0 !important; padding: 0 !important;width: 35px !important; height: 38px; font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black">
+                    <div style=" margin-left: 5px;">
+                        {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                            {% if resident.private %}
+                                {{ resident.roomNumber }}&nbsp;
+                            {% else %}
+                                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </td>
                 <td style="margin: 0 !important; padding: 0 !important;width: 105px !important; height: 38px;font-size: 11px !important; text-align: left; vertical-align: middle; border: solid 1px black"><div style=" margin-left: 5px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</div></td>
                 <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>
                 <td style="margin: 0 !important; padding: 0 !important;width: 35px; background-color: lightgray; border: solid 1px black"></td>

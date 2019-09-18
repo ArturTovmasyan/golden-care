@@ -216,6 +216,25 @@ class FacilityRoomService extends BaseService implements IGridService
 
             $this->validate($facilityRoom, null, ['api_admin_facility_room_add']);
 
+            if ($facilityRoom->getBeds() !== null) {
+                $i = 0;
+
+                /** @var FacilityBed $bed */
+                foreach ($facilityRoom->getBeds() as $bed) {
+                    if ($bed->isEnabled()) {
+                        ++$i;
+                    }
+                }
+
+                if ($i > 1) {
+                    $facilityRoom->setPrivate(false);
+                } else {
+                    $facilityRoom->setPrivate(true);
+                }
+            } else {
+                $facilityRoom->setPrivate(true);
+            }
+
             $this->em->persist($facilityRoom);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -323,6 +342,25 @@ class FacilityRoomService extends BaseService implements IGridService
             }
 
             $this->validate($entity, null, ['api_admin_facility_room_edit']);
+
+            if ($entity->getBeds() !== null) {
+                $i = 0;
+
+                /** @var FacilityBed $bed */
+                foreach ($entity->getBeds() as $bed) {
+                    if ($bed->isEnabled()) {
+                        ++$i;
+                    }
+                }
+
+                if ($i > 1) {
+                    $entity->setPrivate(false);
+                } else {
+                    $entity->setPrivate(true);
+                }
+            } else {
+                $entity->setPrivate(true);
+            }
 
             $this->em->persist($entity);
             $this->em->flush();

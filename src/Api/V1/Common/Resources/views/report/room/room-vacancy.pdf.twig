@@ -45,7 +45,13 @@
 
         <tr>
             <td>{{ datum.typeName }}</td>
-            <td>{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>
+            <td>
+                {% if datum.private %}
+                    {{ datum.roomNumber }}&nbsp;
+                {% else %}
+                    {{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}
+                {% endif %}
+            </td>
             <td>{{ datum.notes }}</td>
         </tr>
     {% endfor %}

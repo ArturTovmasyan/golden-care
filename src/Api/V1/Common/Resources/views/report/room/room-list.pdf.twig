@@ -57,7 +57,15 @@
             </tr>
         {% endif %}
         <tr>
-            {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td style="height: 40px; text-align: left;">{{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}</td>{% endif %}
+            {% if datum.roomNumber is defined and datum.bedNumber is defined %}
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.private %}
+                        {{ datum.roomNumber }}&nbsp;
+                    {% else %}
+                        {{ datum.roomNumber }}&nbsp;{{ datum.bedNumber }}
+                    {% endif %}
+                </td>
+            {% endif %}
             {% if datum.floor is defined and datum.floor %}<td style="height: 40px; text-align: left;">{{ datum.floor }}</td>{% endif %}
             {% if datum.careLevel is defined and datum.careLevel %}<td style="height: 40px; text-align: left;">{{ datum.careLevel }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
@@ -106,7 +114,11 @@
                         <tr>
                             <td style="margin-bottom: 5px; border: none;">
                                 {% if vacant.roomNumber is defined and vacant.bedNumber is defined %}
-                                    {{ vacant.roomNumber }}&nbsp;{{ vacant.bedNumber }}
+                                    {% if vacant.private %}
+                                        {{ vacant.roomNumber }}&nbsp;
+                                    {% else %}
+                                        {{ vacant.roomNumber }}&nbsp;{{ vacant.bedNumber }}
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td style="margin-bottom: 5px; border: none;">

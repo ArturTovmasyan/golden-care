@@ -78,7 +78,13 @@
 
             <tr style="margin: 0 !important;">
                 {% if resident.roomNumber is defined and resident.bedNumber is defined %}
-                    <td style="width: 60px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</td>
+                    <td style="width: 60px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">
+                        {% if resident.private %}
+                            {{ resident.roomNumber }}&nbsp;
+                        {% else %}
+                            {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}
+                        {% endif %}
+                    </td>
                 {% endif %}
                 <td style="width: 180px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px !important; font-size: 13px !important;">{% if resident.salutation is defined and resident.salutation %}{{ resident.salutation }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
                 <td style="width: 400px !important; height: 50px; text-align: left; vertical-align: middle; margin: 0 !important; padding: 5px 5px 0 5px !important; font-size: 13px !important;">

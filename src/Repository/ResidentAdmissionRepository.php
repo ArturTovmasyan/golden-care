@@ -578,6 +578,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
+                        'fbr.private AS private',
                         'fb.number AS bed_number',
                         'fbrf.id AS type_id'
                     )
@@ -597,6 +598,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'abr.number AS room_number',
+                        'abr.private AS private',
                         'ab.number AS bed_number',
                         'abra.id AS type_id'
                     )
@@ -701,8 +703,10 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         $qb
             ->addSelect(
         '(CASE
-                    WHEN fb.id IS NOT NULL THEN fb.number
-                    WHEN ab.id IS NOT NULL THEN ab.number
+                    WHEN fb.id IS NOT NULL AND fr.private = 1 THEN \' \'
+                    WHEN fb.id IS NOT NULL AND fr.private = 0 THEN fb.number
+                    WHEN ab.id IS NOT NULL AND ar.private = 1 THEN \' \'
+                    WHEN ab.id IS NOT NULL AND ar.private = 0 THEN ab.number
                     ELSE \'\' END) as bed_number',
                 '(CASE
                     WHEN fb.id IS NOT NULL THEN fr.number
@@ -943,6 +947,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
+                        'fbr.private AS private',
                         'fb.number AS bed_number'
                     )
                     ->join('ra.facilityBed', 'fb')
@@ -957,6 +962,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'abr.number AS room_number',
+                        'abr.private AS private',
                         'ab.number AS bed_number'
                     )
                     ->join('ra.apartmentBed', 'ab')
@@ -1040,6 +1046,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
+                        'fbr.private AS private',
                         'fb.number AS bed_number',
                         'fbrf.id AS type_id'
                     )
@@ -1059,6 +1066,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'abr.number AS room_number',
+                        'abr.private AS private',
                         'ab.number AS bed_number',
                         'abra.id AS type_id'
                     )
@@ -1165,6 +1173,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
+                        'fbr.private AS private',
                         'fb.number AS bed_number'
                     )
                     ->join('ra.facilityBed', 'fb')
@@ -1179,6 +1188,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'abr.number AS room_number',
+                        'abr.private AS private',
                         'ab.number AS bed_number'
                     )
                     ->join('ra.apartmentBed', 'ab')
@@ -1618,6 +1628,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId,
                         ra.careGroup as careGroup,
@@ -1666,6 +1677,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ab.number as bedNumber
                         ab.id as bedId'
                     )
@@ -1900,6 +1912,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId,
                         ra.careGroup as careGroup,
@@ -1948,6 +1961,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ab.number as bedNumber
                         ab.id as bedId'
                     )
@@ -2250,6 +2264,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId'
                     )
@@ -2280,6 +2295,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ab.number as bedNumber
                         ab.id as bedId'
                     )

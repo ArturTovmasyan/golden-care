@@ -307,6 +307,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId'
                     )
@@ -347,6 +348,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ab.number as bedNumber
                         ab.id as bedId'
                     )
@@ -552,6 +554,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         fb.id as bedId,
@@ -600,6 +603,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ar.floor as floor,
                         ab.number as bedNumber
                         ab.id as bedId'

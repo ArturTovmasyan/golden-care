@@ -54,8 +54,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     $queryBuilder
                         ->addSelect(
                     '(CASE
-                                WHEN fb.id IS NOT NULL THEN CONCAT(fr.number, \' (\',fb.number, \')\')
-                                WHEN ab.id IS NOT NULL THEN CONCAT(ar.number, \' (\',ab.number, \')\')
+                                WHEN fb.id IS NOT NULL AND fr.private = 1 THEN fr.number
+                                WHEN fb.id IS NOT NULL AND fr.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
+                                WHEN ab.id IS NOT NULL AND ar.private = 1 THEN ar.number
+                                WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
                                 ELSE \'\' END) as room',
                             '(CASE
                                 WHEN reg.id IS NOT NULL THEN ra.address
@@ -591,6 +593,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.address as address,
                         f.license as license,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         f.numberOfFloors as numberOfFloors'
@@ -634,6 +637,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         a.address as address,
                         a.license as license,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ar.floor as floor,
                         ab.number as bedNumber'
                     )
@@ -792,6 +796,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.address as address,
                         f.license as license,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         ra.careGroup as careGroup'
@@ -978,6 +983,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.phone as typePhone,
                         f.fax as typeFax,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         dr.title as diningRoom'
@@ -1176,6 +1182,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.phone as typePhone,
                         f.fax as typeFax,
                         fr.number as roomNumber,
+                        fr.private as private,
                         fr.floor as floor,
                         fb.id as bedId,
                         fb.number as bedNumber,
@@ -1228,6 +1235,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
+                        ar.private as private,
                         ar.floor as floor,
                         ab.number as bedNumber
                         ab.id as bedId'

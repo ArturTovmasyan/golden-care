@@ -24,7 +24,14 @@
                 <tr>
                     <td colspan="34">
                         <div style="float: left; width: 250px;">
-                            <b style="font-size: 16px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
+                            <b style="font-size: 16px !important">
+                                {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                                    {% if resident.private %}
+                                        {{ resident.roomNumber }}&nbsp;
+                                    {% else %}
+                                        {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
+                                    {% endif %}
+                                {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
                         </div>
                         <div style="clear: both"></div>
                     </td>
@@ -267,7 +274,15 @@
                             <tr>
                                 <td colspan="34">
                                     <div style="float: left; width: 250px;">
-                                        <b style="font-size: 16px !important">{% if resident.roomNumber is defined and resident.bedNumber is defined %}{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
+                                        <b style="font-size: 16px !important">
+                                            {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                                                {% if resident.private %}
+                                                    {{ resident.roomNumber }}&nbsp;
+                                                {% else %}
+                                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
+                                                {% endif %}
+                                            {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                                        </b>
                                     </div>
                                     <div style="clear: both"></div>
                                 </td>

@@ -209,6 +209,25 @@ class ApartmentRoomService extends BaseService implements IGridService
 
             $this->validate($apartmentRoom, null, ['api_admin_apartment_room_add']);
 
+            if ($apartmentRoom->getBeds() !== null) {
+                $i = 0;
+
+                /** @var ApartmentBed $bed */
+                foreach ($apartmentRoom->getBeds() as $bed) {
+                    if ($bed->isEnabled()) {
+                        ++$i;
+                    }
+                }
+
+                if ($i > 1) {
+                    $apartmentRoom->setPrivate(false);
+                } else {
+                    $apartmentRoom->setPrivate(true);
+                }
+            } else {
+                $apartmentRoom->setPrivate(true);
+            }
+
             $this->em->persist($apartmentRoom);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -314,6 +333,25 @@ class ApartmentRoomService extends BaseService implements IGridService
             }
 
             $this->validate($entity, null, ['api_admin_apartment_room_edit']);
+
+            if ($entity->getBeds() !== null) {
+                $i = 0;
+
+                /** @var ApartmentBed $bed */
+                foreach ($entity->getBeds() as $bed) {
+                    if ($bed->isEnabled()) {
+                        ++$i;
+                    }
+                }
+
+                if ($i > 1) {
+                    $entity->setPrivate(false);
+                } else {
+                    $entity->setPrivate(true);
+                }
+            } else {
+                $entity->setPrivate(true);
+            }
 
             $this->em->persist($entity);
             $this->em->flush();

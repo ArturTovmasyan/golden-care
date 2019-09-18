@@ -22,7 +22,15 @@
                 <p style="margin: 15px 0">RESIDENT NAME: <b>
                     {% if resident.salutation is defined and resident.salutation %}{{ resident.salutation }}&nbsp;{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
                 </b></p>
-                {% if resident.roomNumber is defined and resident.bedNumber is defined %}<p style="margin: 15px 0">ROOM/BED#: <b>{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</b></p>{% endif %}
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                    <p style="margin: 15px 0">
+                        {% if resident.private %}
+                            ROOM#: <b>{{ resident.roomNumber }}&nbsp;</b>
+                        {% else %}
+                            ROOM/BED#: <b>{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}</b>
+                        {% endif %}
+                    </p>
+                {% endif %}
                 <p style="margin: 15px 0">CAREGIVER NAME: ___________________________________</p>
                 <p style="margin: 15px 0">DATE: ____/____/________</p>
                 <p style="margin: 15px 0"><b>CIRCLE ONE:</b></p>
