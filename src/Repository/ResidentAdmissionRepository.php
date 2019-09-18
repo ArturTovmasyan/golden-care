@@ -60,8 +60,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     JSON_OBJECT('Apartment', a.name),
                     JSON_OBJECT(
                         CASE
-                            WHEN fr.private = 1 THEN 'Room'
-                            WHEN fr.private = 0 THEN 'Room (Bed)'
+                            WHEN ar.private = 1 THEN 'Room'
+                            WHEN ar.private = 0 THEN 'Room (Bed)'
                             ELSE 'Room (Bed)' END
                         , 
                         CASE
