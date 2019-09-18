@@ -44,11 +44,31 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->addSelect("
                 JSON_ARRAY(
                     JSON_OBJECT('Facility', f.name),
-                    JSON_OBJECT('Room (Bed)', CONCAT(fr.number, ' (', fb.number, ')')),
+                    JSON_OBJECT(
+                        CASE
+                            WHEN fr.private = 1 THEN 'Room'
+                            WHEN fr.private = 0 THEN 'Room (Bed)'
+                            ELSE 'Room (Bed)' END
+                        , 
+                        CASE
+                            WHEN fr.private = 1 THEN fr.number
+                            WHEN fr.private = 0 THEN CONCAT(fr.number, ' (', fb.number, ')')
+                            ELSE CONCAT(fr.number, ' (', fb.number, ')') END
+                    ),
                     JSON_OBJECT('Dining Room', dr.title),
                     
                     JSON_OBJECT('Apartment', a.name),
-                    JSON_OBJECT('Room (Bed)', CONCAT(ar.number, ' (', ab.number, ')')),
+                    JSON_OBJECT(
+                        CASE
+                            WHEN fr.private = 1 THEN 'Room'
+                            WHEN fr.private = 0 THEN 'Room (Bed)'
+                            ELSE 'Room (Bed)' END
+                        , 
+                        CASE
+                            WHEN ar.private = 1 THEN ar.number
+                            WHEN ar.private = 0 THEN CONCAT(ar.number, ' (', ab.number, ')')
+                            ELSE CONCAT(ar.number, ' (', ab.number, ')') END
+                    ),
                     
                     JSON_OBJECT('Region', reg.name),
                     JSON_OBJECT('Address', ra.address),
