@@ -4,6 +4,14 @@
     {% if user %}
         <p>User: {{ user.firstName }} {{ user.lastName }} &lt;{{ user.username}}&gt;</p>
     {% endif %}
+    {% if facilities is not empty %}
+        <p>
+            {% if facilities|length > 1 %}Facilities{% else %}Facility{% endif %}:
+            {% for facility in facilities %}
+                {{ facility }}{% if not loop.last %},&nbsp;{% endif %}
+            {% endfor %}
+        </p>
+    {% endif %}
     <p>Customer: {{ customer }}</p>
     <p>Code: {{ body.code }}</p>
     {% if body.file is defined %}<p>File: {{ body.file }}</p>{% endif %}

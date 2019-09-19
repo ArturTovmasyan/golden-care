@@ -456,7 +456,7 @@ class ApartmentRoomService extends BaseService implements IGridService
         /** @var ApartmentRoomRepository $repo */
         $repo = $this->em->getRepository(ApartmentRoom::class);
 
-        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $ids);
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $ids);
 
         if (empty($entities)) {
             throw new ApartmentRoomNotFoundException();

@@ -7,7 +7,9 @@ use App\Api\V1\Common\Model\ResponseCode;
 use App\Api\V1\Common\Service\Exception\ApiException;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
+use App\Entity\Facility;
 use App\Entity\User;
+use App\Repository\FacilityRepository;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -130,12 +132,28 @@ class MainListener
 
         // send email when handled customer exception
         if ($sendEmail) {
-            $customer = $this->grantService->getCurrentSpace() ? $this->grantService->getCurrentSpace()->getName() : $event->getRequest()->getHost();
+            $currentSpace = $this->grantService->getCurrentSpace();
+            $customer = $currentSpace ? $currentSpace->getName() : $event->getRequest()->getHost();
             $subject = '[SeniorCare] Exception from customer <'.$customer.'>';
 
-            $user = $this->security->getToken() ? $this->security->getToken()->getUser() : null;
+            $user = null;
+            $facilityNames = [];
+            if ($this->security->getToken()) {
+                $user = $this->security->getToken()->getUser();
 
-            $this->mailer->sendHandledCustomerException($user, $customer, $subject, $body);
+                $facilityIds = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+
+                if (!empty($facilityIds)) {
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
+
+                    $facilities = $facilityRepo->findByIds($currentSpace, $facilityIds, $facilityIds);
+
+                    $facilityNames = array_map(function(Facility $item){return $item->getName();} , $facilities);
+                }
+            }
+
+            $this->mailer->sendHandledCustomerException($user, $facilityNames, $customer, $subject, $body);
         }
 
         $event->setResponse($response);

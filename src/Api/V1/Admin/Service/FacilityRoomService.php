@@ -465,7 +465,7 @@ class FacilityRoomService extends BaseService implements IGridService
         /** @var FacilityRoomRepository $repo */
         $repo = $this->em->getRepository(FacilityRoom::class);
 
-        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $ids);
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
         if (empty($entities)) {
             throw new FacilityRoomNotFoundException();

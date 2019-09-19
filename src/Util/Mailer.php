@@ -329,13 +329,13 @@ class Mailer
 
     /**
      * @param $user
+     * @param $facilityNames
      * @param $customer
      * @param $subject
      * @param $body
      * @return mixed
-     * @throws \Exception
      */
-    public function sendHandledCustomerException($user, $customer, $subject, $body)
+    public function sendHandledCustomerException($user, $facilityNames, $customer, $subject, $body)
     {
         $bcc = \preg_split('/[\s,]+/', $this->configService->get('EXCEPTION_RECIPIENTS'))
             ?? ['haykg@intermotionllc.com', 'armenv@intermotionllc.com'];
@@ -347,6 +347,7 @@ class Mailer
             ->setSubject($subject)
             ->setVars([
                 'user' => $user,
+                'facilities' => $facilityNames,
                 'customer' => $customer,
                 'subject' => $subject,
                 'body' => $body,
