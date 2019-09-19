@@ -740,11 +740,11 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 '(CASE
                     WHEN reg.id IS NOT NULL THEN CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain)
                     ELSE \'\' END) as csz_str',
-                '(CASE
+                'CAST((CASE
                     WHEN fb.id IS NOT NULL THEN :facility_type
                     WHEN ab.id IS NOT NULL THEN :apartment_type
                     WHEN reg.id IS NOT NULL THEN :region_type
-                    ELSE \'\' END) as group_type'
+                    ELSE -1 END) AS INTEGER) as group_type'
             )
             ->setParameter('facility_type', GroupType::TYPE_FACILITY)
             ->setParameter('apartment_type', GroupType::TYPE_APARTMENT)
