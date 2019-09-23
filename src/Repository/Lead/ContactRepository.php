@@ -72,9 +72,10 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param null $userId
+     * @param null $organizationId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $userId = null)
+    public function list(Space $space = null, array $entityGrants = null, $userId = null, $organizationId = null)
     {
         $qb = $this
             ->createQueryBuilder('c')
@@ -89,6 +90,18 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
             $qb
                 ->andWhere('u.id = :userId')
                 ->setParameter('userId', $userId);
+        }
+
+        if ($organizationId !== null) {
+            $qb
+                ->leftJoin(
+                    Organization::class,
+                    'o',
+                    Join::WITH,
+                    'o = c.organization'
+                )
+                ->andWhere('o.id = :organizationId')
+                ->setParameter('organizationId', $organizationId);
         }
 
         if ($space !== null) {
