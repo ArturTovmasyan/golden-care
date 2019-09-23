@@ -66,12 +66,14 @@ class LeadService extends BaseService implements IGridService
             $all = true;
         }
 
+        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+
         $userId = null;
-        if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {
+        if ($facilityEntityGrants !== null || (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
             $userId = $params[0]['user_id'];
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants);
     }
 
     /**
@@ -93,12 +95,14 @@ class LeadService extends BaseService implements IGridService
             $all = true;
         }
 
+        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+
         $userId = null;
-        if (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id'])) {
+        if ($facilityEntityGrants !== null || (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
             $userId = $params[0]['user_id'];
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId);
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants);
     }
 
     /**

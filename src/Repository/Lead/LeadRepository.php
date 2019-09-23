@@ -30,8 +30,9 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param QueryBuilder $queryBuilder
      * @param $all
      * @param null $userId
+     * @param array|null $facilityEntityGrants
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null) : void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -81,10 +82,17 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 ->setParameter('state', State::TYPE_OPEN);
         }
 
-        if ($userId !== null) {
+        if ($userId !== null || $facilityEntityGrants !== null) {
             $queryBuilder
                 ->andWhere('o.id = :userId')
                 ->setParameter('userId', $userId);
+
+            if ($facilityEntityGrants !== null) {
+                $queryBuilder
+                    ->leftJoin('l.facilities', 'sf')
+                    ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
+                    ->setParameter('facilityGrantIds', $facilityEntityGrants);
+            }
         }
 
         if ($space !== null) {
@@ -116,9 +124,10 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param $all
      * @param $free
      * @param null $userId
+     * @param array|null $facilityEntityGrants
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null)
+    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -141,10 +150,23 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 ->andWhere('r.id IS NULL');
         }
 
-        if ($userId !== null) {
+        if ($userId !== null || $facilityEntityGrants !== null) {
             $qb
                 ->andWhere('o.id = :userId')
                 ->setParameter('userId', $userId);
+
+            if ($facilityEntityGrants !== null) {
+                $qb
+                    ->leftJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'f = l.primaryFacility'
+                    )
+                    ->leftJoin('l.facilities', 'sf')
+                    ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
+                    ->setParameter('facilityGrantIds', $facilityEntityGrants);
+            }
         }
 
         if ($space !== null) {
