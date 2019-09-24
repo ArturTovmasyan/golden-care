@@ -116,7 +116,9 @@ class ReferrerType
      * @Groups({
      *     "api_lead_referrer_type_grid",
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $organizationRequired;
@@ -127,7 +129,9 @@ class ReferrerType
      * @Groups({
      *     "api_lead_referrer_type_grid",
      *     "api_lead_referrer_type_list",
-     *     "api_lead_referrer_type_get"
+     *     "api_lead_referrer_type_get",
+     *     "api_lead_referral_get",
+     *     "api_lead_lead_get"
      * })
      */
     private $representativeRequired;

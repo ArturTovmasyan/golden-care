@@ -29,7 +29,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
     {
         $queryBuilder
             ->from(Referral::class, 'r')
-            ->innerJoin(
+            ->leftJoin(
                 Lead::class,
                 'l',
                 Join::WITH,
