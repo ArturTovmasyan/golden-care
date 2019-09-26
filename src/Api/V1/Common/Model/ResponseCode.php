@@ -138,6 +138,7 @@ class ResponseCode
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
     const RESOURCE_NOT_FOUND_EXCEPTION                           = 902;
+    const FEEDBACK_EXCEPTION                                     = 903;
 
     /**
      * @var array
@@ -271,5 +272,6 @@ class ResponseCode
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],
+        self::FEEDBACK_EXCEPTION                                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Unknown error occurred during sending your message. Please try again later...'],
     ];
 }
