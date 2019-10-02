@@ -311,9 +311,14 @@ class LeadService extends BaseService implements IGridService
             $this->em->flush();
 
             // Creating change log
-            $this->leadAddChangeLog($lead, $router);
+            $changeLog = $this->leadAddChangeLog($lead, $router);
 
             $this->em->flush();
+
+            if ($changeLog !== null) {
+                $this->sendNewLeadChangeLogNotification($changeLog);
+            }
+
             $this->em->getConnection()->commit();
 
             $insert_id = $lead->getId();
@@ -703,8 +708,9 @@ class LeadService extends BaseService implements IGridService
     /**
      * @param Lead $lead
      * @param RouterInterface $router
+     * @return ChangeLog
      */
-    private function leadAddChangeLog(Lead $lead, RouterInterface $router)
+    private function leadAddChangeLog(Lead $lead, RouterInterface $router): ChangeLog
     {
         $name = $lead->getFirstName() .' '. $lead->getLastName();
         $id = $lead->getId();
@@ -731,6 +737,46 @@ class LeadService extends BaseService implements IGridService
         $this->validate($changeLog, null, ['api_admin_change_log_add']);
 
         $this->em->persist($changeLog);
+
+        return $changeLog;
+    }
+
+    /**
+     * @param ChangeLog $changeLog
+     */
+    public function sendNewLeadChangeLogNotification(ChangeLog $changeLog): void
+    {
+        $emails = [];
+        $logs = [];
+
+        if ($changeLog->getOwner() !== null) {
+            $emails[] = $changeLog->getOwner()->getEmail();
+        }
+
+        $activityType = '';
+        $title = $changeLog->getContent()['lead_name'];
+        $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD];
+        $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
+
+        $logs[] = [
+            'type' => $changeLog->getType(),
+            'content' => $changeLog->getContent(),
+            'activity_type' => $activityType,
+            'title' => strip_tags($title),
+            'action' => $action,
+            'date' => $date,
+        ];
+
+        if (!empty($emails)) {
+            $subject = 'Leads System User Activity for ' . $changeLog->getCreatedAt()->format('m/d/Y');
+
+            $body = $this->container->get('templating')->render('@api_notification/change-log.email.html.twig', array(
+                'logs' => $logs,
+                'subject' => $subject
+            ));
+
+            $this->mailer->sendNotification($emails, $subject, $body);
+        }
     }
 
     /**
