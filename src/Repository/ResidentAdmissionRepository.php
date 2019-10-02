@@ -851,7 +851,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.birthday AS birthday',
                 'r.gender AS gender',
                 'r.ssn AS ssn',
-                'rs.title AS salutation'
+                'rs.title AS salutation',
+                's.name AS space'
             )
             ->join('ra.resident', 'r')
             ->join('r.space', 's')
@@ -933,23 +934,24 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             $qb
                 ->addSelect(
                     '(CASE
-                        WHEN fb.id IS NOT NULL THEN f.name
-                        WHEN ab.id IS NOT NULL THEN a.name
-                        WHEN reg.id IS NOT NULL THEN reg.name
-                        ELSE \'\' END) as group_name'
-                );
+                        WHEN fb.id IS NOT NULL THEN f.id
+                        WHEN ab.id IS NOT NULL THEN a.id
+                        WHEN reg.id IS NOT NULL THEN reg.id
+                        ELSE :groupId END) as group_id'
+                )
+                ->setParameter('groupId', null);
         } else {
             $qb
                 ->addSelect(
                     '(CASE
-                        WHEN fb.id IS NOT NULL THEN :groupName
-                        WHEN ab.id IS NOT NULL THEN :groupName
-                        WHEN reg.id IS NOT NULL THEN :groupName
-                        ELSE :groupName END) as group_name'
+                        WHEN fb.id IS NOT NULL THEN :groupId
+                        WHEN ab.id IS NOT NULL THEN :groupId
+                        WHEN reg.id IS NOT NULL THEN :groupId
+                        ELSE :groupId END) as group_id'
                 )
                 ->andWhere('ra.groupType=:type')
                 ->setParameter('type', $type)
-                ->setParameter('groupName', null);
+                ->setParameter('groupId', null);
 
             switch ($type) {
                 case GroupType::TYPE_FACILITY:
