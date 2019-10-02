@@ -334,7 +334,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $images = array_column($images, 'photo_150_150', 'id');
 
             foreach ($residents as $resident) {
-                $resident['birthday'] = $resident['birthday']->format('Y-m-d');
+                $resident['birthday'] = $resident['birthday']->format('Y-m-d H:i:s');
                 $resident['effective_date'] = $resident['effective_date']->format('Y-m-d H:i:s');
 
                 if (array_key_exists($resident['id'], $images)) {
