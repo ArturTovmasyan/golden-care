@@ -831,6 +831,179 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param array|null $notGrantResidentIds
+     * @param $page
+     * @param $perPage
+     * @param $inactive
+     * @param null $type
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getMobilePerPageActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $page, $perPage, $inactive, $type = null, $typeId = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'r.middleName AS middle_name',
+                'r.birthday AS birthday',
+                'r.gender AS gender',
+                'r.ssn AS ssn',
+                'rs.title AS salutation'
+            )
+            ->join('ra.resident', 'r')
+            ->join('r.space', 's')
+            ->leftJoin('r.salutation', 'rs')
+            ->leftJoin('ra.facilityBed', 'fb')
+            ->leftJoin('fb.room', 'fr')
+            ->leftJoin('fr.facility', 'f')
+            ->leftJoin('ra.apartmentBed', 'ab')
+            ->leftJoin('ab.room', 'ar')
+            ->leftJoin('ar.apartment', 'a')
+            ->leftJoin('ra.region', 'reg')
+            ->leftJoin('ra.csz', 'csz')
+            ->leftJoin('ra.careLevel', 'cl')
+            ->leftJoin('ra.diningRoom', 'dr');
+
+        if ($inactive) {
+            $qb
+                ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+                ->andWhere('r.id NOT IN (SELECT arar.id
+                        FROM App:ResidentAdmission ara
+                        JOIN ara.resident arar
+                        WHERE ara.admissionType < :admissionType AND ara.end IS NULL)'
+                )
+                ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        } else {
+            $qb
+                ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+                ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        }
+
+        $qb
+            ->addSelect(
+                'ra.admissionType as admission_type',
+                'ra.date as effective_date',
+                'ra.dnr as dnr',
+                'ra.polst as polst',
+                'ra.ambulatory as ambulatory',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN fb.number
+                    WHEN ab.id IS NOT NULL THEN ab.number
+                    ELSE \'\' END) as bed_number',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN fr.number
+                    WHEN ab.id IS NOT NULL THEN ar.number
+                    ELSE \'\' END) as room_number',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN fr.private
+                    WHEN ab.id IS NOT NULL THEN ar.private
+                    ELSE false END) as private',
+                '(CASE
+                    WHEN reg.id IS NOT NULL THEN ra.address
+                    ELSE \'\' END) as address',
+                '(CASE
+                    WHEN reg.id IS NOT NULL THEN CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain)
+                    ELSE \'\' END) as csz_str',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN ra.careGroup
+                    WHEN reg.id IS NOT NULL THEN ra.careGroup
+                    ELSE :null_parameter END) as care_group',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN cl.title
+                    WHEN reg.id IS NOT NULL THEN cl.title
+                    ELSE :null_parameter END) as care_level',
+                '(CASE
+                    WHEN dr.id IS NOT NULL THEN dr.title
+                    ELSE :null_parameter END) as dinning_room',
+                'CAST((CASE
+                    WHEN fb.id IS NOT NULL THEN :facility_type
+                    WHEN ab.id IS NOT NULL THEN :apartment_type
+                    WHEN reg.id IS NOT NULL THEN :region_type
+                    ELSE -1 END) AS INTEGER) as group_type'
+            )
+            ->setParameter('facility_type', GroupType::TYPE_FACILITY)
+            ->setParameter('apartment_type', GroupType::TYPE_APARTMENT)
+            ->setParameter('region_type', GroupType::TYPE_REGION)
+            ->setParameter('null_parameter', null);
+
+        if ($type === null && $typeId === null) {
+            $qb
+                ->addSelect(
+                    '(CASE
+                        WHEN fb.id IS NOT NULL THEN f.name
+                        WHEN ab.id IS NOT NULL THEN a.name
+                        WHEN reg.id IS NOT NULL THEN reg.name
+                        ELSE \'\' END) as group_name'
+                );
+        } else {
+            $qb
+                ->addSelect(
+                    '(CASE
+                        WHEN fb.id IS NOT NULL THEN :groupName
+                        WHEN ab.id IS NOT NULL THEN :groupName
+                        WHEN reg.id IS NOT NULL THEN :groupName
+                        ELSE :groupName END) as group_name'
+                )
+                ->andWhere('ra.groupType=:type')
+                ->setParameter('type', $type)
+                ->setParameter('groupName', null);
+
+            switch ($type) {
+                case GroupType::TYPE_FACILITY:
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                    break;
+                case GroupType::TYPE_APARTMENT:
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                    break;
+                case GroupType::TYPE_REGION:
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                    break;
+                default:
+                    throw new IncorrectStrategyTypeException();
+            }
+        }
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        $qb
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $notGrantResidentIds
      * @param $inactive
      * @param null $type
      * @param null $typeId
