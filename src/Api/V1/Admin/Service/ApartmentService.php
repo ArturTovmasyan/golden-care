@@ -268,4 +268,27 @@ class ApartmentService extends BaseService implements IGridService
 
         return $this->getRelatedData(Apartment::class, $entities);
     }
+
+    /**
+     * @param $date
+     * @return mixed
+     */
+    public function getMobileList($date)
+    {
+        /** @var ApartmentRepository $repo */
+        $repo = $this->em->getRepository(Apartment::class);
+
+        $entities = $repo->mobileList($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $date);
+
+        $finalEntities  = [];
+        if (!empty($entities)) {
+            foreach ($entities as $entity) {
+                $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];
+
+                $finalEntities[] = $entity;
+            }
+        }
+
+        return $finalEntities;
+    }
 }

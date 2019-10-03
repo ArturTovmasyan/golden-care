@@ -578,4 +578,22 @@ class FacilityController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/mobile/list/{date}", name="api_admin_facility_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $date
+     * @param FacilityService $facilityService
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, $date, FacilityService $facilityService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $facilityService->getMobileList($date),
+            ['api_admin_facility_mobile_list']
+        );
+    }
 }

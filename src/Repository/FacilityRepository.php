@@ -316,4 +316,58 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $date
+     * @return mixed
+     */
+    public function mobileList(Space $space = null, array $entityGrants = null, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('f')
+            ->select(
+                'f.id AS id',
+                'f.name AS name',
+                'f.shorthand AS shorthand',
+                'f.updatedAt AS updated_at',
+                'CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain) AS csz_str',
+                'f.address AS address',
+                's.name AS space'
+            )
+            ->innerJoin(
+                CityStateZip::class,
+                'csz',
+                Join::WITH,
+                'csz = f.csz'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = f.space'
+            )
+            ->where('f.updatedAt > :date')
+            ->setParameter('date', $date);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('f.name', 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

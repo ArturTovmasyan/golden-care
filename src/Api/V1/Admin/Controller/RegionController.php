@@ -496,4 +496,22 @@ class RegionController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/mobile/list/{date}", name="api_admin_region_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $date
+     * @param RegionService $regionService
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, $date, RegionService $regionService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $regionService->getMobileList($date),
+            ['api_admin_region_mobile_list']
+        );
+    }
 }

@@ -271,4 +271,27 @@ class FacilityService extends BaseService implements IGridService
 
         return $this->getRelatedData(Facility::class, $entities);
     }
+
+    /**
+     * @param $date
+     * @return mixed
+     */
+    public function getMobileList($date)
+    {
+        /** @var FacilityRepository $repo */
+        $repo = $this->em->getRepository(Facility::class);
+
+        $entities = $repo->mobileList($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $date);
+
+        $finalEntities  = [];
+        if (!empty($entities)) {
+            foreach ($entities as $entity) {
+                $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];
+
+                $finalEntities[] = $entity;
+            }
+        }
+
+        return $finalEntities;
+    }
 }

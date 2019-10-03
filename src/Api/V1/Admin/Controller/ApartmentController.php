@@ -566,4 +566,22 @@ class ApartmentController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/mobile/list/{date}", name="api_admin_apartment_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $date
+     * @param ApartmentService $apartmentService
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, $date, ApartmentService $apartmentService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $apartmentService->getMobileList($date),
+            ['api_admin_apartment_mobile_list']
+        );
+    }
 }

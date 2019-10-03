@@ -309,4 +309,50 @@ class RegionRepository extends EntityRepository implements RelatedInfoInterface
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $date
+     * @return mixed
+     */
+    public function mobileList(Space $space = null, array $entityGrants = null, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->select(
+                'r.id AS id',
+                'r.name AS name',
+                'r.shorthand AS shorthand',
+                'r.updatedAt AS updated_at',
+                's.name AS space'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
+            ->where('r.updatedAt > :date')
+            ->setParameter('date', $date);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('r.name', 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
