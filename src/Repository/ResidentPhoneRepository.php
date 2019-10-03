@@ -60,6 +60,57 @@ class ResidentPhoneRepository extends EntityRepository implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rp');
+
+        $qb
+            ->select('
+                    rp.id as id,
+                    r.id as rId,
+                    rp.primary as primary,
+                    rp.type as type,
+                    rp.number as number
+            ')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rp.resident'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rp.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('rp.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

@@ -833,12 +833,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $notGrantResidentIds
      * @param $page
      * @param $perPage
+     * @param $date
      * @param $inactive
      * @param null $type
      * @param null $typeId
      * @return mixed
      */
-    public function getMobilePerPageActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $page, $perPage, $inactive, $type = null, $typeId = null)
+    public function getMobilePerPageActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $page, $perPage, $date, $inactive, $type = null, $typeId = null)
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -851,6 +852,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.birthday AS birthday',
                 'r.gender AS gender',
                 'r.ssn AS ssn',
+                'r.updatedAt AS updated_at',
                 'rs.title AS salutation',
                 's.name AS space'
             )
@@ -866,11 +868,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->leftJoin('ra.region', 'reg')
             ->leftJoin('ra.csz', 'csz')
             ->leftJoin('ra.careLevel', 'cl')
-            ->leftJoin('ra.diningRoom', 'dr');
+            ->leftJoin('ra.diningRoom', 'dr')
+            ->where('r.updatedAt > :date')
+            ->setParameter('date', $date);
 
         if ($inactive) {
             $qb
-                ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+                ->andWhere('ra.admissionType = :admissionType AND ra.end IS NULL')
                 ->andWhere('r.id NOT IN (SELECT arar.id
                         FROM App:ResidentAdmission ara
                         JOIN ara.resident arar
@@ -879,7 +883,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 ->setParameter('admissionType', AdmissionType::DISCHARGE);
         } else {
             $qb
-                ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+                ->andWhere('ra.admissionType < :admissionType AND ra.end IS NULL')
                 ->setParameter('admissionType', AdmissionType::DISCHARGE);
         }
 
@@ -1006,12 +1010,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param array|null $notGrantResidentIds
+     * @param null $date
      * @param $inactive
      * @param null $type
      * @param null $typeId
      * @return mixed
      */
-    public function getCountActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $inactive, $type = null, $typeId = null)
+    public function getCountActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $date = null, $inactive, $type = null, $typeId = null)
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -1032,6 +1037,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             $qb
                 ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
                 ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        }
+
+        if ($date !== null) {
+            $qb
+                ->andWhere('r.updatedAt > :date')
+                ->setParameter('date', $date);
         }
 
         if ($type !== null && $typeId !== null) {

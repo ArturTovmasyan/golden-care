@@ -342,16 +342,17 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @Route("/mobile/paged/{state}/{page}/{perPage}", requirements={"page"="\d+", "perPage"="\d+"}, name="api_admin_resident_admission_get_mobile_pagination_residents", methods={"GET"})
+     * @Route("/mobile/paged/{state}/{page}/{perPage}/{date}", requirements={"page"="\d+", "perPage"="\d+"}, name="api_admin_resident_admission_get_mobile_pagination_residents", methods={"GET"})
      *
      * @param Request $request
      * @param $state
      * @param $page
      * @param $perPage
+     * @param $date
      * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      */
-    public function getMobilePerPageResidentsAction(Request $request, $state, $page, $perPage, ResidentAdmissionService $residentAdmissionService)
+    public function getMobilePerPageResidentsAction(Request $request, $state, $page, $perPage, $date, ResidentAdmissionService $residentAdmissionService)
     {
         $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
         $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
@@ -359,7 +360,7 @@ class ResidentAdmissionController extends BaseController
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getMobilePerPageResidents($state, $page, $perPage, $type, $typeId),
+            $residentAdmissionService->getMobilePerPageResidents($state, $page, $perPage, $date, $type, $typeId),
             ['api_admin_resident_get_mobile_pagination']
         );
     }

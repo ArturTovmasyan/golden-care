@@ -424,15 +424,75 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $page
+     * @param $perPage
+     * @param $date
      * @return mixed
      */
-    public function getCountNoAdmissionResidents(Space $space = null, array $entityGrants = null)
+    public function getMobilePerPageNoAdmissionResidents(Space $space = null, array $entityGrants = null, $page, $perPage, $date)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'r.middleName AS middle_name',
+                'r.birthday AS birthday',
+                'r.gender AS gender',
+                'r.ssn AS ssn',
+                'r.updatedAt AS updated_at',
+                'rs.title AS salutation',
+                's.name AS space'
+            )
+            ->innerJoin('r.salutation', 'rs')
+            ->innerJoin('r.space', 's')
+            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)')
+            ->andWhere('r.updatedAt > :date')
+            ->setParameter('date', $date);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $date
+     * @return mixed
+     */
+    public function getCountNoAdmissionResidents(Space $space = null, array $entityGrants = null, $date = null)
     {
         $qb = $this->createQueryBuilder('r');
 
         $qb
             ->select('COUNT(r.id) AS total')
             ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)');
+
+        if ($date !== null) {
+            $qb
+                ->andWhere('r.updatedAt > :date')
+                ->setParameter('date', $date);
+        }
 
         if ($space !== null) {
             $qb
