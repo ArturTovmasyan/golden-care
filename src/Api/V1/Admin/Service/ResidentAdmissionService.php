@@ -343,7 +343,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             foreach ($residents as $resident) {
                 $resident['phones'] = null;
                 $resident['birthday'] = $resident['birthday']->format('Y-m-d H:i:s');
-                $resident['updated_at'] = $resident['updated_at']->format('Y-m-d H:i:s');
+                $resident['updated_at'] = $resident['updated_at'] !== null ? $resident['updated_at']->format('Y-m-d H:i:s') : $resident['updated_at'];
 
                 if (array_key_exists('effective_date', $resident)) {
                     $resident['effective_date'] = $resident['effective_date']->format('Y-m-d H:i:s');
