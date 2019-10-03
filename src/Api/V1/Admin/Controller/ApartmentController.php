@@ -568,19 +568,18 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @Route("/mobile/list/{date}", name="api_admin_apartment_mobile_list", methods={"GET"})
+     * @Route("/mobile/list", name="api_admin_apartment_mobile_list", methods={"GET"})
      *
      * @param Request $request
-     * @param $date
      * @param ApartmentService $apartmentService
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, $date, ApartmentService $apartmentService)
+    public function getMobileListAction(Request $request, ApartmentService $apartmentService)
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $apartmentService->getMobileList($date),
+            $apartmentService->getMobileList($request->headers->get('date')),
             ['api_admin_apartment_mobile_list']
         );
     }
