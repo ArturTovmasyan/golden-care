@@ -79,6 +79,18 @@ persistence:
         contact_phone:
           title: 'ContactPhone'
           class: App\Entity\Lead\ContactPhone
+        stage_change_reason:
+          title: 'Stage Change Reason'
+          class: App\Entity\Lead\StageChangeReason
+        funnel_stage:
+          title: 'Funnel Stage'
+          class: App\Entity\Lead\FunnelStage
+        temperature:
+          title: 'Temperature'
+          class: App\Entity\Lead\Temperature
+        lead_funnel_stage:
+          title: 'Lead Funnel Stage'
+          class: App\Entity\Lead\LeadFunnelStage
 
     common:
       title: 'Common'

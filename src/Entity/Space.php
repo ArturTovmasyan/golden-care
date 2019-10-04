@@ -123,6 +123,12 @@ class Space
      *     "api_lead_referrer_type_get",
      *     "api_lead_contact_list",
      *     "api_lead_contact_get",
+     *     "api_lead_stage_change_reason_list",
+     *     "api_lead_stage_change_reason_get",
+     *     "api_lead_temperature_list",
+     *     "api_lead_temperature_get",
+     *     "api_lead_funnel_stage_list",
+     *     "api_lead_funnel_stage_get",
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
@@ -206,6 +212,12 @@ class Space
      *     "api_lead_referrer_type_get",
      *     "api_lead_contact_list",
      *     "api_lead_contact_get",
+     *     "api_lead_stage_change_reason_list",
+     *     "api_lead_stage_change_reason_get",
+     *     "api_lead_temperature_list",
+     *     "api_lead_temperature_get",
+     *     "api_lead_funnel_stage_list",
+     *     "api_lead_funnel_stage_get",
      *     "api_admin_notification_type_list",
      *     "api_admin_notification_type_get",
      *     "api_admin_change_log_list",
@@ -373,6 +385,24 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\StateChangeReason", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadStateChangeReasons;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\StageChangeReason", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadStageChangeReasons;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\FunnelStage", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadFunnelStages;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Temperature", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadTemperatures;
 
     /**
      * @var ArrayCollection
@@ -870,6 +900,54 @@ class Space
     public function setLeadStateChangeReasons(ArrayCollection $leadStateChangeReasons): void
     {
         $this->leadStateChangeReasons = $leadStateChangeReasons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadStageChangeReasons(): ArrayCollection
+    {
+        return $this->leadStageChangeReasons;
+    }
+
+    /**
+     * @param ArrayCollection $leadStageChangeReasons
+     */
+    public function setLeadStageChangeReasons(ArrayCollection $leadStageChangeReasons): void
+    {
+        $this->leadStageChangeReasons = $leadStageChangeReasons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadFunnelStages(): ArrayCollection
+    {
+        return $this->leadFunnelStages;
+    }
+
+    /**
+     * @param ArrayCollection $leadFunnelStages
+     */
+    public function setLeadFunnelStages(ArrayCollection $leadFunnelStages): void
+    {
+        $this->leadFunnelStages = $leadFunnelStages;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadTemperatures(): ArrayCollection
+    {
+        return $this->leadTemperatures;
+    }
+
+    /**
+     * @param ArrayCollection $leadTemperatures
+     */
+    public function setLeadTemperatures(ArrayCollection $leadTemperatures): void
+    {
+        $this->leadTemperatures = $leadTemperatures;
     }
 
     /**

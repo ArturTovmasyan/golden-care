@@ -134,6 +134,10 @@ class ResponseCode
     const INVALID_EFFECTIVE_DATE_EXCEPTION                       = 735;
     const LEAD_CONTACT_NOT_FOUND_EXCEPTION                       = 736;
     const INCORRECT_RESIDENT_STATE_EXCEPTION                     = 737;
+    const LEAD_STAGE_CHANGE_REASON_NOT_FOUND_EXCEPTION           = 738;
+    const LEAD_FUNNEL_STAGE_NOT_FOUND_EXCEPTION                  = 739;
+    const LEAD_TEMPERATURE_NOT_FOUND_EXCEPTION                   = 740;
+    const LEAD_LEAD_FUNNEL_STAGE_NOT_FOUND_EXCEPTION             = 741;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -268,6 +272,10 @@ class ResponseCode
         self::INVALID_EFFECTIVE_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Effective date.'],
         self::LEAD_CONTACT_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Contact not found.'],
         self::INCORRECT_RESIDENT_STATE_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect Resident state. Available states: active, inactive or no-admission.'],
+        self::LEAD_STAGE_CHANGE_REASON_NOT_FOUND_EXCEPTION           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Stage Change Reason not found.'],
+        self::LEAD_FUNNEL_STAGE_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Funnel Stage not found.'],
+        self::LEAD_TEMPERATURE_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Temperature not found.'],
+        self::LEAD_LEAD_FUNNEL_STAGE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead Funnel Stage not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

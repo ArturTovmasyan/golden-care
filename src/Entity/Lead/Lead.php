@@ -93,7 +93,9 @@ class Lead
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_funnel_stage_list",
+     *     "api_lead_lead_funnel_stage_get"
      * })
      */
     private $id;
@@ -119,7 +121,9 @@ class Lead
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_funnel_stage_list",
+     *     "api_lead_lead_funnel_stage_get"
      * })
      */
     private $firstName;
@@ -145,7 +149,9 @@ class Lead
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
      *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_funnel_stage_list",
+     *     "api_lead_lead_funnel_stage_get"
      * })
      */
     private $lastName;
@@ -439,6 +445,12 @@ class Lead
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="lead", cascade={"remove", "persist"})
      */
     private $activities;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadFunnelStage", mappedBy="lead", cascade={"remove", "persist"})
+     */
+    private $leadFunnelStages;
 
     /**
      * @var \DateTime
@@ -801,6 +813,22 @@ class Lead
     public function setActivities(ArrayCollection $activities): void
     {
         $this->activities = $activities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadFunnelStages(): ArrayCollection
+    {
+        return $this->leadFunnelStages;
+    }
+
+    /**
+     * @param ArrayCollection $leadFunnelStages
+     */
+    public function setLeadFunnelStages(ArrayCollection $leadFunnelStages): void
+    {
+        $this->leadFunnelStages = $leadFunnelStages;
     }
 
     /**
