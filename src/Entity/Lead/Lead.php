@@ -95,7 +95,9 @@ class Lead
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_funnel_stage_list",
-     *     "api_lead_lead_funnel_stage_get"
+     *     "api_lead_lead_funnel_stage_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
      * })
      */
     private $id;
@@ -123,7 +125,9 @@ class Lead
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_funnel_stage_list",
-     *     "api_lead_lead_funnel_stage_get"
+     *     "api_lead_lead_funnel_stage_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
      * })
      */
     private $firstName;
@@ -151,7 +155,9 @@ class Lead
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_funnel_stage_list",
-     *     "api_lead_lead_funnel_stage_get"
+     *     "api_lead_lead_funnel_stage_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
      * })
      */
     private $lastName;
@@ -451,6 +457,12 @@ class Lead
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadFunnelStage", mappedBy="lead", cascade={"remove", "persist"})
      */
     private $leadFunnelStages;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadTemperature", mappedBy="lead", cascade={"remove", "persist"})
+     */
+    private $leadTemperatures;
 
     /**
      * @var \DateTime
@@ -829,6 +841,22 @@ class Lead
     public function setLeadFunnelStages(ArrayCollection $leadFunnelStages): void
     {
         $this->leadFunnelStages = $leadFunnelStages;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadTemperatures(): ArrayCollection
+    {
+        return $this->leadTemperatures;
+    }
+
+    /**
+     * @param ArrayCollection $leadTemperatures
+     */
+    public function setLeadTemperatures(ArrayCollection $leadTemperatures): void
+    {
+        $this->leadTemperatures = $leadTemperatures;
     }
 
     /**

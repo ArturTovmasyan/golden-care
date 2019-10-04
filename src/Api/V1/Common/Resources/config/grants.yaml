@@ -91,6 +91,9 @@ persistence:
         lead_funnel_stage:
           title: 'Lead Funnel Stage'
           class: App\Entity\Lead\LeadFunnelStage
+        lead_temperature:
+          title: 'Lead Temperature'
+          class: App\Entity\Lead\LeadTemperature
 
     common:
       title: 'Common'

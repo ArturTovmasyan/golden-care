@@ -3,10 +3,9 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\Lead\FunnelStage;
+use App\Entity\Lead\Temperature;
 use App\Entity\Lead\Lead;
-use App\Entity\Lead\LeadFunnelStage;
-use App\Entity\Lead\StateChangeReason;
+use App\Entity\Lead\LeadTemperature;
 use App\Entity\Space;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -14,10 +13,10 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class LeadFunnelStageRepository
+ * Class LeadTemperatureRepository
  * @package App\Repository\Lead
  */
-class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfoInterface
+class LeadTemperatureRepository extends EntityRepository  implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -27,30 +26,24 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
     public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
-            ->from(LeadFunnelStage::class, 'lfs')
+            ->from(LeadTemperature::class, 'lt')
             ->innerJoin(
                 Lead::class,
                 'l',
                 Join::WITH,
-                'l = lfs.lead'
+                'l = lt.lead'
             )
             ->innerJoin(
-                FunnelStage::class,
-                'fs',
+                Temperature::class,
+                't',
                 Join::WITH,
-                'fs = lfs.stage'
-            )
-            ->innerJoin(
-                StateChangeReason::class,
-                'scr',
-                Join::WITH,
-                'scr = lfs.reason'
+                't = lt.temperature'
             )
             ->innerJoin(
                 User::class,
                 'u',
                 Join::WITH,
-                'u = lfs.createdBy'
+                'u = lt.createdBy'
             );
 
         if ($space !== null) {
@@ -59,7 +52,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                     Space::class,
                     's',
                     Join::WITH,
-                    's = fs.space'
+                    's = t.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -67,12 +60,12 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('lfs.id IN (:grantIds)')
+                ->andWhere('lt.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         $queryBuilder
-            ->groupBy('lfs.id');
+            ->groupBy('lt.id');
     }
 
     /**
@@ -83,12 +76,12 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
     public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
-            ->createQueryBuilder('lfs')
+            ->createQueryBuilder('lt')
             ->innerJoin(
-                FunnelStage::class,
-                'fs',
+                Temperature::class,
+                't',
                 Join::WITH,
-                'fs = lfs.stage'
+                't = lt.temperature'
             );
 
         if ($space !== null) {
@@ -97,7 +90,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                     Space::class,
                     's',
                     Join::WITH,
-                    's = fs.space'
+                    's = t.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -105,12 +98,12 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('lfs.id IN (:grantIds)')
+                ->andWhere('lt.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         $qb
-            ->addOrderBy('fs.title', 'ASC');
+            ->addOrderBy('t.title', 'ASC');
 
         return $qb
             ->getQuery()
@@ -126,14 +119,14 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
     public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('lfs')
+            ->createQueryBuilder('lt')
             ->innerJoin(
-                FunnelStage::class,
-                'fs',
+                Temperature::class,
+                't',
                 Join::WITH,
-                'fs = lfs.stage'
+                't = lt.temperature'
             )
-            ->where('lfs.id = :id')
+            ->where('lt.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -142,7 +135,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                     Space::class,
                     's',
                     Join::WITH,
-                    's = fs.space'
+                    's = t.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -150,7 +143,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('lfs.id IN (:grantIds)')
+                ->andWhere('lt.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -168,23 +161,23 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('lfs')
-            ->where('lfs.id IN (:ids)')
+            ->createQueryBuilder('lt')
+            ->where('lt.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    FunnelStage::class,
-                    'fs',
+                    Temperature::class,
+                    't',
                     Join::WITH,
-                    'fs = lfs.stage'
+                    't = lt.temperature'
                 )
                 ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
-                    's = fs.space'
+                    's = t.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -192,12 +185,12 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('lfs.id IN (:grantIds)')
+                ->andWhere('lt.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
-            ->groupBy('lfs.id')
+            ->groupBy('lt.id')
             ->getQuery()
             ->getResult();
     }
@@ -213,30 +206,30 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('lfs')
+            ->createQueryBuilder('lt')
             ->innerJoin(
-                FunnelStage::class,
-                'fs',
+                Temperature::class,
+                't',
                 Join::WITH,
-                'fs = lfs.stage'
+                't = lt.temperature'
             )
-            ->select('fs.title');
+            ->select('t.title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('lfs.'.$mappedBy.'= :id')
+                ->where('lt.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('lfs.id IN (:ids)')
+                ->andWhere('lt.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('lfs.id IN (:array)')
+                ->andWhere('lt.id IN (:array)')
                 ->setParameter('array', []);
         }
 
@@ -246,7 +239,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                     Space::class,
                     's',
                     Join::WITH,
-                    's = fs.space'
+                    's = t.space'
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
@@ -254,7 +247,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('lfs.id IN (:grantIds)')
+                ->andWhere('lt.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

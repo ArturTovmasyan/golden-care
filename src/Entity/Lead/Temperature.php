@@ -5,6 +5,7 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -65,6 +66,8 @@ class Temperature
      * @Groups({
      *     "api_lead_temperature_list",
      *     "api_lead_temperature_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
      * })
      */
     private $id;
@@ -88,7 +91,9 @@ class Temperature
      * @ORM\Column(name="title", type="string", length=120)
      * @Groups({
      *     "api_lead_temperature_list",
-     *     "api_lead_temperature_get"
+     *     "api_lead_temperature_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
      * })
      */
     private $title;
@@ -130,6 +135,12 @@ class Temperature
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadTemperature", mappedBy="temperature", cascade={"remove", "persist"})
+     */
+    private $leadTemperatures;
 
     public function getId()
     {
@@ -182,5 +193,21 @@ class Temperature
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadTemperatures(): ArrayCollection
+    {
+        return $this->leadTemperatures;
+    }
+
+    /**
+     * @param ArrayCollection $leadTemperatures
+     */
+    public function setLeadTemperatures(ArrayCollection $leadTemperatures): void
+    {
+        $this->leadTemperatures = $leadTemperatures;
     }
 }

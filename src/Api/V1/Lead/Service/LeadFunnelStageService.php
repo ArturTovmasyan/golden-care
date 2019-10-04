@@ -29,6 +29,16 @@ class LeadFunnelStageService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
+        if (empty($params) || empty($params[0]['lead_id'])) {
+            throw new LeadNotFoundException();
+        }
+
+        $leadId = $params[0]['lead_id'];
+
+        $queryBuilder
+            ->where('lfs.lead = :leadId')
+            ->setParameter('leadId', $leadId);
+
         /** @var LeadFunnelStageRepository $repo */
         $repo = $this->em->getRepository(LeadFunnelStage::class);
 

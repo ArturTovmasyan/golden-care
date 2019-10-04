@@ -48,7 +48,10 @@ class LeadFunnelStageController extends BaseController
             $request,
             LeadFunnelStage::class,
             'api_lead_lead_funnel_stage_grid',
-            $leadFunnelStageService
+            $leadFunnelStageService,
+            [
+                'lead_id' => $request->get('lead_id'),
+            ]
         );
     }
 

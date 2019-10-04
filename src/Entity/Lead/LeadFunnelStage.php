@@ -23,16 +23,9 @@ use App\Annotation\Grid;
  *              "field"      = "lfs.id"
  *          },
  *          {
- *              "id"         = "lead_id",
- *              "type"       = "id",
- *              "hidden"     = true,
- *              "field"      = "l.id"
- *          },
- *          {
- *              "id"         = "lead",
+ *              "id"         = "created_by",
  *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))",
- *              "link"       = "/lead/lead/:lead_id"
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
  *          },
  *          {
  *              "id"         = "stage",
