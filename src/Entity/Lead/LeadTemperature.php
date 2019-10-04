@@ -23,11 +23,6 @@ use App\Annotation\Grid;
  *              "field"      = "lt.id"
  *          },
  *          {
- *              "id"         = "created_by",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
- *          },
- *          {
  *              "id"         = "temperature",
  *              "type"       = "string",
  *              "field"      = "t.title"
@@ -41,6 +36,11 @@ use App\Annotation\Grid;
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(lt.notes, 1, 100)), CASE WHEN LENGTH(lt.notes) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "created_by",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
  *          }
  *     }
  * )

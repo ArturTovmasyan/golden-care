@@ -23,11 +23,6 @@ use App\Annotation\Grid;
  *              "field"      = "lfs.id"
  *          },
  *          {
- *              "id"         = "created_by",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
- *          },
- *          {
  *              "id"         = "stage",
  *              "type"       = "string",
  *              "field"      = "fs.title"
@@ -46,6 +41,11 @@ use App\Annotation\Grid;
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(lfs.notes, 1, 100)), CASE WHEN LENGTH(lfs.notes) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "created_by",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
  *          }
  *     }
  * )

@@ -6,7 +6,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
-use App\Entity\Lead\StateChangeReason;
+use App\Entity\Lead\StageChangeReason;
 use App\Entity\Space;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -41,7 +41,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                 'fs = lfs.stage'
             )
             ->innerJoin(
-                StateChangeReason::class,
+                StageChangeReason::class,
                 'scr',
                 Join::WITH,
                 'scr = lfs.reason'
