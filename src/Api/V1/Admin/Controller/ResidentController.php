@@ -339,12 +339,11 @@ class ResidentController extends BaseController
                 'first_name'    => $request->get('first_name'),
                 'last_name'     => $request->get('last_name'),
                 'middle_name'   => $request->get('middle_name'),
-                'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
-                'ssn'        => $request->get('ssn'),
+                'ssn'           => $request->get('ssn'),
                 'photo'         => $request->get('photo'),
                 'phones'        => $request->get('phones'),
             ]
@@ -423,21 +422,20 @@ class ResidentController extends BaseController
                 'first_name'    => $request->get('first_name'),
                 'last_name'     => $request->get('last_name'),
                 'middle_name'   => $request->get('middle_name'),
-                'type'          => $request->get('type'),
                 'space_id'      => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
                 'birthday'      => $request->get('birthday'),
                 'gender'        => $request->get('gender'),
-                'ssn'        => $request->get('ssn'),
+                'ssn'           => $request->get('ssn'),
                 'photo'         => $request->get('photo'),
                 'phones'        => $request->get('phones'),
-                'dnr' => $request->get('dnr'),
-                'polst' => $request->get('polst'),
-                'ambulatory' => $request->get('ambulatory'),
-                'care_group' => $request->get('care_group'),
+                'dnr'           => $request->get('dnr'),
+                'polst'         => $request->get('polst'),
+                'ambulatory'    => $request->get('ambulatory'),
+                'care_group'    => $request->get('care_group'),
                 'care_level_id' => $request->get('care_level_id'),
-                'address' => $request->get('address'),
-                'csz_id' => $request->get('csz_id'),
+                'address'       => $request->get('address'),
+                'csz_id'        => $request->get('csz_id'),
             ]
         );
 
@@ -498,7 +496,7 @@ class ResidentController extends BaseController
      * @apiHeader {String} Content-Type  application/json
      * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
      *
-     * @apiParam {Int[]} ids The unique identifier of the resident TODO: review
+     * @apiParam {Int[]} ids The unique identifier of the resident
      *
      * @apiSuccessExample {json} Sample Response:
      *     HTTP/1.1 204 No Content
@@ -663,6 +661,45 @@ class ResidentController extends BaseController
             '',
             $residentAdmissionService->getResidentLastAdmission($id),
             ['api_admin_resident_get_last_admission']
+        );
+    }
+
+    /**
+     * @Route("/mobile/{id}", requirements={"id"="\d+"}, name="api_admin_resident_edit_mobile", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-resident", level="EDIT")
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentService $residentService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function mobileEditAction(Request $request, $id, ResidentService $residentService)
+    {
+        $residentService->mobileEdit(
+            $id,
+            [
+                'first_name'    => $request->get('first_name'),
+                'last_name'     => $request->get('last_name'),
+                'middle_name'   => $request->get('middle_name'),
+                'salutation_id' => $request->get('salutation_id'),
+                'birthday'      => $request->get('birthday'),
+                'gender'        => $request->get('gender'),
+                'ssn'           => $request->get('ssn'),
+                'phones'        => $request->get('phones'),
+                'dnr'           => $request->get('dnr'),
+                'polst'         => $request->get('polst'),
+                'ambulatory'    => $request->get('ambulatory'),
+                'care_group'    => $request->get('care_group'),
+                'care_level_id' => $request->get('care_level_id'),
+                'address'       => $request->get('address'),
+                'csz_id'        => $request->get('csz_id'),
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
         );
     }
 }

@@ -470,4 +470,21 @@ class SalutationController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/mobile/list", name="api_admin_salutation_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param SalutationService $salutationService
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, SalutationService $salutationService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $salutationService->getMobileList($request->headers->get('date')),
+            ['api_admin_salutation_mobile_list']
+        );
+    }
 }

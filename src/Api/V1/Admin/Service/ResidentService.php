@@ -2173,4 +2173,96 @@ class ResidentService extends BaseService implements IGridService
 
         return $report;
     }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Throwable
+     */
+    public function mobileEdit($id, array $params) : void
+    {
+        try {
+            /**
+             * @var Resident $resident
+             * @var Space $space
+             * @var Salutation $salutation
+             */
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var ResidentRepository $repo */
+            $repo = $this->em->getRepository(Resident::class);
+
+            $resident = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
+
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            $salutationId = $params['salutation_id'] ?? 0;
+
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
+
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
+            }
+
+            $gender = $params['gender'] ? (int)$params['gender'] : 0;
+            $ssn = !empty($params['ssn']) ? $params['ssn'] : null;
+            $birthday = new \DateTime($params['birthday']);
+
+            $resident->setFirstName($params['first_name'] ?? '');
+            $resident->setLastName($params['last_name'] ?? '');
+            $resident->setMiddleName($params['middle_name'] ?? '');
+            $resident->setSalutation($salutation);
+            $resident->setGender($gender);
+            $resident->setSsn($ssn);
+            $resident->setBirthday($birthday);
+            $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
+
+            $this->validate($resident, null, ['api_admin_resident_edit']);
+            $this->em->persist($resident);
+
+            // save admission
+            /** @var ResidentAdmissionRepository $admissionRepo */
+            $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            /** @var ResidentAdmission $lastAction */
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
+
+            if ($lastAction !== null) {
+                switch ($lastAction->getGroupType()) {
+                    case GroupType::TYPE_FACILITY:
+                        $validationGroup = 'api_admin_resident_facility_edit';
+                        $lastAction = $this->saveAsFacility($lastAction, $params);
+                        break;
+                    case GroupType::TYPE_APARTMENT:
+                        $validationGroup = 'api_admin_resident_apartment_edit';
+                        $lastAction = $this->saveAsApartment($lastAction);
+                        break;
+                    case GroupType::TYPE_REGION:
+                        $validationGroup = 'api_admin_resident_region_edit';
+                        $lastAction = $this->saveAsRegion($lastAction, $params);
+                        break;
+                    default:
+                        throw new IncorrectStrategyTypeException();
+                }
+
+                $this->validate($lastAction, null, [$validationGroup]);
+                $this->em->persist($lastAction);
+            }
+
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
 }

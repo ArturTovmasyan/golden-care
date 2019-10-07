@@ -480,4 +480,21 @@ class CareLevelController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/mobile/list", name="api_admin_care_level_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param CareLevelService $careLevelService
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, CareLevelService $careLevelService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $careLevelService->getMobileList($request->headers->get('date')),
+            ['api_admin_care_level_mobile_list']
+        );
+    }
 }

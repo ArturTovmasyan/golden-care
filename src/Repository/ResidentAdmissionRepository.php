@@ -853,7 +853,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.gender AS gender',
                 'r.ssn AS ssn',
                 'r.updatedAt AS updated_at',
-                'rs.title AS salutation',
+                'rs.id AS salutation_id',
                 's.name AS space'
             )
             ->join('ra.resident', 'r')
@@ -917,9 +917,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     WHEN reg.id IS NOT NULL THEN ra.careGroup
                     ELSE :null_parameter END) as care_group',
                 '(CASE
-                    WHEN fb.id IS NOT NULL THEN cl.title
-                    WHEN reg.id IS NOT NULL THEN cl.title
-                    ELSE :null_parameter END) as care_level',
+                    WHEN fb.id IS NOT NULL THEN cl.id
+                    WHEN reg.id IS NOT NULL THEN cl.id
+                    ELSE :null_parameter END) as care_level_id',
                 '(CASE
                     WHEN dr.id IS NOT NULL THEN dr.title
                     ELSE :null_parameter END) as dinning_room',

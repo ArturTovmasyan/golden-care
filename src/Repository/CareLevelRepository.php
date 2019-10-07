@@ -209,4 +209,50 @@ class CareLevelRepository extends EntityRepository implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $date
+     * @return mixed
+     */
+    public function mobileList(Space $space = null, array $entityGrants = null, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('cl')
+            ->select(
+                'cl.id AS id',
+                'cl.title AS title',
+                'cl.description AS description',
+                'cl.updatedAt AS updated_at',
+                's.name AS space'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = cl.space'
+            )
+            ->where('cl.updatedAt > :date')
+            ->setParameter('date', $date);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('cl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('cl.title', 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

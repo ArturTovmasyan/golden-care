@@ -443,7 +443,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 'r.gender AS gender',
                 'r.ssn AS ssn',
                 'r.updatedAt AS updated_at',
-                'rs.title AS salutation',
+                'rs.id AS salutation_id',
                 's.name AS space'
             )
             ->innerJoin('r.salutation', 'rs')
