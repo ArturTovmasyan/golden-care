@@ -465,6 +465,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
+            ->orderBy('r.updatedAt', 'ASC')
             ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
