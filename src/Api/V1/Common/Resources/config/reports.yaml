@@ -126,7 +126,7 @@ form:
           select_all: true
     blood-pressure:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBloodPressureChartingReport
-      title: 'Blood Pressure: Blood pressure charting'
+      title: 'Weight & Blood Pressure Chart: All Residents'
       show_in_resident_list: true
       show_in_group_list: true
       formats: ['pdf']
