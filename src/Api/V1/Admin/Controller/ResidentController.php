@@ -702,4 +702,18 @@ class ResidentController extends BaseController
             Response::HTTP_CREATED
         );
     }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_image_download", methods={"GET"})
+     *
+     * @param ResidentService $residentService
+     * @param $id
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, ResidentService $residentService)
+    {
+        $data = $residentService->downloadFile($id);
+
+        return $this->respondImageFile($data[0], $data[1], $data[2]);
+    }
 }

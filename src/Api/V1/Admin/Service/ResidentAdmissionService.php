@@ -47,6 +47,8 @@ use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class ResidentAdmissionService
@@ -288,6 +290,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
+     * @param RouterInterface $router
      * @param $state
      * @param $page
      * @param $perPage
@@ -296,7 +299,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $typeId
      * @return array
      */
-    public function getMobilePerPageResidents($state, $page, $perPage, $date, $type, $typeId)
+    public function getMobilePerPageResidents(RouterInterface $router, $state, $page, $perPage, $date, $type, $typeId)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -350,7 +353,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 if (array_key_exists($resident['id'], $images)) {
-                    $resident['photo'] = $images[$resident['id']];
+                    $resident['photo'] = $router->generate('api_admin_resident_image_download', ['id' => $resident['id']], UrlGeneratorInterface::ABSOLUTE_URL);
                 } else {
                     $resident['photo'] = null;
                 }

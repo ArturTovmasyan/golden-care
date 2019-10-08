@@ -391,6 +391,25 @@ class BaseController extends AbstractController
         throw new ResourceNotFoundException();
     }
 
+    /**
+     * @param string $title
+     * @param string $mimeType
+     * @param $data
+     * @return Response
+     */
+    protected function respondImageFile($title, $mimeType, $data)
+    {
+        if (!empty($data)) {
+            return new Response($data, Response::HTTP_OK, [
+                'Content-Type' => $mimeType,
+                'Content-Length' => \strlen($data),
+                'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mimeType) . '"'
+            ]);
+        }
+
+        throw new ResourceNotFoundException();
+    }
+
     protected function gridIgnoreFields(Request $request) : array
     {
         return [];

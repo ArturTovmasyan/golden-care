@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use App\Annotation\Grant as Grant;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @Route("/api/v1.0/admin/resident/admission")
@@ -349,19 +350,18 @@ class ResidentAdmissionController extends BaseController
      * @param $page
      * @param $perPage
      * @param ResidentAdmissionService $residentAdmissionService
+     * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function getMobilePerPageResidentsAction(Request $request, $state, $page, $perPage, ResidentAdmissionService $residentAdmissionService)
+    public function getMobilePerPageResidentsAction(Request $request, $state, $page, $perPage, ResidentAdmissionService $residentAdmissionService, RouterInterface $router)
     {
-        $request->headers->get('date');
-
         $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
         $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
 
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getMobilePerPageResidents($state, $page, $perPage, $request->headers->get('date'), $type, $typeId),
+            $residentAdmissionService->getMobilePerPageResidents($router, $state, $page, $perPage, $request->headers->get('date'), $type, $typeId),
             ['api_admin_resident_get_mobile_pagination']
         );
     }

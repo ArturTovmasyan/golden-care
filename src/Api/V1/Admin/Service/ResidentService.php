@@ -28,6 +28,7 @@ use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
+use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -2264,5 +2265,22 @@ class ResidentService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function downloadFile($id): array
+    {
+        $entity = $this->getById($id);
+
+        if(!empty($entity) && $entity->getImage() !== null) {
+            $parseFile = Parser::parse($entity->getImage()->getPhoto150150());
+
+            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
+        }
+
+        return [null, null, null];
     }
 }
