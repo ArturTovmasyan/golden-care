@@ -44,6 +44,7 @@ class FunnelStageRepository extends EntityRepository  implements RelatedInfoInte
         }
 
         $queryBuilder
+            ->addOrderBy('fs.seqNo', 'ASC')
             ->groupBy('fs.id');
     }
 
@@ -76,7 +77,7 @@ class FunnelStageRepository extends EntityRepository  implements RelatedInfoInte
         }
 
         $qb
-            ->addOrderBy('fs.title', 'ASC');
+            ->addOrderBy('fs.seqNo', 'ASC');
 
         return $qb
             ->getQuery()
