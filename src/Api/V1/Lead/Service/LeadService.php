@@ -316,7 +316,7 @@ class LeadService extends BaseService implements IGridService
             $this->em->flush();
 
             if ($changeLog !== null) {
-                $this->sendNewLeadChangeLogNotification($changeLog);
+                $this->sendNewLeadChangeLogNotification($changeLog, $params['base_url']);
             }
 
             $this->em->getConnection()->commit();
@@ -743,8 +743,9 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param ChangeLog $changeLog
+     * @param $baseUrl
      */
-    public function sendNewLeadChangeLogNotification(ChangeLog $changeLog): void
+    public function sendNewLeadChangeLogNotification(ChangeLog $changeLog, $baseUrl): void
     {
         $emails = [];
         $logs = [];
@@ -770,7 +771,8 @@ class LeadService extends BaseService implements IGridService
         if (!empty($emails)) {
             $subject = 'Leads System User Activity for ' . $changeLog->getCreatedAt()->format('m/d/Y');
 
-            $body = $this->container->get('templating')->render('@api_notification/change-log.email.html.twig', array(
+            $body = $this->container->get('templating')->render('@api_notification/new-lead.email.html.twig', array(
+                'baseUrl' => $baseUrl,
                 'logs' => $logs,
                 'subject' => $subject
             ));

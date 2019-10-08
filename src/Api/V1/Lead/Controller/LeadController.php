@@ -152,7 +152,8 @@ class LeadController extends BaseController
                 'primary_facility_id' => $request->get('primary_facility_id'),
                 'facilities' => $request->get('facilities'),
                 'notes' => $request->get('notes'),
-                'referral' => $request->get('referral')
+                'referral' => $request->get('referral'),
+                'base_url' => $request->getSchemeAndHttpHost(),
             ]
         );
 
