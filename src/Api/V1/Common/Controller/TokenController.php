@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\UserLog;
 use App\Model\Log;
 use App\Repository\LoginAttemptRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use OAuth2\OAuth2;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,61 +106,60 @@ class TokenController extends BaseController
     {
         $response = parent::tokenAction($request);
 
-        /**
-         * @var User $user
-         */
+        $username = $request->get('username');
 
-        if ($response->getStatusCode() == Response::HTTP_OK) {
-            $user = $this->em->getRepository(User::class)->findUserByUsername($request->get('username'));
+        if ($username !== null) {
+            if ($response->getStatusCode() === Response::HTTP_OK) {
+                /** @var UserRepository $repo */
+                $repo = $this->em->getRepository(User::class);
+                /** @var User $user */
+                $user = $repo->findUserByUsername($username);
 
-            if ($user) {
-                $attempts = $this->em->getRepository(LoginAttempt::class)
-                    ->findBy(['login'=>$request->get('username')]);
+                if ($user) {
+                    $attempts = $this->em->getRepository(LoginAttempt::class)
+                        ->findBy(['login'=>$username]);
 
-                foreach ($attempts as $attempt) {
-                    $this->em->remove($attempt);
+                    foreach ($attempts as $attempt) {
+                        $this->em->remove($attempt);
+                    }
+
+                    // create log
+                    $log = new UserLog();
+                    $log->setCreatedAt(new \DateTime());
+                    $log->setUser($user);
+                    $log->setType(UserLog::LOG_TYPE_AUTHENTICATION);
+                    $log->setMessage(sprintf('User %s (%s)  logged in.', $user->getFullName(), $user->getUsername()));
+                    $log->setLevel(Log::LOG_LEVEL_LOW);
+                    $this->em->persist($log);
+
+                    $this->em->flush();
+                }
+            } else {
+                /** @var LoginAttemptRepository $loginAttemptRepository */
+                $loginAttemptRepository = $this->em->getRepository(LoginAttempt::class);
+                $attemptsCount = $loginAttemptRepository->getAttemptsCount($username, $this->getClientIp());
+
+                if ($attemptsCount >= LoginAttempt::PASSWORD_ATTEMPT_LIMIT) {
+                    throw new UserBlockedException([$username, $this->getClientIp()]);
                 }
 
-                // create log
-                $log = new UserLog();
-                $log->setCreatedAt(new \DateTime());
-                $log->setUser($user);
-                $log->setType(UserLog::LOG_TYPE_AUTHENTICATION);
-                $log->setMessage(sprintf("User %s (%s)  logged in.", $user->getFullName(), $user->getUsername()));
-                $log->setLevel(Log::LOG_LEVEL_LOW);
-                $this->em->persist($log);
-
+                // create attempt
+                $loginAttempt = new LoginAttempt();
+                $loginAttempt->setCreatedAt(new \DateTime());
+                $loginAttempt->setLogin($username);
+                $loginAttempt->setIp($this->getClientIp());
+                $this->em->persist($loginAttempt);
                 $this->em->flush();
+
+                $content = json_decode($response->getContent(), 1);
+                $message = '';
+
+                if (!empty($content['error_description'])) {
+                    $message = $content['error_description'];
+                }
+
+                throw new UnauthorizedHttpException('token', $message);
             }
-        } else {
-            $username = $request->get('username');
-
-            /**
-             * @var LoginAttemptRepository $loginAttemptRepository
-             */
-            $loginAttemptRepository = $this->em->getRepository(LoginAttempt::class);
-            $attemptsCount = $loginAttemptRepository->getAttemptsCount($username, $this->getClientIp());
-
-            if ($attemptsCount >= LoginAttempt::PASSWORD_ATTEMPT_LIMIT) {
-                throw new UserBlockedException([$username, $this->getClientIp()]);
-            }
-
-            // create attempt
-            $loginAttempt = new LoginAttempt();
-            $loginAttempt->setCreatedAt(new \DateTime());
-            $loginAttempt->setLogin($username);
-            $loginAttempt->setIp($this->getClientIp());
-            $this->em->persist($loginAttempt);
-            $this->em->flush();
-
-            $content = json_decode($response->getContent(), 1);
-            $message = '';
-
-            if (!empty($content['error_description'])) {
-                $message = $content['error_description'];
-            }
-
-            throw new UnauthorizedHttpException("token", $message);
         }
 
         return $response;
