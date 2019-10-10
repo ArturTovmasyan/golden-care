@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\DuplicateImageByRequestIdException;
+use App\Api\V1\Common\Service\Exception\IncompleteChunkDataException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\RegionNotFoundException;
@@ -103,7 +106,7 @@ class ResidentService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
@@ -196,7 +199,7 @@ class ResidentService extends BaseService implements IGridService
      * @return integer|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -276,7 +279,7 @@ class ResidentService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -398,9 +401,9 @@ class ResidentService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(Resident $resident, array $phones = []) : ?array
+    private function savePhones(Resident $resident, array $phones = []): ?array
     {
-        if($resident->getId() !== null) {
+        if ($resident->getId() !== null) {
 
             /** @var ResidentPhoneRepository $residentPhoneRepo */
             $residentPhoneRepo = $this->em->getRepository(ResidentPhone::class);
@@ -416,9 +419,9 @@ class ResidentService extends BaseService implements IGridService
 
         $residentPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
 
             $residentPhone = new ResidentPhone();
             $residentPhone->setResident($resident);
@@ -609,7 +612,7 @@ class ResidentService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function photo($id, array $params) : void
+    public function photo($id, array $params): void
     {
         try {
             /**
@@ -2180,7 +2183,7 @@ class ResidentService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function mobileEdit($id, array $params) : void
+    public function mobileEdit($id, array $params): void
     {
         try {
             /**
@@ -2275,12 +2278,104 @@ class ResidentService extends BaseService implements IGridService
     {
         $entity = $this->getById($id);
 
-        if(!empty($entity) && $entity->getImage() !== null) {
+        if (!empty($entity) && $entity->getImage() !== null) {
             $parseFile = Parser::parse($entity->getImage()->getPhoto150150());
 
             return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
         }
 
         return [null, null, null];
+    }
+
+    /**
+     * @param array $params
+     * @return int|null
+     * @throws \Exception
+     */
+    public function mobileUpload(array $params): ?int
+    {
+        $insert_id = null;
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $requestId = $params['request_id'];
+            $residentId = $params['resident_id'] ?? 0;
+            $userId = $params['user_id'] ?? 0;
+            $extension = 'jpeg';
+
+            /** @var ResidentImage $existImage */
+            $existImage = $this->em->getRepository(ResidentImage::class)->findOneBy(['requestId' => $requestId]);
+
+            if ($existImage !== null) {
+                throw new DuplicateImageByRequestIdException();
+            }
+
+            /** @var Resident $resident */
+            $resident = $this->em->getRepository(Resident::class)->find($residentId);
+
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            //File chunk data
+            $chunkString = $params['chunk'];
+            $chunkId = $params['chunk_id'];
+            $totalChunk = (int)$params['total_chunk'];
+
+            //generate data for chunks upload service
+            $data = array(
+                'chunkString' => $chunkString,
+                'chunkId' => $chunkId,
+                'totalChunk' => $totalChunk,
+                'requestId' => $requestId,
+                'userId' => $userId,
+                'extension' => $extension
+            );
+
+            //check if required POST data exists
+            if (!($chunkString && $chunkId && $totalChunk && $requestId && $userId)) {
+                throw new IncompleteChunkDataException();
+            }
+
+            //upload file by chunks
+            $base64 = $this->uploadByChunks($data);
+
+            $image = null;
+            // save photo
+            if (!empty($base64)) {
+                /** @var ResidentImageRepository $imageRepo */
+                $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+                $image = $imageRepo->getBy($resident->getId());
+
+                if ($image === null) {
+                    $image = new ResidentImage();
+                }
+
+                $base64 = 'data:image/' . $extension . ';base64,' . $base64;
+
+                $image->setResident($resident);
+                $image->setPhoto($base64);
+                $image->setRequestId($requestId);
+
+                $this->em->persist($image);
+
+                $this->imageFilterService->createAllFilterVersion($image);
+
+                $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+
+                $this->em->flush();
+            }
+
+            $this->em->getConnection()->commit();
+
+            $insert_id = $image !== null ? $resident->getId() : null;
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+
+        return $insert_id;
     }
 }

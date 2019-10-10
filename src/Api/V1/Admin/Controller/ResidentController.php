@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
@@ -38,7 +39,8 @@ use App\Annotation\Grant as Grant;
  */
 class ResidentController extends BaseController
 {
-    protected function gridIgnoreFields(Request $request) : array {
+    protected function gridIgnoreFields(Request $request): array
+    {
         $ignoreFields = [];
 
         $state = $request->get('state');
@@ -336,16 +338,16 @@ class ResidentController extends BaseController
 
         $id = $residentService->add(
             [
-                'first_name'    => $request->get('first_name'),
-                'last_name'     => $request->get('last_name'),
-                'middle_name'   => $request->get('middle_name'),
-                'space_id'      => $request->get('space_id'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'middle_name' => $request->get('middle_name'),
+                'space_id' => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
-                'birthday'      => $request->get('birthday'),
-                'gender'        => $request->get('gender'),
-                'ssn'           => $request->get('ssn'),
-                'photo'         => $request->get('photo'),
-                'phones'        => $request->get('phones'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender'),
+                'ssn' => $request->get('ssn'),
+                'photo' => $request->get('photo'),
+                'phones' => $request->get('phones'),
             ]
         );
 
@@ -419,23 +421,23 @@ class ResidentController extends BaseController
         $residentService->edit(
             $id,
             [
-                'first_name'    => $request->get('first_name'),
-                'last_name'     => $request->get('last_name'),
-                'middle_name'   => $request->get('middle_name'),
-                'space_id'      => $request->get('space_id'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'middle_name' => $request->get('middle_name'),
+                'space_id' => $request->get('space_id'),
                 'salutation_id' => $request->get('salutation_id'),
-                'birthday'      => $request->get('birthday'),
-                'gender'        => $request->get('gender'),
-                'ssn'           => $request->get('ssn'),
-                'photo'         => $request->get('photo'),
-                'phones'        => $request->get('phones'),
-                'dnr'           => $request->get('dnr'),
-                'polst'         => $request->get('polst'),
-                'ambulatory'    => $request->get('ambulatory'),
-                'care_group'    => $request->get('care_group'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender'),
+                'ssn' => $request->get('ssn'),
+                'photo' => $request->get('photo'),
+                'phones' => $request->get('phones'),
+                'dnr' => $request->get('dnr'),
+                'polst' => $request->get('polst'),
+                'ambulatory' => $request->get('ambulatory'),
+                'care_group' => $request->get('care_group'),
                 'care_level_id' => $request->get('care_level_id'),
-                'address'       => $request->get('address'),
-                'csz_id'        => $request->get('csz_id'),
+                'address' => $request->get('address'),
+                'csz_id' => $request->get('csz_id'),
             ]
         );
 
@@ -680,21 +682,21 @@ class ResidentController extends BaseController
         $residentService->mobileEdit(
             $id,
             [
-                'first_name'    => $request->get('first_name'),
-                'last_name'     => $request->get('last_name'),
-                'middle_name'   => $request->get('middle_name'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'middle_name' => $request->get('middle_name'),
                 'salutation_id' => $request->get('salutation_id'),
-                'birthday'      => $request->get('birthday'),
-                'gender'        => $request->get('gender'),
-                'ssn'           => $request->get('ssn'),
-                'phones'        => $request->get('phones'),
-                'dnr'           => $request->get('dnr'),
-                'polst'         => $request->get('polst'),
-                'ambulatory'    => $request->get('ambulatory'),
-                'care_group'    => $request->get('care_group'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender'),
+                'ssn' => $request->get('ssn'),
+                'phones' => $request->get('phones'),
+                'dnr' => $request->get('dnr'),
+                'polst' => $request->get('polst'),
+                'ambulatory' => $request->get('ambulatory'),
+                'care_group' => $request->get('care_group'),
                 'care_level_id' => $request->get('care_level_id'),
-                'address'       => $request->get('address'),
-                'csz_id'        => $request->get('csz_id'),
+                'address' => $request->get('address'),
+                'csz_id' => $request->get('csz_id'),
             ]
         );
 
@@ -715,5 +717,40 @@ class ResidentController extends BaseController
         $data = $residentService->downloadFile($id);
 
         return $this->respondImageFile($data[0], $data[1], $data[2]);
+    }
+
+    /**
+     * @Route("/mobile/upload", name="api_admin_resident_upload_mobile", methods={"POST"})
+     *
+     * @Grant(grant="persistence-resident-resident", level="ADD")
+     *
+     * @param Request $request
+     * @param ResidentService $residentService
+     * @param ImageFilterService $imageFilterService
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function mobileUploadAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService)
+    {
+        $residentService->setImageFilterService($imageFilterService);
+
+        $id = $residentService->mobileUpload(
+            [
+                'request_id' => $request->get('request_id'),
+                'resident_id' => $request->get('resident_id'),
+                'user_id' => $request->get('user_id'),
+                'chunk' => $request->get('chunk'),
+                'chunk_id' => $request->get('chunk_id'),
+                'total_chunk' => $request->get('total_chunk'),
+            ]
+        );
+
+        return $id !== null ? $this->respondSuccess(
+            Response::HTTP_CREATED,
+            '',
+            [$id]
+        ) : $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
     }
 }

@@ -7,6 +7,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
+use App\Entity\ChunkFile;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
@@ -19,6 +20,7 @@ use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\ApartmentRepository;
 use App\Repository\ApartmentRoomRepository;
+use App\Repository\ChunkFileRepository;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FacilityRoomRepository;
@@ -439,5 +441,81 @@ class BaseService
         }
 
         return $data;
+    }
+
+    /**
+     * @param $data
+     * @return mixed|null|string
+     */
+    public function uploadByChunks($data)
+    {
+        // Get request id from data
+        $requestId = $data['requestId'];
+
+        //get total chunk from data
+        $totalChunk = $data['totalChunk'];
+
+        // Check for chunk existence. If not exist then add
+        // This will prevent duplicate file create issue.
+        /** @var ChunkFileRepository $chunkFileRepo */
+        $chunkFileRepo = $this->em->getRepository(ChunkFile::class);
+
+        /** @var int $existingChunk */
+        $existingChunk = $chunkFileRepo->getChunk($requestId, $data['chunkId'], $data['userId']);
+
+        if ($existingChunk === 0) {
+            //create new chunk
+            $chunkFile = new ChunkFile();
+            $chunkFile->setChunk($data['chunkString']);
+            $chunkFile->setChunkId($data['chunkId']);
+            $chunkFile->setTotalChunk($totalChunk);
+            $chunkFile->setRequestId($requestId);
+            $chunkFile->setUserId($data['userId']);
+
+            $this->validate($chunkFile, null, ['api_admin_chunk_file_add']);
+
+            $this->em->persist($chunkFile);
+            $this->em->flush();
+
+            //get chunk count by requestID
+            $chunkCount = $chunkFileRepo->getChunkCount($requestId, $data['userId']);
+
+            // If all chunks are recorded then photo can be created.
+            if ($totalChunk === $chunkCount) {
+
+                //set empty string variable
+                $base64 = '';
+
+                //get all chunk for one image
+                $allChunks = $chunkFileRepo->getChunks($requestId, $data['userId']);
+
+                // Remove chunks before image create.
+                // This will prevent photo duplication.
+                $this->removeChunks($requestId);
+
+                foreach ($allChunks as $chunks) {
+                    //generate base 64 code
+                    $base64 .= $chunks['chunk'];
+                }
+
+                //change base64 plus symbols
+                $base64 = str_replace('-*-', '+', $base64);
+
+                return $base64;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * This function is used ti remove chunks in DB after convert
+     *
+     * @param $requestId
+     */
+    private function removeChunks($requestId): void
+    {
+        $query = $this->em->createQuery('DELETE App:ChunkFile ch WHERE ch.requestId = :requestId')->setParameter('requestId', $requestId);
+        $query->execute();
     }
 }

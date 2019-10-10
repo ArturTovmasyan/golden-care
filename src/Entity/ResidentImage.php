@@ -36,7 +36,8 @@ class ResidentImage
      * @var Resident
      * @Assert\NotNull(message = "Please select a Resident", groups={
      *     "api_admin_resident_image_add",
-     *     "api_admin_resident_image_edit"
+     *     "api_admin_resident_image_edit",
+     *     "api_admin_resident_image_add_mobile"
      * })
      * @ORM\OneToOne(targetEntity="App\Entity\Resident", inversedBy="image")
      * @ORM\JoinColumns({
@@ -54,7 +55,8 @@ class ResidentImage
      * @ORM\Column(name="photo", type="text")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add",
-     *     "api_admin_resident_image_edit"
+     *     "api_admin_resident_image_edit",
+     *     "api_admin_resident_image_add_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
@@ -69,7 +71,8 @@ class ResidentImage
      * @ORM\Column(name="photo_35_35", type="text")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add",
-     *     "api_admin_resident_image_edit"
+     *     "api_admin_resident_image_edit",
+     *     "api_admin_resident_image_add_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
@@ -83,7 +86,8 @@ class ResidentImage
      * @ORM\Column(name="photo_150_150", type="text")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add",
-     *     "api_admin_resident_image_edit"
+     *     "api_admin_resident_image_edit",
+     *     "api_admin_resident_image_add_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
@@ -98,7 +102,8 @@ class ResidentImage
      * @ORM\Column(name="photo_300_300", type="text")
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add",
-     *     "api_admin_resident_image_edit"
+     *     "api_admin_resident_image_edit",
+     *     "api_admin_resident_image_add_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_image_list",
@@ -106,6 +111,22 @@ class ResidentImage
      * })
      */
     private $photo_300_300;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="request_id", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_image_add_mobile"
+     * })
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Request Id cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_image_add_mobile"
+     * })
+     */
+    private $requestId = '';
 
     /**
      * @return int
@@ -201,5 +222,21 @@ class ResidentImage
     public function setPhoto300300(?string $photo_300_300): void
     {
         $this->photo_300_300 = $photo_300_300;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRequestId(): ?string
+    {
+        return $this->requestId;
+    }
+
+    /**
+     * @param null|string $requestId
+     */
+    public function setRequestId(?string $requestId): void
+    {
+        $this->requestId = $requestId;
     }
 }

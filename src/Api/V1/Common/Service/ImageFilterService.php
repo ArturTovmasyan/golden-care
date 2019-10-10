@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\FileExtensionException;
@@ -33,8 +34,9 @@ class ImageFilterService
     public function __construct(
         EntityManagerInterface $em,
         ContainerInterface $container
-    ) {
-        $this->em        = $em;
+    )
+    {
+        $this->em = $em;
         $this->container = $container;
     }
 
@@ -78,10 +80,10 @@ class ImageFilterService
         //create cache versions for files
         foreach ($filters as $key => $filter) {
             $data = $filterManager->applyFilter($binary, $filter)->getContent();
-            if($data) {
+            if ($data) {
                 $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
 
-                if($key === 2) {
+                if ($key === 2) {
                     $image->setPhoto3535($base64);
                 } elseif ($key === 3) {
                     $image->setPhoto150150($base64);
