@@ -70,11 +70,8 @@ class StageChangeReasonService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $state = $params['state'] ? (int)$params['state'] : 0;
-
             $stageChangeReason = new StageChangeReason();
             $stageChangeReason->setTitle($params['title']);
-            $stageChangeReason->setState($state);
             $stageChangeReason->setSpace($space);
 
             $this->validate($stageChangeReason, null, ['api_lead_stage_change_reason_add']);
@@ -121,10 +118,7 @@ class StageChangeReasonService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
-            $state = $params['state'] ? (int)$params['state'] : 0;
-
             $entity->setTitle($params['title']);
-            $entity->setState($state);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_lead_stage_change_reason_edit']);

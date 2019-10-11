@@ -41,12 +41,6 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "state",
- *              "type"       = "enum",
- *              "field"      = "scr.state",
- *              "values"     = "\App\Model\Lead\State::getTypeDefaultNames"
- *          },
- *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -100,23 +94,6 @@ class StageChangeReason
     private $title;
 
     /**
-     * @var int
-     * @ORM\Column(name="stage", type="smallint")
-     * @Assert\Choice(
-     *     callback={"App\Model\Lead\State","getTypeValues"},
-     *     groups={
-     *          "api_lead_stage_change_reason_add",
-     *          "api_lead_stage_change_reason_edit"
-     *     }
-     * )
-     * @Groups({
-     *     "api_lead_stage_change_reason_list",
-     *     "api_lead_stage_change_reason_get"
-     * })
-     */
-    private $state;
-
-    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_lead_stage_change_reason_add",
@@ -158,22 +135,6 @@ class StageChangeReason
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getState(): ?int
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param int $state
-     */
-    public function setState(int $state): void
-    {
-        $this->state = $state;
     }
 
     /**

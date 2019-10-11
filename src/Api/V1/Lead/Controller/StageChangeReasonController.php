@@ -114,7 +114,6 @@ class StageChangeReasonController extends BaseController
         $id = $stageChangeReasonService->add(
             [
                 'title' => $request->get('title'),
-                'state' => $request->get('state'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -143,7 +142,6 @@ class StageChangeReasonController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'state' => $request->get('state'),
                 'space_id' => $request->get('space_id')
             ]
         );
