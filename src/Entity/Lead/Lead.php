@@ -54,6 +54,21 @@ use App\Annotation\Grid as Grid;
  *              "values"     = "\App\Model\Lead\State::getTypeDefaultNames"
  *          },
  *          {
+ *              "id"         = "funnel_stage",
+ *              "type"       = "string",
+ *              "field"      = "(SELECT DISTINCT fs.title FROM App:Lead\LeadFunnelStage lfs JOIN lfs.stage fs JOIN lfs.lead fsl WHERE fsl.id=l.id AND lfs.date = (SELECT MAX(lfsMax.date) FROM App:Lead\LeadFunnelStage lfsMax JOIN lfsMax.lead fslMax WHERE fslMax.id=l.id) GROUP BY fsl.id)"
+ *          },
+ *          {
+ *              "id"         = "funnel_date",
+ *              "type"       = "date",
+ *              "field"      = "(SELECT DISTINCT DATE_FORMAT(lf.date, CONCAT('%Y-%m-%d', 'T', '%H:%i:%s', '.000Z'))  FROM App:Lead\LeadFunnelStage lf JOIN lf.lead lfl WHERE lfl.id=l.id AND lf.date = (SELECT MAX(lfMax.date) FROM App:Lead\LeadFunnelStage lfMax JOIN lfMax.lead lflMax WHERE lflMax.id=l.id) GROUP BY lfl.id)"
+ *          },
+ *          {
+ *              "id"         = "temperature",
+ *              "type"       = "string",
+ *              "field"      = "(SELECT DISTINCT t.title FROM App:Lead\LeadTemperature lt JOIN lt.temperature t JOIN lt.lead ltl WHERE ltl.id=l.id AND lt.date = (SELECT MAX(ltMax.date) FROM App:Lead\LeadTemperature ltMax JOIN ltMax.lead ltlMax WHERE ltlMax.id=l.id) GROUP BY ltl.id)"
+ *          },
+ *          {
  *              "id"         = "referral",
  *              "type"       = "string",
  *              "field"      = "COALESCE(CASE WHEN rc.id IS NOT NULL THEN CONCAT(COALESCE(rc.firstName, ''), ' ', COALESCE(rc.lastName, '')) ELSE ro.name END, '<No Referral>')",
