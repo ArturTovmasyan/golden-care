@@ -382,12 +382,6 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\StateChangeReason", mappedBy="space", cascade={"remove", "persist"})
-     */
-    private $leadStateChangeReasons;
-
-    /**
-     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\StageChangeReason", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadStageChangeReasons;
@@ -884,22 +878,6 @@ class Space
     public function setLeadCareTypes(ArrayCollection $leadCareTypes): void
     {
         $this->leadCareTypes = $leadCareTypes;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getLeadStateChangeReasons(): ArrayCollection
-    {
-        return $this->leadStateChangeReasons;
-    }
-
-    /**
-     * @param ArrayCollection $leadStateChangeReasons
-     */
-    public function setLeadStateChangeReasons(ArrayCollection $leadStateChangeReasons): void
-    {
-        $this->leadStateChangeReasons = $leadStateChangeReasons;
     }
 
     /**

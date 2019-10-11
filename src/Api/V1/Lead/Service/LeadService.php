@@ -7,11 +7,13 @@ use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadRpPhoneOrEmailNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
-use App\Api\V1\Common\Service\Exception\Lead\StateChangeReasonNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
@@ -22,11 +24,14 @@ use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Contact;
+use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Lead;
+use App\Entity\Lead\LeadFunnelStage;
+use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferrerType;
-use App\Entity\Lead\StateChangeReason;
+use App\Entity\Lead\Temperature;
 use App\Entity\PaymentSource;
 use App\Entity\User;
 use App\Model\ChangeLogType;
@@ -37,10 +42,12 @@ use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
 use App\Repository\Lead\ContactRepository;
+use App\Repository\Lead\FunnelStageRepository;
+use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
-use App\Repository\Lead\StateChangeReasonRepository;
+use App\Repository\Lead\TemperatureRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -190,34 +197,6 @@ class LeadService extends BaseService implements IGridService
 
             $lead->setInitialContactDate($initialContactDate);
 
-            if (!empty($params['state_change_reason_id'])) {
-                /** @var StateChangeReasonRepository $stateChangeReasonRepo */
-                $stateChangeReasonRepo = $this->em->getRepository(StateChangeReason::class);
-
-                /** @var StateChangeReason $stateChangeReason */
-                $stateChangeReason = $stateChangeReasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $params['state_change_reason_id']);
-
-                if ($stateChangeReason === null) {
-                    throw new StateChangeReasonNotFoundException();
-                }
-
-                if ($stateChangeReason->getState() === State::TYPE_OPEN) {
-                    $lead->setStateChangeReason($stateChangeReason);
-                } else {
-                    $lead->setStateChangeReason(null);
-                }
-            } else {
-                $lead->setStateChangeReason(null);
-            }
-
-            if (!empty($params['state_effective_date'])) {
-                $stateEffectiveDate = new \DateTime($params['state_effective_date']);
-            } else {
-                $stateEffectiveDate = new \DateTime('now');
-            }
-
-            $lead->setStateEffectiveDate($stateEffectiveDate);
-
             $lead->setResponsiblePersonFirstName($params['responsible_person_first_name']);
             $lead->setResponsiblePersonLastName($params['responsible_person_last_name']);
 
@@ -304,6 +283,12 @@ class LeadService extends BaseService implements IGridService
 
                 $this->saveReferral($lead, $newReferral);
             }
+
+            // Creating lead funnel stage
+            $this->createLeadFunnelStage($lead, false);
+
+            // Creating lead temperature
+            $this->createLeadTemperature($lead, false);
 
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
@@ -404,31 +389,26 @@ class LeadService extends BaseService implements IGridService
 
             $entity->setOwner($owner);
 
-            if (!empty($params['state_change_reason_id'])) {
-                /** @var StateChangeReasonRepository $stateChangeReasonRepo */
-                $stateChangeReasonRepo = $this->em->getRepository(StateChangeReason::class);
+            /** @var LeadFunnelStageRepository $stageRepo */
+            $stageRepo = $this->em->getRepository(LeadFunnelStage::class);
+            /** @var LeadFunnelStage $lastStage */
+            $lastStage = $stageRepo->getLastAction($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $id);
 
-                /** @var StateChangeReason $stateChangeReason */
-                $stateChangeReason = $stateChangeReasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(StateChangeReason::class), $params['state_change_reason_id']);
-
-                if ($stateChangeReason === null) {
-                    throw new StateChangeReasonNotFoundException();
-                }
-
-                $entity->setStateChangeReason($stateChangeReason);
-                $entity->setState($stateChangeReason->getState());
-            } else {
-                $entity->setStateChangeReason(null);
-                $entity->setState(State::TYPE_OPEN);
+            if ($lastStage === null) {
+                throw new LeadFunnelStageNotFoundException();
             }
 
-            if (!empty($params['state_effective_date'])) {
-                $stateEffectiveDate = new \DateTime($params['state_effective_date']);
-            } else {
-                $stateEffectiveDate = new \DateTime('now');
+            if ($lastStage->getStage() === null) {
+                throw new FunnelStageNotFoundException();
             }
 
-            $entity->setStateEffectiveDate($stateEffectiveDate);
+            if ($lastStage->getStage()->isOpen()) {
+                $state = State::TYPE_OPEN;
+            } else {
+                $state = State::TYPE_CLOSED;
+            }
+
+            $entity->setState($state);
 
             $entity->setResponsiblePersonFirstName($params['responsible_person_first_name']);
             $entity->setResponsiblePersonLastName($params['responsible_person_last_name']);
@@ -531,7 +511,7 @@ class LeadService extends BaseService implements IGridService
                 if ($leadChangeSet['state']['0'] === State::TYPE_CLOSED && $leadChangeSet['state']['1'] === State::TYPE_OPEN) {
                     $this->createLeadInitialContactActivity($entity, true);
                 } elseif ($leadChangeSet['state']['0'] === State::TYPE_OPEN && $leadChangeSet['state']['1'] === State::TYPE_CLOSED) {
-                    $this->createLeadStateChangeReasonActivity($entity);
+                    $this->createLeadStateChangeActivity($entity, $lastStage);
                 }
 
                 $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity, $router);
@@ -633,6 +613,72 @@ class LeadService extends BaseService implements IGridService
      * @param Lead $lead
      * @param $isEdited
      */
+    private function createLeadFunnelStage(Lead $lead, $isEdited)
+    {
+        /** @var FunnelStageRepository $funnelStageRepo */
+        $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
+        /** @var FunnelStage $funnelStage */
+        $funnelStage = $funnelStageRepo->getFirst($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class));
+
+        if ($funnelStage === null) {
+            throw new FunnelStageNotFoundException();
+        }
+
+        $date = $isEdited ? new \DateTime('now') : $lead->getInitialContactDate();
+
+        $leadFunnelStage = new LeadFunnelStage();
+        $leadFunnelStage->setLead($lead);
+        $leadFunnelStage->setStage($funnelStage);
+        $leadFunnelStage->setReason(null);
+        $leadFunnelStage->setDate($date);
+        $leadFunnelStage->setNotes($funnelStage->getTitle());
+
+        $this->validate($leadFunnelStage, null, ['api_lead_lead_funnel_stage_add']);
+
+        $this->em->persist($leadFunnelStage);
+
+        if ($funnelStage->isOpen()) {
+            $state = State::TYPE_OPEN;
+        } else {
+            $state = State::TYPE_CLOSED;
+        }
+
+        $lead->setState($state);
+        $this->em->persist($lead);
+    }
+
+    /**
+     * @param Lead $lead
+     * @param $isEdited
+     */
+    private function createLeadTemperature(Lead $lead, $isEdited)
+    {
+        /** @var TemperatureRepository $temperatureRepo */
+        $temperatureRepo = $this->em->getRepository(Temperature::class);
+        /** @var Temperature $temperature */
+        $temperature = $temperatureRepo->getFirst($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class));
+
+        if ($temperature === null) {
+            throw new TemperatureNotFoundException();
+        }
+
+        $date = $isEdited ? new \DateTime('now') : $lead->getInitialContactDate();
+
+        $leadTemperature = new LeadTemperature();
+        $leadTemperature->setLead($lead);
+        $leadTemperature->setTemperature($temperature);
+        $leadTemperature->setDate($date);
+        $leadTemperature->setNotes($temperature->getTitle());
+
+        $this->validate($leadTemperature, null, ['api_lead_lead_temperature_add']);
+
+        $this->em->persist($leadTemperature);
+    }
+
+    /**
+     * @param Lead $lead
+     * @param $isEdited
+     */
     private function createLeadInitialContactActivity(Lead $lead, $isEdited)
     {
         /** @var ActivityTypeRepository $typeRepo */
@@ -669,8 +715,9 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
+     * @param LeadFunnelStage $lastStage
      */
-    private function createLeadStateChangeReasonActivity(Lead $lead)
+    private function createLeadStateChangeActivity(Lead $lead, LeadFunnelStage $lastStage)
     {
         /** @var ActivityTypeRepository $typeRepo */
         $typeRepo = $this->em->getRepository(ActivityType::class);
@@ -682,8 +729,8 @@ class LeadService extends BaseService implements IGridService
             throw new ActivityTypeNotFoundException();
         }
 
-        $date = $lead->getStateEffectiveDate() ?? new \DateTime('now');
-        $notes = $lead->getStateChangeReason() ? $lead->getStateChangeReason()->getTitle() : '';
+        $date = $lastStage->getDate() ?? new \DateTime('now');
+        $notes = $lastStage->getNotes() ?? '';
 
         $activity = new Activity();
         $activity->setLead($lead);

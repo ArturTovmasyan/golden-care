@@ -40,13 +40,13 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                 Join::WITH,
                 'fs = lfs.stage'
             )
-            ->innerJoin(
+            ->leftJoin(
                 StageChangeReason::class,
                 'scr',
                 Join::WITH,
                 'scr = lfs.reason'
             )
-            ->innerJoin(
+            ->leftJoin(
                 User::class,
                 'u',
                 Join::WITH,
@@ -261,5 +261,50 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getLastAction(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('lfs')
+            ->join('lfs.lead', 'l')
+            ->where('l.id=:id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    FunnelStage::class,
+                    'fs',
+                    Join::WITH,
+                    'fs = lfs.stage'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = fs.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('lfs.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('lfs.date', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

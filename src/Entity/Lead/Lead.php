@@ -54,16 +54,6 @@ use App\Annotation\Grid as Grid;
  *              "values"     = "\App\Model\Lead\State::getTypeDefaultNames"
  *          },
  *          {
- *              "id"         = "state_change_reason",
- *              "type"       = "string",
- *              "field"      = "scr.title"
- *          },
- *          {
- *              "id"         = "effective_date",
- *              "type"       = "date",
- *              "field"      = "l.stateEffectiveDate"
- *          },
- *          {
  *              "id"         = "referral",
  *              "type"       = "string",
  *              "field"      = "COALESCE(CASE WHEN rc.id IS NOT NULL THEN CONCAT(COALESCE(rc.firstName, ''), ' ', COALESCE(rc.lastName, '')) ELSE ro.name END, '<No Referral>')",
@@ -221,33 +211,6 @@ class Lead
      * })
      */
     private $state;
-
-    /**
-     * @var StateChangeReason
-     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\StateChangeReason", inversedBy="leads", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_state_change_reason", referencedColumnName="id", onDelete="SET NULL")
-     * })
-     * @Groups({
-     *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
-     * })
-     */
-    private $stateChangeReason;
-
-    /**
-     * @var \DateTime
-     * @Assert\DateTime(groups={
-     *     "api_lead_lead_add",
-     *     "api_lead_lead_edit"
-     * })
-     * @ORM\Column(name="state_effective_date", type="datetime", nullable=true)
-     * @Groups({
-     *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
-     * })
-     */
-    private $stateEffectiveDate;
 
     /**
      * @var string
@@ -585,38 +548,6 @@ class Lead
     public function setState(?int $state): void
     {
         $this->state = $state;
-    }
-
-    /**
-     * @return StateChangeReason|null
-     */
-    public function getStateChangeReason(): ?StateChangeReason
-    {
-        return $this->stateChangeReason;
-    }
-
-    /**
-     * @param StateChangeReason|null $stateChangeReason
-     */
-    public function setStateChangeReason(?StateChangeReason $stateChangeReason): void
-    {
-        $this->stateChangeReason = $stateChangeReason;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getStateEffectiveDate(): ?\DateTime
-    {
-        return $this->stateEffectiveDate;
-    }
-
-    /**
-     * @param \DateTime|null $stateEffectiveDate
-     */
-    public function setStateEffectiveDate(?\DateTime $stateEffectiveDate): void
-    {
-        $this->stateEffectiveDate = $stateEffectiveDate;
     }
 
     /**

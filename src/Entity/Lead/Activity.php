@@ -299,7 +299,7 @@ class Activity
      * @var Lead
      * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Lead", inversedBy="activities")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(message = "Please select a Lead", groups={
      *          "api_lead_lead_activity_add",

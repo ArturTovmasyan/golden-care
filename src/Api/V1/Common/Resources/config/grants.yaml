@@ -70,9 +70,6 @@ persistence:
         care_type:
           title: 'Care Type'
           class: App\Entity\Lead\CareType
-        state_change_reason:
-          title: 'State Change Reason'
-          class: App\Entity\Lead\StateChangeReason
         contact:
           title: 'Contact'
           class: App\Entity\Lead\Contact

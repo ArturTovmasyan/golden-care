@@ -7,8 +7,6 @@ use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Lead;
-use App\Entity\Lead\Referral;
-use App\Entity\Lead\StateChangeReason;
 use App\Entity\PaymentSource;
 use App\Entity\Space;
 use App\Entity\User;
@@ -53,12 +51,6 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'pt',
                 Join::WITH,
                 'pt = l.paymentType'
-            )
-            ->leftJoin(
-                StateChangeReason::class,
-                'scr',
-                Join::WITH,
-                'scr = l.stateChangeReason'
             )
             ->leftJoin(
                 CityStateZip::class,
@@ -359,7 +351,6 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'csz.zipMain as rpZipMain',
                 'ct.title as careType',
                 'pt.title as paymentType',
-                'scr.title as stateChangeReason',
                 "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
                 "(CASE
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT(rc.firstName, ' ', rc.lastName)
@@ -384,12 +375,6 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'pt',
                 Join::WITH,
                 'pt = l.paymentType'
-            )
-            ->leftJoin(
-                StateChangeReason::class,
-                'scr',
-                Join::WITH,
-                'scr = l.stateChangeReason'
             )
             ->leftJoin(
                 CityStateZip::class,

@@ -211,4 +211,41 @@ class FunnelStageRepository extends EntityRepository  implements RelatedInfoInte
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getFirst(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('fs')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = fs.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fs.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('fs.seqNo', 'ASC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

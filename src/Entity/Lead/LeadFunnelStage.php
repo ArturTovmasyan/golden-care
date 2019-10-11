@@ -103,10 +103,6 @@ class LeadFunnelStage
 
     /**
      * @var StageChangeReason
-     * @Assert\NotNull(message = "Please select a Stage Change Reason", groups={
-     *          "api_lead_lead_funnel_stage_add",
-     *          "api_lead_lead_funnel_stage_edit"
-     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Lead\StageChangeReason", inversedBy="leadFunnelStages", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_stage_change_reason", referencedColumnName="id", onDelete="CASCADE")

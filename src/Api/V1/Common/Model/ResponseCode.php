@@ -105,7 +105,6 @@ class ResponseCode
     const USER_NOT_YET_INVITED_EXCEPTION                         = 706;
     const SPACE_ALREADY_HAS_OWNER_EXCEPTION                      = 707;
     const LEAD_CARE_TYPE_NOT_FOUND_EXCEPTION                     = 708;
-    const LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION           = 709;
     const LEAD_ACTIVITY_STATUS_NOT_FOUND_EXCEPTION               = 710;
     const LEAD_ACTIVITY_TYPE_NOT_FOUND_EXCEPTION                 = 711;
     const LEAD_REFERRER_TYPE_NOT_FOUND_EXCEPTION                 = 712;
@@ -246,7 +245,6 @@ class ResponseCode
         self::USER_NOT_YET_INVITED_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invitation key is invalid or expired.'],
         self::SPACE_ALREADY_HAS_OWNER_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Space already has an owner.'],
         self::LEAD_CARE_TYPE_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Care Type not found.'],
-        self::LEAD_STATE_CHANGE_REASON_NOT_FOUND_EXCEPTION           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'State Change Reason not found.'],
         self::LEAD_ACTIVITY_STATUS_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Activity Status not found.'],
         self::LEAD_ACTIVITY_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Activity Type not found.'],
         self::LEAD_REFERRER_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Referrer Type not found.'],
