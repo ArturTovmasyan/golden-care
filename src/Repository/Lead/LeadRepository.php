@@ -345,18 +345,34 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
         $qb = $this
             ->createQueryBuilder('l')
             ->select(
-                'l', 'fs',
+                'l', 'fas',
                 'csz.city as rpCity',
                 'csz.stateAbbr as rpStateAbbr',
                 'csz.zipMain as rpZipMain',
                 'ct.title as careType',
                 'pt.title as paymentType',
+                '(SELECT DISTINCT fs.title FROM App:Lead\LeadFunnelStage lfs JOIN lfs.stage fs JOIN lfs.lead fsl
+                WHERE fsl.id=l.id
+                AND lfs.date = (SELECT MAX(lfsMax.date) FROM App:Lead\LeadFunnelStage lfsMax JOIN lfsMax.lead fslMax WHERE fslMax.id=l.id)
+                GROUP BY fsl.id
+                ) as funnelStage',
+                '(SELECT DISTINCT lf.date FROM App:Lead\LeadFunnelStage lf JOIN lf.lead lfl
+                WHERE lfl.id=l.id
+                AND lf.date = (SELECT MAX(lfMax.date) FROM App:Lead\LeadFunnelStage lfMax JOIN lfMax.lead lflMax WHERE lflMax.id=l.id)
+                GROUP BY lfl.id
+                ) as funnelDate',
+                '(SELECT DISTINCT t.title FROM App:Lead\LeadTemperature lt JOIN lt.temperature t JOIN lt.lead ltl
+                WHERE ltl.id=l.id
+                AND lt.date = (SELECT MAX(ltMax.date) FROM App:Lead\LeadTemperature ltMax JOIN ltMax.lead ltlMax WHERE ltlMax.id=l.id)
+                GROUP BY ltl.id
+                ) as temperature',
                 "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
                 "(CASE
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT(rc.firstName, ' ', rc.lastName)
                     WHEN r.id IS NOT NULL AND rc.id IS NULL THEN ro.name
                     ELSE 'N/A' END) as referralFullName",
-                'f.name as primaryFacility'
+                'f.name as primaryFacility
+                '
             )
             ->innerJoin(
                 User::class,
@@ -391,7 +407,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 Join::WITH,
                 'f = l.primaryFacility'
             )
-            ->leftJoin('l.facilities', 'fs')
+            ->leftJoin('l.facilities', 'fas')
             ->where('l.createdAt >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate);
 
