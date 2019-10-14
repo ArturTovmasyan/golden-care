@@ -21,15 +21,36 @@
 
                     </th>
                 </tr>
+                {#<tr>#}
+                    {#<th colspan="15">#}
+                        {#<div style="float: left; font-size: 24px; width: 400px; margin-top: 5px;">#}
+                            {#BLOOD SUGAR TRACKER#}
+                        {#</div>#}
+                        {#<div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">#}
+                            {#{{ resident.typeName }}#}
+                        {#</div>#}
+                        {#<div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">#}
+                            {#{% if resident.roomNumber is defined and resident.bedNumber is defined %}#}
+                                {#{% if resident.private %}#}
+                                    {#{{ resident.roomNumber }}&nbsp;#}
+                                {#{% else %}#}
+                                    {#{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;#}
+                                {#{% endif %}#}
+                            {#{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}#}
+                        {#</div>#}
+                        {#<div style="clear: both"></div>#}
+                    {#</th>#}
+                {#</tr>#}
                 <tr>
                     <th colspan="15">
-                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px;">
+                        <div style="font-size: 24px; text-align: center">
                             BLOOD SUGAR TRACKER
                         </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
-                            {{ resident.typeName }}
-                        </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="15">
+                        <div style="float: left; font-size: 16px; width: 300px; margin-top: 5px;">
                             {% if resident.roomNumber is defined and resident.bedNumber is defined %}
                                 {% if resident.private %}
                                     {{ resident.roomNumber }}&nbsp;
@@ -37,6 +58,9 @@
                                     {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
                                 {% endif %}
                             {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                        </div>
+                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
+                            {{ resident.typeName }}
                         </div>
                         <div style="clear: both"></div>
                     </th>
@@ -138,7 +162,7 @@
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
         </tr>
-        <tr style="height: 10px; width: 100%; clear: both;"></tr>
+        <tr class="divider"></tr>
 
         <tr>
             <td rowspan="2" style="background-color: darkgray;"><b style="height: 36px; font-size: 18px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
@@ -233,7 +257,7 @@
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
         </tr>
-        <tr style="height: 10px; width: 100%; clear: both;"></tr>
+        <tr class="divider"></tr>
 
         <tr>
             <td rowspan="2" style="background-color: darkgray;"><b style="height: 36px; font-size: 18px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
@@ -328,7 +352,7 @@
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
             <td style="background-color: lightgray"><b style="height: 18px !important; width: 55px !important;"></b></td>
         </tr>
-        <tr style="height: 10px; width: 100%; clear: both;"></tr>
+        <tr class="divider"></tr>
 
         <tr>
             <td rowspan="2" style="background-color: darkgray;"><b style="height: 36px; font-size: 18px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
@@ -429,10 +453,6 @@
         </tbody>
         </table>
     {% endif %}
-
-    <table class="report-table main-table">
-        <tr class="divider"></tr>
-    </table>
 
 {% endblock %}
 {% block pageFooter %}
