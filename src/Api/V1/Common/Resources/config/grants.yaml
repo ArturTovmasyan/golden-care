@@ -376,6 +376,8 @@ report:
           title: "Birthday list: List of all residents birthdays, Monthly"
         blood-pressure:
           title: "Weight & Blood Pressure Chart: All Residents"
+        blood-pressure-chart:
+          title: "Blood Pressure Chart"
         bowel-movement:
           title: "Bowel movement: Bowel Movement tracking form, Weekly"
         changeover-notes:
