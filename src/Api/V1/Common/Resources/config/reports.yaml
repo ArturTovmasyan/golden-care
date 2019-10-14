@@ -163,7 +163,7 @@ form:
     glucose-monitor-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getGlucoseMonitorChartReport
       title: 'Glucose Monitor Chart'
-      show_in_resident_list: true
+      show_in_resident_list: false
       show_in_group_list: false
       formats: ['pdf']
       parameters:
