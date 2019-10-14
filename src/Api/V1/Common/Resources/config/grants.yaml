@@ -382,6 +382,8 @@ report:
           title: "Bowel movement: Bowel Movement tracking form, Weekly"
         changeover-notes:
           title: "Changeover notes: Shift Changeover Notes, Daily"
+        glucose-monitor-chart:
+          title: "Glucose Monitor Chart"
         manicure:
           title: "Manicure: Manicure Tracking Form, Monthly"
         meal-monitor:

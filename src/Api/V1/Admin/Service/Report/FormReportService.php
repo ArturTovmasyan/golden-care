@@ -19,6 +19,7 @@ use App\Model\Report\BloodPressureChart;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
+use App\Model\Report\GlucoseMonitorChart;
 use App\Model\Report\Manicure;
 use App\Model\Report\MealMonitor;
 use App\Model\Report\MedicationChart;
@@ -136,7 +137,6 @@ class FormReportService extends BaseService
         $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
 
         $report = new BloodPressureChart();
-        $report->setTitle('BLOOD PRESSURE LOG');
         $report->setResidents($residents);
 
         return $report;
@@ -203,6 +203,39 @@ class FormReportService extends BaseService
         $residents = $repo->getAdmissionResidentsInfoWithCareGroupByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
         $report = new ChangeoverNotes();
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return GlucoseMonitorChart
+     */
+    public function getGlucoseMonitorChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    {
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
+
+        $report = new GlucoseMonitorChart();
         $report->setResidents($residents);
 
         return $report;

@@ -160,6 +160,15 @@ form:
       parameters:
         group:
           select_all: true
+    glucose-monitor-chart:
+      service: App\Api\V1\Admin\Service\Report\FormReportService::getGlucoseMonitorChartReport
+      title: 'Glucose Monitor Chart'
+      show_in_resident_list: true
+      show_in_group_list: false
+      formats: ['pdf']
+      parameters:
+        resident:
+          select_all: true
     manicure:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getManicureReport
       title: 'Manicure: Manicure Tracking Form, Monthly'
