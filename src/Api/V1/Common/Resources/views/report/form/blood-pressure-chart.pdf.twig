@@ -1,0 +1,347 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+    <span style="float: left; width: 400px">{{ data.title }}</span>
+{% endblock %}
+{% block pageContent %}
+
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for resident in data.residents %}
+        {% if renderedGroup == resident.typeId %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = resident.typeId %}
+            {% set newGroup = true %}
+        {% endif %}
+
+        {% if newGroup %}
+            <span class="divider"></span>
+            <span class="divider"></span>
+            <table class="report-table main-table bordered">
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="7">
+                    <div style="float: left">
+                        <h3>
+                            {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                                {% if resident.private %}
+                                    {{ resident.roomNumber }}&nbsp;
+                                {% else %}
+                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
+                                {% endif %}
+                            {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                        </h3>
+                    </div>
+                    <div style="float: right">
+                        <h2>{{ resident.typeName }}</h2>
+                    </div>
+                    <div style="clear: both"></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+
+        <tr>
+            <td><b>Date</b></td>
+            <td><b>Time</b></td>
+            <td></td>
+            <td><b>Systolic</b></td>
+            <td><b>Diastolic</b></td>
+            <td><b>Pulse</b></td>
+            <td><b>Notes</b></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+        <tr>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 40px; text-align: center; vertical-align: middle">AM&nbsp;/&nbsp;PM</td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px"></td>
+            <td style="height: 30px; width: 250px;"></td>
+        </tr>
+    {% endfor %}
+
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    <table class="report-table main-table">
+        <tr class="divider"></tr>
+    </table>
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

@@ -15,6 +15,7 @@ use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
 use App\Model\GroupType;
 use App\Model\Report\AssessmentForm;
+use App\Model\Report\BloodPressureChart;
 use App\Model\Report\BloodPressureCharting;
 use App\Model\Report\BowelMovement;
 use App\Model\Report\ChangeoverNotes;
@@ -102,6 +103,40 @@ class FormReportService extends BaseService
 
         $report = new BloodPressureCharting();
         $report->setTitle('WEIGHT AND BLOOD PRESSURE CHART');
+        $report->setResidents($residents);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return BloodPressureChart
+     */
+    public function getBloodPressureChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    {
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_REGION], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
+
+        $report = new BloodPressureChart();
+        $report->setTitle('BLOOD PRESSURE LOG');
         $report->setResidents($residents);
 
         return $report;
