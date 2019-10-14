@@ -21,36 +21,15 @@
 
                     </th>
                 </tr>
-                {#<tr>#}
-                    {#<th colspan="15">#}
-                        {#<div style="float: left; font-size: 24px; width: 400px; margin-top: 5px;">#}
-                            {#BLOOD SUGAR TRACKER#}
-                        {#</div>#}
-                        {#<div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">#}
-                            {#{{ resident.typeName }}#}
-                        {#</div>#}
-                        {#<div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">#}
-                            {#{% if resident.roomNumber is defined and resident.bedNumber is defined %}#}
-                                {#{% if resident.private %}#}
-                                    {#{{ resident.roomNumber }}&nbsp;#}
-                                {#{% else %}#}
-                                    {#{{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;#}
-                                {#{% endif %}#}
-                            {#{% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}#}
-                        {#</div>#}
-                        {#<div style="clear: both"></div>#}
-                    {#</th>#}
-                {#</tr>#}
                 <tr>
                     <th colspan="15">
-                        <div style="font-size: 24px; text-align: center">
+                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px;">
                             BLOOD SUGAR TRACKER
                         </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th colspan="15">
-                        <div style="float: left; font-size: 16px; width: 300px; margin-top: 5px;">
+                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
+                            {{ resident.typeName }}
+                        </div>
+                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
                             {% if resident.roomNumber is defined and resident.bedNumber is defined %}
                                 {% if resident.private %}
                                     {{ resident.roomNumber }}&nbsp;
@@ -58,9 +37,6 @@
                                     {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
                                 {% endif %}
                             {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
-                        </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
-                            {{ resident.typeName }}
                         </div>
                         <div style="clear: both"></div>
                     </th>
