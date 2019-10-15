@@ -14,6 +14,10 @@
         {% endif %}
     {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_ORGANIZATION') %}
         {{ activity.organization.title }}
+    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_OUTREACH') %}
+        {% if activity.outreach.contact is defined %}
+            {{ activity.outreach.contact.firstName ~ ' ' ~ activity.outreach.contact.lastName }}
+        {% endif %}
     {% endif %}
 {% endblock %}
     {% block content %}
@@ -34,6 +38,10 @@
                         {% endif %}
                     {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_ORGANIZATION') %}
                         {{ activity.organization.title }}
+                    {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_OUTREACH') %}
+                        {% if activity.outreach.contact is defined %}
+                            {{ activity.outreach.contact.firstName ~ ' ' ~ activity.outreach.contact.lastName }}
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>

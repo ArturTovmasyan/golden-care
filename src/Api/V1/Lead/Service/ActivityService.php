@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\Lead\ActivityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\OutreachNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferralNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
@@ -19,6 +20,7 @@ use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
+use App\Entity\Lead\Outreach;
 use App\Entity\Lead\Referral;
 use App\Entity\User;
 use App\Model\ChangeLogType;
@@ -29,6 +31,7 @@ use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
+use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -170,7 +173,7 @@ class ActivityService extends BaseService implements IGridService
                     $statusRepo = $this->em->getRepository(ActivityStatus::class);
 
                     /** @var ActivityStatus $status */
-                    $status = $statusRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $statusId);
+                    $status = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $statusId);
 
                     if ($status === null) {
                         throw new ActivityStatusNotFoundException();
@@ -187,7 +190,7 @@ class ActivityService extends BaseService implements IGridService
                 $userRepo = $this->em->getRepository(User::class);
 
                 /** @var User $user */
-                $user = $userRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $userId);
+                $user = $userRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userId);
 
                 if ($user === null) {
                     throw new UserNotFoundException();
@@ -233,7 +236,7 @@ class ActivityService extends BaseService implements IGridService
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
                 /** @var Facility $facility */
-                $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
                 if ($facility === null) {
                     throw new FacilityNotFoundException();
@@ -254,7 +257,7 @@ class ActivityService extends BaseService implements IGridService
                     $leadRepo = $this->em->getRepository(Lead::class);
 
                     /** @var Lead $lead */
-                    $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+                    $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
                     if ($lead === null) {
                         throw new LeadNotFoundException();
@@ -263,6 +266,7 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setLead($lead);
                     $activity->setReferral(null);
                     $activity->setOrganization(null);
+                    $activity->setOutreach(null);
 
                     break;
                 case ActivityOwnerType::TYPE_REFERRAL:
@@ -274,7 +278,7 @@ class ActivityService extends BaseService implements IGridService
                     $referralRepo = $this->em->getRepository(Referral::class);
 
                     /** @var Referral $referral */
-                    $referral = $referralRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Referral::class), $referralId);
+                    $referral = $referralRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Referral::class), $referralId);
 
                     if ($referral === null) {
                         throw new ReferralNotFoundException();
@@ -283,6 +287,7 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setLead(null);
                     $activity->setReferral($referral);
                     $activity->setOrganization(null);
+                    $activity->setOutreach(null);
 
                     break;
                 case ActivityOwnerType::TYPE_ORGANIZATION:
@@ -294,7 +299,7 @@ class ActivityService extends BaseService implements IGridService
                     $organizationRepo = $this->em->getRepository(Organization::class);
 
                     /** @var Organization $organization */
-                    $organization = $organizationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
+                    $organization = $organizationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
 
                     if ($organization === null) {
                         throw new OrganizationNotFoundException();
@@ -303,6 +308,28 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setLead(null);
                     $activity->setReferral(null);
                     $activity->setOrganization($organization);
+                    $activity->setOutreach(null);
+
+                    break;
+                case ActivityOwnerType::TYPE_OUTREACH:
+                    $validationGroup = 'api_lead_outreach_activity_add';
+
+                    $outreachId = $params['outreach_id'] ?? 0;
+
+                    /** @var OutreachRepository $outreachRepo */
+                    $outreachRepo = $this->em->getRepository(Outreach::class);
+
+                    /** @var Outreach $outreach */
+                    $outreach = $outreachRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Outreach::class), $outreachId);
+
+                    if ($outreach === null) {
+                        throw new OutreachNotFoundException();
+                    }
+
+                    $activity->setLead(null);
+                    $activity->setReferral(null);
+                    $activity->setOrganization(null);
+                    $activity->setOutreach($outreach);
 
                     break;
                 default:
@@ -386,7 +413,7 @@ class ActivityService extends BaseService implements IGridService
                     $statusRepo = $this->em->getRepository(ActivityStatus::class);
 
                     /** @var ActivityStatus $status */
-                    $status = $statusRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $statusId);
+                    $status = $statusRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityStatus::class), $statusId);
 
                     if ($status === null) {
                         throw new ActivityStatusNotFoundException();
@@ -403,7 +430,7 @@ class ActivityService extends BaseService implements IGridService
                 $userRepo = $this->em->getRepository(User::class);
 
                 /** @var User $user */
-                $user = $userRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $userId);
+                $user = $userRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userId);
 
                 if ($user === null) {
                     throw new UserNotFoundException();
@@ -449,7 +476,7 @@ class ActivityService extends BaseService implements IGridService
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
                 /** @var Facility $facility */
-                $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
+                $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
                 if ($facility === null) {
                     throw new FacilityNotFoundException();
@@ -470,7 +497,7 @@ class ActivityService extends BaseService implements IGridService
                     $leadRepo = $this->em->getRepository(Lead::class);
 
                     /** @var Lead $lead */
-                    $lead = $leadRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+                    $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
                     if ($lead === null) {
                         throw new LeadNotFoundException();
@@ -479,6 +506,7 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setLead($lead);
                     $entity->setReferral(null);
                     $entity->setOrganization(null);
+                    $entity->setOutreach(null);
 
                     break;
                 case ActivityOwnerType::TYPE_REFERRAL:
@@ -490,7 +518,7 @@ class ActivityService extends BaseService implements IGridService
                     $referralRepo = $this->em->getRepository(Referral::class);
 
                     /** @var Referral $referral */
-                    $referral = $referralRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Referral::class), $referralId);
+                    $referral = $referralRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Referral::class), $referralId);
 
                     if ($referral === null) {
                         throw new ReferralNotFoundException();
@@ -499,6 +527,7 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setLead(null);
                     $entity->setReferral($referral);
                     $entity->setOrganization(null);
+                    $entity->setOutreach(null);
 
                     break;
                 case ActivityOwnerType::TYPE_ORGANIZATION:
@@ -510,7 +539,7 @@ class ActivityService extends BaseService implements IGridService
                     $organizationRepo = $this->em->getRepository(Organization::class);
 
                     /** @var Organization $organization */
-                    $organization = $organizationRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
+                    $organization = $organizationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Organization::class), $organizationId);
 
                     if ($organization === null) {
                         throw new OrganizationNotFoundException();
@@ -519,6 +548,28 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setLead(null);
                     $entity->setReferral(null);
                     $entity->setOrganization($organization);
+                    $entity->setOutreach(null);
+
+                    break;
+                case ActivityOwnerType::TYPE_OUTREACH:
+                    $validationGroup = 'api_lead_outreach_activity_edit';
+
+                    $outreachId = $params['outreach_id'] ?? 0;
+
+                    /** @var OutreachRepository $outreachRepo */
+                    $outreachRepo = $this->em->getRepository(Outreach::class);
+
+                    /** @var Outreach $outreach */
+                    $outreach = $outreachRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Outreach::class), $outreachId);
+
+                    if ($outreach === null) {
+                        throw new OutreachNotFoundException();
+                    }
+
+                    $entity->setLead(null);
+                    $entity->setReferral(null);
+                    $entity->setOrganization(null);
+                    $entity->setOutreach($outreach);
 
                     break;
                 default:
@@ -575,6 +626,13 @@ class ActivityService extends BaseService implements IGridService
             case ActivityOwnerType::TYPE_ORGANIZATION:
                 $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_OUTREACH:
+                if ($activity->getOutreach() !== null && $activity->getOutreach()->getContact() !== null) {
+                    $owner = $activity->getOutreach()->getContact()->getFirstName() . ' ' . $activity->getOutreach()->getContact()->getLastName();
+                }
+                $id = $activity->getOutreach()->getId();
 
                 break;
             default:
@@ -640,6 +698,13 @@ class ActivityService extends BaseService implements IGridService
             case ActivityOwnerType::TYPE_ORGANIZATION:
                 $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_OUTREACH:
+                if ($activity->getOutreach() !== null && $activity->getOutreach()->getContact() !== null) {
+                    $owner = $activity->getOutreach()->getContact()->getFirstName() . ' ' . $activity->getOutreach()->getContact()->getLastName();
+                }
+                $id = $activity->getOutreach()->getId();
 
                 break;
             default:
