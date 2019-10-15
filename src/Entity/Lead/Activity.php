@@ -49,6 +49,12 @@ use App\Annotation\Grid;
  *              "field"      = "r.id"
  *          },
  *          {
+ *              "id"         = "outreach_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "ou.id"
+ *          },
+ *          {
  *              "id"         = "activity",
  *              "type"       = "string",
  *              "field"      = "a.title",
@@ -83,7 +89,7 @@ use App\Annotation\Grid;
  *              "id"         = "type_info",
  *              "type"       = "string",
  *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND rc.id IS NOT NULL THEN CONCAT('Referral: ', rc.firstName, ' ', rc.lastName) WHEN a.ownerType=2 AND rc.id IS NULL THEN CONCAT('Referral: ', ro.name) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.name) WHEN a.ownerType=4 AND ouc.id IS NOT NULL THEN CONCAT('Outreach: ', ouc.firstName, ' ', ouc.lastName) WHEN a.ownerType=4 AND ouc.id IS NULL THEN 'Outreach' ELSE '' END)",
- *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id>"
+ *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id|/lead/outreach/:outreach_id>"
  *          }
  *     }
  * )
