@@ -123,6 +123,8 @@ class Space
      *     "api_lead_referrer_type_get",
      *     "api_lead_contact_list",
      *     "api_lead_contact_get",
+     *     "api_lead_outreach_type_list",
+     *     "api_lead_outreach_type_get",
      *     "api_lead_stage_change_reason_list",
      *     "api_lead_stage_change_reason_get",
      *     "api_lead_temperature_list",
@@ -212,6 +214,8 @@ class Space
      *     "api_lead_referrer_type_get",
      *     "api_lead_contact_list",
      *     "api_lead_contact_get",
+     *     "api_lead_outreach_type_list",
+     *     "api_lead_outreach_type_get",
      *     "api_lead_stage_change_reason_list",
      *     "api_lead_stage_change_reason_get",
      *     "api_lead_temperature_list",
@@ -415,6 +419,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Contact", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadContacts;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\OutreachType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadOutreachTypes;
 
     /**
      * @var ArrayCollection
@@ -974,6 +984,22 @@ class Space
     public function setLeadContacts(ArrayCollection $leadContacts): void
     {
         $this->leadContacts = $leadContacts;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadOutreachTypes(): ArrayCollection
+    {
+        return $this->leadOutreachTypes;
+    }
+
+    /**
+     * @param ArrayCollection $leadOutreachTypes
+     */
+    public function setLeadOutreachTypes(ArrayCollection $leadOutreachTypes): void
+    {
+        $this->leadOutreachTypes = $leadOutreachTypes;
     }
 
     /**

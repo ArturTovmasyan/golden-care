@@ -91,6 +91,9 @@ persistence:
         lead_temperature:
           title: 'Lead Temperature'
           class: App\Entity\Lead\LeadTemperature
+        outreach_type:
+          title: 'Outreach Type'
+          class: App\Entity\Lead\OutreachType
 
     common:
       title: 'Common'
