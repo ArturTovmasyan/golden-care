@@ -141,6 +141,7 @@ class ResponseCode
     const LEAD_LEAD_TEMPERATURE_NOT_FOUND_EXCEPTION              = 742;
     const INCOMPLETE_CHUNK_DATA_EXCEPTION                        = 743;
     const DUPLICATE_IMAGE_BY_REQUEST_ID_EXCEPTION                = 744;
+    const LEAD_OUTREACH_NOT_FOUND_EXCEPTION                      = 745;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -282,6 +283,7 @@ class ResponseCode
         self::LEAD_LEAD_TEMPERATURE_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Lead Temperature not found.'],
         self::INCOMPLETE_CHUNK_DATA_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incomplete chunk data.'],
         self::DUPLICATE_IMAGE_BY_REQUEST_ID_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Image with this request id already exists.'],
+        self::LEAD_OUTREACH_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Outreach not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

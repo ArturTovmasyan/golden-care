@@ -83,6 +83,8 @@ class Organization
      *     "api_lead_lead_get",
      *     "api_lead_contact_list",
      *     "api_lead_contact_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $id;
@@ -112,7 +114,9 @@ class Organization
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
      *     "api_lead_contact_list",
-     *     "api_lead_contact_get"
+     *     "api_lead_contact_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $name;
@@ -259,6 +263,12 @@ class Organization
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Contact", mappedBy="organization", cascade={"remove", "persist"})
      */
     private $contacts;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="organization", cascade={"remove", "persist"})
+     */
+    private $outreaches;
 
     /**
      * @return int
@@ -451,6 +461,22 @@ class Organization
     public function setContacts(ArrayCollection $contacts): void
     {
         $this->contacts = $contacts;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOutreaches(): ArrayCollection
+    {
+        return $this->outreaches;
+    }
+
+    /**
+     * @param ArrayCollection $outreaches
+     */
+    public function setOutreaches(ArrayCollection $outreaches): void
+    {
+        $this->outreaches = $outreaches;
     }
 
     /**

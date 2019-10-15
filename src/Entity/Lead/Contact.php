@@ -82,7 +82,9 @@ class Contact
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $id;
@@ -110,7 +112,9 @@ class Contact
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $firstName;
@@ -138,7 +142,9 @@ class Contact
      *     "api_lead_activity_list",
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $lastName;
@@ -184,6 +190,8 @@ class Contact
      *      "api_lead_contact_get",
      *      "api_lead_referral_list",
      *      "api_lead_referral_get",
+     *      "api_lead_outreach_list",
+     *      "api_lead_outreach_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -204,6 +212,8 @@ class Contact
      *     "api_lead_contact_get",
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      *     "api_lead_lead_get"
      * })
      */
@@ -231,6 +241,12 @@ class Contact
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Referral", mappedBy="contact", cascade={"remove", "persist"})
      */
     private $referrals;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="contact", cascade={"remove", "persist"})
+     */
+    private $outreaches;
 
     /**
      * @return int
@@ -374,6 +390,22 @@ class Contact
     public function setReferrals(ArrayCollection $referrals): void
     {
         $this->referrals = $referrals;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOutreaches(): ArrayCollection
+    {
+        return $this->outreaches;
+    }
+
+    /**
+     * @param ArrayCollection $outreaches
+     */
+    public function setOutreaches(ArrayCollection $outreaches): void
+    {
+        $this->outreaches = $outreaches;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Lead\Outreach;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -113,7 +114,9 @@ class User implements UserInterface
      *     "api_admin_notification_list",
      *     "api_admin_notification_get",
      *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
+     *     "api_admin_change_log_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -546,6 +549,12 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\ChangeLog", mappedBy="owner", cascade={"remove", "persist"})
      */
     private $changeLogs;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="users", cascade={"persist"})
+     */
+    protected $outreaches;
 
     /**
      * Space constructor.
@@ -1099,5 +1108,44 @@ class User implements UserInterface
     public function setChangeLogs(ArrayCollection $changeLogs): void
     {
         $this->changeLogs = $changeLogs;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOutreaches()
+    {
+        return $this->outreaches;
+    }
+
+    /**
+     * @param mixed $outreaches
+     */
+    public function setOutreaches($outreaches): void
+    {
+        $this->outreaches = $outreaches;
+
+        /** @var Outreach $outreach */
+        foreach ($this->outreaches as $outreach) {
+            $outreach->addUser($this);
+        }
+    }
+
+    /**
+     * @param Outreach $outreach
+     */
+    public function addOutreach(Outreach $outreach): void
+    {
+        $outreach->addUser($this);
+        $this->outreaches[] = $outreach;
+    }
+
+    /**
+     * @param Outreach $outreach
+     */
+    public function removeOutreach(Outreach $outreach): void
+    {
+        $this->outreaches->removeElement($outreach);
+        $outreach->removeUser($this);
     }
 }

@@ -112,9 +112,11 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      *      }
      * )
      * @Assert\Length(
@@ -124,9 +126,11 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      *      }
      * )
      * @ORM\Column(name="title", type="string", length=100)
@@ -145,7 +149,8 @@ class Activity
      *     groups={
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
-     *          "api_lead_organization_activity_add"
+     *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add"
      *     }
      * )
      * @Groups({
@@ -160,7 +165,8 @@ class Activity
      * @Assert\NotNull(message = "Please select a Type", groups={
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
-     *          "api_lead_organization_activity_add"
+     *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Lead\ActivityType", inversedBy="activities", cascade={"persist"})
      * @ORM\JoinColumns({
@@ -179,17 +185,21 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      * })
      * @Assert\DateTime(groups={
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
@@ -209,9 +219,11 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      * })
      * @Groups({
      *     "api_lead_activity_list",
@@ -252,9 +264,11 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      * })
      * @ORM\Column(name="due_date", type="datetime", nullable=true)
      * @Groups({
@@ -270,9 +284,11 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
-     *          "api_lead_organization_activity_edit"
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit"
      * })
      * @ORM\Column(name="reminder_date", type="datetime", nullable=true)
      * @Groups({
@@ -345,6 +361,23 @@ class Activity
      * })
      */
     private $organization;
+
+    /**
+     * @var Outreach
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Outreach", inversedBy="activities")
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_outreach", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select an Outreach", groups={
+     *          "api_lead_outreach_activity_add",
+     *          "api_lead_outreach_activity_edit"
+     * })
+     * @Groups({
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
+     * })
+     */
+    private $outreach;
 
     public function getId()
     {
@@ -563,5 +596,21 @@ class Activity
     public function setOrganization(?Organization $organization): void
     {
         $this->organization = $organization;
+    }
+
+    /**
+     * @return Outreach|null
+     */
+    public function getOutreach(): ?Outreach
+    {
+        return $this->outreach;
+    }
+
+    /**
+     * @param Outreach|null $outreach
+     */
+    public function setOutreach(?Outreach $outreach): void
+    {
+        $this->outreach = $outreach;
     }
 }

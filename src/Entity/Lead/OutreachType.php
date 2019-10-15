@@ -5,6 +5,7 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,7 +60,9 @@ class OutreachType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_outreach_type_list",
-     *     "api_lead_outreach_type_get"
+     *     "api_lead_outreach_type_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $id;
@@ -83,7 +86,9 @@ class OutreachType
      * @ORM\Column(name="title", type="string", length=120)
      * @Groups({
      *     "api_lead_outreach_type_list",
-     *     "api_lead_outreach_type_get"
+     *     "api_lead_outreach_type_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get",
      * })
      */
     private $title;
@@ -104,6 +109,12 @@ class OutreachType
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $outreaches;
 
     public function getId()
     {
@@ -140,5 +151,21 @@ class OutreachType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOutreaches(): ArrayCollection
+    {
+        return $this->outreaches;
+    }
+
+    /**
+     * @param ArrayCollection $outreaches
+     */
+    public function setOutreaches(ArrayCollection $outreaches): void
+    {
+        $this->outreaches = $outreaches;
     }
 }

@@ -94,6 +94,9 @@ persistence:
         outreach_type:
           title: 'Outreach Type'
           class: App\Entity\Lead\OutreachType
+        outreach:
+          title: 'Outreach'
+          class: App\Entity\Lead\Outreach
 
     common:
       title: 'Common'

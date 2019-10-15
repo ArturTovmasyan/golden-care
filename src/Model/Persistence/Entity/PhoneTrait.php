@@ -31,6 +31,8 @@ trait PhoneTrait
      *      "api_lead_referral_get",
      *      "api_lead_contact_list",
      *      "api_lead_contact_get",
+     *      "api_lead_outreach_list",
+     *      "api_lead_outreach_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -74,6 +76,8 @@ trait PhoneTrait
      *      "api_lead_referral_get",
      *      "api_lead_contact_list",
      *      "api_lead_contact_get",
+     *      "api_lead_outreach_list",
+     *      "api_lead_outreach_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -117,6 +121,8 @@ trait PhoneTrait
      *      "api_lead_referral_get",
      *      "api_lead_contact_list",
      *      "api_lead_contact_get",
+     *      "api_lead_outreach_list",
+     *      "api_lead_outreach_get",
      *      "api_lead_lead_get"
      * })
      */
@@ -158,6 +164,8 @@ trait PhoneTrait
      *      "api_lead_referral_get",
      *      "api_lead_contact_list",
      *      "api_lead_contact_get",
+     *      "api_lead_outreach_list",
+     *      "api_lead_outreach_get",
      *      "api_lead_lead_get"
      * })
      */
