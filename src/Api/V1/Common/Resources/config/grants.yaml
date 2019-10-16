@@ -340,11 +340,17 @@ activity:
   title: "Activity"
   fields: ['enabled']
   children:
-    resident:
-      title: "Resident"
+    reference:
+      title: "View Reference in Category panel"
+    event_definition:
+      title: "View Event Definition in Category panel"
+    security:
+      title: "View Security in Category panel"
       children:
-        change-physician:
-          title: "Change the resident's physician"
+        space:
+          title: "View Space in Category panel"
+        role:
+          title: "View Role in Category panel"
 
 report:
   title: "Report"
