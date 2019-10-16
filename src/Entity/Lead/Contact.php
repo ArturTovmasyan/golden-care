@@ -244,9 +244,9 @@ class Contact
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="contact", cascade={"remove", "persist"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="contacts", cascade={"persist"})
      */
-    private $outreaches;
+    protected $outreaches;
 
     /**
      * @return int
@@ -393,19 +393,42 @@ class Contact
     }
 
     /**
-     * @return ArrayCollection
+     * @return mixed
      */
-    public function getOutreaches(): ArrayCollection
+    public function getOutreaches()
     {
         return $this->outreaches;
     }
 
     /**
-     * @param ArrayCollection $outreaches
+     * @param mixed $outreaches
      */
-    public function setOutreaches(ArrayCollection $outreaches): void
+    public function setOutreaches($outreaches): void
     {
         $this->outreaches = $outreaches;
+
+        /** @var Outreach $outreach */
+        foreach ($this->outreaches as $outreach) {
+            $outreach->addContact($this);
+        }
+    }
+
+    /**
+     * @param Outreach $outreach
+     */
+    public function addOutreach(Outreach $outreach): void
+    {
+        $outreach->addContact($this);
+        $this->outreaches[] = $outreach;
+    }
+
+    /**
+     * @param Outreach $outreach
+     */
+    public function removeOutreach(Outreach $outreach): void
+    {
+        $this->outreaches->removeElement($outreach);
+        $outreach->removeContact($this);
     }
 
     /**

@@ -2,7 +2,6 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OutreachNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OutreachTypeNotFoundException;
@@ -90,20 +89,23 @@ class OutreachService extends BaseService implements IGridService
             $outreach->setType($type);
 
             $notes = $params['notes'] ?? '';
-            $contactId = $params['contact_id'] ?? 0;
-
-            /** @var ContactRepository $contactRepo */
-            $contactRepo = $this->em->getRepository(Contact::class);
-
-            /** @var Contact $contact */
-            $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
-
-            if ($contact === null) {
-                throw new ContactNotFoundException();
-            }
-
-            $outreach->setContact($contact);
             $outreach->setNotes($notes);
+
+            if(!empty($params['contacts'])) {
+                /** @var ContactRepository $contactRepo */
+                $contactRepo = $this->em->getRepository(Contact::class);
+
+                $contactIds = array_unique($params['contacts']);
+                $contacts = $contactRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactIds);
+
+                if (!empty($contacts)) {
+                    $outreach->setContacts($contacts);
+                } else {
+                    $outreach->setContacts(null);
+                }
+            } else {
+                $outreach->setContacts(null);
+            }
 
             if (!empty($params['organization_id'])) {
                 /** @var OrganizationRepository $organizationRepo */
@@ -135,7 +137,7 @@ class OutreachService extends BaseService implements IGridService
                 $userRepo = $this->em->getRepository(User::class);
 
                 $userIds = array_unique($params['users']);
-                $users = $userRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
+                $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {
                     $outreach->setUsers($users);
@@ -200,20 +202,28 @@ class OutreachService extends BaseService implements IGridService
             $entity->setType($type);
 
             $notes = $params['notes'] ?? '';
-            $contactId = $params['contact_id'] ?? 0;
+            $entity->setNotes($notes);
 
-            /** @var ContactRepository $contactRepo */
-            $contactRepo = $this->em->getRepository(Contact::class);
-
-            /** @var Contact $contact */
-            $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
-
-            if ($contact === null) {
-                throw new ContactNotFoundException();
+            $contacts = $entity->getContacts();
+            foreach ($contacts as $contact) {
+                $entity->removeContact($contact);
             }
 
-            $entity->setContact($contact);
-            $entity->setNotes($notes);
+            if(!empty($params['contacts'])) {
+                /** @var ContactRepository $contactRepo */
+                $contactRepo = $this->em->getRepository(Contact::class);
+
+                $contactIds = array_unique($params['contacts']);
+                $contacts = $contactRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactIds);
+
+                if (!empty($contacts)) {
+                    $entity->setContacts($contacts);
+                } else {
+                    $entity->setContacts(null);
+                }
+            } else {
+                $entity->setContacts(null);
+            }
 
             if (!empty($params['organization_id'])) {
                 /** @var OrganizationRepository $organizationRepo */
@@ -250,7 +260,7 @@ class OutreachService extends BaseService implements IGridService
                 $userRepo = $this->em->getRepository(User::class);
 
                 $userIds = array_unique($params['users']);
-                $users = $userRepo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
+                $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {
                     $entity->setUsers($users);

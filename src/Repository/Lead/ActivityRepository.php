@@ -12,6 +12,7 @@ use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Outreach;
+use App\Entity\Lead\OutreachType;
 use App\Entity\Lead\Referral;
 use App\Entity\Space;
 use App\Entity\User;
@@ -101,10 +102,10 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'ou = a.outreach'
             )
             ->leftJoin(
-                Contact::class,
-                'ouc',
+                OutreachType::class,
+                'oot',
                 Join::WITH,
-                'ouc = ou.contact'
+                'oot = ou.type'
             )
             ->leftJoin(
                 User::class,
@@ -573,8 +574,8 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT('Referral : ', rc.firstName, ' ', rc.lastName)
                     WHEN r.id IS NOT NULL AND rc.id IS NULL THEN CONCAT('Referral : ', ro.name)
                     WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.name)
-                    WHEN ou.id IS NOT NULL AND ouc.id IS NOT NULL THEN CONCAT('Outreach : ', ouc.firstName, ' ', ouc.lastName)
-                    WHEN ou.id IS NOT NULL AND ouc.id IS NULL THEN 'Outreach'
+                    WHEN ou.id IS NOT NULL AND oot.id IS NOT NULL THEN CONCAT('Outreach : ', oot.title)
+                    WHEN ou.id IS NOT NULL AND oot.id IS NULL THEN 'Outreach'
                 ELSE 'INVALID' END) as type",
                 "CONCAT(u.firstName, ' ', u.lastName) as assignToFullName",
                 "CONCAT(cb.firstName, ' ', cb.lastName) as enteredByFullName",
@@ -644,10 +645,10 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'ou = a.outreach'
             )
             ->leftJoin(
-                Contact::class,
-                'ouc',
+                OutreachType::class,
+                'oot',
                 Join::WITH,
-                'ouc = ou.contact'
+                'oot = ou.type'
             )
             ->leftJoin(
                 User::class,

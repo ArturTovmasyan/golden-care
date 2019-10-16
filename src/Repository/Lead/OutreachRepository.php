@@ -3,7 +3,6 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\Lead\Contact;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\OutreachType;
 use App\Entity\Lead\Outreach;
@@ -27,18 +26,16 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
     {
         $queryBuilder
             ->from(Outreach::class, 'ou')
+            ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(c.firstName, ' ', c.lastName) SEPARATOR ', ') AS contacts")
+            ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(u.firstName, ' ', u.lastName) SEPARATOR ', ') AS users")
             ->innerJoin(
                 OutreachType::class,
                 'ot',
                 Join::WITH,
                 'ot = ou.type'
             )
-            ->innerJoin(
-                Contact::class,
-                'c',
-                Join::WITH,
-                'c = ou.contact'
-            )
+            ->innerJoin('ou.contacts', 'c')
+            ->innerJoin('ou.users', 'u')
             ->leftJoin(
                 Organization::class,
                 'o',
@@ -205,12 +202,12 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
         $qb = $this
             ->createQueryBuilder('ou')
             ->innerJoin(
-                Contact::class,
-                'c',
+                OutreachType::class,
+                'ot',
                 Join::WITH,
-                'c = ou.contact'
+                'ot = ou.type'
             )
-            ->select("CONCAT(c.firstName, ' ', c.lastName) as fullName");
+            ->select('ot.title as title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
@@ -232,12 +229,6 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    OutreachType::class,
-                    'ot',
-                    Join::WITH,
-                    'ot = ou.type'
-                )
                 ->innerJoin(
                     Space::class,
                     's',

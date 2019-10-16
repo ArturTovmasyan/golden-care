@@ -154,7 +154,9 @@ class User implements UserInterface
      *     "api_admin_notification_list",
      *     "api_admin_notification_get",
      *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
+     *     "api_admin_change_log_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get"
      * })
      */
     private $firstName;
@@ -191,7 +193,9 @@ class User implements UserInterface
      *     "api_admin_notification_list",
      *     "api_admin_notification_get",
      *     "api_admin_change_log_list",
-     *     "api_admin_change_log_get"
+     *     "api_admin_change_log_get",
+     *     "api_lead_outreach_list",
+     *     "api_lead_outreach_get"
      * })
      */
     private $lastName;

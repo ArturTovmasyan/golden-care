@@ -34,21 +34,26 @@ use App\Annotation\Grid as Grid;
  *              "field"      = "o.id"
  *          },
  *          {
- *              "id"         = "contact",
- *              "type"       = "string",
- *              "field"      = "CONCAT(COALESCE(c.firstName, ''), ' ', COALESCE(c.lastName, ''))",
- *              "link"       = "/lead/outreach/:id"
- *          },
- *          {
  *              "id"         = "type",
  *              "type"       = "string",
- *              "field"      = "ot.title"
+ *              "field"      = "ot.title",
+ *              "link"       = "/lead/outreach/:id"
  *          },
  *          {
  *              "id"         = "organization",
  *              "type"       = "string",
  *              "field"      = "o.name",
  *              "link"       = "/lead/referral/organization/:organization_id"
+ *          },
+ *          {
+ *              "id"         = "contacts",
+ *              "type"       = "string",
+ *              "field"      = ""
+ *          },
+ *          {
+ *              "id"         = "users",
+ *              "type"       = "string",
+ *              "field"      = ""
  *          },
  *          {
  *              "id"         = "notes",
@@ -110,23 +115,27 @@ class Outreach
     private $organization;
 
     /**
-     * @var Contact
-     * @Assert\NotNull(message = "Please select a Contact", groups={
-     *          "api_lead_outreach_add",
-     *          "api_lead_outreach_edit"
+     * @var ArrayCollection
+     * @Assert\NotNull(message = "Please select at least one Contact.", groups={
+     *     "api_lead_outreach_add",
+     *     "api_lead_outreach_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Contact", inversedBy="outreaches", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_contact", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Contact", inversedBy="outreaches", cascade={"persist"})
+     * @ORM\JoinTable(
+     *      name="tbl_lead_outreach_contacts",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_outreach", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_contact", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
      * @Groups({
      *     "api_lead_outreach_list",
-     *     "api_lead_outreach_get",
-     *     "api_lead_activity_list",
-     *     "api_lead_activity_get"
+     *     "api_lead_outreach_get"
      * })
      */
-    private $contact;
+    private $contacts;
 
     /**
      * @var \DateTime
@@ -241,19 +250,35 @@ class Outreach
     }
 
     /**
-     * @return Contact|null
+     * @return mixed
      */
-    public function getContact(): ?Contact
+    public function getContacts()
     {
-        return $this->contact;
+        return $this->contacts;
+    }
+
+    /**
+     * @param $contacts
+     */
+    public function setContacts($contacts): void
+    {
+        $this->contacts = $contacts;
     }
 
     /**
      * @param Contact|null $contact
      */
-    public function setContact(?Contact $contact): void
+    public function addContact(?Contact $contact): void
     {
-        $this->contact = $contact;
+        $this->contacts->add($contact);
+    }
+
+    /**
+     * @param Contact|null $contact
+     */
+    public function removeContact(?Contact $contact): void
+    {
+        $this->contacts->removeElement($contact);
     }
 
     /**

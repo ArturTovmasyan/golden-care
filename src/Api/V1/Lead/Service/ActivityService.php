@@ -629,8 +629,8 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_OUTREACH:
-                if ($activity->getOutreach() !== null && $activity->getOutreach()->getContact() !== null) {
-                    $owner = $activity->getOutreach()->getContact()->getFirstName() . ' ' . $activity->getOutreach()->getContact()->getLastName();
+                if ($activity->getOutreach() !== null && $activity->getOutreach()->getType() !== null) {
+                    $owner = $activity->getOutreach()->getType()->getTitle();
                 }
                 $id = $activity->getOutreach()->getId();
 
@@ -701,8 +701,8 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_OUTREACH:
-                if ($activity->getOutreach() !== null && $activity->getOutreach()->getContact() !== null) {
-                    $owner = $activity->getOutreach()->getContact()->getFirstName() . ' ' . $activity->getOutreach()->getContact()->getLastName();
+                if ($activity->getOutreach() !== null && $activity->getOutreach()->getType() !== null) {
+                    $owner = $activity->getOutreach()->getType()->getTitle();
                 }
                 $id = $activity->getOutreach()->getId();
 
