@@ -405,7 +405,8 @@ class ResidentAdmission
      *          "api_admin_region_add",
      *          "api_admin_region_edit",
      *          "api_admin_resident_facility_edit",
-     *          "api_admin_resident_region_edit"
+     *          "api_admin_resident_region_edit",
+     *          "api_admin_resident_region_edit_mobile"
      * }
      * )
      * @Assert\NotBlank(groups={
@@ -414,7 +415,8 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_resident_facility_edit",
-     *     "api_admin_resident_region_edit"
+     *     "api_admin_resident_region_edit",
+     *     "api_admin_resident_region_edit_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",
@@ -438,7 +440,8 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_resident_facility_edit",
-     *     "api_admin_resident_region_edit"
+     *     "api_admin_resident_region_edit",
+     *     "api_admin_resident_region_edit_mobile"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",

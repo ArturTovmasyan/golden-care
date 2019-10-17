@@ -539,6 +539,36 @@ class ResidentService extends BaseService implements IGridService
     }
 
     /**
+     * @param ResidentAdmission $entity
+     * @param array $params
+     * @return ResidentAdmission
+     */
+    private function saveAsRegionMobile(ResidentAdmission $entity, array $params): ResidentAdmission
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var CareLevelRepository $careLevelRepo */
+        $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+        /** @var CareLevel $careLevel */
+        $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+        if ($careLevel === null) {
+            throw new CareLevelNotFoundException();
+        }
+
+        $careGroup = $params['care_group'] ? (int)$params['care_group'] : 0;
+
+        $entity->setDnr($params['dnr'] ?? false);
+        $entity->setPolst($params['polst'] ?? false);
+        $entity->setAmbulatory($params['ambulatory'] ?? false);
+        $entity->setCareGroup($careGroup);
+        $entity->setCareLevel($careLevel);
+
+        return $entity;
+    }
+
+    /**
      * @param $id
      * @throws \Throwable
      */
@@ -2249,8 +2279,8 @@ class ResidentService extends BaseService implements IGridService
                         $lastAction = $this->saveAsApartment($lastAction);
                         break;
                     case GroupType::TYPE_REGION:
-                        $validationGroup = 'api_admin_resident_region_edit';
-                        $lastAction = $this->saveAsRegion($lastAction, $params);
+                        $validationGroup = 'api_admin_resident_region_edit_mobile';
+                        $lastAction = $this->saveAsRegionMobile($lastAction, $params);
                         break;
                     default:
                         throw new IncorrectStrategyTypeException();
