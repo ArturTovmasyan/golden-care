@@ -23,13 +23,13 @@
                 </tr>
                 <tr>
                     <th colspan="15">
-                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px;">
-                            BLOOD SUGAR TRACKER
-                        </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
+                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px; text-align: left;">
                             {{ resident.typeName }}
                         </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
+                        <div style="float: left; font-size: 24px; width: 330px; margin-top: 5px;  text-align: center;">
+                            BLOOD SUGAR TRACKER
+                        </div>
+                        <div style="float: right; font-size: 24px; width: 400px; margin-top: 5px; text-align: right;">
                             {% if resident.roomNumber is defined and resident.bedNumber is defined %}
                                 {% if resident.private %}
                                     {{ resident.roomNumber }}&nbsp;

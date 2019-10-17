@@ -28,7 +28,10 @@
                 </tr>
                 <tr>
                     <th colspan="7">
-                        <div style="float: left; font-size: 16px; width: 300px; margin-top: 5px;">
+                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px; text-align: left;">
+                            {{ resident.typeName }}
+                        </div>
+                        <div style="float: right; font-size: 24px; width: 450px; margin-top: 5px; text-align: right;">
                             {% if resident.roomNumber is defined and resident.bedNumber is defined %}
                                 {% if resident.private %}
                                     {{ resident.roomNumber }}&nbsp;
@@ -36,9 +39,6 @@
                                     {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
                                 {% endif %}
                             {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
-                        </div>
-                        <div style="float: right; font-size: 16px; width: 300px; margin-top: 5px;">
-                            {{ resident.typeName }}
                         </div>
                         <div style="clear: both"></div>
                     </th>
