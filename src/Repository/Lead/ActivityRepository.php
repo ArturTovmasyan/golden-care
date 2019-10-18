@@ -108,6 +108,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'oot = ou.type'
             )
             ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = a.contact'
+            )
+            ->leftJoin(
                 User::class,
                 'cb',
                 Join::WITH,
@@ -137,6 +143,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 case ActivityOwnerType::TYPE_OUTREACH:
                     $queryBuilder
                         ->where('ou.id = :id')
+                        ->setParameter('id', $id);
+
+                    break;
+                case ActivityOwnerType::TYPE_CONTACT:
+                    $queryBuilder
+                        ->where('c.id = :id')
                         ->setParameter('id', $id);
 
                     break;
@@ -292,6 +304,18 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                         'ou = a.outreach'
                     )
                     ->where('ou.id = :id')
+                    ->setParameter('id', $id);
+
+                break;
+            case ActivityOwnerType::TYPE_CONTACT:
+                $qb
+                    ->leftJoin(
+                        Contact::class,
+                        'c',
+                        Join::WITH,
+                        'c = a.contact'
+                    )
+                    ->where('c.id = :id')
                     ->setParameter('id', $id);
 
                 break;
@@ -576,6 +600,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                     WHEN o.id IS NOT NULL THEN CONCAT('Organization : ', o.name)
                     WHEN ou.id IS NOT NULL AND oot.id IS NOT NULL THEN CONCAT('Outreach : ', oot.title)
                     WHEN ou.id IS NOT NULL AND oot.id IS NULL THEN 'Outreach'
+                    WHEN c.id IS NOT NULL THEN CONCAT('Contact : ', c.firstName, ' ', c.lastName)
                 ELSE 'INVALID' END) as type",
                 "CONCAT(u.firstName, ' ', u.lastName) as assignToFullName",
                 "CONCAT(cb.firstName, ' ', cb.lastName) as enteredByFullName",
@@ -649,6 +674,12 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
                 'oot',
                 Join::WITH,
                 'oot = ou.type'
+            )
+            ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = a.contact'
             )
             ->leftJoin(
                 User::class,

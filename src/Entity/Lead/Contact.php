@@ -249,6 +249,12 @@ class Contact
     protected $outreaches;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="contact", cascade={"remove", "persist"})
+     */
+    private $activities;
+
+    /**
      * @return int
      */
     public function getId()
@@ -429,6 +435,22 @@ class Contact
     {
         $this->outreaches->removeElement($outreach);
         $outreach->removeContact($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActivities(): ArrayCollection
+    {
+        return $this->activities;
+    }
+
+    /**
+     * @param ArrayCollection $activities
+     */
+    public function setActivities(ArrayCollection $activities): void
+    {
+        $this->activities = $activities;
     }
 
     /**

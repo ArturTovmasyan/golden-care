@@ -55,6 +55,12 @@ use App\Annotation\Grid;
  *              "field"      = "ou.id"
  *          },
  *          {
+ *              "id"         = "contact_id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "c.id"
+ *          },
+ *          {
  *              "id"         = "activity",
  *              "type"       = "string",
  *              "field"      = "a.title",
@@ -88,8 +94,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "type_info",
  *              "type"       = "string",
- *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND rc.id IS NOT NULL THEN CONCAT('Referral: ', rc.firstName, ' ', rc.lastName) WHEN a.ownerType=2 AND rc.id IS NULL THEN CONCAT('Referral: ', ro.name) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.name) WHEN a.ownerType=4 AND oot.id IS NOT NULL THEN CONCAT('Outreach: ', oot.title) WHEN a.ownerType=4 AND oot.id IS NULL THEN 'Outreach' ELSE '' END)",
- *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id|/lead/outreach/:outreach_id>"
+ *              "field"      = "(CASE WHEN a.ownerType=1 THEN CONCAT('Lead: ', l.firstName, ' ', l.lastName) WHEN a.ownerType=2 AND rc.id IS NOT NULL THEN CONCAT('Referral: ', rc.firstName, ' ', rc.lastName) WHEN a.ownerType=2 AND rc.id IS NULL THEN CONCAT('Referral: ', ro.name) WHEN a.ownerType=3 THEN CONCAT('Organization: ', o.name) WHEN a.ownerType=4 AND oot.id IS NOT NULL THEN CONCAT('Outreach: ', oot.title) WHEN a.ownerType=4 AND oot.id IS NULL THEN 'Outreach' WHEN a.ownerType=5 THEN CONCAT('Contact: ', c.firstName, ' ', c.lastName) ELSE '' END)",
+ *              "link"       = "owner_type:</lead/lead/:lead_id|/lead/referral/:referral_id|/lead/referral/organization/:organization_id|/lead/outreach/:outreach_id|/lead/contact/:contact_id>"
  *          }
  *     }
  * )
@@ -119,10 +125,12 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      *      }
      * )
      * @Assert\Length(
@@ -133,10 +141,12 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      *      }
      * )
      * @ORM\Column(name="title", type="string", length=100)
@@ -156,7 +166,8 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
-     *          "api_lead_outreach_activity_add"
+     *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add"
      *     }
      * )
      * @Groups({
@@ -172,7 +183,8 @@ class Activity
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
-     *          "api_lead_outreach_activity_add"
+     *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Lead\ActivityType", inversedBy="activities", cascade={"persist"})
      * @ORM\JoinColumns({
@@ -192,20 +204,24 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      * })
      * @Assert\DateTime(groups={
      *          "api_lead_lead_activity_add",
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
@@ -226,10 +242,12 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      * })
      * @Groups({
      *     "api_lead_activity_list",
@@ -271,10 +289,12 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      * })
      * @ORM\Column(name="due_date", type="datetime", nullable=true)
      * @Groups({
@@ -291,10 +311,12 @@ class Activity
      *          "api_lead_referral_activity_add",
      *          "api_lead_organization_activity_add",
      *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
      *          "api_lead_lead_activity_edit",
      *          "api_lead_referral_activity_edit",
      *          "api_lead_organization_activity_edit",
-     *          "api_lead_outreach_activity_edit"
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
      * })
      * @ORM\Column(name="reminder_date", type="datetime", nullable=true)
      * @Groups({
@@ -384,6 +406,23 @@ class Activity
      * })
      */
     private $outreach;
+
+    /**
+     * @var Contact
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Contact", inversedBy="activities")
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_contact", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Contact", groups={
+     *          "api_lead_contact_activity_add",
+     *          "api_lead_contact_activity_edit"
+     * })
+     * @Groups({
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
+     * })
+     */
+    private $contact;
 
     public function getId()
     {
@@ -618,5 +657,21 @@ class Activity
     public function setOutreach(?Outreach $outreach): void
     {
         $this->outreach = $outreach;
+    }
+
+    /**
+     * @return Contact
+     */
+    public function getContact(): Contact
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param Contact $contact
+     */
+    public function setContact(Contact $contact): void
+    {
+        $this->contact = $contact;
     }
 }

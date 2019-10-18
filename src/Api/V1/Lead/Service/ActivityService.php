@@ -3,6 +3,7 @@ namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\IncorrectOwnerTypeException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityStatusNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityNotFoundException;
@@ -18,6 +19,7 @@ use App\Entity\Facility;
 use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Outreach;
@@ -29,6 +31,7 @@ use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityStatusRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
+use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\OutreachRepository;
@@ -267,6 +270,7 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setReferral(null);
                     $activity->setOrganization(null);
                     $activity->setOutreach(null);
+                    $activity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_REFERRAL:
@@ -288,6 +292,7 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setReferral($referral);
                     $activity->setOrganization(null);
                     $activity->setOutreach(null);
+                    $activity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_ORGANIZATION:
@@ -309,6 +314,7 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setReferral(null);
                     $activity->setOrganization($organization);
                     $activity->setOutreach(null);
+                    $activity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_OUTREACH:
@@ -330,6 +336,29 @@ class ActivityService extends BaseService implements IGridService
                     $activity->setReferral(null);
                     $activity->setOrganization(null);
                     $activity->setOutreach($outreach);
+                    $activity->setContact(null);
+
+                    break;
+                case ActivityOwnerType::TYPE_CONTACT:
+                    $validationGroup = 'api_lead_contact_activity_add';
+
+                    $contactId = $params['contact_id'] ?? 0;
+
+                    /** @var ContactRepository $contactRepo */
+                    $contactRepo = $this->em->getRepository(Contact::class);
+
+                    /** @var Contact $contact */
+                    $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
+
+                    if ($contact === null) {
+                        throw new ContactNotFoundException();
+                    }
+
+                    $activity->setLead(null);
+                    $activity->setReferral(null);
+                    $activity->setOrganization(null);
+                    $activity->setOutreach(null);
+                    $activity->setContact($contact);
 
                     break;
                 default:
@@ -507,6 +536,7 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setReferral(null);
                     $entity->setOrganization(null);
                     $entity->setOutreach(null);
+                    $entity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_REFERRAL:
@@ -528,6 +558,7 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setReferral($referral);
                     $entity->setOrganization(null);
                     $entity->setOutreach(null);
+                    $entity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_ORGANIZATION:
@@ -549,6 +580,7 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setReferral(null);
                     $entity->setOrganization($organization);
                     $entity->setOutreach(null);
+                    $entity->setContact(null);
 
                     break;
                 case ActivityOwnerType::TYPE_OUTREACH:
@@ -570,6 +602,29 @@ class ActivityService extends BaseService implements IGridService
                     $entity->setReferral(null);
                     $entity->setOrganization(null);
                     $entity->setOutreach($outreach);
+                    $entity->setContact(null);
+
+                    break;
+                case ActivityOwnerType::TYPE_CONTACT:
+                    $validationGroup = 'api_lead_contact_activity_edit';
+
+                    $contactId = $params['contact_id'] ?? 0;
+
+                    /** @var ContactRepository $contactRepo */
+                    $contactRepo = $this->em->getRepository(Contact::class);
+
+                    /** @var Contact $contact */
+                    $contact = $contactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $contactId);
+
+                    if ($contact === null) {
+                        throw new ContactNotFoundException();
+                    }
+
+                    $entity->setLead(null);
+                    $entity->setReferral(null);
+                    $entity->setOrganization(null);
+                    $entity->setOutreach(null);
+                    $entity->setContact($contact);
 
                     break;
                 default:
@@ -633,6 +688,11 @@ class ActivityService extends BaseService implements IGridService
                     $owner = $activity->getOutreach()->getType()->getTitle();
                 }
                 $id = $activity->getOutreach()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_CONTACT:
+                $owner =  $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
+                $id = $activity->getContact()->getId();
 
                 break;
             default:
@@ -705,6 +765,11 @@ class ActivityService extends BaseService implements IGridService
                     $owner = $activity->getOutreach()->getType()->getTitle();
                 }
                 $id = $activity->getOutreach()->getId();
+
+                break;
+            case ActivityOwnerType::TYPE_CONTACT:
+                $owner =  $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
+                $id = $activity->getContact()->getId();
 
                 break;
             default:

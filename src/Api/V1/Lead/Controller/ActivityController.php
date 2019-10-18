@@ -148,7 +148,8 @@ class ActivityController extends BaseController
                 'lead_id' => $request->get('lead_id'),
                 'referral_id' => $request->get('referral_id'),
                 'organization_id' => $request->get('organization_id'),
-                'outreach_id' => $request->get('outreach_id')
+                'outreach_id' => $request->get('outreach_id'),
+                'contact_id' => $request->get('contact_id')
             ]
         );
 
@@ -188,7 +189,8 @@ class ActivityController extends BaseController
                 'lead_id' => $request->get('lead_id'),
                 'referral_id' => $request->get('referral_id'),
                 'organization_id' => $request->get('organization_id'),
-                'outreach_id' => $request->get('outreach_id')
+                'outreach_id' => $request->get('outreach_id'),
+                'contact_id' => $request->get('contact_id')
             ]
         );
 
