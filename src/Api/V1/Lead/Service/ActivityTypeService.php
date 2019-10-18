@@ -83,6 +83,8 @@ class ActivityTypeService extends BaseService implements IGridService
             $activityType->setCc($params['cc']);
             $activityType->setSms($params['sms']);
             $activityType->setFacility($params['facility']);
+            $activityType->setContact($params['contact']);
+            $activityType->setAmount($params['amount']);
             $activityType->setEditable($params['editable']);
             $activityType->setDeletable($params['deletable']);
 
@@ -143,6 +145,8 @@ class ActivityTypeService extends BaseService implements IGridService
             $entity->setCc($params['cc']);
             $entity->setSms($params['sms']);
             $entity->setFacility($params['facility']);
+            $entity->setContact($params['contact']);
+            $entity->setAmount($params['amount']);
             $entity->setEditable($params['editable']);
             $entity->setDeletable($params['deletable']);
 

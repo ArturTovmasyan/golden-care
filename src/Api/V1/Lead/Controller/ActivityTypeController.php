@@ -121,6 +121,8 @@ class ActivityTypeController extends BaseController
                 'cc' => $request->get('cc'),
                 'sms' => $request->get('sms'),
                 'facility' => $request->get('facility'),
+                'contact' => $request->get('contact'),
+                'amount' => $request->get('amount'),
                 'editable' => $request->get('editable'),
                 'deletable' => $request->get('deletable')
             ]
@@ -157,6 +159,8 @@ class ActivityTypeController extends BaseController
                 'cc' => $request->get('cc'),
                 'sms' => $request->get('sms'),
                 'facility' => $request->get('facility'),
+                'contact' => $request->get('contact'),
+                'amount' => $request->get('amount'),
                 'editable' => $request->get('editable'),
                 'deletable' => $request->get('deletable')
             ]
