@@ -59,6 +59,57 @@ class UserPhoneRepository extends EntityRepository implements RelatedInfoInterfa
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $userIds
+     * @return mixed
+     */
+    public function getByUserIds(Space $space = null, array $entityGrants = null, array $userIds)
+    {
+        $qb = $this->createQueryBuilder('up');
+
+        $qb
+            ->select('
+                    up.id as id,
+                    u.id as uId,
+                    up.primary as primary,
+                    up.type as type,
+                    up.number as number
+            ')
+            ->innerJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = up.user'
+            )
+            ->where('u.id IN (:userIds)')
+            ->setParameter('userIds', $userIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = u.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('up.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('up.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use App\Annotation\Grant as Grant;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @IgnoreAnnotation("api")
@@ -501,5 +502,40 @@ class UserController extends BaseController
             '',
             [$relatedData]
         );
+    }
+
+    /**
+     * @Route("/mobile/list", name="api_admin_user_mobile_list", methods={"GET"})
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @param RouterInterface $router
+     * @return JsonResponse
+     */
+    public function getMobileListAction(Request $request, UserService $userService, RouterInterface $router)
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $userService->getMobileList($router, $request->headers->get('date'), $user->getId()),
+            ['api_admin_user_mobile_list']
+        );
+    }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_user_image_download", methods={"GET"})
+     *
+     * @param UserService $userService
+     * @param $id
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, UserService $userService)
+    {
+        $data = $userService->downloadFile($id);
+
+        return $this->respondImageFile($data[0], $data[1], $data[2]);
     }
 }

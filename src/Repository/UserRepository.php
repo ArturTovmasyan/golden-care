@@ -257,4 +257,58 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $date
+     * @param $userId
+     * @return mixed
+     */
+    public function mobileList(Space $space = null, array $entityGrants = null, $date, $userId)
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select(
+                'u.id AS id',
+                'u.firstName AS first_name',
+                'u.lastName AS last_name',
+                'u.username AS user_name',
+                'u.email AS email',
+                'u.enabled AS enabled',
+                'u.owner AS owner',
+                'u.lastActivityAt AS last_activity_at',
+                'u.updatedAt AS updated_at',
+                'u.licenseAccepted AS license_accepted',
+                's.name AS space'
+            )
+            ->addSelect("GROUP_CONCAT(r.name SEPARATOR ', ') AS roles")
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = u.space'
+            )
+            ->innerJoin('u.roles', 'r')
+            ->where('u.updatedAt > :date')
+            ->andWhere('u.id = :userId')
+            ->setParameter('date', $date)
+            ->setParameter('userId', $userId);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('u.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

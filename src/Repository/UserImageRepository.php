@@ -33,4 +33,30 @@ class UserImageRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIds($ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('ui')
+            ->select('
+                u.id as id, 
+                ui.photo_150_150 as photo_150_150
+            ')
+            ->join(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = ui.user'
+            )
+            ->where('u.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

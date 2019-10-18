@@ -9,10 +9,15 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Entity\UserImage;
 use App\Entity\UserPhone;
+use App\Repository\UserImageRepository;
 use App\Repository\UserPhoneRepository;
 use App\Repository\UserRepository;
+use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class UserService
@@ -395,5 +400,74 @@ class UserService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(User::class, $entities);
+    }
+
+    /**
+     * @param RouterInterface $router
+     * @param $date
+     * @param $userId
+     * @return mixed
+     */
+    public function getMobileList(RouterInterface $router, $date, $userId)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var UserRepository $repo */
+        $repo = $this->em->getRepository(User::class);
+
+        $entities = $repo->mobileList($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $date, $userId);
+
+        $userIds = array_map(function($item){return $item['id'];} , $entities);
+
+        /** @var UserImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(UserImage::class);
+
+        $images = $imageRepo->findByIds($userIds);
+        $images = array_column($images, 'photo_150_150', 'id');
+
+        /** @var UserPhoneRepository $phoneRepo */
+        $phoneRepo = $this->em->getRepository(UserPhone::class);
+        $phones = $phoneRepo->getByUserIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(UserPhone::class), $userIds);
+
+        $finalEntities  = [];
+        if (!empty($entities)) {
+            foreach ($entities as $entity) {
+                $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];
+                $entity['last_activity_at'] = $entity['last_activity_at'] !== null ? $entity['last_activity_at']->format('Y-m-d H:i:s') : $entity['last_activity_at'];
+
+                if (array_key_exists($entity['id'], $images)) {
+                    $entity['photo'] = $router->generate('api_admin_user_image_download', ['id' => $entity['id']], UrlGeneratorInterface::ABSOLUTE_URL);
+                } else {
+                    $entity['photo'] = null;
+                }
+
+                foreach ($phones as $phone) {
+                    if ($phone['uId'] === $entity['id']) {
+                        $entity['phones'][] = $phone;
+                    }
+                }
+
+                $finalEntities[] = $entity;
+            }
+        }
+
+        return $finalEntities;
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function downloadFile($id): array
+    {
+        $entity = $this->getById($id);
+
+        if (!empty($entity) && $entity->getImage() !== null) {
+            $parseFile = Parser::parse($entity->getImage()->getPhoto300300());
+
+            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
+        }
+
+        return [null, null, null];
     }
 }
