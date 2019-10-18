@@ -85,6 +85,22 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if activity.type.contact %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Contact:</td>
+                    <td>
+                        {% if activity.taskContact %}{{ activity.taskContact.firstName ~ ' ' ~ activity.taskContact.lastName }}{% else %}N/A{% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if activity.type.amount %}
+                <tr>
+                    <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Amount:</td>
+                    <td>
+                        {% if activity.amount %}$ {{ activity.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                    </td>
+                </tr>
+            {% endif %}
 
             <tr>
                 <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Notes:</td>

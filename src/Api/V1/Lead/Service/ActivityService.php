@@ -250,6 +250,30 @@ class ActivityService extends BaseService implements IGridService
                 $activity->setFacility(null);
             }
 
+            if ($type->isContact()) {
+                $taskContactId = $params['task_contact_id'] ?? 0;
+
+                /** @var ContactRepository $taskContactRepo */
+                $taskContactRepo = $this->em->getRepository(Contact::class);
+
+                /** @var Contact $taskContact */
+                $taskContact = $taskContactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $taskContactId);
+
+                if ($taskContact === null) {
+                    throw new ContactNotFoundException();
+                }
+
+                $activity->setTaskContact($taskContact);
+            } else {
+                $activity->setTaskContact(null);
+            }
+
+            if ($type->isAmount()) {
+                $activity->setAmount($params['amount']);
+            } else {
+                $activity->setAmount(null);
+            }
+
             switch ($ownerType) {
                 case ActivityOwnerType::TYPE_LEAD:
                     $validationGroup = 'api_lead_lead_activity_add';
@@ -514,6 +538,30 @@ class ActivityService extends BaseService implements IGridService
                 $entity->setFacility($facility);
             } else {
                 $entity->setFacility(null);
+            }
+
+            if ($type->isContact()) {
+                $taskContactId = $params['task_contact_id'] ?? 0;
+
+                /** @var ContactRepository $taskContactRepo */
+                $taskContactRepo = $this->em->getRepository(Contact::class);
+
+                /** @var Contact $taskContact */
+                $taskContact = $taskContactRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $taskContactId);
+
+                if ($taskContact === null) {
+                    throw new ContactNotFoundException();
+                }
+
+                $entity->setTaskContact($taskContact);
+            } else {
+                $entity->setTaskContact(null);
+            }
+
+            if ($type->isAmount()) {
+                $entity->setAmount($params['amount']);
+            } else {
+                $entity->setAmount(null);
             }
 
             switch ($ownerType) {

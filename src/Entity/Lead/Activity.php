@@ -330,7 +330,7 @@ class Activity
      * @var Facility
      * @ORM\ManyToOne(targetEntity="App\Entity\Facility", inversedBy="leadActivities")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_lead_activity_list",
@@ -338,6 +338,59 @@ class Activity
      * })
      */
     private $facility;
+
+    /**
+     * @var Contact
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Contact", inversedBy="taskActivities")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_task_contact", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
+     * })
+     */
+    private $taskContact;
+
+    /**
+     * @var int $amount
+     * @ORM\Column(name="amount", type="float", length=10, nullable=true)
+     * @Assert\Regex(
+     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
+     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
+     *      groups={
+     *          "api_lead_lead_activity_add",
+     *          "api_lead_referral_activity_add",
+     *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
+     *          "api_lead_lead_activity_edit",
+     *          "api_lead_referral_activity_edit",
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_lead_activity_add",
+     *          "api_lead_referral_activity_add",
+     *          "api_lead_organization_activity_add",
+     *          "api_lead_outreach_activity_add",
+     *          "api_lead_contact_activity_add",
+     *          "api_lead_lead_activity_edit",
+     *          "api_lead_referral_activity_edit",
+     *          "api_lead_organization_activity_edit",
+     *          "api_lead_outreach_activity_edit",
+     *          "api_lead_contact_activity_edit"
+     * })
+     * @Groups({
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get"
+     * })
+     */
+    private $amount;
 
     /**
      * @var Lead
@@ -596,6 +649,38 @@ class Activity
     }
 
     /**
+     * @return Contact|null
+     */
+    public function getTaskContact(): ?Contact
+    {
+        return $this->taskContact;
+    }
+
+    /**
+     * @param Contact|null $taskContact
+     */
+    public function setTaskContact(?Contact $taskContact): void
+    {
+        $this->taskContact = $taskContact;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param int|null $amount
+     */
+    public function setAmount(?int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
      * @return Lead|null
      */
     public function getLead(): ?Lead
@@ -660,17 +745,17 @@ class Activity
     }
 
     /**
-     * @return Contact
+     * @return Contact|null
      */
-    public function getContact(): Contact
+    public function getContact(): ?Contact
     {
         return $this->contact;
     }
 
     /**
-     * @param Contact $contact
+     * @param Contact|null $contact
      */
-    public function setContact(Contact $contact): void
+    public function setContact(?Contact $contact): void
     {
         $this->contact = $contact;
     }

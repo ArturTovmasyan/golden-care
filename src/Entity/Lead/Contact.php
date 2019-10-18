@@ -255,6 +255,12 @@ class Contact
     private $activities;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="taskContact", cascade={"remove", "persist"})
+     */
+    private $taskActivities;
+
+    /**
      * @return int
      */
     public function getId()
@@ -451,6 +457,22 @@ class Contact
     public function setActivities(ArrayCollection $activities): void
     {
         $this->activities = $activities;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTaskActivities(): ArrayCollection
+    {
+        return $this->taskActivities;
+    }
+
+    /**
+     * @param ArrayCollection $taskActivities
+     */
+    public function setTaskActivities(ArrayCollection $taskActivities): void
+    {
+        $this->taskActivities = $taskActivities;
     }
 
     /**

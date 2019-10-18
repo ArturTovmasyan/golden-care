@@ -65,6 +65,16 @@ use App\Annotation\Grid;
  *              "field"      = "at.facility"
  *          },
  *          {
+ *              "id"         = "contact",
+ *              "type"       = "boolean",
+ *              "field"      = "at.contact"
+ *          },
+ *          {
+ *              "id"         = "amount",
+ *              "type"       = "boolean",
+ *              "field"      = "at.amount"
+ *          },
+ *          {
  *              "id"         = "editable",
  *              "type"       = "boolean",
  *              "field"      = "at.editable"
@@ -205,6 +215,28 @@ class ActivityType
      * })
      */
     private $facility;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="contact", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_lead_activity_type_grid",
+     *     "api_lead_activity_type_list",
+     *     "api_lead_activity_type_get"
+     * })
+     */
+    private $contact;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="amount", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_lead_activity_type_grid",
+     *     "api_lead_activity_type_list",
+     *     "api_lead_activity_type_get"
+     * })
+     */
+    private $amount;
 
     /**
      * @var bool
@@ -365,6 +397,38 @@ class ActivityType
     public function setFacility(bool $facility): void
     {
         $this->facility = $facility;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isContact(): bool
+    {
+        return $this->contact;
+    }
+
+    /**
+     * @param bool $contact
+     */
+    public function setContact(bool $contact): void
+    {
+        $this->contact = $contact;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAmount(): bool
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param bool $amount
+     */
+    public function setAmount(bool $amount): void
+    {
+        $this->amount = $amount;
     }
 
     /**
