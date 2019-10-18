@@ -116,10 +116,11 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param $all
      * @param $free
      * @param null $userId
+     * @param null $contactId
      * @param array|null $facilityEntityGrants
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null, $contactId = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -128,7 +129,8 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                 'o',
                 Join::WITH,
                 'o = l.owner'
-            );
+            )
+            ->leftJoin('l.referral', 'r');
 
         if (!$all) {
             $qb
@@ -138,7 +140,6 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
 
         if ($free) {
             $qb
-                ->leftJoin('l.referral', 'r')
                 ->andWhere('r.id IS NULL');
         }
 
@@ -159,6 +160,13 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
                     ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
                     ->setParameter('facilityGrantIds', $facilityEntityGrants);
             }
+        }
+
+        if ($contactId !== null) {
+            $qb
+                ->leftJoin('r.contact', 'c')
+                ->andWhere('c.id = :contactId')
+                ->setParameter('contactId', $contactId);
         }
 
         if ($space !== null) {

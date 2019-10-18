@@ -109,7 +109,13 @@ class LeadService extends BaseService implements IGridService
             $userId = $params[0]['user_id'];
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants);
+        $contactId = null;
+        if (!empty($params) && !empty($params[0]['contact_id'])) {
+            $contactId = $params[0]['contact_id'];
+            $free = false;
+        }
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants, $contactId);
     }
 
     /**

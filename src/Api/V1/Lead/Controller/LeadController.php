@@ -96,7 +96,8 @@ class LeadController extends BaseController
                 'all' => $request->get('all'),
                 'free' => $request->get('free'),
                 'my' => $request->get('my'),
-                'user_id' => $user->getId()
+                'user_id' => $user->getId(),
+                'contact_id' => $request->get('contact_id')
             ]
         );
     }
