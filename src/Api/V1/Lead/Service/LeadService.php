@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ContactOrganizationChangedException;
 use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
@@ -601,6 +602,10 @@ class LeadService extends BaseService implements IGridService
 
             if ($contact === null) {
                 throw new ContactNotFoundException();
+            }
+
+            if ($referral->getOrganization() !== null && $contact->getOrganization() !== null && $referral->getOrganization()->getId() !== $contact->getOrganization()->getId()) {
+                throw new ContactOrganizationChangedException();
             }
 
             $referral->setContact($contact);

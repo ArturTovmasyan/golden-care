@@ -3,6 +3,7 @@ namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ContactOrganizationChangedException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadAlreadyJoinedInReferralException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
@@ -162,6 +163,10 @@ class ReferralService extends BaseService implements IGridService
                     throw new ContactNotFoundException();
                 }
 
+                if ($referral->getOrganization() !== null && $contact->getOrganization() !== null && $referral->getOrganization()->getId() !== $contact->getOrganization()->getId()) {
+                    throw new ContactOrganizationChangedException();
+                }
+
                 $referral->setContact($contact);
                 $referral->setNotes($notes);
 
@@ -274,6 +279,10 @@ class ReferralService extends BaseService implements IGridService
 
                 if ($contact === null) {
                     throw new ContactNotFoundException();
+                }
+
+                if ($entity->getOrganization() !== null && $contact->getOrganization() !== null && $entity->getOrganization()->getId() !== $contact->getOrganization()->getId()) {
+                    throw new ContactOrganizationChangedException();
                 }
 
                 $entity->setContact($contact);

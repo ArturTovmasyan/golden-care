@@ -98,6 +98,7 @@ class ResponseCode
     const END_DATE_NOT_BE_BLANK_EXCEPTION                        = 698;
     const INCORRECT_STRATEGY_TYPE_EXCEPTION                      = 699;
     const CAN_NOT_REMOVE_BED_EXCEPTION                           = 700;
+    const LEAD_CONTACT_ORGANIZATION_CHANGED_EXCEPTION            = 701;
     const REGION_CAN_NOT_HAVE_BED_EXCEPTION                      = 702;
     const UNHANDLED_RENT_PERIOD_EXCEPTION                        = 703;
     const RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION                 = 704;
@@ -240,6 +241,7 @@ class ResponseCode
         self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date cannot not be blank.'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region.'],
         self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bed has a Resident. Move Resident to another bed.'],
+        self::LEAD_CONTACT_ORGANIZATION_CHANGED_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The Organization of Contact has been changed. Please choose another Contact.'],
         self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region cannot hav a bed.'],
         self::UNHANDLED_RENT_PERIOD_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid entry for rent period.'],
         self::RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Admission not found.'],
