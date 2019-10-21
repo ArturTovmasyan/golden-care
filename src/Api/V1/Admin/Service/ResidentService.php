@@ -5,7 +5,6 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
-use App\Api\V1\Common\Service\Exception\DuplicateImageByRequestIdException;
 use App\Api\V1\Common\Service\Exception\IncompleteChunkDataException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
@@ -2337,69 +2336,69 @@ class ResidentService extends BaseService implements IGridService
             $existImage = $this->em->getRepository(ResidentImage::class)->findOneBy(['requestId' => $requestId]);
 
             if ($existImage !== null) {
-                throw new DuplicateImageByRequestIdException();
-            }
+                $insert_id = $existImage->getResident() ? $existImage->getResident()->getId() : null;
+            } else {
+                /** @var Resident $resident */
+                $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
-            /** @var Resident $resident */
-            $resident = $this->em->getRepository(Resident::class)->find($residentId);
-
-            if ($resident === null) {
-                throw new ResidentNotFoundException();
-            }
-
-            //File chunk data
-            $chunkString = $params['chunk'];
-            $chunkId = $params['chunk_id'];
-            $totalChunk = (int)$params['total_chunk'];
-
-            //generate data for chunks upload service
-            $data = array(
-                'chunkString' => $chunkString,
-                'chunkId' => $chunkId,
-                'totalChunk' => $totalChunk,
-                'requestId' => $requestId,
-                'userId' => $userId,
-                'extension' => $extension
-            );
-
-            //check if required POST data exists
-            if (!($chunkString && $chunkId && $totalChunk && $requestId && $userId)) {
-                throw new IncompleteChunkDataException();
-            }
-
-            //upload file by chunks
-            $base64 = $this->uploadByChunks($data);
-
-            $image = null;
-            // save photo
-            if (!empty($base64)) {
-                /** @var ResidentImageRepository $imageRepo */
-                $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-                $image = $imageRepo->getBy($resident->getId());
-
-                if ($image === null) {
-                    $image = new ResidentImage();
+                if ($resident === null) {
+                    throw new ResidentNotFoundException();
                 }
 
-                $base64 = 'data:image/' . $extension . ';base64,' . $base64;
+                //File chunk data
+                $chunkString = $params['chunk'];
+                $chunkId = $params['chunk_id'];
+                $totalChunk = (int)$params['total_chunk'];
 
-                $image->setResident($resident);
-                $image->setPhoto($base64);
-                $image->setRequestId($requestId);
+                //generate data for chunks upload service
+                $data = array(
+                    'chunkString' => $chunkString,
+                    'chunkId' => $chunkId,
+                    'totalChunk' => $totalChunk,
+                    'requestId' => $requestId,
+                    'userId' => $userId,
+                    'extension' => $extension
+                );
 
-                $this->em->persist($image);
+                //check if required POST data exists
+                if (!($chunkString && $chunkId && $totalChunk && $requestId && $userId)) {
+                    throw new IncompleteChunkDataException();
+                }
 
-                $this->imageFilterService->createAllFilterVersion($image);
+                //upload file by chunks
+                $base64 = $this->uploadByChunks($data);
 
-                $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+                $image = null;
+                // save photo
+                if (!empty($base64)) {
+                    /** @var ResidentImageRepository $imageRepo */
+                    $imageRepo = $this->em->getRepository(ResidentImage::class);
 
-                $this->em->flush();
+                    $image = $imageRepo->getBy($resident->getId());
+
+                    if ($image === null) {
+                        $image = new ResidentImage();
+                    }
+
+                    $base64 = 'data:image/' . $extension . ';base64,' . $base64;
+
+                    $image->setResident($resident);
+                    $image->setPhoto($base64);
+                    $image->setRequestId($requestId);
+
+                    $this->em->persist($image);
+
+                    $this->imageFilterService->createAllFilterVersion($image);
+
+                    $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+
+                    $this->em->flush();
+                }
+
+                $this->em->getConnection()->commit();
+
+                $insert_id = $image !== null ? $resident->getId() : null;
             }
-
-            $this->em->getConnection()->commit();
-
-            $insert_id = $image !== null ? $resident->getId() : null;
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
