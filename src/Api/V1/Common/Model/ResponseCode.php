@@ -143,6 +143,7 @@ class ResponseCode
     const INCOMPLETE_CHUNK_DATA_EXCEPTION                        = 743;
     const DUPLICATE_IMAGE_BY_REQUEST_ID_EXCEPTION                = 744;
     const LEAD_OUTREACH_NOT_FOUND_EXCEPTION                      = 745;
+    const LEAD_CONTACT_ORGANIZATION_NOT_ALLOWED_CHANGE_EXCEPTION = 746;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -286,6 +287,7 @@ class ResponseCode
         self::INCOMPLETE_CHUNK_DATA_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incomplete chunk data.'],
         self::DUPLICATE_IMAGE_BY_REQUEST_ID_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Image with this request id already exists.'],
         self::LEAD_OUTREACH_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Outreach not found.'],
+        self::LEAD_CONTACT_ORGANIZATION_NOT_ALLOWED_CHANGE_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You are not allowed to change Contact Organization as this connection is used in Lead Referrals.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

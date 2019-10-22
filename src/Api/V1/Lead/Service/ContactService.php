@@ -2,6 +2,7 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\ContactOrganizationNotAllowedChangeException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
@@ -10,10 +11,12 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Lead\Organization;
 use App\Entity\Lead\Contact;
 use App\Entity\Lead\ContactPhone;
+use App\Entity\Lead\Referral;
 use App\Entity\Space;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ContactPhoneRepository;
 use App\Repository\Lead\ContactRepository;
+use App\Repository\Lead\ReferralRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -198,6 +201,25 @@ class ContactService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_lead_contact_edit']);
 
             $this->em->persist($entity);
+
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $contactChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
+
+            if (!empty($contactChangeSet) && array_key_exists('organization', $contactChangeSet)) {
+                $oldOrganizationId = $contactChangeSet['organization'][0] !== null ? $contactChangeSet['organization'][0]->getId() : null;
+
+                /** @var ReferralRepository $referralRepo */
+                $referralRepo = $this->em->getRepository(Referral::class);
+
+                $referrals = $referralRepo->getByContactAndOrganization($currentSpace, $this->grantService->getCurrentUserEntityGrants(Referral::class), $entity->getId(), $oldOrganizationId);
+
+                if (!empty($referrals)) {
+                    throw new ContactOrganizationNotAllowedChangeException();
+                }
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

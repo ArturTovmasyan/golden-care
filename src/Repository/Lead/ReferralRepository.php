@@ -454,4 +454,68 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $contactId
+     * @param $organizationId
+     * @return mixed
+     */
+    public function getByContactAndOrganization(Space $space = null, array $entityGrants = null, $contactId, $organizationId)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->innerJoin(
+                ReferrerType::class,
+                'rt',
+                Join::WITH,
+                'rt = r.type'
+            )
+            ->leftJoin(
+                Organization::class,
+                'o',
+                Join::WITH,
+                'o = r.organization'
+            )
+            ->leftJoin(
+                Contact::class,
+                'c',
+                Join::WITH,
+                'c = r.contact'
+            )
+            ->where('c.id = :contactId')
+            ->setParameter('contactId', $contactId);
+
+        if ($organizationId === null) {
+            $qb
+                ->andWhere('o.id IS NULL');
+        } else {
+            $qb
+                ->andWhere('o.id = :organizationId')
+                ->setParameter('organizationId', $organizationId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
