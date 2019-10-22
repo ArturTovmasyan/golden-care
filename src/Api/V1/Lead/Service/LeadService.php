@@ -541,14 +541,14 @@ class LeadService extends BaseService implements IGridService
     {
         $oldReferral = $lead->getReferral();
 
-        if ($oldReferral) {
-            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_add';
-            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_add';
+        if ($oldReferral !== null) {
+            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_edit';
+            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_edit';
 
             $referral = $oldReferral;
         } else {
-            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_edit';
-            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_edit';
+            $organizationRequiredValidationGroup = 'api_lead_referral_organization_required_add';
+            $representativeRequiredValidationGroup = 'api_lead_referral_representative_required_add';
 
             $referral = new Referral();
         }
