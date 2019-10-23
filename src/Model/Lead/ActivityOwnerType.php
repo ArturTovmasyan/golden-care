@@ -47,11 +47,11 @@ class ActivityOwnerType
      * @var array
      */
     private static $values = [
-        self::TYPE_LEAD => '1',
-        self::TYPE_REFERRAL => '2',
-        self::TYPE_ORGANIZATION => '3',
-        self::TYPE_OUTREACH => '4',
-        self::TYPE_CONTACT => '5',
+        self::TYPE_LEAD,
+        self::TYPE_REFERRAL,
+        self::TYPE_ORGANIZATION,
+        self::TYPE_OUTREACH,
+        self::TYPE_CONTACT,
     ];
 
     /**
