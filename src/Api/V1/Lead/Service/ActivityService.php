@@ -148,7 +148,7 @@ class ActivityService extends BaseService implements IGridService
             $ownerType = $params['owner_type'] ? (int)$params['owner_type'] : 0;
             $notes = $params['notes'] ?? '';
 
-            if (!\in_array($ownerType, $type->getOwnerTypes(), false)) {
+            if (!\in_array($ownerType, $type->getCategories(), false)) {
                 throw new IncorrectActivityTypeException();
             }
 

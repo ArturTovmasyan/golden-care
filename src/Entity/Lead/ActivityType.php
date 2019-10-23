@@ -85,10 +85,10 @@ use App\Annotation\Grid;
  *              "field"      = "at.deletable"
  *          },
  *          {
- *              "id"         = "owner_types",
+ *              "id"         = "categories",
  *              "sortable"   = false,
  *              "type"       = "json",
- *              "field"      = "owner_types"
+ *              "field"      = "categories"
  *          }
  *     }
  * )
@@ -267,8 +267,8 @@ class ActivityType
     private $deletable;
 
     /**
-     * @var array $ownerTypes
-     * @ORM\Column(name="owner_types", type="json_array", nullable=true)
+     * @var array $categories
+     * @ORM\Column(name="categories", type="json_array", nullable=true)
      * @Assert\All({
      *     @Assert\Choice(
      *          callback={"App\Model\Lead\ActivityOwnerType","getValues"},
@@ -283,7 +283,7 @@ class ActivityType
      *     "api_lead_activity_type_get"
      * })
      */
-    private $ownerTypes = [];
+    private $categories = [];
 
     /**
      * @var ArrayCollection
@@ -491,17 +491,17 @@ class ActivityType
     /**
      * @return array
      */
-    public function getOwnerTypes(): array
+    public function getCategories(): array
     {
-        return $this->ownerTypes;
+        return $this->categories;
     }
 
     /**
-     * @param array $ownerTypes
+     * @param array $categories
      */
-    public function setOwnerTypes(array $ownerTypes): void
+    public function setCategories(array $categories): void
     {
-        $this->ownerTypes = $ownerTypes;
+        $this->categories = $categories;
     }
 
     /**

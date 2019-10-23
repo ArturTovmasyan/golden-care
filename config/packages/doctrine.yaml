@@ -29,17 +29,17 @@ doctrine:
                 alias: App
         dql:
             string_functions:
-                SC_PAYMENT_SOURCE_DECORATOR:        App\Util\MySQL\PaymentSourceDecorator
-                SC_ACTIVITY_OWNER_TYPE_DECORATOR:   App\Util\MySQL\ActivityOwnerTypeDecorator
-                NATURAL_SORT:                       App\Util\MySQL\NaturalSort
-                FIRST:                              App\Util\MySQL\First
-                JSON_ARRAYAGG:                      App\Util\MySQL\JsonArrayAgg
-                JSON_OBJECT:                        App\Util\MySQL\JsonObject
-                JSON_ARRAY:                         Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
-                JSON_EXTRACT:                       Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
-                JSON_CONTAINS:                      Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
-                JSON_UNQUOTE:                       Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
-                JSON_SEARCH:                        Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
-                CAST:                               Oro\ORM\Query\AST\Functions\Cast
-                DATE_FORMAT:                        Oro\ORM\Query\AST\Functions\String\DateFormat
-                GROUP_CONCAT:                       Oro\ORM\Query\AST\Functions\String\GroupConcat
+                SC_PAYMENT_SOURCE_DECORATOR:            App\Util\MySQL\PaymentSourceDecorator
+                SC_ACTIVITY_TYPE_CATEGORY_DECORATOR:    App\Util\MySQL\ActivityTypeCategoryDecorator
+                NATURAL_SORT:                           App\Util\MySQL\NaturalSort
+                FIRST:                                  App\Util\MySQL\First
+                JSON_ARRAYAGG:                          App\Util\MySQL\JsonArrayAgg
+                JSON_OBJECT:                            App\Util\MySQL\JsonObject
+                JSON_ARRAY:                             Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonArray
+                JSON_EXTRACT:                           Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                JSON_CONTAINS:                          Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains
+                JSON_UNQUOTE:                           Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonUnquote
+                JSON_SEARCH:                            Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+                CAST:                                   Oro\ORM\Query\AST\Functions\Cast
+                DATE_FORMAT:                            Oro\ORM\Query\AST\Functions\String\DateFormat
+                GROUP_CONCAT:                           Oro\ORM\Query\AST\Functions\String\GroupConcat
