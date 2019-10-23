@@ -25,6 +25,7 @@ class ActivityTypeRepository extends EntityRepository  implements RelatedInfoInt
     {
         $queryBuilder
             ->from(ActivityType::class, 'at')
+            ->addSelect('SC_ACTIVITY_OWNER_TYPE_DECORATOR(at.ownerTypes) AS owner_types')
             ->innerJoin(
                 ActivityStatus::class,
                 'ds',
@@ -57,9 +58,10 @@ class ActivityTypeRepository extends EntityRepository  implements RelatedInfoInt
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param null $ownerType
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $ownerType = null)
     {
         $qb = $this
             ->createQueryBuilder('at')
@@ -69,6 +71,12 @@ class ActivityTypeRepository extends EntityRepository  implements RelatedInfoInt
                 Join::WITH,
                 'ds = at.defaultStatus'
             );
+
+        if ($ownerType !== null) {
+            $qb
+                ->andWhere("JSON_SEARCH(at.ownerTypes, 'one', CAST(:ownerType AS JSON)) IS NOT NULL")
+                ->setParameter('ownerType', $ownerType);
+        }
 
         if ($space !== null) {
             $qb

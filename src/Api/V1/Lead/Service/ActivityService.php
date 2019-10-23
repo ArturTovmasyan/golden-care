@@ -4,6 +4,7 @@ namespace App\Api\V1\Lead\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\IncorrectActivityTypeException;
 use App\Api\V1\Common\Service\Exception\Lead\IncorrectOwnerTypeException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityStatusNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityNotFoundException;
@@ -146,6 +147,10 @@ class ActivityService extends BaseService implements IGridService
 
             $ownerType = $params['owner_type'] ? (int)$params['owner_type'] : 0;
             $notes = $params['notes'] ?? '';
+
+            if (!\in_array($ownerType, $type->getOwnerTypes(), false)) {
+                throw new IncorrectActivityTypeException();
+            }
 
             $activity = new Activity();
             $activity->setType($type);

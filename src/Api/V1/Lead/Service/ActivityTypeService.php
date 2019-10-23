@@ -35,10 +35,15 @@ class ActivityTypeService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $ownerType = null;
+        if (!empty($params) && !empty($params[0]['owner_type'])) {
+            $ownerType = $params[0]['owner_type'];
+        }
+
         /** @var ActivityTypeRepository $repo */
         $repo = $this->em->getRepository(ActivityType::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class));
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), $ownerType);
     }
 
     /**
@@ -87,6 +92,7 @@ class ActivityTypeService extends BaseService implements IGridService
             $activityType->setAmount($params['amount']);
             $activityType->setEditable($params['editable']);
             $activityType->setDeletable($params['deletable']);
+            $activityType->setOwnerTypes($params['owner_types']);
 
             $this->validate($activityType, null, ['api_lead_activity_type_add']);
 
@@ -149,6 +155,7 @@ class ActivityTypeService extends BaseService implements IGridService
             $entity->setAmount($params['amount']);
             $entity->setEditable($params['editable']);
             $entity->setDeletable($params['deletable']);
+            $entity->setOwnerTypes($params['owner_types']);
 
             $this->validate($entity, null, ['api_lead_activity_type_edit']);
 

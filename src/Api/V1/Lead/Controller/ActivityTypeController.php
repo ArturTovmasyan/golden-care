@@ -78,7 +78,8 @@ class ActivityTypeController extends BaseController
             $request,
             ActivityType::class,
             'api_lead_activity_type_list',
-            $activityTypeService
+            $activityTypeService,
+            ['owner_type' => $request->get('owner_type')]
         );
     }
 
@@ -124,7 +125,8 @@ class ActivityTypeController extends BaseController
                 'contact' => $request->get('contact'),
                 'amount' => $request->get('amount'),
                 'editable' => $request->get('editable'),
-                'deletable' => $request->get('deletable')
+                'deletable' => $request->get('deletable'),
+                'owner_types' => $request->get('owner_types')
             ]
         );
 
@@ -162,7 +164,8 @@ class ActivityTypeController extends BaseController
                 'contact' => $request->get('contact'),
                 'amount' => $request->get('amount'),
                 'editable' => $request->get('editable'),
-                'deletable' => $request->get('deletable')
+                'deletable' => $request->get('deletable'),
+                'owner_types' => $request->get('owner_types')
             ]
         );
 

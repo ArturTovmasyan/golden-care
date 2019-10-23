@@ -44,6 +44,17 @@ class ActivityOwnerType
     ];
 
     /**
+     * @var array
+     */
+    private static $values = [
+        self::TYPE_LEAD => '1',
+        self::TYPE_REFERRAL => '2',
+        self::TYPE_ORGANIZATION => '3',
+        self::TYPE_OUTREACH => '4',
+        self::TYPE_CONTACT => '5',
+    ];
+
+    /**
      * @return array
      */
     public static function getTypes()
@@ -65,6 +76,14 @@ class ActivityOwnerType
     public static function getTypeValues()
     {
         return self::$typeValues;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getValues()
+    {
+        return self::$values;
     }
 }
 
