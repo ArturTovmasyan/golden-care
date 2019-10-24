@@ -87,7 +87,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "categories",
  *              "sortable"   = false,
- *              "type"       = "json",
+ *              "type"       = "string",
  *              "field"      = "categories"
  *          }
  *     }
