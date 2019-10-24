@@ -74,7 +74,7 @@ class ActivityTypeRepository extends EntityRepository  implements RelatedInfoInt
 
         if ($category !== null) {
             $qb
-                ->andWhere("JSON_SEARCH(at.categories, 'one', CAST(:category AS JSON)) IS NOT NULL")
+                ->andWhere("JSON_CONTAINS(at.categories, :category, '$') = 1")
                 ->setParameter('category', $category);
         }
 
