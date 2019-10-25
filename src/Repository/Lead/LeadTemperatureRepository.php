@@ -39,7 +39,7 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
                 Join::WITH,
                 't = lt.temperature'
             )
-            ->innerJoin(
+            ->leftJoin(
                 User::class,
                 'u',
                 Join::WITH,

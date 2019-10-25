@@ -44,6 +44,7 @@ class TemperatureRepository extends EntityRepository  implements RelatedInfoInte
         }
 
         $queryBuilder
+            ->addOrderBy('t.value', 'ASC')
             ->groupBy('t.id');
     }
 
