@@ -355,6 +355,8 @@ class FacilityController extends BaseController
                 'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
                 'number_of_floors' => $request->get('number_of_floors'),
+                'capacity_red' => $request->get('capacity_red'),
+                'capacity_yellow' => $request->get('capacity_yellow'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -443,6 +445,8 @@ class FacilityController extends BaseController
                 'license_capacity' => $request->get('license_capacity'),
                 'capacity' => $request->get('capacity'),
                 'number_of_floors' => $request->get('number_of_floors'),
+                'capacity_red' => $request->get('capacity_red'),
+                'capacity_yellow' => $request->get('capacity_yellow'),
                 'space_id' => $request->get('space_id')
             ]
         );

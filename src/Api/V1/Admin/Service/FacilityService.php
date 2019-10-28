@@ -98,6 +98,8 @@ class FacilityService extends BaseService implements IGridService
             $facility->setLicenseCapacity((int)$params['license_capacity']);
             $facility->setCapacity((int)$params['capacity']);
             $facility->setNumberOfFloors((int)$params['number_of_floors']);
+            $facility->setCapacityRed((int)$params['capacity_red']);
+            $facility->setCapacityYellow((int)$params['capacity_yellow']);
             $facility->setSpace($space);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
@@ -169,6 +171,8 @@ class FacilityService extends BaseService implements IGridService
             $entity->setLicenseCapacity((int)$params['license_capacity']);
             $entity->setCapacity((int)$params['capacity']);
             $entity->setNumberOfFloors((int)$params['number_of_floors']);
+            $entity->setCapacityRed((int)$params['capacity_red']);
+            $entity->setCapacityYellow((int)$params['capacity_yellow']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_facility_edit']);

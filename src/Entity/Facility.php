@@ -83,6 +83,16 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
  *          },
  *          {
+ *              "id"         = "capacity_red",
+ *              "type"       = "string",
+ *              "field"      = "f.capacityRed"
+ *          },
+ *          {
+ *              "id"         = "capacity_yellow",
+ *              "type"       = "string",
+ *              "field"      = "f.capacityYellow"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -362,6 +372,50 @@ class Facility
     private $numberOfFloors = 1;
 
     /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_add",
+     *     "api_admin_facility_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/^[1-9][0-9]*$/",
+     *      message="The value should be numeric.",
+     *      groups={
+     *          "api_admin_facility_add",
+     *          "api_admin_facility_edit"
+     * })
+     * @ORM\Column(name="capacity_red", type="integer")
+     * @Groups({
+     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $capacityRed;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_add",
+     *     "api_admin_facility_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/^[1-9][0-9]*$/",
+     *      message="The value should be numeric.",
+     *      groups={
+     *          "api_admin_facility_add",
+     *          "api_admin_facility_edit"
+     * })
+     * @ORM\Column(name="capacity_yellow", type="integer")
+     * @Groups({
+     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $capacityYellow;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_admin_facility_add",
@@ -550,6 +604,38 @@ class Facility
     public function setCsz(?CityStateZip $csz): void
     {
         $this->csz = $csz;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCapacityRed(): ?int
+    {
+        return $this->capacityRed;
+    }
+
+    /**
+     * @param int|null $capacityRed
+     */
+    public function setCapacityRed(?int $capacityRed): void
+    {
+        $this->capacityRed = $capacityRed;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCapacityYellow(): ?int
+    {
+        return $this->capacityYellow;
+    }
+
+    /**
+     * @param int|null $capacityYellow
+     */
+    public function setCapacityYellow(?int $capacityYellow): void
+    {
+        $this->capacityYellow = $capacityYellow;
     }
 
     public function getSpace(): ?Space
@@ -780,6 +866,25 @@ class Facility
         if ($capacity > $licenseCapacity) {
             $context->buildViolation('The capacity "'.$capacity.'" should be less than or equal to license capacity "'.$licenseCapacity.'".')
                 ->atPath('capacity')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={
+     *     "api_admin_facility_add",
+     *     "api_admin_facility_edit"
+     * })
+     */
+    public function areCapacityRedValid(ExecutionContextInterface $context): void
+    {
+        $yellowCapacity = $this->capacityYellow;
+        $redCapacity = $this->capacityRed;
+
+        if ($redCapacity >= $yellowCapacity) {
+            $context->buildViolation('The Capacity Red Flag Warning "'.$redCapacity.'" should be less than Capacity Yellow Flag Warning "'.$yellowCapacity.'".')
+                ->atPath('capacityRed')
                 ->addViolation();
         }
     }
