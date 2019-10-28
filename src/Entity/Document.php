@@ -74,7 +74,7 @@ class Document
      * @var DocumentCategory
      * @ORM\ManyToOne(targetEntity="App\Entity\DocumentCategory", inversedBy="documents")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="SET NULL")
      * })
      * @Assert\NotNull(message = "Please select a Document Category", groups={
      *     "api_admin_document_add",
