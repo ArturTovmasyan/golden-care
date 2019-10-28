@@ -109,9 +109,6 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        $qb
-            ->addOrderBy('fs.title', 'ASC');
-
         return $qb
             ->getQuery()
             ->getResult();

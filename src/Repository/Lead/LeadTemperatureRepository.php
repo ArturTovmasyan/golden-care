@@ -102,9 +102,6 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        $qb
-            ->addOrderBy('t.title', 'ASC');
-
         return $qb
             ->getQuery()
             ->getResult();
