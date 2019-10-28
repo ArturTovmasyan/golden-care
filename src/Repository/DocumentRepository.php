@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Document;
 use App\Entity\Space;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -31,6 +32,12 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
                 's',
                 Join::WITH,
                 's = d.space'
+            )
+            ->leftJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = d.updatedBy'
             );
 
         if ($space !== null) {

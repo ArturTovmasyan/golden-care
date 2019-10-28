@@ -46,6 +46,16 @@ use App\Annotation\Grid;
  *              "field"      = "CONCAT(TRIM(SUBSTRING(d.description, 1, 100)), CASE WHEN LENGTH(d.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
+ *              "id"         = "date_uploaded",
+ *              "type"       = "date",
+ *              "field"      = "d.updatedAt"
+ *          },
+ *          {
+ *              "id"         = "owner",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -178,6 +188,36 @@ class Document
     {
         if ($this->getFile() !== null) {
             return $this->getDownloadUrl();
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("date_uploaded")
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    public function getDateUploaded(): ?\DateTime
+    {
+        return $this->getUpdatedAt();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("owner")
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    public function getOwner(): ?string
+    {
+        if ($this->getUpdatedBy() !== null) {
+            return $this->getUpdatedBy()->getFirstName() . ' ' . $this->getUpdatedBy()->getLastName();
         }
 
         return null;
