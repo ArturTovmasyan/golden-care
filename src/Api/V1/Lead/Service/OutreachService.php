@@ -140,12 +140,12 @@ class OutreachService extends BaseService implements IGridService
                 $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {
-                    $outreach->setUsers($users);
+                    $outreach->setParticipants($users);
                 } else {
-                    $outreach->setUsers(null);
+                    $outreach->setParticipants(null);
                 }
             } else {
-                $outreach->setUsers(null);
+                $outreach->setParticipants(null);
             }
 
             $this->validate($outreach, null, ['api_lead_outreach_add']);
@@ -250,7 +250,7 @@ class OutreachService extends BaseService implements IGridService
                 $entity->setDate(null);
             }
 
-            $users = $entity->getUsers();
+            $users = $entity->getParticipants();
             foreach ($users as $user) {
                 $entity->removeUser($user);
             }
@@ -263,12 +263,12 @@ class OutreachService extends BaseService implements IGridService
                 $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {
-                    $entity->setUsers($users);
+                    $entity->setParticipants($users);
                 } else {
-                    $entity->setUsers(null);
+                    $entity->setParticipants(null);
                 }
             } else {
-                $entity->setUsers(null);
+                $entity->setParticipants(null);
             }
 
             $this->validate($entity, null, ['api_lead_outreach_edit']);

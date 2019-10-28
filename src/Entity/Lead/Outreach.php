@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid as Grid;
 
 /**
@@ -186,16 +185,15 @@ class Outreach
      *          @ORM\JoinColumn(name="id_outreach", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     *          @ORM\JoinColumn(name="id_participant", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
-     * @Serializer\SerializedName("participants")
      * @Groups({
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get"
      * })
      */
-    private $users;
+    private $participants;
 
     /**
      * @var ArrayCollection
@@ -318,33 +316,33 @@ class Outreach
     /**
      * @return mixed
      */
-    public function getUsers()
+    public function getParticipants()
     {
-        return $this->users;
+        return $this->participants;
     }
 
     /**
-     * @param $users
+     * @param $participants
      */
-    public function setUsers($users): void
+    public function setParticipants($participants): void
     {
-        $this->users = $users;
+        $this->participants = $participants;
     }
 
     /**
-     * @param User|null $user
+     * @param User|null $participant
      */
-    public function addUser(?User $user): void
+    public function addUser(?User $participant): void
     {
-        $this->users->add($user);
+        $this->participants->add($participant);
     }
 
     /**
-     * @param User|null $user
+     * @param User|null $participant
      */
-    public function removeUser(?User $user): void
+    public function removeUser(?User $participant): void
     {
-        $this->users->removeElement($user);
+        $this->participants->removeElement($participant);
     }
 
     /**

@@ -556,7 +556,7 @@ class User implements UserInterface
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="users", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Outreach", mappedBy="participants", cascade={"persist"})
      */
     protected $outreaches;
 
