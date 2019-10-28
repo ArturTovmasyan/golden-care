@@ -149,6 +149,29 @@ class Document
     private $facilities;
 
     /**
+     * @var ArrayCollection
+     * @Assert\NotNull(message = "Please select at least one Role.", groups={
+     *     "api_admin_document_add",
+     *     "api_admin_document_edit"
+     * })
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="documents", cascade={"persist"})
+     * @ORM\JoinTable(
+     *      name="tbl_document_roles",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_document", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_role", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     * @Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    private $roles;
+
+    /**
      * @var File
      * @Assert\NotNull(message = "Please select a File", groups={
      *     "api_admin_document_add",
@@ -297,6 +320,38 @@ class Document
     public function removeFacility(?Facility $facility): void
     {
         $this->facilities->removeElement($facility);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param $roles
+     */
+    public function setRoles($roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @param Role|null $role
+     */
+    public function addRole(?Role $role): void
+    {
+        $this->roles->add($role);
+    }
+
+    /**
+     * @param Role|null $role
+     */
+    public function removeRole(?Role $role): void
+    {
+        $this->roles->removeElement($role);
     }
 
     /**

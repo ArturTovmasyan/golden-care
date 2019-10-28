@@ -10,11 +10,13 @@ use App\Entity\Document;
 use App\Entity\DocumentCategory;
 use App\Entity\Facility;
 use App\Entity\File;
+use App\Entity\Role;
 use App\Model\FileType;
 use App\Repository\DocumentCategoryRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FileRepository;
+use App\Repository\RoleRepository;
 use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use DataURI\Parser;
@@ -42,7 +44,12 @@ class DocumentService extends BaseService implements IGridService
             $categoryId = $params[0]['category_id'];
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $queryBuilder, $categoryId);
+        $userRoleIds = null;
+        if (!empty($params) || !empty($params[0]['user_role_ids'])) {
+            $userRoleIds = $params[0]['user_role_ids'];
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $queryBuilder, $userRoleIds, $categoryId);
     }
 
     /**
@@ -61,7 +68,12 @@ class DocumentService extends BaseService implements IGridService
             $categoryId = $params[0]['category_id'];
         }
 
-        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $categoryId);
+        $userRoleIds = null;
+        if (!empty($params) || !empty($params[0]['user_role_ids'])) {
+            $userRoleIds = $params[0]['user_role_ids'];
+        }
+
+        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $userRoleIds, $categoryId);
 
         /** @var Document $entity */
         foreach ($list as $entity) {
@@ -135,6 +147,22 @@ class DocumentService extends BaseService implements IGridService
                 }
             } else {
                 $document->setFacilities(null);
+            }
+
+            if(!empty($params['roles'])) {
+                /** @var RoleRepository $roleRepo */
+                $roleRepo = $this->em->getRepository(Role::class);
+
+                $roleIds = array_unique($params['roles']);
+                $roles = $roleRepo->findByIds($roleIds);
+
+                if (!empty($roles)) {
+                    $document->setRoles($roles);
+                } else {
+                    $document->setRoles(null);
+                }
+            } else {
+                $document->setRoles(null);
             }
 
             //save file
@@ -239,6 +267,27 @@ class DocumentService extends BaseService implements IGridService
                 }
             } else {
                 $entity->setFacilities(null);
+            }
+
+            $roles = $entity->getRoles();
+            foreach ($roles as $role) {
+                $entity->removeRole($role);
+            }
+
+            if(!empty($params['roles'])) {
+                /** @var RoleRepository $roleRepo */
+                $roleRepo = $this->em->getRepository(Role::class);
+
+                $roleIds = array_unique($params['roles']);
+                $roles = $roleRepo->findByIds($roleIds);
+
+                if (!empty($roles)) {
+                    $entity->setRoles($roles);
+                } else {
+                    $entity->setRoles(null);
+                }
+            } else {
+                $entity->setRoles(null);
             }
 
             // save file

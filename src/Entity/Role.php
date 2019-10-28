@@ -70,7 +70,9 @@ class Role
      *     "api_admin_role_list",
      *     "api_admin_role_get",
      *     "api_admin_user_get",
-     *     "api_profile_me"
+     *     "api_profile_me",
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
      * })
      */
     private $id;
@@ -94,7 +96,8 @@ class Role
      *     "api_admin_role_grid",
      *     "api_admin_role_list",
      *     "api_admin_role_get",
-     *     "api_profile_me"
+     *     "api_profile_me",
+     *     "api_admin_document_list"
      * })
      */
     private $name;
@@ -131,6 +134,12 @@ class Role
      * @ORM\ManyToMany(targetEntity="User", mappedBy="roles", cascade={"persist"})
      */
     private $users;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Document", mappedBy="roles", cascade={"persist"})
+     */
+    protected $documents;
 
     /**
      * Role constructor.
@@ -218,5 +227,44 @@ class Role
     public function setDefault(?bool $default): void
     {
         $this->default = $default;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    /**
+     * @param mixed $documents
+     */
+    public function setDocuments($documents): void
+    {
+        $this->documents = $documents;
+
+        /** @var Document $document */
+        foreach ($this->documents as $document) {
+            $document->addRole($this);
+        }
+    }
+
+    /**
+     * @param Document $document
+     */
+    public function addDocument(Document $document): void
+    {
+        $document->addRole($this);
+        $this->documents[] = $document;
+    }
+
+    /**
+     * @param Document $document
+     */
+    public function removeDocument(Document $document): void
+    {
+        $this->documents->removeElement($document);
+        $document->removeRole($this);
     }
 }

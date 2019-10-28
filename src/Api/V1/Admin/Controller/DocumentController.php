@@ -5,6 +5,7 @@ use App\Api\V1\Admin\Service\DocumentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\S3Service;
 use App\Entity\Document;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,12 +46,27 @@ class DocumentController extends BaseController
      */
     public function gridAction(Request $request, DocumentService $documentService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userRoleIds = [];
+        if ($user !== null) {
+            $userRoles = $user->getRoleObjects();
+
+            if ($userRoles !== null) {
+                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+            }
+        }
+
         return $this->respondGrid(
             $request,
             Document::class,
             'api_admin_document_grid',
             $documentService,
-            ['category_id' => $request->get('category_id')]
+            [
+                'category_id' => $request->get('category_id'),
+                'user_role_ids' => $userRoleIds
+            ]
         );
     }
 
@@ -76,12 +92,27 @@ class DocumentController extends BaseController
      */
     public function listAction(Request $request, DocumentService $documentService)
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userRoleIds = [];
+        if ($user !== null) {
+            $userRoles = $user->getRoleObjects();
+
+            if ($userRoles !== null) {
+                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+            }
+        }
+
         return $this->respondList(
             $request,
             Document::class,
             'api_admin_document_list',
             $documentService,
-            ['category_id' => $request->get('category_id')]
+            [
+                'category_id' => $request->get('category_id'),
+                'user_role_ids' => $userRoleIds
+            ]
         );
     }
 
@@ -136,7 +167,8 @@ class DocumentController extends BaseController
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
                 'facilities' => $request->get('facilities'),
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'roles' => $request->get('roles'),
             ]
         );
 
@@ -167,7 +199,8 @@ class DocumentController extends BaseController
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
                 'facilities' => $request->get('facilities'),
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'roles' => $request->get('roles'),
             ]
         );
 

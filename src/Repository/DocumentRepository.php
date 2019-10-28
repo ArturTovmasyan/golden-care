@@ -22,13 +22,15 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
+     * @param array|null $userRoleIds
      * @param null $categoryId
      */
-    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, $categoryId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, array $userRoleIds = null, $categoryId = null) : void
     {
         $queryBuilder
             ->from(Document::class, 'd')
             ->join('d.facilities', 'f')
+            ->leftJoin('d.roles', 'r')
             ->innerJoin(
                 DocumentCategory::class,
                 'dc',
@@ -41,6 +43,12 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
                 Join::WITH,
                 'u = d.updatedBy'
             );
+
+        if ($userRoleIds !== null) {
+            $queryBuilder
+                ->andWhere('r.id IN (:userRoleIds)')
+                ->setParameter('userRoleIds', $userRoleIds);
+        }
 
         if ($categoryId !== null) {
             $queryBuilder
@@ -80,20 +88,28 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $facilityEntityGrants
+     * @param array|null $userRoleIds
      * @param null $categoryId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $facilityEntityGrants, $categoryId = null)
+    public function list(Space $space = null, array $entityGrants = null, $facilityEntityGrants, array $userRoleIds = null, $categoryId = null)
     {
         $qb = $this
             ->createQueryBuilder('d')
             ->join('d.facilities', 'f')
+            ->leftJoin('d.roles', 'r')
             ->innerJoin(
                 DocumentCategory::class,
                 'dc',
                 Join::WITH,
                 'dc = d.category'
             );
+
+        if ($userRoleIds !== null) {
+            $qb
+                ->andWhere('r.id IN (:userRoleIds)')
+                ->setParameter('userRoleIds', $userRoleIds);
+        }
 
         if ($categoryId !== null) {
             $qb
