@@ -1,42 +1,46 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class AdmissionType
 {
-    const ADMIT               = 1;
-    const READMIT             = 2;
-    const TEMPORARY_DISCHARGE = 3;
-    const DISCHARGE           = 4;
+    const LONG_ADMIT = 1;
+    const SHORT_ADMIT = 2;
+    const READMIT = 3;
+    const TEMPORARY_DISCHARGE = 4;
+    const DISCHARGE = 5;
 
     /**
      * @var array
      */
     private static $types = [
-        self::ADMIT               => 'Admit',
-        self::READMIT             => 'Re-admit',
+        self::LONG_ADMIT => 'Long-Term Admit',
+        self::SHORT_ADMIT => 'Short-Term Admit',
+        self::READMIT => 'Re-admit',
         self::TEMPORARY_DISCHARGE => 'Temporary Discharge',
-        self::DISCHARGE           => 'Discharge',
+        self::DISCHARGE => 'Discharge',
     ];
 
     /**
      * @var array
      */
     private static $typeDefaultNames = [
-        'Admit'               => '1',
-        'Re-admit'            => '2',
-        'Temporary Discharge' => '3',
-        'Discharge'           => '4',
+        'Long-Term Admit' => '1',
+        'Short-Term Admit' => '2',
+        'Re-admit' => '3',
+        'Temporary Discharge' => '4',
+        'Discharge' => '5',
     ];
 
     /**
      * @var array
      */
     private static $typeValues = [
-        self::ADMIT               => 1,
-        self::READMIT             => 2,
-        self::TEMPORARY_DISCHARGE => 3,
-        self::DISCHARGE           => 4,
+        self::LONG_ADMIT => 1,
+        self::SHORT_ADMIT => 2,
+        self::READMIT => 3,
+        self::TEMPORARY_DISCHARGE => 4,
+        self::DISCHARGE => 5,
     ];
 
     /**

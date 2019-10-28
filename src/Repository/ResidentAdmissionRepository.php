@@ -350,9 +350,10 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->createQueryBuilder('ra')
             ->join('ra.resident', 'r')
             ->where('r.id=:id')
-            ->andWhere('ra.admissionType=:admissionType')
+            ->andWhere('ra.admissionType=:longAdmit OR ra.admissionType=:shortAdmit')
             ->setParameter('id', $id)
-            ->setParameter('admissionType', AdmissionType::ADMIT);
+            ->setParameter('longAdmit', AdmissionType::LONG_ADMIT)
+            ->setParameter('longAdmit', AdmissionType::SHORT_ADMIT);
 
         if ($space !== null) {
             $qb
@@ -2262,7 +2263,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         if ($dischargedAdmissionEnds !== null) {
             $qb
-                ->andWhere('ra.admissionType ='. AdmissionType::ADMIT.' OR ra.admissionType='. AdmissionType::DISCHARGE. ' OR ra.start IN (:dischargedAdmissionEnds)')
+                ->andWhere('ra.admissionType ='. AdmissionType::LONG_ADMIT.' OR ra.admissionType='. AdmissionType::SHORT_ADMIT. ' OR ra.admissionType='. AdmissionType::DISCHARGE. ' OR ra.start IN (:dischargedAdmissionEnds)')
                 ->setParameter('dischargedAdmissionEnds', $dischargedAdmissionEnds);
         }
 

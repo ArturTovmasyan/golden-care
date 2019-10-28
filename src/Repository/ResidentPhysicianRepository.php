@@ -16,7 +16,6 @@ use App\Entity\ResidentPhysician;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\Speciality;
-use App\Model\AdmissionType;
 use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
