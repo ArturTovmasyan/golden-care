@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid as Grid;
 
 /**
@@ -51,7 +52,7 @@ use App\Annotation\Grid as Grid;
  *              "field"      = ""
  *          },
  *          {
- *              "id"         = "users",
+ *              "id"         = "participants",
  *              "type"       = "string",
  *              "field"      = ""
  *          },
@@ -174,7 +175,7 @@ class Outreach
 
     /**
      * @var ArrayCollection
-     * @Assert\NotNull(message = "Please select at least one User.", groups={
+     * @Assert\NotNull(message = "Please select at least one Participant.", groups={
      *     "api_lead_outreach_add",
      *     "api_lead_outreach_edit"
      * })
@@ -188,6 +189,7 @@ class Outreach
      *          @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
+     * @Serializer\SerializedName("participants")
      * @Groups({
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get"

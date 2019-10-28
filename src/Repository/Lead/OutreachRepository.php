@@ -27,7 +27,7 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
         $queryBuilder
             ->from(Outreach::class, 'ou')
             ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(c.firstName, ' ', c.lastName) SEPARATOR ', ') AS contacts")
-            ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(u.firstName, ' ', u.lastName) SEPARATOR ', ') AS users")
+            ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(u.firstName, ' ', u.lastName) SEPARATOR ', ') AS participants")
             ->innerJoin(
                 OutreachType::class,
                 'ot',

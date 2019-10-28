@@ -132,11 +132,11 @@ class OutreachService extends BaseService implements IGridService
                 $outreach->setDate(null);
             }
 
-            if(!empty($params['users'])) {
+            if(!empty($params['participants'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
-                $userIds = array_unique($params['users']);
+                $userIds = array_unique($params['participants']);
                 $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {
@@ -255,11 +255,11 @@ class OutreachService extends BaseService implements IGridService
                 $entity->removeUser($user);
             }
 
-            if(!empty($params['users'])) {
+            if(!empty($params['participants'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
-                $userIds = array_unique($params['users']);
+                $userIds = array_unique($params['participants']);
                 $users = $userRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userIds);
 
                 if (!empty($users)) {

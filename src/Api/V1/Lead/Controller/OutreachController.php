@@ -117,7 +117,7 @@ class OutreachController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'contacts' => $request->get('contacts'),
                 'date' => $request->get('date'),
-                'users' => $request->get('users'),
+                'participants' => $request->get('participants'),
                 'notes' => $request->get('notes')
             ]
         );
@@ -149,7 +149,7 @@ class OutreachController extends BaseController
                 'organization_id' => $request->get('organization_id'),
                 'contacts' => $request->get('contacts'),
                 'date' => $request->get('date'),
-                'users' => $request->get('users'),
+                'participants' => $request->get('participants'),
                 'notes' => $request->get('notes')
             ]
         );
