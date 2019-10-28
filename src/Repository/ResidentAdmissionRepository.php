@@ -353,7 +353,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->andWhere('ra.admissionType=:longAdmit OR ra.admissionType=:shortAdmit')
             ->setParameter('id', $id)
             ->setParameter('longAdmit', AdmissionType::LONG_ADMIT)
-            ->setParameter('longAdmit', AdmissionType::SHORT_ADMIT);
+            ->setParameter('shortAdmit', AdmissionType::SHORT_ADMIT);
 
         if ($space !== null) {
             $qb
