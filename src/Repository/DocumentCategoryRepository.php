@@ -3,130 +3,80 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\Document;
 use App\Entity\DocumentCategory;
 use App\Entity\Space;
-use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class DocumentRepository
+ * Class DocumentCategoryRepository
  * @package App\Repository
  */
-class DocumentRepository extends EntityRepository implements RelatedInfoInterface
+class DocumentCategoryRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
-     * @param null $categoryId
      */
-    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, $categoryId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
     {
         $queryBuilder
-            ->from(Document::class, 'd')
-            ->join('d.facilities', 'f')
+            ->from(DocumentCategory::class, 'dc')
             ->innerJoin(
-                DocumentCategory::class,
-                'dc',
+                Space::class,
+                's',
                 Join::WITH,
-                'dc = d.category'
-            )
-            ->leftJoin(
-                User::class,
-                'u',
-                Join::WITH,
-                'u = d.updatedBy'
+                's = dc.space'
             );
-
-        if ($categoryId !== null) {
-            $queryBuilder
-                ->andWhere('dc.id = :categoryId')
-                ->setParameter('categoryId', $categoryId);
-        }
 
         if ($space !== null) {
             $queryBuilder
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = dc.space'
-                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('d.id IN (:grantIds)')
+                ->andWhere('dc.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        if ($facilityEntityGrants !== null) {
-            $queryBuilder
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
         $queryBuilder
-            ->groupBy('d.id');
+            ->groupBy('dc.id');
     }
 
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param $facilityEntityGrants
-     * @param null $categoryId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $facilityEntityGrants, $categoryId = null)
+    public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
-            ->createQueryBuilder('d')
-            ->join('d.facilities', 'f')
+            ->createQueryBuilder('dc')
             ->innerJoin(
-                DocumentCategory::class,
-                'dc',
+                Space::class,
+                's',
                 Join::WITH,
-                'dc = d.category'
+                's = dc.space'
             );
-
-        if ($categoryId !== null) {
-            $qb
-                ->andWhere('dc.id = :categoryId')
-                ->setParameter('categoryId', $categoryId);
-        }
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = dc.space'
-                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('d.id IN (:grantIds)')
+                ->andWhere('dc.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        if ($facilityEntityGrants !== null) {
-            $qb
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
         $qb
-            ->addOrderBy('d.title', 'ASC');
+            ->addOrderBy('dc.title', 'ASC');
 
         return $qb
             ->getQuery()
@@ -142,20 +92,14 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
     public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('d')
-            ->innerJoin(
-                DocumentCategory::class,
-                'dc',
-                Join::WITH,
-                'dc = d.category'
-            )
+            ->createQueryBuilder('dc')
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = dc.space'
             )
-            ->where('d.id = :id')
+            ->where('dc.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -166,7 +110,7 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('d.id IN (:grantIds)')
+                ->andWhere('dc.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -184,18 +128,12 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('d')
-            ->where('d.id IN (:ids)')
+            ->createQueryBuilder('dc')
+            ->where('dc.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    DocumentCategory::class,
-                    'dc',
-                    Join::WITH,
-                    'dc = d.category'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -208,11 +146,11 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('d.id IN (:grantIds)')
+                ->andWhere('dc.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        return $qb->groupBy('d.id')
+        return $qb->groupBy('dc.id')
             ->getQuery()
             ->getResult();
     }
@@ -228,35 +166,29 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('d')
-            ->select('d.title');
+            ->createQueryBuilder('dc')
+            ->select('dc.title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('d.'.$mappedBy.'= :id')
+                ->where('dc.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('d.id IN (:ids)')
+                ->andWhere('dc.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('d.id IN (:array)')
+                ->andWhere('dc.id IN (:array)')
                 ->setParameter('array', []);
         }
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    DocumentCategory::class,
-                    'dc',
-                    Join::WITH,
-                    'dc = d.category'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -269,7 +201,7 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('d.id IN (:grantIds)')
+                ->andWhere('dc.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

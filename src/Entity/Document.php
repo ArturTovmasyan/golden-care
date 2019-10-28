@@ -7,7 +7,6 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
@@ -16,15 +15,6 @@ use App\Annotation\Grid;
  * Class Document
  *
  * @ORM\Entity(repositoryClass="App\Repository\DocumentRepository")
- * @UniqueEntity(
- *     fields={"space", "title"},
- *     errorPath="title",
- *     message="The title is already in use in this space.",
- *     groups={
- *          "api_admin_document_add",
- *          "api_admin_document_edit"
- *     }
- * )
  * @ORM\Table(name="tbl_document")
  * @Grid(
  *     api_admin_document_grid={
@@ -33,6 +23,11 @@ use App\Annotation\Grid;
  *              "type"       = "id",
  *              "hidden"     = true,
  *              "field"      = "d.id"
+ *          },
+ *          {
+ *              "id"         = "category",
+ *              "type"       = "string",
+ *              "field"      = "dc.title"
  *          },
  *          {
  *              "id"         = "title",
@@ -54,11 +49,6 @@ use App\Annotation\Grid;
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
- *          },
- *          {
- *              "id"         = "space",
- *              "type"       = "string",
- *              "field"      = "s.name"
  *          }
  *     }
  * )
@@ -79,6 +69,23 @@ class Document
      * })
      */
     private $id;
+
+    /**
+     * @var DocumentCategory
+     * @ORM\ManyToOne(targetEntity="App\Entity\DocumentCategory", inversedBy="documents")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Document Category", groups={
+     *     "api_admin_document_add",
+     *     "api_admin_document_edit"
+     * })
+     * @Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    private $category;
 
     /**
      * @var string
@@ -142,23 +149,6 @@ class Document
     private $facilities;
 
     /**
-     * @var Space
-     * @Assert\NotNull(message = "Please select a Space", groups={
-     *     "api_admin_document_add",
-     *     "api_admin_document_edit"
-     * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="documents")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     * @Groups({
-     *     "api_admin_document_list",
-     *     "api_admin_document_get"
-     * })
-     */
-    private $space;
-
-    /**
      * @var File
      * @Assert\NotNull(message = "Please select a File", groups={
      *     "api_admin_document_add",
@@ -183,6 +173,7 @@ class Document
      *     "api_admin_document_list",
      *     "api_admin_document_get"
      * })
+     * @return null|string
      */
     public function getDocumentFile(): ?string
     {
@@ -231,6 +222,22 @@ class Document
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return DocumentCategory|null
+     */
+    public function getCategory(): ?DocumentCategory
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param DocumentCategory|null $category
+     */
+    public function setCategory(?DocumentCategory $category): void
+    {
+        $this->category = $category;
     }
 
     public function getTitle(): ?string
@@ -290,22 +297,6 @@ class Document
     public function removeFacility(?Facility $facility): void
     {
         $this->facilities->removeElement($facility);
-    }
-
-    /**
-     * @return Space|null
-     */
-    public function getSpace(): ?Space
-    {
-        return $this->space;
-    }
-
-    /**
-     * @param Space|null $space
-     */
-    public function setSpace(?Space $space): void
-    {
-        $this->space = $space;
     }
 
     /**

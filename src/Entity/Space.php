@@ -137,8 +137,8 @@ class Space
      *     "api_admin_change_log_get",
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
-     *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_category_list",
+     *     "api_admin_document_category_get"
      * })
      */
     private $id;
@@ -228,8 +228,8 @@ class Space
      *     "api_admin_change_log_get",
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
-     *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_category_list",
+     *     "api_admin_document_category_get"
      * })
      */
     private $name;
@@ -446,9 +446,9 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\DocumentCategory", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $documents;
+    private $documentCategories;
 
     /**
      * Space constructor.
@@ -1053,16 +1053,16 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getDocuments(): ArrayCollection
+    public function getDocumentCategories(): ArrayCollection
     {
-        return $this->documents;
+        return $this->documentCategories;
     }
 
     /**
-     * @param ArrayCollection $documents
+     * @param ArrayCollection $documentCategories
      */
-    public function setDocuments(ArrayCollection $documents): void
+    public function setDocumentCategories(ArrayCollection $documentCategories): void
     {
-        $this->documents = $documents;
+        $this->documentCategories = $documentCategories;
     }
 }

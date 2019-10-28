@@ -49,7 +49,8 @@ class DocumentController extends BaseController
             $request,
             Document::class,
             'api_admin_document_grid',
-            $documentService
+            $documentService,
+            ['category_id' => $request->get('category_id')]
         );
     }
 
@@ -79,7 +80,8 @@ class DocumentController extends BaseController
             $request,
             Document::class,
             'api_admin_document_list',
-            $documentService
+            $documentService,
+            ['category_id' => $request->get('category_id')]
         );
     }
 
@@ -130,11 +132,11 @@ class DocumentController extends BaseController
     {
         $id = $documentService->add(
             [
+                'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
                 'facilities' => $request->get('facilities'),
-                'file' => $request->get('file'),
-                'space_id' => $request->get('space_id')
+                'file' => $request->get('file')
             ]
         );
 
@@ -161,11 +163,11 @@ class DocumentController extends BaseController
         $documentService->edit(
             $id,
             [
+                'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
                 'facilities' => $request->get('facilities'),
-                'file' => $request->get('file'),
-                'space_id' => $request->get('space_id')
+                'file' => $request->get('file')
             ]
         );
 

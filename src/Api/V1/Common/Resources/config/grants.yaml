@@ -191,6 +191,10 @@ persistence:
           class: App\Entity\InsuranceCompany
           route: api_admin_insurance_company_list
 
+        document_category:
+          title: 'Document Category'
+          class: App\Entity\DocumentCategory
+          route: api_admin_document_category_list
         document:
           title: 'Document'
           class: App\Entity\Document
