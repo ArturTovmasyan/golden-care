@@ -2245,7 +2245,6 @@ class ResidentService extends BaseService implements IGridService
             }
 
             $gender = $params['gender'] ? (int)$params['gender'] : 0;
-            $ssn = !empty($params['ssn']) ? $params['ssn'] : null;
             $birthday = new \DateTime($params['birthday']);
 
             $resident->setFirstName($params['first_name'] ?? '');
@@ -2253,7 +2252,6 @@ class ResidentService extends BaseService implements IGridService
             $resident->setMiddleName($params['middle_name'] ?? '');
             $resident->setSalutation($salutation);
             $resident->setGender($gender);
-            $resident->setSsn($ssn);
             $resident->setBirthday($birthday);
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 

@@ -441,7 +441,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 'r.middleName AS middle_name',
                 'r.birthday AS birthday',
                 'r.gender AS gender',
-                'r.ssn AS ssn',
                 'r.updatedAt AS updated_at',
                 'rs.id AS salutation_id',
                 's.name AS space'

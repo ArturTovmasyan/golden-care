@@ -688,7 +688,6 @@ class ResidentController extends BaseController
                 'salutation_id' => $request->get('salutation_id'),
                 'birthday' => $request->get('birthday'),
                 'gender' => $request->get('gender'),
-                'ssn' => $request->get('ssn'),
                 'phones' => $request->get('phones'),
                 'dnr' => $request->get('dnr'),
                 'polst' => $request->get('polst'),
