@@ -405,6 +405,15 @@ physician:
       parameters:
         group:
           select_all: true
+    residents-by-physician:
+      service: App\Api\V1\Admin\Service\Report\PhysicianReportService::getResidentsByPhysicianReport
+      title: 'Physicians with Resident Roster: List of Physicians, including contact information and names of Residents'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
 
 assessment:
   title: 'Assessment Reports'

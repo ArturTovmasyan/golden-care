@@ -452,6 +452,8 @@ report:
           title: "Physician Roster Simple: List of physicians, with contact information and resident count"
         full:
           title: "Physician Roster Full: List of physicians, with contact information and resident count"
+        residents-by-physician:
+          title: "Physicians with Resident Roster: List of Physicians, including contact information and names of Residents"
     assessment:
       title: "Assessment Reports"
       children:
