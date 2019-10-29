@@ -269,7 +269,7 @@ class DocumentService extends BaseService implements IGridService
                 $entity->setFacilities(null);
             }
 
-            $roles = $entity->getRoles();
+            $roles = $entity->getRoleObjects();
             foreach ($roles as $role) {
                 $entity->removeRole($role);
             }
