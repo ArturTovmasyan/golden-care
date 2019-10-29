@@ -325,6 +325,14 @@ class Document
     /**
      * @return mixed
      */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getRoleObjects()
     {
         return $this->roles;
