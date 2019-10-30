@@ -346,6 +346,8 @@ activity:
   children:
     reference:
       title: "View Reference in Category panel"
+    lead_admin:
+      title: "View Lead Admin Items in Category panel"
     event_definition:
       title: "View Event Definition in Category panel"
     security:
