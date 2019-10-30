@@ -154,6 +154,8 @@ class LeadController extends BaseController
                 'facilities' => $request->get('facilities'),
                 'notes' => $request->get('notes'),
                 'referral' => $request->get('referral'),
+                'funnel_stage_id' => $request->get('funnel_stage_id'),
+                'temperature_id' => $request->get('temperature_id'),
                 'base_url' => $request->getSchemeAndHttpHost(),
             ]
         );

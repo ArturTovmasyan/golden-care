@@ -292,10 +292,12 @@ class LeadService extends BaseService implements IGridService
             }
 
             // Creating lead funnel stage
-            $this->createLeadFunnelStage($lead, false);
+            $funnelStageId = $params['funnel_stage_id'] ?? 0;
+            $this->createLeadFunnelStage($lead, $funnelStageId);
 
             // Creating lead temperature
-            $this->createLeadTemperature($lead, false);
+            $temperatureId = $params['temperature_id'] ?? 0;
+            $this->createLeadTemperature($lead, $temperatureId);
 
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
@@ -622,26 +624,24 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
-     * @param $isEdited
+     * @param $funnelStageId
      */
-    private function createLeadFunnelStage(Lead $lead, $isEdited)
+    private function createLeadFunnelStage(Lead $lead, $funnelStageId)
     {
         /** @var FunnelStageRepository $funnelStageRepo */
         $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
         /** @var FunnelStage $funnelStage */
-        $funnelStage = $funnelStageRepo->getFirst($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class));
+        $funnelStage = $funnelStageRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), $funnelStageId);
 
         if ($funnelStage === null) {
             throw new FunnelStageNotFoundException();
         }
 
-        $date = $isEdited ? new \DateTime('now') : $lead->getInitialContactDate();
-
         $leadFunnelStage = new LeadFunnelStage();
         $leadFunnelStage->setLead($lead);
         $leadFunnelStage->setStage($funnelStage);
         $leadFunnelStage->setReason(null);
-        $leadFunnelStage->setDate($date);
+        $leadFunnelStage->setDate($lead->getInitialContactDate());
         $leadFunnelStage->setNotes($funnelStage->getTitle());
 
         $this->validate($leadFunnelStage, null, ['api_lead_lead_funnel_stage_add']);
@@ -660,25 +660,23 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
-     * @param $isEdited
+     * @param $temperatureId
      */
-    private function createLeadTemperature(Lead $lead, $isEdited)
+    private function createLeadTemperature(Lead $lead, $temperatureId)
     {
         /** @var TemperatureRepository $temperatureRepo */
         $temperatureRepo = $this->em->getRepository(Temperature::class);
         /** @var Temperature $temperature */
-        $temperature = $temperatureRepo->getFirst($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class));
+        $temperature = $temperatureRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), $temperatureId);
 
         if ($temperature === null) {
             throw new TemperatureNotFoundException();
         }
 
-        $date = $isEdited ? new \DateTime('now') : $lead->getInitialContactDate();
-
         $leadTemperature = new LeadTemperature();
         $leadTemperature->setLead($lead);
         $leadTemperature->setTemperature($temperature);
-        $leadTemperature->setDate($date);
+        $leadTemperature->setDate($lead->getInitialContactDate());
         $leadTemperature->setNotes($temperature->getTitle());
 
         $this->validate($leadTemperature, null, ['api_lead_lead_temperature_add']);
