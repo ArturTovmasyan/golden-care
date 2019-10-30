@@ -19,10 +19,13 @@ use App\Annotation\ValidationSerializedName as ValidationSerializedName;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="This Email address is already in use.", groups={
  *     "api_admin_user_add",
+ *     "api_admin_user_edit",
+ *     "api_profile_edit",
  *     "api_account_signup"
  * })
  * @UniqueEntity(fields="username", message="This Username is already taken.", groups={
  *     "api_admin_user_add",
+ *     "api_admin_user_edit",
  *     "api_account_signup"
  * })
  * @UniqueEntity(
@@ -205,6 +208,7 @@ class User implements UserInterface
      * @ORM\Column(name="username", type="string", length=255, unique=true, nullable=true)
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
+     *     "api_admin_user_edit",
      *     "api_account_signup"
      * })
      * @Assert\Length(
@@ -212,6 +216,7 @@ class User implements UserInterface
      *      maxMessage = "User Name cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_user_add",
+     *          "api_admin_user_edit",
      *          "api_account_signup"
      *      }
      * )
@@ -230,11 +235,15 @@ class User implements UserInterface
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Assert\NotBlank(groups={
      *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
      *     "api_account_signup",
      *     "api_user_invite"
      * })
      * @Assert\Email(groups={
      *     "api_admin_user_add",
+     *     "api_admin_user_edit",
+     *     "api_profile_edit",
      *     "api_account_signup",
      *     "api_user_invite"
      * })
@@ -243,6 +252,8 @@ class User implements UserInterface
      *      maxMessage = "Email cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_user_add",
+     *          "api_admin_user_edit",
+     *          "api_profile_edit",
      *          "api_account_signup",
      *          "api_user_invite"
      *      }
@@ -459,8 +470,8 @@ class User implements UserInterface
     /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
-     *     "api_admin_space_add",
-     *     "api_admin_space_edit"
+     *     "api_admin_user_add",
+     *     "api_admin_user_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="users")
      * @ORM\JoinColumns({
