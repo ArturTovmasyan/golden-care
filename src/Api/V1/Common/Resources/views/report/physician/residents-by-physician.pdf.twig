@@ -21,14 +21,14 @@
             <table class="report-table main-table bordered">
             <tr class="divider"></tr>
             <thead>
-            </thead>
-            <tbody>
-        {% endif %}
             <tr>
                 <th colspan="8">
                     <b style="font-size: 16px; text-align: center">{{ datum.typeName }}</b>
                 </th>
             </tr>
+            </thead>
+            <tbody>
+        {% endif %}
             <tr>
                 <td><b>Physician Name</b></td>
                 <td><b>Count</b></td>
@@ -121,8 +121,6 @@
                     </tr>
                 {% endfor %}
             {% endif %}
-            <tr class="divider"></tr>
-            <tr class="divider"></tr>
     {% endfor %}
 
     {% if not newGroup %}
