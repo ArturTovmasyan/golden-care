@@ -41,7 +41,12 @@ class FacilityService extends BaseService implements IGridService
         /** @var FacilityRepository $repo */
         $repo = $this->em->getRepository(Facility::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+        $entityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+        if (!empty($params) && isset($params[0]['all'])) {
+            $entityGrants = null;
+        }
+
+        return $repo->list($this->grantService->getCurrentSpace(), $entityGrants);
     }
 
     /**

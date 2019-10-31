@@ -208,7 +208,10 @@ class FacilityController extends BaseController
             $request,
             Facility::class,
             'api_admin_facility_list',
-            $facilityService
+            $facilityService,
+            [
+                'all' => $request->get('all')
+            ]
         );
     }
 

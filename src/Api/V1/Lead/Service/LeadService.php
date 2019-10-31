@@ -269,7 +269,7 @@ class LeadService extends BaseService implements IGridService
 
             if(!empty($params['facilities'])) {
                 $facilityIds = array_unique($params['facilities']);
-                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                $facilities = $facilityRepo->findByIds($currentSpace, null, $facilityIds);
 
                 if (!empty($facilities)) {
                     $lead->setFacilities($facilities);
@@ -489,7 +489,7 @@ class LeadService extends BaseService implements IGridService
 
             if(!empty($params['facilities'])) {
                 $facilityIds = array_unique($params['facilities']);
-                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                $facilities = $facilityRepo->findByIds($currentSpace, null, $facilityIds);
 
                 if (!empty($facilities)) {
                     $entity->setFacilities($facilities);
