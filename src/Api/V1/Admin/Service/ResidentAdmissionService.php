@@ -614,7 +614,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
             /** @var ResidentAdmission $lastAction */
             $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-            if ($lastAction === null && ($admissionType !== AdmissionType::LONG_ADMIT || $admissionType !== AdmissionType::SHORT_ADMIT)) {
+            $admitTypesArray = [
+                AdmissionType::LONG_ADMIT,
+                AdmissionType::SHORT_ADMIT,
+            ];
+
+            if ($lastAction === null && !\in_array($admissionType, $admitTypesArray, false)) {
                 throw new ResidentAdmissionOnlyAdmitException();
             }
 
@@ -641,7 +646,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 /** @var ResidentAdmission $admitAction */
                 $admitAction = $admissionRepo->getOneAdmitAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-                if ($lastAction !== null && $admitAction !== null && ($admissionType === AdmissionType::LONG_ADMIT || $admissionType === AdmissionType::SHORT_ADMIT)) {
+                if ($lastAction !== null && $admitAction !== null && \in_array($admissionType, $admitTypesArray, false)) {
                     throw new ResidentAdmitOnlyOneTimeException();
                 }
 
