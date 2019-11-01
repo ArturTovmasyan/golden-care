@@ -481,7 +481,7 @@ class BaseService
             $chunkCount = $chunkFileRepo->getChunkCount($requestId, $data['userId']);
 
             // If all chunks are recorded then photo can be created.
-            if ($totalChunk === $chunkCount) {
+            if ($totalChunk === (int)$chunkCount) {
 
                 //set empty string variable
                 $base64 = '';
