@@ -490,8 +490,8 @@ class BaseService
                 $allChunks = $chunkFileRepo->getChunks($requestId, $data['userId']);
 
                 // Remove chunks before image create.
-                // This will prevent photo duplication.
-                $this->removeChunks($requestId);
+                // This will prevent photo duplication
+		$this->removeChunks($requestId);
 
                 foreach ($allChunks as $chunks) {
                     //generate base 64 code
