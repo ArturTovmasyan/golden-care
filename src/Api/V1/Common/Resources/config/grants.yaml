@@ -348,6 +348,11 @@ activity:
       title: "View Reference in Category panel"
     lead_admin:
       title: "View Lead Admin Items in Category panel"
+    corporate:
+      title: "View Corporate in Category panel"
+      children:
+        dashboard:
+          title: "View Dashboard"
     event_definition:
       title: "View Event Definition in Category panel"
     security:
