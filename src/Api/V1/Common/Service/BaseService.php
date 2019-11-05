@@ -461,11 +461,10 @@ class BaseService
      */
     public function uploadByChunks($data): void
     {
-        // Get request id from data
         $requestId = $data['requestId'];
-
-        //get total chunk from data
         $totalChunk = $data['totalChunk'];
+        $userId = $data['userId'];
+        $chunkId = $data['chunkId'];
 
         // Check for chunk existence. If not exist then add
         // This will prevent duplicate file create issue.
@@ -473,7 +472,7 @@ class BaseService
         $chunkFileRepo = $this->em->getRepository(ChunkFile::class);
 
         //create new chunk
-        $chunkFile = $chunkFileRepo->findOneBy(['requestId' => $requestId, 'chunkId' => $data['chunkId'], 'userId' => $data['userId']]);
+        $chunkFile = $chunkFileRepo->findOneBy(['requestId' => $requestId, 'chunkId' => $chunkId, 'userId' => $userId]);
 
         if ($chunkFile === null) {
             $chunkFile = new ChunkFile();
@@ -515,10 +514,10 @@ class BaseService
         }
 
         $chunkFile->setChunk($data['chunkString']);
-        $chunkFile->setChunkId($data['chunkId']);
+        $chunkFile->setChunkId($chunkId);
         $chunkFile->setTotalChunk($totalChunk);
         $chunkFile->setRequestId($requestId);
-        $chunkFile->setUserId($data['userId']);
+        $chunkFile->setUserId($userId);
 
         $this->validate($chunkFile, null, ['api_admin_chunk_file_add']);
 
