@@ -15,6 +15,11 @@ class ResidentMoveByMonth extends Base
     private $days = [];
 
     /**
+     * @var array
+     */
+    private $grandTotal = [];
+
+    /**
      * @var string
      */
     private $strategy;
@@ -30,13 +35,16 @@ class ResidentMoveByMonth extends Base
     private $date;
 
     /**
-     * RoomRent constructor.
+     * ResidentMoveByMonth constructor.
      */
     public function __construct()
     {
         parent::__construct();
 
         $this->addOption('orientation', self::ORIENTATION_LANDSCAPE);
+        $this->addOption('footer-center', ' _________________________________________________________________________________________________________________________________________
+(*) Calculated based on 1 year = 365 days, 1 month = 30 days
+                                                    ');
     }
 
     /**
@@ -69,6 +77,22 @@ class ResidentMoveByMonth extends Base
     public function getDays(): ?array
     {
         return $this->days;
+    }
+
+    /**
+     * @param $grandTotal
+     */
+    public function setGrandTotal($grandTotal): void
+    {
+        $this->grandTotal = $grandTotal;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGrandTotal(): ?array
+    {
+        return $this->grandTotal;
     }
 
     /**

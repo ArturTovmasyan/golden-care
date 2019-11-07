@@ -2065,7 +2065,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         if ($dateTimeInterval) {
             $qb
                 ->join('ra.resident', 'rar')
-                ->where('ra.end IS NULL OR (ra.end > = :start AND ra.end < = :end)')
+                ->where('ra.end IS NULL OR ra.end > = :start')
                 ->andWhere('ra.start < = :end AND ra.start > = :start')
                 ->setParameter('start', $dateTimeInterval->getStart())
                 ->setParameter('end', $dateTimeInterval->getEnd());
