@@ -42,6 +42,7 @@ class ResidentMoveByMonth extends Base
         parent::__construct();
 
         $this->addOption('orientation', self::ORIENTATION_LANDSCAPE);
+        $this->addOption('footer-spacing', 5);
         $this->addOption('footer-center', ' _________________________________________________________________________________________________________________________________________
 (*) Calculated based on 1 year = 365 days, 1 month = 30 days
                                                     ');
