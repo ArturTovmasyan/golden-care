@@ -270,6 +270,9 @@ class PhysicianReportService extends BaseService
             }
 
             $data = array_values($data);
+
+            $typeNames = array_map(function($item){return $item['typeName'];} , $data);
+            array_multisort($typeNames, SORT_ASC, $data);
         }
 
         $report = new ResidentsByPhysician();
