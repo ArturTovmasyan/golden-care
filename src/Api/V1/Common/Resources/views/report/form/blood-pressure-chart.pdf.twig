@@ -6,10 +6,10 @@
     {% set renderedGroup = null %}
     {% set newGroup = false %}
     {% for resident in data.residents %}
-        {% if renderedGroup == resident.typeId %}
+        {% if renderedGroup == resident.id %}
             {% set newGroup = false %}
         {% else %}
-            {% set renderedGroup = resident.typeId %}
+            {% set renderedGroup = resident.id %}
             {% set newGroup = true %}
         {% endif %}
 

@@ -136,12 +136,12 @@ form:
     blood-pressure-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBloodPressureChartReport
       title: 'Blood Pressure Chart'
-      show_in_resident_list: false
-      show_in_group_list: false
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         resident:
-          select_all: false
+          select_all: true
     bowel-movement:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getBowelMovementReport
       title: 'Bowel movement: Bowel Movement tracking form, Weekly'
@@ -163,12 +163,12 @@ form:
     glucose-monitor-chart:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getGlucoseMonitorChartReport
       title: 'Glucose Monitor Chart'
-      show_in_resident_list: false
-      show_in_group_list: false
+      show_in_resident_list: true
+      show_in_group_list: true
       formats: ['pdf']
       parameters:
         resident:
-          select_all: false
+          select_all: true
     manicure:
       service: App\Api\V1\Admin\Service\Report\FormReportService::getManicureReport
       title: 'Manicure: Manicure Tracking Form, Monthly'
