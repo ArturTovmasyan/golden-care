@@ -8,9 +8,11 @@ use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Facility;
 use App\Entity\FacilityDashboard;
+use App\Entity\Lead\LeadTemperature;
 use App\Entity\ResidentAdmission;
 use App\Model\AdmissionType;
 use App\Repository\FacilityRepository;
+use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\ResidentAdmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -93,10 +95,13 @@ class FacilityDashboardCommand extends Command
             $dateFormatted = $yesterday->format('Y-m-d 00:00:00');
             $date = new \DateTime($dateFormatted);
 
+            $startDate = $date;
+            $endDate = new \DateTime($date->format('Y-m-d 23:59:59'));
+
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
             $activeAdmissions = $admissionRepo->getActiveResidentsForFacilityDashboard($currentSpace, null, null);
-            $admissions = $admissionRepo->getResidentsForFacilityDashboard($currentSpace, null, null, $date, new \DateTime($date->format('Y-m-d 23:59:59')));
+            $admissions = $admissionRepo->getResidentsForFacilityDashboard($currentSpace, null, null, $startDate, $endDate);
 
             $dischargedResidentIds = [];
             $longTermResidentIds = [];
@@ -114,6 +119,10 @@ class FacilityDashboardCommand extends Command
                 $shortTermAdmissions = $admissionRepo->getShortTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
                 $shortTermResidentIds = array_map(function($item){return $item['id'];} , $shortTermAdmissions);
             }
+
+            /** @var LeadTemperatureRepository $leadTemperatureRepo */
+            $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
+            $ladsTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
 
             /** @var Facility $facility */
             foreach ($facilities as $facility) {
@@ -178,6 +187,19 @@ class FacilityDashboardCommand extends Command
                 $entity->setMoveInsLongTerm($moveInsLongTerm);
                 $entity->setMoveOutsRespite($moveOutsRespite);
                 $entity->setMoveOutsLongTerm($moveOutsLongTerm);
+
+                $hotLeads = 0;
+                if (!empty($ladsTemperatures)) {
+                    foreach ($ladsTemperatures as $hotLead) {
+                        $n = 0;
+                        if ($hotLead['typeId'] === $facility->getId()) {
+                            $n ++;
+
+                            $hotLeads += $n;
+                        }
+                    }
+                }
+                $entity->setHotLeads($hotLeads);
 
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 

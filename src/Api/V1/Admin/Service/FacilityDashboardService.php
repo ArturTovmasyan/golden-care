@@ -147,6 +147,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $moveInsLongTerm += $dashboard['moveInsLongTerm'];
                         $moveOutsRespite += $dashboard['moveOutsRespite'];
                         $moveOutsLongTerm += $dashboard['moveOutsLongTerm'];
+                        $hotLeads += $dashboard['hotLeads'];
                     }
                 }
 

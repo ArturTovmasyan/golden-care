@@ -3,6 +3,7 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\Facility;
 use App\Entity\Lead\Temperature;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
@@ -252,4 +253,69 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getHotLeadsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('lt')
+            ->select(
+                'lt.id as id',
+                'l.id as leadId',
+                'f.id as typeId'
+            )
+            ->innerJoin(
+                Temperature::class,
+                't',
+                Join::WITH,
+                't = lt.temperature'
+            )
+            ->innerJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = lt.lead'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->where('lt.date >= :startDate AND lt.date <= :endDate')
+            ->andWhere('t.value = (SELECT MAX(mt.value) FROM App:Lead\LeadTemperature mlt JOIN mlt.temperature mt JOIN mlt.lead ml WHERE ml.id = l.id GROUP BY ml.id)')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = t.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('lt.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('l.id')
+            ->getQuery()
+            ->getResult();
+    }
+    /// ///////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }
