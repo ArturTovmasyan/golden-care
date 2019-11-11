@@ -122,6 +122,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $moveOutsLongTerm = 0;
                 $hotLeads = 0;
                 $noticeToVacate = 0;
+                $projectedNearTermOccupancy = 0;
                 $toursPerMonth = 0;
                 $totalInquiries = 0;
                 $qualifiedInquiries = 0;
@@ -161,6 +162,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'move_outs_long_term' => $moveOutsLongTerm,
                     'hot_leads' => $hotLeads,
                     'notice_to_vacate' => $noticeToVacate,
+                    'projected_near_term_occupancy' => $projectedNearTermOccupancy,
                     'tours_per_month' => $toursPerMonth,
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,

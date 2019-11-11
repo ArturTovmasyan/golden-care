@@ -88,6 +88,7 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
                 'fd.moveOutsLongTerm as moveOutsLongTerm',
                 'fd.hotLeads as hotLeads',
                 'fd.noticeToVacate as noticeToVacate',
+                'fd.projectedNearTermOccupancy as projectedNearTermOccupancy',
                 'fd.toursPerMonth as toursPerMonth',
                 'fd.totalInquiries as totalInquiries',
                 'fd.qualifiedInquiries as qualifiedInquiries',

@@ -292,6 +292,20 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="projected_near_term_occupancy", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $projectedNearTermOccupancy = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="tours_per_month", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -576,6 +590,22 @@ class FacilityDashboard
     public function setNoticeToVacate(?int $noticeToVacate): void
     {
         $this->noticeToVacate = $noticeToVacate;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getProjectedNearTermOccupancy(): ?int
+    {
+        return $this->projectedNearTermOccupancy;
+    }
+
+    /**
+     * @param int|null $projectedNearTermOccupancy
+     */
+    public function setProjectedNearTermOccupancy(?int $projectedNearTermOccupancy): void
+    {
+        $this->projectedNearTermOccupancy = $projectedNearTermOccupancy;
     }
 
     /**
