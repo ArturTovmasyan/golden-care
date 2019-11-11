@@ -105,6 +105,7 @@ class FacilityDashboardService extends BaseService implements IGridService
 
         $dashboards = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityDashboard::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $interval, $facilityId);
 
+        $nestedData = [];
         $data = [];
         /** @var Facility $facility */
         foreach ($facilities as $facility) {
@@ -115,6 +116,8 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $capacityYellow = 0;
                 $startingOccupancy = 0;
                 $endingOccupancy = 0;
+                $moveInsRespite = 0;
+                $moveInsLongTerm = 0;
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
                     if ($dashboard['date'] >= $subInterval['dateFrom'] && $dashboard['date'] <= $subInterval['dateTo'] && $dashboard['facilityId'] === $facility->getId()) {
@@ -125,28 +128,31 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $totalCapacity += $dashboard['totalCapacity'];
                         $breakEven += $dashboard['breakEven'];
                         $capacityYellow += $dashboard['capacityYellow'];
-
                         if ($dashboard['date']->format('Y-m-d H:i:s') === $subInterval['dateFrom']->format('Y-m-d H:i:s')) {
                             $startingOccupancy = $dashboard['occupancy'];
                         }
-
                         $endingOccupancy = $dashboard['occupancy'];
+                        $moveInsRespite += $dashboard['moveInsRespite'];
+                        $moveInsLongTerm += $dashboard['moveInsLongTerm'];
                     }
                 }
 
-                $data[] = [
-                    'id' => $facility->getId(),
-                    'name' => $facility->getName(),
-                    'data' => [
-                        'date' => $key,
-                        'total_capacity' => $days > 0 ? (int) round($totalCapacity / $days) : 0,
-                        'break_even' => $days > 0 ? (int) round($breakEven / $days) : 0,
-                        'capacity_yellow' => $days > 0 ? (int) round($capacityYellow / $days) : 0,
-                        'starting_occupancy' => $startingOccupancy,
-                        'ending_occupancy' => $endingOccupancy,
-                    ]
+                $nestedData[$key] = [
+                    'total_capacity' => $days > 0 ? (int) round($totalCapacity / $days) : 0,
+                    'break_even' => $days > 0 ? (int) round($breakEven / $days) : 0,
+                    'capacity_yellow' => $days > 0 ? (int) round($capacityYellow / $days) : 0,
+                    'starting_occupancy' => $startingOccupancy,
+                    'ending_occupancy' => $endingOccupancy,
+                    'move_ins_respite' => $moveInsRespite,
+                    'move_ins_long_term' => $moveInsLongTerm,
                 ];
             }
+
+            $data[] = [
+                'id' => $facility->getId(),
+                'name' => $facility->getName(),
+                'data' => $nestedData
+            ];
         }
 
         return $data;
