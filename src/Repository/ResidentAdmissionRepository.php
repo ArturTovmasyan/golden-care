@@ -2572,6 +2572,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getResult();
     }
 
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
@@ -2690,4 +2692,113 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $notGrantResidentIds
+     * @param $ids
+     * @return mixed
+     */
+    public function getLongTermAdmittedResidentIds(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id'
+            )
+            ->join('ra.resident', 'r')
+            ->join('ra.facilityBed', 'fb')
+            ->join('fb.room', 'fr')
+            ->join('fr.facility', 'f')
+            ->where('ra.admissionType = :admissionType')
+            ->andWhere('r.id IN (:ids)')
+            ->setParameter('admissionType', AdmissionType::LONG_ADMIT)
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $notGrantResidentIds
+     * @param $ids
+     * @return mixed
+     */
+    public function getShortTermAdmittedResidentIds(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id'
+            )
+            ->join('ra.resident', 'r')
+            ->join('ra.facilityBed', 'fb')
+            ->join('fb.room', 'fr')
+            ->join('fr.facility', 'f')
+            ->where('ra.admissionType = :admissionType')
+            ->andWhere('r.id IN (:ids)')
+            ->setParameter('admissionType', AdmissionType::SHORT_ADMIT)
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////////
 }

@@ -98,6 +98,23 @@ class FacilityDashboardCommand extends Command
             $activeAdmissions = $admissionRepo->getActiveResidentsForFacilityDashboard($currentSpace, null, null);
             $admissions = $admissionRepo->getResidentsForFacilityDashboard($currentSpace, null, null, $date, new \DateTime($date->format('Y-m-d 23:59:59')));
 
+            $dischargedResidentIds = [];
+            $longTermResidentIds = [];
+            $shortTermResidentIds = [];
+            if (!empty($admissions)) {
+                foreach ($admissions as $admission) {
+                    if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
+                        $dischargedResidentIds[] = $admission['id'];
+                    }
+                }
+
+                $longTermAdmissions = $admissionRepo->getLongTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
+                $longTermResidentIds = array_map(function($item){return $item['id'];} , $longTermAdmissions);
+
+                $shortTermAdmissions = $admissionRepo->getShortTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
+                $shortTermResidentIds = array_map(function($item){return $item['id'];} , $shortTermAdmissions);
+            }
+
             /** @var Facility $facility */
             foreach ($facilities as $facility) {
                 $entity = new FacilityDashboard();
@@ -122,10 +139,14 @@ class FacilityDashboardCommand extends Command
 
                 $moveInsRespite = 0;
                 $moveInsLongTerm = 0;
+                $moveOutsRespite = 0;
+                $moveOutsLongTerm = 0;
                 if (!empty($admissions)) {
                     foreach ($admissions as $admission) {
                         $j = 0;
                         $k = 0;
+                        $l = 0;
+                        $m = 0;
                         if ($admission['typeId'] === $facility->getId()) {
                             if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
                                 $j ++;
@@ -138,11 +159,25 @@ class FacilityDashboardCommand extends Command
 
                                 $moveInsLongTerm += $k;
                             }
+
+                            if ($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $shortTermResidentIds, false)) {
+                                $l ++;
+
+                                $moveOutsRespite += $l;
+                            }
+
+                            if ($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $longTermResidentIds, false)) {
+                                $m ++;
+
+                                $moveOutsLongTerm += $m;
+                            }
                         }
                     }
                 }
                 $entity->setMoveInsRespite($moveInsRespite);
                 $entity->setMoveInsLongTerm($moveInsLongTerm);
+                $entity->setMoveOutsRespite($moveOutsRespite);
+                $entity->setMoveOutsLongTerm($moveOutsLongTerm);
 
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 

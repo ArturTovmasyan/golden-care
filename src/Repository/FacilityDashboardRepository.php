@@ -83,7 +83,9 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
                 'fd.capacityYellow as capacityYellow',
                 'fd.occupancy as occupancy',
                 'fd.moveInsRespite as moveInsRespite',
-                'fd.moveInsLongTerm as moveInsLongTerm'
+                'fd.moveInsLongTerm as moveInsLongTerm',
+                'fd.moveOutsRespite as moveOutsRespite',
+                'fd.moveOutsLongTerm as moveOutsLongTerm'
             )
             ->innerJoin(
                 Facility::class,

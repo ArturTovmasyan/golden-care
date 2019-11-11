@@ -118,6 +118,8 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $endingOccupancy = 0;
                 $moveInsRespite = 0;
                 $moveInsLongTerm = 0;
+                $moveOutsRespite = 0;
+                $moveOutsLongTerm = 0;
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
                     if ($dashboard['date'] >= $subInterval['dateFrom'] && $dashboard['date'] <= $subInterval['dateTo'] && $dashboard['facilityId'] === $facility->getId()) {
@@ -134,6 +136,8 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $endingOccupancy = $dashboard['occupancy'];
                         $moveInsRespite += $dashboard['moveInsRespite'];
                         $moveInsLongTerm += $dashboard['moveInsLongTerm'];
+                        $moveOutsRespite += $dashboard['moveOutsRespite'];
+                        $moveOutsLongTerm += $dashboard['moveOutsLongTerm'];
                     }
                 }
 
@@ -145,6 +149,8 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'ending_occupancy' => $endingOccupancy,
                     'move_ins_respite' => $moveInsRespite,
                     'move_ins_long_term' => $moveInsLongTerm,
+                    'move_outs_respite' => $moveOutsRespite,
+                    'move_outs_long_term' => $moveOutsLongTerm,
                 ];
             }
 
