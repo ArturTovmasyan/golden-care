@@ -9,10 +9,12 @@ use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Facility;
 use App\Entity\FacilityDashboard;
 use App\Entity\Lead\LeadTemperature;
+use App\Entity\Lead\Outreach;
 use App\Entity\ResidentAdmission;
 use App\Model\AdmissionType;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
+use App\Repository\Lead\OutreachRepository;
 use App\Repository\ResidentAdmissionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -124,6 +126,15 @@ class FacilityDashboardCommand extends Command
             $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
             $ladsTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
 
+            /** @var OutreachRepository $outreachRepo */
+            $outreachRepo = $this->em->getRepository(Outreach::class);
+            $outreaches = $outreachRepo->getOutreachesForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+
+            $outreachPerMonth = 0;
+            if (!empty($outreaches)) {
+                $outreachPerMonth = \count($outreaches);
+            }
+
             /** @var Facility $facility */
             foreach ($facilities as $facility) {
                 $entity = new FacilityDashboard();
@@ -132,6 +143,7 @@ class FacilityDashboardCommand extends Command
                 $entity->setTotalCapacity($facility->getCapacity());
                 $entity->setBreakEven($facility->getCapacityRed());
                 $entity->setCapacityYellow($facility->getCapacityYellow());
+                $entity->setOutreachPerMonth($outreachPerMonth);
 
                 $occupancy = 0;
                 if (!empty($activeAdmissions)) {

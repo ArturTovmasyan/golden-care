@@ -249,4 +249,54 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getOutreachesForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('ou')
+            ->select(
+                'ou.id as id'
+            )
+            ->where('ou.date >= :startDate AND ou.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    OutreachType::class,
+                    'ot',
+                    Join::WITH,
+                    'ot = ou.type'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ot.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ou.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('ou.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }
