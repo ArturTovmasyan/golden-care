@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Command;
 
-use App\Annotation\ValidationSerializedName;
+use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserAlreadyInvitedException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
@@ -19,7 +20,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class InviteCustomerCommand extends Command
 {
@@ -34,35 +34,36 @@ class InviteCustomerCommand extends Command
     protected $mailer;
 
     /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
-
-    /**
      * @var Reader
      */
     protected $reader;
 
     /**
+     * @var BaseService
+     */
+    protected $baseService;
+
+    /**
      * InviteCustomerCommand constructor.
      * @param EntityManagerInterface $em
      * @param Mailer $mailer
-     * @param ValidatorInterface $validator
+
      * @param Reader $reader
+     * @param BaseService $baseService
      */
-    public function __construct(EntityManagerInterface $em, Mailer $mailer, ValidatorInterface $validator, Reader $reader)
+    public function __construct(EntityManagerInterface $em, Mailer $mailer, Reader $reader, BaseService $baseService)
     {
         parent::__construct();
-        $this->em        = $em;
-        $this->mailer    = $mailer;
-        $this->validator = $validator;
-        $this->reader    = $reader;
+        $this->em = $em;
+        $this->mailer = $mailer;
+        $this->reader = $reader;
+        $this->baseService = $baseService;
     }
 
     /**
      *
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:invite-customer')
@@ -72,8 +73,7 @@ class InviteCustomerCommand extends Command
             ->addArgument('space_id', InputArgument::REQUIRED, 'The space id of the customer.')
             ->addArgument('user_id', InputArgument::REQUIRED, 'The user id who invited the customer.')
             ->addArgument('email', InputArgument::REQUIRED, 'The email of the customer.')
-            ->addArgument('roles', InputArgument::IS_ARRAY, 'The roles of the customer.')
-        ;
+            ->addArgument('roles', InputArgument::IS_ARRAY, 'The roles of the customer.');
     }
 
     /**
@@ -88,9 +88,9 @@ class InviteCustomerCommand extends Command
             $this->em->getConnection()->beginTransaction();
 
             /**
-             * @var UserInvite $userInvite|null
-             * @var Space $space|null
-             * @var User $user|null
+             * @var UserInvite $userInvite |null
+             * @var Space $space |null
+             * @var User $user |null
              */
             $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['email' => $input->getArgument('email')]);
             $space = $this->em->getRepository(Space::class)->find($input->getArgument('space_id'));
@@ -115,20 +115,20 @@ class InviteCustomerCommand extends Command
             $userInvite->setSpace($space);
             $userInvite->setUser($user);
 
-            if(\count($input->getArgument('roles')) > 0) {
+            if (\count($input->getArgument('roles')) > 0) {
                 $userInvite->getRoleObjects()->clear();
 
                 foreach ($input->getArgument('roles') as $roleId) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($roleId);
-                    if($role) {
+                    if ($role) {
                         $userInvite->getRoleObjects()->add($role);
                     }
                 }
             }
 
             // validate user
-            $this->validate($userInvite, null, ['api_admin_user_invite']);
+            $this->baseService->validate($userInvite, null, ['api_admin_user_invite']);
 
             $this->em->persist($userInvite);
 
@@ -158,35 +158,5 @@ class InviteCustomerCommand extends Command
                 $output->writeln($e->getMessage());
             }
         }
-    }
-
-    /**
-     * @param $entity
-     * @param null $constraints
-     * @param null $groups
-     * @return bool
-     * @throws \ReflectionException
-     */
-    protected function validate($entity, $constraints = null, $groups = null)
-    {
-        $validationErrors = $this->validator->validate($entity, $constraints, $groups);
-        $errors           = [];
-
-        if ($validationErrors->count() > 0) {
-            foreach ($validationErrors as $error) {
-                $propertyPath = ValidationSerializedName::convert(
-                    $this->reader,
-                    $this->em->getClassMetadata(\get_class($entity))->getName(),
-                    $groups[0],
-                    $error->getPropertyPath()
-                );
-
-                $errors[$propertyPath] = $error->getMessage();
-            }
-
-            throw new ValidationException($errors);
-        }
-
-        return true;
     }
 }

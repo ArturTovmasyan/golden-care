@@ -236,7 +236,7 @@ class DiningRoomService extends BaseService implements IGridService
         /** @var DiningRoomRepository $repo */
         $repo = $this->em->getRepository(DiningRoom::class);
 
-        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $ids);
+        $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
         if (empty($entities)) {
             throw new DiningRoomNotFoundException();

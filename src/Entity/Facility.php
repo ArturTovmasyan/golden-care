@@ -128,7 +128,9 @@ class Facility
      *     "api_lead_lead_get",
      *     "api_admin_resident_get_last_admission",
      *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_get",
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
      * })
      */
     private $id;
@@ -164,7 +166,9 @@ class Facility
      *     "api_lead_activity_get",
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
-     *     "api_admin_resident_get_last_admission"
+     *     "api_admin_resident_get_last_admission",
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
      * })
      */
     private $name;
@@ -479,6 +483,12 @@ class Facility
      * @ORM\ManyToMany(targetEntity="App\Entity\Document", mappedBy="facilities", cascade={"persist"})
      */
     protected $documents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityDashboard", mappedBy="facility", cascade={"remove", "persist"})
+     */
+    private $dashboards;
 
     /**
      * @return int
@@ -827,6 +837,22 @@ class Facility
     {
         $this->documents->removeElement($document);
         $document->removeFacility($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDashboards(): ArrayCollection
+    {
+        return $this->dashboards;
+    }
+
+    /**
+     * @param ArrayCollection $dashboards
+     */
+    public function setDashboards(ArrayCollection $dashboards): void
+    {
+        $this->dashboards = $dashboards;
     }
 
     /**

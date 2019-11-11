@@ -146,6 +146,7 @@ class ResponseCode
     const LEAD_CONTACT_ORGANIZATION_NOT_ALLOWED_CHANGE_EXCEPTION = 746;
     const LEAD_INCORRECT_ACTIVITY_TYPE_EXCEPTION                 = 747;
     const DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION                  = 748;
+    const FACILITY_DASHBOARD_NOT_FOUND_EXCEPTION                 = 749;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -292,6 +293,7 @@ class ResponseCode
         self::LEAD_CONTACT_ORGANIZATION_NOT_ALLOWED_CHANGE_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You are not allowed to change Contact Organization as this connection is used in Lead Referrals.'],
         self::LEAD_INCORRECT_ACTIVITY_TYPE_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect Activity Type.'],
         self::DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Document Category not found.'],
+        self::FACILITY_DASHBOARD_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Dashboard not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

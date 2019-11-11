@@ -253,6 +253,10 @@ persistence:
       title: 'FacilityBed'
       class: App\Entity\FacilityBed
       route: api_admin_facility_bed_list
+    facility_dashboard:
+      title: 'FacilityDashboard'
+      class: App\Entity\FacilityDashboard
+      route: api_admin_facility_dashboard_list
     dining_room:
       title: 'DiningRoom'
       class: App\Entity\DiningRoom

@@ -126,7 +126,7 @@ class BaseService
      * @return bool
      * @throws \ReflectionException
      */
-    protected function validate($entity, $constraints = null, $groups = null)
+    public function validate($entity, $constraints = null, $groups = null)
     {
         $validationErrors = $this->validator->validate($entity, $constraints, $groups);
         $errors = [];
