@@ -259,6 +259,118 @@ class FacilityDashboard
     private $moveOutsLongTerm = 0;
 
     /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="hot_leads", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $hotLeads = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="notice_to_vacate", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $noticeToVacate = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="tours_per_month", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $toursPerMonth = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="total_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $totalInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="qualified_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $qualifiedInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="outreach_per_month", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $outreachPerMonth = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="events_per_month", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $eventsPerMonth = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="average_room_rent", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $averageRoomRent = 0;
+
+    /**
      * @return int
      */
     public function getId()
@@ -432,5 +544,133 @@ class FacilityDashboard
     public function setMoveOutsLongTerm(?int $moveOutsLongTerm): void
     {
         $this->moveOutsLongTerm = $moveOutsLongTerm;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHotLeads(): ?int
+    {
+        return $this->hotLeads;
+    }
+
+    /**
+     * @param int|null $hotLeads
+     */
+    public function setHotLeads(?int $hotLeads): void
+    {
+        $this->hotLeads = $hotLeads;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNoticeToVacate(): ?int
+    {
+        return $this->noticeToVacate;
+    }
+
+    /**
+     * @param int|null $noticeToVacate
+     */
+    public function setNoticeToVacate(?int $noticeToVacate): void
+    {
+        $this->noticeToVacate = $noticeToVacate;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getToursPerMonth(): ?int
+    {
+        return $this->toursPerMonth;
+    }
+
+    /**
+     * @param int|null $toursPerMonth
+     */
+    public function setToursPerMonth(?int $toursPerMonth): void
+    {
+        $this->toursPerMonth = $toursPerMonth;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotalInquiries(): ?int
+    {
+        return $this->totalInquiries;
+    }
+
+    /**
+     * @param int|null $totalInquiries
+     */
+    public function setTotalInquiries(?int $totalInquiries): void
+    {
+        $this->totalInquiries = $totalInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getQualifiedInquiries(): ?int
+    {
+        return $this->qualifiedInquiries;
+    }
+
+    /**
+     * @param int|null $qualifiedInquiries
+     */
+    public function setQualifiedInquiries(?int $qualifiedInquiries): void
+    {
+        $this->qualifiedInquiries = $qualifiedInquiries;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOutreachPerMonth(): ?int
+    {
+        return $this->outreachPerMonth;
+    }
+
+    /**
+     * @param int|null $outreachPerMonth
+     */
+    public function setOutreachPerMonth(?int $outreachPerMonth): void
+    {
+        $this->outreachPerMonth = $outreachPerMonth;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getEventsPerMonth(): ?int
+    {
+        return $this->eventsPerMonth;
+    }
+
+    /**
+     * @param int|null $eventsPerMonth
+     */
+    public function setEventsPerMonth(?int $eventsPerMonth): void
+    {
+        $this->eventsPerMonth = $eventsPerMonth;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAverageRoomRent(): ?int
+    {
+        return $this->averageRoomRent;
+    }
+
+    /**
+     * @param int|null $averageRoomRent
+     */
+    public function setAverageRoomRent(?int $averageRoomRent): void
+    {
+        $this->averageRoomRent = $averageRoomRent;
     }
 }

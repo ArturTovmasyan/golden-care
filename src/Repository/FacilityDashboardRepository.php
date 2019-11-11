@@ -85,7 +85,15 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
                 'fd.moveInsRespite as moveInsRespite',
                 'fd.moveInsLongTerm as moveInsLongTerm',
                 'fd.moveOutsRespite as moveOutsRespite',
-                'fd.moveOutsLongTerm as moveOutsLongTerm'
+                'fd.moveOutsLongTerm as moveOutsLongTerm',
+                'fd.hotLeads as hotLeads',
+                'fd.noticeToVacate as noticeToVacate',
+                'fd.toursPerMonth as toursPerMonth',
+                'fd.totalInquiries as totalInquiries',
+                'fd.qualifiedInquiries as qualifiedInquiries',
+                'fd.outreachPerMonth as outreachPerMonth',
+                'fd.eventsPerMonth as eventsPerMonth',
+                'fd.averageRoomRent as averageRoomRent'
             )
             ->innerJoin(
                 Facility::class,

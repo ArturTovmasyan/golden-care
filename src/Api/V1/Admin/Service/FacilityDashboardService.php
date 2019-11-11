@@ -120,6 +120,14 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $moveInsLongTerm = 0;
                 $moveOutsRespite = 0;
                 $moveOutsLongTerm = 0;
+                $hotLeads = 0;
+                $noticeToVacate = 0;
+                $toursPerMonth = 0;
+                $totalInquiries = 0;
+                $qualifiedInquiries = 0;
+                $outreachPerMonth = 0;
+                $eventsPerMonth = 0;
+                $averageRoomRent = 0;
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
                     if ($dashboard['date'] >= $subInterval['dateFrom'] && $dashboard['date'] <= $subInterval['dateTo'] && $dashboard['facilityId'] === $facility->getId()) {
@@ -151,6 +159,14 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'move_ins_long_term' => $moveInsLongTerm,
                     'move_outs_respite' => $moveOutsRespite,
                     'move_outs_long_term' => $moveOutsLongTerm,
+                    'hot_leads' => $hotLeads,
+                    'notice_to_vacate' => $noticeToVacate,
+                    'tours_per_month' => $toursPerMonth,
+                    'total_inquiries' => $totalInquiries,
+                    'qualified_inquiries' => $qualifiedInquiries,
+                    'outreach_per_month' => $outreachPerMonth,
+                    'events_per_month' => $eventsPerMonth,
+                    'average_room_rent' => $averageRoomRent,
                 ];
             }
 
