@@ -265,6 +265,8 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
             ->select(
                 'ou.id as id'
             )
+            ->addSelect("GROUP_CONCAT(DISTINCT p.id SEPARATOR ',') AS participants")
+            ->innerJoin('ou.participants', 'p')
             ->where('ou.date >= :startDate AND ou.date <= :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate);

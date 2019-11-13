@@ -311,4 +311,55 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $ids
+     * @return mixed
+     */
+    public function getFacilityIdsByIds(Space $space = null, array $entityGrants = null, $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u.id as id')
+            ->addSelect(
+                "(SELECT GROUP_CONCAT(DISTINCT f.id SEPARATOR ',')
+                        FROM
+                          App\\Entity\\Facility f
+                        WHERE JSON_CONTAINS(
+                            JSON_EXTRACT(
+                              u.grants,
+                              '$.\"persistence-facility\"'
+                            ),
+                            CAST(f.id AS JSON)
+                          ) = 1) AS facilityIds")
+            ->where('u.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = u.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('u.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('u.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }

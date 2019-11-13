@@ -12,12 +12,14 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\ResidentAdmission;
+use App\Entity\User;
 use App\Model\AdmissionType;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -136,9 +138,49 @@ class FacilityDashboardCommand extends Command
             $outreachRepo = $this->em->getRepository(Outreach::class);
             $outreaches = $outreachRepo->getOutreachesForFacilityDashboard($currentSpace, null, $startDate, $endDate);
 
-            $outreachPerMonth = 0;
+            $finalOutreaches = [];
             if (!empty($outreaches)) {
-                $outreachPerMonth = \count($outreaches);
+                $modifiedOutreaches = [];
+                $allUserIds = [];
+
+                foreach ($outreaches as $outreach) {
+                    $modifiedOutreaches[$outreach['id']] = explode(',', $outreach['participants']);
+                }
+
+                foreach ($modifiedOutreaches as $userIds) {
+                    foreach ($userIds as $userId) {
+                        $allUserIds[] = $userId;
+                    }
+                }
+
+                $allUserIds = array_unique($allUserIds);
+
+                /** @var UserRepository $userRepo */
+                $userRepo = $this->em->getRepository(User::class);
+                $userFacilities = $userRepo->getFacilityIdsByIds($currentSpace, null, $allUserIds);
+
+                foreach ($modifiedOutreaches as $outreachId => $userIds) {
+                    $allowedFacilityIds = [];
+                    foreach ($userFacilities as $userFacility) {
+                        if (\in_array($userFacility['id'], $userIds, false)) {
+                            $userFacilityIds =  $userFacility['facilityIds'] !== null ? explode(',', $userFacility['facilityIds']) : [];
+
+                            $allowedFacilityIds = array_merge($allowedFacilityIds, $userFacilityIds);
+                            $allowedFacilityIds = array_unique($allowedFacilityIds);
+
+                            if ($userFacility['facilityIds'] === null) {
+                                $allowedFacilityIds = [];
+                                break;
+                            }
+                        }
+                    }
+
+                    $finalOutreaches[] = [
+                        'id' => $outreachId,
+                        'facilityIds' => $allowedFacilityIds,
+                        'all' => empty($allowedFacilityIds) ? true : false
+                    ];
+                }
             }
 
             /** @var Facility $facility */
@@ -149,7 +191,6 @@ class FacilityDashboardCommand extends Command
                 $entity->setTotalCapacity($facility->getCapacity());
                 $entity->setBreakEven($facility->getCapacityRed());
                 $entity->setCapacityYellow($facility->getCapacityYellow());
-                $entity->setOutreachPerMonth($outreachPerMonth);
 
                 $occupancy = 0;
                 if (!empty($activeAdmissions)) {
@@ -231,6 +272,19 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setTotalInquiries($totalInquiries);
+
+                $outreachPerMonth = 0;
+                if (!empty($finalOutreaches)) {
+                    foreach ($finalOutreaches as $outreach) {
+                        $p = 0;
+                        if ($outreach['all'] === true || ($outreach['all'] === false && \in_array($facility->getId(), $outreach['facilityIds'], false))) {
+                            $p ++;
+
+                            $outreachPerMonth += $p;
+                        }
+                    }
+                }
+                $entity->setOutreachPerMonth($outreachPerMonth);
 
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 
