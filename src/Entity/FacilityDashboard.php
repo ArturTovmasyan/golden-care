@@ -362,20 +362,6 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="events_per_month", type="integer")
-     * @Groups({
-     *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
-     * })
-     */
-    private $eventsPerMonth = 0;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={
-     *     "api_admin_facility_dashboard_add",
-     *     "api_admin_facility_dashboard_edit"
-     * })
      * @ORM\Column(name="average_room_rent", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -670,22 +656,6 @@ class FacilityDashboard
     public function setOutreachPerMonth(?int $outreachPerMonth): void
     {
         $this->outreachPerMonth = $outreachPerMonth;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getEventsPerMonth(): ?int
-    {
-        return $this->eventsPerMonth;
-    }
-
-    /**
-     * @param int|null $eventsPerMonth
-     */
-    public function setEventsPerMonth(?int $eventsPerMonth): void
-    {
-        $this->eventsPerMonth = $eventsPerMonth;
     }
 
     /**

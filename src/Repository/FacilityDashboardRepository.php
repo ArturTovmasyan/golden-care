@@ -93,7 +93,6 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
                 'fd.totalInquiries as totalInquiries',
                 'fd.qualifiedInquiries as qualifiedInquiries',
                 'fd.outreachPerMonth as outreachPerMonth',
-                'fd.eventsPerMonth as eventsPerMonth',
                 'fd.averageRoomRent as averageRoomRent'
             )
             ->innerJoin(
