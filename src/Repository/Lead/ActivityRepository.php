@@ -17,6 +17,7 @@ use App\Entity\Lead\Referral;
 use App\Entity\Space;
 use App\Entity\User;
 use App\Model\Lead\ActivityOwnerType;
+use App\Model\Lead\State;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -40,7 +41,6 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
     {
         $queryBuilder
             ->from(Activity::class, 'a')
-
             ->innerJoin(
                 ActivityType::class,
                 'at',
@@ -764,4 +764,82 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getLeadTourActivitiesForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $tour = 'tour';
+
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->select(
+                'l.id as leadId',
+                'f.id as typeId'
+            )
+            ->innerJoin(
+                ActivityType::class,
+                'at',
+                Join::WITH,
+                'at = a.type'
+            )
+            ->innerJoin(
+                ActivityStatus::class,
+                'st',
+                Join::WITH,
+                'st = a.status'
+            )
+            ->innerJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = a.lead'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->where('a.dueDate IS NOT NULL AND a.dueDate >= :startDate AND a.dueDate <= :endDate AND st.done = 1 AND l.state = :state')
+            ->andWhere("at.title LIKE '%{$tour}%'")
+            ->setParameter('state', State::TYPE_OPEN)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    ActivityStatus::class,
+                    'ds',
+                    Join::WITH,
+                    'ds = at.defaultStatus'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ds.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }

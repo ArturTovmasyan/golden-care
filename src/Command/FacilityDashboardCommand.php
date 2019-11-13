@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Facility;
 use App\Entity\FacilityDashboard;
+use App\Entity\Lead\Activity;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
@@ -15,6 +16,7 @@ use App\Entity\ResidentAdmission;
 use App\Entity\User;
 use App\Model\AdmissionType;
 use App\Repository\FacilityRepository;
+use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
@@ -129,6 +131,10 @@ class FacilityDashboardCommand extends Command
             /** @var LeadTemperatureRepository $leadTemperatureRepo */
             $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
             $leadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+
+            /** @var ActivityRepository $activityRepo */
+            $activityRepo = $this->em->getRepository(Activity::class);
+            $leadTourActivities = $activityRepo->getLeadTourActivitiesForFacilityDashboard($currentSpace, null, $startDate, $endDate);
 
             /** @var LeadRepository $leadRepo */
             $leadRepo = $this->em->getRepository(Lead::class);
@@ -260,14 +266,27 @@ class FacilityDashboardCommand extends Command
                 }
                 $entity->setHotLeads($hotLeads);
 
+                $toursPerMonth = 0;
+                if (!empty($leadTourActivities)) {
+                    foreach ($leadTourActivities as $activity) {
+                        $o = 0;
+                        if ($activity['typeId'] === $facility->getId()) {
+                            $o ++;
+
+                            $toursPerMonth += $o;
+                        }
+                    }
+                }
+                $entity->setToursPerMonth($toursPerMonth);
+
                 $totalInquiries = 0;
                 if (!empty($leads)) {
                     foreach ($leads as $lead) {
-                        $o = 0;
+                        $p = 0;
                         if ($lead['typeId'] === $facility->getId()) {
-                            $o ++;
+                            $p ++;
 
-                            $totalInquiries += $o;
+                            $totalInquiries += $p;
                         }
                     }
                 }
@@ -276,11 +295,11 @@ class FacilityDashboardCommand extends Command
                 $outreachPerMonth = 0;
                 if (!empty($finalOutreaches)) {
                     foreach ($finalOutreaches as $outreach) {
-                        $p = 0;
+                        $q = 0;
                         if ($outreach['all'] === true || ($outreach['all'] === false && \in_array($facility->getId(), $outreach['facilityIds'], false))) {
-                            $p ++;
+                            $q ++;
 
-                            $outreachPerMonth += $p;
+                            $outreachPerMonth += $q;
                         }
                     }
                 }

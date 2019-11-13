@@ -123,10 +123,10 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $hotLeads = 0;
                 $noticeToVacate = 0;//-
                 $projectedNearTermOccupancy = 0;//?
-                $toursPerMonth = 0;//-
+                $toursPerMonth = 0;
                 $totalInquiries = 0;
                 $qualifiedInquiries = 0;//?
-                $outreachPerMonth = 0;//-
+                $outreachPerMonth = 0;
                 $averageRoomRent = 0;//-
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
@@ -147,6 +147,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $moveOutsRespite += $dashboard['moveOutsRespite'];
                         $moveOutsLongTerm += $dashboard['moveOutsLongTerm'];
                         $hotLeads += $dashboard['hotLeads'];
+                        $toursPerMonth += $dashboard['toursPerMonth'];
                         $totalInquiries += $dashboard['totalInquiries'];
                         $outreachPerMonth += $dashboard['outreachPerMonth'];
                     }
