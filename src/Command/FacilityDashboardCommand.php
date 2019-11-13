@@ -67,7 +67,7 @@ class FacilityDashboardCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('app:facility_dashboard')
+            ->setName('app:facility:dashboard')
             ->setDescription('Facility Dashboard data.')
             ->setHelp('This command allows you add facility dashboard data...');
     }
