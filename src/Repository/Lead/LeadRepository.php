@@ -441,4 +441,62 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getLeadsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'l.id as leadId',
+                'f.id as typeId'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->where('l.createdAt >= :startDate AND l.createdAt <= :endDate AND l.state = :state')
+            ->setParameter('state', State::TYPE_OPEN)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    User::class,
+                    'o',
+                    Join::WITH,
+                    'o = l.owner'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('l.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }

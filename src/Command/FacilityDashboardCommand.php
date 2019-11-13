@@ -8,11 +8,13 @@ use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\Facility;
 use App\Entity\FacilityDashboard;
+use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\ResidentAdmission;
 use App\Model\AdmissionType;
 use App\Repository\FacilityRepository;
+use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\ResidentAdmissionRepository;
@@ -124,7 +126,11 @@ class FacilityDashboardCommand extends Command
 
             /** @var LeadTemperatureRepository $leadTemperatureRepo */
             $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
-            $ladsTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+            $leadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
+            $leads = $leadRepo->getLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);
@@ -201,8 +207,8 @@ class FacilityDashboardCommand extends Command
                 $entity->setMoveOutsLongTerm($moveOutsLongTerm);
 
                 $hotLeads = 0;
-                if (!empty($ladsTemperatures)) {
-                    foreach ($ladsTemperatures as $hotLead) {
+                if (!empty($leadTemperatures)) {
+                    foreach ($leadTemperatures as $hotLead) {
                         $n = 0;
                         if ($hotLead['typeId'] === $facility->getId()) {
                             $n ++;
@@ -212,6 +218,19 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setHotLeads($hotLeads);
+
+                $totalInquiries = 0;
+                if (!empty($leads)) {
+                    foreach ($leads as $lead) {
+                        $o = 0;
+                        if ($lead['typeId'] === $facility->getId()) {
+                            $o ++;
+
+                            $totalInquiries += $o;
+                        }
+                    }
+                }
+                $entity->setTotalInquiries($totalInquiries);
 
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 

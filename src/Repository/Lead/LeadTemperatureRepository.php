@@ -9,6 +9,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Model\Lead\State;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -289,8 +290,9 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
                 Join::WITH,
                 'f = l.primaryFacility'
             )
-            ->where('lt.date >= :startDate AND lt.date <= :endDate')
+            ->where('lt.date >= :startDate AND lt.date <= :endDate AND l.state = :state')
             ->andWhere('t.value = (SELECT MAX(mt.value) FROM App:Lead\LeadTemperature mlt JOIN mlt.temperature mt JOIN mlt.lead ml WHERE ml.id = l.id GROUP BY ml.id)')
+            ->setParameter('state', State::TYPE_OPEN)
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate);
 
