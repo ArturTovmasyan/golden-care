@@ -215,12 +215,14 @@ class FacilityDashboardCommand extends Command
                 $moveInsLongTerm = 0;
                 $moveOutsRespite = 0;
                 $moveOutsLongTerm = 0;
+                $noticeToVacate = 0;
                 if (!empty($admissions)) {
                     foreach ($admissions as $admission) {
                         $j = 0;
                         $k = 0;
                         $l = 0;
                         $m = 0;
+                        $h = 0;
                         if ($admission['typeId'] === $facility->getId()) {
                             if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
                                 $j ++;
@@ -245,6 +247,12 @@ class FacilityDashboardCommand extends Command
 
                                 $moveOutsLongTerm += $m;
                             }
+
+                            if ($admission['admissionType'] === AdmissionType::PENDING_DISCHARGE) {
+                                $h ++;
+
+                                $noticeToVacate += $h;
+                            }
                         }
                     }
                 }
@@ -252,6 +260,7 @@ class FacilityDashboardCommand extends Command
                 $entity->setMoveInsLongTerm($moveInsLongTerm);
                 $entity->setMoveOutsRespite($moveOutsRespite);
                 $entity->setMoveOutsLongTerm($moveOutsLongTerm);
+                $entity->setNoticeToVacate($noticeToVacate);
 
                 $hotLeads = 0;
                 if (!empty($leadTemperatures)) {

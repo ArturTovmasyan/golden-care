@@ -2642,6 +2642,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         $admissionTypes = [
             AdmissionType::LONG_ADMIT,
             AdmissionType::SHORT_ADMIT,
+            AdmissionType::PENDING_DISCHARGE,
             AdmissionType::DISCHARGE,
         ];
 

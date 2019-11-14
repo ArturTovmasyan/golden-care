@@ -626,7 +626,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity = new ResidentAdmission();
             $entity->setResident($resident);
 
-            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
                 if ($lastAction === null) {
                     throw new LastResidentAdmissionNotFoundException();
                 }
@@ -637,7 +637,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     throw new ResidentAdmissionOnlyReadmitException();
                 }
 
-                if (($lastActionAdmissionType === $admissionType) === AdmissionType::TEMPORARY_DISCHARGE) {
+                if (($lastActionAdmissionType === $admissionType) === AdmissionType::TEMPORARY_DISCHARGE || ($lastActionAdmissionType === $admissionType) === AdmissionType::PENDING_DISCHARGE) {
                     throw new ResidentAdmissionTwoTimeARowException();
                 }
 
@@ -700,7 +700,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     throw new IncorrectStrategyTypeException();
             }
 
-            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
                 $validationGroup = 'api_admin_discharge_add';
             }
 
@@ -847,7 +847,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     throw new IncorrectStrategyTypeException();
             }
 
-            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
+            if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
                 $validationGroup = 'api_admin_discharge_edit';
             }
 
@@ -996,7 +996,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setDiningRoom($lastAction->getDiningRoom() ?? null);
             $entity->setFacilityBed($lastAction->getFacilityBed() ?? null);
             $entity->setDnr($lastAction->isDnr() ?? null);
@@ -1006,7 +1006,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var DiningRoomRepository $diningRoomRepo */
             $diningRoomRepo = $this->em->getRepository(DiningRoom::class);
 
@@ -1079,11 +1079,11 @@ class ResidentAdmissionService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var ApartmentBedRepository $apartmentBedRepo */
             $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
 
@@ -1112,7 +1112,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
+        if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setRegion($lastAction->getRegion() ?? null);
             $entity->setCsz($lastAction->getCsz() ?? null);
             $entity->setAddress($lastAction->getAddress() ?? null);
@@ -1123,7 +1123,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setCareLevel($lastAction->getCareLevel() ?? null);
         }
 
-        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
+        if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
             /** @var RegionRepository $regionRepo */
             $regionRepo = $this->em->getRepository(Region::class);
 

@@ -8,7 +8,8 @@ class AdmissionType
     const SHORT_ADMIT = 2;
     const READMIT = 3;
     const TEMPORARY_DISCHARGE = 4;
-    const DISCHARGE = 5;
+    const PENDING_DISCHARGE = 5;
+    const DISCHARGE = 6;
 
     /**
      * @var array
@@ -18,6 +19,7 @@ class AdmissionType
         self::SHORT_ADMIT => 'Short-Term Admit',
         self::READMIT => 'Re-admit',
         self::TEMPORARY_DISCHARGE => 'Temporary Discharge',
+        self::PENDING_DISCHARGE => 'Pending Discharge',
         self::DISCHARGE => 'Discharge',
     ];
 
@@ -29,7 +31,8 @@ class AdmissionType
         'Short-Term Admit' => '2',
         'Re-admit' => '3',
         'Temporary Discharge' => '4',
-        'Discharge' => '5',
+        'Pending Discharge' => '5',
+        'Discharge' => '6',
     ];
 
     /**
@@ -40,7 +43,8 @@ class AdmissionType
         self::SHORT_ADMIT => 2,
         self::READMIT => 3,
         self::TEMPORARY_DISCHARGE => 4,
-        self::DISCHARGE => 5,
+        self::PENDING_DISCHARGE => 5,
+        self::DISCHARGE => 6,
     ];
 
     /**
