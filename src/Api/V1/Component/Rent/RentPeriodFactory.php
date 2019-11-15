@@ -144,4 +144,17 @@ class RentPeriodFactory
             'days' => $days,
         );
     }
+
+    /**
+     * @param ImtDateTimeInterval $rentInterval
+     * @param $period
+     * @param $amount
+     * @return mixed
+     */
+    public function calculateForFacilityDashboard(ImtDateTimeInterval $rentInterval, $period, $amount)
+    {
+        $period = $this->getPeriod($period);
+
+        return $period->calculateForFacilityDashboard($rentInterval, $amount);
+    }
 }

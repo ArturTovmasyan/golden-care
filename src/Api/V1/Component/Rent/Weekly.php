@@ -22,4 +22,13 @@ class Weekly extends RentPeriod
 
         return $amount * $weeksCount + ($amount * $daysCount / 7);
     }
+
+    public function calculateForFacilityDashboard(ImtDateTimeInterval $subInterval, $amount)
+    {
+        $diff = $subInterval->getEnd()->diff($subInterval->getStart());
+        $weeksCount = $diff->y * 365 / 7 + $diff->m * 365 / 12 / 7;
+        $daysCount = $diff->d + 1;
+
+        return $amount * $weeksCount + ($amount * $daysCount / 7);
+    }
 }

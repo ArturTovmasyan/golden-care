@@ -79,11 +79,6 @@ class FacilityDashboardService extends BaseService implements IGridService
             throw new StartGreaterEndDateException();
         }
 
-        //TODO for test (must remove)/////////////////
-//        $dateFrom = new \DateTime('2018-11-01 00:00:00');
-//        $dateTo = new \DateTime('2020-01-31 23:59:59');
-        ///////////////////////////////////
-
         $interval = ImtDateTimeInterval::getWithDateTimes($dateFrom, $dateTo);
         $dateToClone = clone $dateTo;
 
@@ -127,7 +122,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $totalInquiries = 0;
                 $qualifiedInquiries = 0;//?
                 $outreachPerMonth = 0;
-                $averageRoomRent = 0;//-
+                $averageRoomRent = 0;
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
                     if ($dashboard['date'] >= $subInterval['dateFrom'] && $dashboard['date'] <= $subInterval['dateTo'] && $dashboard['facilityId'] === $facility->getId()) {
@@ -151,6 +146,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $toursPerMonth += $dashboard['toursPerMonth'];
                         $totalInquiries += $dashboard['totalInquiries'];
                         $outreachPerMonth += $dashboard['outreachPerMonth'];
+                        $averageRoomRent += $dashboard['averageRoomRent'];
                     }
                 }
 
@@ -171,7 +167,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
                     'outreach_per_month' => $outreachPerMonth,
-                    'average_room_rent' => $averageRoomRent,
+                    'average_room_rent' => round($averageRoomRent, 2),
                 ];
             }
 

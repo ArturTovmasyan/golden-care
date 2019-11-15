@@ -29,6 +29,13 @@ abstract class RentPeriod
     abstract public function calculateForInterval(ImtDateTimeInterval $subInterval, $amount);
 
     /**
+     * @param ImtDateTimeInterval $subInterval
+     * @param $amount
+     * @return mixed
+     */
+    abstract public function calculateForFacilityDashboard(ImtDateTimeInterval $subInterval, $amount);
+
+    /**
      * @return int
      */
     public function getPeriod(): ?int

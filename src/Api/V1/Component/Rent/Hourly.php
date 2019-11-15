@@ -22,4 +22,13 @@ class Hourly extends RentPeriod
 
         return $amount * $hoursCount + ($amount * $minutesCount / 60);
     }
+
+    public function calculateForFacilityDashboard(ImtDateTimeInterval $subInterval, $amount)
+    {
+        $diff = $subInterval->getEnd()->diff($subInterval->getStart());
+        $hoursCount = $diff->h;
+        $minutesCount = $diff->i + 1;
+
+        return $amount * $hoursCount + ($amount * $minutesCount / 60);
+    }
 }

@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
+use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Facility;
 use App\Entity\FacilityDashboard;
 use App\Entity\Lead\Activity;
@@ -13,15 +14,19 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentRent;
 use App\Entity\User;
 use App\Model\AdmissionType;
+use App\Model\GroupType;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\UserRepository;
+use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -189,6 +194,27 @@ class FacilityDashboardCommand extends Command
                 }
             }
 
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+            $subInterval = ImtDateTimeInterval::getWithDateTimes($startDate, $endDate);
+
+            $residentRents = $rentRepo->getAdmissionRoomRentDataForFacilityDashboard($currentSpace, null, GroupType::TYPE_FACILITY, $subInterval, null, null);
+            $rents = [];
+            if (!empty($residentRents)) {
+                $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+
+                foreach ($residentRents as $rent) {
+                    $rents[] = [
+                        'typeId' => $rent['typeId'],
+                        'amount' => $rentPeriodFactory->calculateForFacilityDashboard(
+                            ImtDateTimeInterval::getWithDateTimes($subInterval->getStart(), $subInterval->getEnd()),
+                            $rent['period'],
+                            $rent['amount']
+                        )
+                    ];
+                }
+            }
+
             /** @var Facility $facility */
             foreach ($facilities as $facility) {
                 $entity = new FacilityDashboard();
@@ -313,6 +339,17 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setOutreachPerMonth($outreachPerMonth);
+
+                $averageRoomRent = 0;
+                if (!empty($rents)) {
+                    foreach ($rents as $rent) {
+                        if ($rent['typeId'] === $facility->getId()) {
+                            $averageRoomRent += $rent['amount'];
+                        }
+                    }
+                }
+
+                $entity->setAverageRoomRent(round($averageRoomRent, 2));
 
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 

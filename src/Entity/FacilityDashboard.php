@@ -357,12 +357,12 @@ class FacilityDashboard
     private $outreachPerMonth = 0;
 
     /**
-     * @var int
+     * @var float
      * @Assert\NotBlank(groups={
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="average_room_rent", type="integer")
+     * @ORM\Column(name="average_room_rent", type="float")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
@@ -659,17 +659,17 @@ class FacilityDashboard
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
-    public function getAverageRoomRent(): ?int
+    public function getAverageRoomRent(): ?float
     {
         return $this->averageRoomRent;
     }
 
     /**
-     * @param int|null $averageRoomRent
+     * @param float|null $averageRoomRent
      */
-    public function setAverageRoomRent(?int $averageRoomRent): void
+    public function setAverageRoomRent(?float $averageRoomRent): void
     {
         $this->averageRoomRent = $averageRoomRent;
     }
