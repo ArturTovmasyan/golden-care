@@ -129,6 +129,8 @@ class Facility
      *     "api_admin_resident_get_last_admission",
      *     "api_admin_document_list",
      *     "api_admin_document_get",
+     *     "api_admin_notification_list",
+     *     "api_admin_notification_get",
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
      * })

@@ -76,6 +76,8 @@ class Region
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
      *     "api_admin_contract_get_active",
+     *     "api_admin_notification_list",
+     *     "api_admin_notification_get",
      *     "api_admin_resident_get_last_admission"
      * })
      */
