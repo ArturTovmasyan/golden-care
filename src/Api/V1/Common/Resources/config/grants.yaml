@@ -261,6 +261,10 @@ persistence:
       title: 'DiningRoom'
       class: App\Entity\DiningRoom
       route: api_admin_dining_room_list
+    facility_document:
+      title: 'FacilityDocument'
+      class: App\Entity\FacilityDocument
+      route: api_admin_facility_document_list
 
     region:
       title: 'Region'

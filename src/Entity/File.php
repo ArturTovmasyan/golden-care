@@ -113,6 +113,12 @@ class File
     private $insuranceSecondFile;
 
     /**
+     * @var FacilityDocument
+     * @ORM\OneToOne(targetEntity="App\Entity\FacilityDocument", mappedBy="file", cascade={"remove", "persist"})
+     */
+    private $facilityDocument;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -232,5 +238,21 @@ class File
     public function setInsuranceSecondFile(?ResidentHealthInsurance $insuranceSecondFile): void
     {
         $this->insuranceSecondFile = $insuranceSecondFile;
+    }
+
+    /**
+     * @return FacilityDocument|null
+     */
+    public function getFacilityDocument(): ?FacilityDocument
+    {
+        return $this->facilityDocument;
+    }
+
+    /**
+     * @param FacilityDocument|null $facilityDocument
+     */
+    public function setFacilityDocument(?FacilityDocument $facilityDocument): void
+    {
+        $this->facilityDocument = $facilityDocument;
     }
 }

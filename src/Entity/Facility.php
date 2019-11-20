@@ -131,6 +131,8 @@ class Facility
      *     "api_admin_document_get",
      *     "api_admin_notification_list",
      *     "api_admin_notification_get",
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get",
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
      * })
@@ -169,6 +171,8 @@ class Facility
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
      *     "api_admin_resident_get_last_admission",
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get",
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
      * })
@@ -485,6 +489,12 @@ class Facility
      * @ORM\ManyToMany(targetEntity="App\Entity\Document", mappedBy="facilities", cascade={"persist"})
      */
     protected $documents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityDocument", mappedBy="facility", cascade={"remove", "persist"})
+     */
+    private $facilityDocuments;
 
     /**
      * @var ArrayCollection
@@ -839,6 +849,22 @@ class Facility
     {
         $this->documents->removeElement($document);
         $document->removeFacility($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFacilityDocuments(): ArrayCollection
+    {
+        return $this->facilityDocuments;
+    }
+
+    /**
+     * @param ArrayCollection $facilityDocuments
+     */
+    public function setFacilityDocuments(ArrayCollection $facilityDocuments): void
+    {
+        $this->facilityDocuments = $facilityDocuments;
     }
 
     /**

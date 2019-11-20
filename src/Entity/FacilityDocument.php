@@ -12,37 +12,37 @@ use App\Annotation\Grid;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class ResidentDocument
+ * Class FacilityDocument
  *
- * @ORM\Entity(repositoryClass="App\Repository\ResidentDocumentRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\FacilityDocumentRepository")
  * @UniqueEntity(
- *     fields={"resident", "title"},
+ *     fields={"facility", "title"},
  *     errorPath="title",
- *     message="The title is already in use for this Resident.",
+ *     message="The title is already in use for this Facility.",
  *     groups={
- *          "api_admin_resident_document_add",
- *          "api_admin_resident_document_edit"
+ *          "api_admin_facility_document_add",
+ *          "api_admin_facility_document_edit"
  *     }
  * )
- * @ORM\Table(name="tbl_resident_document")
+ * @ORM\Table(name="tbl_facility_document")
  * @Grid(
- *     api_admin_resident_document_grid={
+ *     api_admin_facility_document_grid={
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
- *              "field"      = "rd.id"
+ *              "field"      = "fd.id"
  *          },
  *          {
  *              "id"         = "title",
  *              "type"       = "string",
- *              "field"      = "rd.title",
+ *              "field"      = "fd.title",
  *              "link"       = ":edit"
  *          },
  *          {
  *              "id"         = "date",
  *              "type"       = "datetime",
- *              "field"      = "rd.createdAt"
+ *              "field"      = "fd.createdAt"
  *          },
  *          {
  *              "id"         = "user",
@@ -52,7 +52,7 @@ use JMS\Serializer\Annotation as Serializer;
  *     }
  * )
  */
-class ResidentDocument
+class FacilityDocument
 {
     use TimeAwareTrait;
     use UserAwareTrait;
@@ -63,46 +63,46 @@ class ResidentDocument
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_resident_document_list",
-     *     "api_admin_resident_document_get"
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
      * })
      */
     private $id;
 
     /**
-     * @var Resident
-     * @Assert\NotNull(message = "Please select a Resident", groups={
-     *     "api_admin_resident_document_add",
-     *     "api_admin_resident_document_edit"
+     * @var Facility
+     * @Assert\NotNull(message = "Please select a Facility", groups={
+     *     "api_admin_facility_document_add",
+     *     "api_admin_facility_document_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentDocuments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Facility", inversedBy="facilityDocuments")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_facility", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_resident_document_list",
-     *     "api_admin_resident_document_get"
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
      * })
      */
-    private $resident;
+    private $facility;
 
     /**
      * @var string
      * @Assert\NotBlank(groups={
-     *     "api_admin_resident_document_add",
-     *     "api_admin_resident_document_edit"
+     *     "api_admin_facility_document_add",
+     *     "api_admin_facility_document_edit"
      * })
      * @Assert\Length(
      *      max = 255,
      *      maxMessage = "Title cannot be longer than {{ limit }} characters",
      *      groups={
-     *           "api_admin_resident_document_add",
-     *           "api_admin_resident_document_edit"
+     *           "api_admin_facility_document_add",
+     *           "api_admin_facility_document_edit"
      * })
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
-     *     "api_admin_resident_document_list",
-     *     "api_admin_resident_document_get"
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
      * })
      */
     private $title;
@@ -110,10 +110,10 @@ class ResidentDocument
     /**
      * @var File
      * @Assert\NotNull(message = "Please select a File", groups={
-     *     "api_admin_resident_document_add",
-     *     "api_admin_resident_document_edit"
+     *     "api_admin_facility_document_add",
+     *     "api_admin_facility_document_edit"
      * })
-     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="residentDocument")
+     * @ORM\OneToOne(targetEntity="App\Entity\File", inversedBy="facilityDocument")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_file", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -128,9 +128,9 @@ class ResidentDocument
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_resident_document_get"})
+     * @Serializer\Groups({"api_admin_facility_document_get"})
      */
-    public function getResidentDocumentFile(): ?string
+    public function getFacilityDocumentFile(): ?string
     {
         if ($this->getFile() !== null) {
             return $this->getDownloadUrl();
@@ -150,19 +150,19 @@ class ResidentDocument
     }
 
     /**
-     * @return Resident|null
+     * @return Facility|null
      */
-    public function getResident(): ?Resident
+    public function getFacility(): ?Facility
     {
-        return $this->resident;
+        return $this->facility;
     }
 
     /**
-     * @param Resident|null $resident
+     * @param Facility|null $facility
      */
-    public function setResident(?Resident $resident): void
+    public function setFacility(?Facility $facility): void
     {
-        $this->resident = $resident;
+        $this->facility = $facility;
     }
 
     public function getTitle(): ?string
