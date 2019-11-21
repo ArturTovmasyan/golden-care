@@ -63,7 +63,7 @@
                             <div style="width: 100%;">
                                 <div style="float: left; width: 65%">
                                     {% if resident['admitted'] is defined %}
-                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                     {% endif %}
                                 </div>
                                 <div style="float: left; width: 35%">
@@ -547,7 +547,7 @@
                                     <div style="width: 100%;">
                                         <div style="float: left; width: 65%">
                                             {% if resident['admitted'] is defined %}
-                                                <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                                <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                             {% endif %}
                                         </div>
                                         <div style="float: left; width: 35%">

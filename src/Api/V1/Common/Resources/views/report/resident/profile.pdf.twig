@@ -83,7 +83,7 @@
                             <div style="width: 100%;">
                                 <div style="float: left; width: 65%">
                                     {% if resident['admitted'] is defined %}
-                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                     {% endif %}
                                 </div>
                                 <div style="float: left; width: 35%">
@@ -146,11 +146,7 @@
                                 <div style="width: 100%;">
                                     <div style="float: left; width: 65%">
                                         {% if resident['rents'] is defined %}
-                                            <div>Last&nbsp;Increase&nbsp;-&nbsp;
-                                                {% for rent in resident['rents'] %}
-                                                    {% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}
-                                                {% endfor %}
-                                            </div>
+                                            <div>Last&nbsp;Increase&nbsp;-&nbsp;{% for rent in resident['rents'] %}{% if rent.start %}{{ rent.start|date("F") }}&nbsp;{{ rent.start|date("d") }},&nbsp;{{ rent.start|date("Y") }}{% endif %}{% endfor %}</div>
                                         {% else %}
                                             <div>Last&nbsp;Increase&nbsp;-&nbsp;N/A</div>
                                         {% endif %}
@@ -496,7 +492,7 @@
                             <div style="width: 100%;">
                                 <div style="float: left; width: 65%">
                                     {% if resident['admitted'] is defined %}
-                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                     {% endif %}
                                 </div>
                                 <div style="float: left; width: 35%">
@@ -559,11 +555,7 @@
                                 <div style="width: 100%;">
                                     <div style="float: left; width: 65%">
                                         {% if resident['rents'] is defined %}
-                                            <div>Last&nbsp;Increase&nbsp;-&nbsp;
-                                                {% for rent in resident['rents'] %}
-                                                    {% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}
-                                                {% endfor %}
-                                            </div>
+                                            <div>Last&nbsp;Increase&nbsp;-&nbsp;{% for rent in resident['rents'] %}{% if rent.start %}{{ rent.start|date("F") }}&nbsp;{{ rent.start|date("d") }},&nbsp;{{ rent.start|date("Y") }}{% endif %}{% endfor %}</div>
                                         {% else %}
                                             <div>Last&nbsp;Increase&nbsp;-&nbsp;N/A</div>
                                         {% endif %}
@@ -672,7 +664,7 @@
                                             <div style="width: 100%;">
                                                 <div style="float: left; width: 65%">
                                                     {% if resident['admitted'] is defined %}
-                                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                                        <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                                     {% endif %}
                                                 </div>
                                                 <div style="float: left; width: 35%">
@@ -737,7 +729,7 @@
                                                         {% if resident['rents'] is defined %}
                                                             <div>Last&nbsp;Increase&nbsp;-&nbsp;
                                                                 {% for rent in resident['rents'] %}
-                                                                    {% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}
+                                                                    {% if rent.start %}{{ rent.start|date("F") }}&nbsp;{{ rent.start|date("d") }},&nbsp;{{ rent.start|date("Y") }}{% endif %}
                                                                 {% endfor %}
                                                             </div>
                                                         {% else %}
@@ -746,11 +738,7 @@
                                                     </div>
                                                     <div style="float: left; width: 35%">
                                                         {% if resident['rents'] is defined %}
-                                                            <div>Rent&nbsp;-&nbsp;
-                                                                {% for rent in resident['rents'] %}
-                                                                    {% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
-                                                                {% endfor %}
-                                                            </div>
+                                                            <div>Rent&nbsp;-&nbsp;{% for rent in resident['rents'] %}{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}{% endfor %}</div>
                                                         {% else %}
                                                             <div>Rent&nbsp;-&nbsp;$&nbsp;{{ 0|number_format(2, '.', ',') }}/A</div>
                                                         {% endif %}
@@ -1159,7 +1147,7 @@
                                     <div style="width: 100%;">
                                         <div style="float: left; width: 65%">
                                             {% if resident['admitted'] is defined %}
-                                                <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("m/d/Y") }}{% else %}N/A{% endif %}</div>
+                                                <div>Admitted&nbsp;-&nbsp;{% if resident['admitted'] %}{{ resident['admitted']|date("F") }}&nbsp;{{ resident['admitted']|date("d") }},&nbsp;{{ resident['admitted']|date("Y") }}{% else %}N/A{% endif %}</div>
                                             {% endif %}
                                         </div>
                                         <div style="float: left; width: 35%">
@@ -1224,7 +1212,7 @@
                                                 {% if resident['rents'] is defined %}
                                                     <div>Last&nbsp;Increase&nbsp;-&nbsp;
                                                         {% for rent in resident['rents'] %}
-                                                            {% if rent.start %}{{ rent.start|date("m/d/Y") }}{% endif %}
+                                                            {% if rent.start %}{{ rent.start|date("F") }}&nbsp;{{ rent.start|date("d") }},&nbsp;{{ rent.start|date("Y") }}{% endif %}
                                                         {% endfor %}
                                                     </div>
                                                 {% else %}
@@ -1233,11 +1221,7 @@
                                             </div>
                                             <div style="float: left; width: 35%">
                                                 {% if resident['rents'] is defined %}
-                                                    <div>Rent&nbsp;-&nbsp;
-                                                        {% for rent in resident['rents'] %}
-                                                            {% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
-                                                        {% endfor %}
-                                                    </div>
+                                                    <div>Rent&nbsp;-&nbsp;{% for rent in resident['rents'] %}{% if rent.amount is defined and rent.amount %}$&nbsp;{{ rent.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}{% endfor %}</div>
                                                 {% else %}
                                                     <div>Rent&nbsp;-&nbsp;$&nbsp;{{ 0|number_format(2, '.', ',') }}/A</div>
                                                 {% endif %}
