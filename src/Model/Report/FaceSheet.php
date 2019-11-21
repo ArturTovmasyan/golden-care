@@ -14,6 +14,7 @@ class FaceSheet extends Base
     private $physicianPhones = [];
     private $responsiblePersonPhones = [];
     private $insuranceFiles = [];
+    private $images = [];
 
     /**
      * FaceSheet constructor.
@@ -65,6 +66,22 @@ class FaceSheet extends Base
     public function setInsuranceFiles($insuranceFiles): void
     {
         $this->insuranceFiles = $insuranceFiles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param $images
+     */
+    public function setImages($images): void
+    {
+        $this->images = $images;
     }
 
     /**

@@ -15,6 +15,7 @@ class Profile extends Base
     private $physicianPhones = [];
     private $responsiblePersonPhones = [];
     private $insuranceFiles = [];
+    private $images = [];
 
     /**
      * @var string
@@ -94,6 +95,21 @@ class Profile extends Base
         $this->insuranceFiles = $insuranceFiles;
     }
 
+    /**
+     * @return array
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param $images
+     */
+    public function setImages($images): void
+    {
+        $this->images = $images;
+    }
 
     /**
      * @param $medications
