@@ -27,6 +27,11 @@ use App\Annotation\Grid;
  * @Grid(
  *     api_admin_dining_room_grid={
  *          {
+ *              "id"         = "facility",
+ *              "type"       = "string",
+ *              "field"      = "f.name"
+ *          },
+ *          {
  *              "id"         = "id",
  *              "type"       = "id",
  *              "hidden"     = true,
@@ -37,11 +42,6 @@ use App\Annotation\Grid;
  *              "type"       = "string",
  *              "field"      = "dr.title",
  *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "facility",
- *              "type"       = "string",
- *              "field"      = "f.name"
  *          }
  *     }
  * )
