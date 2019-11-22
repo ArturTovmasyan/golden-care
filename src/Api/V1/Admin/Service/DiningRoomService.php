@@ -23,10 +23,15 @@ class DiningRoomService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
+        $facilityId = null;
+        if (!empty($params) || !empty($params[0]['facility_id'])) {
+            $facilityId = $params[0]['facility_id'];
+        }
+
         /** @var DiningRoomRepository $repo */
         $repo = $this->em->getRepository(DiningRoom::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiningRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $facilityId);
     }
 
     /**

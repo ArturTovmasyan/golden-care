@@ -34,6 +34,19 @@ use App\Annotation\Grant as Grant;
  */
 class DiningRoomController extends BaseController
 {
+    protected function gridIgnoreFields(Request $request): array
+    {
+        $ignoreFields = [];
+
+        $facilityId = (int)$request->get('facility_id');
+
+        if (!empty($facilityId)) {
+            $ignoreFields[] = 'facility';
+        }
+
+        return $ignoreFields;
+    }
+
     /**
      * @api {get} /api/v1.0/admin/facility/dining/room/grid Get DiningRooms Grid
      * @apiVersion 1.0.0
@@ -77,7 +90,8 @@ class DiningRoomController extends BaseController
             $request,
             DiningRoom::class,
             'api_admin_dining_room_grid',
-            $diningRoomService
+            $diningRoomService,
+            ['facility_id' => $request->get('facility_id')]
         );
     }
 

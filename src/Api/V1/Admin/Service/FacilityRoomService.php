@@ -30,10 +30,15 @@ class FacilityRoomService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
+        $facilityId = null;
+        if (!empty($params) || !empty($params[0]['facility_id'])) {
+            $facilityId = $params[0]['facility_id'];
+        }
+
         /** @var FacilityRoomRepository $repo */
         $repo = $this->em->getRepository(FacilityRoom::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $facilityId);
     }
 
     /**

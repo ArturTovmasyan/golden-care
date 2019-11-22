@@ -34,6 +34,19 @@ use App\Annotation\Grant as Grant;
  */
 class FacilityRoomController extends BaseController
 {
+    protected function gridIgnoreFields(Request $request): array
+    {
+        $ignoreFields = [];
+
+        $facilityId = (int)$request->get('facility_id');
+
+        if (!empty($facilityId)) {
+            $ignoreFields[] = 'facility';
+        }
+
+        return $ignoreFields;
+    }
+
     /**
      * @api {get} /api/v1.0/admin/facility/room/grid Get FacilityRooms Grid
      * @apiVersion 1.0.0
@@ -81,7 +94,8 @@ class FacilityRoomController extends BaseController
             $request,
             FacilityRoom::class,
             'api_admin_facility_room_grid',
-            $facilityRoomService
+            $facilityRoomService,
+            ['facility_id' => $request->get('facility_id')]
         );
     }
 
