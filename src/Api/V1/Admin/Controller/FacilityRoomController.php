@@ -42,6 +42,7 @@ class FacilityRoomController extends BaseController
 
         if (!empty($facilityId)) {
             $ignoreFields[] = 'facility';
+            $ignoreFields[] = 'shorthand';
         }
 
         return $ignoreFields;
