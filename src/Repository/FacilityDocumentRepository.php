@@ -22,8 +22,9 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
      * @param array|null $entityGrants
      * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $facilityId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null) : void
     {
         $queryBuilder
             ->from(FacilityDocument::class, 'fd')
@@ -39,6 +40,12 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
                 Join::WITH,
                 'u = fd.createdBy'
             );
+
+        if ($facilityId !== null) {
+            $queryBuilder
+                ->where('f.id = :facilityId')
+                ->setParameter('facilityId', $facilityId);
+        }
 
         if ($space !== null) {
             $queryBuilder

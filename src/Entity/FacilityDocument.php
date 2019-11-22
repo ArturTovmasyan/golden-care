@@ -48,6 +48,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "user",
  *              "type"       = "string",
  *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
+ *          },
+ *          {
+ *              "id"         = "facility",
+ *              "type"       = "string",
+ *              "field"      = "f.name"
  *          }
  *     }
  * )

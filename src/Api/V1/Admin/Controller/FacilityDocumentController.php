@@ -34,6 +34,19 @@ use App\Annotation\Grant as Grant;
  */
 class FacilityDocumentController extends BaseController
 {
+    protected function gridIgnoreFields(Request $request): array
+    {
+        $ignoreFields = [];
+
+        $facilityId = (int)$request->get('facility_id');
+
+        if (!empty($facilityId)) {
+            $ignoreFields[] = 'facility';
+        }
+
+        return $ignoreFields;
+    }
+
     /**
      * @Route("/grid", name="api_admin_facility_document_grid", methods={"GET"})
      *

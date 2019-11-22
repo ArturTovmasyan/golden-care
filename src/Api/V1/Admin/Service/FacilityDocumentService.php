@@ -29,20 +29,15 @@ class FacilityDocumentService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        if (empty($params) || empty($params[0]['facility_id'])) {
-            throw new FacilityNotFoundException();
+        $facilityId = null;
+        if (!empty($params) || !empty($params[0]['facility_id'])) {
+            $facilityId = $params[0]['facility_id'];
         }
-
-        $facilityId = $params[0]['facility_id'];
-
-        $queryBuilder
-            ->where('fd.facility = :facilityId')
-            ->setParameter('facilityId', $facilityId);
 
         /** @var FacilityDocumentRepository $repo */
         $repo = $this->em->getRepository(FacilityDocument::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $facilityId);
     }
 
     /**
