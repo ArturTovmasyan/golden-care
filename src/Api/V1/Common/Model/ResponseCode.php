@@ -148,6 +148,7 @@ class ResponseCode
     const DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION                  = 748;
     const FACILITY_DASHBOARD_NOT_FOUND_EXCEPTION                 = 749;
     const FACILITY_DOCUMENT_NOT_FOUND_EXCEPTION                  = 750;
+    const RESIDENT_RENT_INCREASE_NOT_FOUND_EXCEPTION             = 751;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -296,6 +297,7 @@ class ResponseCode
         self::DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Document Category not found.'],
         self::FACILITY_DASHBOARD_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Dashboard not found.'],
         self::FACILITY_DOCUMENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Document not found.'],
+        self::RESIDENT_RENT_INCREASE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Rent Increase not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

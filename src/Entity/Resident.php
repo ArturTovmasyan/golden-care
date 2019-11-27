@@ -113,7 +113,9 @@ class Resident
      *      "api_admin_resident_health_insurance_list",
      *      "api_admin_resident_health_insurance_get",
      *      "api_admin_resident_document_list",
-     *      "api_admin_resident_document_get"
+     *      "api_admin_resident_document_get",
+     *      "api_admin_resident_rent_increase_list",
+     *      "api_admin_resident_rent_increase_get",
      * })
      */
     private $id;
@@ -399,6 +401,12 @@ class Resident
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentDocument", mappedBy="resident", cascade={"remove", "persist"})
      */
     private $residentDocuments;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentRentIncrease", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentRentIncreases;
 
     /**
      * @return int
@@ -814,5 +822,21 @@ class Resident
     public function setResidentDocuments(ArrayCollection $residentDocuments): void
     {
         $this->residentDocuments = $residentDocuments;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentRentIncreases(): ArrayCollection
+    {
+        return $this->residentRentIncreases;
+    }
+
+    /**
+     * @param ArrayCollection $residentRentIncreases
+     */
+    public function setResidentRentIncreases(ArrayCollection $residentRentIncreases): void
+    {
+        $this->residentRentIncreases = $residentRentIncreases;
     }
 }

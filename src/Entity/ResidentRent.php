@@ -152,7 +152,7 @@ class ResidentRent
     private $period = RentPeriod::MONTHLY;
 
     /**
-     * @var int $amount
+     * @var float
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_rent_add",
@@ -291,17 +291,17 @@ class ResidentRent
     }
 
     /**
-     * @return int
+     * @return float|null
      */
-    public function getAmount(): int
+    public function getAmount(): ?float
     {
         return $this->amount;
     }
 
     /**
-     * @param int $amount
+     * @param float|null $amount
      */
-    public function setAmount($amount): void
+    public function setAmount(?float $amount): void
     {
         $this->amount = $amount;
     }

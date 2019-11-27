@@ -318,6 +318,10 @@ persistence:
           title: 'ResidentRent'
           class: App\Entity\ResidentRent
           route: api_admin_resident_rent_list
+        resident_rent_increase:
+          title: 'ResidentRentIncrease'
+          class: App\Entity\ResidentRentIncrease
+          route: api_admin_resident_rent_increase_list
         resident_responsible_person:
           title: 'ResidentResponsiblePerson'
           class: App\Entity\ResidentResponsiblePerson
