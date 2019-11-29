@@ -240,4 +240,64 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public function getResidentCalendarData(Space $space = null, array $entityGrants = null, $id, $dateFrom = null, $dateTo = null)
+    {
+        $qb = $this->createQueryBuilder('rri');
+
+        $qb
+            ->select(
+                'rri.id AS id',
+                'rri.amount AS amount',
+                'rri.reason AS reason',
+                'rri.effectiveDate AS start'
+            )
+            ->join('rri.resident', 'r')
+            ->where('r.id=:id')
+            ->setParameter('id', $id);
+
+        if ($dateFrom !== null) {
+            $qb
+                ->andWhere('rri.effectiveDate >= :start')
+                ->setParameter('start', $dateFrom);
+        }
+
+        if ($dateTo !== null) {
+            $qb
+                ->andWhere('rri.effectiveDate <= :end')
+                ->setParameter('end', $dateTo);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rri.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
 }

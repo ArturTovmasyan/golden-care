@@ -447,4 +447,68 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public function getResidentCalendarData(Space $space = null, array $entityGrants = null, $id, $dateFrom = null, $dateTo = null)
+    {
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                're.id AS id',
+                'd.type AS type',
+                'd.title AS title',
+                're.date AS start',
+                're.additionalDate AS end',
+                're.notes AS notes'
+            )
+            ->join('re.resident', 'r')
+            ->join('re.definition', 'd')
+            ->where('r.id=:id')
+            ->setParameter('id', $id);
+
+        if ($dateFrom !== null) {
+            $qb
+                ->andWhere('re.date >= :start')
+                ->andWhere('re.additionalDate IS NULL OR re.additionalDate >= :start')
+                ->setParameter('start', $dateFrom);
+        }
+
+        if ($dateTo !== null) {
+            $qb
+                ->andWhere('re.date <= :end')
+                ->setParameter('end', $dateTo);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
 }

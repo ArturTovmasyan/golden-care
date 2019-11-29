@@ -70,7 +70,10 @@ class EventDefinitionService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $type = $params['type'] ? (int)$params['type'] : 0;
+
             $entity = new EventDefinition();
+            $entity->setType($type);
             $entity->setInChooser($params['in_chooser']);
             $entity->setTitle($params['title']);
             $entity->setFfc($params['ffc']);
@@ -129,6 +132,9 @@ class EventDefinitionService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $type = $params['type'] ? (int)$params['type'] : 0;
+
+            $entity->setType($type);
             $entity->setTitle($params['title']);
             $entity->setInChooser($params['in_chooser']);
             $entity->setFfc($params['ffc']);

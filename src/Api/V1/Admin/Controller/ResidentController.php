@@ -667,6 +667,24 @@ class ResidentController extends BaseController
     }
 
     /**
+     * @Route("/calendar/{id}", requirements={"id"="\d+"}, name="api_admin_resident_calendar", methods={"GET"})
+     *
+     * @param Request $request
+     * @param ResidentService $residentService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getResidentCalendarAction(Request $request, $id, ResidentService $residentService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentService->getCalendar($id, $request->get('date_from'), $request->get('date_to')),
+            ['api_admin_resident_calendar']
+        );
+    }
+
+    /**
      * @Route("/mobile/{id}", requirements={"id"="\d+"}, name="api_admin_resident_edit_mobile", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident", level="EDIT")

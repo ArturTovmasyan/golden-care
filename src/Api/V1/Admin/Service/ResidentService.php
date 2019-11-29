@@ -19,8 +19,11 @@ use App\Entity\ChunkFile;
 use App\Entity\CityStateZip;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentEvent;
 use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
+use App\Entity\ResidentRent;
+use App\Entity\ResidentRentIncrease;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\GroupType;
@@ -28,8 +31,11 @@ use App\Repository\CareLevelRepository;
 use App\Repository\ChunkFileRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
+use App\Repository\ResidentRentIncreaseRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
 use DataURI\Parser;
@@ -2207,6 +2213,50 @@ class ResidentService extends BaseService implements IGridService
         $report->setDateEnd($dateEnd);
 
         return $report;
+    }
+
+    /**
+     * @param $id
+     * @param $dateFrom
+     * @param $dateTo
+     * @return array
+     */
+    public function getCalendar($id, $dateFrom, $dateTo): array
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        if (!empty($dateFrom)) {
+            $dateFrom = new \DateTime($dateFrom);
+            $dateFrom = $dateFrom->format('Y-m-d 00:00:00');
+        }
+
+        if (!empty($dateTo)) {
+            $dateTo = new \DateTime($dateTo);
+            $dateTo = $dateTo->format('Y-m-d 23:59:59');
+        }
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        $admissions = $admissionRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id, $dateFrom, $dateTo);
+
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+        $rents = $rentRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $id, $dateFrom, $dateTo);
+
+        /** @var ResidentRentIncreaseRepository $rentIncreaseRepo */
+        $rentIncreaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
+        $rentIncreases = $rentIncreaseRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRentIncrease::class), $id, $dateFrom, $dateTo);
+
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+        $events = $eventRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id, $dateFrom, $dateTo);
+
+        return [
+            'admissions' => $admissions,
+            'rents' => $rents,
+            'rent_increases' => $rentIncreases,
+            'events' => $events,
+        ];
     }
 
     /**

@@ -34,6 +34,12 @@ use App\Annotation\Grid;
  *              "field"      = "ed.id"
  *          },
  *          {
+ *              "id"         = "type",
+ *              "type"       = "enum",
+ *              "field"      = "ed.type",
+ *              "values"     = "\App\Model\EventDefinitionType::getTypeDefaultNames"
+ *          },
+ *          {
  *              "id"         = "title",
  *              "type"       = "string",
  *              "field"      = "ed.title",
@@ -121,6 +127,26 @@ class EventDefinition
      * })
      */
     private $id;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_event_definition_add",
+     *     "api_admin_event_definition_edit"
+     * })
+     * @Assert\Choice(
+     *     callback={"App\Model\EventDefinitionType","getTypeValues"},
+     *     groups={
+     *         "api_admin_event_definition_add",
+     *         "api_admin_event_definition_edit"
+     * })
+     * @ORM\Column(name="type", type="smallint")
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    private $type;
 
     /**
      * @var string
@@ -305,6 +331,22 @@ class EventDefinition
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int|null $type
+     */
+    public function setType(?int $type): void
+    {
+        $this->type = $type;
     }
 
     /**

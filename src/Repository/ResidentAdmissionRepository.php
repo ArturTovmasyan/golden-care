@@ -2572,7 +2572,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getResult();
     }
 
-
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
     /**
      * @param Space|null $space
@@ -2802,4 +2801,66 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getResult();
     }
     ///////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////////
+
+    ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public function getResidentCalendarData(Space $space = null, array $entityGrants = null, $id, $dateFrom = null, $dateTo = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'ra.id AS id',
+                'ra.admissionType AS admission_type',
+                'ra.start AS start',
+                'ra.end AS end',
+                'ra.notes AS notes'
+            )
+            ->join('ra.resident', 'r')
+            ->where('r.id=:id')
+            ->setParameter('id', $id);
+
+        if ($dateFrom !== null) {
+            $qb
+                ->andWhere('ra.start >= :start')
+                ->andWhere('ra.end IS NULL OR ra.end >= :start')
+                ->setParameter('start', $dateFrom);
+        }
+
+        if ($dateTo !== null) {
+            $qb
+                ->andWhere('ra.start <= :end')
+                ->setParameter('end', $dateTo);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
 }
