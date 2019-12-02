@@ -49,11 +49,6 @@ use App\Annotation\Grid;
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
- *          },
- *          {
- *              "id"         = "send_email_notification",
- *              "type"       = "boolean",
- *              "field"      = "d.sendEmailNotification"
  *          }
  *     }
  * )
