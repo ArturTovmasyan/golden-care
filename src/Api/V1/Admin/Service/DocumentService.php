@@ -134,7 +134,7 @@ class DocumentService extends BaseService implements IGridService
             $document->setCategory($category);
             $document->setTitle($params['title']);
             $document->setDescription($params['description']);
-            $document->setSendEmailNotification($params['send_email_notification']);
+            $document->setSendEmailNotification($params['notification']);
 
             if(!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
@@ -287,7 +287,7 @@ class DocumentService extends BaseService implements IGridService
             $entity->setCategory($category);
             $entity->setTitle($params['title']);
             $entity->setDescription($params['description']);
-            $entity->setSendEmailNotification($params['send_email_notification']);
+            $entity->setSendEmailNotification($params['notification']);
 
             $facilities = $entity->getFacilities();
             foreach ($facilities as $facility) {
