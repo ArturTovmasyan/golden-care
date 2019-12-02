@@ -354,4 +354,26 @@ class Mailer
             ])
             ->send();
     }
+
+    /**
+     * @param $emails
+     * @param $subject
+     * @param $description
+     * @param $spaceName
+     * @return mixed
+     */
+    public function sendDocumentNotification($emails, $subject, $description, $spaceName)
+    {
+        return $this
+            ->setRecipient(array_shift($emails))
+            ->setBcc($emails)
+            ->setTemplate('@api_email/document.html.twig')
+            ->setSubject($subject)
+            ->setVars([
+                'subject' => $subject,
+                'description' => $description,
+                'spaceName' => $spaceName
+            ])
+            ->send();
+    }
 }

@@ -49,6 +49,11 @@ use App\Annotation\Grid;
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
+ *          },
+ *          {
+ *              "id"         = "send_email_notification",
+ *              "type"       = "boolean",
+ *              "field"      = "d.sendEmailNotification"
  *          }
  *     }
  * )
@@ -183,6 +188,16 @@ class Document
      * })
      */
     private $file;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="send_email_notification", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    protected $sendEmailNotification;
 
     /**
      * @var string $downloadUrl
@@ -376,6 +391,22 @@ class Document
     public function setFile(?File $file): void
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSendEmailNotification(): bool
+    {
+        return $this->sendEmailNotification;
+    }
+
+    /**
+     * @param bool $sendEmailNotification
+     */
+    public function setSendEmailNotification(bool $sendEmailNotification): void
+    {
+        $this->sendEmailNotification = $sendEmailNotification;
     }
 
     /**

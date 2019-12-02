@@ -362,4 +362,58 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->getResult();
     }
     ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $roleIds
+     * @return mixed
+     */
+    public function getEnabledUserFacilityIdsByRoles(Space $space = null, array $entityGrants = null, $roleIds)
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('
+                u.id as id,
+                u.email as email
+            ')
+            ->addSelect(
+                "(SELECT GROUP_CONCAT(DISTINCT f.id SEPARATOR ',')
+                        FROM
+                          App\\Entity\\Facility f
+                        WHERE JSON_CONTAINS(
+                            JSON_EXTRACT(
+                              u.grants,
+                              '$.\"persistence-facility\"'
+                            ),
+                            CAST(f.id AS JSON)
+                          ) = 1) AS facilityIds")
+            ->innerJoin('u.roles', 'r')
+            ->where('u.enabled=1')
+            ->andWhere('r.id IN (:roleIds)')
+            ->setParameter('roleIds', $roleIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = u.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('u.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('u.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

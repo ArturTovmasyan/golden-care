@@ -11,12 +11,14 @@ use App\Entity\DocumentCategory;
 use App\Entity\Facility;
 use App\Entity\File;
 use App\Entity\Role;
+use App\Entity\User;
 use App\Model\FileType;
 use App\Repository\DocumentCategoryRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FileRepository;
 use App\Repository\RoleRepository;
+use App\Repository\UserRepository;
 use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use DataURI\Parser;
@@ -132,6 +134,7 @@ class DocumentService extends BaseService implements IGridService
             $document->setCategory($category);
             $document->setTitle($params['title']);
             $document->setDescription($params['description']);
+            $document->setSendEmailNotification($params['send_email_notification']);
 
             if(!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
@@ -200,6 +203,43 @@ class DocumentService extends BaseService implements IGridService
             $this->em->persist($document);
 
             $this->em->flush();
+
+            if ($document->isSendEmailNotification()) {
+                $roleIds = array_map(function($item){return $item->getId();} , $document->getRoles()->toArray());
+
+                /** @var UserRepository $userRepo */
+                $userRepo = $this->em->getRepository(User::class);
+                $userFacilityIds = $userRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, $roleIds);
+
+                $emails = [];
+                if (!empty($userFacilityIds)) {
+                    $facilityIds = array_map(function($item){return $item->getId();} , $document->getFacilities()->toArray());
+
+                    foreach ($userFacilityIds as $userFacilityId) {
+                        if ($userFacilityId['facilityIds'] === null) {
+                            $emails[] = $userFacilityId['email'];
+                        } else {
+                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                            if (!empty(array_intersect($explodedUserFacilityIds, $facilityIds))) {
+                                $emails[] = $userFacilityId['email'];
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($emails)) {
+                    $spaceName = '';
+                    if ($document->getCategory() !== null && $document->getCategory()->getSpace() !== null) {
+                        $spaceName = $document->getCategory()->getSpace()->getName();
+                    }
+
+                    $subject = 'New Document - '. $document->getTitle();
+
+                    $this->mailer->sendDocumentNotification($emails, $subject, $document->getDescription(), $spaceName);
+                }
+            }
+
             $this->em->getConnection()->commit();
 
             $insert_id = $document->getId();
@@ -247,6 +287,7 @@ class DocumentService extends BaseService implements IGridService
             $entity->setCategory($category);
             $entity->setTitle($params['title']);
             $entity->setDescription($params['description']);
+            $entity->setSendEmailNotification($params['send_email_notification']);
 
             $facilities = $entity->getFacilities();
             foreach ($facilities as $facility) {
@@ -334,6 +375,43 @@ class DocumentService extends BaseService implements IGridService
             $this->em->persist($entity);
 
             $this->em->flush();
+
+            if ($entity->isSendEmailNotification()) {
+                $roleIds = array_map(function($item){return $item->getId();} , $entity->getRoles()->toArray());
+
+                /** @var UserRepository $userRepo */
+                $userRepo = $this->em->getRepository(User::class);
+                $userFacilityIds = $userRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, $roleIds);
+
+                $emails = [];
+                if (!empty($userFacilityIds)) {
+                    $facilityIds = array_map(function($item){return $item->getId();} , $entity->getFacilities()->toArray());
+
+                    foreach ($userFacilityIds as $userFacilityId) {
+                        if ($userFacilityId['facilityIds'] === null) {
+                            $emails[] = $userFacilityId['email'];
+                        } else {
+                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                            if (!empty(array_intersect($explodedUserFacilityIds, $facilityIds))) {
+                                $emails[] = $userFacilityId['email'];
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($emails)) {
+                    $spaceName = '';
+                    if ($entity->getCategory() !== null && $entity->getCategory()->getSpace() !== null) {
+                        $spaceName = $entity->getCategory()->getSpace()->getName();
+                    }
+
+                    $subject = 'New Document - '. $entity->getTitle();
+
+                    $this->mailer->sendDocumentNotification($emails, $subject, $entity->getDescription(), $spaceName);
+                }
+            }
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
