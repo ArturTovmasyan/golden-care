@@ -61,7 +61,9 @@ class DocumentCategory
      *     "api_admin_document_category_list",
      *     "api_admin_document_category_get",
      *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_get",
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
      * })
      */
     private $id;
@@ -84,7 +86,9 @@ class DocumentCategory
      *     "api_admin_document_category_list",
      *     "api_admin_document_category_get",
      *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_get",
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
      * })
      */
     private $title;
@@ -111,6 +115,12 @@ class DocumentCategory
      * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="category", cascade={"remove", "persist"})
      */
     private $documents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityDocument", mappedBy="category", cascade={"remove", "persist"})
+     */
+    private $facilityDocuments;
 
     public function getId()
     {
@@ -163,5 +173,21 @@ class DocumentCategory
     public function setDocuments(ArrayCollection $documents): void
     {
         $this->documents = $documents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFacilityDocuments(): ArrayCollection
+    {
+        return $this->facilityDocuments;
+    }
+
+    /**
+     * @param ArrayCollection $facilityDocuments
+     */
+    public function setFacilityDocuments(ArrayCollection $facilityDocuments): void
+    {
+        $this->facilityDocuments = $facilityDocuments;
     }
 }

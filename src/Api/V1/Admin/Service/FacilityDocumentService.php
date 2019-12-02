@@ -2,13 +2,16 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\DocumentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityDocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\DocumentCategory;
 use App\Entity\File;
 use App\Entity\Facility;
 use App\Entity\FacilityDocument;
 use App\Model\FileType;
+use App\Repository\DocumentCategoryRepository;
 use App\Repository\FileRepository;
 use App\Repository\FacilityDocumentRepository;
 use App\Repository\FacilityRepository;
@@ -34,10 +37,15 @@ class FacilityDocumentService extends BaseService implements IGridService
             $facilityId = $params[0]['facility_id'];
         }
 
+        $categoryId = null;
+        if (!empty($params) || !empty($params[0]['category_id'])) {
+            $categoryId = $params[0]['category_id'];
+        }
+
         /** @var FacilityDocumentRepository $repo */
         $repo = $this->em->getRepository(FacilityDocument::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $facilityId);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $facilityId, $categoryId);
     }
 
     /**
@@ -49,10 +57,15 @@ class FacilityDocumentService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
+            $categoryId = null;
+            if (!empty($params[0]['category_id'])) {
+                $categoryId = $params[0]['category_id'];
+            }
+
             /** @var FacilityDocumentRepository $repo */
             $repo = $this->em->getRepository(FacilityDocument::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId, $categoryId);
         }
 
         throw new FacilityNotFoundException();
@@ -81,19 +94,33 @@ class FacilityDocumentService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
             /** @var Facility $facility */
-            $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
+            $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['facility_id']);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
             }
 
+            /** @var DocumentCategoryRepository $categoryRepo */
+            $categoryRepo = $this->em->getRepository(DocumentCategory::class);
+
+            /** @var DocumentCategory $category */
+            $category = $categoryRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DocumentCategory::class), $params['category_id']);
+
+            if ($category === null) {
+                throw new DocumentCategoryNotFoundException();
+            }
+
             $facilityDocument = new FacilityDocument();
             $facilityDocument->setFacility($facility);
+            $facilityDocument->setCategory($category);
             $facilityDocument->setTitle($params['title']);
+            $facilityDocument->setDescription($params['description']);
 
             //save file
             $file = new File();
@@ -169,8 +196,20 @@ class FacilityDocumentService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
+            /** @var DocumentCategoryRepository $categoryRepo */
+            $categoryRepo = $this->em->getRepository(DocumentCategory::class);
+
+            /** @var DocumentCategory $category */
+            $category = $categoryRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DocumentCategory::class), $params['category_id']);
+
+            if ($category === null) {
+                throw new DocumentCategoryNotFoundException();
+            }
+
             $entity->setFacility($facility);
+            $entity->setCategory($category);
             $entity->setTitle($params['title']);
+            $entity->setDescription($params['description']);
 
             // save file
             $file = $entity->getFile();

@@ -62,7 +62,10 @@ class FacilityDocumentController extends BaseController
             FacilityDocument::class,
             'api_admin_facility_document_grid',
             $facilityDocumentService,
-            ['facility_id' => $request->get('facility_id')]
+            [
+                'facility_id' => $request->get('facility_id'),
+                'category_id' => $request->get('category_id')
+            ]
         );
     }
 
@@ -93,7 +96,10 @@ class FacilityDocumentController extends BaseController
             FacilityDocument::class,
             'api_admin_facility_document_list',
             $facilityDocumentService,
-            ['facility_id' => $request->get('facility_id')]
+            [
+                'facility_id' => $request->get('facility_id'),
+                'category_id' => $request->get('category_id')
+            ]
         );
     }
 
@@ -140,7 +146,9 @@ class FacilityDocumentController extends BaseController
         $id = $facilityDocumentService->add(
             [
                 'facility_id' => $request->get('facility_id'),
+                'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
+                'description' => $request->get('description') ?? '',
                 'file' => $request->get('file')
             ]
         );
@@ -169,7 +177,9 @@ class FacilityDocumentController extends BaseController
             $id,
             [
                 'facility_id' => $request->get('facility_id'),
+                'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
+                'description' => $request->get('description') ?? '',
                 'file' => $request->get('file')
             ]
         );

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\DocumentCategory;
 use App\Entity\Facility;
 use App\Entity\FacilityDocument;
 use App\Entity\Space;
@@ -23,8 +24,9 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
      * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
      * @param null $facilityId
+     * @param null $categoryId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null, $categoryId = null) : void
     {
         $queryBuilder
             ->from(FacilityDocument::class, 'fd')
@@ -33,6 +35,12 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
                 'f',
                 Join::WITH,
                 'f = fd.facility'
+            )
+            ->innerJoin(
+                DocumentCategory::class,
+                'dc',
+                Join::WITH,
+                'dc = fd.category'
             )
             ->innerJoin(
                 User::class,
@@ -45,6 +53,12 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
             $queryBuilder
                 ->where('f.id = :facilityId')
                 ->setParameter('facilityId', $facilityId);
+        }
+
+        if ($categoryId !== null) {
+            $queryBuilder
+                ->andWhere('dc.id = :categoryId')
+                ->setParameter('categoryId', $categoryId);
         }
 
         if ($space !== null) {
@@ -81,9 +95,10 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
      * @param array|null $entityGrants
      * @param array|null $facilityEntityGrants
      * @param $id
+     * @param null $categoryId
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id, $categoryId = null)
     {
         $qb = $this
             ->createQueryBuilder('fd')
@@ -93,8 +108,20 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
                 Join::WITH,
                 'f = fd.facility'
             )
+            ->innerJoin(
+                DocumentCategory::class,
+                'dc',
+                Join::WITH,
+                'dc = fd.category'
+            )
             ->where('f.id = :id')
             ->setParameter('id', $id);
+
+        if ($categoryId !== null) {
+            $qb
+                ->andWhere('dc.id = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
 
         if ($space !== null) {
             $qb

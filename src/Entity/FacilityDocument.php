@@ -34,6 +34,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "fd.id"
  *          },
  *          {
+ *              "id"         = "category",
+ *              "type"       = "string",
+ *              "field"      = "dc.title"
+ *          },
+ *          {
  *              "id"         = "title",
  *              "type"       = "string",
  *              "field"      = "fd.title",
@@ -53,6 +58,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "facility",
  *              "type"       = "string",
  *              "field"      = "f.name"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(fd.description, 1, 100)), CASE WHEN LENGTH(fd.description) > 100 THEN '…' ELSE '' END)"
  *          }
  *     }
  * )
@@ -92,6 +102,23 @@ class FacilityDocument
     private $facility;
 
     /**
+     * @var DocumentCategory
+     * @ORM\ManyToOne(targetEntity="App\Entity\DocumentCategory", inversedBy="facilityDocuments")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(message = "Please select a Document Category", groups={
+     *     "api_admin_facility_document_add",
+     *     "api_admin_facility_document_edit"
+     * })
+     * @Groups({
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
+     * })
+     */
+    private $category;
+
+    /**
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_admin_facility_document_add",
@@ -111,6 +138,23 @@ class FacilityDocument
      * })
      */
     private $title;
+
+    /**
+     * @var string $description
+     * @ORM\Column(name="description", type="text", length=512, nullable=true)
+     * @Assert\Length(
+     *      max = 512,
+     *      maxMessage = "Description cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_facility_document_add",
+     *          "api_admin_facility_document_edit"
+     * })
+     * @Groups({
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
+     * })
+     */
+    private $description;
 
     /**
      * @var File
@@ -170,6 +214,22 @@ class FacilityDocument
         $this->facility = $facility;
     }
 
+    /**
+     * @return DocumentCategory|null
+     */
+    public function getCategory(): ?DocumentCategory
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param DocumentCategory|null $category
+     */
+    public function setCategory(?DocumentCategory $category): void
+    {
+        $this->category = $category;
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -179,6 +239,22 @@ class FacilityDocument
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param null|string $description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     /**
