@@ -200,6 +200,7 @@ class FacilityDashboardCommand extends Command
 
             $residentRents = $rentRepo->getAdmissionRoomRentDataForFacilityDashboard($currentSpace, null, GroupType::TYPE_FACILITY, $subInterval, null, null);
             $rents = [];
+            $countResidentIds = [];
             if (!empty($residentRents)) {
                 $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
@@ -212,6 +213,8 @@ class FacilityDashboardCommand extends Command
                             $rent['amount']
                         )
                     ];
+
+                    $countResidentIds[$rent['typeId']] = array_key_exists($rent['typeId'], $countResidentIds) ? $countResidentIds[$rent['typeId']] + 1 : 1;
                 }
             }
 
@@ -346,6 +349,10 @@ class FacilityDashboardCommand extends Command
                         if ($rent['typeId'] === $facility->getId()) {
                             $averageRoomRent += $rent['amount'];
                         }
+                    }
+
+                    if (array_key_exists($facility->getId(), $countResidentIds)) {
+                        $averageRoomRent /= $countResidentIds[$facility->getId()];
                     }
                 }
 
