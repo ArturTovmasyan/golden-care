@@ -62,6 +62,7 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
         }
 
         $queryBuilder
+            ->addOrderBy('ou.createdAt', 'DESC')
             ->groupBy('ou.id');
     }
 
@@ -98,6 +99,9 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
                 ->andWhere('ou.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
+
+        $qb
+            ->addOrderBy('ou.createdAt', 'DESC');
 
         return $qb
             ->getQuery()
