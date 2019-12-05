@@ -825,6 +825,11 @@ class LeadService extends BaseService implements IGridService
         ];
 
         if (!empty($emails)) {
+            $spaceName = '';
+            if ($changeLog->getSpace() !== null) {
+                $spaceName = $changeLog->getSpace()->getName();
+            }
+
             $subject = 'Leads System User Activity for ' . $changeLog->getCreatedAt()->format('m/d/Y');
 
             $body = $this->container->get('templating')->render('@api_notification/new-lead.email.html.twig', array(
@@ -833,7 +838,7 @@ class LeadService extends BaseService implements IGridService
                 'subject' => $subject
             ));
 
-            $this->mailer->sendNotification($emails, $subject, $body);
+            $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
         }
     }
 

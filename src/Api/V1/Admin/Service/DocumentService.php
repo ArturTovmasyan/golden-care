@@ -236,7 +236,13 @@ class DocumentService extends BaseService implements IGridService
 
                     $subject = 'New Document - '. $document->getTitle();
 
-                    $this->mailer->sendDocumentNotification($emails, $subject, $document->getDescription(), $spaceName);
+                    $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
+                        'subject' => $subject,
+                        'description' => $document->getDescription(),
+                        'spaceName' => $spaceName
+                    ));
+
+                    $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
                 }
             }
 
@@ -408,7 +414,13 @@ class DocumentService extends BaseService implements IGridService
 
                     $subject = 'New Document - '. $entity->getTitle();
 
-                    $this->mailer->sendDocumentNotification($emails, $subject, $entity->getDescription(), $spaceName);
+                    $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
+                        'subject' => $subject,
+                        'description' => $entity->getDescription(),
+                        'spaceName' => $spaceName
+                    ));
+
+                    $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
                 }
             }
 

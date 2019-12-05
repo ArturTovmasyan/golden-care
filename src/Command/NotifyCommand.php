@@ -153,7 +153,12 @@ class NotifyCommand extends Command
 
                 $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+                $spaceName = '';
+                if ($facility->getSpace() !== null) {
+                    $spaceName = $facility->getSpace()->getName();
+                }
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
             }
         }
         if (!empty($apartments)) {
@@ -172,7 +177,12 @@ class NotifyCommand extends Command
 
                 $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+                $spaceName = '';
+                if ($apartment->getSpace() !== null) {
+                    $spaceName = $apartment->getSpace()->getName();
+                }
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
             }
         }
         if (!empty($regions)) {
@@ -191,7 +201,12 @@ class NotifyCommand extends Command
 
                 $subject = $subjectText . ' - ' . $groupName . ' - ' . $date->format('F') . ' ' . $date->format('Y');
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path);
+                $spaceName = '';
+                if ($region->getSpace() !== null) {
+                    $spaceName = $region->getSpace()->getName();
+                }
+
+                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
             }
         }
     }
@@ -246,13 +261,18 @@ class NotifyCommand extends Command
 
             // Sending email notification per activity
             if ($isEmail && !empty($allEmails)) {
+                $spaceName = '';
+                if ($activity->getStatus() !== null && $activity->getStatus()->getSpace() !== null) {
+                    $spaceName = $activity->getStatus()->getSpace()->getName();
+                }
+
                 $body = $this->container->get('templating')->render('@api_notification/activity.email.html.twig', array(
                     'activity' => $activity,
                     'ownerTitle' => ActivityOwnerType::getTypes()[$activity->getOwnerType()],
                     'subject' => $subject
                 ));
 
-                $this->mailer->sendNotification($allEmails, $subject, $body);
+                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
             }
         }
     }
@@ -324,6 +344,11 @@ class NotifyCommand extends Command
         $emails = array_unique($emails);
 
         if (!empty($emails)) {
+            $spaceName = '';
+            if ($changeLog->getSpace() !== null) {
+                $spaceName = $changeLog->getSpace()->getName();
+            }
+
             $date = new \DateTime('now');
             $date->modify('-24 hours');
             $subject = 'Leads System User Activity for ' . $date->format('m/d/Y');
@@ -333,7 +358,7 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $this->mailer->sendNotification($emails, $subject, $body);
+            $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
         }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Util;
 
 use App\Api\V1\Common\Service\ConfigService;
 use App\Entity\User;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Mailer
@@ -24,6 +25,11 @@ class Mailer
      * @var ConfigService
      */
     private $configService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var array
@@ -53,11 +59,14 @@ class Mailer
     /**
      * Mailer constructor.
      * @param ContainerInterface $container
+     * @param ConfigService $configService
+     * @param LoggerInterface $logger
      */
-    public function __construct(ContainerInterface $container, ConfigService $configService)
+    public function __construct(ContainerInterface $container, ConfigService $configService, LoggerInterface $logger)
     {
         $this->container = $container;
         $this->configService = $configService;
+        $this->logger = $logger;
     }
 
     /**
@@ -138,13 +147,12 @@ class Mailer
             $this->vars
         );
 
-        $mailer  = $this->container->get('mailer');
+        $mailer = $this->container->get('mailer');
         $message = (new \Swift_Message($this->subject))
             ->setFrom(self::FROM)
             ->setTo($this->recipient)
             ->setBcc($this->bcc)
-            ->setBody($body, self::BODY)
-        ;
+            ->setBody($body, self::BODY);
 
         return $mailer->send($message);
     }
@@ -166,7 +174,7 @@ class Mailer
             ->setSubject('Sign In Details')
             ->setVars([
                 'subject' => $this->subject,
-                'user'    => $user,
+                'user' => $user,
             ])
             ->send();
     }
@@ -189,7 +197,7 @@ class Mailer
             ->setSubject('Password Recovery')
             ->setVars([
                 'subject' => $this->subject,
-                'user'    => $user,
+                'user' => $user,
                 'baseUrl' => $baseUrl,
             ])
             ->send();
@@ -213,7 +221,7 @@ class Mailer
             ->setSubject('Welcome to SeniorCare')
             ->setVars([
                 'subject' => $this->subject,
-                'user'    => $user,
+                'user' => $user,
                 'baseUrl' => $baseUrl,
             ])
             ->send();
@@ -234,9 +242,9 @@ class Mailer
             ->setTemplate('@api_email/invitation.html.twig')
             ->setSubject('Invite to Space')
             ->setVars([
-                'subject'  => $this->subject,
-                'baseUrl'  => $baseUrl,
-                'token'    => $token,
+                'subject' => $this->subject,
+                'baseUrl' => $baseUrl,
+                'token' => $token,
                 'fullName' => $fullName,
             ])
             ->send();
@@ -257,11 +265,11 @@ class Mailer
             ->setTemplate('@api_email/create-customer.html.twig')
             ->setSubject('Welcome to SeniorCare Software!')
             ->setVars([
-                'subject'  => $this->subject,
-                'domain'  => $domain,
-                'fullName'  => $fullName,
-                'email'  => $email,
-                'password'  => $password
+                'subject' => $this->subject,
+                'domain' => $domain,
+                'fullName' => $fullName,
+                'email' => $email,
+                'password' => $password
             ])
             ->send();
     }
@@ -281,9 +289,9 @@ class Mailer
             ->setTemplate('@api_email/invite-customer.html.twig')
             ->setSubject('Invite Customer to Space')
             ->setVars([
-                'subject'  => $this->subject,
-                'domain'  => $domain,
-                'token'    => $token,
+                'subject' => $this->subject,
+                'domain' => $domain,
+                'token' => $token,
                 'fullName' => $fullName,
             ])
             ->send();
@@ -293,18 +301,26 @@ class Mailer
      * @param $emails
      * @param $subject
      * @param $body
+     * @param $spaceName
      * @return mixed
      */
-    public function sendNotification($emails, $subject, $body)
+    public function sendNotification($emails, $subject, $body, $spaceName)
     {
-        $mailer  = $this->container->get('mailer');
+        $mailer = $this->container->get('mailer');
         $message = (new \Swift_Message($subject))
             ->setFrom(self::FROM)
             ->setBcc($emails)
-            ->setBody($body, self::BODY)
-        ;
+            ->setBody($body, self::BODY);
 
-        return $mailer->send($message);
+        $status = $mailer->send($message);
+
+        $this->logger->critical($subject, array(
+            'status' => $status,
+            'space' => $spaceName,
+            'emails' => $emails
+        ));
+
+        return $status;
     }
 
     /**
@@ -312,19 +328,27 @@ class Mailer
      * @param $subject
      * @param $body
      * @param $path
+     * @param $spaceName
      * @return mixed
      */
-    public function sendReportNotification($emails, $subject, $body, $path)
+    public function sendReportNotification($emails, $subject, $body, $path, $spaceName)
     {
-        $mailer  = $this->container->get('mailer');
+        $mailer = $this->container->get('mailer');
         $message = (new \Swift_Message($subject))
             ->setFrom(self::FROM)
             ->setBcc($emails)
             ->setBody($body, self::BODY)
-            ->attach(\Swift_Attachment::fromPath($path))
-        ;
+            ->attach(\Swift_Attachment::fromPath($path));
 
-        return $mailer->send($message);
+        $status = $mailer->send($message);
+
+        $this->logger->critical($subject, array(
+            'status' => $status,
+            'space' => $spaceName,
+            'emails' => $emails
+        ));
+
+        return $status;
     }
 
     /**
@@ -358,22 +382,26 @@ class Mailer
     /**
      * @param $emails
      * @param $subject
-     * @param $description
+     * @param $body
      * @param $spaceName
      * @return mixed
      */
-    public function sendDocumentNotification($emails, $subject, $description, $spaceName)
+    public function sendDocumentNotification($emails, $subject, $body, $spaceName)
     {
-        return $this
-            ->setRecipient(array_shift($emails))
+        $mailer = $this->container->get('mailer');
+        $message = (new \Swift_Message($subject))
+            ->setFrom(self::FROM)
             ->setBcc($emails)
-            ->setTemplate('@api_email/document.html.twig')
-            ->setSubject($subject)
-            ->setVars([
-                'subject' => $subject,
-                'description' => $description,
-                'spaceName' => $spaceName
-            ])
-            ->send();
+            ->setBody($body, self::BODY);
+
+        $status = $mailer->send($message);
+
+        $this->logger->critical($subject, array(
+            'status' => $status,
+            'space' => $spaceName,
+            'emails' => $emails
+        ));
+
+        return $status;
     }
 }
