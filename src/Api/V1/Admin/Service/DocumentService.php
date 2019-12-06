@@ -136,6 +136,9 @@ class DocumentService extends BaseService implements IGridService
             $document->setDescription($params['description']);
             $document->setSendEmailNotification($params['notification']);
 
+            $ccEmails = !empty($params['emails']) ? $params['emails'] : [];
+            $document->setEmails($ccEmails);
+
             if(!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
@@ -228,6 +231,11 @@ class DocumentService extends BaseService implements IGridService
                     }
                 }
 
+                if (!empty($document->getEmails())) {
+                    $emails = array_merge($emails, $ccEmails);
+                    $emails = array_unique($emails);
+                }
+
                 if (!empty($emails)) {
                     $spaceName = '';
                     if ($document->getCategory() !== null && $document->getCategory()->getSpace() !== null) {
@@ -294,6 +302,9 @@ class DocumentService extends BaseService implements IGridService
             $entity->setTitle($params['title']);
             $entity->setDescription($params['description']);
             $entity->setSendEmailNotification($params['notification']);
+
+            $ccEmails = !empty($params['emails']) ? $params['emails'] : [];
+            $entity->setEmails($ccEmails);
 
             $facilities = $entity->getFacilities();
             foreach ($facilities as $facility) {
@@ -404,6 +415,11 @@ class DocumentService extends BaseService implements IGridService
                             }
                         }
                     }
+                }
+
+                if (!empty($entity->getEmails())) {
+                    $emails = array_merge($emails, $ccEmails);
+                    $emails = array_unique($emails);
                 }
 
                 if (!empty($emails)) {

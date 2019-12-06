@@ -170,6 +170,7 @@ class DocumentController extends BaseController
                 'file' => $request->get('file'),
                 'roles' => $request->get('roles'),
                 'notification' => $request->get('notification'),
+                'emails' => $request->get('emails'),
             ]
         );
 
@@ -203,6 +204,7 @@ class DocumentController extends BaseController
                 'file' => $request->get('file'),
                 'roles' => $request->get('roles'),
                 'notification' => $request->get('notification'),
+                'emails' => $request->get('emails'),
             ]
         );
 

@@ -49,6 +49,11 @@ use App\Annotation\Grid;
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
+ *          },
+ *          {
+ *              "id"         = "emails",
+ *              "type"       = "string",
+ *              "field"      = "d.emails"
  *          }
  *     }
  * )
@@ -193,6 +198,23 @@ class Document
      * })
      */
     protected $sendEmailNotification;
+
+    /**
+     * @var array $emails
+     * @ORM\Column(name="emails", type="json_array", nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot enter more than {{ limit }} email addresses",
+     *      groups={
+     *          "api_admin_document_add",
+     *          "api_admin_document_edit"
+     * })
+     * @Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    private $emails = [];
 
     /**
      * @var string $downloadUrl
@@ -402,6 +424,22 @@ class Document
     public function setSendEmailNotification(bool $sendEmailNotification): void
     {
         $this->sendEmailNotification = $sendEmailNotification;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmails(): array
+    {
+        return $this->emails;
+    }
+
+    /**
+     * @param array $emails
+     */
+    public function setEmails(array $emails): void
+    {
+        $this->emails = $emails;
     }
 
     /**
