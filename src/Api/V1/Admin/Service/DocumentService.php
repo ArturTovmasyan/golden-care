@@ -109,10 +109,11 @@ class DocumentService extends BaseService implements IGridService
 
     /**
      * @param array $params
+     * @param string $baseUrl
      * @return int|null
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params, string $baseUrl) : ?int
     {
         $insert_id = null;
         try {
@@ -247,7 +248,10 @@ class DocumentService extends BaseService implements IGridService
                     $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
                         'subject' => $subject,
                         'description' => $document->getDescription(),
-                        'spaceName' => $spaceName
+                        'spaceName' => $spaceName,
+                        'title' => $document->getTitle(),
+                        'id' => $document->getId(),
+                        'baseUrl' => $baseUrl
                     ));
 
                     $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
@@ -269,9 +273,10 @@ class DocumentService extends BaseService implements IGridService
     /**
      * @param $id
      * @param array $params
-     * @throws \Throwable
+     * @param string $baseUrl
+     * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params, string $baseUrl) : void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -433,7 +438,10 @@ class DocumentService extends BaseService implements IGridService
                     $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
                         'subject' => $subject,
                         'description' => $entity->getDescription(),
-                        'spaceName' => $spaceName
+                        'spaceName' => $spaceName,
+                        'title' => $entity->getTitle(),
+                        'id' => $entity->getId(),
+                        'baseUrl' => $baseUrl
                     ));
 
                     $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);

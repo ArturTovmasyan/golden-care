@@ -171,7 +171,8 @@ class DocumentController extends BaseController
                 'roles' => $request->get('roles'),
                 'notification' => $request->get('notification'),
                 'emails' => $request->get('emails'),
-            ]
+            ],
+            $request->getSchemeAndHttpHost()
         );
 
         return $this->respondSuccess(
@@ -205,7 +206,8 @@ class DocumentController extends BaseController
                 'roles' => $request->get('roles'),
                 'notification' => $request->get('notification'),
                 'emails' => $request->get('emails'),
-            ]
+            ],
+            $request->getSchemeAndHttpHost()
         );
 
         return $this->respondSuccess(
