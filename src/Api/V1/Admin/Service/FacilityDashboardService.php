@@ -91,6 +91,7 @@ class FacilityDashboardService extends BaseService implements IGridService
             $subIntervals[$axis] = [
                 'dateFrom' => $start,
                 'dateTo' => $end,
+                'days' => $end->diff($start)->days + 1,
             ];
 
             $dateToClone->modify('last day of previous month');
@@ -167,7 +168,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
                     'outreach_per_month' => $outreachPerMonth,
-                    'average_room_rent' => round($averageRoomRent, 2),
+                    'average_room_rent' =>  $days > 0 ? round(($averageRoomRent / $days) * $subInterval['days'], 2) : 0,
                 ];
             }
 
