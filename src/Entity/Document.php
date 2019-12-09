@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Class Document
@@ -456,5 +457,40 @@ class Document
     public function setDownloadUrl(?string $downloadUrl): void
     {
         $this->downloadUrl = $downloadUrl;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={
+     *     "api_admin_document_add",
+     *     "api_admin_document_edit"
+     * })
+     */
+    public function areEmailsValid(ExecutionContextInterface $context): void
+    {
+        $emails = $this->getEmails();
+        $checks = [];
+        foreach ($emails as $email) {
+            $check = preg_match('/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/', $email);
+            $checks[] = $check;
+        }
+
+        if (\count($emails) === 1 && empty($emails[0])) {
+            $countEmails = 0;
+        } else {
+            $countEmails = \count($emails);
+        }
+        $checks = array_sum($checks);
+        $valid = $countEmails - $checks;
+
+        if ($valid === 1) {
+            $context->buildViolation('Invalid email.')
+                ->atPath('emails')
+                ->addViolation();
+        } elseif ($valid > 1) {
+            $context->buildViolation($valid . ' invalid emails.')
+                ->atPath('emails')
+                ->addViolation();
+        }
     }
 }
