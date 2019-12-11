@@ -428,12 +428,12 @@ class ResidentService extends BaseService implements IGridService
 
         foreach ($phones as $phone) {
             $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
+            $smsEnabled = array_key_exists('sms_enabled', $phone) ? (bool)$phone['sms_enabled'] : false;
 
             $residentPhone = new ResidentPhone();
             $residentPhone->setResident($resident);
             $residentPhone->setCompatibility($phone['compatibility'] ?? null);
-            $residentPhone->setType($phone['type']);
+            $residentPhone->setType((int)$phone['type']);
             $residentPhone->setNumber($phone['number']);
             $residentPhone->setPrimary($primary);
             $residentPhone->setSmsEnabled($smsEnabled);
