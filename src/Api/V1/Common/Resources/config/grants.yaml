@@ -98,6 +98,16 @@ persistence:
           title: 'Outreach'
           class: App\Entity\Lead\Outreach
 
+        assessment:
+          title: 'Assessment'
+          children:
+            assessment:
+              title: 'Assessment'
+              class: App\Entity\Lead\Assessment
+            assessment_row:
+              title: 'AssessmentRow'
+              class: App\Entity\Lead\AssessmentRow
+
     common:
       title: 'Common'
       children:

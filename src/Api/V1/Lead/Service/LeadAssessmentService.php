@@ -1,32 +1,31 @@
 <?php
-namespace App\Api\V1\Admin\Service;
+namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryMultipleException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentNotFoundException;
-use App\Api\V1\Common\Service\Exception\AssessmentRowNotAvailableException;
-use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Assessment\Assessment;
-use App\Entity\Assessment\AssessmentRow;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
-use App\Entity\Resident;
-use App\Repository\Assessment\AssessmentRepository;
-use App\Repository\Assessment\AssessmentRowRepository;
+use App\Entity\Lead\Assessment;
+use App\Entity\Lead\AssessmentRow;
+use App\Entity\Lead\Lead;
 use App\Repository\Assessment\FormRepository;
-use App\Repository\ResidentRepository;
+use App\Repository\Lead\AssessmentRepository;
+use App\Repository\Lead\AssessmentRowRepository;
+use App\Repository\Lead\LeadRepository;
 use App\Util\ArrayUtil;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ResidentAssessmentService
- * @package App\Api\V1\Admin\Service
+ * Class LeadAssessmentService
+ * @package App\Api\V1\Lead\Service
  */
-class ResidentAssessmentService extends BaseService implements IGridService
+class LeadAssessmentService extends BaseService implements IGridService
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -34,15 +33,15 @@ class ResidentAssessmentService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params) : void
     {
-        if (empty($params) || empty($params[0]['resident_id'])) {
-            throw new ResidentNotFoundException();
+        if (empty($params) || empty($params[0]['lead_id'])) {
+            throw new LeadNotFoundException();
         }
 
-        $residentId = $params[0]['resident_id'];
+        $leadId = $params[0]['lead_id'];
 
         $queryBuilder
-            ->where('a.resident = :residentId')
-            ->setParameter('residentId', $residentId);
+            ->where('a.lead = :leadId')
+            ->setParameter('leadId', $leadId);
 
         /** @var AssessmentRepository $repo */
         $repo = $this->em->getRepository(Assessment::class);
@@ -56,16 +55,16 @@ class ResidentAssessmentService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['resident_id'])) {
-            $residentId = $params[0]['resident_id'];
+        if (!empty($params) && !empty($params[0]['lead_id'])) {
+            $leadId = $params[0]['lead_id'];
 
             /** @var AssessmentRepository $repo */
             $repo = $this->em->getRepository(Assessment::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $residentId);
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Assessment::class), $leadId);
         }
 
-        throw new ResidentNotFoundException();
+        throw new LeadNotFoundException();
     }
 
     /**
@@ -91,7 +90,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
         try {
             /**
              * @var Form $form
-             * @var Resident $resident
+             * @var Lead $lead
              */
             $this->em->getConnection()->beginTransaction();
 
@@ -99,7 +98,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
             $formId = $params['form_id'] ?? 0;
-            $residentId = $params['resident_id'] ?? 0;
+            $leadId = $params['lead_id'] ?? 0;
 
             /** @var FormRepository $formRepo */
             $formRepo = $this->em->getRepository(Form::class);
@@ -110,24 +109,24 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 throw new AssessmentFormNotFoundException();
             }
 
-            /** @var ResidentRepository $residentRepo */
-            $residentRepo = $this->em->getRepository(Resident::class);
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
 
-            /** @var Resident $resident */
-            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
+            /** @var Lead $lead */
+            $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
-            if ($resident === null) {
-                throw new ResidentNotFoundException();
+            if ($lead === null) {
+                throw new LeadNotFoundException();
             }
 
             $assessment = new Assessment();
-            $assessment->setResident($resident);
+            $assessment->setLead($lead);
             $assessment->setForm($form);
             $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
             $assessment->setNotes($params['notes']);
 
-            $this->validate($assessment, null, ['api_admin_resident_assessment_add']);
+            $this->validate($assessment, null, ['api_lead_assessment_add']);
             $this->em->persist($assessment);
 
             // save rows
@@ -164,14 +163,14 @@ class ResidentAssessmentService extends BaseService implements IGridService
             /**
              * @var Assessment $assessment
              * @var Form $form
-             * @var Resident $resident
+             * @var Lead $lead
              */
             $this->em->getConnection()->beginTransaction();
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
             $formId = $params['form_id'] ?? 0;
-            $residentId = $params['resident_id'] ?? 0;
+            $leadId = $params['lead_id'] ?? 0;
             $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
 
             /** @var FormRepository $formRepo */
@@ -183,14 +182,14 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 throw new AssessmentFormNotFoundException();
             }
 
-            /** @var ResidentRepository $residentRepo */
-            $residentRepo = $this->em->getRepository(Resident::class);
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
 
-            /** @var Resident $resident */
-            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
+            /** @var Lead $lead */
+            $lead = $leadRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
 
-            if ($resident ===  null) {
-                throw new ResidentNotFoundException();
+            if ($lead ===  null) {
+                throw new LeadNotFoundException();
             }
 
             /** @var AssessmentRepository $repo */
@@ -202,13 +201,13 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 throw new AssessmentNotFoundException();
             }
 
-            $assessment->setResident($resident);
+            $assessment->setLead($lead);
             $assessment->setForm($form);
             $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
             $assessment->setNotes($params['notes']);
 
-            $this->validate($assessment, null, ['api_admin_resident_assessment_edit']);
+            $this->validate($assessment, null, ['api_lead_assessment_edit']);
             $this->em->persist($assessment);
 
             // save rows

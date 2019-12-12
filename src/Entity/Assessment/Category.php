@@ -63,7 +63,9 @@ class Category
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $id;
@@ -86,7 +88,9 @@ class Category
      *      "api_admin_assessment_category_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $space;
@@ -108,7 +112,9 @@ class Category
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $title;
@@ -124,7 +130,9 @@ class Category
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $rows;
@@ -145,7 +153,9 @@ class Category
      *      "api_admin_assessment_category_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $multiItem = false;

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity\Assessment;
+namespace App\Entity\Lead;
 
+use App\Entity\Assessment\Row;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,8 +10,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Assessment\AssessmentRowRepository")
- * @ORM\Table(name="tbl_assessment_assessment_row")
+ * @ORM\Entity(repositoryClass="App\Repository\Lead\AssessmentRowRepository")
+ * @ORM\Table(name="tbl_lead_assessment_assessment_row")
  */
 class AssessmentRow
 {
@@ -23,9 +24,8 @@ class AssessmentRow
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $id;
@@ -39,8 +39,8 @@ class AssessmentRow
      * @Assert\NotNull(
      *      message = "Please select an Assessment",
      *      groups={
-     *          "api_admin_resident_assessment_row_edit",
-     *          "api_admin_resident_assessment_row_add"
+     *          "api_lead_assessment_row_edit",
+     *          "api_lead_assessment_row_add"
      *      }
      * )
      */
@@ -48,21 +48,20 @@ class AssessmentRow
 
     /**
      * @var Row
-     * @ORM\ManyToOne(targetEntity="Row", inversedBy="assessmentRows", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Row", inversedBy="leadAssessmentRows", cascade={"persist"})
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_row", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a Row",
      *      groups={
-     *          "api_admin_resident_assessment_row_edit",
-     *          "api_admin_resident_assessment_row_add"
+     *          "api_lead_assessment_row_edit",
+     *          "api_lead_assessment_row_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_resident_assessment_list",
-     *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $row;
@@ -72,14 +71,13 @@ class AssessmentRow
      * @ORM\Column(name="score", type="decimal", precision=8, scale=2)
      * @Assert\NotNull(
      *      groups={
-     *          "api_admin_resident_assessment_row_edit",
-     *          "api_admin_resident_assessment_row_add"
+     *          "api_lead_assessment_row_edit",
+     *          "api_lead_assessment_row_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_resident_assessment_list",
-     *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $score = 0;

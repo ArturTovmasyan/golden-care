@@ -29,7 +29,9 @@ class FormCategory
      *     "api_admin_assessment_form_get",
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_admin_resident_assessment_report",
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $id;
@@ -46,7 +48,9 @@ class FormCategory
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $orderNumber = 0;
@@ -62,7 +66,9 @@ class FormCategory
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $category;

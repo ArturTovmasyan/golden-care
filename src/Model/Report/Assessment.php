@@ -9,6 +9,7 @@ use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
+use App\Entity\Lead\AssessmentRow as LeadAssessmentRow;
 
 class Assessment extends Base
 {
@@ -203,7 +204,7 @@ class Assessment extends Base
     {
         /**
          * @var FormCategory $formCategory
-         * @var AssessmentRow $assessmentRow
+         * @var AssessmentRow|LeadAssessmentRow $assessmentRow
          * @var Category $category
          * @var Row $row
          */

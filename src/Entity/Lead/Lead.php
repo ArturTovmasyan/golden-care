@@ -443,6 +443,11 @@ class Lead
     private $leadTemperatures;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Assessment", mappedBy="lead")
+     */
+    private $assessments;
+
+    /**
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_lead_lead_add"
@@ -803,6 +808,22 @@ class Lead
     public function setLeadTemperatures(ArrayCollection $leadTemperatures): void
     {
         $this->leadTemperatures = $leadTemperatures;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAssessments()
+    {
+        return $this->assessments;
+    }
+
+    /**
+     * @param mixed $assessments
+     */
+    public function setAssessments($assessments): void
+    {
+        $this->assessments = $assessments;
     }
 
     /**

@@ -59,7 +59,9 @@ class Form
      *     "api_admin_assessment_form_get",
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_admin_resident_assessment_report",
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $id;
@@ -82,7 +84,9 @@ class Form
      *     "api_admin_assessment_form_get",
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_admin_resident_assessment_report",
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $space;
@@ -107,7 +111,9 @@ class Form
      *     "api_admin_assessment_form_get",
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_admin_resident_assessment_report",
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $title;
@@ -130,7 +136,9 @@ class Form
      * @Groups({
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_admin_resident_assessment_report",
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $formCategories;
@@ -140,6 +148,12 @@ class Form
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="form", cascade={"remove", "persist"})
      */
     private $assessments;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Assessment", mappedBy="form", cascade={"remove", "persist"})
+     */
+    private $leadAssessments;
 
     /**
      * Form constructor.
@@ -285,5 +299,21 @@ class Form
     public function setAssessments(ArrayCollection $assessments): void
     {
         $this->assessments = $assessments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeadAssessments()
+    {
+        return $this->leadAssessments;
+    }
+
+    /**
+     * @param mixed $leadAssessments
+     */
+    public function setLeadAssessments($leadAssessments): void
+    {
+        $this->leadAssessments = $leadAssessments;
     }
 }

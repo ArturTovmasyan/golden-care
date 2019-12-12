@@ -29,7 +29,9 @@ class Row
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $id;
@@ -68,7 +70,9 @@ class Row
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $title;
@@ -89,7 +93,9 @@ class Row
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $score = 0;
@@ -104,7 +110,9 @@ class Row
      *      "api_admin_assessment_form_get",
      *      "api_admin_resident_assessment_list",
      *      "api_admin_resident_assessment_get",
-     *      "api_admin_resident_assessment_report"
+     *      "api_admin_resident_assessment_report",
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $orderNumber = 0;
@@ -114,6 +122,12 @@ class Row
      * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="row", cascade={"persist"})
      */
     private $assessmentRows;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\AssessmentRow", mappedBy="row", cascade={"persist"})
+     */
+    private $leadAssessmentRows;
 
     /**
      * @return int
@@ -209,5 +223,21 @@ class Row
     public function setAssessmentRows(ArrayCollection $assessmentRows): void
     {
         $this->assessmentRows = $assessmentRows;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadAssessmentRows(): ArrayCollection
+    {
+        return $this->leadAssessmentRows;
+    }
+
+    /**
+     * @param ArrayCollection $leadAssessmentRows
+     */
+    public function setLeadAssessmentRows(ArrayCollection $leadAssessmentRows): void
+    {
+        $this->leadAssessmentRows = $leadAssessmentRows;
     }
 }

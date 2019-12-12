@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Entity\Assessment;
+namespace App\Entity\Lead;
 
-use App\Entity\Resident;
+use App\Entity\Assessment\Form;
+use App\Entity\Assessment\FormCategory;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,10 +17,10 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * Class Assessment
  *
- * @ORM\Entity(repositoryClass="App\Repository\Assessment\AssessmentRepository")
- * @ORM\Table(name="tbl_assessment")
+ * @ORM\Entity(repositoryClass="App\Repository\Lead\AssessmentRepository")
+ * @ORM\Table(name="tbl_lead_assessment")
  * @Grid(
- *     api_admin_resident_assessment_grid={
+ *     api_lead_assessment_grid={
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
@@ -66,46 +67,41 @@ class Assessment
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_get",
-     *     "api_admin_resident_assessment_report"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $id;
 
     /**
-     * @var Resident
-     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="assessments", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
+     * @var Lead
+     * @Assert\NotNull(message = "Please select a Lead", groups={
+     *          "api_lead_assessment_add",
+     *          "api_lead_assessment_edit"
      * })
-     * @Assert\NotNull(
-     *      message = "Please select a Resident",
-     *      groups={
-     *          "api_admin_resident_assessment_add",
-     *          "api_admin_resident_assessment_edit"
-     *      }
-     * )
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\Lead", inversedBy="assessments", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
-    private $resident;
+    private $lead;
 
     /**
      * @var Form
-     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Form", inversedBy="assessments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\Form", inversedBy="leadAssessments")
      * @ORM\JoinColumns({
      *      @ORM\JoinColumn(name="id_form", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Assert\NotNull(
      *      message = "Please select a Form",
      *      groups={
-     *          "api_admin_resident_assessment_edit",
-     *          "api_admin_resident_assessment_add"
+     *          "api_lead_assessment_edit",
+     *          "api_lead_assessment_add"
      *      }
      * )
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report",
-     *     "api_admin_resident_assessment_get"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $form;
@@ -116,32 +112,30 @@ class Assessment
      * @Assert\NotBlank(
      *      message = "Please select a Date",
      *      groups={
-     *          "api_admin_resident_assessment_edit",
-     *          "api_admin_resident_assessment_add"
+     *          "api_lead_assessment_edit",
+     *          "api_lead_assessment_add"
      *      }
      * )
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report",
-     *     "api_admin_resident_assessment_get"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $date;
 
     /**
      * @var string
-     * @ORM\Column(name="performed_by", type="string", nullable=false)
+     * @ORM\Column(name="performed_by", type="string")
      * @Assert\NotBlank(
      *     message = "Value cannot be blank",
      *     groups={
-     *          "api_admin_resident_assessment_edit",
-     *          "api_admin_resident_assessment_add"
+     *          "api_lead_assessment_edit",
+     *          "api_lead_assessment_add"
      *     }
      * )
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report",
-     *     "api_admin_resident_assessment_get"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $performedBy;
@@ -153,14 +147,13 @@ class Assessment
      *      max = 400,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_resident_assessment_add",
-     *          "api_admin_resident_assessment_edit"
+     *          "api_lead_assessment_add",
+     *          "api_lead_assessment_edit"
      *      }
      * )
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report",
-     *     "api_admin_resident_assessment_get"
+     *     "api_lead_assessment_list",
+     *     "api_lead_assessment_get"
      * })
      */
     private $notes;
@@ -169,25 +162,23 @@ class Assessment
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="AssessmentRow", mappedBy="assessment", cascade={"persist"})
      * @Groups({
-     *     "api_admin_resident_assessment_list",
-     *     "api_admin_resident_assessment_report"
+     *     "api_lead_assessment_list"
      * })
      */
     private $assessmentRows;
 
     /**
      * @var float
-     * @ORM\Column(name="score", type="decimal", precision=8, scale=2, nullable=false)
+     * @ORM\Column(name="score", type="decimal", precision=8, scale=2)
      * @Assert\NotNull(
      *      groups={
-     *          "api_admin_resident_assessment_edit",
-     *          "api_admin_resident_assessment_add"
+     *          "api_lead_assessment_edit",
+     *          "api_lead_assessment_add"
      *      }
      * )
      * @Groups({
-     *      "api_admin_resident_assessment_list",
-     *      "api_admin_resident_assessment_report",
-     *      "api_admin_resident_assessment_get"
+     *      "api_lead_assessment_list",
+     *      "api_lead_assessment_get"
      * })
      */
     private $score = 0;
@@ -209,19 +200,19 @@ class Assessment
     }
 
     /**
-     * @return Resident
+     * @return Lead|null
      */
-    public function getResident(): Resident
+    public function getLead(): ?Lead
     {
-        return $this->resident;
+        return $this->lead;
     }
 
     /**
-     * @param Resident $resident
+     * @param Lead|null $lead
      */
-    public function setResident(Resident $resident): void
+    public function setLead(?Lead $lead): void
     {
-        $this->resident = $resident;
+        $this->lead = $lead;
     }
 
     /**
@@ -324,7 +315,7 @@ class Assessment
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("rows")
      * @Groups({
-     *     "api_admin_resident_assessment_get"
+     *     "api_lead_assessment_get"
      * })
      */
     public function getVirtualRows()
