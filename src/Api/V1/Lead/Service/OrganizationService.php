@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
+use App\Api\V1\Common\Service\Exception\TheNameIsAlreadyInUseInThisSpaceException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Lead\Organization;
@@ -70,13 +71,15 @@ class OrganizationService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $categoryId = $params['category_id'] ?? 0;
 
             /** @var ReferrerTypeRepository $categoryRepo */
             $categoryRepo = $this->em->getRepository(ReferrerType::class);
 
             /** @var ReferrerType $category */
-            $category = $categoryRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $categoryId);
+            $category = $categoryRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $categoryId);
 
             if ($category === null) {
                 throw new ReferrerTypeNotFoundException();
@@ -88,10 +91,22 @@ class OrganizationService extends BaseService implements IGridService
             $cszRepo = $this->em->getRepository(CityStateZip::class);
 
             /** @var CityStateZip $csz */
-            $csz = $cszRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
+            }
+
+            //////for name unique by space validation
+            if ($category !== null && $category->getSpace() !== null) {
+                /** @var OrganizationRepository $repo */
+                $repo = $this->em->getRepository(Organization::class);
+
+                $existOrganizations = $repo->getOrganizationsByNameAndSpace($category->getSpace()->getId(), preg_replace('/\s\s+/', ' ', $params['name']));
+
+                if (!empty($existOrganizations) && \count($existOrganizations) >= 1) {
+                    throw new TheNameIsAlreadyInUseInThisSpaceException();
+                }
             }
 
             $emails = !empty($params['emails']) ? $params['emails'] : [];
@@ -151,7 +166,7 @@ class OrganizationService extends BaseService implements IGridService
             $categoryRepo = $this->em->getRepository(ReferrerType::class);
 
             /** @var ReferrerType $category */
-            $category = $categoryRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $categoryId);
+            $category = $categoryRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $categoryId);
 
             if ($category === null) {
                 throw new ReferrerTypeNotFoundException();
@@ -163,10 +178,19 @@ class OrganizationService extends BaseService implements IGridService
             $cszRepo = $this->em->getRepository(CityStateZip::class);
 
             /** @var CityStateZip $csz */
-            $csz = $cszRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
+            $csz = $cszRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CityStateZip::class), $cszId);
 
             if ($csz === null) {
                 throw new CityStateZipNotFoundException();
+            }
+
+            //////for name unique by space validation
+            if ($category !== null && $category->getSpace() !== null) {
+                $existOrganizations = $repo->getOrganizationsByNameAndSpace($category->getSpace()->getId(), preg_replace('/\s\s+/', ' ', $params['name']), $id);
+
+                if (!empty($existOrganizations) && \count($existOrganizations) >= 1) {
+                    throw new TheNameIsAlreadyInUseInThisSpaceException();
+                }
             }
 
             $emails = !empty($params['emails']) ? $params['emails'] : [];
@@ -183,6 +207,7 @@ class OrganizationService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_lead_organization_edit']);
 
             $this->em->persist($entity);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

@@ -248,4 +248,45 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
             ->getQuery()
             ->getResult();
     }
+
+    //////for name unique by space validation
+    /**
+     * @param $spaceId
+     * @param $name
+     * @param null $id
+     * @return mixed
+     */
+    public function getOrganizationsByNameAndSpace($spaceId, $name, $id = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('o')
+            ->select('o.id')
+            ->innerJoin(
+                ReferrerType::class,
+                'c',
+                Join::WITH,
+                'c = o.category'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = c.space'
+            )
+            ->where('s.id = :spaceId')
+            ->andWhere('o.name = :name')
+            ->setParameter('spaceId', $spaceId)
+            ->setParameter('name', $name);
+
+        if ($id !== null) {
+            $qb
+                ->andWhere('o.id != :id')
+                ->setParameter('id', $id);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    //////end for name unique by space validation
 }

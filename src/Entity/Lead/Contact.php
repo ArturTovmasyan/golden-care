@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -15,6 +16,15 @@ use App\Annotation\Grid as Grid;
 /**
  * @ORM\Table(name="tbl_lead_contact")
  * @ORM\Entity(repositoryClass="App\Repository\Lead\ContactRepository")
+ * @UniqueEntity(
+ *     fields={"space", "firstName", "lastName"},
+ *     errorPath="lastName",
+ *     message="The Contact full name is already in use in this space.",
+ *     groups={
+ *          "api_lead_contact_add",
+ *          "api_lead_contact_edit"
+ *     }
+ * )
  * @Grid(
  *     api_lead_contact_grid={
  *          {
