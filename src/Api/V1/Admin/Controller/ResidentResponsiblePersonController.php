@@ -35,36 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResidentResponsiblePersonController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/responsible/person/grid Get ResidentResponsiblePersons Grid
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentResponsiblePersons Grid
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to listing residentResponsiblePersons
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentResponsiblePersons
-     * @apiSuccess {Object}   resident             The resident identifier of the residentResponsiblePersons
-     * @apiSuccess {Object}   responsible_person   The responsible person Full Name of the residentResponsiblePersons
-     * @apiSuccess {String}   relationship         The relationship name of the residentResponsiblePersons
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                   "id": 1,
-     *                   "resident": 1,
-     *                   "responsible_person": "Joe Cole",
-     *                   "relationship": "Brother"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_responsible_person_grid", methods={"GET"})
      *
      * @param Request $request
@@ -84,30 +54,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/responsible/person/grid Get ResidentResponsiblePerson Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentResponsiblePerson Grid Options
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the residentResponsiblePerson listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_responsible_person_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -120,42 +66,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/responsible/person Get ResidentResponsiblePersons
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentResponsiblePersons
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to listing residentResponsiblePersons
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentResponsiblePerson
-     * @apiSuccess {Object}   resident             The resident of the residentResponsiblePerson
-     * @apiSuccess {Object}   responsible_person   The responsible person of the residentResponsiblePerson
-     * @apiSuccess {String}   relationship         The relationship of the residentResponsiblePerson
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     [
-     *         {
-     *             "id": 1,
-     *             "resident": {
-     *                 "id": 1,
-     *                 "first_name": "Joe",
-     *                 "last_name": "Cole"
-     *             },
-     *             "responsible_person": {
-     *                 "id": 1,
-     *                 "first_name": "Joe",
-     *                 "last_name": "Cole"
-     *             },
-     *             "relationship": {
-     *                 "id": 1
-     *                 "name": "Brother"
-     *             }
-     *         }
-     *     ]
-     *
      * @Route("", name="api_admin_resident_responsible_person_list", methods={"GET"})
      *
      * @param Request $request
@@ -175,40 +85,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/responsible/person/{id} Get ResidentResponsiblePerson
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentResponsiblePerson
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to get residentResponsiblePerson
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentResponsiblePerson
-     * @apiSuccess {Object}   resident             The resident of the residentResponsiblePerson
-     * @apiSuccess {Object}   responsible_person   The responsible person of the residentResponsiblePerson
-     * @apiSuccess {String}   relationship         The relationship of the residentResponsiblePerson
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "resident": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole"
-     *          },
-     *          "responsible_person": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole"
-     *          },
-     *          "relationship": {
-     *              "id": 1
-     *              "name": "Brother"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_responsible_person_get", methods={"GET"})
      *
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
@@ -226,38 +102,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/responsible/person Add ResidentResponsiblePerson
-     * @apiVersion 1.0.0
-     * @apiName Add ResidentResponsiblePerson
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to add residentResponsiblePerson
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     responsible_person_id The unique identifier of the responsible person
-     * @apiParam {Object}  relationship_id       The unique identifier of relationship
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "responsible_person_id": 1,
-     *          "relationship_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "relationship_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_resident_responsible_person_add", methods={"POST"})
      *
      * @Grant(grant="persistence-resident-resident_responsible_person", level="ADD")
@@ -286,38 +130,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/responsible/person/{id} Edit ResidentResponsiblePerson
-     * @apiVersion 1.0.0
-     * @apiName Edit ResidentResponsiblePerson
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to edit residentResponsiblePerson
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     responsible_person_id The unique identifier of the responsible person
-     * @apiParam {Object}  relationship_id       The unique identifier of relationship
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "responsible_person_id": 1,
-     *          "relationship_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "relationship_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_responsible_person_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident_responsible_person", level="EDIT")
@@ -346,25 +158,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/responsible/person/{id} Delete ResidentResponsiblePerson
-     * @apiVersion 1.0.0
-     * @apiName Delete ResidentResponsiblePerson
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to remove residentResponsiblePerson
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentResponsiblePerson not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_responsible_person_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_responsible_person", level="DELETE")
@@ -385,30 +178,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/responsible/person Bulk Delete ResidentResponsiblePersons
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete ResidentResponsiblePersons
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to bulk remove ResidentResponsiblePersons
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the residentResponsiblePersons
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentResponsiblePerson not found"
-     *     }
-     *
      * @Route("", name="api_admin_resident_responsible_person_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_responsible_person", level="DELETE")
@@ -429,30 +198,6 @@ class ResidentResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/responsible/person/related/info ResidentResponsiblePerson related info
-     * @apiVersion 1.0.0
-     * @apiName ResidentResponsiblePerson Related Info
-     * @apiGroup Admin Resident Responsible Persons
-     * @apiDescription This function is used to get residentResponsiblePerson related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResidentResponsiblePerson not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_resident_responsible_person_related_info", methods={"POST"})
      *
      * @param Request $request
@@ -478,7 +223,6 @@ class ResidentResponsiblePersonController extends BaseController
      * @Grant(grant="persistence-resident-resident_responsible_person", level="EDIT")
      *
      * @param Request $request
-     * @param $id
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
      * @throws \Throwable

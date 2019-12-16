@@ -35,36 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResidentAllergenController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/history/allergy/other/grid Get ResidentAllergens Grid
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentAllergens Grid
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to listing residentAllergens
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentAllergen
-     * @apiSuccess {Object}   resident             The resident of the residentAllergen
-     * @apiSuccess {Object}   allergen             The allergen of the residentAllergen
-     * @apiSuccess {String}   notes                The notes of the residentAllergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                   "id": 1,
-     *                   "allergen": "Lidocaine",
-     *                   "notes": "some notes"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_allergen_grid", methods={"GET"})
      *
      * @param Request $request
@@ -84,30 +54,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/history/allergy/other/grid Get ResidentAllergen Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentAllergen Grid Options
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the residentAllergen listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_allergen_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -120,42 +66,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/history/allergy/other Get ResidentAllergens
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentAllergens
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to listing residentAllergens
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentAllergen
-     * @apiSuccess {Object}   resident             The resident of the residentAllergen
-     * @apiSuccess {Object}   allergen             The allergen of the residentAllergen
-     * @apiSuccess {String}   notes                The notes of the residentAllergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "allergen": {
-     *                      "id": 1,
-     *                      "title": "Lidocaine"
-     *                  },
-     *                  "notes": "some notes"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_resident_allergen_list", methods={"GET"})
      *
      * @param Request $request
@@ -175,36 +85,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/history/allergy/other/{id} Get ResidentAllergen
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentAllergen
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to get residentAllergen
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentAllergen
-     * @apiSuccess {Object}   resident             The resident of the residentAllergen
-     * @apiSuccess {Object}   allergen             The allergen of the residentAllergen
-     * @apiSuccess {String}   notes                The notes of the residentAllergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "allergen": {
-     *                      "id": 1,
-     *                      "title": "Lidocaine"
-     *                  },
-     *                  "notes": "some notes"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_allergen_get", methods={"GET"})
      *
      * @param ResidentAllergenService $residentAllergenService
@@ -222,43 +102,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/history/allergy/other Add ResidentAllergen
-     * @apiVersion 1.0.0
-     * @apiName Add ResidentAllergen
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to add residentAllergen
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     allergen_id           The unique identifier of the allergen in select mode
-     * @apiParam {Object}  allergen              The new allergen in add new mode
-     * @apiParam {String}  [notes]               The notes of the residentAllergen
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "allergen_id": 1,
-     *          "allergen": {
-     *               "title": "Lidocaine",
-     *               "description": "some description"
-     *          },
-     *          "notes": "some notes"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "allergen_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_resident_allergen_add", methods={"POST"})
      *
      * @Grant(grant="persistence-resident-resident_allergen", level="ADD")
@@ -286,43 +129,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/history/allergy/other/{id} Edit ResidentAllergen
-     * @apiVersion 1.0.0
-     * @apiName Edit ResidentAllergen
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to edit residentAllergen
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     allergen_id           The unique identifier of the allergen in select mode
-     * @apiParam {Object}  allergen              The new allergen in add new mode
-     * @apiParam {String}  [notes]               The notes of the residentAllergen
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "allergen_id": 1,
-     *          "allergen": {
-     *                          "title": "Lidocaine",
-     *                          "description": "some description"
-     *                        },
-     *          "notes": "some notes"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "allergen_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_allergen_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident_allergen", level="EDIT")
@@ -350,25 +156,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/history/allergy/other/{id} Delete ResidentAllergen
-     * @apiVersion 1.0.0
-     * @apiName Delete ResidentAllergen
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to remove residentAllergen
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentAllergen not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_allergen_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_allergen", level="DELETE")
@@ -389,30 +176,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/history/allergy/other Bulk Delete ResidentAllergens
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete ResidentAllergens
-     * @apiGroup Admin Resident Allergens
-     * @apiDescription This function is used to bulk remove residentAllergens
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the residentAllergens
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentAllergen not found"
-     *     }
-     *
      * @Route("", name="api_admin_resident_allergen_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_allergen", level="DELETE")
@@ -433,30 +196,6 @@ class ResidentAllergenController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/history/allergy/other/related/info ResidentAllergen related info
-     * @apiVersion 1.0.0
-     * @apiName ResidentAllergen Related Info
-     * @apiGroup Admin Resident Allergen
-     * @apiDescription This function is used to get RrsidentAllergen related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResidentAllergen not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_resident_allergen_related_info", methods={"POST"})
      *
      * @param Request $request

@@ -35,59 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResidentMedicationController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/medication/grid Get ResidentMedications Grid
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentMedications Grid
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to listing residentMedications
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentMedication
-     * @apiSuccess {Object}   resident             The resident of the residentMedication
-     * @apiSuccess {Object}   physician            The physician of the residentMedication
-     * @apiSuccess {Object}   medication           The medication of the residentMedication
-     * @apiSuccess {Object}   form_factor          The formFactor of the residentMedication
-     * @apiSuccess {String}   dosage               The dosage of the residentMedication
-     * @apiSuccess {String}   dosage_unit          The dosageUnit of the residentMedication
-     * @apiSuccess {String}   am                   The am of the residentMedication
-     * @apiSuccess {String}   nn                   The nn of the residentMedication
-     * @apiSuccess {String}   pm                   The pm of the residentMedication
-     * @apiSuccess {String}   hs                   The hs of the residentMedication
-     * @apiSuccess {Boolean}  prn                  The prn status of the residentMedication
-     * @apiSuccess {Boolean}  discontinued         The discontinued status of the residentMedication
-     * @apiSuccess {Boolean}  treatment            The treatment status of the residentMedication
-     * @apiSuccess {String}   notes                The notes of the residentMedication
-     * @apiSuccess {String}   prescription_number  The prescriptionNumber of the residentMedication
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                   "id": 1,
-     *                   "medication": "Ampicillin",
-     *                   "form_factor": "Factor1",
-     *                   "dosage": "30",
-     *                   "dosage_unit": "mg",
-     *                   "am": "0",
-     *                   "nn": "0",
-     *                   "pm": "0",
-     *                   "hs": "0",
-     *                   "prn": false,
-     *                   "discontinued": false,
-     *                   "treatment": false,
-     *                   "notes": "some notes",
-     *                   "prescription_number": "OTC"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_medication_grid", methods={"GET"})
      *
      * @param Request $request
@@ -110,30 +57,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/medication/grid Get ResidentMedication Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentMedication Grid Options
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the residentMedication listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_medication_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -146,71 +69,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/medication Get ResidentMedications
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentMedications
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to listing residentMedications
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentMedication
-     * @apiSuccess {Object}   resident             The resident of the residentMedication
-     * @apiSuccess {Object}   physician            The physician of the residentMedication
-     * @apiSuccess {Object}   medication           The medication of the residentMedication
-     * @apiSuccess {Object}   form_factor          The formFactor of the residentMedication
-     * @apiSuccess {String}   dosage               The dosage of the residentMedication
-     * @apiSuccess {String}   dosage_unit          The dosageUnit of the residentMedication
-     * @apiSuccess {String}   am                   The am of the residentMedication
-     * @apiSuccess {String}   nn                   The nn of the residentMedication
-     * @apiSuccess {String}   pm                   The pm of the residentMedication
-     * @apiSuccess {String}   hs                   The hs of the residentMedication
-     * @apiSuccess {Boolean}  prn                  The prn status of the residentMedication
-     * @apiSuccess {Boolean}  discontinued         The discontinued status of the residentMedication
-     * @apiSuccess {Boolean}  treatment            The treatment status of the residentMedication
-     * @apiSuccess {String}   notes                The notes of the residentMedication
-     * @apiSuccess {String}   prescription_number  The prescriptionNumber of the residentMedication
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "physician": {
-     *                      "id": 1
-     *                  },
-     *                  "medication": {
-     *                      "id": 1,
-     *                      "name": "Ampicillin"
-     *                  },
-     *                  "form_factor": {
-     *                      "id": 1,
-     *                      "title": "Factor1"
-     *                  },
-     *                  "dosage": "30",
-     *                  "dosage_unit": "mg",
-     *                  "am": "0",
-     *                  "nn": "0",
-     *                  "pm": "0",
-     *                  "hs": "0",
-     *                  "prn": false,
-     *                  "discontinued": false,
-     *                  "treatment": false,
-     *                  "notes": "some notes",
-     *                  "prescription_number": "OTC"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_resident_medication_list", methods={"GET"})
      *
      * @param Request $request
@@ -234,65 +92,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/medication/{id} Get ResidentMedication
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentMedication
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to get residentMedication
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id                   The unique identifier of the residentMedication
-     * @apiSuccess {Object}   resident             The resident of the residentMedication
-     * @apiSuccess {Object}   physician            The physician of the residentMedication
-     * @apiSuccess {Object}   medication           The medication of the residentMedication
-     * @apiSuccess {Object}   form_factor          The formFactor of the residentMedication
-     * @apiSuccess {String}   dosage               The dosage of the residentMedication
-     * @apiSuccess {String}   dosage_unit          The dosageUnit of the residentMedication
-     * @apiSuccess {String}   am                   The am of the residentMedication
-     * @apiSuccess {String}   nn                   The nn of the residentMedication
-     * @apiSuccess {String}   pm                   The pm of the residentMedication
-     * @apiSuccess {String}   hs                   The hs of the residentMedication
-     * @apiSuccess {Boolean}  prn                  The prn status of the residentMedication
-     * @apiSuccess {Boolean}  discontinued         The discontinued status of the residentMedication
-     * @apiSuccess {Boolean}  treatment            The treatment status of the residentMedication
-     * @apiSuccess {String}   notes                The notes of the residentMedication
-     * @apiSuccess {String}   prescription_number  The prescriptionNumber of the residentMedication
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "physician": {
-     *                      "id": 1
-     *                  },
-     *                  "medication": {
-     *                      "id": 1,
-     *                      "name": "Ampicillin"
-     *                  },
-     *                  "form_factor": {
-     *                      "id": 1,
-     *                      "title": "Factor1"
-     *                  },
-     *                  "dosage": "30",
-     *                  "dosage_unit": "mg",
-     *                  "am": "0",
-     *                  "nn": "0",
-     *                  "pm": "0",
-     *                  "hs": "0",
-     *                  "prn": false,
-     *                  "discontinued": false,
-     *                  "treatment": false,
-     *                  "notes": "some notes",
-     *                  "prescription_number": "OTC"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_get", methods={"GET"})
      *
      * @param ResidentMedicationService $residentMedicationService
@@ -310,62 +109,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/medication Add ResidentMedication
-     * @apiVersion 1.0.0
-     * @apiName Add ResidentMedication
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to add residentMedication
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     physician_id          The unique identifier of the physician
-     * @apiParam {Int}     medication_id         The unique identifier of the medication
-     * @apiParam {Int}     form_factor_id        The unique identifier of the formFactor
-     * @apiParam {String}  dosage                The dosage of the residentMedication
-     * @apiParam {String}  dosage_unit           The dosageUnit of the residentMedication
-     * @apiParam {String}  [am]                  The am of the residentMedication
-     * @apiParam {String}  [nn]                  The nn of the residentMedication
-     * @apiParam {String}  [pm]                  The pm of the residentMedication
-     * @apiParam {String}  [hs]                  The hs of the residentMedication
-     * @apiParam {Int}     prn                   The prn status of the residentMedication
-     * @apiParam {Int}     discontinued          The discontinued status of the residentMedication
-     * @apiParam {Int}     treatment             The treatment status of the residentMedication
-     * @apiParam {String}  [notes]               The notes of the residentMedication
-     * @apiParam {String}  [prescription_number] The prescriptionNumber of the residentMedication
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "physician_id": 1,
-     *          "medication_id": 1,
-     *          "form_factor_id": 1,
-     *          "dosage": "30",
-     *          "dosage_unit": "mg",
-     *          "am": "0",
-     *          "nn": "0",
-     *          "pm": "0",
-     *          "hs": "0",
-     *          "prn": false,
-     *          "discontinued": false,
-     *          "treatment": false,
-     *          "notes": "some notes",
-     *          "prescription_number": "OTC"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "dosage": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_resident_medication_add", methods={"POST"})
      *
      * @Grant(grant="persistence-resident-resident_medication", level="ADD")
@@ -405,62 +148,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/medication/{id} Edit ResidentMedication
-     * @apiVersion 1.0.0
-     * @apiName Edit ResidentMedication
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to edit residentMedication
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id           The unique identifier of the resident
-     * @apiParam {Int}     physician_id          The unique identifier of the physician
-     * @apiParam {Int}     medication_id         The unique identifier of the medication
-     * @apiParam {Int}     form_factor_id        The unique identifier of the formFactor
-     * @apiParam {String}  dosage                The dosage of the residentMedication
-     * @apiParam {String}  dosage_unit           The dosageUnit of the residentMedication
-     * @apiParam {String}  [am]                  The am of the residentMedication
-     * @apiParam {String}  [nn]                  The nn of the residentMedication
-     * @apiParam {String}  [pm]                  The pm of the residentMedication
-     * @apiParam {String}  [hs]                  The hs of the residentMedication
-     * @apiParam {Int}     prn                   The prn status of the residentMedication
-     * @apiParam {Int}     discontinued          The discontinued status of the residentMedication
-     * @apiParam {Int}     treatment             The treatment status of the residentMedication
-     * @apiParam {String}  [notes]               The notes of the residentMedication
-     * @apiParam {String}  [prescription_number] The prescriptionNumber of the residentMedication
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "physician_id": 1,
-     *          "medication_id": 1,
-     *          "form_factor_id": 1,
-     *          "dosage": "30",
-     *          "dosage_unit": "mg",
-     *          "am": "0",
-     *          "nn": "0",
-     *          "pm": "0",
-     *          "hs": "0",
-     *          "prn": false,
-     *          "discontinued": false,
-     *          "treatment": false,
-     *          "notes": "some notes",
-     *          "prescription_number": "OTC"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "dosage": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident_medication", level="EDIT")
@@ -500,25 +187,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/medication/{id} Delete ResidentMedication
-     * @apiVersion 1.0.0
-     * @apiName Delete ResidentMedication
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to remove residentMedication
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentMedication not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_medication", level="DELETE")
@@ -539,30 +207,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/medication Bulk Delete ResidentMedications
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete ResidentMedications
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to bulk remove residentMedications
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the residentMedications
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentMedication not found"
-     *     }
-     *
      * @Route("", name="api_admin_resident_medication_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_medication", level="DELETE")
@@ -583,30 +227,6 @@ class ResidentMedicationController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/medication/related/info ResidentMedication related info
-     * @apiVersion 1.0.0
-     * @apiName ResidentMedication Related Info
-     * @apiGroup Admin Resident Medications
-     * @apiDescription This function is used to get residentMedication related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResidentMedication not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_resident_medication_related_info", methods={"POST"})
      *
      * @param Request $request

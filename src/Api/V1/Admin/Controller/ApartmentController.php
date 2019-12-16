@@ -35,53 +35,6 @@ use App\Annotation\Grant as Grant;
 class ApartmentController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/apartment/grid Get Apartments Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Apartments Grid
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to listing apartments
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id               The unique identifier of the apartment
-     * @apiSuccess {String}  name             The name of the apartment
-     * @apiSuccess {String}  description      The description time of the apartment
-     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
-     * @apiSuccess {String}  phone            The phone time of the apartment
-     * @apiSuccess {String}  fax              The fax time of the apartment
-     * @apiSuccess {String}  address          The address time of the apartment
-     * @apiSuccess {String}  license          The license time of the apartment
-     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
-     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
-     * @apiSuccess {Int}     capacity         The capacity time of the apartment
-     * @apiSuccess {Object}  space            The space of the apartment
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "name": "Auburn Oaks",
-     *                  "description": "Some description",
-     *                  "shorthand": "AOIL",
-     *                  "phone": "(916) 729-9200",
-     *                  "fax": "(916) 729-9204",
-     *                  "address": "Auburn Oaks",
-     *                  "license": "347005555",
-     *                  "license_capacity": 48,
-     *                  "capacity": 48,
-     *                  "space": "alms",
-     *                  "csz_str": "Verdi CA, 89439"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_apartment_grid", methods={"GET"})
      *
      * @param Request $request
@@ -100,30 +53,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/apartment/grid Get Apartment Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Apartment Grid Options
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the apartment listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_apartment_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -136,61 +65,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/apartment Get Apartments
-     * @apiVersion 1.0.0
-     * @apiName Get Apartments
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to listing apartments
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id               The unique identifier of the apartment
-     * @apiSuccess {String}  name             The name of the apartment
-     * @apiSuccess {String}  description      The description time of the apartment
-     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
-     * @apiSuccess {String}  phone            The phone time of the apartment
-     * @apiSuccess {String}  fax              The fax time of the apartment
-     * @apiSuccess {String}  address          The address time of the apartment
-     * @apiSuccess {String}  license          The license time of the apartment
-     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
-     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
-     * @apiSuccess {Int}     capacity         The capacity time of the apartment
-     * @apiSuccess {Object}  space            The space of the apartment
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "name": "Auburn Oaks",
-     *                  "description": "Some description",
-     *                  "shorthand": "AOIL",
-     *                  "phone": "(916) 729-9200",
-     *                  "fax": "(916) 729-9204",
-     *                  "address": "Auburn Oaks",
-     *                  "license": "347005555",
-     *                  "csz": {
-     *                      "id": 1,
-     *                      "state_abbr": "CA",
-     *                      "zip_main": "89439",
-     *                      "city": "Verdi"
-     *                  },
-     *                  "license_capacity": 48,
-     *                  "capacity": 48,
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_apartment_list", methods={"GET"})
      *
      * @param Request $request
@@ -209,55 +83,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/apartment/{id} Get Apartment
-     * @apiVersion 1.0.0
-     * @apiName Get Apartment
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to get apartment
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id               The unique identifier of the apartment
-     * @apiSuccess {String}  name             The name of the apartment
-     * @apiSuccess {String}  description      The description time of the apartment
-     * @apiSuccess {String}  shorthand        The shorthand time of the apartment
-     * @apiSuccess {String}  phone            The phone time of the apartment
-     * @apiSuccess {String}  fax              The fax time of the apartment
-     * @apiSuccess {String}  address          The address time of the apartment
-     * @apiSuccess {String}  license          The license time of the apartment
-     * @apiSuccess {Object}  csz              The City State & Zip of the apartment
-     * @apiSuccess {Int}     license_capacity The license capacity time of the apartment
-     * @apiSuccess {Int}     capacity         The capacity time of the apartment
-     * @apiSuccess {Object}  space            The space of the apartment
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "name": "Auburn Oaks",
-     *                  "description": "Some description",
-     *                  "shorthand": "AOIL",
-     *                  "phone": "(916) 729-9200",
-     *                  "fax": "(916) 729-9204",
-     *                  "address": "Auburn Oaks",
-     *                  "license": "347005555",
-     *                  "csz": {
-     *                      "id": 1,
-     *                      "state_abbr": "CA",
-     *                      "zip_main": "89439",
-     *                      "city": "Verdi"
-     *                  },
-     *                  "license_capacity": 48,
-     *                  "capacity": 48,
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_get", methods={"GET"})
      *
      * @param ApartmentService $apartmentService
@@ -275,54 +100,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/apartment Add Apartment
-     * @apiVersion 1.0.0
-     * @apiName Add Apartment
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to add apartment
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  name             The name of the apartment
-     * @apiParam {String}  [description]    The description of the apartment
-     * @apiParam {String}  shorthand        The shorthand of the apartment
-     * @apiParam {String}  [phone]          The phone of the apartment
-     * @apiParam {String}  [fax]            The fax of the apartment
-     * @apiParam {String}  address          The address of the apartment
-     * @apiParam {String}  [license]        The license of the apartment
-     * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
-     * @apiParam {Int}     license_capacity The license capacity of the apartment
-     * @apiParam {Int}     capacity         The capacity of the apartment
-     * @apiParam {Int}     space_id         The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "name": "Auburn Oaks",
-     *          "description": "Some description",
-     *          "shorthand": "AOIL",
-     *          "phone": "(916) 729-9200",
-     *          "fax": "(916) 729-9204",
-     *          "address": "Auburn Oaks",
-     *          "license": "347005555",
-     *          "csz_id": 1,
-     *          "license_capacity": 48,
-     *          "capacity": 48,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this name is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_apartment_add", methods={"POST"})
      *
      * @Grant(grant="persistence-apartment", level="ADD")
@@ -358,54 +135,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/apartment/{id} Edit Apartment
-     * @apiVersion 1.0.0
-     * @apiName Edit Apartment
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to edit apartment
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  name             The name of the apartment
-     * @apiParam {String}  [description]    The description of the apartment
-     * @apiParam {String}  shorthand        The shorthand of the apartment
-     * @apiParam {String}  [phone]          The phone of the apartment
-     * @apiParam {String}  [fax]            The fax of the apartment
-     * @apiParam {String}  address          The address of the apartment
-     * @apiParam {String}  [license]        The license of the apartment
-     * @apiParam {Int}     csz_id           The unique identifier of the City State & Zip
-     * @apiParam {Int}     license_capacity The license capacity of the apartment
-     * @apiParam {Int}     capacity         The capacity of the apartment
-     * @apiParam {Int}     space_id         The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "name": "Auburn Oaks",
-     *          "description": "Some description",
-     *          "shorthand": "AOIL",
-     *          "phone": "(916) 729-9200",
-     *          "fax": "(916) 729-9204",
-     *          "address": "Auburn Oaks",
-     *          "license": "347005555",
-     *          "csz_id": 1,
-     *          "license_capacity": 48,
-     *          "capacity": 48,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this name is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-apartment", level="EDIT")
@@ -441,25 +170,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/apartment/{id} Delete Apartment
-     * @apiVersion 1.0.0
-     * @apiName Delete Apartment
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to remove apartment
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Apartment not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-apartment", level="DELETE")
@@ -480,30 +190,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/apartment Bulk Delete Apartments
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Apartments
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to bulk remove apartments
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the apartments
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Apartment not found"
-     *     }
-     *
      * @Route("", name="api_admin_apartment_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-apartment", level="DELETE")
@@ -524,30 +210,6 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/apartment/related/info Apartment related info
-     * @apiVersion 1.0.0
-     * @apiName Apartment Related Info
-     * @apiGroup Admin Apartment
-     * @apiDescription This function is used to get apartment related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Apartment not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_apartment_related_info", methods={"POST"})
      *
      * @param Request $request

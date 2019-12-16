@@ -35,47 +35,6 @@ use App\Annotation\Grant as Grant;
 class EventDefinitionController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/event/definition/grid Get EventDefinitions Grid
-     * @apiVersion 1.0.0
-     * @apiName Get EventDefinitions Grid
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to listing eventDefinitions
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id                  The unique identifier of the eventDefinition
-     * @apiSuccess {String}  title               The title of the eventDefinition
-     * @apiSuccess {Boolean} ffc                 The show in FFC status of the eventDefinition
-     * @apiSuccess {Boolean} ihc                 The show in IHC status of the eventDefinition
-     * @apiSuccess {Boolean} il                  The show in IL status of the eventDefinition
-     * @apiSuccess {Boolean} physician           The show physician field in event
-     * @apiSuccess {Boolean} responsible_person  The show responsiblePerson field in event
-     * @apiSuccess {Boolean} additional_date     The show additionalDate field in event
-     * @apiSuccess {Object}  space               The space of the eventDefinition
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "911",
-     *                  "ffc": true,
-     *                  "ihc": true,
-     *                  "il": true,
-     *                  "physician": false,
-     *                  "responsible_person": false,
-     *                  "additional_date": false,
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_event_definition_grid", methods={"GET"})
      *
      * @param Request $request
@@ -94,30 +53,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/event/definition/grid Get EventDefinition Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get EventDefinition Grid Options
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the eventDefinition listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_event_definition_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -130,50 +65,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/event/definition Get EventDefinitions
-     * @apiVersion 1.0.0
-     * @apiName Get EventDefinitions
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to listing eventDefinitions
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id                  The unique identifier of the eventDefinition
-     * @apiSuccess {String}  title               The title of the eventDefinition
-     * @apiSuccess {Boolean} ffc                 The show in FFC status of the eventDefinition
-     * @apiSuccess {Boolean} ihc                 The show in IHC status of the eventDefinition
-     * @apiSuccess {Boolean} il                  The show in IL status of the eventDefinition
-     * @apiSuccess {Boolean} physician           The show physician field in event
-     * @apiSuccess {Boolean} responsible_person  The show responsiblePerson field in event
-     * @apiSuccess {Boolean} additional_date     The show additionalDate field in event
-     * @apiSuccess {Object}  space               The space of the eventDefinition
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "911",
-     *                  "ffc": true,
-     *                  "ihc": true,
-     *                  "il": true,
-     *                  "physician": false,
-     *                  "responsible_person": false,
-     *                  "additional_date": false,
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_event_definition_list", methods={"GET"})
      *
      * @param Request $request
@@ -192,44 +83,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/event/definition/{id} Get EventDefinition
-     * @apiVersion 1.0.0
-     * @apiName Get EventDefinition
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to get eventDefinition
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id                  The unique identifier of the eventDefinition
-     * @apiSuccess {String}  title               The title of the eventDefinition
-     * @apiSuccess {Boolean} ffc                 The show in FFC status of the eventDefinition
-     * @apiSuccess {Boolean} ihc                 The show in IHC status of the eventDefinition
-     * @apiSuccess {Boolean} il                  The show in IL status of the eventDefinition
-     * @apiSuccess {Boolean} physician           The show physician field in event
-     * @apiSuccess {Boolean} responsible_person  The show responsiblePerson field in event
-     * @apiSuccess {Boolean} additional_date     The show additionalDate field in event
-     * @apiSuccess {Object}  space               The space of the eventDefinition
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "911",
-     *                  "ffc": true,
-     *                  "ihc": true,
-     *                  "il": true,
-     *                  "physician": false,
-     *                  "responsible_person": false,
-     *                  "additional_date": false,
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_event_definition_get", methods={"GET"})
      *
      * @param EventDefinitionService $eventDefinitionService
@@ -247,48 +100,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/event/definition Add EventDefinition
-     * @apiVersion 1.0.0
-     * @apiName Add EventDefinition
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to add eventDefinition
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam   {String}  title               The title of the eventDefinition
-     * @apiParam   {Int}     ffc                 The show in FFC status of the eventDefinition
-     * @apiParam   {Int}     ihc                 The show in IHC status of the eventDefinition
-     * @apiParam   {Int}     il                  The show in IL status of the eventDefinition
-     * @apiParam   {Int}     physician           The show physician field in event
-     * @apiParam   {Int}     responsible_person  The show responsiblePerson field in event
-     * @apiParam   {Int}     additional_date     The show additionalDate field in event
-     * @apiParam   {Int}     space_id            The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "911",
-     *          "ffc": true,
-     *          "ihc": true,
-     *          "il": true,
-     *          "physician": false,
-     *          "responsible_person": false,
-     *          "additional_date": false,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_event_definition_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-event_definition", level="ADD")
@@ -327,48 +138,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/event/definition/{id} Edit EventDefinition
-     * @apiVersion 1.0.0
-     * @apiName Edit EventDefinition
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to edit eventDefinition
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam   {String}  title               The title of the eventDefinition
-     * @apiParam   {Int}     ffc                 The show in FFC status of the eventDefinition
-     * @apiParam   {Int}     ihc                 The show in IHC status of the eventDefinition
-     * @apiParam   {Int}     il                  The show in IL status of the eventDefinition
-     * @apiParam   {Int}     physician           The show physician field in event
-     * @apiParam   {Int}     responsible_person  The show responsiblePerson field in event
-     * @apiParam   {Int}     additional_date     The show additionalDate field in event
-     * @apiParam   {Int}     space_id            The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "911",
-     *          "ffc": true,
-     *          "ihc": true,
-     *          "il": true,
-     *          "physician": false,
-     *          "responsible_person": false,
-     *          "additional_date": false,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_event_definition_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-event_definition", level="EDIT")
@@ -407,25 +176,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/event/definition/{id} Delete EventDefinition
-     * @apiVersion 1.0.0
-     * @apiName Delete EventDefinition
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to remove eventDefinition
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "EventDefinition not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_event_definition_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-event_definition", level="DELETE")
@@ -446,30 +196,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/event/definition Bulk Delete EventDefinitions
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete EventDefinitions
-     * @apiGroup Admin Event Definitions
-     * @apiDescription This function is used to bulk remove eventDefinitions
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the eventDefinitions
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "EventDefinition not found"
-     *     }
-     *
      * @Route("", name="api_admin_event_definition_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-event_definition", level="DELETE")
@@ -490,30 +216,6 @@ class EventDefinitionController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/event/definition/related/info EventDefinition related info
-     * @apiVersion 1.0.0
-     * @apiName EventDefinition Related Info
-     * @apiGroup Admin EventDefinition
-     * @apiDescription This function is used to get eventDefinition related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "EventDefinition not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_event_definition_related_info", methods={"POST"})
      *
      * @param Request $request

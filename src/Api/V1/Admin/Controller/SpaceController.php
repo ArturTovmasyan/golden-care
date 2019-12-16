@@ -35,32 +35,6 @@ use App\Annotation\Grant as Grant;
 class SpaceController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/space/grid Get Spaces Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Spaces Grid
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to listing spaces
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the space
-     * @apiSuccess {String}  name          The Name of the space
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "name": "ALMS"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_space_grid", methods={"GET"})
      *
      * @param Request $request
@@ -79,30 +53,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/space Get Spaces Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Spaces Grid Options
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the space listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_space_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -115,29 +65,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/space Get Spaces
-     * @apiVersion 1.0.0
-     * @apiName Get Spaces
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to listing spaces
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the space
-     * @apiSuccess {String}  name          The Name of the space
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": 1,
-     *                  "name": "ALMS"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_space_list", methods={"GET"})
      *
      * @param Request $request
@@ -156,25 +83,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/space/{id} Get Space
-     * @apiVersion 1.0.0
-     * @apiName Get Space
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to get space
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the space
-     * @apiSuccess {String}  name          The Name of the space
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "name": "ALMS"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_get", methods={"GET"})
      *
      * @param Request $request
@@ -193,34 +101,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/space Add Space
-     * @apiVersion 1.0.0
-     * @apiName Add Space
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to add Space
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  name      The name of the Space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "name": "ALMS"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_space_add", methods={"POST"})
      *
      * @Grant(grant="persistence-security-space", level="ADD")
@@ -246,34 +126,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/space/{id} Edit Space
-     * @apiVersion 1.0.0
-     * @apiName Edit Space
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to edit space
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String} name The name of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "name": "ALMS"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this name is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-security-space", level="EDIT")
@@ -299,25 +151,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/space/{id} Delete Space
-     * @apiVersion 1.0.0
-     * @apiName Delete Space
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to remove Space
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 612,
-     *          "error": "Space not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-space", level="DELETE")
@@ -338,30 +171,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/space Bulk Delete Spaces
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Spaces
-     * @apiGroup Admin Space
-     * @apiDescription This function is used to bulk remove spaces
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the spaces
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["1", "4", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 612,
-     *          "error": "Space not found"
-     *     }
-     *
      * @Route("", name="api_admin_space_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-space", level="DELETE")
@@ -382,30 +191,6 @@ class SpaceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/space/related/info Space related info
-     * @apiVersion 1.0.0
-     * @apiName Space Related Info
-     * @apiGroup Admin Spaces
-     * @apiDescription This function is used to get space related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Space not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_space_related_info", methods={"POST"})
      *
      * @param Request $request

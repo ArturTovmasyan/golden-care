@@ -35,37 +35,6 @@ use App\Annotation\Grant as Grant;
 class AllergenController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/allergen/grid Get Allergens Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Allergens Grid
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to listing allergens
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the allergen
-     * @apiSuccess {String}  title         The title of the allergen
-     * @apiSuccess {String}  description   The description time of the allergen
-     * @apiSuccess {Object}  space         The space of the allergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Lidocaine",
-     *                  "description": "Medication Allergies",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_allergen_grid", methods={"GET"})
      *
      * @param Request $request
@@ -84,30 +53,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/allergen/grid Get Allergen Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Allergen Grid Options
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the allergen listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_allergen_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -120,40 +65,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/allergen Get Allergens
-     * @apiVersion 1.0.0
-     * @apiName Get Allergens
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to listing allergens
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the allergen
-     * @apiSuccess {String}  title         The title of the allergen
-     * @apiSuccess {String}  description   The description time of the allergen
-     * @apiSuccess {Object}  space         The space of the allergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Lidocaine",
-     *                  "description": "Medication Allergies",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_allergen_list", methods={"GET"})
      *
      * @param Request $request
@@ -172,34 +83,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/allergen/{id} Get Allergen
-     * @apiVersion 1.0.0
-     * @apiName Get Allergen
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to get allergen
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the allergen
-     * @apiSuccess {String}  title         The title of the allergen
-     * @apiSuccess {String}  description   The description time of the allergen
-     * @apiSuccess {Object}  space         The space of the allergen
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *              "id": 1,
-     *              "title": "Lidocaine",
-     *              "description": "Medication Allergies",
-     *              "space": {
-     *                  "id": 1,
-     *                  "name": "alms"
-     *              }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_allergen_get", methods={"GET"})
      *
      * @param AllergenService $allergenService
@@ -217,38 +100,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/allergen Add Allergen
-     * @apiVersion 1.0.0
-     * @apiName Add Allergen
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to add allergen
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the allergen
-     * @apiParam {String}  [description]   The description of the allergen
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Lidocaine",
-     *         "description": "Medication Allergies",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_allergen_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-allergen", level="ADD")
@@ -276,38 +127,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/allergen/{id} Edit Allergen
-     * @apiVersion 1.0.0
-     * @apiName Edit Allergen
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to edit allergen
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title          The title of the allergen
-     * @apiParam {String}  [description]  The description of the allergen
-     * @apiParam {Int}     space_id       The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Lidocaine",
-     *         "description": "Medication Allergies",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_allergen_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-allergen", level="EDIT")
@@ -335,25 +154,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/allergen/{id} Delete Allergen
-     * @apiVersion 1.0.0
-     * @apiName Delete Allergen
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to remove allergen
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Allergen not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_allergen_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-allergen", level="DELETE")
@@ -374,30 +174,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/allergen Bulk Delete Allergens
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Allergens
-     * @apiGroup Admin Allergens
-     * @apiDescription This function is used to bulk remove allergens
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the allergens
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Allergen not found"
-     *     }
-     *
      * @Route("", name="api_admin_allergen_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-allergen", level="DELETE")
@@ -418,30 +194,6 @@ class AllergenController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/allergen/related/info Allergen related info
-     * @apiVersion 1.0.0
-     * @apiName Allergen Related Info
-     * @apiGroup Admin Allergen
-     * @apiDescription This function is used to get allergen related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Allergen not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_allergen_related_info", methods={"POST"})
      *
      * @param Request $request

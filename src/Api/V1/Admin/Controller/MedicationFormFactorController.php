@@ -35,35 +35,6 @@ use App\Annotation\Grant as Grant;
 class MedicationFormFactorController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/medication/form/factor/grid Get MedicationFormFactors Grid
-     * @apiVersion 1.0.0
-     * @apiName Get MedicationFormFactors Grid
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to listing medicationFormFactors
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
-     * @apiSuccess {String}  title         The title of the medicationFormFactor
-     * @apiSuccess {Object}  space         The space of the medicationFormFactor
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Factor second",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_medication_form_factor_grid", methods={"GET"})
      *
      * @param Request $request
@@ -82,30 +53,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/medication/form/factor/grid Get MedicationFormFactor Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get MedicationFormFactor Grid Options
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the medicationFormFactor listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_medication_form_factor_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -118,38 +65,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/medication/form/factor Get MedicationFormFactors
-     * @apiVersion 1.0.0
-     * @apiName Get MedicationFormFactors
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to listing medicationFormFactors
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
-     * @apiSuccess {String}  title         The title of the medicationFormFactor
-     * @apiSuccess {Object}  space         The space of the medicationFormFactor
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Factor second",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_medication_form_factor_list", methods={"GET"})
      *
      * @param Request $request
@@ -168,32 +83,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/medication/form/factor/{id} Get MedicationFormFactor
-     * @apiVersion 1.0.0
-     * @apiName Get MedicationFormFactor
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to get medicationFormFactor
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the medicationFormFactor
-     * @apiSuccess {String}  title         The title of the medicationFormFactor
-     * @apiSuccess {Object}  space         The space of the medicationFormFactor
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "Factor second",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_get", methods={"GET"})
      *
      * @param MedicationFormFactorService $medicationFormFactorService
@@ -211,36 +100,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/medication/form/factor Add MedicationFormFactor
-     * @apiVersion 1.0.0
-     * @apiName Add MedicationFormFactor
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to add medicationFormFactor
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the medicationFormFactor
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Factor second",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_medication_form_factor_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-medication_form_factor", level="ADD")
@@ -267,36 +126,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/medication/form/factor/{id} Edit MedicationFormFactor
-     * @apiVersion 1.0.0
-     * @apiName Edit MedicationFormFactor
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to edit medicationFormFactor
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title          The title of the medicationFormFactor
-     * @apiParam {Int}     space_id       The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Factor second",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-medication_form_factor", level="EDIT")
@@ -323,25 +152,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/medication/form/factor/{id} Delete MedicationFormFactor
-     * @apiVersion 1.0.0
-     * @apiName Delete MedicationFormFactor
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to remove medicationFormFactor
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "MedicationFormFactor not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-medication_form_factor", level="DELETE")
@@ -362,30 +172,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/medication/form/factor Bulk Delete MedicationFormFactors
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete MedicationFormFactors
-     * @apiGroup Admin Medication Form Factors
-     * @apiDescription This function is used to bulk remove medicationFormFactors
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the medicationFormFactors
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "MedicationFormFactor not found"
-     *     }
-     *
      * @Route("", name="api_admin_medication_form_factor_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-medication_form_factor", level="DELETE")
@@ -406,30 +192,6 @@ class MedicationFormFactorController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/medication/form/factor/related/info MedicationFormFactor related info
-     * @apiVersion 1.0.0
-     * @apiName MedicationFormFactor Related Info
-     * @apiGroup Admin  Medication Form Factors
-     * @apiDescription This function is used to get medicationFormFactor related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "MedicationFormFactor not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_medication_form_factor_related_info", methods={"POST"})
      *
      * @param Request $request

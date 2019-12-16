@@ -33,30 +33,6 @@ use App\Annotation\Grant as Grant;
 class ApartmentBedController extends BaseController
 {
     /**
-     * @api {post} /api/v1.0/admin/apartment/bed/related/info ApartmentBed related info
-     * @apiVersion 1.0.0
-     * @apiName ApartmentBed Related Info
-     * @apiGroup Admin ApartmentBed
-     * @apiDescription This function is used to get apartmentBed related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the apartmentBeds
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ApartmentBed not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_apartment_bed_related_info", methods={"POST"})
      *
      * @param Request $request

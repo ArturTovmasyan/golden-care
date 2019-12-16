@@ -33,30 +33,6 @@ use App\Annotation\Grant as Grant;
 class FacilityBedController extends BaseController
 {
     /**
-     * @api {post} /api/v1.0/admin/facility/bed/related/info FacilityBed related info
-     * @apiVersion 1.0.0
-     * @apiName FacilityBed Related Info
-     * @apiGroup Admin FacilityBed
-     * @apiDescription This function is used to get facilityBed related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilityBeds
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "FacilityBed not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_facility_bed_related_info", methods={"POST"})
      *
      * @param Request $request

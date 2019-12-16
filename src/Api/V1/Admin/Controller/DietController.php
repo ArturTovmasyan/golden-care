@@ -35,37 +35,6 @@ use App\Annotation\Grant as Grant;
 class DietController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/diet/grid Get Diets Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Diets Grid
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to listing diets
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diet
-     * @apiSuccess {String}  title         The title of the diet
-     * @apiSuccess {String}  color         The color time of the diet
-     * @apiSuccess {Object}  space         The space of the diet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Diabetic",
-     *                  "color": "#ffff00",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_diet_grid", methods={"GET"})
      *
      * @param Request $request
@@ -84,30 +53,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/diet/grid Get Diet Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Diet Grid Options
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the diet listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_diet_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -120,40 +65,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/diet Get Diets
-     * @apiVersion 1.0.0
-     * @apiName Get Diets
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to listing diets
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diet
-     * @apiSuccess {String}  title         The title of the diet
-     * @apiSuccess {String}  color         The color time of the diet
-     * @apiSuccess {Object}  space         The space of the diet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Diabetic",
-     *                  "color": "#ffff00",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_diet_list", methods={"GET"})
      *
      * @param Request $request
@@ -172,34 +83,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/diet/{id} Get Diet
-     * @apiVersion 1.0.0
-     * @apiName Get Diet
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to get diet
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diet
-     * @apiSuccess {String}  title         The title of the diet
-     * @apiSuccess {String}  color         The color time of the diet
-     * @apiSuccess {Object}  space         The space of the diet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "Diabetic",
-     *                  "color": "#ffff00",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_get", methods={"GET"})
      *
      * @param DietService $dietService
@@ -217,38 +100,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/diet Add Diet
-     * @apiVersion 1.0.0
-     * @apiName Add Diet
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to add diet
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title     The title of the diet
-     * @apiParam {String}  color     The color of the diet
-     * @apiParam {Int}     space_id  The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Dr.",
-     *         "color": "#ffff00",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_diet_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-diet", level="ADD")
@@ -276,38 +127,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/diet/{id} Edit Diet
-     * @apiVersion 1.0.0
-     * @apiName Edit Diet
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to edit diet
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title     The title of the diet
-     * @apiParam {String}  color     The color of the diet
-     * @apiParam {Int}     space_id  The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Dr.",
-     *         "color": "#ffff00",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-diet", level="EDIT")
@@ -335,25 +154,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/diet/{id} Delete Diet
-     * @apiVersion 1.0.0
-     * @apiName Delete Diet
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to remove diet
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diet not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-diet", level="DELETE")
@@ -374,30 +174,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/diet Bulk Delete Diets
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Diets
-     * @apiGroup Admin Dietary Restriction
-     * @apiDescription This function is used to bulk remove diets
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the diets
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diet not found"
-     *     }
-     *
      * @Route("", name="api_admin_diet_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-diet", level="DELETE")
@@ -418,30 +194,6 @@ class DietController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/diet/related/info Diet related info
-     * @apiVersion 1.0.0
-     * @apiName Diet Related Info
-     * @apiGroup Admin Diet
-     * @apiDescription This function is used to get diet related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diet not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_diet_related_info", methods={"POST"})
      *
      * @param Request $request

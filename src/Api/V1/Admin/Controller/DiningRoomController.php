@@ -48,35 +48,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/dining/room/grid Get DiningRooms Grid
-     * @apiVersion 1.0.0
-     * @apiName Get DiningRooms Grid
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to listing diningRooms
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the diningRoom
-     * @apiSuccess {String}  title           The title of the diningRoom
-     * @apiSuccess {Object}  facility        The facility of the diningRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "North Dining Room",
-     *                  "facility": "Citrus Heights Terrace"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_dining_room_grid", methods={"GET"})
      *
      * @param Request $request
@@ -96,30 +67,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/facility/dining/room/grid Get DiningRoom Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get DiningRoom Grid Options
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the diningRoom listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_dining_room_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -132,38 +79,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/dining/room Get DiningRooms
-     * @apiVersion 1.0.0
-     * @apiName Get DiningRooms
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to listing diningRooms
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the diningRoom
-     * @apiSuccess {String}  title           The title of the diningRoom
-     * @apiSuccess {Object}  facility        The facility of the diningRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "North Dining Room",
-     *                  "facility": {
-     *                      "id": 1,
-     *                      "name": "Citrus Heights Terrace"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_dining_room_list", methods={"GET"})
      *
      * @param Request $request
@@ -183,32 +98,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/dining/room/{id} Get DiningRoom
-     * @apiVersion 1.0.0
-     * @apiName Get DiningRoom
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to get diningRoom
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the diningRoom
-     * @apiSuccess {String}  title           The title of the diningRoom
-     * @apiSuccess {Object}  facility        The facility of the diningRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "North Dining Room",
-     *                  "facility": {
-     *                      "id": 1,
-     *                      "name": "Citrus Heights Terrace"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_dining_room_get", methods={"GET"})
      *
      * @param DiningRoomService $diningRoomService
@@ -226,36 +115,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/facility/dining/room Add DiningRoom
-     * @apiVersion 1.0.0
-     * @apiName Add DiningRoom
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to add diningRoom
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the diningRoom
-     * @apiParam {Int}     facility_id     The unique identifier of the facility
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "North Dining Room",
-     *          "facility_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_dining_room_add", methods={"POST"})
      *
      * @Grant(grant="persistence-dining_room", level="ADD")
@@ -282,36 +141,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/facility/dining/room/{id} Edit DiningRoom
-     * @apiVersion 1.0.0
-     * @apiName Edit DiningRoom
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to edit diningRoom
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the diningRoom
-     * @apiParam {Int}     facility_id     The unique identifier of the facility
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "North Dining Room",
-     *          "facility_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_dining_room_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-dining_room", level="EDIT")
@@ -338,25 +167,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/dining/room/{id} Delete DiningRoom
-     * @apiVersion 1.0.0
-     * @apiName Delete DiningRoom
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to remove diningRoom
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "DiningRoom not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_dining_room_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-dining_room", level="DELETE")
@@ -377,30 +187,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/dining/room Bulk Delete DiningRooms
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete DiningRooms
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to bulk remove diningRooms
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the diningRooms
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "DiningRoom not found"
-     *     }
-     *
      * @Route("", name="api_admin_dining_room_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-dining_room", level="DELETE")
@@ -421,30 +207,6 @@ class DiningRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/facility/dining/room/related/info DiningRoom related info
-     * @apiVersion 1.0.0
-     * @apiName DiningRoom Related Info
-     * @apiGroup Admin DiningRoom
-     * @apiDescription This function is used to get diningRoom related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "DiningRoom not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_dining_room_related_info", methods={"POST"})
      *
      * @param Request $request

@@ -35,37 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResidentDietController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/diet/grid Get ResidentDiets Grid
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentDiets Grid
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to listing residentDiets
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the residentDiet
-     * @apiSuccess {Object}   resident        The resident of the residentDiet
-     * @apiSuccess {Object}   diet            The diet of the residentDiet
-     * @apiSuccess {String}   description     The description of the residentDiet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "diet_title": "Diabetic",
-     *                  "diet_color": "#ffff00",
-     *                  "description": "some description",
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_diet_grid", methods={"GET"})
      *
      * @param Request $request
@@ -85,30 +54,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/diet/grid Get ResidentDiet Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentDiet Grid Options
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the residentDiet listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_diet_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -121,43 +66,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/diet Get ResidentDiets
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentDiets
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to listing residentDiets
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the residentDiet
-     * @apiSuccess {Object}   resident        The resident of the residentDiet
-     * @apiSuccess {Object}   diet            The diet of the residentDiet
-     * @apiSuccess {String}   description     The description of the residentDiet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "diet": {
-     *                      "id": 1,
-     *                      "title": "Diabetic",
-     *                      "color": "#ffff00"
-     *                  },
-     *                  "description": "some description"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_resident_diet_list", methods={"GET"})
      *
      * @param Request $request
@@ -177,37 +85,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/diet/{id} Get ResidentDiet
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentDiet
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to get residentDiet
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the residentDiet
-     * @apiSuccess {Object}   resident        The resident of the residentDiet
-     * @apiSuccess {Object}   diet            The diet of the residentDiet
-     * @apiSuccess {String}   description     The description of the residentDiet
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "resident": {
-     *                      "id": 1
-     *                  },
-     *                  "diet": {
-     *                      "id": 1,
-     *                      "title": "Diabetic",
-     *                      "color": "#ffff00"
-     *                  },
-     *                  "description": "some description"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_get", methods={"GET"})
      *
      * @param ResidentDietService $residentDietService
@@ -225,38 +102,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/diet Add ResidentDiet
-     * @apiVersion 1.0.0
-     * @apiName Add ResidentDiet
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to add residentDiet
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {Int}     diet_id         The unique identifier of the diet
-     * @apiParam {String}  description     The description of the residentDiet
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "diet_id": 1,
-     *          "description": "some description",
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "description": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_resident_diet_add", methods={"POST"})
      *
      * @Grant(grant="persistence-resident-resident_diet", level="ADD")
@@ -284,38 +129,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/diet/{id} Edit ResidentDiet
-     * @apiVersion 1.0.0
-     * @apiName Edit ResidentDiet
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to edit residentDiet
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id     The unique identifier of the resident
-     * @apiParam {Int}     diet_id         The unique identifier of the diet
-     * @apiParam {String}  description     The description of the residentDiet
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "diet_id": 1,
-     *          "description": "some description",
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "description": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident_diet", level="EDIT")
@@ -343,25 +156,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/diet/{id} Delete ResidentDiet
-     * @apiVersion 1.0.0
-     * @apiName Delete ResidentDiet
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to remove residentDiet
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentDiet not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_diet", level="DELETE")
@@ -382,30 +176,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/diet Bulk Delete ResidentDiets
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete ResidentDiets
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to bulk remove residentDiets
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the residentDiets
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentDiet not found"
-     *     }
-     *
      * @Route("", name="api_admin_resident_diet_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_diet", level="DELETE")
@@ -426,30 +196,6 @@ class ResidentDietController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/diet/related/info ResidentDiet related info
-     * @apiVersion 1.0.0
-     * @apiName ResidentDiet Related Info
-     * @apiGroup Admin Resident Dietary Restriction
-     * @apiDescription This function is used to get residentDiet related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResidentDiet not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_resident_diet_related_info", methods={"POST"})
      *
      * @param Request $request

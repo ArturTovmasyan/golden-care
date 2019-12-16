@@ -35,51 +35,6 @@ use App\Annotation\Grant as Grant;
 class CityStateZipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip/grid Get CityStateZips Grid
-     * @apiVersion 1.0.0
-     * @apiName Get CityStateZips Grid
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to listing cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
-     * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
-     * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
-     * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
-     * @apiSuccess {String}  city           The city of the cityStateZip
-     * @apiSuccess {String}  created_at     The created time of the cityStateZip
-     * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
-     * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
-     * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
-     * @apiSuccess {Object}  space          The space of the cityStateZip
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "created_at": "2018-11-01 17:24:48",
-     *                  "updated_at": "2018-11-01 17:25:49",
-     *                  "created_by": 1,
-     *                  "updated_by": 5,
-     *                  "id": 1,
-     *                  "state_full": "California",
-     *                  "state_abbr": "CA",
-     *                  "zip_main": "89439",
-     *                  "zip_sub": "",
-     *                  "city": "Verdi",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_city_state_zip_grid", methods={"GET"})
      *
      * @param Request $request
@@ -98,30 +53,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/city/state/zip/grid Get CityStateZips Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get CityStateZips Grid Options
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the cityStateZip listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_city_state_zip_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -134,50 +65,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip Get CityStateZips
-     * @apiVersion 1.0.0
-     * @apiName Get CityStateZips
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to listing cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
-     * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
-     * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
-     * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
-     * @apiSuccess {String}  city           The city of the cityStateZip
-     * @apiSuccess {String}  created_at     The created time of the cityStateZip
-     * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
-     * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
-     * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
-     * @apiSuccess {Object}  space          The space of the cityStateZip
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "created_at": "2018-11-01 17:24:48",
-     *                  "updated_at": "2018-11-01 17:25:49",
-     *                  "created_by": 1,
-     *                  "updated_by": 5,
-     *                  "id": 1,
-     *                  "state_full": "California",
-     *                  "state_abbr": "CA",
-     *                  "zip_main": "89439",
-     *                  "zip_sub": "",
-     *                  "city": "Verdi",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_city_state_zip_list", methods={"GET"})
      *
      * @param Request $request
@@ -196,48 +83,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/city/state/zip/{id} Get CityStateZip
-     * @apiVersion 1.0.0
-     * @apiName Get CityStateZip
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to get cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id             The unique identifier of the cityStateZip
-     * @apiSuccess {String}  state_full     The stateFull of the cityStateZip
-     * @apiSuccess {String}  state_abbr     The stateAbbr of the cityStateZip
-     * @apiSuccess {String}  zip_main       The zipMain of the cityStateZip
-     * @apiSuccess {String}  zip_sub        The zipSub of the cityStateZip
-     * @apiSuccess {String}  city           The city of the cityStateZip
-     * @apiSuccess {String}  created_at     The created time of the cityStateZip
-     * @apiSuccess {String}  updated_at     The updated time of the cityStateZip
-     * @apiSuccess {Int}     created_by     The created user id of the cityStateZip
-     * @apiSuccess {Int}     updated_by     The updated user id of the cityStateZip
-     * @apiSuccess {Object}  space          The space of the cityStateZip
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "created_at": "2018-11-01 17:24:48",
-     *                  "updated_at": "2018-11-01 17:25:49",
-     *                  "created_by": 1,
-     *                  "updated_by": 5,
-     *                  "id": 1,
-     *                  "state_full": "California",
-     *                  "state_abbr": "CA",
-     *                  "zip_main": "89439",
-     *                  "zip_sub": "",
-     *                  "city": "Verdi",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_get", methods={"GET"})
      *
      * @param CityStateZipService $cityStateZipService
@@ -255,44 +100,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/city/state/zip Add CityStateZip
-     * @apiVersion 1.0.0
-     * @apiName Add CityStateZip
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to add cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  state_full       The stateFull of the cityStateZip
-     * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
-     * @apiParam {String}  zip_main         The zipMain of the cityStateZip
-     * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
-     * @apiParam {String}  city             The city of the cityStateZip
-     * @apiParam {Int}     space_id         The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "state_full": "California",
-     *         "state_abbr": "CA",
-     *         "zip_main": "89439",
-     *         "zip_sub": "",
-     *         "city": "Verdi",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "city": "Sorry, this value should not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_city_state_zip_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-city_state_zip", level="ADD")
@@ -323,44 +130,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/city/state/zip/{id} Edit CityStateZip
-     * @apiVersion 1.0.0
-     * @apiName Edit CityStateZip
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to edit cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  state_full       The stateFull of the cityStateZip
-     * @apiParam {String}  state_abbr       The stateAbbr of the cityStateZip
-     * @apiParam {String}  zip_main         The zipMain of the cityStateZip
-     * @apiParam {String}  [zip_sub]        The zipSub of the cityStateZip
-     * @apiParam {String}  city             The city of the cityStateZip
-     * @apiParam {Int}     space_id         The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "state_full": "California",
-     *         "state_abbr": "CA",
-     *         "zip_main": "89439",
-     *         "zip_sub": "",
-     *         "city": "Verdi",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "city": "Sorry, this value should not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-city_state_zip", level="EDIT")
@@ -391,25 +160,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/city/state/zip/{id} Delete CityStateZip
-     * @apiVersion 1.0.0
-     * @apiName Delete CityStateZip
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to remove cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "CityStateZip not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-city_state_zip", level="DELETE")
@@ -430,30 +180,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/city/state/zip Bulk Delete CityStateZip
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete CityStateZip
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to bulk remove cityStateZip
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the cityStateZips
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "CityStateZip not found"
-     *     }
-     *
      * @Route("", name="api_admin_city_state_zip_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-city_state_zip", level="DELETE")
@@ -472,30 +198,6 @@ class CityStateZipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/city/state/zip/related/info CityStateZip related info
-     * @apiVersion 1.0.0
-     * @apiName CityStateZip Related Info
-     * @apiGroup Admin CityStateZip
-     * @apiDescription This function is used to get cityStateZip related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "CityStateZip not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_city_state_zip_related_info", methods={"POST"})
      *
      * @param Request $request

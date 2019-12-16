@@ -35,34 +35,6 @@ use App\Annotation\Grant as Grant;
 class RelationshipController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/relationship/grid Get Relationships Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Relationships Grid
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to listing relationships
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id     The unique identifier of the relationship
-     * @apiSuccess {String}  title  The title of the relationship
-     * @apiSuccess {Object}  space  The space of the relationship
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Son",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_relationship_grid", methods={"GET"})
      *
      * @param Request $request
@@ -81,30 +53,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/relationship/grid Get Relationships Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Relationships Grid Options
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the relationship listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_relationship_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -117,34 +65,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/relationship Get Relationships
-     * @apiVersion 1.0.0
-     * @apiName Get Relationships
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to listing relationships
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id     The unique identifier of the relationship
-     * @apiSuccess {String}  title  The title of the relationship
-     * @apiSuccess {Object}  space  The space of the relationship
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Son",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_relationship_list", methods={"GET"})
      *
      * @param Request $request
@@ -163,30 +83,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/relationship/{id} Get Relationship
-     * @apiVersion 1.0.0
-     * @apiName Get Relationship
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to get relationship
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the relationship
-     * @apiSuccess {String}  title         The title of the relationship
-     * @apiSuccess {Object}  space         The space of the relationship
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "title": "Son",
-     *          "space": {
-     *              "id": 1,
-     *              "name": "alms"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_get", methods={"GET"})
      *
      * @param Request $request
@@ -205,36 +101,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/relationship Add Relationship
-     * @apiVersion 1.0.0
-     * @apiName Add Relationship
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to add relationship
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title     The title of the relationship
-     * @apiParam {Int}     space_id  The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Son",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_relationship_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-relationship", level="ADD")
@@ -261,37 +127,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/relationship/{id} Edit Relationship
-     * @apiVersion 1.0.0
-     * @apiName Edit Relationship
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to edit relationship
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     id        The unique identifier of the relationship
-     * @apiParam {String}  title     The title of the relationship
-     * @apiParam {Int}     space_id  The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "Son",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-relationship", level="EDIT")
@@ -318,27 +153,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/relationship/{id} Delete Relationship
-     * @apiVersion 1.0.0
-     * @apiName Delete Relationship
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to remove relationship
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of the relationship
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 627,
-     *          "error": "Relationship not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-relationship", level="DELETE")
@@ -360,27 +174,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/relationship Bulk Delete Relationships
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Relationships
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to bulk remove relationships
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the relationship
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 627,
-     *          "error": "Relationship not found"
-     *     }
-     *
      * @Route("", name="api_admin_relationship_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-relationship", level="DELETE")
@@ -401,30 +194,6 @@ class RelationshipController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/relationship/related/info Relationship related info
-     * @apiVersion 1.0.0
-     * @apiName Relationship Related Info
-     * @apiGroup Admin Relationships
-     * @apiDescription This function is used to get relationship related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Relationship not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_relationship_related_info", methods={"POST"})
      *
      * @param Request $request

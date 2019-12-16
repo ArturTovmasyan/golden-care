@@ -35,36 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResidentPhysicianController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/resident/physician/grid Get ResidentPhysician Grid
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentPhysician Grid
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to listing residentPhysicians
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the residentPhysicians
-     * @apiSuccess {String}   resident        The resident identifier of the residentPhysicians
-     * @apiSuccess {String}   physician       The physician Full Name of the residentPhysicians
-     * @apiSuccess {Int}      primary      The primary status of the residentPhysicians
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                   "id": 1,
-     *                   "resident": "Henrik Cole",
-     *                   "physician": "Joe Cole",
-     *                   "relationship": "Brother"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_physician_grid", methods={"GET"})
      *
      * @param Request $request
@@ -84,30 +54,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/resident/physician/grid Get ResidentPhysician Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentPhysician Grid Options
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the residentPhysician listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_resident_physician_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -120,39 +66,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/physician Get ResidentPhysicians
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentPhysicians
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to listing ResidentPhysicians
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id          The unique identifier of the residentPhysician
-     * @apiSuccess {Object}   resident    The resident of the residentPhysician
-     * @apiSuccess {Object}   physician   The physician of the residentPhysician
-     * @apiSuccess {String}   primary     The primary status of the residentPhysician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     [
-     *         {
-     *             "id": 1,
-     *             "resident": {
-     *                 "id": 1,
-     *                 "first_name": "Joe",
-     *                 "last_name": "Cole"
-     *             },
-     *             "physician": {
-     *                 "id": 1,
-     *                 "first_name": "Joe",
-     *                 "last_name": "Cole"
-     *             },
-     *             "primary": 0
-     *         }
-     *     ]
-     *
      * @Route("", name="api_admin_resident_physician_list", methods={"GET"})
      *
      * @param Request $request
@@ -172,37 +85,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/resident/physician/{id} Get ResidentPhysician
-     * @apiVersion 1.0.0
-     * @apiName Get ResidentPhysician
-     * @apiGroup Admin Resident Resident Physicians
-     * @apiDescription This function is used to get ResidentPhysician
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id          The unique identifier of the residentPhysician
-     * @apiSuccess {Object}   resident    The resident of the residentPhysician
-     * @apiSuccess {Object}   physician   The physician of the residentPhysician
-     * @apiSuccess {String}   primary     The primary status of the residentPhysician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "resident": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole"
-     *          },
-     *          "physician": {
-     *              "id": 1,
-     *              "first_name": "Joe",
-     *              "last_name": "Cole"
-     *          },
-     *          "primary": 0
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_get", methods={"GET"})
      *
      * @param ResidentPhysicianService $residentPhysicianService
@@ -220,38 +102,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/physician Add ResidentPhysician
-     * @apiVersion 1.0.0
-     * @apiName Add ResidentPhysician
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to add Physicians
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}  resident_id      The unique identifier of the resident
-     * @apiParam {Int}  physician_id     The unique identifier of the physician
-     * @apiParam {Int}  primary          The status of relationship
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "physician_id": 1,
-     *          "primary": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "physician_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_resident_physician_add", methods={"POST"})
      *
      * @Grant(grant="persistence-resident-resident_physician", level="ADD")
@@ -279,38 +129,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/resident/physician/{id} Edit ResidentPhysician
-     * @apiVersion 1.0.0
-     * @apiName Edit ResidentPhysician
-     * @apiGroup Admin Resident Physician
-     * @apiDescription This function is used to edit residentPhysician
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     resident_id   The unique identifier of the resident
-     * @apiParam {Int}     physician_id  The unique identifier of the physician
-     * @apiParam {Object}  primary       The primary status identifier of residentPhysician
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "resident_id": 1,
-     *          "physician_id": 1,
-     *          "primary": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "physician_id": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-resident_physician", level="EDIT")
@@ -338,25 +156,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/physician/{id} Delete ResidentPhysician
-     * @apiVersion 1.0.0
-     * @apiName Delete ResidentPhysician
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to remove residentPhysician
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentPhysician not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_physician", level="DELETE")
@@ -377,30 +176,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/resident/physician Bulk Delete ResidentPhysicians
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete ResidentPhysicians
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to bulk remove ResidentPhysicians
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the residentPhysicians
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "ResidentPhysician not found"
-     *     }
-     *
      * @Route("", name="api_admin_resident_physician_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_physician", level="DELETE")
@@ -438,30 +213,6 @@ class ResidentPhysicianController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/resident/physician/related/info ResidentPhysician related info
-     * @apiVersion 1.0.0
-     * @apiName ResidentPhysician Related Info
-     * @apiGroup Admin Resident Physicians
-     * @apiDescription This function is used to get residentDiet related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResidentPhysician not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_resident_physician_related_info", methods={"POST"})
      *
      * @param Request $request
@@ -487,7 +238,6 @@ class ResidentPhysicianController extends BaseController
      * @Grant(grant="persistence-resident-resident_physician", level="EDIT")
      *
      * @param Request $request
-     * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
      * @throws \Throwable

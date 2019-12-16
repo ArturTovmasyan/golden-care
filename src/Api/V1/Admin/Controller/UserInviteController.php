@@ -36,34 +36,6 @@ use App\Annotation\Grant as Grant;
 class UserInviteController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/user/invite/grid Get UserInvites Grid
-     * @apiVersion 1.0.0
-     * @apiName Get UserInvites Grid
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to listing user invites
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id     The unique identifier of the userInvite
-     * @apiSuccess {String}  email  The email of the userInvite
-     * @apiSuccess {Object}  space  The space of the userInvite
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "email": "test@gmail.com",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_user_invite_grid", methods={"GET"})
      *
      * @param Request $request
@@ -82,30 +54,6 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/user/invite/grid Get UserInvites Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get UserInvites Grid Options
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the medication listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_user_invite_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -118,34 +66,6 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/user/invite Get UserInvites
-     * @apiVersion 1.0.0
-     * @apiName Get UserInvites
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to listing user invites
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id     The unique identifier of the userInvite
-     * @apiSuccess {String}  email  The email of the userInvite
-     * @apiSuccess {Object}  space  The space of the userInvite
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": 1,
-     *                  "email": "test@gmail.com",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_user_invite_list", methods={"GET"})
      *
      * @param Request $request
@@ -164,30 +84,6 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/user/invite /{id} Get UserInvite
-     * @apiVersion 1.0.0
-     * @apiName Get UserInvite
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to get user invite
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the userInvite
-     * @apiSuccess {String}  email         The email of the userInvite
-     * @apiSuccess {Object}  space         The space of the userInvite
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "email": "test@gmail.com",
-     *          "space": {
-     *              "id": 1,
-     *              "name": "alms"
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_get", methods={"GET"})
      *
      * @param Request $request
@@ -206,37 +102,6 @@ class UserInviteController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/user/invite Invite User
-     * @apiVersion 1.0.0
-     * @apiName Invite User
-     * @apiGroup Admin User Invite
-     * @apiDescription This function is used to invite user
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  email      The email of the invite user
-     * @apiParam {Int}     space_id   The unique identifier of the space
-     * @apiParam {Int}     user_id    The unique identifier of the user
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "email": "test@gmail.com",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this email is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_user_invite_add", methods={"POST"})
      *
      * @Grant(grant="persistence-security-user_invite", level="ADD")

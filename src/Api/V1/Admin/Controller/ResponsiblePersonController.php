@@ -35,48 +35,6 @@ use App\Annotation\Grant as Grant;
 class ResponsiblePersonController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/responsible/person/grid Get Responsible Person Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Responsible Person Grid
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to listing rp's
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the rp
-     * @apiSuccess {String}  first_name      The First Name of the rp
-     * @apiSuccess {String}  middle_name     The Middle Name of the rp
-     * @apiSuccess {String}  last_name       The Last Name of the rp
-     * @apiSuccess {String}  address_1       The main address of the rp
-     * @apiSuccess {String}  address_2       The secondary address of the rp
-     * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {String}  space           The space name of the rp
-     * @apiSuccess {String}  csz             The cityStateZip short address of the rp
-     * @apiSuccess {String}  salutation      The salutation of the rp
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "salutation": "Mr",
-     *                  "first_name": "Arthur",
-     *                  "middle_name": "Gagik",
-     *                  "last_name": "Jovhannesyan",
-     *                  "address_1": "Fuchik str 2",
-     *                  "address_2": "Alaverdyan str 25 ap. 2",
-     *                  "email": "test@example.com",
-     *                  "csz": "Verdi CA, 89439",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_responsible_person_grid", methods={"GET"})
      *
      * @param Request $request
@@ -95,30 +53,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/responsible/person/grid Get Responsible Person Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Responsible Person Grid Options
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the rp listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_responsible_person_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -131,58 +65,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/responsible/person Get Responsible Persons
-     * @apiVersion 1.0.0
-     * @apiName Get Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to listing rp's
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the rp
-     * @apiSuccess {String}  first_name      The First Name of the rp
-     * @apiSuccess {String}  middle_name     The Middle Name of the rp
-     * @apiSuccess {String}  last_name       The Last Name of the rp
-     * @apiSuccess {String}  address_1       The main address of the rp
-     * @apiSuccess {String}  address_2       The secondary address of the rp
-     * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Object}  space           The space of the rp
-     * @apiSuccess {Object}  csz             The cityStateZip of the rp
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     [
-     *          {
-     *              "id": 1,
-     *              "first_name": "Gagik",
-     *              "last_name": "Gabrielyan",
-     *              "middle_name": "",
-     *              "address_1": "",
-     *              "address_2": "",
-     *              "email": "",
-     *              "csz": {
-     *                  "id": 1
-     *               },
-     *              "space": {
-     *                  "id": 1
-     *              },
-     *              "salutation": {
-     *                  "id": 1
-     *              },
-     *              "phones": [
-     *                  {
-     *                      "compatibility": 1,
-     *                      "type": 1,
-     *                      "number": "+3748880880",
-     *                      "primary": 0,
-     *                      "sms_enabled": 1,
-     *                      "extension": 1515
-     *                  }
-     *              ]
-     *          }
-     *     ]
-     *
      * @Route("", name="api_admin_responsible_person_list", methods={"GET"})
      *
      * @param Request $request
@@ -201,55 +83,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/responsible/person/{id} Get Responsible Person
-     * @apiVersion 1.0.0
-     * @apiName Get Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to get rp
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the rp
-     * @apiSuccess {String}  first_name      The First Name of the rp
-     * @apiSuccess {String}  middle_name     The Middle Name of the rp
-     * @apiSuccess {String}  last_name       The Last Name of the rp
-     * @apiSuccess {String}  address_1       The main address of the rp
-     * @apiSuccess {String}  address_2       The secondary address of the rp
-     * @apiSuccess {String}  email           The email address of the rp
-     * @apiSuccess {Object}  space           The space of the rp
-     * @apiSuccess {Object}  csz             The cityStateZip of the rp
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *              "id": 1,
-     *              "first_name": "Arthur",
-     *              "middle_name": "Gagik",
-     *              "last_name": "Jovhannesyan",
-     *              "address_1": "Fuchik str 2",
-     *              "address_2": "Alaverdyan str 25 ap. 2",
-     *              "email": "test@example.com",
-     *              "space": {
-     *                  id: 5
-     *              },
-     *              "csz": {
-     *                  id: 1
-     *              },
-     *              "phones": [
-     *                  {
-     *                      "compatibility": 1,
-     *                      "type": 1,
-     *                      "number": "+3748880880",
-     *                      "primary": 0,
-     *                      "sms_enabled": 1,
-     *                      "extension": 1515
-     *                  }
-     *              ]
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_get", methods={"GET"})
      *
      * @param ResponsiblePersonService $responsiblePersonService
@@ -267,50 +100,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/responsible/person Add Responsible Person
-     * @apiVersion 1.0.0
-     * @apiName Add Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to add rp
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  first_name      The First Name of the rp
-     * @apiParam {String}  [middle_name]   The Middle Name of the rp
-     * @apiParam {String}  last_name       The Last Name of the rp
-     * @apiParam {String}  address_1       The first address of the rp
-     * @apiParam {String}  [address_2]     The second address of the rp
-     * @apiParam {String}  email           The email address of the rp
-     * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     * @apiParam {Int}     salutation_id   The unique identifier of the salutation
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "first_name": "Arthur",
-     *          "middle_name": "Gagik",
-     *          "last_name": "Jovhannesyan",
-     *          "address_1": "Fuchik str 2",
-     *          "address_2": "Alaverdyan str 25 ap. 2",
-     *          "email": "test@example.com",
-     *          "csz_id": 1,
-     *          "space_id": 1,
-     *          "salutation_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "email": "This value is not a valid email address."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_responsible_person_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-responsible_person", level="ADD")
@@ -345,50 +134,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/responsible/person/{id} Edit Responsible Person
-     * @apiVersion 1.0.0
-     * @apiName Edit Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to edit rp
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  first_name      The First Name of the rp
-     * @apiParam {String}  [middle_name]   The Middle Name of the rp
-     * @apiParam {String}  last_name       The Last Name of the rp
-     * @apiParam {String}  address_1       The first address of the rp
-     * @apiParam {String}  [address_2]     The second address of the rp
-     * @apiParam {String}  email           The email address of the rp
-     * @apiParam {Int}     csz_id          The unique identifier of the City State & Zip
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     * @apiParam {Int}     salutation_id   The unique identifier of the salutation
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "first_name": "Arthur",
-     *          "middle_name": "Gagik",
-     *          "last_name": "Jovhannesyan",
-     *          "address_1": "Fuchik str 2",
-     *          "address_2": "Alaverdyan str 25 ap. 2",
-     *          "email": "test@example.com",
-     *          "csz_id": 1,
-     *          "space_id": 1,
-     *          "salutation_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "email": "This value is not a valid email address."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-responsible_person", level="EDIT")
@@ -423,25 +168,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/responsible/person/{id} Delete Responsible Person
-     * @apiVersion 1.0.0
-     * @apiName Delete Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to remove rp
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Responsible person not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-responsible_person", level="DELETE")
@@ -462,30 +188,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/responsible/person Bulk Delete Responsible Person
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Responsible Person
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to bulk remove rp
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the rp
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Responsible person not found"
-     *     }
-     *
      * @Route("", name="api_admin_responsible_person_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-responsible_person", level="DELETE")
@@ -506,30 +208,6 @@ class ResponsiblePersonController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/responsible/person/related/info ResponsiblePerson related info
-     * @apiVersion 1.0.0
-     * @apiName ResponsiblePerson Related Info
-     * @apiGroup Admin Responsible Person
-     * @apiDescription This function is used to get responsiblePerson related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "ResponsiblePerson not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_responsible_person_related_info", methods={"POST"})
      *
      * @param Request $request

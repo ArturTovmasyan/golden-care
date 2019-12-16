@@ -35,35 +35,6 @@ use App\Annotation\Grant as Grant;
 class SpecialityController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/speciality/grid Get Specialities Grid
-     * @apiVersion 1.0.0
-     * @apiName Specialities Grid
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to listing specialities
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id             The unique identifier of the speciality
-     * @apiSuccess {Object}   space          The space of the speciality
-     * @apiSuccess {String}   title          The title of the speciality
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_speciality_grid", methods={"GET"})
      *
      * @param Request $request
@@ -82,30 +53,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/speciality/grid Get Speciality Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Speciality Grid Options
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the Speciality listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_speciality_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -118,38 +65,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/speciality Get Specialities
-     * @apiVersion 1.0.0
-     * @apiName Get Specialities
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to listing specialities
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id             The unique identifier of the Speciality
-     * @apiSuccess {Object}   space          The space of the Speciality
-     * @apiSuccess {String}   title          The title of the Speciality
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_speciality_list", methods={"GET"})
      *
      * @param Request $request
@@ -169,32 +84,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/speciality/{id} Get Speciality
-     * @apiVersion 1.0.0
-     * @apiName Get Speciality
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to get Speciality
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id             The unique identifier of the Speciality
-     * @apiSuccess {Object}   space          The space of the Speciality
-     * @apiSuccess {String}   title          The title of the Speciality
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "Speciality1",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_get", methods={"GET"})
      *
      * @param SpecialityService $specialityService
@@ -212,36 +101,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/speciality Add Speciality
-     * @apiVersion 1.0.0
-     * @apiName Add Speciality
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to add Speciality
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     space_id     The unique identifier of the space
-     * @apiParam {String}  title        The number of the Speciality
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "space_id": 1,
-     *          "title": "Speciality1"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_speciality_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-speciality", level="ADD")
@@ -268,36 +127,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/speciality/{id} Edit Speciality
-     * @apiVersion 1.0.0
-     * @apiName Edit Speciality
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to edit speciality
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     space_id     The unique identifier of the space
-     * @apiParam {String}  title        The number of the Speciality
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "space_id": 1,
-     *          "title": "Speciality1"
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-speciality", level="EDIT")
@@ -324,25 +153,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/speciality/{id} Delete Speciality
-     * @apiVersion 1.0.0
-     * @apiName Delete Speciality
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to remove Speciality
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "Speciality not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-speciality", level="DELETE")
@@ -363,30 +173,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/speciality Bulk Delete Specialities
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Specialities
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to bulk remove specialities
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the specialities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "Speciality not found"
-     *     }
-     *
      * @Route("", name="api_admin_speciality_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-speciality", level="DELETE")
@@ -407,30 +193,6 @@ class SpecialityController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/speciality/related/info Speciality related info
-     * @apiVersion 1.0.0
-     * @apiName Speciality Related Info
-     * @apiGroup Admin Specialities
-     * @apiDescription This function is used to get speciality related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Speciality not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_speciality_related_info", methods={"POST"})
      *
      * @param Request $request

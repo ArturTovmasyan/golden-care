@@ -49,39 +49,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/room/grid Get FacilityRooms Grid
-     * @apiVersion 1.0.0
-     * @apiName Get FacilityRooms Grid
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to listing facilityRooms
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the facilityRoom
-     * @apiSuccess {Object}   facility        The facility of the facilityRoom
-     * @apiSuccess {String}   number          The number of the facilityRoom
-     * @apiSuccess {Int}      floor           The floor of the facilityRoom
-     * @apiSuccess {String}   notes           The notes of the facilityRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "number": "101",
-     *                  "floor": 1,
-     *                  "notes": "some notes",
-     *                  "facility": "Citrus Heights Terrace"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_facility_room_grid", methods={"GET"})
      *
      * @param Request $request
@@ -101,30 +68,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/facility/room/grid Get FacilityRoom Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get FacilityRoom Grid Options
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the facilityRoom listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_facility_room_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -137,61 +80,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/room Get FacilityRooms
-     * @apiVersion 1.0.0
-     * @apiName Get FacilityRooms
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to listing facilityRooms
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the facilityRoom
-     * @apiSuccess {Object}   facility        The facility of the facilityRoom
-     * @apiSuccess {String}   number          The number of the facilityRoom
-     * @apiSuccess {Int}      floor           The floor of the facilityRoom
-     * @apiSuccess {String}   notes           The notes of the facilityRoom
-     * @apiSuccess {Array}    beds            The beds of the facilityRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "facility": {
-     *                      "id": 1,
-     *                      "name": "Citrus Heights Terrace"
-     *                  },
-     *                  "number": "101",
-     *                  "floor": 1,
-     *                  "notes": "some notes",
-     *                  "beds": [
-     *                        {
-     *                          "id": 9,
-     *                          "number": "A"
-     *                        },
-     *                        {
-     *                          "id": 10,
-     *                          "number": "B"
-     *                        },
-     *                        {
-     *                          "id": 11,
-     *                          "number": "C"
-     *                        },
-     *                        {
-     *                          "id": 12,
-     *                          "number": "D"
-     *                        }
-     *                    ]
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_facility_room_list", methods={"GET"})
      *
      * @param Request $request
@@ -214,55 +102,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/facility/room/{id} Get FacilityRoom
-     * @apiVersion 1.0.0
-     * @apiName Get FacilityRoom
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to get facilityRoom
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}      id              The unique identifier of the facilityRoom
-     * @apiSuccess {Object}   facility        The facility of the facilityRoom
-     * @apiSuccess {String}   number          The number of the facilityRoom
-     * @apiSuccess {Int}      floor           The floor of the facilityRoom
-     * @apiSuccess {String}   notes           The notes of the facilityRoom
-     * @apiSuccess {Array}    beds            The beds of the facilityRoom
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "facility": {
-     *                      "id": 1,
-     *                      "name": "Citrus Heights Terrace"
-     *                  },
-     *                  "number": "101",
-     *                  "floor": 1,
-     *                  "notes": "some notes",
-     *                  "beds": [
-     *                        {
-     *                          "id": 9,
-     *                          "number": "A"
-     *                        },
-     *                        {
-     *                          "id": 10,
-     *                          "number": "B"
-     *                        },
-     *                        {
-     *                          "id": 11,
-     *                          "number": "C"
-     *                        },
-     *                        {
-     *                          "id": 12,
-     *                          "number": "D"
-     *                        }
-     *                    ]
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_room_get", methods={"GET"})
      *
      * @param FacilityRoomService $facilityRoomService
@@ -280,51 +119,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/facility/room Add FacilityRoom
-     * @apiVersion 1.0.0
-     * @apiName Add FacilityRoom
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to add facilityRoom
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     facility_id     The unique identifier of the facility
-     * @apiParam {String}  number          The number of the facilityRoom
-     * @apiParam {Int}     floor           The floor of the facilityRoom
-     * @apiParam {String}  [notes]         The notes of the facilityRoom
-     * @apiParam {Array}   beds            The beds of the facilityRoom
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "facility_id": 1,
-     *          "number": "101",
-     *          "floor": 1,
-     *          "notes": "some notes",
-     *          "beds": [
-     *                        {
-     *                          "id": "",
-     *                          "number": "A"
-     *                        },
-     *                        {
-     *                          "id": "",
-     *                          "number": "B"
-     *                        }
-     *                    ]
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "number": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_facility_room_add", methods={"POST"})
      *
      * @Grant(grant="persistence-facility_room", level="ADD")
@@ -354,59 +148,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/facility/room/{id} Edit FacilityRoom
-     * @apiVersion 1.0.0
-     * @apiName Edit FacilityRoom
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to edit facilityRoom
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     facility_id     The unique identifier of the facility
-     * @apiParam {String}  number          The number of the facilityRoom
-     * @apiParam {Int}     floor           The floor of the facilityRoom
-     * @apiParam {String}  [notes]         The notes of the facilityRoom
-     * @apiParam {Array}   beds            The beds of the facilityRoom
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "facility_id": 1,
-     *          "number": "101",
-     *          "floor": 1,
-     *          "notes": "some notes",
-     *          "beds": [
-     *                        {
-     *                          "id": 9,
-     *                          "number": "A"
-     *                        },
-     *                        {
-     *                          "id": 10,
-     *                          "number": "B"
-     *                        },
-     *                        {
-     *                          "id": "",
-     *                          "number": "C"
-     *                        },
-     *                        {
-     *                          "id": "",
-     *                          "number": "D"
-     *                        }
-     *                    ]
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "number": "Sorry, this value not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_room_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-facility_room", level="EDIT")
@@ -436,25 +177,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/room/{id} Delete FacilityRoom
-     * @apiVersion 1.0.0
-     * @apiName Delete FacilityRoom
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to remove facilityRoom
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "FacilityRoom not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_room_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-facility_room", level="DELETE")
@@ -475,30 +197,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/facility/room Bulk Delete FacilityRooms
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete FacilityRooms
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to bulk remove facilityRooms
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilityRooms
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "FacilityRoom not found"
-     *     }
-     *
      * @Route("", name="api_admin_facility_room_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-facility_room", level="DELETE")
@@ -519,7 +217,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     *
      * @Route("/{facility_id}/last", requirements={"facility_id"="\d+"}, name="api_admin_facility_room_get_last", methods={"GET"})
      *
      * @Grant(grant="persistence-facility_room", level="VIEW")
@@ -538,30 +235,6 @@ class FacilityRoomController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/facility/room/related/info FacilityRoom related info
-     * @apiVersion 1.0.0
-     * @apiName FacilityRoom Related Info
-     * @apiGroup Admin FacilityRoom
-     * @apiDescription This function is used to get facilityRoom related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilityRooms
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "FacilityRoom not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_facility_room_related_info", methods={"POST"})
      *
      * @param Request $request

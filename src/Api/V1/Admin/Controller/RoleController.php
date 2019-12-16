@@ -36,37 +36,6 @@ use App\Annotation\Grant as Grant;
 class RoleController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/role/grid Get Roles Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Roles Grid
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to roles grid
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the role
-     * @apiSuccess {String}  name          The Name of the role
-     * @apiSuccess {Boolean} default       The status of the role
-     * @apiSuccess {Boolean} space_default The space status of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "name": "Administrator",
-     *                  "space": "Space name",
-     *                  "default": false,
-     *                  "space_default": false
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_role_grid", methods={"GET"})
      *
      * @param Request $request
@@ -85,30 +54,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/role/grid Get Roles Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Roles Grid Options
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of thr role listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_role_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -121,37 +66,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/role/grid Get Roles Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Roles Grid
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to roles grid
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the role
-     * @apiSuccess {String}  name          The Name of the role
-     * @apiSuccess {Object}  space         The Space of the role
-     * @apiSuccess {Boolean} default       The status of the role
-     * @apiSuccess {Boolean} space_default The space status of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": 1,
-     *                  "name": "Administrator",
-     *                  "space": {
-     *                      "id": 1
-     *                  },
-     *                  "default": false,
-     *                  "space_default": false
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_role_list", methods={"GET"})
      *
      * @param Request $request
@@ -171,29 +85,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/role/{id} Get Role
-     * @apiVersion 1.0.0
-     * @apiName Get Role
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to get role
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the role
-     * @apiSuccess {String}  name          The Name of the role
-     * @apiSuccess {Boolean} default       The status of the role
-     * @apiSuccess {Boolean} space_default The space status of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "id": 1,
-     *          "name": "Administrator",
-     *          "default": false,
-     *          "space_default": false
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_get", methods={"GET"})
      *
      * @param Request $request
@@ -212,40 +103,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/role Add Role
-     * @apiVersion 1.0.0
-     * @apiName Add Role
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to add role
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  name          The name of the role
-     * @apiParam {Int}     space_id      The unique identifier of the space
-     * @apiParam {Int}     default       The global status of the role
-     * @apiParam {Int}     space_default The space status of the role
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "name": "User Management",
-     *         "space_id": 1,
-     *         "default": true,
-     *         "space_default": 0,
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this name is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_role_add", methods={"POST"})
      *
      * @Grant(grant="persistence-security-role", level="ADD")
@@ -274,41 +131,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/role/{id} Edit Role
-     * @apiVersion 1.0.0
-     * @apiName Edit Role
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to edit role
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int}     id            The unique identifier of the role
-     * @apiParam {String}  name          The name of the role
-     * @apiParam {Int}     space_id      The unique identifier of the space
-     * @apiParam {Int}     default       The global status of the role
-     * @apiParam {Boolean} space_default The space status of the role
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "name": "User Management",
-     *         "space_id": 1,
-     *         "default": true,
-     *         "space_default": false,
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this name is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-security-role", level="EDIT")
@@ -337,27 +159,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/role/{id} Delete Role
-     * @apiVersion 1.0.0
-     * @apiName Delete Role
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to remove role
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 611,
-     *          "error": "Role not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-role", level="DELETE")
@@ -379,27 +180,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/role Bulk Delete Roles
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Roles
-     * @apiGroup Admin Role
-     * @apiDescription This function is used to bulk remove roles
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Array} ids The unique identifier of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 611,
-     *          "error": "Role not found"
-     *     }
-     *
      * @Route("", name="api_admin_role_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-security-role", level="DELETE")
@@ -420,30 +200,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/role/related/info Role related info
-     * @apiVersion 1.0.0
-     * @apiName Role Related Info
-     * @apiGroup Admin Roles
-     * @apiDescription This function is used to get role related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Role not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_role_related_info", methods={"POST"})
      *
      * @param Request $request

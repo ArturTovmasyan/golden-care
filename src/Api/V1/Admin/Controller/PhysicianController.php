@@ -36,59 +36,6 @@ use App\Annotation\Grant as Grant;
 class PhysicianController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/physician/grid Get Physicians Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Physicians Grid
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to get user all physicians grid for admin
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id                 The identifier of the physician
-     * @apiSuccess {String}  speciality         The speciality title of the physician
-     * @apiSuccess {String}  salutation         The salutation title of the physician
-     * @apiSuccess {String}  first_name         The First Name of the physician
-     * @apiSuccess {String}  middle_name        The Middle Name of the physician
-     * @apiSuccess {String}  last_name          The Last Name of the physician
-     * @apiSuccess {String}  address_1          The main address of the physician
-     * @apiSuccess {String}  address_2          The secondary address of the physician
-     * @apiSuccess {String}  office_phone       The office phone number of the physician
-     * @apiSuccess {String}  fax                The fax number of the physician
-     * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
-     * @apiSuccess {String}  email              The email address of the physician
-     * @apiSuccess {String}  website_url        The website url of the physician
-     * @apiSuccess {Object}  space              The space of the physician
-     * @apiSuccess {Object}  csz                The cityStateZip of the physician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": "10",
-     *          "total": 2,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "speciality": "Doctor",
-     *                  "salutation": "Mr.",
-     *                  "first_name": "Arthur",
-     *                  "middle_name": "Gagik",
-     *                  "last_name": "Jovhannesyan",
-     *                  "address_1": "Fuchik str 2",
-     *                  "address_2": "Alaverdyan str 25 ap. 2",
-     *                  "office_phone": "+374544554545",
-     *                  "fax": "+37410555565",
-     *                  "emergency_phone": "+37455888080",
-     *                  "email": "test@example.com",
-     *                  "website_url": "http://example.com",
-     *                  "space": "alms",
-     *                  "csz_str": "Verdi CA, 89439"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_physician_grid", methods={"GET"})
      *
      * @param Request $request
@@ -107,31 +54,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/physician/grid Get Physicians Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Physicians Grid Options
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of thr role listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "label": "id",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_physician_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -144,75 +66,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/physician Get Physicians
-     * @apiVersion 1.0.0
-     * @apiName Get Physicians
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to listing physicians
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} space_id  The unique identifier of the space
-     *
-     * @apiSuccess {Int}     id                 The identifier of the physician
-     * @apiSuccess {String}  first_name         The First Name of the physician
-     * @apiSuccess {String}  middle_name        The Middle Name of the physician
-     * @apiSuccess {String}  last_name          The Last Name of the physician
-     * @apiSuccess {String}  address_1          The main address of the physician
-     * @apiSuccess {String}  address_2          The secondary address of the physician
-     * @apiSuccess {String}  office_phone       The office phone number of the physician
-     * @apiSuccess {String}  fax                The fax number of the physician
-     * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
-     * @apiSuccess {String}  email              The email address of the physician
-     * @apiSuccess {String}  website_url        The website url of the physician
-     * @apiSuccess {Object}  space              The related space of the physician
-     * @apiSuccess {Object}  speciality         The related speciality of the physician
-     * @apiSuccess {Object}  salutation         The related salutation of the physician
-     * @apiSuccess {Object}  csz                The related cityStateZip of the physician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *         {
-     *             "id": 1,
-     *             "first_name": "Arthur",
-     *             "middle_name": "Gagik",
-     *             "last_name": "Jovhannesyan",
-     *             "address_1": "Fuchik str 2",
-     *             "address_2": "Alaverdyan str 25 ap. 2",
-     *             "office_phone": "+374544554545",
-     *             "fax": "+37410555565",
-     *             "emergency_phone": "+37455888080",
-     *             "email": "test@example.com",
-     *             "website_url": "http://example.com",
-     *             "space": {
-     *                 "id": 1,
-     *                 "name": "Space N1"
-     *             },
-     *             "speciality": {
-     *                 "id": 1,
-     *                 "name": "Doctor"
-     *             },
-     *             "salutation": {
-     *                 "id": 1,
-     *                 "name": "Mr."
-     *             },
-     *             "speciality": {
-     *                 "id": 1,
-     *                 "name": "Doctor"
-     *             },
-     *             "csz": {
-     *                 "id": 1,
-     *                 "state_abbr": "CA",
-     *                 "zip_main": "89439",
-     *                 "zip_sub": "",
-     *                 "city": "Verdi"
-     *             }
-     *         }
-     *     }
-     *
      * @Route("", name="api_admin_physician_list", methods={"GET"})
      *
      * @param Request $request
@@ -231,69 +84,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/physician/{id} Get Physician
-     * @apiVersion 1.0.0
-     * @apiName Get Physician
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to get physician by id
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id       The unique identifier of the physician
-     *
-     * @apiSuccess {Int}     id                 The identifier of the physician
-     * @apiSuccess {String}  first_name         The First Name of the physician
-     * @apiSuccess {String}  middle_name        The Middle Name of the physician
-     * @apiSuccess {String}  last_name          The Last Name of the physician
-     * @apiSuccess {String}  address_1          The main address of the physician
-     * @apiSuccess {String}  address_2          The secondary address of the physician
-     * @apiSuccess {String}  office_phone       The office phone number of the physician
-     * @apiSuccess {String}  fax                The fax number of the physician
-     * @apiSuccess {String}  emergency_phone    The emergency phone number of the physician
-     * @apiSuccess {String}  email              The email address of the physician
-     * @apiSuccess {String}  website_url        The website url of the physician
-     * @apiSuccess {Object}  space              The related space of the physician
-     * @apiSuccess {Object}  speciality         The related speciality of the physician
-     * @apiSuccess {Object}  salutation         The related salutation of the physician
-     * @apiSuccess {Object}  csz                The related cityStateZip of the physician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *             "id": 1,
-     *             "first_name": "Arthur",
-     *             "middle_name": "Gagik",
-     *             "last_name": "Jovhannesyan",
-     *             "address_1": "Fuchik str 2",
-     *             "address_2": "Alaverdyan str 25 ap. 2",
-     *             "office_phone": "+374544554545",
-     *             "fax": "+37410555565",
-     *             "emergency_phone": "+37455888080",
-     *             "email": "test@example.com",
-     *             "website_url": "http://example.com",
-     *             "space": {
-     *                 "id": 1,
-     *                 "name": "Space N1"
-     *             },
-     *             "speciality": {
-     *                 "id": 1,
-     *                 "name": "Doctor"
-     *             },
-     *             "salutation": {
-     *                 "id": 1,
-     *                 "name": "Mr."
-     *             },
-     *             "csz": {
-     *                 "id": 1,
-     *                 "state_abbr": "CA",
-     *                 "zip_main": "89439",
-     *                 "zip_sub": "",
-     *                 "city": "Verdi"
-     *             }
-     *     }
-     *
      * @Route("/{id}", name="api_admin_physician_get", requirements={"id"="\d+"}, methods={"GET"})
      *
      * @param Request $request
@@ -312,50 +102,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/physician Add Physician
-     * @apiVersion 1.0.0
-     * @apiName Add Physician
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to add physician
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  first_name           The First Name of the physician
-     * @apiParam {String}  [middle_name]        The Middle Name of the physician
-     * @apiParam {String}  last_name            The Last Name of the physician
-     * @apiParam {String}  address_1            The main address of the physician
-     * @apiParam {String}  [address_2]          The secondary address of the physician
-     * @apiParam {String}  office_phone         The office phone number of the physician
-     * @apiParam {String}  [fax]                The fax number of the physician
-     * @apiParam {String}  [emergency_phone]    The emergency phone number of the physician
-     * @apiParam {String}  [email]              The email address of the physician
-     * @apiParam {String}  [website_url]        The website url of the physician
-     * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
-     * @apiParam {Integer} space_id             The unique identifier of the space
-     * @apiParam {Integer} salutaton_id         The unique identifier of the salutation
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "first_name": "Harut",
-     *          "last_name": "Grigoryan",
-     *          "middle_name": "Gagik",
-     *          "address_1": "Fuchik str. 25",
-     *          "address_2": "Alaverdyan str. 25 ap 2",
-     *          "office_phone": "+37499105555555",
-     *          "fax": "+37499105555555",
-     *          "emergency_phone": "+37499105555555",
-     *          "email": "test@example.com",
-     *          "website_url": "http://example.com",
-     *          "csz_id": 1,
-     *          "salutation_id": 1,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     *
      * @Route("", name="api_admin_physician_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-physician", level="ADD")
@@ -393,59 +139,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/physician/{id} Edit Physician
-     * @apiVersion 1.0.0
-     * @apiName Edit Physician
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to edit physician
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  first_name           The First Name of the physician
-     * @apiParam {String}  [middle_name]        The Middle Name of the physician
-     * @apiParam {String}  last_name            The Last Name of the physician
-     * @apiParam {String}  address_1            The main address of the physician
-     * @apiParam {String}  [address_2]          The secondary address of the physician
-     * @apiParam {String}  office_phone         The office phone number of the physician
-     * @apiParam {String}  [fax]                The fax number of the physician
-     * @apiParam {String}  [emergency_phone]    The emergency phone number of the physician
-     * @apiParam {String}  [email]              The email address of the physician
-     * @apiParam {String}  [website_url]        The website url of the physician
-     * @apiParam {Integer} csz_id               The unique identifier of the cityStateZip
-     * @apiParam {Integer} space_id             The unique identifier of the space
-     * @apiParam {Integer} salutaton_id         The unique identifier of the salutation
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "first_name": "Harut",
-     *          "last_name": "Grigoryan",
-     *          "middle_name": "Gagik",
-     *          "address_1": "Fuchik str. 25",
-     *          "address_2": "Alaverdyan str. 25 ap 2",
-     *          "office_phone": "+37499105555555",
-     *          "fax": "+37499105555555",
-     *          "emergency_phone": "+37499105555555",
-     *          "email": "test@example.com",
-     *          "website_url": "http://example.com",
-     *          "csz_id": 1,
-     *          "salutation_id": 1,
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "address_1": "This value should not be blank."
-     *          }
-     *     }
-     *
      * @Route("/{id}", name="api_admin_physician_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-physician", level="EDIT")
@@ -482,28 +175,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/physician/{id} Delete Physician
-     * @apiVersion 1.0.0
-     * @apiName Delete Physician
-     * @apiGroup Admin Physicians
-     * @apiPermission none
-     * @apiDescription This function is used to remove physician
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int} id The unique identifier of the physician
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 631,
-     *          "error": "Physician not found"
-     *     }
-     *
      * @Route("/{id}", name="api_admin_physician_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-physician", level="DELETE")
@@ -525,27 +196,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/physician Bulk Delete Physicians
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Physicians
-     * @apiGroup Admin Physicians
-     * @apiDescription This function is used to bulk remove physicians
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the role
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 611,
-     *          "error": "Role not found"
-     *     }
-     *
      * @Route("", name="api_admin_physician_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-physician", level="DELETE")
@@ -566,30 +216,6 @@ class PhysicianController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/physician/related/info Physician related info
-     * @apiVersion 1.0.0
-     * @apiName Physician Related Info
-     * @apiGroup Admin Physicians
-     * @apiDescription This function is used to get physician related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Physician not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_physician_related_info", methods={"POST"})
      *
      * @param Request $request

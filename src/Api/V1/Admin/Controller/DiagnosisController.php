@@ -35,39 +35,6 @@ use App\Annotation\Grant as Grant;
 class DiagnosisController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/diagnosis/grid Get Diagnoses Grid
-     * @apiVersion 1.0.0
-     * @apiName Get Diagnoses Grid
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to listing diagnoses
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
-     * @apiSuccess {String}  title         The title of the diagnosis
-     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
-     * @apiSuccess {String}  description   The description time of the diagnosis
-     * @apiSuccess {Object}  space         The space of the diagnosis
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "High Blood Pressure",
-     *                  "acronym": "HBP",
-     *                  "description": "some description",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_diagnosis_grid", methods={"GET"})
      *
      * @param Request $request
@@ -86,30 +53,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/diagnosis/grid Get Diagnosis Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get Diagnosis Grid Options
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the diagnosis listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_diagnosis_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -122,42 +65,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/diagnosis Get Diagnoses
-     * @apiVersion 1.0.0
-     * @apiName Get Diagnoses
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to listing diagnoses
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
-     * @apiSuccess {String}  title         The title of the diagnosis
-     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
-     * @apiSuccess {String}  description   The description time of the diagnosis
-     * @apiSuccess {Object}  space         The space of the diagnosis
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "High Blood Pressure",
-     *                  "acronym": "HBP",
-     *                  "description": "some description",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_diagnosis_list", methods={"GET"})
      *
      * @param Request $request
@@ -176,36 +83,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/diagnosis/{id} Get Diagnosis
-     * @apiVersion 1.0.0
-     * @apiName Get Diagnosis
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to get diagnosis
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id            The unique identifier of the diagnosis
-     * @apiSuccess {String}  title         The title of the diagnosis
-     * @apiSuccess {String}  acronym       The acronym time of the diagnosis
-     * @apiSuccess {String}  description   The description time of the diagnosis
-     * @apiSuccess {Object}  space         The space of the diagnosis
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "High Blood Pressure",
-     *                  "acronym": "HBP",
-     *                  "description": "some description",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_get", methods={"GET"})
      *
      * @param DiagnosisService $diagnosisService
@@ -223,40 +100,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/diagnosis Add Diagnosis
-     * @apiVersion 1.0.0
-     * @apiName Add Diagnosis
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to add diagnosis
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the diagnosis
-     * @apiParam {String}  [acronym]       The acronym of the diagnosis
-     * @apiParam {String}  [description]   The description of the diagnosis
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "High Blood Pressure",
-     *         "acronym": "HBP",
-     *         "description": "some description",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_diagnosis_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-diagnosis", level="ADD")
@@ -285,40 +128,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/diagnosis/{id} Edit Diagnosis
-     * @apiVersion 1.0.0
-     * @apiName Edit Diagnosis
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to edit diagnosis
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title          The title of the diagnosis
-     * @apiParam {String}  [acronym]      The acronym of the diagnosis
-     * @apiParam {String}  [description]  The description of the diagnosis
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "title": "High Blood Pressure",
-     *         "acronym": "HBP",
-     *         "description": "some description",
-     *         "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "name": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-diagnosis", level="EDIT")
@@ -347,25 +156,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/diagnosis/{id} Delete Diagnosis
-     * @apiVersion 1.0.0
-     * @apiName Delete Diagnosis
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to remove diagnosis
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diagnosis not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-diagnosis", level="DELETE")
@@ -386,30 +176,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/diagnosis Bulk Delete Diagnosiss
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete Diagnosiss
-     * @apiGroup Admin Diagnoses
-     * @apiDescription This function is used to bulk remove diagnosiss
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the diagnosiss
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diagnosis not found"
-     *     }
-     *
      * @Route("", name="api_admin_diagnosis_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-diagnosis", level="DELETE")
@@ -430,30 +196,6 @@ class DiagnosisController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/diagnosis/related/info Diagnosis related info
-     * @apiVersion 1.0.0
-     * @apiName Diagnosis Related Info
-     * @apiGroup Admin Diagnosis
-     * @apiDescription This function is used to get diagnosis related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "Diagnosis not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_diagnosis_related_info", methods={"POST"})
      *
      * @param Request $request

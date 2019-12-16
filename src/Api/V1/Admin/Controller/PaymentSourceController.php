@@ -35,35 +35,6 @@ use App\Annotation\Grant as Grant;
 class PaymentSourceController extends BaseController
 {
     /**
-     * @api {get} /api/v1.0/admin/payment/source/grid Get PaymentSources Grid
-     * @apiVersion 1.0.0
-     * @apiName Get PaymentSources Grid
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to listing paymentSources
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the paymentSource
-     * @apiSuccess {String}  title           The title of the paymentSource
-     * @apiSuccess {Object}  space           The space of the paymentSource
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Private Pay",
-     *                  "space": "alms"
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_payment_source_grid", methods={"GET"})
      *
      * @param Request $request
@@ -82,30 +53,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {options} /api/v1.0/admin/payment/source/grid Get PaymentSource Grid Options
-     * @apiVersion 1.0.0
-     * @apiName Get PaymentSource Grid Options
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to describe options of listing
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Array} options The options of the paymentSource listing
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          [
-     *              {
-     *                  "id": "name",
-     *                  "type": "integer",
-     *                  "sortable": true,
-     *                  "filterable": true,
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("/grid", name="api_admin_payment_source_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
@@ -118,38 +65,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/payment/source Get PaymentSources
-     * @apiVersion 1.0.0
-     * @apiName Get PaymentSources
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to listing paymentSources
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the paymentSource
-     * @apiSuccess {String}  title           The title of the paymentSource
-     * @apiSuccess {Object}  space           The space of the paymentSource
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "page": "1",
-     *          "per_page": 10,
-     *          "all_pages": 1,
-     *          "total": 5,
-     *          "data": [
-     *              {
-     *                  "id": 1,
-     *                  "title": "Private Pay",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *              }
-     *          ]
-     *     }
-     *
      * @Route("", name="api_admin_payment_source_list", methods={"GET"})
      *
      * @param Request $request
@@ -168,32 +83,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {get} /api/v1.0/admin/payment/source/{id} Get PaymentSource
-     * @apiVersion 1.0.0
-     * @apiName Get PaymentSource
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to get paymentSource
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccess {Int}     id              The unique identifier of the paymentSource
-     * @apiSuccess {String}  title           The title of the paymentSource
-     * @apiSuccess {Object}  space           The space of the paymentSource
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *          "data": {
-     *                  "id": 1,
-     *                  "title": "Private Pay",
-     *                  "space": {
-     *                      "id": 1,
-     *                      "name": "alms"
-     *                  }
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_get", methods={"GET"})
      *
      * @param PaymentSourceService $paymentSourceService
@@ -211,36 +100,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/payment/source Add PaymentSource
-     * @apiVersion 1.0.0
-     * @apiName Add PaymentSource
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to add paymentSource
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the paymentSource
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "Private Pay",
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("", name="api_admin_payment_source_add", methods={"POST"})
      *
      * @Grant(grant="persistence-common-payment_source", level="ADD")
@@ -267,36 +126,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {put} /api/v1.0/admin/payment/source/{id} Edit PaymentSource
-     * @apiVersion 1.0.0
-     * @apiName Edit PaymentSource
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to edit paymentSource
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {String}  title           The title of the paymentSource
-     * @apiParam {Int}     space_id        The unique identifier of the space
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *          "title": "Private Pay",
-     *          "space_id": 1
-     *     }
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 201 Created
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 610,
-     *          "error": "Validation error",
-     *          "details": {
-     *              "title": "Sorry, this title is already in use."
-     *          }
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-common-payment_source", level="EDIT")
@@ -323,25 +152,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/payment/source/{id} Delete PaymentSource
-     * @apiVersion 1.0.0
-     * @apiName Delete PaymentSource
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to remove paymentSource
-     *
-     * @apiHeader {String} Content-Type  application/json
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "PaymentSource not found"
-     *     }
-     *
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-payment_source", level="DELETE")
@@ -362,30 +172,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {delete} /api/v1.0/admin/payment/source Bulk Delete PaymentSources
-     * @apiVersion 1.0.0
-     * @apiName Bulk Delete PaymentSources
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to bulk remove paymentSources
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the paymentSources
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 639,
-     *          "error": "PaymentSource not found"
-     *     }
-     *
      * @Route("", name="api_admin_payment_source_delete_bulk", methods={"DELETE"})
      *
      * @Grant(grant="persistence-common-payment_source", level="DELETE")
@@ -406,30 +192,6 @@ class PaymentSourceController extends BaseController
     }
 
     /**
-     * @api {post} /api/v1.0/admin/payment/source/related/info PaymentSource related info
-     * @apiVersion 1.0.0
-     * @apiName PaymentSource Related Info
-     * @apiGroup Admin Payment Sources
-     * @apiDescription This function is used to get paymentSource related info
-     *
-     * @apiHeader {String} Content-Type  application/x-www-form-urlencoded
-     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
-     *
-     * @apiParam {Int[]} ids The unique identifier of the facilities
-     *
-     * @apiParamExample {json} Request-Example:
-     *     ["2", "1", "5"]
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 204 No Content
-     *     {}
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 624,
-     *          "error": "PaymentSource not found"
-     *     }
-     *
      * @Route("/related/info", name="api_admin_payment_source_related_info", methods={"POST"})
      *
      * @param Request $request
