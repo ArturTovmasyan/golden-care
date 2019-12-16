@@ -95,6 +95,16 @@ class FaceSheet extends Base
     }
 
     /**
+     * @param $medicationAllergens
+     */
+    public function setMedicationAllergens($medicationAllergens): void
+    {
+        foreach ($medicationAllergens as $medicationAllergen) {
+            $this->residents[$medicationAllergen['residentId']]['medicationAllergens'][] = $medicationAllergen;
+        }
+    }
+
+    /**
      * @param $allergens
      */
     public function setAllergens($allergens): void

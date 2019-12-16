@@ -426,7 +426,36 @@
 
             <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
             <tr style="">
-                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Allergens</b></td>
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Medical&nbsp;Allergens</b></td>
+            </tr>
+            {% if resident['medicationAllergens'] is defined %}
+                {% set x = 0 %}
+                {% for medicationAllergen in resident['medicationAllergens'] %}
+                    {% set x = x + 1 %}
+                    {% if x == 1  %}
+                        <tr style="">
+                            <td colspan="9" style="font-size: 13px !important;">
+                                <div style="float: left; width: 40% !important;">Title</div>
+                                <div style="float: left; width: 60% !important;">Description</div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr style="">
+                        <td colspan="9">
+                            <div style="float: left; width: 40% !important;"><b style="font-size: 12px !important;">{% if medicationAllergen.title %}{{ medicationAllergen.title }}{% else %}N/A{% endif %}</b></div>
+                            <div style="float: left; width: 60% !important;"><b style="font-size: 12px !important;">{% if medicationAllergen.notes %}{{ medicationAllergen.notes }}{% else %}N/A{% endif %}</b></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else  %}
+                <tr style="">
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Medical&nbsp;Allergens</td>
+                </tr>
+            {% endif %}
+
+            <tr class="dividerThird"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
+            <tr style="">
+                <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">Other&nbsp;Allergens</b></td>
             </tr>
             {% if resident['allergens'] is defined %}
                 {% set l = 0 %}
@@ -435,7 +464,7 @@
                     {% if l == 1  %}
                         <tr style="">
                             <td colspan="9" style="font-size: 13px !important;">
-                                <div style="float: left; width: 40% !important;">Medical&nbsp;allergens</div>
+                                <div style="float: left; width: 40% !important;">Title</div>
                                 <div style="float: left; width: 60% !important;">Description</div>
                             </td>
                         </tr>
@@ -449,7 +478,7 @@
                 {% endfor %}
             {% else  %}
                 <tr style="">
-                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Allergens</td>
+                    <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;Other&nbsp;Allergens</td>
                 </tr>
             {% endif %}
 
