@@ -50,9 +50,12 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param bool $isResident
+     * @param bool $isFacility
+     * @param bool $isCorporate
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $isResident = false, $isFacility = false, $isCorporate = false)
     {
         $qb = $this
             ->createQueryBuilder('ed')
@@ -78,6 +81,24 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
         $qb
             ->andWhere('ed.inChooser=:inChooser')
             ->setParameter('inChooser', true);
+
+        if ($isResident) {
+            $qb
+                ->andWhere('ed.resident=:resident')
+                ->setParameter('resident', $isResident);
+        }
+
+        if ($isFacility) {
+            $qb
+                ->andWhere('ed.facility=:facility')
+                ->setParameter('facility', $isFacility);
+        }
+
+        if ($isCorporate) {
+            $qb
+                ->andWhere('ed.corporate=:corporate')
+                ->setParameter('corporate', $isCorporate);
+        }
 
         $qb
             ->addOrderBy('ed.title', 'ASC');

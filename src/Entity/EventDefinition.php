@@ -101,6 +101,46 @@ use App\Annotation\Grid;
  *              "field"      = "ed.additionalDate"
  *          },
  *          {
+ *              "id"         = "resident",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.resident"
+ *          },
+ *          {
+ *              "id"         = "facility",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.facility"
+ *          },
+ *          {
+ *              "id"         = "corporate",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.corporate"
+ *          },
+ *          {
+ *              "id"         = "residents",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.residents"
+ *          },
+ *          {
+ *              "id"         = "users",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.users"
+ *          },
+ *          {
+ *              "id"         = "duration",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.duration"
+ *          },
+ *          {
+ *              "id"         = "repeats",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.repeats"
+ *          },
+ *          {
+ *              "id"         = "rsvp",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.rsvp"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -119,11 +159,12 @@ class EventDefinition
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
      * })
      */
     private $id;
@@ -163,11 +204,12 @@ class EventDefinition
      * })
      * @ORM\Column(name="title", type="string", length=100)
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
      * })
      */
     private $title;
@@ -183,7 +225,6 @@ class EventDefinition
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -194,7 +235,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_in_chooser", type="boolean", options={"default" = 1})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -205,7 +245,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_resident_ffc", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -216,7 +255,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_resident_ihc", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -227,7 +265,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_resident_il", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -238,7 +275,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_physician", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -249,7 +285,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_physician_optional", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -260,7 +295,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_responsible_person", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -271,7 +305,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_responsible_person_optional", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -282,7 +315,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_responsible_person_multi", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -293,7 +325,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_responsible_person_multi_optional", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -304,7 +335,6 @@ class EventDefinition
      * @var bool
      * @ORM\Column(name="show_additional_date", type="boolean", options={"default" = 0})
      * @Groups({
-     *     "api_admin_event_definition_grid",
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
@@ -312,10 +342,96 @@ class EventDefinition
     protected $additionalDate;
 
     /**
+     * @var bool
+     * @ORM\Column(name="show_in_resident", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $resident;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_in_facility", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $facility;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_in_corporate", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $corporate;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_residents", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $residents;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_users", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $users;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_duration", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $duration;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_repeats", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $repeats;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_rsvp", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $rsvp;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="definition", cascade={"remove", "persist"})
      */
     private $residentEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="definition", cascade={"remove", "persist"})
+     */
+    private $facilityEvents;
 
     /**
      * @return int
@@ -558,6 +674,134 @@ class EventDefinition
     }
 
     /**
+     * @return bool
+     */
+    public function isResident(): bool
+    {
+        return $this->resident;
+    }
+
+    /**
+     * @param bool $resident
+     */
+    public function setResident(bool $resident): void
+    {
+        $this->resident = $resident;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFacility(): bool
+    {
+        return $this->facility;
+    }
+
+    /**
+     * @param bool $facility
+     */
+    public function setFacility(bool $facility): void
+    {
+        $this->facility = $facility;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCorporate(): bool
+    {
+        return $this->corporate;
+    }
+
+    /**
+     * @param bool $corporate
+     */
+    public function setCorporate(bool $corporate): void
+    {
+        $this->corporate = $corporate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResidents(): bool
+    {
+        return $this->residents;
+    }
+
+    /**
+     * @param bool $residents
+     */
+    public function setResidents(bool $residents): void
+    {
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUsers(): bool
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param bool $users
+     */
+    public function setUsers(bool $users): void
+    {
+        $this->users = $users;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDuration(): bool
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param bool $duration
+     */
+    public function setDuration(bool $duration): void
+    {
+        $this->duration = $duration;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRepeats(): bool
+    {
+        return $this->repeats;
+    }
+
+    /**
+     * @param bool $repeats
+     */
+    public function setRepeats(bool $repeats): void
+    {
+        $this->repeats = $repeats;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRsvp(): bool
+    {
+        return $this->rsvp;
+    }
+
+    /**
+     * @param bool $rsvp
+     */
+    public function setRsvp(bool $rsvp): void
+    {
+        $this->rsvp = $rsvp;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getResidentEvents(): ArrayCollection
@@ -571,5 +815,21 @@ class EventDefinition
     public function setResidentEvents(ArrayCollection $residentEvents): void
     {
         $this->residentEvents = $residentEvents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFacilityEvents(): ArrayCollection
+    {
+        return $this->facilityEvents;
+    }
+
+    /**
+     * @param ArrayCollection $facilityEvents
+     */
+    public function setFacilityEvents(ArrayCollection $facilityEvents): void
+    {
+        $this->facilityEvents = $facilityEvents;
     }
 }

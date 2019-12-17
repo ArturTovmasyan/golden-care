@@ -37,7 +37,25 @@ class EventDefinitionService extends BaseService implements IGridService
         /** @var EventDefinitionRepository $repo */
         $repo = $this->em->getRepository(EventDefinition::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class));
+        $isResident = false;
+        $isFacility = false;
+        $isCorporate = false;
+
+        if (!empty($params)) {
+            if (!empty($params[0]['resident'])) {
+                $isResident = (bool) $params[0]['resident'];
+            }
+
+            if (!empty($params[0]['facility'])) {
+                $isFacility = (bool) $params[0]['facility'];
+            }
+
+            if (!empty($params[0]['corporate'])) {
+                $isCorporate = (bool) $params[0]['corporate'];
+            }
+        }
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $isResident, $isFacility, $isCorporate);
     }
 
     /**
@@ -86,6 +104,14 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
             $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
+            $entity->setResident($params['resident']);
+            $entity->setFacility($params['facility']);
+            $entity->setCorporate($params['corporate']);
+            $entity->setResidents($params['residents']);
+            $entity->setUsers($params['users']);
+            $entity->setDuration($params['duration']);
+            $entity->setRepeats($params['repeats']);
+            $entity->setRsvp($params['rsvp']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_event_definition_add']);
@@ -147,6 +173,14 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
             $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
+            $entity->setResident($params['resident']);
+            $entity->setFacility($params['facility']);
+            $entity->setCorporate($params['corporate']);
+            $entity->setResidents($params['residents']);
+            $entity->setUsers($params['users']);
+            $entity->setDuration($params['duration']);
+            $entity->setRepeats($params['repeats']);
+            $entity->setRsvp($params['rsvp']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_event_definition_edit']);

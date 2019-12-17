@@ -275,6 +275,10 @@ persistence:
       title: 'FacilityDocument'
       class: App\Entity\FacilityDocument
       route: api_admin_facility_document_list
+    facility_event:
+      title: 'FacilityEvent'
+      class: App\Entity\FacilityEvent
+      route: api_admin_facility_event_list
 
     region:
       title: 'Region'

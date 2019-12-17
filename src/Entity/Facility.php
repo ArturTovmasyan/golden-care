@@ -134,7 +134,9 @@ class Facility
      *     "api_admin_facility_document_list",
      *     "api_admin_facility_document_get",
      *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
+     *     "api_admin_facility_dashboard_get",
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
      * })
      */
     private $id;
@@ -174,7 +176,9 @@ class Facility
      *     "api_admin_facility_document_list",
      *     "api_admin_facility_document_get",
      *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
+     *     "api_admin_facility_dashboard_get",
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
      * })
      */
     private $name;
@@ -501,6 +505,12 @@ class Facility
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityDashboard", mappedBy="facility", cascade={"remove", "persist"})
      */
     private $dashboards;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="facility", cascade={"remove", "persist"})
+     */
+    private $facilityEvents;
 
     /**
      * @return int
@@ -881,6 +891,22 @@ class Facility
     public function setDashboards(ArrayCollection $dashboards): void
     {
         $this->dashboards = $dashboards;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFacilityEvents(): ArrayCollection
+    {
+        return $this->facilityEvents;
+    }
+
+    /**
+     * @param ArrayCollection $facilityEvents
+     */
+    public function setFacilityEvents(ArrayCollection $facilityEvents): void
+    {
+        $this->facilityEvents = $facilityEvents;
     }
 
     /**

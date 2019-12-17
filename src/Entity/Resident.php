@@ -116,6 +116,8 @@ class Resident
      *      "api_admin_resident_document_get",
      *      "api_admin_resident_rent_increase_list",
      *      "api_admin_resident_rent_increase_get",
+     *      "api_admin_facility_event_list",
+     *      "api_admin_facility_event_get"
      * })
      */
     private $id;
@@ -177,7 +179,9 @@ class Resident
      *      "api_admin_resident_health_insurance_list",
      *      "api_admin_resident_health_insurance_get",
      *      "api_admin_resident_document_list",
-     *      "api_admin_resident_document_get"
+     *      "api_admin_resident_document_get",
+     *      "api_admin_facility_event_list",
+     *      "api_admin_facility_event_get"
      * })
      */
     private $firstName;
@@ -208,7 +212,9 @@ class Resident
      *      "api_admin_resident_health_insurance_list",
      *      "api_admin_resident_health_insurance_get",
      *      "api_admin_resident_document_list",
-     *      "api_admin_resident_document_get"
+     *      "api_admin_resident_document_get",
+     *      "api_admin_facility_event_list",
+     *      "api_admin_facility_event_get"
      * })
      */
     private $lastName;
@@ -407,6 +413,12 @@ class Resident
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentRentIncrease", mappedBy="resident", cascade={"remove", "persist"})
      */
     private $residentRentIncreases;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="residents", cascade={"persist"})
+     */
+    protected $facilityEvents;
 
     /**
      * @return int
@@ -838,5 +850,44 @@ class Resident
     public function setResidentRentIncreases(ArrayCollection $residentRentIncreases): void
     {
         $this->residentRentIncreases = $residentRentIncreases;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacilityEvents()
+    {
+        return $this->facilityEvents;
+    }
+
+    /**
+     * @param mixed $facilityEvents
+     */
+    public function setFacilityEvents($facilityEvents): void
+    {
+        $this->facilityEvents = $facilityEvents;
+
+        /** @var FacilityEvent $facilityEvent */
+        foreach ($this->facilityEvents as $facilityEvent) {
+            $facilityEvent->addResident($this);
+        }
+    }
+
+    /**
+     * @param FacilityEvent $facilityEvent
+     */
+    public function addFacilityEvent(FacilityEvent $facilityEvent): void
+    {
+        $facilityEvent->addResident($this);
+        $this->facilityEvents[] = $facilityEvent;
+    }
+
+    /**
+     * @param FacilityEvent $facilityEvent
+     */
+    public function removeFacilityEvent(FacilityEvent $facilityEvent): void
+    {
+        $this->facilityEvents->removeElement($facilityEvent);
+        $facilityEvent->removeResident($this);
     }
 }

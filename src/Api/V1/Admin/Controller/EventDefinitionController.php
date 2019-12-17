@@ -78,7 +78,12 @@ class EventDefinitionController extends BaseController
             $request,
             EventDefinition::class,
             'api_admin_event_definition_list',
-            $eventDefinitionService
+            $eventDefinitionService,
+            [
+                'resident' => $request->get('resident'),
+                'facility' => $request->get('facility'),
+                'corporate' => $request->get('corporate')
+            ]
         );
     }
 
@@ -126,6 +131,14 @@ class EventDefinitionController extends BaseController
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
+                'resident' => $request->get('resident'),
+                'facility' => $request->get('facility'),
+                'corporate' => $request->get('corporate'),
+                'residents' => $request->get('residents'),
+                'users' => $request->get('users'),
+                'duration' => $request->get('duration'),
+                'repeats' => $request->get('repeats'),
+                'rsvp' => $request->get('rsvp'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -166,6 +179,14 @@ class EventDefinitionController extends BaseController
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
+                'resident' => $request->get('resident'),
+                'facility' => $request->get('facility'),
+                'corporate' => $request->get('corporate'),
+                'residents' => $request->get('residents'),
+                'users' => $request->get('users'),
+                'duration' => $request->get('duration'),
+                'repeats' => $request->get('repeats'),
+                'rsvp' => $request->get('rsvp'),
                 'space_id' => $request->get('space_id')
             ]
         );

@@ -150,6 +150,10 @@ class ResponseCode
     const FACILITY_DOCUMENT_NOT_FOUND_EXCEPTION                  = 750;
     const RESIDENT_RENT_INCREASE_NOT_FOUND_EXCEPTION             = 751;
     const THE_NAME_IS_ALREADY_IN_USE_IN_THIS_SPACE_EXCEPTION     = 752;
+    const FACILITY_EVENT_NOT_FOUND_EXCEPTION                     = 753;
+    const USER_NOT_BE_BLANK_EXCEPTION                            = 754;
+    const RESIDENT_NOT_BE_BLANK_EXCEPTION                        = 755;
+    const NOT_A_VALID_CHOICE_EXCEPTION                           = 756;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -301,6 +305,10 @@ class ResponseCode
         self::RESIDENT_RENT_INCREASE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Rent Increase not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::THE_NAME_IS_ALREADY_IN_USE_IN_THIS_SPACE_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The name is already in use in this space.'],
+        self::FACILITY_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Event not found.'],
+        self::USER_NOT_BE_BLANK_EXCEPTION                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select an User.'],
+        self::RESIDENT_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a Resident.'],
+        self::NOT_A_VALID_CHOICE_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The value you selected is not a valid choice.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],
