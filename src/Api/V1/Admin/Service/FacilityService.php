@@ -337,9 +337,9 @@ class FacilityService extends BaseService implements IGridService
         $rentIncreaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
         $rentIncreases = $rentIncreaseRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRentIncrease::class), $residentIds, $dateFrom, $dateTo);
 
-        /** @var ResidentEventRepository $eventRepo */
-        $eventRepo = $this->em->getRepository(ResidentEvent::class);
-        $residentEvents = $eventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo);
+        /** @var ResidentEventRepository $residentEventRepo */
+        $residentEventRepo = $this->em->getRepository(ResidentEvent::class);
+        $residentEvents = $residentEventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo);
 
         return [
             'facility_events' => $facilityEvents,

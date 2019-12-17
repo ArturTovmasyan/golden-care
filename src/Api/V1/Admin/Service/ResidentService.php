@@ -17,6 +17,7 @@ use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\CareLevel;
 use App\Entity\ChunkFile;
 use App\Entity\CityStateZip;
+use App\Entity\FacilityEvent;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
@@ -30,6 +31,7 @@ use App\Model\GroupType;
 use App\Repository\CareLevelRepository;
 use App\Repository\ChunkFileRepository;
 use App\Repository\CityStateZipRepository;
+use App\Repository\FacilityEventRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentImageRepository;
@@ -2249,13 +2251,18 @@ class ResidentService extends BaseService implements IGridService
 
         /** @var ResidentEventRepository $eventRepo */
         $eventRepo = $this->em->getRepository(ResidentEvent::class);
-        $events = $eventRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id, $dateFrom, $dateTo);
+        $residentEvents = $eventRepo->getResidentCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $id, $dateFrom, $dateTo);
+
+        /** @var FacilityEventRepository $facilityEventRepo */
+        $facilityEventRepo = $this->em->getRepository(FacilityEvent::class);
+        $facilityEvents = $facilityEventRepo->getFacilityCalendarDataByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityEvent::class), [$id], $dateFrom, $dateTo);
 
         return [
             'admissions' => $admissions,
             'rents' => $rents,
             'rent_increases' => $rentIncreases,
-            'events' => $events,
+            'resident_events' => $residentEvents,
+            'facility_events' => $facilityEvents,
         ];
     }
 
