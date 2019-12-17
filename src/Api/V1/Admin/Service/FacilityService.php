@@ -8,9 +8,20 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\FacilityEvent;
+use App\Entity\ResidentAdmission;
+use App\Entity\ResidentEvent;
+use App\Entity\ResidentRent;
+use App\Entity\ResidentRentIncrease;
 use App\Entity\Space;
+use App\Model\GroupType;
 use App\Repository\CityStateZipRepository;
+use App\Repository\FacilityEventRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentEventRepository;
+use App\Repository\ResidentRentIncreaseRepository;
+use App\Repository\ResidentRentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -279,6 +290,64 @@ class FacilityService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(Facility::class, $entities);
+    }
+
+    /**
+     * @param $id
+     * @param $dateFrom
+     * @param $dateTo
+     * @return array
+     */
+    public function getCalendar($id, $dateFrom, $dateTo): array
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        if (!empty($dateFrom)) {
+            $dateFrom = new \DateTime($dateFrom);
+            $dateFrom = $dateFrom->format('Y-m-d 00:00:00');
+        }
+
+        if (!empty($dateTo)) {
+            $dateTo = new \DateTime($dateTo);
+            $dateTo = $dateTo->format('Y-m-d 23:59:59');
+        }
+
+        /** @var FacilityEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(FacilityEvent::class);
+        $facilityEvents = $eventRepo->getFacilityCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityEvent::class), $id, $dateFrom, $dateTo);
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        $residents = $admissionRepo->getActiveResidentsByStrategy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $id);
+
+        $residentIds = [];
+        if (!empty($residents)) {
+            $residentIds = array_map(function (array $item) {
+                return $item['id'];
+            }, $residents);
+        }
+
+        $admissions = $admissionRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentIds, $dateFrom, $dateTo);
+
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+        $rents = $rentRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds, $dateFrom, $dateTo);
+
+        /** @var ResidentRentIncreaseRepository $rentIncreaseRepo */
+        $rentIncreaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
+        $rentIncreases = $rentIncreaseRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRentIncrease::class), $residentIds, $dateFrom, $dateTo);
+
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+        $residentEvents = $eventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo);
+
+        return [
+            'facility_events' => $facilityEvents,
+            'admissions' => $admissions,
+            'rents' => $rents,
+            'rent_increases' => $rentIncreases,
+            'resident_events' => $residentEvents,
+        ];
     }
 
     /**

@@ -254,4 +254,22 @@ class FacilityController extends BaseController
             ['api_admin_facility_mobile_list']
         );
     }
+
+    /**
+     * @Route("/calendar/{id}", requirements={"id"="\d+"}, name="api_admin_facility_calendar", methods={"GET"})
+     *
+     * @param Request $request
+     * @param FacilityService $facilityService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getFacilityCalendarAction(Request $request, $id, FacilityService $facilityService)
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $facilityService->getCalendar($id, $request->get('date_from'), $request->get('date_to')),
+            ['api_admin_facility_calendar']
+        );
+    }
 }

@@ -6,6 +6,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
 use App\Entity\Physician;
 use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
 use App\Entity\ResponsiblePerson;
 use App\Entity\Salutation;
@@ -474,6 +475,82 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
             ->join('re.definition', 'd')
             ->where('r.id=:id')
             ->setParameter('id', $id);
+
+        if ($dateFrom !== null) {
+            $qb
+                ->andWhere('re.date >= :start')
+                ->andWhere('re.additionalDate IS NULL OR re.additionalDate >= :start')
+                ->setParameter('start', $dateFrom);
+        }
+
+        if ($dateTo !== null) {
+            $qb
+                ->andWhere('re.date <= :end')
+                ->setParameter('end', $dateTo);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $ids
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public function getResidentsCalendarData(Space $space = null, array $entityGrants = null, $ids, $dateFrom = null, $dateTo = null)
+    {
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                're.id AS id',
+                'd.type AS type',
+                'd.title AS title',
+                're.date AS start',
+                're.additionalDate AS end',
+                're.notes AS notes',
+                'r.id AS resident_id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'fr.number AS room_number',
+                'fb.number AS bed_number'
+            )
+            ->join('re.resident', 'r')
+            ->join('re.definition', 'd')
+            ->innerJoin(
+                ResidentAdmission::class,
+                'ra',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->join('ra.facilityBed', 'fb')
+            ->join('fb.room', 'fr')
+            ->where('r.id IN (:ids)')
+            ->andWhere('ra.end IS NULL')
+            ->setParameter('ids', $ids);
 
         if ($dateFrom !== null) {
             $qb

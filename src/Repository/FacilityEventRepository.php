@@ -442,7 +442,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
                 'fe.end AS end',
                 'fe.notes AS notes'
             )
-            ->join('fe.facility', 'r')
+            ->join('fe.facility', 'f')
             ->join('fe.definition', 'd')
             ->where('f.id=:id')
             ->setParameter('id', $id);
