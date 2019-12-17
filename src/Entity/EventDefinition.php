@@ -34,6 +34,21 @@ use App\Annotation\Grid;
  *              "field"      = "ed.id"
  *          },
  *          {
+ *              "id"         = "resident",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.resident"
+ *          },
+ *          {
+ *              "id"         = "facility",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.facility"
+ *          },
+ *          {
+ *              "id"         = "corporate",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.corporate"
+ *          },
+ *          {
  *              "id"         = "type",
  *              "type"       = "enum",
  *              "field"      = "ed.type",
@@ -99,21 +114,6 @@ use App\Annotation\Grid;
  *              "id"         = "additional_date",
  *              "type"       = "boolean",
  *              "field"      = "ed.additionalDate"
- *          },
- *          {
- *              "id"         = "resident",
- *              "type"       = "boolean",
- *              "field"      = "ed.resident"
- *          },
- *          {
- *              "id"         = "facility",
- *              "type"       = "boolean",
- *              "field"      = "ed.facility"
- *          },
- *          {
- *              "id"         = "corporate",
- *              "type"       = "boolean",
- *              "field"      = "ed.corporate"
  *          },
  *          {
  *              "id"         = "residents",
