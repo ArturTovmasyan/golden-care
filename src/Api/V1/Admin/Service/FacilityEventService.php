@@ -243,6 +243,10 @@ class FacilityEventService extends BaseService implements IGridService
 
             $facilityEvent->setRsvp($rsvp);
 
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+
+            $facilityEvent->setNoRepeatEnd($noRepeatEnd);
+
             $this->validate($facilityEvent, null, ['api_admin_facility_event_add']);
 
             $this->em->persist($facilityEvent);
@@ -437,6 +441,10 @@ class FacilityEventService extends BaseService implements IGridService
             }
 
             $entity->setRsvp($rsvp);
+
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+
+            $entity->setNoRepeatEnd($noRepeatEnd);
 
             $this->validate($entity, null, ['api_admin_facility_event_edit']);
 

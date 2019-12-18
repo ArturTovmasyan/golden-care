@@ -67,6 +67,11 @@ use App\Annotation\Grid;
  *              "field"      = "fe.repeatEnd"
  *          },
  *          {
+ *              "id"         = "no_repeat_end",
+ *              "type"       = "boolean",
+ *              "field"      = "fe.noRepeatEnd"
+ *          },
+ *          {
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(fe.notes, 1, 100)), CASE WHEN LENGTH(fe.notes) > 100 THEN '…' ELSE '' END)"
@@ -288,6 +293,16 @@ class FacilityEvent
      * })
      */
     protected $rsvp;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="no_repeat_end", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
+     * })
+     */
+    protected $noRepeatEnd;
 
     /**
      * @return int
@@ -521,5 +536,21 @@ class FacilityEvent
     public function setRsvp(bool $rsvp): void
     {
         $this->rsvp = $rsvp;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoRepeatEnd(): bool
+    {
+        return $this->noRepeatEnd;
+    }
+
+    /**
+     * @param bool $noRepeatEnd
+     */
+    public function setNoRepeatEnd(bool $noRepeatEnd): void
+    {
+        $this->noRepeatEnd = $noRepeatEnd;
     }
 }

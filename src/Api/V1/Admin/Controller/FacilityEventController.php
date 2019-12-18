@@ -125,6 +125,7 @@ class FacilityEventController extends BaseController
                 'all_day' => $request->get('all_day'),
                 'repeat' => $request->get('repeat'),
                 'repeat_end' => $request->get('repeat_end'),
+                'no_repeat_end' => $request->get('no_repeat_end'),
                 'rsvp' => $request->get('rsvp'),
                 'notes' => $request->get('notes') ?? ''
             ]
@@ -163,6 +164,7 @@ class FacilityEventController extends BaseController
                 'all_day' => $request->get('all_day'),
                 'repeat' => $request->get('repeat'),
                 'repeat_end' => $request->get('repeat_end'),
+                'no_repeat_end' => $request->get('no_repeat_end'),
                 'rsvp' => $request->get('rsvp'),
                 'notes' => $request->get('notes') ?? ''
             ]
