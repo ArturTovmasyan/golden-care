@@ -91,9 +91,16 @@ class EventDefinitionService extends BaseService implements IGridService
             $type = $params['type'] ? (int)$params['type'] : 0;
 
             $entity = new EventDefinition();
+            $entity->setSpace($space);
             $entity->setType($type);
             $entity->setInChooser($params['in_chooser']);
             $entity->setTitle($params['title']);
+
+            $entity->setResident($params['resident']);
+            $entity->setFacility($params['facility']);
+            $entity->setCorporate($params['corporate']);
+
+            //for resident event
             $entity->setFfc($params['ffc']);
             $entity->setIhc($params['ihc']);
             $entity->setIl($params['il']);
@@ -104,19 +111,41 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
             $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
-            $entity->setResident($params['resident']);
-            $entity->setFacility($params['facility']);
-            $entity->setCorporate($params['corporate']);
+
+            //for facility event
             $entity->setResidents($params['residents']);
             $entity->setUsers($params['users']);
             $entity->setDuration($params['duration']);
             $entity->setRepeats($params['repeats']);
             $entity->setRsvp($params['rsvp']);
-            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_event_definition_add']);
 
             $this->em->persist($entity);
+
+            if ($entity->isResident()) {
+                $entity->setResidents(false);
+                $entity->setUsers(false);
+                $entity->setDuration(false);
+                $entity->setRepeats(false);
+                $entity->setRsvp(false);
+            }
+
+            if ($entity->isFacility()) {
+                $entity->setFfc(false);
+                $entity->setIhc(false);
+                $entity->setIl(false);
+                $entity->setPhysician(false);
+                $entity->setPhysicianOptional(false);
+                $entity->setResponsiblePerson(false);
+                $entity->setResponsiblePersonOptional(false);
+                $entity->setResponsiblePersonMulti(false);
+                $entity->setResponsiblePersonMultiOptional(false);
+                $entity->setAdditionalDate(false);
+            }
+
+            $this->em->persist($entity);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -160,9 +189,16 @@ class EventDefinitionService extends BaseService implements IGridService
 
             $type = $params['type'] ? (int)$params['type'] : 0;
 
+            $entity->setSpace($space);
             $entity->setType($type);
             $entity->setTitle($params['title']);
             $entity->setInChooser($params['in_chooser']);
+
+            $entity->setResident($params['resident']);
+            $entity->setFacility($params['facility']);
+            $entity->setCorporate($params['corporate']);
+
+            //for resident event
             $entity->setFfc($params['ffc']);
             $entity->setIhc($params['ihc']);
             $entity->setIl($params['il']);
@@ -173,19 +209,41 @@ class EventDefinitionService extends BaseService implements IGridService
             $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
             $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
             $entity->setAdditionalDate($params['additional_date']);
-            $entity->setResident($params['resident']);
-            $entity->setFacility($params['facility']);
-            $entity->setCorporate($params['corporate']);
+
+            //for facility event
             $entity->setResidents($params['residents']);
             $entity->setUsers($params['users']);
             $entity->setDuration($params['duration']);
             $entity->setRepeats($params['repeats']);
             $entity->setRsvp($params['rsvp']);
-            $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_event_definition_edit']);
 
             $this->em->persist($entity);
+
+            if ($entity->isResident()) {
+                $entity->setResidents(false);
+                $entity->setUsers(false);
+                $entity->setDuration(false);
+                $entity->setRepeats(false);
+                $entity->setRsvp(false);
+            }
+
+            if ($entity->isFacility()) {
+                $entity->setFfc(false);
+                $entity->setIhc(false);
+                $entity->setIl(false);
+                $entity->setPhysician(false);
+                $entity->setPhysicianOptional(false);
+                $entity->setResponsiblePerson(false);
+                $entity->setResponsiblePersonOptional(false);
+                $entity->setResponsiblePersonMulti(false);
+                $entity->setResponsiblePersonMultiOptional(false);
+                $entity->setAdditionalDate(false);
+            }
+
+            $this->em->persist($entity);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
