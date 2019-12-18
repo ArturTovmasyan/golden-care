@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
 use App\Entity\Apartment;
 use App\Entity\ChangeLog;
 use App\Entity\Facility;
+use App\Entity\FacilityEvent;
 use App\Entity\Lead\Activity;
 use App\Entity\Notification;
 use App\Entity\Region;
@@ -18,6 +19,7 @@ use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
 use App\Repository\ChangeLogRepository;
+use App\Repository\FacilityEventRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\NotificationRepository;
 use App\Util\Mailer;
@@ -114,6 +116,11 @@ class NotifyCommand extends Command
                     case NotificationTypeCategoryType::TYPE_LEAD_CHANGE_LOG:
                         if ($notification->getType()->isEmail()) {
                             $this->sendTodayLeadChangeLogNotifications($emails);
+                        }
+                        break;
+                    case NotificationTypeCategoryType::TYPE_FACILITY_ACTIVITY:
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendOnTheDayBeforeFacilityActivityNotifications($emails, $notification->getType()->isEmail());
                         }
                         break;
                 }
@@ -359,6 +366,51 @@ class NotifyCommand extends Command
             ));
 
             $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+        }
+    }
+
+    /**
+     * @param array $emails
+     * @param $isEmail
+     */
+    public function sendOnTheDayBeforeFacilityActivityNotifications(array $emails, $isEmail): void
+    {
+        /** @var FacilityEventRepository $activityRepo */
+        $activityRepo = $this->em->getRepository(FacilityEvent::class);
+        $activities = $activityRepo->getActivitiesForCrontabNotification();
+
+        /** @var FacilityEvent $activity */
+        foreach ($activities as $activity) {
+            $allEmails = [];
+
+            $subject = 'Facility Activity Reminder - ' . $activity->getTitle();
+
+            if (!empty($activity->getUsers())) {
+                $activityUserEmails = [];
+                /** @var User $activityUser */
+                foreach ($activity->getUsers() as $activityUser) {
+                    $activityUserEmails[] = $activityUser->getEmail();
+                }
+
+                //for email
+                $allEmails = array_merge($emails, $activityUserEmails);
+                $allEmails = array_unique($allEmails);
+            }
+
+            // Sending email notification per activity
+            if ($isEmail && !empty($allEmails)) {
+                $spaceName = '';
+                if ($activity->getFacility() !== null && $activity->getFacility()->getSpace() !== null) {
+                    $spaceName = $activity->getFacility()->getSpace()->getName();
+                }
+
+                $body = $this->container->get('templating')->render('@api_notification/facility.activity.email.html.twig', array(
+                    'activity' => $activity,
+                    'subject' => $subject
+                ));
+
+                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+            }
         }
     }
 }

@@ -548,4 +548,56 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
             ->getResult();
     }
     ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getActivitiesForCrontabNotification(Space $space = null, array $entityGrants = null)
+    {
+        $today = new \DateTime('now');
+        $tomorrow = date_modify($today, '+1 day');
+        $tomorrowStart = $tomorrow->format('Y-m-d 00:00:00');
+        $tomorrowEnd = $tomorrow->format('Y-m-d 23:59:59');
+        $qb = $this->createQueryBuilder('fe')
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fe.facility'
+            )
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                'ed = fe.definition'
+            )
+            ->join('fe.users', 'u')
+            ->where('fe.start <= :tomorrowEnd AND fe.start >= :tomorrowStart')
+            ->setParameter('tomorrowStart', $tomorrowStart)
+            ->setParameter('tomorrowEnd', $tomorrowEnd);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fe.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

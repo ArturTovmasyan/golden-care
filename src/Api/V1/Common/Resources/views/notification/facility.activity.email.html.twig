@@ -1,0 +1,27 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.title }}{% endif %}{% endblock %}
+{% block subTitle %} |
+    {{ activity.facility.name }}
+{% endblock %}
+    {% block content %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Facility:</td>
+                <td>
+                    {{ activity.facility.name }}
+                </td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Date:</td>
+                <td>
+                    {{ activity.start|date('m/d/Y H:i:s') }}
+                </td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Notes:</td>
+                <td>{{ activity.notes }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endblock %}
