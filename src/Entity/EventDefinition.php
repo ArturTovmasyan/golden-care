@@ -40,10 +40,10 @@ use App\Annotation\Grid;
  *              "values"     = "\App\Model\EventDefinitionType::getTypeDefaultNames"
  *          },
  *          {
- *              "id"         = "show",
+ *              "id"         = "view",
  *              "type"       = "enum",
- *              "field"      = "ed.show",
- *              "values"     = "\App\Model\EventDefinitionShow::getTypeDefaultNames"
+ *              "field"      = "ed.view",
+ *              "values"     = "\App\Model\EventDefinitionView::getTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "title",
@@ -194,18 +194,18 @@ class EventDefinition
      *     "api_admin_event_definition_edit"
      * })
      * @Assert\Choice(
-     *     callback={"App\Model\EventDefinitionShow","getTypeValues"},
+     *     callback={"App\Model\EventDefinitionView","getTypeValues"},
      *     groups={
      *         "api_admin_event_definition_add",
      *         "api_admin_event_definition_edit"
      * })
-     * @ORM\Column(name="show", type="smallint")
+     * @ORM\Column(name="view", type="smallint")
      * @Groups({
      *     "api_admin_event_definition_list",
      *     "api_admin_event_definition_get"
      * })
      */
-    private $show;
+    private $view;
 
     /**
      * @var string
@@ -474,17 +474,17 @@ class EventDefinition
     /**
      * @return int|null
      */
-    public function getShow(): ?int
+    public function getView(): ?int
     {
-        return $this->show;
+        return $this->view;
     }
 
     /**
-     * @param int|null $show
+     * @param int|null $view
      */
-    public function setShow(?int $show): void
+    public function setView(?int $view): void
     {
-        $this->show = $show;
+        $this->view = $view;
     }
 
     /**

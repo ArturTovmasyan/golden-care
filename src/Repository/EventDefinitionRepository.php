@@ -50,10 +50,10 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param null $show
+     * @param null $view
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $show = null)
+    public function list(Space $space = null, array $entityGrants = null, $view = null)
     {
         $qb = $this
             ->createQueryBuilder('ed')
@@ -80,10 +80,10 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
             ->andWhere('ed.inChooser=:inChooser')
             ->setParameter('inChooser', true);
 
-        if ($show !== null) {
+        if ($view !== null) {
             $qb
-                ->andWhere('ed.show=:show')
-                ->setParameter('show', $show);
+                ->andWhere('ed.view=:view')
+                ->setParameter('view', $view);
         }
 
         $qb

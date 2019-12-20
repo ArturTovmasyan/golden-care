@@ -8,7 +8,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
 use App\Entity\Space;
-use App\Model\EventDefinitionShow;
+use App\Model\EventDefinitionView;
 use App\Repository\EventDefinitionRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -39,12 +39,12 @@ class EventDefinitionService extends BaseService implements IGridService
         /** @var EventDefinitionRepository $repo */
         $repo = $this->em->getRepository(EventDefinition::class);
 
-        $show = null;
-        if (!empty($params) && !empty($params[0]['show'])) {
-            $show = (int) $params[0]['show'];
+        $view = null;
+        if (!empty($params) && !empty($params[0]['view'])) {
+            $view = (int) $params[0]['view'];
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $show);
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $view);
     }
 
     /**
@@ -78,17 +78,17 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $type = $params['type'] ? (int)$params['type'] : 0;
-            $show = $params['show'] ? (int)$params['show'] : 0;
+            $view = $params['view'] ? (int)$params['view'] : 0;
 
             $entity = new EventDefinition();
             $entity->setSpace($space);
             $entity->setType($type);
-            $entity->setShow($show);
+            $entity->setView($view);
             $entity->setTitle($params['title']);
             $entity->setInChooser($params['in_chooser']);
 
-            switch ($show) {
-                case EventDefinitionShow::RESIDENT:
+            switch ($view) {
+                case EventDefinitionView::RESIDENT:
                     $entity->setFfc($params['ffc']);
                     $entity->setIhc($params['ihc']);
                     $entity->setIl($params['il']);
@@ -107,7 +107,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setRsvp(false);
                     $entity->setDone(false);
                     break;
-                case EventDefinitionShow::FACILITY:
+                case EventDefinitionView::FACILITY:
                     $entity->setFfc(false);
                     $entity->setIhc(false);
                     $entity->setIl(false);
@@ -127,7 +127,7 @@ class EventDefinitionService extends BaseService implements IGridService
 
                     $entity->setDone(false);
                     break;
-                case EventDefinitionShow::CORPORATE:
+                case EventDefinitionView::CORPORATE:
                     $entity->setFfc(false);
                     $entity->setIhc(false);
                     $entity->setIl(false);
@@ -154,7 +154,7 @@ class EventDefinitionService extends BaseService implements IGridService
 
             $this->em->persist($entity);
 
-            if ($entity->getShow() === EventDefinitionShow::CORPORATE && $entity->isDone()) {
+            if ($entity->getView() === EventDefinitionView::CORPORATE && $entity->isDone()) {
                 $entity->setUsers(true);
             }
 
@@ -202,16 +202,16 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $type = $params['type'] ? (int)$params['type'] : 0;
-            $show = $params['show'] ? (int)$params['show'] : 0;
+            $view = $params['view'] ? (int)$params['view'] : 0;
 
             $entity->setSpace($space);
             $entity->setType($type);
-            $entity->setShow($show);
+            $entity->setView($view);
             $entity->setTitle($params['title']);
             $entity->setInChooser($params['in_chooser']);
 
-            switch ($show) {
-                case EventDefinitionShow::RESIDENT:
+            switch ($view) {
+                case EventDefinitionView::RESIDENT:
                     $entity->setFfc($params['ffc']);
                     $entity->setIhc($params['ihc']);
                     $entity->setIl($params['il']);
@@ -230,7 +230,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setRsvp(false);
                     $entity->setDone(false);
                     break;
-                case EventDefinitionShow::FACILITY:
+                case EventDefinitionView::FACILITY:
                     $entity->setFfc(false);
                     $entity->setIhc(false);
                     $entity->setIl(false);
@@ -250,7 +250,7 @@ class EventDefinitionService extends BaseService implements IGridService
 
                     $entity->setDone(false);
                     break;
-                case EventDefinitionShow::CORPORATE:
+                case EventDefinitionView::CORPORATE:
                     $entity->setFfc(false);
                     $entity->setIhc(false);
                     $entity->setIl(false);
@@ -277,7 +277,7 @@ class EventDefinitionService extends BaseService implements IGridService
 
             $this->em->persist($entity);
 
-            if ($entity->getShow() === EventDefinitionShow::CORPORATE && $entity->isDone()) {
+            if ($entity->getView() === EventDefinitionView::CORPORATE && $entity->isDone()) {
                 $entity->setUsers(true);
             }
 

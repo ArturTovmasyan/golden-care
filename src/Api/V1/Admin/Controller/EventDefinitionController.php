@@ -80,7 +80,7 @@ class EventDefinitionController extends BaseController
             'api_admin_event_definition_list',
             $eventDefinitionService,
             [
-                'show' => $request->get('show')
+                'view' => $request->get('view')
             ]
         );
     }
@@ -117,7 +117,7 @@ class EventDefinitionController extends BaseController
         $id = $eventDefinitionService->add(
             [
                 'type' => $request->get('type'),
-                'show' => $request->get('show'),
+                'view' => $request->get('view'),
                 'title' => $request->get('title'),
                 'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
@@ -164,7 +164,7 @@ class EventDefinitionController extends BaseController
             $id,
             [
                 'type' => $request->get('type'),
-                'show' => $request->get('show'),
+                'view' => $request->get('view'),
                 'title' => $request->get('title'),
                 'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
