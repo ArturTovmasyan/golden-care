@@ -1,0 +1,27 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.title }}{% endif %}{% endblock %}
+{% block subTitle %}
+{% endblock %}
+    {% block content %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            {% if activity.definition.done %}
+                <tr>
+                    <td colspan="2" style="word-break:keep-all;word-wrap:normal;font-weight: bold;">
+                        Please complete your task "{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.title }}{% endif %}".
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Date:</td>
+                <td>
+                    {{ activity.start|date('m/d/Y H:i:s') }}
+                </td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Notes:</td>
+                <td>{{ activity.notes }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endblock %}

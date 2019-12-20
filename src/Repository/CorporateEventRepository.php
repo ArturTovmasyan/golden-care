@@ -355,4 +355,51 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
             ->getResult();
     }
     ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getActivitiesForCrontabNotification(Space $space = null, array $entityGrants = null)
+    {
+        $today = new \DateTime('now');
+        $tomorrow = date_modify($today, '+1 day');
+        $tomorrowStart = $tomorrow->format('Y-m-d 00:00:00');
+        $tomorrowEnd = $tomorrow->format('Y-m-d 23:59:59');
+        $qb = $this->createQueryBuilder('ce')
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                'ed = ce.definition'
+            )
+            ->join('ce.corporateEventUsers', 'u')
+            ->where('ce.start <= :tomorrowEnd AND ce.start >= :tomorrowStart')
+            ->andWhere('ce.done = 0')
+            ->setParameter('tomorrowStart', $tomorrowStart)
+            ->setParameter('tomorrowEnd', $tomorrowEnd);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ed.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ce.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

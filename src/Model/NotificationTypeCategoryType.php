@@ -8,6 +8,7 @@ class NotificationTypeCategoryType
     const TYPE_LEAD_ACTIVITY = 2;
     const TYPE_LEAD_CHANGE_LOG = 3;
     const TYPE_FACILITY_ACTIVITY = 4;
+    const TYPE_CORPORATE_ACTIVITY = 5;
 
     /**
      * @var array
@@ -17,6 +18,7 @@ class NotificationTypeCategoryType
         self::TYPE_LEAD_ACTIVITY => 'Lead Activity',
         self::TYPE_LEAD_CHANGE_LOG => 'Lead Change Log',
         self::TYPE_FACILITY_ACTIVITY => 'Facility Activity',
+        self::TYPE_CORPORATE_ACTIVITY => 'Corporate Activity',
     ];
 
     /**
@@ -27,6 +29,7 @@ class NotificationTypeCategoryType
         'Lead Activity' => '2',
         'Lead Change Log' => '3',
         'Facility Activity' => '4',
+        'Corporate Activity' => '5',
     ];
 
     /**
@@ -37,6 +40,7 @@ class NotificationTypeCategoryType
         self::TYPE_LEAD_ACTIVITY => 2,
         self::TYPE_LEAD_CHANGE_LOG => 3,
         self::TYPE_FACILITY_ACTIVITY => 4,
+        self::TYPE_CORPORATE_ACTIVITY => 5,
     ];
 
     /**
