@@ -292,4 +292,33 @@ class UserController extends BaseController
 
         return $this->respondImageFile($data[0], $data[1], $data[2]);
     }
+
+    /**
+     * @Route("/calendar", name="api_admin_corporate_calendar", methods={"GET"})
+     *
+     * @param Request $request
+     * @param UserService $userService
+     * @return JsonResponse
+     */
+    public function getCorporateCalendarAction(Request $request, UserService $userService)
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userRoleIds = null;
+        if ($user !== null) {
+            $userRoles = $user->getRoleObjects();
+
+            if ($userRoles !== null) {
+                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+            }
+        }
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $userService->getCalendar($user, $userRoleIds, $request->get('date_from'), $request->get('date_to')),
+            ['api_admin_facility_calendar']
+        );
+    }
 }

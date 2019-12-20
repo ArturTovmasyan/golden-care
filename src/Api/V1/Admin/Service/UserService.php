@@ -6,11 +6,14 @@ use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\CorporateEvent;
+use App\Entity\Facility;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
 use App\Entity\UserImage;
 use App\Entity\UserPhone;
+use App\Repository\CorporateEventRepository;
 use App\Repository\UserImageRepository;
 use App\Repository\UserPhoneRepository;
 use App\Repository\UserRepository;
@@ -469,5 +472,41 @@ class UserService extends BaseService implements IGridService
         }
 
         return [null, null, null];
+    }
+
+    /**
+     * @param User $user
+     * @param $userRoleIds
+     * @param $dateFrom
+     * @param $dateTo
+     * @return array
+     */
+    public function getCalendar($user, $userRoleIds, $dateFrom, $dateTo): array
+    {
+        if ($user === null) {
+            throw new UserNotFoundException();
+        }
+
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        if (!empty($dateFrom)) {
+            $dateFrom = new \DateTime($dateFrom);
+            $dateFrom = $dateFrom->format('Y-m-d 00:00:00');
+        }
+
+        if (!empty($dateTo)) {
+            $dateTo = new \DateTime($dateTo);
+            $dateTo = $dateTo->format('Y-m-d 23:59:59');
+        }
+
+        $facilityEntityGrants = !empty($this->grantService->getCurrentUserEntityGrants(Facility::class)) ? $this->grantService->getCurrentUserEntityGrants(Facility::class) : null;
+
+        /** @var CorporateEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(CorporateEvent::class);
+        $corporateEvents = $eventRepo->getCorporateCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(CorporateEvent::class), $facilityEntityGrants, $userRoleIds, $dateFrom, $dateTo);
+
+        return [
+            'corporate_events' => $corporateEvents
+        ];
     }
 }

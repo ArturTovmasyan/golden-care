@@ -273,4 +273,86 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $facilityEntityGrants
+     * @param array|null $userRoleIds
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public function getCorporateCalendarData(Space $space = null, array $entityGrants = null, $facilityEntityGrants, array $userRoleIds = null, $dateFrom = null, $dateTo = null)
+    {
+        $qb = $this->createQueryBuilder('ce');
+
+        $qb
+            ->select(
+                'ce.id AS id',
+                'ce.title AS title',
+                'ce.start AS start',
+                'ce.end AS end',
+                'ce.done AS done',
+                'ce.notes AS notes'
+            )
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                'ed = ce.definition'
+            )
+            ->leftJoin('ce.facilities', 'f')
+            ->leftJoin('ce.roles', 'r');
+
+        if ($dateFrom !== null) {
+            $qb
+                ->andWhere('ce.start >= :start')
+                ->andWhere('ce.end IS NULL OR ce.end >= :start')
+                ->setParameter('start', $dateFrom);
+        }
+
+        if ($dateTo !== null) {
+            $qb
+                ->andWhere('ce.start <= :end')
+                ->setParameter('end', $dateTo);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ed.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ce.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds) OR f.id IS NULL')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
+        if ($userRoleIds !== null) {
+            $qb
+                ->andWhere('r.id IN (:userRoleIds) OR r.id IS NULL')
+                ->setParameter('userRoleIds', $userRoleIds);
+        }
+
+        return $qb
+            ->groupBy('ce.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
 }
