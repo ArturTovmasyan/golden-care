@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -304,12 +305,27 @@ class CorporateEvent
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\CorporateEventUser", mappedBy="event", cascade={"persist"})
-     * @Groups({
-     *     "api_admin_corporate_event_list",
-     *     "api_admin_corporate_event_get"
-     * })
      */
     private $corporateEventUsers;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("users")
+     * @Serializer\Groups({"api_admin_corporate_event_get", "api_admin_corporate_event_list"})
+     */
+    public function getUsers(): ?array
+    {
+        $users = [];
+        if ($this->getCorporateEventUsers() !== null) {
+            /** @var CorporateEventUser $corporateEventUser */
+            foreach ($this->getCorporateEventUsers() as $corporateEventUser) {
+                $users[] = $corporateEventUser->getUser();
+            }
+            return $users;
+        }
+
+        return null;
+    }
 
     /**
      * @return int
