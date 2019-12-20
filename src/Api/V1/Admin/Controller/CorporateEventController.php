@@ -263,4 +263,30 @@ class CorporateEventController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/done/{id}", requirements={"id"="\d+"}, name="api_admin_corporate_event_edit_done", methods={"POST"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param CorporateEventService $corporateEventService
+     * @return JsonResponse
+     */
+    public function changeDoneByCurrentUserAction(Request $request, $id, CorporateEventService $corporateEventService)
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $corporateEventService->changeDoneByCurrentUser(
+            $id,
+            $user,
+            [
+                'done' => $request->get('done')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
 }

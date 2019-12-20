@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\NotAValidChoiceException;
 use App\Api\V1\Common\Service\Exception\CorporateEventNotFoundException;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\Exception\UserNotBeBlankException;
+use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CorporateEventUser;
 use App\Entity\EventDefinition;
@@ -499,6 +500,68 @@ class CorporateEventService extends BaseService implements IGridService
         $event->setDone($done);
 
         return $corporateEventUsers;
+    }
+
+    /**
+     * @param $id
+     * @param User $user
+     * @param array $params
+     * @throws \Exception
+     */
+    public function changeDoneByCurrentUser($id, User $user, array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            if ($user === null) {
+                throw new UserNotFoundException();
+            }
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var CorporateEventRepository $repo */
+            $repo = $this->em->getRepository(CorporateEvent::class);
+
+            /** @var CorporateEvent $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CorporateEvent::class), $id);
+
+            if ($entity === null) {
+                throw new CorporateEventNotFoundException();
+            }
+
+            $definition = $entity->getDefinition();
+
+            if ($definition === null) {
+                throw new EventDefinitionNotFoundException();
+            }
+
+            $done = true;
+            if ($definition->isUsers() && !empty($entity->getCorporateEventUsers())) {
+                /** @var CorporateEventUser $corporateEventUser */
+                foreach ($entity->getCorporateEventUsers() as $corporateEventUser) {
+                    if ($corporateEventUser->getUser() !== null && $corporateEventUser->getUser()->getId() === $user->getId()) {
+                        $corporateEventUser->setDone((bool) $params['done']);
+
+                        $this->em->persist($corporateEventUser);
+                    }
+
+                    if (!$corporateEventUser->isDone()) {
+                        $done = false;
+                    }
+                }
+            }
+
+            $entity->setDone($done);
+
+            $this->em->persist($entity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
     }
 
     /**
