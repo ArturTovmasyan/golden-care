@@ -4,90 +4,125 @@ namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
+use App\Entity\CorporateEvent;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class EventDefinitionRepository
+ * Class CorporateEventRepository
  * @package App\Repository
  */
-class EventDefinitionRepository extends EntityRepository implements RelatedInfoInterface
+class CorporateEventRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
+     * @param array|null $userRoleIds
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, array $userRoleIds = null) : void
     {
         $queryBuilder
-            ->from(EventDefinition::class, 'ed')
+            ->from(CorporateEvent::class, 'ce')
+            ->addSelect("GROUP_CONCAT(DISTINCT f.name SEPARATOR ', ') AS facilities")
+            ->addSelect("GROUP_CONCAT(DISTINCT r.name SEPARATOR ', ') AS roles")
             ->innerJoin(
-                Space::class,
-                's',
+                EventDefinition::class,
+                'ed',
                 Join::WITH,
-                's = ed.space'
-            );
+                'ed = ce.definition'
+            )
+            ->leftJoin('ce.facilities', 'f')
+            ->leftJoin('ce.roles', 'r')
+        ;
 
         if ($space !== null) {
             $queryBuilder
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ed.space'
+                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('ed.id IN (:grantIds)')
+                ->andWhere('ce.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('f.id IN (:facilityGrantIds) OR f.id IS NULL')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
+        if ($userRoleIds !== null) {
+            $queryBuilder
+                ->andWhere('r.id IN (:userRoleIds) OR r.id IS NULL')
+                ->setParameter('userRoleIds', $userRoleIds);
+        }
+
         $queryBuilder
-            ->groupBy('ed.id');
+            ->orderBy('ce.start', 'DESC')
+            ->groupBy('ce.id');
     }
 
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param null $show
+     * @param $facilityEntityGrants
+     * @param array|null $userRoleIds
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $show = null)
+    public function list(Space $space = null, array $entityGrants = null, $facilityEntityGrants, array $userRoleIds = null)
     {
         $qb = $this
-            ->createQueryBuilder('ed')
+            ->createQueryBuilder('ce')
             ->innerJoin(
-                Space::class,
-                's',
+                EventDefinition::class,
+                'ed',
                 Join::WITH,
-                's = ed.space'
-            );
+                'ed = ce.definition'
+            )
+            ->leftJoin('ce.facilities', 'f')
+            ->leftJoin('ce.roles', 'r');
 
         if ($space !== null) {
             $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ed.space'
+                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('ed.id IN (:grantIds)')
+                ->andWhere('ce.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        $qb
-            ->andWhere('ed.inChooser=:inChooser')
-            ->setParameter('inChooser', true);
-
-        if ($show !== null) {
+        if ($facilityEntityGrants !== null) {
             $qb
-                ->andWhere('ed.show=:show')
-                ->setParameter('show', $show);
+                ->andWhere('f.id IN (:facilityGrantIds) OR f.id IS NULL')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
-        $qb
-            ->addOrderBy('ed.title', 'ASC');
+        if ($userRoleIds !== null) {
+            $qb
+                ->andWhere('r.id IN (:userRoleIds) OR r.id IS NULL')
+                ->setParameter('userRoleIds', $userRoleIds);
+        }
 
         return $qb
             ->getQuery()
@@ -103,14 +138,20 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
     public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('ed')
+            ->createQueryBuilder('ce')
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                'ed = ce.definition'
+            )
             ->innerJoin(
                 Space::class,
                 's',
                 Join::WITH,
                 's = ed.space'
             )
-            ->where('ed.id = :id')
+            ->where('ce.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -121,7 +162,7 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('ed.id IN (:grantIds)')
+                ->andWhere('ce.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
@@ -139,12 +180,18 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
     public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('ed')
-            ->where('ed.id IN (:ids)')
+            ->createQueryBuilder('ce')
+            ->where('ce.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
+                ->innerJoin(
+                    EventDefinition::class,
+                    'ed',
+                    Join::WITH,
+                    'ed = ce.definition'
+                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -157,11 +204,11 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('ed.id IN (:grantIds)')
+                ->andWhere('ce.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        return $qb->groupBy('ed.id')
+        return $qb->groupBy('ce.id')
             ->getQuery()
             ->getResult();
     }
@@ -177,24 +224,30 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('ed')
-            ->select('ed.title');
+            ->createQueryBuilder('ce')
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                'ed = ce.definition'
+            )
+            ->select('ce.title');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ed.'.$mappedBy.'= :id')
+                ->where('ce.'.$mappedBy.'= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('ed.id IN (:ids)')
+                ->andWhere('ce.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('ed.id IN (:array)')
+                ->andWhere('ce.id IN (:array)')
                 ->setParameter('array', []);
         }
 
@@ -212,7 +265,7 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('ed.id IN (:grantIds)')
+                ->andWhere('ce.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

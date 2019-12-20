@@ -136,7 +136,9 @@ class Facility
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $id;
@@ -178,7 +180,9 @@ class Facility
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $name;
@@ -511,6 +515,12 @@ class Facility
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="facility", cascade={"remove", "persist"})
      */
     private $facilityEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\CorporateEvent", mappedBy="facilities", cascade={"persist"})
+     */
+    protected $corporateEvents;
 
     /**
      * @return int
@@ -907,6 +917,45 @@ class Facility
     public function setFacilityEvents(ArrayCollection $facilityEvents): void
     {
         $this->facilityEvents = $facilityEvents;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCorporateEvents()
+    {
+        return $this->corporateEvents;
+    }
+
+    /**
+     * @param mixed $corporateEvents
+     */
+    public function setCorporateEvents($corporateEvents): void
+    {
+        $this->corporateEvents = $corporateEvents;
+
+        /** @var CorporateEvent $corporateEvent */
+        foreach ($this->corporateEvents as $corporateEvent) {
+            $corporateEvent->addFacility($this);
+        }
+    }
+
+    /**
+     * @param CorporateEvent $corporateEvent
+     */
+    public function addCorporateEvent(CorporateEvent $corporateEvent): void
+    {
+        $corporateEvent->addFacility($this);
+        $this->corporateEvents[] = $corporateEvent;
+    }
+
+    /**
+     * @param CorporateEvent $corporateEvent
+     */
+    public function removeCorporateEvent(CorporateEvent $corporateEvent): void
+    {
+        $this->corporateEvents->removeElement($corporateEvent);
+        $corporateEvent->removeFacility($this);
     }
 
     /**

@@ -34,25 +34,16 @@ use App\Annotation\Grid;
  *              "field"      = "ed.id"
  *          },
  *          {
- *              "id"         = "resident",
- *              "type"       = "boolean",
- *              "field"      = "ed.resident"
- *          },
- *          {
- *              "id"         = "facility",
- *              "type"       = "boolean",
- *              "field"      = "ed.facility"
- *          },
- *          {
- *              "id"         = "corporate",
- *              "type"       = "boolean",
- *              "field"      = "ed.corporate"
- *          },
- *          {
  *              "id"         = "type",
  *              "type"       = "enum",
  *              "field"      = "ed.type",
  *              "values"     = "\App\Model\EventDefinitionType::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "show",
+ *              "type"       = "enum",
+ *              "field"      = "ed.show",
+ *              "values"     = "\App\Model\EventDefinitionShow::getTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "title",
@@ -141,6 +132,11 @@ use App\Annotation\Grid;
  *              "field"      = "ed.rsvp"
  *          },
  *          {
+ *              "id"         = "done",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.done"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -164,7 +160,9 @@ class EventDefinition
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $id;
@@ -190,6 +188,26 @@ class EventDefinition
     private $type;
 
     /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_event_definition_add",
+     *     "api_admin_event_definition_edit"
+     * })
+     * @Assert\Choice(
+     *     callback={"App\Model\EventDefinitionShow","getTypeValues"},
+     *     groups={
+     *         "api_admin_event_definition_add",
+     *         "api_admin_event_definition_edit"
+     * })
+     * @ORM\Column(name="show", type="smallint")
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    private $show;
+
+    /**
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_admin_event_definition_add",
@@ -209,7 +227,9 @@ class EventDefinition
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $title;
@@ -343,36 +363,6 @@ class EventDefinition
 
     /**
      * @var bool
-     * @ORM\Column(name="show_in_resident", type="boolean", options={"default" = 0})
-     * @Groups({
-     *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
-     * })
-     */
-    protected $resident;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="show_in_facility", type="boolean", options={"default" = 0})
-     * @Groups({
-     *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
-     * })
-     */
-    protected $facility;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="show_in_corporate", type="boolean", options={"default" = 0})
-     * @Groups({
-     *     "api_admin_event_definition_list",
-     *     "api_admin_event_definition_get"
-     * })
-     */
-    protected $corporate;
-
-    /**
-     * @var bool
      * @ORM\Column(name="show_residents", type="boolean", options={"default" = 0})
      * @Groups({
      *     "api_admin_event_definition_list",
@@ -422,6 +412,16 @@ class EventDefinition
     protected $rsvp;
 
     /**
+     * @var bool
+     * @ORM\Column(name="show_done", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $done;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentEvent", mappedBy="definition", cascade={"remove", "persist"})
      */
@@ -432,6 +432,12 @@ class EventDefinition
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="definition", cascade={"remove", "persist"})
      */
     private $facilityEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\CorporateEvent", mappedBy="definition", cascade={"remove", "persist"})
+     */
+    private $corporateEvents;
 
     /**
      * @return int
@@ -463,6 +469,22 @@ class EventDefinition
     public function setType(?int $type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getShow(): ?int
+    {
+        return $this->show;
+    }
+
+    /**
+     * @param int|null $show
+     */
+    public function setShow(?int $show): void
+    {
+        $this->show = $show;
     }
 
     /**
@@ -676,54 +698,6 @@ class EventDefinition
     /**
      * @return bool
      */
-    public function isResident(): bool
-    {
-        return $this->resident;
-    }
-
-    /**
-     * @param bool $resident
-     */
-    public function setResident(bool $resident): void
-    {
-        $this->resident = $resident;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFacility(): bool
-    {
-        return $this->facility;
-    }
-
-    /**
-     * @param bool $facility
-     */
-    public function setFacility(bool $facility): void
-    {
-        $this->facility = $facility;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCorporate(): bool
-    {
-        return $this->corporate;
-    }
-
-    /**
-     * @param bool $corporate
-     */
-    public function setCorporate(bool $corporate): void
-    {
-        $this->corporate = $corporate;
-    }
-
-    /**
-     * @return bool
-     */
     public function isResidents(): bool
     {
         return $this->residents;
@@ -802,6 +776,22 @@ class EventDefinition
     }
 
     /**
+     * @return bool
+     */
+    public function isDone(): bool
+    {
+        return $this->done;
+    }
+
+    /**
+     * @param bool $done
+     */
+    public function setDone(bool $done): void
+    {
+        $this->done = $done;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getResidentEvents(): ArrayCollection
@@ -831,5 +821,21 @@ class EventDefinition
     public function setFacilityEvents(ArrayCollection $facilityEvents): void
     {
         $this->facilityEvents = $facilityEvents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCorporateEvents(): ArrayCollection
+    {
+        return $this->corporateEvents;
+    }
+
+    /**
+     * @param ArrayCollection $corporateEvents
+     */
+    public function setCorporateEvents(ArrayCollection $corporateEvents): void
+    {
+        $this->corporateEvents = $corporateEvents;
     }
 }

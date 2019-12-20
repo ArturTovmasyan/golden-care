@@ -121,7 +121,9 @@ class User implements UserInterface
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
 >>>>>>> e4d4a223 (Separated Grid and List actions.)
      */
@@ -163,7 +165,9 @@ class User implements UserInterface
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $firstName;
@@ -204,7 +208,9 @@ class User implements UserInterface
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get",
      *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
+     *     "api_admin_facility_event_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $lastName;
@@ -582,6 +588,12 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="users", cascade={"persist"})
      */
     protected $facilityEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\CorporateEventUser", mappedBy="user", cascade={"persist"})
+     */
+    private $corporateEventUsers;
 
     /**
      * Space constructor.
@@ -1213,5 +1225,21 @@ class User implements UserInterface
     {
         $this->facilityEvents->removeElement($facilityEvent);
         $facilityEvent->removeUser($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCorporateEventUsers(): ArrayCollection
+    {
+        return $this->corporateEventUsers;
+    }
+
+    /**
+     * @param ArrayCollection $corporateEventUsers
+     */
+    public function setCorporateEventUsers(ArrayCollection $corporateEventUsers): void
+    {
+        $this->corporateEventUsers = $corporateEventUsers;
     }
 }

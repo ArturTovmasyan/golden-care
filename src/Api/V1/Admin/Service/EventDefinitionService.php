@@ -3,10 +3,12 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
+use App\Api\V1\Common\Service\Exception\NotAValidChoiceException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
 use App\Entity\Space;
+use App\Model\EventDefinitionShow;
 use App\Repository\EventDefinitionRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -37,25 +39,12 @@ class EventDefinitionService extends BaseService implements IGridService
         /** @var EventDefinitionRepository $repo */
         $repo = $this->em->getRepository(EventDefinition::class);
 
-        $isResident = false;
-        $isFacility = false;
-        $isCorporate = false;
-
-        if (!empty($params)) {
-            if (!empty($params[0]['resident'])) {
-                $isResident = (bool) $params[0]['resident'];
-            }
-
-            if (!empty($params[0]['facility'])) {
-                $isFacility = (bool) $params[0]['facility'];
-            }
-
-            if (!empty($params[0]['corporate'])) {
-                $isCorporate = (bool) $params[0]['corporate'];
-            }
+        $show = null;
+        if (!empty($params) && !empty($params[0]['show'])) {
+            $show = (int) $params[0]['show'];
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $isResident, $isFacility, $isCorporate);
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $show);
     }
 
     /**
@@ -89,59 +78,84 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $type = $params['type'] ? (int)$params['type'] : 0;
+            $show = $params['show'] ? (int)$params['show'] : 0;
 
             $entity = new EventDefinition();
             $entity->setSpace($space);
             $entity->setType($type);
-            $entity->setInChooser($params['in_chooser']);
+            $entity->setShow($show);
             $entity->setTitle($params['title']);
+            $entity->setInChooser($params['in_chooser']);
 
-            $entity->setResident($params['resident']);
-            $entity->setFacility($params['facility']);
-            $entity->setCorporate($params['corporate']);
+            switch ($show) {
+                case EventDefinitionShow::RESIDENT:
+                    $entity->setFfc($params['ffc']);
+                    $entity->setIhc($params['ihc']);
+                    $entity->setIl($params['il']);
+                    $entity->setPhysician($params['physician']);
+                    $entity->setPhysicianOptional($params['physician_optional']);
+                    $entity->setResponsiblePerson($params['responsible_person']);
+                    $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
+                    $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
+                    $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
+                    $entity->setAdditionalDate($params['additional_date']);
 
-            //for resident event
-            $entity->setFfc($params['ffc']);
-            $entity->setIhc($params['ihc']);
-            $entity->setIl($params['il']);
-            $entity->setPhysician($params['physician']);
-            $entity->setPhysicianOptional($params['physician_optional']);
-            $entity->setResponsiblePerson($params['responsible_person']);
-            $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
-            $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
-            $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
-            $entity->setAdditionalDate($params['additional_date']);
+                    $entity->setResidents(false);
+                    $entity->setUsers(false);
+                    $entity->setDuration(false);
+                    $entity->setRepeats(false);
+                    $entity->setRsvp(false);
+                    $entity->setDone(false);
+                    break;
+                case EventDefinitionShow::FACILITY:
+                    $entity->setFfc(false);
+                    $entity->setIhc(false);
+                    $entity->setIl(false);
+                    $entity->setPhysician(false);
+                    $entity->setPhysicianOptional(false);
+                    $entity->setResponsiblePerson(false);
+                    $entity->setResponsiblePersonOptional(false);
+                    $entity->setResponsiblePersonMulti(false);
+                    $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setAdditionalDate(false);
 
-            //for facility event
-            $entity->setResidents($params['residents']);
-            $entity->setUsers($params['users']);
-            $entity->setDuration($params['duration']);
-            $entity->setRepeats($params['repeats']);
-            $entity->setRsvp($params['rsvp']);
+                    $entity->setResidents($params['residents']);
+                    $entity->setUsers($params['users']);
+                    $entity->setDuration($params['duration']);
+                    $entity->setRepeats($params['repeats']);
+                    $entity->setRsvp($params['rsvp']);
+
+                    $entity->setDone(false);
+                    break;
+                case EventDefinitionShow::CORPORATE:
+                    $entity->setFfc(false);
+                    $entity->setIhc(false);
+                    $entity->setIl(false);
+                    $entity->setPhysician(false);
+                    $entity->setPhysicianOptional(false);
+                    $entity->setResponsiblePerson(false);
+                    $entity->setResponsiblePersonOptional(false);
+                    $entity->setResponsiblePersonMulti(false);
+                    $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setAdditionalDate(false);
+                    $entity->setResidents(false);
+
+                    $entity->setUsers($params['users']);
+                    $entity->setDuration($params['duration']);
+                    $entity->setRepeats($params['repeats']);
+                    $entity->setRsvp($params['rsvp']);
+                    $entity->setDone($params['done']);
+                    break;
+                default:
+                    throw new NotAValidChoiceException();
+            }
 
             $this->validate($entity, null, ['api_admin_event_definition_add']);
 
             $this->em->persist($entity);
 
-            if ($entity->isResident()) {
-                $entity->setResidents(false);
-                $entity->setUsers(false);
-                $entity->setDuration(false);
-                $entity->setRepeats(false);
-                $entity->setRsvp(false);
-            }
-
-            if ($entity->isFacility()) {
-                $entity->setFfc(false);
-                $entity->setIhc(false);
-                $entity->setIl(false);
-                $entity->setPhysician(false);
-                $entity->setPhysicianOptional(false);
-                $entity->setResponsiblePerson(false);
-                $entity->setResponsiblePersonOptional(false);
-                $entity->setResponsiblePersonMulti(false);
-                $entity->setResponsiblePersonMultiOptional(false);
-                $entity->setAdditionalDate(false);
+            if ($entity->getShow() === EventDefinitionShow::CORPORATE && $entity->isDone()) {
+                $entity->setUsers(true);
             }
 
             $this->em->persist($entity);
@@ -188,58 +202,83 @@ class EventDefinitionService extends BaseService implements IGridService
             }
 
             $type = $params['type'] ? (int)$params['type'] : 0;
+            $show = $params['show'] ? (int)$params['show'] : 0;
 
             $entity->setSpace($space);
             $entity->setType($type);
+            $entity->setShow($show);
             $entity->setTitle($params['title']);
             $entity->setInChooser($params['in_chooser']);
 
-            $entity->setResident($params['resident']);
-            $entity->setFacility($params['facility']);
-            $entity->setCorporate($params['corporate']);
+            switch ($show) {
+                case EventDefinitionShow::RESIDENT:
+                    $entity->setFfc($params['ffc']);
+                    $entity->setIhc($params['ihc']);
+                    $entity->setIl($params['il']);
+                    $entity->setPhysician($params['physician']);
+                    $entity->setPhysicianOptional($params['physician_optional']);
+                    $entity->setResponsiblePerson($params['responsible_person']);
+                    $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
+                    $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
+                    $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
+                    $entity->setAdditionalDate($params['additional_date']);
 
-            //for resident event
-            $entity->setFfc($params['ffc']);
-            $entity->setIhc($params['ihc']);
-            $entity->setIl($params['il']);
-            $entity->setPhysician($params['physician']);
-            $entity->setPhysicianOptional($params['physician_optional']);
-            $entity->setResponsiblePerson($params['responsible_person']);
-            $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
-            $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
-            $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
-            $entity->setAdditionalDate($params['additional_date']);
+                    $entity->setResidents(false);
+                    $entity->setUsers(false);
+                    $entity->setDuration(false);
+                    $entity->setRepeats(false);
+                    $entity->setRsvp(false);
+                    $entity->setDone(false);
+                    break;
+                case EventDefinitionShow::FACILITY:
+                    $entity->setFfc(false);
+                    $entity->setIhc(false);
+                    $entity->setIl(false);
+                    $entity->setPhysician(false);
+                    $entity->setPhysicianOptional(false);
+                    $entity->setResponsiblePerson(false);
+                    $entity->setResponsiblePersonOptional(false);
+                    $entity->setResponsiblePersonMulti(false);
+                    $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setAdditionalDate(false);
 
-            //for facility event
-            $entity->setResidents($params['residents']);
-            $entity->setUsers($params['users']);
-            $entity->setDuration($params['duration']);
-            $entity->setRepeats($params['repeats']);
-            $entity->setRsvp($params['rsvp']);
+                    $entity->setResidents($params['residents']);
+                    $entity->setUsers($params['users']);
+                    $entity->setDuration($params['duration']);
+                    $entity->setRepeats($params['repeats']);
+                    $entity->setRsvp($params['rsvp']);
+
+                    $entity->setDone(false);
+                    break;
+                case EventDefinitionShow::CORPORATE:
+                    $entity->setFfc(false);
+                    $entity->setIhc(false);
+                    $entity->setIl(false);
+                    $entity->setPhysician(false);
+                    $entity->setPhysicianOptional(false);
+                    $entity->setResponsiblePerson(false);
+                    $entity->setResponsiblePersonOptional(false);
+                    $entity->setResponsiblePersonMulti(false);
+                    $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setAdditionalDate(false);
+                    $entity->setResidents(false);
+
+                    $entity->setUsers($params['users']);
+                    $entity->setDuration($params['duration']);
+                    $entity->setRepeats($params['repeats']);
+                    $entity->setRsvp($params['rsvp']);
+                    $entity->setDone($params['done']);
+                    break;
+                default:
+                    throw new NotAValidChoiceException();
+            }
 
             $this->validate($entity, null, ['api_admin_event_definition_edit']);
 
             $this->em->persist($entity);
 
-            if ($entity->isResident()) {
-                $entity->setResidents(false);
-                $entity->setUsers(false);
-                $entity->setDuration(false);
-                $entity->setRepeats(false);
-                $entity->setRsvp(false);
-            }
-
-            if ($entity->isFacility()) {
-                $entity->setFfc(false);
-                $entity->setIhc(false);
-                $entity->setIl(false);
-                $entity->setPhysician(false);
-                $entity->setPhysicianOptional(false);
-                $entity->setResponsiblePerson(false);
-                $entity->setResponsiblePersonOptional(false);
-                $entity->setResponsiblePersonMulti(false);
-                $entity->setResponsiblePersonMultiOptional(false);
-                $entity->setAdditionalDate(false);
+            if ($entity->getShow() === EventDefinitionShow::CORPORATE && $entity->isDone()) {
+                $entity->setUsers(true);
             }
 
             $this->em->persist($entity);

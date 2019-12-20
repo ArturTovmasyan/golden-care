@@ -154,6 +154,8 @@ class ResponseCode
     const USER_NOT_BE_BLANK_EXCEPTION                            = 754;
     const RESIDENT_NOT_BE_BLANK_EXCEPTION                        = 755;
     const NOT_A_VALID_CHOICE_EXCEPTION                           = 756;
+    const CORPORATE_EVENT_USER_NOT_FOUND_EXCEPTION               = 757;
+    const CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    = 758;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -309,6 +311,8 @@ class ResponseCode
         self::USER_NOT_BE_BLANK_EXCEPTION                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select an User.'],
         self::RESIDENT_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a Resident.'],
         self::NOT_A_VALID_CHOICE_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The value you selected is not a valid choice.'],
+        self::CORPORATE_EVENT_USER_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Corporate Event User not found.'],
+        self::CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Corporate Event not found.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

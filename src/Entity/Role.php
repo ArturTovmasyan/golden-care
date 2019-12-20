@@ -72,7 +72,9 @@ class Role
      *     "api_admin_user_get",
      *     "api_profile_me",
      *     "api_admin_document_list",
-     *     "api_admin_document_get"
+     *     "api_admin_document_get",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $id;
@@ -97,7 +99,9 @@ class Role
      *     "api_admin_role_list",
      *     "api_admin_role_get",
      *     "api_profile_me",
-     *     "api_admin_document_list"
+     *     "api_admin_document_list",
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
      * })
      */
     private $name;
@@ -140,6 +144,12 @@ class Role
      * @ORM\ManyToMany(targetEntity="App\Entity\Document", mappedBy="roles", cascade={"persist"})
      */
     protected $documents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\CorporateEvent", mappedBy="roles", cascade={"persist"})
+     */
+    protected $corporateEvents;
 
     /**
      * Role constructor.
@@ -266,5 +276,44 @@ class Role
     {
         $this->documents->removeElement($document);
         $document->removeRole($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCorporateEvents()
+    {
+        return $this->corporateEvents;
+    }
+
+    /**
+     * @param mixed $corporateEvents
+     */
+    public function setCorporateEvents($corporateEvents): void
+    {
+        $this->corporateEvents = $corporateEvents;
+
+        /** @var CorporateEvent $corporateEvent */
+        foreach ($this->corporateEvents as $corporateEvent) {
+            $corporateEvent->addRole($this);
+        }
+    }
+
+    /**
+     * @param CorporateEvent $corporateEvent
+     */
+    public function addCorporateEvent(CorporateEvent $corporateEvent): void
+    {
+        $corporateEvent->addRole($this);
+        $this->corporateEvents[] = $corporateEvent;
+    }
+
+    /**
+     * @param CorporateEvent $corporateEvent
+     */
+    public function removeCorporateEvent(CorporateEvent $corporateEvent): void
+    {
+        $this->corporateEvents->removeElement($corporateEvent);
+        $corporateEvent->removeRole($this);
     }
 }

@@ -80,9 +80,7 @@ class EventDefinitionController extends BaseController
             'api_admin_event_definition_list',
             $eventDefinitionService,
             [
-                'resident' => $request->get('resident'),
-                'facility' => $request->get('facility'),
-                'corporate' => $request->get('corporate')
+                'show' => $request->get('show')
             ]
         );
     }
@@ -119,6 +117,7 @@ class EventDefinitionController extends BaseController
         $id = $eventDefinitionService->add(
             [
                 'type' => $request->get('type'),
+                'show' => $request->get('show'),
                 'title' => $request->get('title'),
                 'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
@@ -131,14 +130,12 @@ class EventDefinitionController extends BaseController
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
-                'resident' => $request->get('resident'),
-                'facility' => $request->get('facility'),
-                'corporate' => $request->get('corporate'),
                 'residents' => $request->get('residents'),
                 'users' => $request->get('users'),
                 'duration' => $request->get('duration'),
                 'repeats' => $request->get('repeats'),
                 'rsvp' => $request->get('rsvp'),
+                'done' => $request->get('done'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -167,6 +164,7 @@ class EventDefinitionController extends BaseController
             $id,
             [
                 'type' => $request->get('type'),
+                'show' => $request->get('show'),
                 'title' => $request->get('title'),
                 'in_chooser' => $request->get('in_chooser'),
                 'ffc' => $request->get('ffc'),
@@ -179,14 +177,12 @@ class EventDefinitionController extends BaseController
                 'responsible_person_multi' => $request->get('responsible_person_multi'),
                 'responsible_person_multi_optional' => $request->get('responsible_person_multi_optional'),
                 'additional_date' => $request->get('additional_date'),
-                'resident' => $request->get('resident'),
-                'facility' => $request->get('facility'),
-                'corporate' => $request->get('corporate'),
                 'residents' => $request->get('residents'),
                 'users' => $request->get('users'),
                 'duration' => $request->get('duration'),
                 'repeats' => $request->get('repeats'),
                 'rsvp' => $request->get('rsvp'),
+                'done' => $request->get('done'),
                 'space_id' => $request->get('space_id')
             ]
         );

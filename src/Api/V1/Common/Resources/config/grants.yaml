@@ -285,6 +285,16 @@ persistence:
       class: App\Entity\Region
       route: api_admin_region_list
 
+    corporate:
+      title: 'Corporate'
+      children:
+        corporate_event:
+          title: 'CorporateEvent'
+          class: App\Entity\CorporateEvent
+        corporate_event_user:
+          title: 'CorporateEventUser'
+          class: App\Entity\CorporateEventUser
+
     resident:
       title: 'Resident'
       children:
