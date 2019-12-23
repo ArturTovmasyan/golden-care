@@ -2,15 +2,20 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\StageChangeReasonNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Lead\Activity;
+use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\StageChangeReason;
+use App\Model\Lead\ActivityOwnerType;
+use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\FunnelStageRepository;
 use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
@@ -137,6 +142,10 @@ class LeadFunnelStageService extends BaseService implements IGridService
             $this->validate($leadFunnelStage, null, ['api_lead_lead_funnel_stage_add']);
 
             $this->em->persist($leadFunnelStage);
+
+            // Creating change funnel stage activity
+            $this->createLeadChangeFunnelStageActivity($currentSpace, $lead, $leadFunnelStage);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -234,6 +243,56 @@ class LeadFunnelStageService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $currentSpace
+     * @param Lead $lead
+     * @param LeadFunnelStage $leadFunnelStage
+     */
+    private function createLeadChangeFunnelStageActivity($currentSpace, Lead $lead, LeadFunnelStage $leadFunnelStage)
+    {
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+        /** @var ActivityType $type */
+        $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 13);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        /** @var LeadFunnelStageRepository $repo */
+        $repo = $this->em->getRepository(LeadFunnelStage::class);
+        /** @var LeadFunnelStage $lastFunnelStage */
+        $lastFunnelStage = $repo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $lead->getId());
+
+        if ($lastFunnelStage === null) {
+            throw new LeadFunnelStageNotFoundException();
+        }
+
+        $lastFunnelStageTitle = $lastFunnelStage->getStage() ? $lastFunnelStage->getStage()->getTitle() : 'N/A';
+        $currentFunnelStageTitle = $leadFunnelStage->getStage() ? $leadFunnelStage->getStage()->getTitle() : 'N/A';
+
+        $notes = 'Changed funnel Stage from ' . $lastFunnelStageTitle . ' to ' . $currentFunnelStageTitle . '.';
+
+        $activity = new Activity();
+        $activity->setLead($lead);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+        $activity->setDate($leadFunnelStage->getDate());
+        $activity->setStatus($type->getDefaultStatus());
+        $activity->setTitle($type->getTitle());
+        $activity->setNotes($notes);
+        $activity->setAssignTo(null);
+        $activity->setDueDate(null);
+        $activity->setReminderDate(null);
+        $activity->setFacility(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+
+        $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
     }
 
     /**

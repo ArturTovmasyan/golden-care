@@ -2,13 +2,18 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadTemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Lead\Activity;
+use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\Temperature;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
+use App\Model\Lead\ActivityOwnerType;
+use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\TemperatureRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\LeadRepository;
@@ -121,6 +126,10 @@ class LeadTemperatureService extends BaseService implements IGridService
             $this->validate($leadTemperature, null, ['api_lead_lead_temperature_add']);
 
             $this->em->persist($leadTemperature);
+
+            // Creating change temperature activity
+            $this->createLeadChangeTemperatureActivity($currentSpace, $lead, $leadTemperature);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -205,6 +214,56 @@ class LeadTemperatureService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $currentSpace
+     * @param Lead $lead
+     * @param LeadTemperature $leadTemperature
+     */
+    private function createLeadChangeTemperatureActivity($currentSpace, Lead $lead, LeadTemperature $leadTemperature)
+    {
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+        /** @var ActivityType $type */
+        $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 8);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        /** @var LeadTemperatureRepository $repo */
+        $repo = $this->em->getRepository(LeadTemperature::class);
+        /** @var LeadTemperature $lastTemperature */
+        $lastTemperature = $repo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadTemperature::class), $lead->getId());
+
+        if ($lastTemperature === null) {
+            throw new LeadTemperatureNotFoundException();
+        }
+
+        $lastTemperatureTitle = $lastTemperature->getTemperature() ? $lastTemperature->getTemperature()->getTitle() : 'N/A';
+        $currentTemperatureTitle = $leadTemperature->getTemperature() ? $leadTemperature->getTemperature()->getTitle() : 'N/A';
+
+        $notes = 'Changed temperature from ' . $lastTemperatureTitle . ' to ' . $currentTemperatureTitle . '.';
+
+        $activity = new Activity();
+        $activity->setLead($lead);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+        $activity->setDate($leadTemperature->getDate());
+        $activity->setStatus($type->getDefaultStatus());
+        $activity->setTitle($type->getTitle());
+        $activity->setNotes($notes);
+        $activity->setAssignTo(null);
+        $activity->setDueDate(null);
+        $activity->setReminderDate(null);
+        $activity->setFacility(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+
+        $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
     }
 
     /**

@@ -255,6 +255,51 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
             ->getResult();
     }
 
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getLastAction(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('lt')
+            ->join('lt.lead', 'l')
+            ->where('l.id=:id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Temperature::class,
+                    't',
+                    Join::WITH,
+                    't = lt.temperature'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = t.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('lt.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('lt.date', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
     /**
      * @param Space|null $space
