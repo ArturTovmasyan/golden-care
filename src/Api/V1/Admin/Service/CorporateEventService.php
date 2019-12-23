@@ -113,7 +113,7 @@ class CorporateEventService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $corporateEvent->setTitle($params['title']);
-            } else{
+            } else {
                 $corporateEvent->setTitle($definition->getTitle());
             }
 
@@ -126,7 +126,7 @@ class CorporateEventService extends BaseService implements IGridService
             $end = null;
             if ($definition->isDuration()) {
                 if (!empty($params['all_day'])) {
-                    $allDay = (bool) $params['all_day'];
+                    $allDay = (bool)$params['all_day'];
                 }
 
                 if ($allDay) {
@@ -157,7 +157,7 @@ class CorporateEventService extends BaseService implements IGridService
             $repeatEnd = null;
             if ($definition->isRepeats()) {
                 if (!empty($params['repeat'])) {
-                    $repeat = (int) $params['repeat'];
+                    $repeat = (int)$params['repeat'];
                 }
 
                 if (!\in_array($repeat, RepeatType::getTypeValues(), false)) {
@@ -182,16 +182,16 @@ class CorporateEventService extends BaseService implements IGridService
 
             $rsvp = false;
             if ($definition->isRsvp()) {
-                $rsvp = (bool) $params['rsvp'];
+                $rsvp = (bool)$params['rsvp'];
             }
 
             $corporateEvent->setRsvp($rsvp);
 
-            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool)$params['no_repeat_end'] : false;
 
             $corporateEvent->setNoRepeatEnd($noRepeatEnd);
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -207,7 +207,7 @@ class CorporateEventService extends BaseService implements IGridService
                 $corporateEvent->setFacilities(null);
             }
 
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var RoleRepository $roleRepo */
                 $roleRepo = $this->em->getRepository(Role::class);
 
@@ -297,7 +297,7 @@ class CorporateEventService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $entity->setTitle($params['title']);
-            } else{
+            } else {
                 $entity->setTitle($definition->getTitle());
             }
 
@@ -310,7 +310,7 @@ class CorporateEventService extends BaseService implements IGridService
             $end = null;
             if ($definition && $definition->isDuration()) {
                 if (!empty($params['all_day'])) {
-                    $allDay = (bool) $params['all_day'];
+                    $allDay = (bool)$params['all_day'];
                 }
 
                 if ($allDay) {
@@ -341,7 +341,7 @@ class CorporateEventService extends BaseService implements IGridService
             $repeatEnd = null;
             if ($definition && $definition->isRepeats()) {
                 if (!empty($params['repeat'])) {
-                    $repeat = (int) $params['repeat'];
+                    $repeat = (int)$params['repeat'];
                 }
 
                 if (!\in_array($repeat, RepeatType::getTypeValues(), false)) {
@@ -366,12 +366,12 @@ class CorporateEventService extends BaseService implements IGridService
 
             $rsvp = false;
             if ($definition && $definition->isRsvp()) {
-                $rsvp = (bool) $params['rsvp'];
+                $rsvp = (bool)$params['rsvp'];
             }
 
             $entity->setRsvp($rsvp);
 
-            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool)$params['no_repeat_end'] : false;
 
             $entity->setNoRepeatEnd($noRepeatEnd);
 
@@ -380,7 +380,7 @@ class CorporateEventService extends BaseService implements IGridService
                 $entity->removeFacility($facility);
             }
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -401,7 +401,7 @@ class CorporateEventService extends BaseService implements IGridService
                 $entity->removeRole($role);
             }
 
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var RoleRepository $roleRepo */
                 $roleRepo = $this->em->getRepository(Role::class);
 
@@ -541,7 +541,7 @@ class CorporateEventService extends BaseService implements IGridService
                 /** @var CorporateEventUser $corporateEventUser */
                 foreach ($entity->getCorporateEventUsers() as $corporateEventUser) {
                     if ($corporateEventUser->getUser() !== null && $corporateEventUser->getUser()->getId() === $user->getId()) {
-                        $corporateEventUser->setDone((bool) $params['done']);
+                        $corporateEventUser->setDone((bool)$params['done']);
 
                         $this->em->persist($corporateEventUser);
                     }
@@ -562,6 +562,34 @@ class CorporateEventService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $id
+     * @param User $user
+     * @return bool
+     */
+    public function getIsDone($id, User $user): bool
+    {
+        $isDone = true;
+
+        /** @var CorporateEventRepository $repo */
+        $repo = $this->em->getRepository(CorporateEvent::class);
+
+        /** @var CorporateEvent $entity */
+        $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CorporateEvent::class), $id);
+
+        if ($entity !== null && $user !== null && $entity->getDefinition() !== null && !empty($entity->getCorporateEventUsers()) && $entity->getDefinition()->isUsers()) {
+            /** @var CorporateEventUser $corporateEventUser */
+            foreach ($entity->getCorporateEventUsers() as $corporateEventUser) {
+                if ($corporateEventUser->getUser() !== null && $corporateEventUser->getUser()->getId() === $user->getId()) {
+                    $isDone = $corporateEventUser->isDone();
+                    break;
+                }
+            }
+        }
+
+        return $isDone;
     }
 
     /**

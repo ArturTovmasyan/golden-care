@@ -267,6 +267,8 @@ class CorporateEventController extends BaseController
     /**
      * @Route("/done/{id}", requirements={"id"="\d+"}, name="api_admin_corporate_event_edit_done", methods={"POST"})
      *
+     * @Grant(grant="persistence-corporate-corporate_event", level="EDIT")
+     *
      * @param Request $request
      * @param $id
      * @param CorporateEventService $corporateEventService
@@ -287,6 +289,26 @@ class CorporateEventController extends BaseController
 
         return $this->respondSuccess(
             Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/done/{id}", requirements={"id"="\d+"}, name="api_admin_corporate_event_get_is_done", methods={"GET"})
+     *
+     * @param CorporateEventService $corporateEventService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getIsDoneAction(Request $request, $id, CorporateEventService $corporateEventService)
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $corporateEventService->getIsDone($id, $user),
+            ['api_admin_corporate_event_get_is_done']
         );
     }
 }
