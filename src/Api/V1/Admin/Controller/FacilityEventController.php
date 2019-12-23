@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 use App\Api\V1\Admin\Service\FacilityEventService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\FacilityEvent;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -232,6 +233,26 @@ class FacilityEventController extends BaseController
             Response::HTTP_OK,
             '',
             [$relatedData]
+        );
+    }
+
+    /**
+     * @Route("/rsvp/{id}", requirements={"id"="\d+"}, name="api_admin_facility_event_get_is_rsvp", methods={"GET"})
+     *
+     * @param FacilityEventService $facilityEventService
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getIsDoneAction(Request $request, $id, FacilityEventService $facilityEventService)
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $facilityEventService->getIsRsvp($id, $user),
+            ['api_admin_facility_event_get_is_rsvp']
         );
     }
 }

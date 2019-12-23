@@ -460,6 +460,28 @@ class FacilityEventService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param User $user
+     * @return bool
+     */
+    public function getIsRsvp($id, User $user): bool
+    {
+        $isRsvp = false;
+
+        /** @var FacilityEventRepository $repo */
+        $repo = $this->em->getRepository(FacilityEvent::class);
+
+        /** @var FacilityEvent $entity */
+        $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityEvent::class), $id);
+        
+        if ($entity !== null && $user !== null && $this->grantService->hasCurrentUserGrant('activity-rsvp_facility_event')) {
+            $isRsvp = $entity->isRsvp();
+        }
+
+        return $isRsvp;
+    }
+
+    /**
+     * @param $id
      * @throws \Throwable
      */
     public function remove($id)

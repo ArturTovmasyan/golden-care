@@ -391,6 +391,8 @@ activity:
           title: "View Dashboard"
     event_definition:
       title: "View Event Definition in Category panel"
+    rsvp_facility_event:
+      title: "View RSVP Facility Event in Resident Calendar"
     security:
       title: "View Security in Category panel"
       children:
