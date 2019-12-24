@@ -1006,18 +1006,19 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
-     * @param $firstId
-     * @param $secondId
      * @param array $params
      * @throws \Throwable
      */
-    public function swap($firstId, $secondId, array $params): void
+    public function swap(array $params): void
     {
         try {
 
             $this->em->getConnection()->beginTransaction();
 
             $currentSpace = $this->grantService->getCurrentSpace();
+
+            $firstId = $params['first_id'] ?? 0;
+            $secondId = $params['second_id'] ?? 0;
 
             /** @var ResidentRepository $residentRepo */
             $residentRepo = $this->em->getRepository(Resident::class);

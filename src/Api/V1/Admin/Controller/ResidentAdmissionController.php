@@ -255,23 +255,21 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
-     * @Route("/{firstId}/{secondId}/swap", requirements={"firstId"="\d+", "secondId"="\d+"}, name="api_admin_resident_admission_swap", methods={"PUT"})
+     * @Route("/swap", name="api_admin_resident_admission_swap", methods={"PUT"})
      *
      * @Grant(grant="persistence-resident-admission", level="EDIT")
      *
      * @param Request $request
-     * @param $firstId
-     * @param $secondId
      * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      * @throws \Throwable
      */
-    public function swapAction(Request $request, $firstId, $secondId, ResidentAdmissionService $residentAdmissionService)
+    public function swapAction(Request $request, ResidentAdmissionService $residentAdmissionService)
     {
         $residentAdmissionService->swap(
-            $firstId,
-            $secondId,
             [
+                'first_id' => $request->get('first_id'),
+                'second_id' => $request->get('second_id'),
                 'date' => $request->get('date'),
             ]
         );
