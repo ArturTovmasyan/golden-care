@@ -51,7 +51,12 @@ class DocumentService extends BaseService implements IGridService
             $userRoleIds = $params[0]['user_role_ids'];
         }
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $queryBuilder, $userRoleIds, $categoryId);
+        $isAdmin = false;
+        if (!empty($params) || !empty($params[0]['is_admin'])) {
+            $isAdmin = $params[0]['is_admin'];
+        }
+
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $queryBuilder, $isAdmin, $userRoleIds, $categoryId);
     }
 
     /**
@@ -75,7 +80,12 @@ class DocumentService extends BaseService implements IGridService
             $userRoleIds = $params[0]['user_role_ids'];
         }
 
-        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $userRoleIds, $categoryId);
+        $isAdmin = false;
+        if (!empty($params) || !empty($params[0]['is_admin'])) {
+            $isAdmin = $params[0]['is_admin'];
+        }
+
+        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Document::class), $facilityEntityGrants, $isAdmin, $userRoleIds, $categoryId);
 
         /** @var Document $entity */
         foreach ($list as $entity) {

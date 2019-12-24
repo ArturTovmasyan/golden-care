@@ -49,8 +49,11 @@ class DocumentController extends BaseController
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $isAdmin = false;
         $userRoleIds = [];
         if ($user !== null) {
+            $isAdmin = $this->grantService->hasCurrentUserGrant('activity-is_administrator');
+
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
@@ -65,7 +68,8 @@ class DocumentController extends BaseController
             $documentService,
             [
                 'category_id' => $request->get('category_id'),
-                'user_role_ids' => $userRoleIds
+                'user_role_ids' => $userRoleIds,
+                'is_admin' => $isAdmin
             ]
         );
     }
@@ -95,8 +99,11 @@ class DocumentController extends BaseController
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $isAdmin = false;
         $userRoleIds = [];
         if ($user !== null) {
+            $isAdmin = $this->grantService->hasCurrentUserGrant('activity-is_administrator');
+
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
@@ -111,7 +118,8 @@ class DocumentController extends BaseController
             $documentService,
             [
                 'category_id' => $request->get('category_id'),
-                'user_role_ids' => $userRoleIds
+                'user_role_ids' => $userRoleIds,
+                'is_admin' => $isAdmin
             ]
         );
     }

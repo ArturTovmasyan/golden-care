@@ -380,6 +380,8 @@ activity:
   title: "Activity"
   fields: ['enabled']
   children:
+    is_administrator:
+        title: "Should be enabled only for SC Admin and Administrator roles"
     reference:
       title: "View Reference in Category panel"
     lead_admin:
