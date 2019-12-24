@@ -296,9 +296,10 @@ class FacilityService extends BaseService implements IGridService
      * @param $id
      * @param $dateFrom
      * @param $dateTo
+     * @param $definitionId
      * @return array
      */
-    public function getCalendar($id, $dateFrom, $dateTo): array
+    public function getCalendar($id, $dateFrom, $dateTo, $definitionId): array
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -311,6 +312,8 @@ class FacilityService extends BaseService implements IGridService
             $dateTo = new \DateTime($dateTo);
             $dateTo = $dateTo->format('Y-m-d 23:59:59');
         }
+
+        $definitionId = !empty($definitionId) ? (int) $definitionId : null;
 
         /** @var FacilityEventRepository $eventRepo */
         $eventRepo = $this->em->getRepository(FacilityEvent::class);
@@ -339,7 +342,7 @@ class FacilityService extends BaseService implements IGridService
 
         /** @var ResidentEventRepository $residentEventRepo */
         $residentEventRepo = $this->em->getRepository(ResidentEvent::class);
-        $residentEvents = $residentEventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo);
+        $residentEvents = $residentEventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo, $definitionId);
 
         return [
             'facility_events' => $facilityEvents,

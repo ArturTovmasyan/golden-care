@@ -518,9 +518,10 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
      * @param $ids
      * @param null $dateFrom
      * @param null $dateTo
+     * @param null $definitionId
      * @return mixed
      */
-    public function getResidentsCalendarData(Space $space = null, array $entityGrants = null, $ids, $dateFrom = null, $dateTo = null)
+    public function getResidentsCalendarData(Space $space = null, array $entityGrants = null, $ids, $dateFrom = null, $dateTo = null, $definitionId = null)
     {
         $qb = $this->createQueryBuilder('re');
 
@@ -563,6 +564,12 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
             $qb
                 ->andWhere('re.date <= :end')
                 ->setParameter('end', $dateTo);
+        }
+
+        if ($definitionId !== null) {
+            $qb
+                ->andWhere('d.id = :definitionId')
+                ->setParameter('definitionId', $definitionId);
         }
 
         if ($space !== null) {

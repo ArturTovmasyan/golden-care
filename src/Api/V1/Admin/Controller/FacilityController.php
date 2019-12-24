@@ -268,7 +268,7 @@ class FacilityController extends BaseController
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $facilityService->getCalendar($id, $request->get('date_from'), $request->get('date_to')),
+            $facilityService->getCalendar($id, $request->get('date_from'), $request->get('date_to'), $request->get('definition_id')),
             ['api_admin_facility_calendar']
         );
     }
