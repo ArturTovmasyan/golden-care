@@ -1092,7 +1092,6 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $firstEntity->setCareLevel($firstAdmission->getCareLevel());
             $firstEntity->setNotes('');
 
-            $this->validate($firstEntity, null, ['api_admin_facility_add']);
             $this->em->persist($firstEntity);
 
             $secondEntity->setFacilityBed($firstAdmission->getFacilityBed());
@@ -1107,7 +1106,6 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $secondEntity->setCareLevel($secondAdmission->getCareLevel());
             $secondEntity->setNotes('');
 
-            $this->validate($secondEntity, null, ['api_admin_facility_add']);
             $this->em->persist($secondEntity);
 
             $this->em->flush();
