@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -60,7 +61,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -168,14 +169,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $groupIds = null;
             $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
             if (!empty($groupList)) {
-                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
-                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
+                $groupIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $groupList);
+                $groupArray = array_map(function ($item) {
+                    return ['id' => $item->getId(), 'name' => $item->getName()];
+                }, $groupList);
 
                 $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
 
                 $images = [];
                 if (!empty($groupResidents)) {
-                    $residentIds = array_map(function($item){return $item['id'];} , $groupResidents);
+                    $residentIds = array_map(function ($item) {
+                        return $item['id'];
+                    }, $groupResidents);
 
                     /** @var ResidentImageRepository $imageRepo */
                     $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -208,7 +215,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         }
                     }
 
-                    if(!empty($currentGroup['residents'])) {
+                    if (!empty($currentGroup['residents'])) {
                         $groups[] = $currentGroup;
                     }
                 }
@@ -260,7 +267,9 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
         $finalResidents = [];
         if (!empty($residents)) {
-            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $residents);
 
             /** @var ResidentImageRepository $imageRepo */
             $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -331,7 +340,9 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
         $finalResidents = [];
         if (!empty($residents)) {
-            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $residents);
 
             /** @var ResidentImageRepository $imageRepo */
             $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -412,8 +423,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $groupIds = null;
             $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
             if (!empty($groupList)) {
-                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
-                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
+                $groupIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $groupList);
+                $groupArray = array_map(function ($item) {
+                    return ['id' => $item->getId(), 'name' => $item->getName()];
+                }, $groupList);
 
                 $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
 
@@ -503,8 +518,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $groupIds = null;
             $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
             if (!empty($groupList)) {
-                $groupIds = array_map(function($item){return $item->getId();} , $groupList);
-                $groupArray = array_map(function($item){return ['id' => $item->getId(), 'name' => $item->getName()];} , $groupList);
+                $groupIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $groupList);
+                $groupArray = array_map(function ($item) {
+                    return ['id' => $item->getId(), 'name' => $item->getName()];
+                }, $groupList);
 
                 if ($inactive) {
                     $groupResidents = $repo->getInactiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
@@ -514,7 +533,9 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                 $images = [];
                 if (!empty($groupResidents)) {
-                    $residentIds = array_map(function($item){return $item['id'];} , $groupResidents);
+                    $residentIds = array_map(function ($item) {
+                        return $item['id'];
+                    }, $groupResidents);
 
                     /** @var ResidentImageRepository $imageRepo */
                     $imageRepo = $this->em->getRepository(ResidentImage::class);
@@ -586,7 +607,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -725,7 +746,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -782,7 +803,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                 $admissions = $admissionRepo->getByOrderedStartDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
 
-                if(\count($admissions) <= 1) {
+                if (\count($admissions) <= 1) {
                     $previousAdmission = null;
                     $nextAdmission = null;
                 } else {
@@ -794,12 +815,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
                      */
                     foreach ($admissions as $key => $admission) {
                         if ($admission->getId() === $entity->getId()) {
-                            if($key >= $length - 1) {
+                            if ($key >= $length - 1) {
                                 $previousAdmission = $admissions[$key - 1];
                                 $nextAdmission = null;
                             } else {
                                 $nextAdmission = $admissions[$key + 1];
-                                if($key === 0) {
+                                if ($key === 0) {
                                     $previousAdmission = null;
                                 } else {
                                     $previousAdmission = $admissions[$key - 1];
@@ -868,7 +889,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function move($id, array $params) : void
+    public function move($id, array $params): void
     {
         try {
 
@@ -974,6 +995,119 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         throw new IncorrectStrategyTypeException();
                 }
             }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $firstId
+     * @param $secondId
+     * @param array $params
+     * @throws \Throwable
+     */
+    public function swap($firstId, $secondId, array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
+
+            /** @var Resident $firstResident */
+            $firstResident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $firstId);
+
+            /** @var Resident $secondResident */
+            $secondResident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $secondId);
+
+            if ($firstResident === null || $secondResident === null) {
+                throw new ResidentNotFoundException();
+            }
+
+            /** @var ResidentAdmissionRepository $repo */
+            $repo = $this->em->getRepository(ResidentAdmission::class);
+
+            /** @var ResidentAdmission $firstAdmission */
+            $firstAdmission = $repo->getDataByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $firstId);
+
+            /** @var ResidentAdmission $secondAdmission */
+            $secondAdmission = $repo->getDataByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $secondId);
+
+            if ($firstAdmission === null || $secondAdmission === null) {
+                throw new ResidentAdmissionNotFoundException();
+            }
+
+            $firstEntity = new ResidentAdmission();
+            $secondEntity = new ResidentAdmission();
+
+            $date = $params['date'];
+            if (!empty($date)) {
+                $date = new \DateTime($params['date']);
+
+                $now = new \DateTime('now');
+                $date->setTime($now->format('H'), $now->format('i'), $now->format('s'));
+
+                $firstEntity->setDate($date);
+                $secondEntity->setDate($date);
+
+                $dateFormatted = $date->format('Y-m-d');
+                if (($firstAdmission->getStart() !== null && $dateFormatted <= $firstAdmission->getStart()->format('Y-m-d')) || ($secondAdmission->getStart() !== null && $dateFormatted <= $secondAdmission->getStart()->format('Y-m-d'))) {
+                    throw new InvalidEffectiveDateException();
+                }
+
+                $firstEntity->setStart($date);
+                $secondEntity->setStart($date);
+
+                $firstAdmission->setEnd($date);
+                $secondAdmission->setEnd($date);
+
+                $this->em->persist($firstAdmission);
+                $this->em->persist($secondAdmission);
+            } else {
+                $firstEntity->setDate(null);
+                $firstEntity->setStart(null);
+
+                $secondEntity->setDate(null);
+                $secondEntity->setStart(null);
+            }
+
+            $firstEntity->setFacilityBed($secondAdmission->getFacilityBed());
+            $firstEntity->setResident($firstAdmission->getResident());
+            $firstEntity->setGroupType($firstAdmission->getGroupType());
+            $firstEntity->setAdmissionType(AdmissionType::READMIT);
+            $firstEntity->setDiningRoom($firstAdmission->getDiningRoom());
+            $firstEntity->setDnr($firstAdmission->isDnr());
+            $firstEntity->setPolst($firstAdmission->isPolst());
+            $firstEntity->setAmbulatory($firstAdmission->isAmbulatory());
+            $firstEntity->setCareGroup($firstAdmission->getCareGroup());
+            $firstEntity->setCareLevel($firstAdmission->getCareLevel());
+            $firstEntity->setNotes('');
+
+            $this->validate($firstEntity, null, ['api_admin_facility_add']);
+            $this->em->persist($firstEntity);
+
+            $secondEntity->setFacilityBed($firstAdmission->getFacilityBed());
+            $secondEntity->setResident($secondAdmission->getResident());
+            $secondEntity->setGroupType($secondAdmission->getGroupType());
+            $secondEntity->setAdmissionType(AdmissionType::READMIT);
+            $secondEntity->setDiningRoom($secondAdmission->getDiningRoom());
+            $secondEntity->setDnr($secondAdmission->isDnr());
+            $secondEntity->setPolst($secondAdmission->isPolst());
+            $secondEntity->setAmbulatory($secondAdmission->isAmbulatory());
+            $secondEntity->setCareGroup($secondAdmission->getCareGroup());
+            $secondEntity->setCareLevel($secondAdmission->getCareLevel());
+            $secondEntity->setNotes('');
+
+            $this->validate($secondEntity, null, ['api_admin_facility_add']);
+            $this->em->persist($secondEntity);
 
             $this->em->flush();
             $this->em->getConnection()->commit();

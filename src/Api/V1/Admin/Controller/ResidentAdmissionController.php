@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
@@ -243,8 +244,35 @@ class ResidentAdmissionController extends BaseController
         $residentAdmissionService->move(
             $id,
             [
-                'group_type'    => $request->get('group_type'),
+                'group_type' => $request->get('group_type'),
                 'move_id' => $request->get('move_id')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Route("/{firstId}/{secondId}/swap", requirements={"firstId"="\d+", "secondId"="\d+"}, name="api_admin_resident_admission_swap", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-admission", level="EDIT")
+     *
+     * @param Request $request
+     * @param $firstId
+     * @param $secondId
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function swapAction(Request $request, $firstId, $secondId, ResidentAdmissionService $residentAdmissionService)
+    {
+        $residentAdmissionService->swap(
+            $firstId,
+            $secondId,
+            [
+                'date' => $request->get('date'),
             ]
         );
 
