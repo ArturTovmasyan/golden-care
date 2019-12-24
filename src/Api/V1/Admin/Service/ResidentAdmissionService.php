@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\DiningRoomNotValidException;
+use App\Api\V1\Common\Service\Exception\DuplicateResidentException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
@@ -1031,6 +1032,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             if ($firstResident === null || $secondResident === null) {
                 throw new ResidentNotFoundException();
+            }
+
+            if ($firstResident->getId() === $secondResident->getId()) {
+                throw new DuplicateResidentException();
             }
 
             /** @var ResidentAdmissionRepository $repo */
