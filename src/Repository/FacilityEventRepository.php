@@ -309,6 +309,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
                 'fe.title AS title',
                 'fe.start AS start',
                 'fe.end AS end',
+                'fe.rsvp AS rsvp',
                 'fe.notes AS notes'
             )
             ->join('fe.facility', 'f')
