@@ -118,6 +118,7 @@ class ResidentAssessmentController extends BaseController
             [
                 'space_id'     => $request->get('space_id'),
                 'resident_id'  => $request->get('resident_id'),
+                'type_id'  => $request->get('type_id'),
                 'form_id'      => $request->get('form_id'),
                 'date'         => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),
@@ -151,6 +152,7 @@ class ResidentAssessmentController extends BaseController
             [
                 'space_id'     => $request->get('space_id'),
                 'resident_id'  => $request->get('resident_id'),
+                'type_id'  => $request->get('type_id'),
                 'form_id'      => $request->get('form_id'),
                 'date'         => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),

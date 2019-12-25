@@ -27,6 +27,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "a.id"
  *          },
  *          {
+ *              "id"         = "type",
+ *              "type"       = "string",
+ *              "field"      = "at.title"
+ *          },
+ *          {
  *              "id"         = "form",
  *              "type"       = "string",
  *              "field"      = "f.title",
@@ -88,6 +93,26 @@ class Assessment
      * )
      */
     private $resident;
+
+    /**
+     * @var AssessmentType
+     * @ORM\ManyToOne(targetEntity="App\Entity\Assessment\AssessmentType", inversedBy="assessments", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *      @ORM\JoinColumn(name="id_type", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Assert\NotNull(
+     *      message = "Please select a Type",
+     *      groups={
+     *          "api_admin_resident_assessment_add",
+     *          "api_admin_resident_assessment_edit"
+     *      }
+     * )
+     * @Groups({
+     *     "api_admin_resident_assessment_list",
+     *     "api_admin_resident_assessment_get"
+     * })
+     */
+    private $type;
 
     /**
      * @var Form
@@ -222,6 +247,22 @@ class Assessment
     public function setResident(Resident $resident): void
     {
         $this->resident = $resident;
+    }
+
+    /**
+     * @return AssessmentType
+     */
+    public function getType(): AssessmentType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param AssessmentType $type
+     */
+    public function setType(AssessmentType $type): void
+    {
+        $this->type = $type;
     }
 
     /**

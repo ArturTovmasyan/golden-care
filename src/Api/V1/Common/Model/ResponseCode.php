@@ -157,6 +157,7 @@ class ResponseCode
     const CORPORATE_EVENT_USER_NOT_FOUND_EXCEPTION               = 757;
     const CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    = 758;
     const DUPLICATE_RESIDENT_EXCEPTION                           = 759;
+    const ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    = 760;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -315,6 +316,7 @@ class ResponseCode
         self::CORPORATE_EVENT_USER_NOT_FOUND_EXCEPTION               => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Corporate Event User not found.'],
         self::CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Corporate Event not found.'],
         self::DUPLICATE_RESIDENT_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please choose different Resident.'],
+        self::ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment Type not found.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

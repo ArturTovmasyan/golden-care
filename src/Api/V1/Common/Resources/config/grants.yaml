@@ -213,6 +213,10 @@ persistence:
     assessment:
       title: 'Assessment'
       children:
+        assessment_type:
+          title: 'AssessmentType'
+          class: App\Entity\Assessment\AssessmentType
+          route: api_admin_assessment_type_list
         care_level:
           title: 'CareLevel'
           class: App\Entity\Assessment\CareLevel

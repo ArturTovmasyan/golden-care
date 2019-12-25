@@ -138,7 +138,9 @@ class Space
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
      *     "api_admin_document_category_list",
-     *     "api_admin_document_category_get"
+     *     "api_admin_document_category_get",
+     *     "api_admin_assessment_type_list",
+     *     "api_admin_assessment_type_get"
      * })
      */
     private $id;
@@ -229,7 +231,9 @@ class Space
      *     "api_admin_insurance_company_list",
      *     "api_admin_insurance_company_get",
      *     "api_admin_document_category_list",
-     *     "api_admin_document_category_get"
+     *     "api_admin_document_category_get",
+     *     "api_admin_assessment_type_list",
+     *     "api_admin_assessment_type_get"
      * })
      */
     private $name;
@@ -449,6 +453,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\DocumentCategory", mappedBy="space", cascade={"remove", "persist"})
      */
     private $documentCategories;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Assessment\AssessmentType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $assessmentTypes;
 
     /**
      * Space constructor.
@@ -1064,5 +1074,21 @@ class Space
     public function setDocumentCategories(ArrayCollection $documentCategories): void
     {
         $this->documentCategories = $documentCategories;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAssessmentTypes(): ArrayCollection
+    {
+        return $this->assessmentTypes;
+    }
+
+    /**
+     * @param ArrayCollection $assessmentTypes
+     */
+    public function setAssessmentTypes(ArrayCollection $assessmentTypes): void
+    {
+        $this->assessmentTypes = $assessmentTypes;
     }
 }

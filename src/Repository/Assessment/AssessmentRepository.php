@@ -4,6 +4,7 @@ namespace App\Repository\Assessment;
 
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Assessment\Assessment;
+use App\Entity\Assessment\AssessmentType;
 use App\Entity\Assessment\Form;
 use App\Entity\Resident;
 use App\Entity\Space;
@@ -26,6 +27,12 @@ class AssessmentRepository extends EntityRepository implements RelatedInfoInterf
     {
         $queryBuilder
             ->from(Assessment::class, 'a')
+            ->innerJoin(
+                AssessmentType::class,
+                'at',
+                Join::WITH,
+                'at = a.type'
+            )
             ->innerJoin(
                 Form::class,
                 'f',

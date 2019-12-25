@@ -5,11 +5,13 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryMultipleException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentNotFoundException;
+use App\Api\V1\Common\Service\Exception\AssessmentTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Assessment\Assessment;
 use App\Entity\Assessment\AssessmentRow;
+use App\Entity\Assessment\AssessmentType;
 use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
@@ -20,6 +22,7 @@ use App\Entity\ResidentEvent;
 use App\Model\EventDefinitionType;
 use App\Repository\Assessment\AssessmentRepository;
 use App\Repository\Assessment\AssessmentRowRepository;
+use App\Repository\Assessment\AssessmentTypeRepository;
 use App\Repository\Assessment\FormRepository;
 use App\Repository\EventDefinitionRepository;
 use App\Repository\ResidentRepository;
@@ -102,8 +105,18 @@ class ResidentAssessmentService extends BaseService implements IGridService
             $currentSpace = $this->grantService->getCurrentSpace();
 
             $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
+            $typeId = $params['type_id'] ?? 0;
             $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
+
+            /** @var AssessmentTypeRepository $typeRepo */
+            $typeRepo = $this->em->getRepository(AssessmentType::class);
+
+            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(AssessmentType::class), $typeId);
+
+            if ($type === null) {
+                throw new AssessmentTypeNotFoundException();
+            }
 
             /** @var FormRepository $formRepo */
             $formRepo = $this->em->getRepository(Form::class);
@@ -126,6 +139,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $assessment = new Assessment();
             $assessment->setResident($resident);
+            $assessment->setType($type);
             $assessment->setForm($form);
             $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
@@ -204,9 +218,19 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
+            $typeId = $params['type_id'] ?? 0;
             $formId = $params['form_id'] ?? 0;
             $residentId = $params['resident_id'] ?? 0;
             $rows = $params['rows'] ? ArrayUtil::flatten1D($params['rows']) : [];
+
+            /** @var AssessmentTypeRepository $typeRepo */
+            $typeRepo = $this->em->getRepository(AssessmentType::class);
+
+            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(AssessmentType::class), $typeId);
+
+            if ($type === null) {
+                throw new AssessmentTypeNotFoundException();
+            }
 
             /** @var FormRepository $formRepo */
             $formRepo = $this->em->getRepository(Form::class);
@@ -237,6 +261,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
             }
 
             $assessment->setResident($resident);
+            $assessment->setType($type);
             $assessment->setForm($form);
             $assessment->setDate(new \DateTime($params['date']));
             $assessment->setPerformedBy($params['performed_by']);
