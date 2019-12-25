@@ -25,7 +25,7 @@ use App\Annotation\Grant as Grant;
  * @IgnoreAnnotation("apiErrorExample")
  * @IgnoreAnnotation("apiPermission")
  *
- * @Route("/api/v1.0/admin/assessment/type")
+ * @Route("/api/v1.0/admin/assessment-type")
  *
  * @Grant(grant="persistence-assessment-assessment_type", level="VIEW")
  *
