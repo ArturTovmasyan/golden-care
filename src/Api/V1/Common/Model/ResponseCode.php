@@ -158,6 +158,7 @@ class ResponseCode
     const CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    = 758;
     const DUPLICATE_RESIDENT_EXCEPTION                           = 759;
     const ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    = 760;
+    const ACTIVE_RESIDENT_EXIST_IN_BED_EXCEPTION                 = 761;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -317,6 +318,7 @@ class ResponseCode
         self::CORPORATE_EVENT_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Corporate Event not found.'],
         self::DUPLICATE_RESIDENT_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please choose different Resident.'],
         self::ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment Type not found.'],
+        self::ACTIVE_RESIDENT_EXIST_IN_BED_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Before disable the Bed first assign the Resident to another Bed.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

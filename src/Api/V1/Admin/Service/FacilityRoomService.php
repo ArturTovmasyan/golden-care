@@ -2,6 +2,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\ActiveResidentExistInBedException;
 use App\Api\V1\Common\Service\Exception\CanNotRemoveBadException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
@@ -187,13 +188,15 @@ class FacilityRoomService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $facilityId = $params['facility_id'] ?? 0;
 
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
             /** @var Facility $facility */
-            $facility = $facilityRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
+            $facility = $facilityRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
 
             if ($facility === null) {
                 throw new FacilityNotFoundException();
@@ -223,12 +226,24 @@ class FacilityRoomService extends BaseService implements IGridService
 
             if ($facilityRoom->getBeds() !== null) {
                 $i = 0;
+                $disabledBedIds = [];
 
                 /** @var FacilityBed $bed */
                 foreach ($facilityRoom->getBeds() as $bed) {
                     if ($bed->isEnabled()) {
                         ++$i;
+                    } else {
+                        $disabledBedIds[] = $bed->getId();
                     }
+                }
+
+                /** @var ResidentAdmissionRepository $admissionRepo */
+                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $disabledBedIds);
+
+                if (!empty($residentAdmissions)) {
+                    throw new ActiveResidentExistInBedException();
                 }
 
                 if ($i > 1) {
@@ -350,12 +365,24 @@ class FacilityRoomService extends BaseService implements IGridService
 
             if ($entity->getBeds() !== null) {
                 $i = 0;
+                $disabledBedIds = [];
 
                 /** @var FacilityBed $bed */
                 foreach ($entity->getBeds() as $bed) {
                     if ($bed->isEnabled()) {
                         ++$i;
+                    } else {
+                        $disabledBedIds[] = $bed->getId();
                     }
+                }
+
+                /** @var ResidentAdmissionRepository $admissionRepo */
+                $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $disabledBedIds);
+
+                if (!empty($residentAdmissions)) {
+                    throw new ActiveResidentExistInBedException();
                 }
 
                 if ($i > 1) {
