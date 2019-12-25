@@ -5,7 +5,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCategoryMultipleException;
 use App\Api\V1\Common\Service\Exception\AssessmentFormNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentNotFoundException;
-use App\Api\V1\Common\Service\Exception\AssessmentRowNotAvailableException;
+use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Assessment\Assessment;
@@ -14,10 +14,14 @@ use App\Entity\Assessment\Category;
 use App\Entity\Assessment\Form;
 use App\Entity\Assessment\FormCategory;
 use App\Entity\Assessment\Row;
+use App\Entity\EventDefinition;
 use App\Entity\Resident;
+use App\Entity\ResidentEvent;
+use App\Model\EventDefinitionType;
 use App\Repository\Assessment\AssessmentRepository;
 use App\Repository\Assessment\AssessmentRowRepository;
 use App\Repository\Assessment\FormRepository;
+use App\Repository\EventDefinitionRepository;
 use App\Repository\ResidentRepository;
 use App\Util\ArrayUtil;
 use Doctrine\ORM\QueryBuilder;
@@ -139,6 +143,10 @@ class ResidentAssessmentService extends BaseService implements IGridService
             // calculate and save total score
             $assessment->setScore($this->calculateTotalScore($assessment));
             $this->em->persist($assessment);
+
+            // Creating assessment type of resident event
+            $this->createAssessmentEvent($currentSpace, $assessment);
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -151,6 +159,32 @@ class ResidentAssessmentService extends BaseService implements IGridService
         }
 
         return $insert_id;
+    }
+
+    /**
+     * @param $currentSpace
+     * @param Assessment $assessment
+     */
+    private function createAssessmentEvent($currentSpace, Assessment $assessment)
+    {
+        /** @var EventDefinitionRepository $definitionRepo */
+        $definitionRepo = $this->em->getRepository(EventDefinition::class);
+        /** @var EventDefinition $definition */
+        $definition = $definitionRepo->getOneByType($currentSpace, $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), EventDefinitionType::ASSESSMENT);
+
+        if ($definition === null) {
+            throw new EventDefinitionNotFoundException();
+        }
+
+        $residentEvent = new ResidentEvent();
+        $residentEvent->setResident($assessment->getResident());
+        $residentEvent->setDefinition($definition);
+        $residentEvent->setDate($assessment->getDate());
+        $residentEvent->setNotes($assessment->getNotes());
+
+        $this->validate($residentEvent, null, ['api_admin_resident_event_add']);
+
+        $this->em->persist($residentEvent);
     }
 
     /**

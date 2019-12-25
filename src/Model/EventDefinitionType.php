@@ -9,6 +9,7 @@ class EventDefinitionType
      */
     const NONE = 1;
     const ABSENCE = 2;
+    const ASSESSMENT = 3;
 
     /**
      * @var array
@@ -16,6 +17,7 @@ class EventDefinitionType
     private static $typeNames = [
         self::NONE => 'None',
         self::ABSENCE => 'Absence',
+        self::ASSESSMENT => 'Assessment',
     ];
 
     /**
@@ -24,6 +26,7 @@ class EventDefinitionType
     private static $typeDefaultNames = [
         'None' => '1',
         'Absence' => '2',
+        'Assessment' => '3',
     ];
 
     /**
@@ -32,6 +35,7 @@ class EventDefinitionType
     private static $typeValues = [
         self::NONE,
         self::ABSENCE,
+        self::ASSESSMENT,
     ];
 
     /**

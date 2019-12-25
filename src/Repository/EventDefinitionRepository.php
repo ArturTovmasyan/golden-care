@@ -220,4 +220,40 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @return mixed
+     */
+    public function getOneByType(Space $space = null, array $entityGrants = null, $type)
+    {
+        $qb = $this
+            ->createQueryBuilder('ed')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = ed.space'
+            )
+            ->where('ed.type = :type')
+            ->setParameter('type', $type);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ed.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
