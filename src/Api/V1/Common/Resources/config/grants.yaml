@@ -390,11 +390,17 @@ activity:
       title: "View Reference in Category panel"
     lead_admin:
       title: "View Lead Admin Items in Category panel"
+    resident_calendar:
+      title: "View Resident Calendar in Resident details page"
+    facility_calendar:
+      title: "View Facility Calendar in Facility details page"
     corporate:
       title: "View Corporate in Category panel"
       children:
         dashboard:
           title: "View Dashboard"
+        calendar:
+          title: "View Calendar"
     event_definition:
       title: "View Event Definition in Category panel"
     rsvp_facility_event:
