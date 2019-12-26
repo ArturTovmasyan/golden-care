@@ -1246,4 +1246,48 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getResult();
     }
     ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getRentsByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rr');
+
+        $qb
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rr.resident = r'
+            )
+            ->where('r.id IN (:residentIds) AND rr.end IS NULL')
+            ->andWhere('rr.start = (SELECT MAX(mrr.start) FROM App:ResidentRent mrr JOIN mrr.resident mr WHERE mr.id = r.id GROUP BY mr.id)')
+            ->setParameter('residentIds', $residentIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
