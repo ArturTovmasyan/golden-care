@@ -5,6 +5,7 @@ namespace App\Command;
 use Ahc\Cron\Expression;
 use App\Api\V1\Admin\Service\Report\ResidentReportService;
 use App\Api\V1\Common\Service\AmazonSnsService;
+use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
 use App\Entity\Apartment;
 use App\Entity\ChangeLog;
@@ -15,16 +16,23 @@ use App\Entity\FacilityEvent;
 use App\Entity\Lead\Activity;
 use App\Entity\Notification;
 use App\Entity\Region;
+use App\Entity\ResidentRent;
+use App\Entity\ResidentRentIncrease;
+use App\Entity\ResidentResponsiblePerson;
 use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
+use App\Model\RentIncreaseReason;
 use App\Repository\ChangeLogRepository;
 use App\Repository\CorporateEventRepository;
 use App\Repository\FacilityEventRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\NotificationRepository;
+use App\Repository\ResidentRentIncreaseRepository;
+use App\Repository\ResidentRentRepository;
+use App\Repository\ResidentResponsiblePersonRepository;
 use App\Util\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -42,6 +50,9 @@ class NotifyCommand extends Command
     /** @var EntityManagerInterface */
     private $em;
 
+    /** @var  GrantService */
+    protected $grantService;
+
     /** @var Mailer */
     private $mailer;
 
@@ -56,6 +67,7 @@ class NotifyCommand extends Command
 
     public function __construct (
         EntityManagerInterface $em,
+        GrantService $grantService,
         Mailer $mailer,
         ContainerInterface $container,
         ResidentReportService $residentReportService,
@@ -63,6 +75,7 @@ class NotifyCommand extends Command
     )
     {
         $this->em = $em;
+        $this->grantService = $grantService;
         $this->mailer = $mailer;
         $this->container = $container;
         $this->residentReportService = $residentReportService;
@@ -129,6 +142,11 @@ class NotifyCommand extends Command
                     case NotificationTypeCategoryType::TYPE_CORPORATE_ACTIVITY:
                         if ($notification->getType()->isEmail()) {
                             $this->sendOnTheDayBeforeCorporateActivityNotifications($emails, $notification->getType()->isEmail());
+                        }
+                        break;
+                    case NotificationTypeCategoryType::TYPE_RESIDENT_RENT_INCREASE:
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendTodayResidentRentIncreaseNotifications($emails, $notification->getType()->isEmail());
                         }
                         break;
                 }
@@ -235,7 +253,7 @@ class NotifyCommand extends Command
     {
         /** @var ActivityRepository $activityRepo */
         $activityRepo = $this->em->getRepository(Activity::class);
-        $activities = $activityRepo->getActivitiesForCrontabNotification();
+        $activities = $activityRepo->getActivitiesForCrontabNotification($this->grantService->getCurrentSpace());
 
         /** @var Activity $activity */
         foreach ($activities as $activity) {
@@ -299,7 +317,7 @@ class NotifyCommand extends Command
     {
         /** @var ChangeLogRepository $logRepo */
         $logRepo = $this->em->getRepository(ChangeLog::class);
-        $changeLogs = $logRepo->getChangeLogsForCrontabNotification();
+        $changeLogs = $logRepo->getChangeLogsForCrontabNotification($this->grantService->getCurrentSpace());
 
         $ownerEmails = [];
         $logs = [];
@@ -385,7 +403,7 @@ class NotifyCommand extends Command
     {
         /** @var FacilityEventRepository $activityRepo */
         $activityRepo = $this->em->getRepository(FacilityEvent::class);
-        $activities = $activityRepo->getActivitiesForCrontabNotification();
+        $activities = $activityRepo->getActivitiesForCrontabNotification($this->grantService->getCurrentSpace());
 
         /** @var FacilityEvent $activity */
         foreach ($activities as $activity) {
@@ -430,7 +448,7 @@ class NotifyCommand extends Command
     {
         /** @var CorporateEventRepository $activityRepo */
         $activityRepo = $this->em->getRepository(CorporateEvent::class);
-        $activities = $activityRepo->getActivitiesForCrontabNotification();
+        $activities = $activityRepo->getActivitiesForCrontabNotification($this->grantService->getCurrentSpace());
 
         /** @var CorporateEvent $activity */
         foreach ($activities as $activity) {
@@ -467,6 +485,84 @@ class NotifyCommand extends Command
                 ));
 
                 $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+            }
+        }
+    }
+
+    /**
+     * @param array $emails
+     * @param $isEmail
+     */
+    public function sendTodayResidentRentIncreaseNotifications(array $emails, $isEmail): void
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var ResidentRentIncreaseRepository $increaseRepo */
+        $increaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
+        $increases = $increaseRepo->getRentIncreasesForCronJobNotification($currentSpace);
+
+        $residentIds = array_map(function (ResidentRentIncrease $item) {
+            return $item->getResident() ? $item->getResident()->getId() : 0;
+        }, $increases);
+
+        if (!empty($residentIds)) {
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            $rents = $rentRepo->getRentsByResidentIds($currentSpace, null, $residentIds);
+
+            if (!empty($rents)) {
+                /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+                $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+                $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, null, $residentIds);
+
+                $responsiblePersonEmails = [];
+                if (!empty($responsiblePersons)) {
+                    /** @var ResidentResponsiblePerson $responsiblePerson */
+                    foreach ($responsiblePersons as $responsiblePerson) {
+                        if ($responsiblePerson->getResident() !== null && $responsiblePerson->getResponsiblePerson() !== null) {
+                            $responsiblePersonEmails[$responsiblePerson->getResident()->getId()][] = $responsiblePerson->getResponsiblePerson()->getEmail();
+                        }
+                    }
+                }
+
+                /** @var ResidentRentIncrease $increase */
+                foreach ($increases as $increase) {
+                    $resident = $increase->getResident();
+
+                    /** @var ResidentRent $rent */
+                    foreach ($rents as $rent) {
+                        if ($resident !== null && $rent->getResident() !== null && $resident->getId() === $rent->getResident()->getId()) {
+                            $subject = 'Room Rent Increase - ' . $resident->getFirstName() . ' ' . $resident->getLastName();
+
+                            $rpEmails = [];
+                            if (array_key_exists($resident->getId(), $responsiblePersonEmails)) {
+                                $rpEmails = $responsiblePersonEmails[$resident->getId()];
+                            }
+
+                            //for email
+                            $allEmails = array_merge($emails, $rpEmails);
+                            $allEmails = array_unique($allEmails);
+
+                            // Sending email notification per increase
+                            if ($isEmail && !empty($allEmails)) {
+                                $spaceName = '';
+                                if ($resident->getSpace() !== null) {
+                                    $spaceName = $resident->getSpace()->getName();
+                                }
+
+                                $body = $this->container->get('templating')->render('@api_notification/resident.rent.increase.email.html.twig', array(
+                                    'increase' => $increase,
+                                    'reason' => RentIncreaseReason::getTypeNames()[$increase->getReason()],
+                                    'subject' => $subject
+                                ));
+
+                                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

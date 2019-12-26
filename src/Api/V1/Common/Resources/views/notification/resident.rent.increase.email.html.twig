@@ -1,0 +1,24 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{{ subject }}{% endblock %}
+{% block subTitle %}
+{% endblock %}
+    {% block content %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Effective Date:</td>
+                <td>
+                    {{ increase.effectiveDate|date('m/d/Y') }}
+                </td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Amount:</td>
+                <td>$ {{ increase.amount|number_format(2, '.', ',') }}</td>
+            </tr>
+            <tr>
+                <td style="word-break:keep-all;word-wrap:normal;font-weight: bold;">Reason:</td>
+                <td>{{ reason }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endblock %}

@@ -417,4 +417,49 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getRentIncreasesForCronJobNotification(Space $space = null, array $entityGrants = null)
+    {
+        $now = new \DateTime('now');
+        $startDate = $now->format('Y-m-d 00:00:00');
+        $endDate = $now->format('Y-m-d 23:59:59');
+        $qb = $this->createQueryBuilder('rri')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rri.resident'
+            )
+            ->where('rri.notificationDate <= :endDate AND rri.notificationDate >= :startDate')
+            ->andWhere('rri.effectiveDate = (SELECT MAX(mri.effectiveDate) FROM App:ResidentRentIncrease mri JOIN mri.resident mr WHERE mr.id = r.id GROUP BY mr.id)')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rri.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
