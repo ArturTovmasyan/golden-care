@@ -9,6 +9,7 @@ class NotificationTypeCategoryType
     const TYPE_LEAD_CHANGE_LOG = 3;
     const TYPE_FACILITY_ACTIVITY = 4;
     const TYPE_CORPORATE_ACTIVITY = 5;
+    const TYPE_RESIDENT_RENT_INCREASE = 6;
 
     /**
      * @var array
@@ -19,6 +20,7 @@ class NotificationTypeCategoryType
         self::TYPE_LEAD_CHANGE_LOG => 'Lead Change Log',
         self::TYPE_FACILITY_ACTIVITY => 'Facility Activity',
         self::TYPE_CORPORATE_ACTIVITY => 'Corporate Activity',
+        self::TYPE_RESIDENT_RENT_INCREASE => 'Resident Rent Increase',
     ];
 
     /**
@@ -30,6 +32,7 @@ class NotificationTypeCategoryType
         'Lead Change Log' => '3',
         'Facility Activity' => '4',
         'Corporate Activity' => '5',
+        'Resident Rent Increase' => '6',
     ];
 
     /**
@@ -41,6 +44,7 @@ class NotificationTypeCategoryType
         self::TYPE_LEAD_CHANGE_LOG => 3,
         self::TYPE_FACILITY_ACTIVITY => 4,
         self::TYPE_CORPORATE_ACTIVITY => 5,
+        self::TYPE_RESIDENT_RENT_INCREASE => 6,
     ];
 
     /**

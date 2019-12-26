@@ -148,7 +148,8 @@ class Resident
      * })
      * @Groups({
      *      "api_admin_resident_list",
-     *      "api_admin_resident_get"
+     *      "api_admin_resident_get",
+     *      "api_admin_resident_event_get"
      * })
      */
     private $salutation;
@@ -181,7 +182,8 @@ class Resident
      *      "api_admin_resident_document_list",
      *      "api_admin_resident_document_get",
      *      "api_admin_facility_event_list",
-     *      "api_admin_facility_event_get"
+     *      "api_admin_facility_event_get",
+     *      "api_admin_resident_event_get"
      * })
      */
     private $firstName;
@@ -214,7 +216,8 @@ class Resident
      *      "api_admin_resident_document_list",
      *      "api_admin_resident_document_get",
      *      "api_admin_facility_event_list",
-     *      "api_admin_facility_event_get"
+     *      "api_admin_facility_event_get",
+     *      "api_admin_resident_event_get"
      * })
      */
     private $lastName;
