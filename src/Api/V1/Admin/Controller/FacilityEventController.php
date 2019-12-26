@@ -28,7 +28,7 @@ use App\Annotation\Grant as Grant;
  *
  * @Route("/api/v1.0/admin/facility/event")
  *
- * @Grant(grant="persistence-facility-facility_event", level="VIEW")
+ * @Grant(grant="persistence-facility_event", level="VIEW")
  *
  * Class FacilityEventController
  * @package App\Api\V1\Admin\Controller
@@ -105,7 +105,7 @@ class FacilityEventController extends BaseController
     /**
      * @Route("", name="api_admin_facility_event_add", methods={"POST"})
      *
-     * @Grant(grant="persistence-facility-facility_event", level="ADD")
+     * @Grant(grant="persistence-facility_event", level="ADD")
      *
      * @param Request $request
      * @param FacilityEventService $facilityEventService
@@ -142,7 +142,7 @@ class FacilityEventController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_event_edit", methods={"PUT"})
      *
-     * @Grant(grant="persistence-facility-facility_event", level="EDIT")
+     * @Grant(grant="persistence-facility_event", level="EDIT")
      *
      * @param Request $request
      * @param $id
@@ -179,7 +179,7 @@ class FacilityEventController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_event_delete", methods={"DELETE"})
      *
-     * @Grant(grant="persistence-facility-facility_event", level="DELETE")
+     * @Grant(grant="persistence-facility_event", level="DELETE")
      *
      * @param $id
      * @param FacilityEventService $facilityEventService
@@ -199,7 +199,7 @@ class FacilityEventController extends BaseController
     /**
      * @Route("", name="api_admin_facility_event_delete_bulk", methods={"DELETE"})
      *
-     * @Grant(grant="persistence-facility-facility_event", level="DELETE")
+     * @Grant(grant="persistence-facility_event", level="DELETE")
      *
      * @param Request $request
      * @param FacilityEventService $facilityEventService
