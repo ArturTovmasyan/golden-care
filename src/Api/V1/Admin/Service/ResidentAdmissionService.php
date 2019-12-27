@@ -123,6 +123,32 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
+     * @param $type
+     * @param $ids
+     * @return mixed
+     */
+    public function getResidentsByBedIds($type, $ids)
+    {
+        $data = [];
+
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $residents = $repo->getResidentsByBedIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $ids);
+        $residents = array_column($residents, 'fullName', 'id');
+
+        foreach ($ids as $id) {
+            if (array_key_exists((int) $id, $residents)) {
+                $data[$id][] = $residents[(int) $id];
+            } else {
+                $data[$id][] = null;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @param $id
      * @return ResidentAdmission|null|object
      */

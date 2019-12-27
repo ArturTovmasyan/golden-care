@@ -280,9 +280,28 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @Route("/beds", name="api_admin_resident_admission_by_bed_ids", methods={"POST"})
+     *
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getResidentsByBedIdsAction(Request $request, ResidentAdmissionService $residentAdmissionService)
+    {
+        $residents = $residentAdmissionService->getResidentsByBedIds($request->get('type'), $request->get('ids'));
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            [$residents]
+        );
+    }
+
+    /**
      * @Route("/{id}/active", requirements={"id"="\d+"}, name="api_admin_resident_admission_get_active_resident", methods={"GET"})
      *
      * @param ResidentAdmissionService $residentAdmissionService
+     * @param Request $request
      * @param $id
      * @return JsonResponse
      */
