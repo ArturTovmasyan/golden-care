@@ -68,6 +68,8 @@ class Salutation
      *     "api_admin_responsible_person_get",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_rent_increase_get",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
      *     "api_admin_resident_physician_get"
@@ -99,6 +101,8 @@ class Salutation
      *     "api_admin_physician_get",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_rent_increase_get",
      *     "api_admin_responsible_person_list",
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_physician_list",
