@@ -119,10 +119,12 @@ class CorporateEventService extends BaseService implements IGridService
 
             $start = null;
             if (!empty($params['start_date'])) {
+                $start = new \DateTime($params['start_date']);
+
                 if (!empty($params['start_time'])) {
-                    $start = new \DateTime($params['start_date'] . ' ' . $params['start_time']);
-                } else {
-                    $start = new \DateTime($params['start_date']);
+                    $startTime = new \DateTime($params['start_time']);
+
+                    $start->setTime($startTime->format('H'), $startTime->format('i'), $startTime->format('s'));
                 }
             }
 
@@ -141,10 +143,12 @@ class CorporateEventService extends BaseService implements IGridService
                 }
 
                 if (!$allDay && !empty($params['end_date'])) {
+                    $end = new \DateTime($params['end_date']);
+
                     if (!empty($params['end_time'])) {
-                        $end = new \DateTime($params['end_date'] . ' ' . $params['end_time']);
-                    } else {
-                        $end = new \DateTime($params['end_date']);
+                        $endTime = new \DateTime($params['end_time']);
+
+                        $end->setTime($endTime->format('H'), $endTime->format('i'), $endTime->format('s'));
                     }
                 }
 
@@ -311,10 +315,12 @@ class CorporateEventService extends BaseService implements IGridService
 
             $start = null;
             if (!empty($params['start_date'])) {
+                $start = new \DateTime($params['start_date']);
+
                 if (!empty($params['start_time'])) {
-                    $start = new \DateTime($params['start_date'] . ' ' . $params['start_time']);
-                } else {
-                    $start = new \DateTime($params['start_date']);
+                    $startTime = new \DateTime($params['start_time']);
+
+                    $start->setTime($startTime->format('H'), $startTime->format('i'), $startTime->format('s'));
                 }
             }
 
@@ -333,10 +339,12 @@ class CorporateEventService extends BaseService implements IGridService
                 }
 
                 if (!$allDay && !empty($params['end_date'])) {
+                    $end = new \DateTime($params['end_date']);
+
                     if (!empty($params['end_time'])) {
-                        $end = new \DateTime($params['end_date'] . ' ' . $params['end_time']);
-                    } else {
-                        $end = new \DateTime($params['end_date']);
+                        $endTime = new \DateTime($params['end_time']);
+
+                        $end->setTime($endTime->format('H'), $endTime->format('i'), $endTime->format('s'));
                     }
                 }
 
