@@ -118,8 +118,12 @@ class CorporateEventService extends BaseService implements IGridService
             }
 
             $start = null;
-            if (!empty($params['start'])) {
-                $start = new \DateTime($params['start']);
+            if (!empty($params['start_date'])) {
+                if (!empty($params['start_time'])) {
+                    $start = new \DateTime($params['start_date'] . ' ' . $params['start_time']);
+                } else {
+                    $start = new \DateTime($params['start_date']);
+                }
             }
 
             $allDay = false;
@@ -136,8 +140,12 @@ class CorporateEventService extends BaseService implements IGridService
                     $end->setTime(23, 59, 59);
                 }
 
-                if (!$allDay && !empty($params['end'])) {
-                    $end = new \DateTime($params['end']);
+                if (!$allDay && !empty($params['end_date'])) {
+                    if (!empty($params['end_time'])) {
+                        $end = new \DateTime($params['end_date'] . ' ' . $params['end_time']);
+                    } else {
+                        $end = new \DateTime($params['end_date']);
+                    }
                 }
 
                 if ($end === null) {
@@ -302,8 +310,12 @@ class CorporateEventService extends BaseService implements IGridService
             }
 
             $start = null;
-            if (!empty($params['start'])) {
-                $start = new \DateTime($params['start']);
+            if (!empty($params['start_date'])) {
+                if (!empty($params['start_time'])) {
+                    $start = new \DateTime($params['start_date'] . ' ' . $params['start_time']);
+                } else {
+                    $start = new \DateTime($params['start_date']);
+                }
             }
 
             $allDay = false;
@@ -320,8 +332,12 @@ class CorporateEventService extends BaseService implements IGridService
                     $end->setTime(23, 59, 59);
                 }
 
-                if (!$allDay && !empty($params['end'])) {
-                    $end = new \DateTime($params['end']);
+                if (!$allDay && !empty($params['end_date'])) {
+                    if (!empty($params['end_time'])) {
+                        $end = new \DateTime($params['end_date'] . ' ' . $params['end_time']);
+                    } else {
+                        $end = new \DateTime($params['end_date']);
+                    }
                 }
 
                 if ($end === null) {
