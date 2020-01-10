@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\UserService;
 use App\Entity\User;
@@ -10,23 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/user")
  *
  * @Grant(grant="persistence-security-user", level="VIEW")
@@ -41,10 +29,9 @@ class UserController extends BaseController
      *
      * @param Request $request
      * @param UserService $userService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, UserService $userService)
+    public function gridAction(Request $request, UserService $userService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -59,9 +46,8 @@ class UserController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, User::class, 'api_admin_user_grid');
     }
@@ -71,9 +57,7 @@ class UserController extends BaseController
      *
      * @param Request $request
      * @param UserService $userService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
-     * @throws \Throwable
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, UserService $userService)
     {
@@ -93,7 +77,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, UserService $userService)
+    public function getAction(Request $request, $id, UserService $userService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -111,25 +95,23 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function addAction(Request $request, UserService $userService)
+    public function addAction(Request $request, UserService $userService): JsonResponse
     {
         $id = $userService->add(
             [
-                'first_name'  => $request->get('first_name'),
-                'last_name'   => $request->get('last_name'),
-                'username'    => $request->get('username'),
-                'email'       => $request->get('email'),
-                'password'    => $request->get('password'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'username' => $request->get('username'),
+                'email' => $request->get('email'),
+                'password' => $request->get('password'),
                 're_password' => $request->get('re_password'),
-                'phones'      => $request->get('phones'),
-                'enabled'     => $request->get('enabled'),
-                'roles'       => $request->get('roles'),
-                'grants'      => $request->get('grants'),
-                'space_id'    => $request->get('space_id'),
-                'owner'    => $request->get('owner'),
+                'phones' => $request->get('phones'),
+                'enabled' => $request->get('enabled'),
+                'roles' => $request->get('roles'),
+                'grants' => $request->get('grants'),
+                'space_id' => $request->get('space_id'),
+                'owner' => $request->get('owner'),
             ]
         );
 
@@ -149,26 +131,24 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, UserService $userService)
+    public function editAction(Request $request, $id, UserService $userService): JsonResponse
     {
         $userService->edit(
             $id,
             [
-                'first_name'  => $request->get('first_name'),
-                'last_name'   => $request->get('last_name'),
-                'username'    => $request->get('username'),
-                'email'       => $request->get('email'),
-                'password'    => $request->get('password'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'username' => $request->get('username'),
+                'email' => $request->get('email'),
+                'password' => $request->get('password'),
                 're_password' => $request->get('re_password'),
-                'phones'      => $request->get('phones'),
-                'enabled'     => $request->get('enabled'),
-                'roles'       => $request->get('roles'),
-                'grants'      => $request->get('grants'),
-                'space_id'    => $request->get('space_id'),
-                'owner'    => $request->get('owner'),
+                'phones' => $request->get('phones'),
+                'enabled' => $request->get('enabled'),
+                'roles' => $request->get('roles'),
+                'grants' => $request->get('grants'),
+                'space_id' => $request->get('space_id'),
+                'owner' => $request->get('owner'),
             ]
         );
 
@@ -186,9 +166,8 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function resetPasswordAction(Request $request, $id, UserService $userService)
+    public function resetPasswordAction(Request $request, $id, UserService $userService): JsonResponse
     {
         $userService->resetPassword($id);
 
@@ -206,10 +185,8 @@ class UserController extends BaseController
      * @param $id
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, UserService $userService)
+    public function deleteAction(Request $request, $id, UserService $userService): JsonResponse
     {
         $userService->disable($id);
 
@@ -226,10 +203,8 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, UserService $userService)
+    public function deleteBulkAction(Request $request, UserService $userService): JsonResponse
     {
         $userService->disableBulk($request->get('ids'));
 
@@ -244,10 +219,8 @@ class UserController extends BaseController
      * @param Request $request
      * @param UserService $userService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, UserService $userService)
+    public function relatedInfoAction(Request $request, UserService $userService): JsonResponse
     {
         $relatedData = $userService->getRelatedInfo($request->get('ids'));
 
@@ -266,7 +239,7 @@ class UserController extends BaseController
      * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, UserService $userService, RouterInterface $router)
+    public function getMobileListAction(Request $request, UserService $userService, RouterInterface $router): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -282,11 +255,12 @@ class UserController extends BaseController
     /**
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_user_image_download", methods={"GET"})
      *
-     * @param UserService $userService
+     * @param Request $request
      * @param $id
+     * @param UserService $userService
      * @return Response
      */
-    public function downloadAction(Request $request, $id, UserService $userService)
+    public function downloadAction(Request $request, $id, UserService $userService): Response
     {
         $data = $userService->downloadFile($id);
 
@@ -300,7 +274,7 @@ class UserController extends BaseController
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function getCorporateCalendarAction(Request $request, UserService $userService)
+    public function getCorporateCalendarAction(Request $request, UserService $userService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -310,7 +284,9 @@ class UserController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+                $userRoleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $userRoles->toArray());
             }
         }
 

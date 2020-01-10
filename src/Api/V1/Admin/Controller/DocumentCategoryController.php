@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\DocumentCategoryService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\DocumentCategory;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/document_category")
  *
  * @Grant(grant="persistence-common-document_category", level="VIEW")
@@ -39,10 +27,9 @@ class DocumentCategoryController extends BaseController
      *
      * @param Request $request
      * @param DocumentCategoryService $documentCategory
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, DocumentCategoryService $documentCategory)
+    public function gridAction(Request $request, DocumentCategoryService $documentCategory): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class DocumentCategoryController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, DocumentCategory::class, 'api_admin_document_category_grid');
     }
@@ -69,8 +55,7 @@ class DocumentCategoryController extends BaseController
      *
      * @param Request $request
      * @param DocumentCategoryService $documentCategory
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, DocumentCategoryService $documentCategory)
     {
@@ -85,11 +70,12 @@ class DocumentCategoryController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_document_category_get", methods={"GET"})
      *
-     * @param DocumentCategoryService $documentCategory
+     * @param Request $request
      * @param $id
+     * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, DocumentCategoryService $documentCategory)
+    public function getAction(Request $request, $id, DocumentCategoryService $documentCategory): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class DocumentCategoryController extends BaseController
      * @param Request $request
      * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, DocumentCategoryService $documentCategory)
+    public function addAction(Request $request, DocumentCategoryService $documentCategory): JsonResponse
     {
         $id = $documentCategory->add(
             [
@@ -134,9 +119,8 @@ class DocumentCategoryController extends BaseController
      * @param $id
      * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, DocumentCategoryService $documentCategory)
+    public function editAction(Request $request, $id, DocumentCategoryService $documentCategory): JsonResponse
     {
         $documentCategory->edit(
             $id,
@@ -156,13 +140,12 @@ class DocumentCategoryController extends BaseController
      *
      * @Grant(grant="persistence-common-document_category", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DocumentCategoryService $documentCategory)
+    public function deleteAction(Request $request, $id, DocumentCategoryService $documentCategory): JsonResponse
     {
         $documentCategory->remove($id);
 
@@ -179,10 +162,8 @@ class DocumentCategoryController extends BaseController
      * @param Request $request
      * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DocumentCategoryService $documentCategory)
+    public function deleteBulkAction(Request $request, DocumentCategoryService $documentCategory): JsonResponse
     {
         $documentCategory->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class DocumentCategoryController extends BaseController
      * @param Request $request
      * @param DocumentCategoryService $documentCategory
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, DocumentCategoryService $documentCategory)
+    public function relatedInfoAction(Request $request, DocumentCategoryService $documentCategory): JsonResponse
     {
         $relatedData = $documentCategory->getRelatedInfo($request->get('ids'));
 

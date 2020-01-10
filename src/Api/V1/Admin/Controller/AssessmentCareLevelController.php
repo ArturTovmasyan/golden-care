@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\AssessmentCareLevelService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\CareLevel;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/assessment/care/level")
  *
  * @Grant(grant="persistence-assessment-care_level", level="VIEW")
@@ -39,10 +27,9 @@ class AssessmentCareLevelController extends BaseController
      *
      * @param Request $request
      * @param AssessmentCareLevelService $careLevelService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, AssessmentCareLevelService $careLevelService)
+    public function gridAction(Request $request, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class AssessmentCareLevelController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, CareLevel::class, 'api_admin_assessment_care_level_grid');
     }
@@ -69,8 +55,7 @@ class AssessmentCareLevelController extends BaseController
      *
      * @param Request $request
      * @param AssessmentCareLevelService $careLevelService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, AssessmentCareLevelService $careLevelService)
     {
@@ -85,11 +70,12 @@ class AssessmentCareLevelController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_care_level_get", methods={"GET"})
      *
-     * @param AssessmentCareLevelService $careLevelService
+     * @param Request $request
      * @param $id
+     * @param AssessmentCareLevelService $careLevelService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentCareLevelService $careLevelService)
+    public function getAction(Request $request, $id, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,16 +93,15 @@ class AssessmentCareLevelController extends BaseController
      * @param Request $request
      * @param AssessmentCareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, AssessmentCareLevelService $careLevelService)
+    public function addAction(Request $request, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         $id = $careLevelService->add(
             [
-                'title'               => $request->get('title'),
-                'space_id'            => $request->get('space_id'),
-                'level_low'           => $request->get('level_low'),
-                'level_high'          => $request->get('level_high'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
+                'level_low' => $request->get('level_low'),
+                'level_high' => $request->get('level_high'),
                 'care_level_group_id' => $request->get('care_level_group_id'),
             ]
         );
@@ -137,17 +122,16 @@ class AssessmentCareLevelController extends BaseController
      * @param $id
      * @param AssessmentCareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, AssessmentCareLevelService $careLevelService)
+    public function editAction(Request $request, $id, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->edit(
             $id,
             [
-                'title'               => $request->get('title'),
-                'space_id'            => $request->get('space_id'),
-                'level_low'           => $request->get('level_low'),
-                'level_high'          => $request->get('level_high'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
+                'level_low' => $request->get('level_low'),
+                'level_high' => $request->get('level_high'),
                 'care_level_group_id' => $request->get('care_level_group_id'),
             ]
         );
@@ -162,13 +146,12 @@ class AssessmentCareLevelController extends BaseController
      *
      * @Grant(grant="persistence-assessment-care_level", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param AssessmentCareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentCareLevelService $careLevelService)
+    public function deleteAction(Request $request, $id, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->remove($id);
 
@@ -185,10 +168,8 @@ class AssessmentCareLevelController extends BaseController
      * @param Request $request
      * @param AssessmentCareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentCareLevelService $careLevelService)
+    public function deleteBulkAction(Request $request, AssessmentCareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->removeBulk($request->get('ids'));
 
@@ -203,10 +184,8 @@ class AssessmentCareLevelController extends BaseController
      * @param Request $request
      * @param AssessmentCareLevelService $careLevelSService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, AssessmentCareLevelService $careLevelSService)
+    public function relatedInfoAction(Request $request, AssessmentCareLevelService $careLevelSService): JsonResponse
     {
         $relatedData = $careLevelSService->getRelatedInfo($request->get('ids'));
 

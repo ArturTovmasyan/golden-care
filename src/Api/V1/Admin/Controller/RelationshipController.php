@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\RelationshipService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Relationship;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/relationship")
  *
  * @Grant(grant="persistence-common-relationship", level="VIEW")
@@ -39,10 +27,9 @@ class RelationshipController extends BaseController
      *
      * @param Request $request
      * @param RelationshipService $relationshipService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, RelationshipService $relationshipService)
+    public function gridAction(Request $request, RelationshipService $relationshipService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class RelationshipController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Relationship::class, 'api_admin_relationship_grid');
     }
@@ -69,8 +55,7 @@ class RelationshipController extends BaseController
      *
      * @param Request $request
      * @param RelationshipService $relationshipService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, RelationshipService $relationshipService)
     {
@@ -86,11 +71,11 @@ class RelationshipController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_relationship_get", methods={"GET"})
      *
      * @param Request $request
-     * @param RelationshipService $relationshipService
      * @param $id
+     * @param RelationshipService $relationshipService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, RelationshipService $relationshipService)
+    public function getAction(Request $request, $id, RelationshipService $relationshipService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,9 +93,8 @@ class RelationshipController extends BaseController
      * @param Request $request
      * @param RelationshipService $relationshipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, RelationshipService $relationshipService)
+    public function addAction(Request $request, RelationshipService $relationshipService): JsonResponse
     {
         $id = $relationshipService->add(
             [
@@ -135,9 +119,8 @@ class RelationshipController extends BaseController
      * @param $id
      * @param RelationshipService $relationshipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, RelationshipService $relationshipService)
+    public function editAction(Request $request, $id, RelationshipService $relationshipService): JsonResponse
     {
         $relationshipService->edit(
             $id,
@@ -161,10 +144,8 @@ class RelationshipController extends BaseController
      * @param $id
      * @param RelationshipService $relationshipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, RelationshipService $relationshipService)
+    public function deleteAction(Request $request, $id, RelationshipService $relationshipService): JsonResponse
     {
         $relationshipService->remove($id);
 
@@ -181,10 +162,8 @@ class RelationshipController extends BaseController
      * @param Request $request
      * @param RelationshipService $relationshipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, RelationshipService $relationshipService)
+    public function deleteBulkAction(Request $request, RelationshipService $relationshipService): JsonResponse
     {
         $relationshipService->removeBulk($request->get('ids'));
 
@@ -199,10 +178,8 @@ class RelationshipController extends BaseController
      * @param Request $request
      * @param RelationshipService $relationshipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, RelationshipService $relationshipService)
+    public function relatedInfoAction(Request $request, RelationshipService $relationshipService): JsonResponse
     {
         $relatedData = $relationshipService->getRelatedInfo($request->get('ids'));
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\DefaultRoleNotFoundException;
@@ -23,13 +24,11 @@ use App\Repository\RoleRepository;
 class AccountService extends BaseService
 {
     /**
-     * Register User
-     *
      * @param array $params
      * @param string $baseUrl
      * @throws \Exception
      */
-    public function signup(array $params, string $baseUrl)
+    public function signup(array $params, string $baseUrl): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -37,7 +36,7 @@ class AccountService extends BaseService
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
-            /** @var Role $defaultRole **/
+            /** @var Role $defaultRole * */
             $defaultRole = $roleRepo->getDefaultRole();
 
             if ($defaultRole === null) {
@@ -80,10 +79,10 @@ class AccountService extends BaseService
 
             $this->em->persist($user);
 
-            if($params['phone']) { // TODO: review
+            if ($params['phone']) { // TODO: review
                 $userPhone = new UserPhone();
                 $userPhone->setUser($user);
-                $userPhone->setCompatibility( null);
+                $userPhone->setCompatibility(null);
                 $userPhone->setType(Phone::TYPE_OFFICE);
                 $userPhone->setNumber($user->getPhone());
                 $userPhone->setPrimary(true);
@@ -116,11 +115,10 @@ class AccountService extends BaseService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function activate(array $params)
+    public function activate(array $params): void
     {
-        /** @var User $user **/
+        /** @var User $user * */
         $user = $this->em->getRepository(User::class)->findOneBy(['activationHash' => $params['hash']]);
 
         if ($user === null) {
@@ -150,10 +148,10 @@ class AccountService extends BaseService
      * @param string $baseUrl
      * @throws \Exception
      */
-    public function forgotPassword(string $email, string $baseUrl)
+    public function forgotPassword(string $email, string $baseUrl): void
     {
-        /** @var User $user **/
-        $user = $this->em->getRepository(User::class)->findOneByEmail($email);
+        /** @var User $user * */
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if ($user === null) {
             return;
@@ -179,11 +177,10 @@ class AccountService extends BaseService
 
     /**
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function resetPassword(array $params)
+    public function resetPassword(array $params): void
     {
-        /** @var User $user **/
+        /** @var User $user * */
         $user = $this->em->getRepository(User::class)->findOneBy(['passwordRecoveryHash' => $params['hash']]);
 
         if ($user === null) {
@@ -219,7 +216,7 @@ class AccountService extends BaseService
      * @param array $params
      * @throws \Exception
      */
-    public function acceptInvitation($token, array $params)
+    public function acceptInvitation($token, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -264,20 +261,20 @@ class AccountService extends BaseService
             // validate user
             $this->validate($user, null, ['api_admin_user_add']);
 
-            if(\count($userInvite->getRoleObjects()) > 0) {
+            if (\count($userInvite->getRoleObjects()) > 0) {
                 $user->getRoleObjects()->clear();
 
                 foreach ($userInvite->getRoleObjects() as $role) {
-                        $user->getRoleObjects()->add($role);
+                    $user->getRoleObjects()->add($role);
                 }
             }
 
             $this->em->persist($user);
 
-            if($params['phone']) { // TODO: review
+            if ($params['phone']) { // TODO: review
                 $userPhone = new UserPhone();
                 $userPhone->setUser($user);
-                $userPhone->setCompatibility( null);
+                $userPhone->setCompatibility(null);
                 $userPhone->setType(Phone::TYPE_OFFICE);
                 $userPhone->setNumber($user->getPhone());
                 $userPhone->setPrimary(true);

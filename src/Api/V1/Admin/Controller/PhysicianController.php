@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\PhysicianService;
 use App\Entity\Physician;
@@ -10,22 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/physician")
  *
  * @Grant(grant="persistence-common-physician", level="VIEW")
@@ -40,10 +27,9 @@ class PhysicianController extends BaseController
      *
      * @param Request $request
      * @param PhysicianService $physicianService
-     * @return PdfResponse|JsonResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, PhysicianService $physicianService)
+    public function gridAction(Request $request, PhysicianService $physicianService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,10 +43,9 @@ class PhysicianController extends BaseController
      * @Route("/grid", name="api_admin_physician_grid_options", methods={"OPTIONS"})
      *
      * @param Request $request
-     * @return \Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse|JsonResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Physician::class, 'api_admin_physician_grid');
     }
@@ -70,8 +55,7 @@ class PhysicianController extends BaseController
      *
      * @param Request $request
      * @param PhysicianService $physicianService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, PhysicianService $physicianService)
     {
@@ -91,7 +75,7 @@ class PhysicianController extends BaseController
      * @param PhysicianService $physicianService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, PhysicianService $physicianService)
+    public function getAction(Request $request, $id, PhysicianService $physicianService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,25 +93,23 @@ class PhysicianController extends BaseController
      * @param Request $request
      * @param PhysicianService $physicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function addAction(Request $request, PhysicianService $physicianService)
+    public function addAction(Request $request, PhysicianService $physicianService): JsonResponse
     {
         $id = $physicianService->add(
             [
-                'first_name'        => $request->get('first_name'),
-                'middle_name'       => $request->get('middle_name'),
-                'last_name'         => $request->get('last_name'),
-                'address_1'         => $request->get('address_1'),
-                'address_2'         => $request->get('address_2'),
-                'email'             => $request->get('email'),
-                'website_url'       => $request->get('website_url'),
-                'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id'),
-                'phones'            => $request->get('phones')
+                'first_name' => $request->get('first_name'),
+                'middle_name' => $request->get('middle_name'),
+                'last_name' => $request->get('last_name'),
+                'address_1' => $request->get('address_1'),
+                'address_2' => $request->get('address_2'),
+                'email' => $request->get('email'),
+                'website_url' => $request->get('website_url'),
+                'csz_id' => $request->get('csz_id'),
+                'space_id' => $request->get('space_id'),
+                'salutation_id' => $request->get('salutation_id'),
+                'speciality_id' => $request->get('speciality_id'),
+                'phones' => $request->get('phones')
             ]
         );
 
@@ -147,25 +129,24 @@ class PhysicianController extends BaseController
      * @param $id
      * @param PhysicianService $physicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, PhysicianService $physicianService)
+    public function editAction(Request $request, $id, PhysicianService $physicianService): JsonResponse
     {
         $physicianService->edit(
             $id,
             [
-                'first_name'        => $request->get('first_name'),
-                'middle_name'       => $request->get('middle_name'),
-                'last_name'         => $request->get('last_name'),
-                'address_1'         => $request->get('address_1'),
-                'address_2'         => $request->get('address_2'),
-                'email'             => $request->get('email'),
-                'website_url'       => $request->get('website_url'),
-                'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id'),
-                'speciality_id'     => $request->get('speciality_id'),
-                'phones'            => $request->get('phones')
+                'first_name' => $request->get('first_name'),
+                'middle_name' => $request->get('middle_name'),
+                'last_name' => $request->get('last_name'),
+                'address_1' => $request->get('address_1'),
+                'address_2' => $request->get('address_2'),
+                'email' => $request->get('email'),
+                'website_url' => $request->get('website_url'),
+                'csz_id' => $request->get('csz_id'),
+                'space_id' => $request->get('space_id'),
+                'salutation_id' => $request->get('salutation_id'),
+                'speciality_id' => $request->get('speciality_id'),
+                'phones' => $request->get('phones')
             ]
         );
 
@@ -183,10 +164,8 @@ class PhysicianController extends BaseController
      * @param $id
      * @param PhysicianService $physicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, PhysicianService $physicianService)
+    public function deleteAction(Request $request, $id, PhysicianService $physicianService): JsonResponse
     {
         $physicianService->remove($id);
 
@@ -203,10 +182,8 @@ class PhysicianController extends BaseController
      * @param Request $request
      * @param PhysicianService $physicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, PhysicianService $physicianService)
+    public function deleteBulkAction(Request $request, PhysicianService $physicianService): JsonResponse
     {
         $physicianService->removeBulk($request->get('ids'));
 
@@ -221,10 +198,8 @@ class PhysicianController extends BaseController
      * @param Request $request
      * @param PhysicianService $physicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, PhysicianService $physicianService)
+    public function relatedInfoAction(Request $request, PhysicianService $physicianService): JsonResponse
     {
         $relatedData = $physicianService->getRelatedInfo($request->get('ids'));
 

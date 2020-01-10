@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
@@ -10,19 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/report")
  *
  * Class ReportController
@@ -37,7 +25,7 @@ class ReportController extends BaseController
      * @param ReportService $reportService
      * @return JsonResponse
      */
-    public function listAction(Request $request, ReportService $reportService)
+    public function listAction(Request $request, ReportService $reportService): JsonResponse
     {
         $data = $reportService->list();
 
@@ -55,8 +43,7 @@ class ReportController extends BaseController
      * @param $group
      * @param $alias
      * @param ReportService $reportService
-     * @return PdfResponse
-     * @throws \Throwable
+     * @return PdfResponse|Response
      */
     public function getAction(Request $request, $group, $alias, ReportService $reportService)
     {

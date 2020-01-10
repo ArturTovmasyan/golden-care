@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentDietService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentDiet;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/diet")
  *
  * @Grant(grant="persistence-resident-resident_diet", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentDietController extends BaseController
      *
      * @param Request $request
      * @param ResidentDietService $residentDietService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentDietService $residentDietService)
+    public function gridAction(Request $request, ResidentDietService $residentDietService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentDietController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentDiet::class, 'api_admin_resident_diet_grid');
     }
@@ -70,8 +56,7 @@ class ResidentDietController extends BaseController
      *
      * @param Request $request
      * @param ResidentDietService $residentDietService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentDietService $residentDietService)
     {
@@ -87,11 +72,12 @@ class ResidentDietController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diet_get", methods={"GET"})
      *
-     * @param ResidentDietService $residentDietService
+     * @param Request $request
      * @param $id
+     * @param ResidentDietService $residentDietService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentDietService $residentDietService)
+    public function getAction(Request $request, $id, ResidentDietService $residentDietService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentDietController extends BaseController
      * @param Request $request
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentDietService $residentDietService)
+    public function addAction(Request $request, ResidentDietService $residentDietService): JsonResponse
     {
         $id = $residentDietService->add(
             [
@@ -137,9 +122,8 @@ class ResidentDietController extends BaseController
      * @param $id
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentDietService $residentDietService)
+    public function editAction(Request $request, $id, ResidentDietService $residentDietService): JsonResponse
     {
         $residentDietService->edit(
             $id,
@@ -160,13 +144,12 @@ class ResidentDietController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_diet", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentDietService $residentDietService)
+    public function deleteAction(Request $request, $id, ResidentDietService $residentDietService): JsonResponse
     {
         $residentDietService->remove($id);
 
@@ -183,10 +166,8 @@ class ResidentDietController extends BaseController
      * @param Request $request
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentDietService $residentDietService)
+    public function deleteBulkAction(Request $request, ResidentDietService $residentDietService): JsonResponse
     {
         $residentDietService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class ResidentDietController extends BaseController
      * @param Request $request
      * @param ResidentDietService $residentDietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentDietService $residentDietService)
+    public function relatedInfoAction(Request $request, ResidentDietService $residentDietService): JsonResponse
     {
         $relatedData = $residentDietService->getRelatedInfo($request->get('ids'));
 

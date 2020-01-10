@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use App\Entity\User;
@@ -25,7 +26,8 @@ class AmazonSnsService
      */
     public function __construct(
         EntityManagerInterface $em
-    ) {
+    )
+    {
         $this->em = $em;
     }
 
@@ -113,7 +115,9 @@ class AmazonSnsService
                 $subscriptions = $snSClient->listSubscriptionsByTopic(array(
                     'TopicArn' => $topicArn
                 ));
-                $endpointsFromSubscriptions = array_map(function($item){return str_replace('+', '', $item['Endpoint']);} , $subscriptions['Subscriptions']);
+                $endpointsFromSubscriptions = array_map(function ($item) {
+                    return str_replace('+', '', $item['Endpoint']);
+                }, $subscriptions['Subscriptions']);
 
                 $endpointsFromUser = [];
                 foreach ($phones as $phone) {
@@ -175,9 +179,9 @@ class AmazonSnsService
     {
         if ($subscriptionArn) {
             try {
-                 $snSClient->unsubscribe([
+                $snSClient->unsubscribe([
                     'SubscriptionArn' => $subscriptionArn
-                 ]);
+                ]);
             } catch (AwsException $e) {
                 throw $e;
             }

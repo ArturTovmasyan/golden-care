@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\CorporateEventService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\CorporateEvent;
@@ -10,22 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/corporate/event")
  *
  * @Grant(grant="persistence-corporate-corporate_event", level="VIEW")
@@ -40,10 +28,9 @@ class CorporateEventController extends BaseController
      *
      * @param Request $request
      * @param CorporateEventService $corporateEventService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, CorporateEventService $corporateEventService)
+    public function gridAction(Request $request, CorporateEventService $corporateEventService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -53,7 +40,9 @@ class CorporateEventController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+                $userRoleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $userRoles->toArray());
             }
         }
 
@@ -73,9 +62,8 @@ class CorporateEventController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, CorporateEvent::class, 'api_admin_corporate_event_grid');
     }
@@ -85,8 +73,7 @@ class CorporateEventController extends BaseController
      *
      * @param Request $request
      * @param CorporateEventService $corporateEventService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, CorporateEventService $corporateEventService)
     {
@@ -98,7 +85,9 @@ class CorporateEventController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+                $userRoleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $userRoles->toArray());
             }
         }
 
@@ -116,11 +105,12 @@ class CorporateEventController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_corporate_event_get", methods={"GET"})
      *
-     * @param CorporateEventService $corporateEventService
+     * @param Request $request
      * @param $id
+     * @param CorporateEventService $corporateEventService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, CorporateEventService $corporateEventService)
+    public function getAction(Request $request, $id, CorporateEventService $corporateEventService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -138,9 +128,8 @@ class CorporateEventController extends BaseController
      * @param Request $request
      * @param CorporateEventService $corporateEventService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, CorporateEventService $corporateEventService)
+    public function addAction(Request $request, CorporateEventService $corporateEventService): JsonResponse
     {
         $id = $corporateEventService->add(
             [
@@ -178,9 +167,8 @@ class CorporateEventController extends BaseController
      * @param $id
      * @param CorporateEventService $corporateEventService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, CorporateEventService $corporateEventService)
+    public function editAction(Request $request, $id, CorporateEventService $corporateEventService): JsonResponse
     {
         $corporateEventService->edit(
             $id,
@@ -213,13 +201,12 @@ class CorporateEventController extends BaseController
      *
      * @Grant(grant="persistence-corporate-corporate_event", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param CorporateEventService $corporateEventService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, CorporateEventService $corporateEventService)
+    public function deleteAction(Request $request, $id, CorporateEventService $corporateEventService): JsonResponse
     {
         $corporateEventService->remove($id);
 
@@ -236,10 +223,8 @@ class CorporateEventController extends BaseController
      * @param Request $request
      * @param CorporateEventService $corporateEventService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CorporateEventService $corporateEventService)
+    public function deleteBulkAction(Request $request, CorporateEventService $corporateEventService): JsonResponse
     {
         $corporateEventService->removeBulk($request->get('ids'));
 
@@ -257,7 +242,7 @@ class CorporateEventController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, CorporateEventService $corporateEventService)
+    public function relatedInfoAction(Request $request, CorporateEventService $corporateEventService): JsonResponse
     {
         $relatedData = $corporateEventService->getRelatedInfo($request->get('ids'));
 
@@ -278,7 +263,7 @@ class CorporateEventController extends BaseController
      * @param CorporateEventService $corporateEventService
      * @return JsonResponse
      */
-    public function changeDoneByCurrentUserAction(Request $request, $id, CorporateEventService $corporateEventService)
+    public function changeDoneByCurrentUserAction(Request $request, $id, CorporateEventService $corporateEventService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -299,11 +284,12 @@ class CorporateEventController extends BaseController
     /**
      * @Route("/done/{id}", requirements={"id"="\d+"}, name="api_admin_corporate_event_get_is_done", methods={"GET"})
      *
-     * @param CorporateEventService $corporateEventService
+     * @param Request $request
      * @param $id
+     * @param CorporateEventService $corporateEventService
      * @return JsonResponse
      */
-    public function getIsDoneAction(Request $request, $id, CorporateEventService $corporateEventService)
+    public function getIsDoneAction(Request $request, $id, CorporateEventService $corporateEventService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();

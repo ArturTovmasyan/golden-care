@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentAllergenService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentAllergen;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/history/allergy/other")
  *
  * @Grant(grant="persistence-resident-resident_allergen", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentAllergenController extends BaseController
      *
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentAllergenService $residentAllergenService)
+    public function gridAction(Request $request, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentAllergenController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentAllergen::class, 'api_admin_resident_allergen_grid');
     }
@@ -70,8 +56,7 @@ class ResidentAllergenController extends BaseController
      *
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentAllergenService $residentAllergenService)
     {
@@ -87,11 +72,12 @@ class ResidentAllergenController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_allergen_get", methods={"GET"})
      *
-     * @param ResidentAllergenService $residentAllergenService
+     * @param Request $request
      * @param $id
+     * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentAllergenService $residentAllergenService)
+    public function getAction(Request $request, $id, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentAllergenController extends BaseController
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentAllergenService $residentAllergenService)
+    public function addAction(Request $request, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         $id = $residentAllergenService->add(
             [
@@ -137,9 +122,8 @@ class ResidentAllergenController extends BaseController
      * @param $id
      * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentAllergenService $residentAllergenService)
+    public function editAction(Request $request, $id, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         $residentAllergenService->edit(
             $id,
@@ -160,13 +144,12 @@ class ResidentAllergenController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_allergen", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentAllergenService $residentAllergenService)
+    public function deleteAction(Request $request, $id, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         $residentAllergenService->remove($id);
 
@@ -183,10 +166,8 @@ class ResidentAllergenController extends BaseController
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentAllergenService $residentAllergenService)
+    public function deleteBulkAction(Request $request, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         $residentAllergenService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class ResidentAllergenController extends BaseController
      * @param Request $request
      * @param ResidentAllergenService $residentAllergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentAllergenService $residentAllergenService)
+    public function relatedInfoAction(Request $request, ResidentAllergenService $residentAllergenService): JsonResponse
     {
         $relatedData = $residentAllergenService->getRelatedInfo($request->get('ids'));
 

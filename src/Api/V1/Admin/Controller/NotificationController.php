@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\NotificationService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Notification;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/notification")
  *
  * @Grant(grant="persistence-common-notification", level="VIEW")
  *
  * Class NotificationController
- * @package  App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Admin\Controller
  */
 class NotificationController extends BaseController
 {
@@ -39,10 +27,9 @@ class NotificationController extends BaseController
      *
      * @param Request $request
      * @param NotificationService $activityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, NotificationService $activityService)
+    public function gridAction(Request $request, NotificationService $activityService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class NotificationController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Notification::class, 'api_admin_notification_grid');
     }
@@ -69,8 +55,7 @@ class NotificationController extends BaseController
      *
      * @param Request $request
      * @param NotificationService $activityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, NotificationService $activityService)
     {
@@ -85,11 +70,12 @@ class NotificationController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_notification_get", methods={"GET"})
      *
-     * @param NotificationService $activityService
+     * @param Request $request
      * @param $id
+     * @param NotificationService $activityService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, NotificationService $activityService)
+    public function getAction(Request $request, $id, NotificationService $activityService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class NotificationController extends BaseController
      * @param Request $request
      * @param NotificationService $activityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, NotificationService $activityService)
+    public function addAction(Request $request, NotificationService $activityService): JsonResponse
     {
         $id = $activityService->add(
             [
@@ -140,9 +125,8 @@ class NotificationController extends BaseController
      * @param $id
      * @param NotificationService $activityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, NotificationService $activityService)
+    public function editAction(Request $request, $id, NotificationService $activityService): JsonResponse
     {
         $activityService->edit(
             $id,
@@ -168,13 +152,12 @@ class NotificationController extends BaseController
      *
      * @Grant(grant="persistence-common-notification", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param NotificationService $activityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, NotificationService $activityService)
+    public function deleteAction(Request $request, $id, NotificationService $activityService): JsonResponse
     {
         $activityService->remove($id);
 
@@ -191,10 +174,8 @@ class NotificationController extends BaseController
      * @param Request $request
      * @param NotificationService $activityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, NotificationService $activityService)
+    public function deleteBulkAction(Request $request, NotificationService $activityService): JsonResponse
     {
         $activityService->removeBulk($request->get('ids'));
 
@@ -209,10 +190,8 @@ class NotificationController extends BaseController
      * @param Request $request
      * @param NotificationService $activityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, NotificationService $activityService)
+    public function relatedInfoAction(Request $request, NotificationService $activityService): JsonResponse
     {
         $relatedData = $activityService->getRelatedInfo($request->get('ids'));
 

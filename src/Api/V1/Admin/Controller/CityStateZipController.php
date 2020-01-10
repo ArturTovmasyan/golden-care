@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\CityStateZipService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\CityStateZip;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/city/state/zip")
  *
  * @Grant(grant="persistence-common-city_state_zip", level="VIEW")
@@ -39,10 +27,9 @@ class CityStateZipController extends BaseController
      *
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, CityStateZipService $cityStateZipService)
+    public function gridAction(Request $request, CityStateZipService $cityStateZipService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class CityStateZipController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, CityStateZip::class, 'api_admin_city_state_zip_grid');
     }
@@ -69,8 +55,7 @@ class CityStateZipController extends BaseController
      *
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, CityStateZipService $cityStateZipService)
     {
@@ -85,11 +70,12 @@ class CityStateZipController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_city_state_zip_get", methods={"GET"})
      *
-     * @param CityStateZipService $cityStateZipService
+     * @param Request $request
      * @param $id
+     * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, CityStateZipService $cityStateZipService)
+    public function getAction(Request $request, $id, CityStateZipService $cityStateZipService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class CityStateZipController extends BaseController
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, CityStateZipService $cityStateZipService)
+    public function addAction(Request $request, CityStateZipService $cityStateZipService): JsonResponse
     {
         $id = $cityStateZipService->add(
             [
@@ -138,9 +123,8 @@ class CityStateZipController extends BaseController
      * @param $id
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, CityStateZipService $cityStateZipService)
+    public function editAction(Request $request, $id, CityStateZipService $cityStateZipService): JsonResponse
     {
         $cityStateZipService->edit(
             $id,
@@ -164,13 +148,12 @@ class CityStateZipController extends BaseController
      *
      * @Grant(grant="persistence-common-city_state_zip", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, CityStateZipService $cityStateZipService)
+    public function deleteAction(Request $request, $id, CityStateZipService $cityStateZipService): JsonResponse
     {
         $cityStateZipService->remove($id);
 
@@ -188,7 +171,7 @@ class CityStateZipController extends BaseController
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, CityStateZipService $cityStateZipService)
+    public function deleteBulkAction(Request $request, CityStateZipService $cityStateZipService): JsonResponse
     {
         $cityStateZipService->removeBulk($request->get('ids'));
 
@@ -203,10 +186,8 @@ class CityStateZipController extends BaseController
      * @param Request $request
      * @param CityStateZipService $cityStateZipService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, CityStateZipService $cityStateZipService)
+    public function relatedInfoAction(Request $request, CityStateZipService $cityStateZipService): JsonResponse
     {
         $relatedData = $cityStateZipService->getRelatedInfo($request->get('ids'));
 

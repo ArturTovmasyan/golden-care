@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ApartmentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Apartment;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/apartment")
  *
  * @Grant(grant="persistence-apartment", level="VIEW")
@@ -39,10 +27,9 @@ class ApartmentController extends BaseController
      *
      * @param Request $request
      * @param ApartmentService $apartmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ApartmentService $apartmentService)
+    public function gridAction(Request $request, ApartmentService $apartmentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ApartmentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Apartment::class, 'api_admin_apartment_grid');
     }
@@ -69,8 +55,7 @@ class ApartmentController extends BaseController
      *
      * @param Request $request
      * @param ApartmentService $apartmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ApartmentService $apartmentService)
     {
@@ -85,11 +70,12 @@ class ApartmentController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_get", methods={"GET"})
      *
-     * @param ApartmentService $apartmentService
+     * @param Request $request
      * @param $id
+     * @param ApartmentService $apartmentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ApartmentService $apartmentService)
+    public function getAction(Request $request, $id, ApartmentService $apartmentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class ApartmentController extends BaseController
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ApartmentService $apartmentService)
+    public function addAction(Request $request, ApartmentService $apartmentService): JsonResponse
     {
         $id = $apartmentService->add(
             [
@@ -143,9 +128,8 @@ class ApartmentController extends BaseController
      * @param $id
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ApartmentService $apartmentService)
+    public function editAction(Request $request, $id, ApartmentService $apartmentService): JsonResponse
     {
         $apartmentService->edit(
             $id,
@@ -174,13 +158,12 @@ class ApartmentController extends BaseController
      *
      * @Grant(grant="persistence-apartment", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ApartmentService $apartmentService)
+    public function deleteAction(Request $request, $id, ApartmentService $apartmentService): JsonResponse
     {
         $apartmentService->remove($id);
 
@@ -190,17 +173,15 @@ class ApartmentController extends BaseController
     }
 
     /**
-     * @Route("", name="api_admin_apartment_delete_bulk", methods={"DELETE"})
+     * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_apartment_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-apartment", level="DELETE")
      *
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ApartmentService $apartmentService)
+    public function deleteBulkAction(Request $request, ApartmentService $apartmentService): JsonResponse
     {
         $apartmentService->removeBulk($request->get('ids'));
 
@@ -215,10 +196,8 @@ class ApartmentController extends BaseController
      * @param Request $request
      * @param ApartmentService $apartmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ApartmentService $apartmentService)
+    public function relatedInfoAction(Request $request, ApartmentService $apartmentService): JsonResponse
     {
         $relatedData = $apartmentService->getRelatedInfo($request->get('ids'));
 
@@ -236,7 +215,7 @@ class ApartmentController extends BaseController
      * @param ApartmentService $apartmentService
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, ApartmentService $apartmentService)
+    public function getMobileListAction(Request $request, ApartmentService $apartmentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

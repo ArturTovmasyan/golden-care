@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentRentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentRent;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/rent")
  *
  * @Grant(grant="persistence-resident-resident_rent", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentRentController extends BaseController
      *
      * @param Request $request
      * @param ResidentRentService $residentRentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentRentService $residentRentService)
+    public function gridAction(Request $request, ResidentRentService $residentRentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentRentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentRent::class, 'api_admin_resident_rent_grid');
     }
@@ -70,8 +56,7 @@ class ResidentRentController extends BaseController
      *
      * @param Request $request
      * @param ResidentRentService $residentRentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentRentService $residentRentService)
     {
@@ -87,11 +72,12 @@ class ResidentRentController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_rent_get", methods={"GET"})
      *
-     * @param ResidentRentService $residentRentService
+     * @param Request $request
      * @param $id
+     * @param ResidentRentService $residentRentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentRentService $residentRentService)
+    public function getAction(Request $request, $id, ResidentRentService $residentRentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentRentController extends BaseController
      * @param Request $request
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentRentService $residentRentService)
+    public function addAction(Request $request, ResidentRentService $residentRentService): JsonResponse
     {
         $id = $residentRentService->add(
             [
@@ -141,9 +126,8 @@ class ResidentRentController extends BaseController
      * @param $id
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentRentService $residentRentService)
+    public function editAction(Request $request, $id, ResidentRentService $residentRentService): JsonResponse
     {
         $residentRentService->edit(
             $id,
@@ -168,13 +152,12 @@ class ResidentRentController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_rent", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentRentService $residentRentService)
+    public function deleteAction(Request $request, $id, ResidentRentService $residentRentService): JsonResponse
     {
         $residentRentService->remove($id);
 
@@ -191,10 +174,8 @@ class ResidentRentController extends BaseController
      * @param Request $request
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentRentService $residentRentService)
+    public function deleteBulkAction(Request $request, ResidentRentService $residentRentService): JsonResponse
     {
         $residentRentService->removeBulk($request->get('ids'));
 
@@ -209,10 +190,8 @@ class ResidentRentController extends BaseController
      * @param Request $request
      * @param ResidentRentService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentRentService $residentRentService)
+    public function relatedInfoAction(Request $request, ResidentRentService $residentRentService): JsonResponse
     {
         $relatedData = $residentRentService->getRelatedInfo($request->get('ids'));
 

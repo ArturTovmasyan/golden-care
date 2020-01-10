@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\DiagnosisService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Diagnosis;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/diagnosis")
  *
  * @Grant(grant="persistence-common-diagnosis", level="VIEW")
@@ -39,10 +27,9 @@ class DiagnosisController extends BaseController
      *
      * @param Request $request
      * @param DiagnosisService $diagnosisService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, DiagnosisService $diagnosisService)
+    public function gridAction(Request $request, DiagnosisService $diagnosisService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class DiagnosisController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Diagnosis::class, 'api_admin_diagnosis_grid');
     }
@@ -69,8 +55,7 @@ class DiagnosisController extends BaseController
      *
      * @param Request $request
      * @param DiagnosisService $diagnosisService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, DiagnosisService $diagnosisService)
     {
@@ -85,11 +70,12 @@ class DiagnosisController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diagnosis_get", methods={"GET"})
      *
-     * @param DiagnosisService $diagnosisService
+     * @param Request $request
      * @param $id
+     * @param DiagnosisService $diagnosisService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, DiagnosisService $diagnosisService)
+    public function getAction(Request $request, $id, DiagnosisService $diagnosisService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class DiagnosisController extends BaseController
      * @param Request $request
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, DiagnosisService $diagnosisService)
+    public function addAction(Request $request, DiagnosisService $diagnosisService): JsonResponse
     {
         $id = $diagnosisService->add(
             [
@@ -136,9 +121,8 @@ class DiagnosisController extends BaseController
      * @param $id
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, DiagnosisService $diagnosisService)
+    public function editAction(Request $request, $id, DiagnosisService $diagnosisService): JsonResponse
     {
         $diagnosisService->edit(
             $id,
@@ -160,13 +144,12 @@ class DiagnosisController extends BaseController
      *
      * @Grant(grant="persistence-common-diagnosis", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DiagnosisService $diagnosisService)
+    public function deleteAction(Request $request, $id, DiagnosisService $diagnosisService): JsonResponse
     {
         $diagnosisService->remove($id);
 
@@ -183,10 +166,8 @@ class DiagnosisController extends BaseController
      * @param Request $request
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DiagnosisService $diagnosisService)
+    public function deleteBulkAction(Request $request, DiagnosisService $diagnosisService): JsonResponse
     {
         $diagnosisService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class DiagnosisController extends BaseController
      * @param Request $request
      * @param DiagnosisService $diagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, DiagnosisService $diagnosisService)
+    public function relatedInfoAction(Request $request, DiagnosisService $diagnosisService): JsonResponse
     {
         $relatedData = $diagnosisService->getRelatedInfo($request->get('ids'));
 

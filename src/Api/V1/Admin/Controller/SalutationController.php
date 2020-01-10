@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\SalutationService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Salutation;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/salutation")
  *
  * @Grant(grant="persistence-common-salutation", level="VIEW")
@@ -39,10 +27,9 @@ class SalutationController extends BaseController
      *
      * @param Request $request
      * @param SalutationService $salutationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, SalutationService $salutationService)
+    public function gridAction(Request $request, SalutationService $salutationService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class SalutationController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Salutation::class, 'api_admin_salutation_grid');
     }
@@ -69,8 +55,7 @@ class SalutationController extends BaseController
      *
      * @param Request $request
      * @param SalutationService $salutationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, SalutationService $salutationService)
     {
@@ -85,11 +70,12 @@ class SalutationController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_salutation_get", methods={"GET"})
      *
-     * @param SalutationService $salutationService
+     * @param Request $request
      * @param $id
+     * @param SalutationService $salutationService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, SalutationService $salutationService)
+    public function getAction(Request $request, $id, SalutationService $salutationService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class SalutationController extends BaseController
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, SalutationService $salutationService)
+    public function addAction(Request $request, SalutationService $salutationService): JsonResponse
     {
         $id = $salutationService->add(
             [
@@ -134,9 +119,8 @@ class SalutationController extends BaseController
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, SalutationService $salutationService)
+    public function editAction(Request $request, $id, SalutationService $salutationService): JsonResponse
     {
         $salutationService->edit(
             $id,
@@ -156,13 +140,12 @@ class SalutationController extends BaseController
      *
      * @Grant(grant="persistence-common-salutation", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, SalutationService $salutationService)
+    public function deleteAction(Request $request, $id, SalutationService $salutationService): JsonResponse
     {
         $salutationService->remove($id);
 
@@ -179,10 +162,8 @@ class SalutationController extends BaseController
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, SalutationService $salutationService)
+    public function deleteBulkAction(Request $request, SalutationService $salutationService): JsonResponse
     {
         $salutationService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class SalutationController extends BaseController
      * @param Request $request
      * @param SalutationService $salutationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, SalutationService $salutationService)
+    public function relatedInfoAction(Request $request, SalutationService $salutationService): JsonResponse
     {
         $relatedData = $salutationService->getRelatedInfo($request->get('ids'));
 
@@ -218,7 +197,7 @@ class SalutationController extends BaseController
      * @param SalutationService $salutationService
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, SalutationService $salutationService)
+    public function getMobileListAction(Request $request, SalutationService $salutationService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

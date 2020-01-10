@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\CareLevelService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\CareLevel;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/care/level")
  *
  * @Grant(grant="persistence-common-care_level", level="VIEW")
@@ -39,10 +27,9 @@ class CareLevelController extends BaseController
      *
      * @param Request $request
      * @param CareLevelService $careLevelService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, CareLevelService $careLevelService)
+    public function gridAction(Request $request, CareLevelService $careLevelService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class CareLevelController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, CareLevel::class, 'api_admin_care_level_grid');
     }
@@ -69,8 +55,7 @@ class CareLevelController extends BaseController
      *
      * @param Request $request
      * @param CareLevelService $careLevelService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, CareLevelService $careLevelService)
     {
@@ -85,11 +70,12 @@ class CareLevelController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_care_level_get", methods={"GET"})
      *
-     * @param CareLevelService $careLevelService
+     * @param Request $request
      * @param $id
+     * @param CareLevelService $careLevelService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, CareLevelService $careLevelService)
+    public function getAction(Request $request, $id, CareLevelService $careLevelService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class CareLevelController extends BaseController
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, CareLevelService $careLevelService)
+    public function addAction(Request $request, CareLevelService $careLevelService): JsonResponse
     {
         $id = $careLevelService->add(
             [
@@ -135,9 +120,8 @@ class CareLevelController extends BaseController
      * @param $id
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, CareLevelService $careLevelService)
+    public function editAction(Request $request, $id, CareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->edit(
             $id,
@@ -158,13 +142,12 @@ class CareLevelController extends BaseController
      *
      * @Grant(grant="persistence-common-care_level", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, CareLevelService $careLevelService)
+    public function deleteAction(Request $request, $id, CareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->remove($id);
 
@@ -181,10 +164,8 @@ class CareLevelController extends BaseController
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CareLevelService $careLevelService)
+    public function deleteBulkAction(Request $request, CareLevelService $careLevelService): JsonResponse
     {
         $careLevelService->removeBulk($request->get('ids'));
 
@@ -199,10 +180,8 @@ class CareLevelController extends BaseController
      * @param Request $request
      * @param CareLevelService $careLevelService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, CareLevelService $careLevelService)
+    public function relatedInfoAction(Request $request, CareLevelService $careLevelService): JsonResponse
     {
         $relatedData = $careLevelService->getRelatedInfo($request->get('ids'));
 
@@ -220,7 +199,7 @@ class CareLevelController extends BaseController
      * @param CareLevelService $careLevelService
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, CareLevelService $careLevelService)
+    public function getMobileListAction(Request $request, CareLevelService $careLevelService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

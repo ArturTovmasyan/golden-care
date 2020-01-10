@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentMedicationAllergyService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentMedicationAllergy;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/history/allergy/medication")
  *
  * @Grant(grant="persistence-resident-resident_medication_allergy", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentMedicationAllergyController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function gridAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentMedicationAllergyController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentMedicationAllergy::class, 'api_admin_resident_medication_allergy_grid');
     }
@@ -70,8 +56,7 @@ class ResidentMedicationAllergyController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
     {
@@ -87,11 +72,12 @@ class ResidentMedicationAllergyController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_allergy_get", methods={"GET"})
      *
-     * @param ResidentMedicationAllergyService $residentMedicationAllergyService
+     * @param Request $request
      * @param $id
+     * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function getAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentMedicationAllergyController extends BaseController
      * @param Request $request
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function addAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         $id = $residentMedicationAllergyService->add(
             [
@@ -137,9 +122,8 @@ class ResidentMedicationAllergyController extends BaseController
      * @param $id
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function editAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         $residentMedicationAllergyService->edit(
             $id,
@@ -160,13 +144,12 @@ class ResidentMedicationAllergyController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_medication_allergy", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function deleteAction(Request $request, $id, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         $residentMedicationAllergyService->remove($id);
 
@@ -183,10 +166,8 @@ class ResidentMedicationAllergyController extends BaseController
      * @param Request $request
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function deleteBulkAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         $residentMedicationAllergyService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class ResidentMedicationAllergyController extends BaseController
      * @param Request $request
      * @param ResidentMedicationAllergyService $residentMedicationAllergyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService)
+    public function relatedInfoAction(Request $request, ResidentMedicationAllergyService $residentMedicationAllergyService): JsonResponse
     {
         $relatedData = $residentMedicationAllergyService->getRelatedInfo($request->get('ids'));
 

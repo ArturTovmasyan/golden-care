@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentDocumentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentDocument;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/document")
  *
  * @Grant(grant="persistence-resident-resident_document", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentDocumentController extends BaseController
      *
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function gridAction(Request $request, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentDocumentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentDocument::class, 'api_admin_resident_document_grid');
     }
@@ -70,8 +56,7 @@ class ResidentDocumentController extends BaseController
      *
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentDocumentService $residentDocumentService)
     {
@@ -88,16 +73,16 @@ class ResidentDocumentController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_document_get", methods={"GET"})
      *
      * @param Request $request
-     * @param ResidentDocumentService $residentDocumentService
      * @param $id
+     * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function getAction(Request $request, $id, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $entity = $residentDocumentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
-            $downloadUrl = $request->getScheme().'://'. $request->getHttpHost().$this->generateUrl('api_admin_resident_document_download', ['id' => $entity->getId()]);
+            $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_admin_resident_document_download', ['id' => $entity->getId()]);
 
             $entity->setDownloadUrl($downloadUrl);
         } else {
@@ -120,9 +105,8 @@ class ResidentDocumentController extends BaseController
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function addAction(Request $request, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $id = $residentDocumentService->add(
             [
@@ -148,9 +132,8 @@ class ResidentDocumentController extends BaseController
      * @param $id
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function editAction(Request $request, $id, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $residentDocumentService->edit(
             $id,
@@ -171,13 +154,12 @@ class ResidentDocumentController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_document", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function deleteAction(Request $request, $id, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $residentDocumentService->remove($id);
 
@@ -194,10 +176,8 @@ class ResidentDocumentController extends BaseController
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function deleteBulkAction(Request $request, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $residentDocumentService->removeBulk($request->get('ids'));
 
@@ -212,10 +192,8 @@ class ResidentDocumentController extends BaseController
      * @param Request $request
      * @param ResidentDocumentService $residentDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentDocumentService $residentDocumentService)
+    public function relatedInfoAction(Request $request, ResidentDocumentService $residentDocumentService): JsonResponse
     {
         $relatedData = $residentDocumentService->getRelatedInfo($request->get('ids'));
 
@@ -229,11 +207,12 @@ class ResidentDocumentController extends BaseController
     /**
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_document_download", methods={"GET"})
      *
-     * @param ResidentDocumentService $residentDocumentService
+     * @param Request $request
      * @param $id
+     * @param ResidentDocumentService $residentDocumentService
      * @return Response
      */
-    public function downloadAction(Request $request, $id, ResidentDocumentService $residentDocumentService)
+    public function downloadAction(Request $request, $id, ResidentDocumentService $residentDocumentService): Response
     {
         $data = $residentDocumentService->downloadFile($id);
 

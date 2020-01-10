@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentPhysicianService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentPhysician;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/physician")
  *
  * @Grant(grant="persistence-resident-resident_physician", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentPhysicianController extends BaseController
      *
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentPhysicianService $residentPhysicianService)
+    public function gridAction(Request $request, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentPhysicianController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentPhysician::class, 'api_admin_resident_physician_grid');
     }
@@ -70,8 +56,7 @@ class ResidentPhysicianController extends BaseController
      *
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentPhysicianService $residentPhysicianService)
     {
@@ -87,11 +72,12 @@ class ResidentPhysicianController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_physician_get", methods={"GET"})
      *
-     * @param ResidentPhysicianService $residentPhysicianService
+     * @param Request $request
      * @param $id
+     * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService)
+    public function getAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,15 +95,14 @@ class ResidentPhysicianController extends BaseController
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentPhysicianService $residentPhysicianService)
+    public function addAction(Request $request, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         $id = $residentPhysicianService->add(
             [
-                'resident_id'  => $request->get('resident_id'),
+                'resident_id' => $request->get('resident_id'),
                 'physician_id' => $request->get('physician_id'),
-                'primary'      => $request->get('primary')
+                'primary' => $request->get('primary')
             ]
         );
 
@@ -137,16 +122,15 @@ class ResidentPhysicianController extends BaseController
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService)
+    public function editAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         $residentPhysicianService->edit(
             $id,
             [
-                'resident_id'  => $request->get('resident_id'),
+                'resident_id' => $request->get('resident_id'),
                 'physician_id' => $request->get('physician_id'),
-                'primary'      => $request->get('primary')
+                'primary' => $request->get('primary')
             ]
         );
 
@@ -160,13 +144,12 @@ class ResidentPhysicianController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_physician", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService)
+    public function deleteAction(Request $request, $id, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         $residentPhysicianService->remove($id);
 
@@ -183,10 +166,8 @@ class ResidentPhysicianController extends BaseController
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentPhysicianService $residentPhysicianService)
+    public function deleteBulkAction(Request $request, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         $residentPhysicianService->removeBulk($request->get('ids'));
 
@@ -198,11 +179,12 @@ class ResidentPhysicianController extends BaseController
     /**
      * @Route("/{resident_id}/primary", requirements={"resident_id"="\d+"}, name="api_admin_resident_physician_get_primary", methods={"GET"})
      *
-     * @param ResidentPhysicianService $residentPhysicianService
+     * @param Request $request
      * @param $resident_id
+     * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
      */
-    public function getPrimaryAction(Request $request, $resident_id, ResidentPhysicianService $residentPhysicianService)
+    public function getPrimaryAction(Request $request, $resident_id, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -218,10 +200,8 @@ class ResidentPhysicianController extends BaseController
      * @param Request $request
      * @param ResidentPhysicianService $residentDietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentPhysicianService $residentDietService)
+    public function relatedInfoAction(Request $request, ResidentPhysicianService $residentDietService): JsonResponse
     {
         $relatedData = $residentDietService->getRelatedInfo($request->get('ids'));
 
@@ -240,9 +220,8 @@ class ResidentPhysicianController extends BaseController
      * @param Request $request
      * @param ResidentPhysicianService $residentPhysicianService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function reorderAction(Request $request, ResidentPhysicianService $residentPhysicianService)
+    public function reorderAction(Request $request, ResidentPhysicianService $residentPhysicianService): JsonResponse
     {
         $residentPhysicianService->reorder(
             [

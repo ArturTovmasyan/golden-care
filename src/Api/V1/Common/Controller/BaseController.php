@@ -16,7 +16,6 @@ use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use App\Util\MimeUtil;
 use App\Util\StringUtil;
-use Aws\Result;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -73,6 +72,7 @@ class BaseController extends AbstractController
      * @param Pdf $pdf
      * @param Mailer $mailer
      * @param Security $security
+     * @param GrantService $grantService
      */
     public function __construct(
         SerializerInterface $serializer,
@@ -102,8 +102,8 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @param IGridService $service
-     * @return JsonResponse|PdfResponse
-     * @throws \Exception
+     * @param array ...$params
+     * @return PdfResponse|JsonResponse|Response
      */
     protected function respondList(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
@@ -137,10 +137,10 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @param IGridService $service
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @param array ...$params
+     * @return JsonResponse
      */
-    protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
+    protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params): JsonResponse
     {
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
         $service->gridSelect($queryBuilder, $params);
@@ -175,14 +175,14 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param string $message
      * @param int $httpStatus
+     * @param string $message
      * @param array $data
      * @param array $groups
      * @param array $headers
      * @return JsonResponse
      */
-    protected function respondSuccess($httpStatus = Response::HTTP_OK, $message = '', $data = [], $groups = [], $headers = [])
+    protected function respondSuccess($httpStatus = Response::HTTP_OK, $message = '', $data = [], $groups = [], $headers = []): JsonResponse
     {
         $responseData = [];
 
@@ -211,8 +211,7 @@ class BaseController extends AbstractController
      * @param Request $request
      * @param $data
      * @param $fields
-     * @return PdfResponse
-     * @throws \Exception
+     * @return PdfResponse|Response
      */
     protected function respondPdf(Request $request, $data, $fields)
     {
@@ -230,7 +229,7 @@ class BaseController extends AbstractController
 
     /**
      * @param $template
-     * @param string $actualName
+     * @param $actualName
      * @param string $format
      * @param array $params
      * @return PdfResponse|Response
@@ -246,9 +245,11 @@ class BaseController extends AbstractController
 
         $html = $this->renderView($template, $params);
 
-        if ($format == 'pdf') {
+        if ($format === 'pdf') {
             return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName . '.pdf');
-        } elseif ($format == 'csv') {
+        }
+
+        if ($format === 'csv') {
             return new Response($html, Response::HTTP_OK, [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => 'attachment; filename="' . $actualName . '.csv"',
@@ -266,8 +267,7 @@ class BaseController extends AbstractController
      * @param string $group
      * @param string $alias
      * @param ReportService $reportService
-     * @return PdfResponse
-     * @throws \Exception
+     * @return PdfResponse|Response
      */
     protected function respondReport(Request $request, string $group, string $alias, ReportService $reportService)
     {
@@ -288,12 +288,12 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @param string $entityName
      * @param string $groupName
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    protected function getOptionsByGroupName(Request $request, string $entityName, string $groupName)
+    protected function getOptionsByGroupName(Request $request, string $entityName, string $groupName): JsonResponse
     {
         $options = $this->getGrid($entityName)->getGroupOptions($groupName);
 
@@ -303,7 +303,7 @@ class BaseController extends AbstractController
 
         $ignoreFields = $this->gridIgnoreFields($request);
 
-        if(!empty($ignoreFields)) {
+        if (!empty($ignoreFields)) {
             foreach ($options as $key => $option) {
                 if (\in_array($option['id'], $ignoreFields, false)) {
                     unset($options[$key]);
@@ -340,7 +340,6 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @return QueryBuilder
-     * @throws \ReflectionException
      */
     protected function getQueryBuilder(Request $request, string $entityName, string $groupName)
     {
@@ -353,7 +352,6 @@ class BaseController extends AbstractController
     /**
      * @param $entityName
      * @return null|object|Grid
-     * @throws \ReflectionException
      */
     private function getGrid($entityName)
     {
@@ -366,12 +364,12 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param string $title
-     * @param string $mimeType
-     * @param Result $awsData
+     * @param $title
+     * @param $mimeType
+     * @param $awsData
      * @return Response
      */
-    protected function respondResource($title, $mimeType, $awsData)
+    protected function respondResource($title, $mimeType, $awsData): Response
     {
         /** @var Stream $stream */
         $stream = $awsData['Body'];
@@ -392,12 +390,12 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param string $title
-     * @param string $mimeType
+     * @param $title
+     * @param $mimeType
      * @param $data
      * @return Response
      */
-    protected function respondImageFile($title, $mimeType, $data)
+    protected function respondImageFile($title, $mimeType, $data): Response
     {
         if (!empty($data)) {
             return new Response($data, Response::HTTP_OK, [
@@ -410,7 +408,7 @@ class BaseController extends AbstractController
         throw new ResourceNotFoundException();
     }
 
-    protected function gridIgnoreFields(Request $request) : array
+    protected function gridIgnoreFields(Request $request): array
     {
         return [];
     }

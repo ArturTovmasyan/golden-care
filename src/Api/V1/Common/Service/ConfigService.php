@@ -4,11 +4,11 @@ namespace App\Api\V1\Common\Service;
 
 /**
  * Class ConfigService
- * @package App\Api\V1\Service
+ * @package App\Api\V1\Common\Service
  */
 class ConfigService
 {
-    private $config = [];
+    private $config;
 
     public function __construct()
     {
@@ -35,6 +35,6 @@ class ConfigService
 
     public function get(string $key)
     {
-        return \array_key_exists($key, $this->config) ? $this->config[$key] : null;
+        return $this->config[$key] ?? null;
     }
 }

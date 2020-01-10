@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentDiagnosisService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentDiagnosis;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/history/diagnose")
  *
  * @Grant(grant="persistence-resident-resident_diagnosis", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentDiagnosisController extends BaseController
      *
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
+    public function gridAction(Request $request, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentDiagnosisController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentDiagnosis::class, 'api_admin_resident_diagnosis_grid');
     }
@@ -70,8 +56,7 @@ class ResidentDiagnosisController extends BaseController
      *
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
     {
@@ -87,11 +72,12 @@ class ResidentDiagnosisController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_diagnosis_get", methods={"GET"})
      *
-     * @param ResidentDiagnosisService $residentDiagnosisService
+     * @param Request $request
      * @param $id
+     * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService)
+    public function getAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentDiagnosisController extends BaseController
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
+    public function addAction(Request $request, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         $id = $residentDiagnosisService->add(
             [
@@ -138,9 +123,8 @@ class ResidentDiagnosisController extends BaseController
      * @param $id
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService)
+    public function editAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         $residentDiagnosisService->edit(
             $id,
@@ -162,13 +146,12 @@ class ResidentDiagnosisController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_diagnosis", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService)
+    public function deleteAction(Request $request, $id, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         $residentDiagnosisService->remove($id);
 
@@ -185,10 +168,8 @@ class ResidentDiagnosisController extends BaseController
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
+    public function deleteBulkAction(Request $request, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         $residentDiagnosisService->removeBulk($request->get('ids'));
 
@@ -203,10 +184,8 @@ class ResidentDiagnosisController extends BaseController
      * @param Request $request
      * @param ResidentDiagnosisService $residentDiagnosisService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentDiagnosisService $residentDiagnosisService)
+    public function relatedInfoAction(Request $request, ResidentDiagnosisService $residentDiagnosisService): JsonResponse
     {
         $relatedData = $residentDiagnosisService->getRelatedInfo($request->get('ids'));
 

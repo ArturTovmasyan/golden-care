@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ChangeLogService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ChangeLog;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/change-log")
  *
  * @Grant(grant="persistence-common-change_log", level="VIEW")
  *
  * Class ChangeLogController
- * @package  App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Admin\Controller
  */
 class ChangeLogController extends BaseController
 {
@@ -39,10 +27,9 @@ class ChangeLogController extends BaseController
      *
      * @param Request $request
      * @param ChangeLogService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ChangeLogService $activityTypeService)
+    public function gridAction(Request $request, ChangeLogService $activityTypeService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ChangeLogController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ChangeLog::class, 'api_admin_change_log_grid');
     }
@@ -69,8 +55,7 @@ class ChangeLogController extends BaseController
      *
      * @param Request $request
      * @param ChangeLogService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ChangeLogService $activityTypeService)
     {
@@ -85,11 +70,12 @@ class ChangeLogController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_change_log_get", methods={"GET"})
      *
-     * @param ChangeLogService $activityTypeService
+     * @param Request $request
      * @param $id
+     * @param ChangeLogService $activityTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ChangeLogService $activityTypeService)
+    public function getAction(Request $request, $id, ChangeLogService $activityTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -104,13 +90,12 @@ class ChangeLogController extends BaseController
      *
      * @Grant(grant="persistence-common-change_log", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ChangeLogService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ChangeLogService $activityTypeService)
+    public function deleteAction(Request $request, $id, ChangeLogService $activityTypeService): JsonResponse
     {
         $activityTypeService->remove($id);
 
@@ -127,10 +112,8 @@ class ChangeLogController extends BaseController
      * @param Request $request
      * @param ChangeLogService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ChangeLogService $activityTypeService)
+    public function deleteBulkAction(Request $request, ChangeLogService $activityTypeService): JsonResponse
     {
         $activityTypeService->removeBulk($request->get('ids'));
 
@@ -145,10 +128,8 @@ class ChangeLogController extends BaseController
      * @param Request $request
      * @param ChangeLogService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ChangeLogService $activityTypeService)
+    public function relatedInfoAction(Request $request, ChangeLogService $activityTypeService): JsonResponse
     {
         $relatedData = $activityTypeService->getRelatedInfo($request->get('ids'));
 

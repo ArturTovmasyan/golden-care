@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentRentIncreaseService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentRentIncrease;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident-rent-increase")
  *
  * @Grant(grant="persistence-resident-resident_rent_increase", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentRentIncreaseController extends BaseController
      *
      * @param Request $request
      * @param ResidentRentIncreaseService $residentRentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentRentIncreaseService $residentRentService)
+    public function gridAction(Request $request, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentRentIncreaseController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentRentIncrease::class, 'api_admin_resident_rent_increase_grid');
     }
@@ -70,8 +56,7 @@ class ResidentRentIncreaseController extends BaseController
      *
      * @param Request $request
      * @param ResidentRentIncreaseService $residentRentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentRentIncreaseService $residentRentService)
     {
@@ -87,11 +72,12 @@ class ResidentRentIncreaseController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_rent_increase_get", methods={"GET"})
      *
-     * @param ResidentRentIncreaseService $residentRentService
+     * @param Request $request
      * @param $id
+     * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentRentIncreaseService $residentRentService)
+    public function getAction(Request $request, $id, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentRentIncreaseController extends BaseController
      * @param Request $request
      * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentRentIncreaseService $residentRentService)
+    public function addAction(Request $request, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         $id = $residentRentService->add(
             [
@@ -139,9 +124,8 @@ class ResidentRentIncreaseController extends BaseController
      * @param $id
      * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentRentIncreaseService $residentRentService)
+    public function editAction(Request $request, $id, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         $residentRentService->edit(
             $id,
@@ -164,13 +148,12 @@ class ResidentRentIncreaseController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_rent_increase", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentRentIncreaseService $residentRentService)
+    public function deleteAction(Request $request, $id, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         $residentRentService->remove($id);
 
@@ -187,10 +170,8 @@ class ResidentRentIncreaseController extends BaseController
      * @param Request $request
      * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentRentIncreaseService $residentRentService)
+    public function deleteBulkAction(Request $request, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         $residentRentService->removeBulk($request->get('ids'));
 
@@ -205,10 +186,8 @@ class ResidentRentIncreaseController extends BaseController
      * @param Request $request
      * @param ResidentRentIncreaseService $residentRentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentRentIncreaseService $residentRentService)
+    public function relatedInfoAction(Request $request, ResidentRentIncreaseService $residentRentService): JsonResponse
     {
         $relatedData = $residentRentService->getRelatedInfo($request->get('ids'));
 

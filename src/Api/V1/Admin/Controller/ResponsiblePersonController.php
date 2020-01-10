@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResponsiblePersonService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResponsiblePerson;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/responsible/person")
  *
  * @Grant(grant="persistence-common-responsible_person", level="VIEW")
@@ -39,10 +27,9 @@ class ResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResponsiblePersonService $responsiblePersonService)
+    public function gridAction(Request $request, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResponsiblePerson::class, 'api_admin_responsible_person_grid');
     }
@@ -69,8 +55,7 @@ class ResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResponsiblePersonService $responsiblePersonService)
     {
@@ -85,11 +70,12 @@ class ResponsiblePersonController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_get", methods={"GET"})
      *
-     * @param ResponsiblePersonService $responsiblePersonService
+     * @param Request $request
      * @param $id
+     * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService)
+    public function getAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,22 +93,21 @@ class ResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResponsiblePersonService $responsiblePersonService)
+    public function addAction(Request $request, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         $id = $responsiblePersonService->add(
             [
-                'first_name'        => $request->get('first_name'),
-                'middle_name'       => $request->get('middle_name'),
-                'last_name'         => $request->get('last_name'),
-                'address_1'         => $request->get('address_1'),
-                'address_2'         => $request->get('address_2'),
-                'email'             => $request->get('email'),
-                'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id'),
-                'phones'            => $request->get('phones')
+                'first_name' => $request->get('first_name'),
+                'middle_name' => $request->get('middle_name'),
+                'last_name' => $request->get('last_name'),
+                'address_1' => $request->get('address_1'),
+                'address_2' => $request->get('address_2'),
+                'email' => $request->get('email'),
+                'csz_id' => $request->get('csz_id'),
+                'space_id' => $request->get('space_id'),
+                'salutation_id' => $request->get('salutation_id'),
+                'phones' => $request->get('phones')
             ]
         );
 
@@ -142,23 +127,22 @@ class ResponsiblePersonController extends BaseController
      * @param $id
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService)
+    public function editAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         $responsiblePersonService->edit(
             $id,
             [
-                'first_name'        => $request->get('first_name'),
-                'middle_name'       => $request->get('middle_name'),
-                'last_name'         => $request->get('last_name'),
-                'address_1'         => $request->get('address_1'),
-                'address_2'         => $request->get('address_2'),
-                'email'             => $request->get('email'),
-                'csz_id'            => $request->get('csz_id'),
-                'space_id'          => $request->get('space_id'),
-                'salutation_id'     => $request->get('salutation_id'),
-                'phones'            => $request->get('phones')
+                'first_name' => $request->get('first_name'),
+                'middle_name' => $request->get('middle_name'),
+                'last_name' => $request->get('last_name'),
+                'address_1' => $request->get('address_1'),
+                'address_2' => $request->get('address_2'),
+                'email' => $request->get('email'),
+                'csz_id' => $request->get('csz_id'),
+                'space_id' => $request->get('space_id'),
+                'salutation_id' => $request->get('salutation_id'),
+                'phones' => $request->get('phones')
             ]
         );
 
@@ -172,13 +156,12 @@ class ResponsiblePersonController extends BaseController
      *
      * @Grant(grant="persistence-common-responsible_person", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService)
+    public function deleteAction(Request $request, $id, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         $responsiblePersonService->remove($id);
 
@@ -195,10 +178,8 @@ class ResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResponsiblePersonService $responsiblePersonService)
+    public function deleteBulkAction(Request $request, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         $responsiblePersonService->removeBulk($request->get('ids'));
 
@@ -213,10 +194,8 @@ class ResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonService $responsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResponsiblePersonService $responsiblePersonService)
+    public function relatedInfoAction(Request $request, ResponsiblePersonService $responsiblePersonService): JsonResponse
     {
         $relatedData = $responsiblePersonService->getRelatedInfo($request->get('ids'));
 

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\DietService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Diet;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/diet")
  *
  * @Grant(grant="persistence-common-diet", level="VIEW")
@@ -39,10 +27,9 @@ class DietController extends BaseController
      *
      * @param Request $request
      * @param DietService $dietService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, DietService $dietService)
+    public function gridAction(Request $request, DietService $dietService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class DietController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Diet::class, 'api_admin_diet_grid');
     }
@@ -69,8 +55,7 @@ class DietController extends BaseController
      *
      * @param Request $request
      * @param DietService $dietService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, DietService $dietService)
     {
@@ -85,11 +70,12 @@ class DietController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_diet_get", methods={"GET"})
      *
-     * @param DietService $dietService
+     * @param Request $request
      * @param $id
+     * @param DietService $dietService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, DietService $dietService)
+    public function getAction(Request $request, $id, DietService $dietService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class DietController extends BaseController
      * @param Request $request
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, DietService $dietService)
+    public function addAction(Request $request, DietService $dietService): JsonResponse
     {
         $id = $dietService->add(
             [
@@ -135,9 +120,8 @@ class DietController extends BaseController
      * @param $id
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, DietService $dietService)
+    public function editAction(Request $request, $id, DietService $dietService): JsonResponse
     {
         $dietService->edit(
             $id,
@@ -158,13 +142,12 @@ class DietController extends BaseController
      *
      * @Grant(grant="persistence-common-diet", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DietService $dietService)
+    public function deleteAction(Request $request, $id, DietService $dietService): JsonResponse
     {
         $dietService->remove($id);
 
@@ -181,10 +164,8 @@ class DietController extends BaseController
      * @param Request $request
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DietService $dietService)
+    public function deleteBulkAction(Request $request, DietService $dietService): JsonResponse
     {
         $dietService->removeBulk($request->get('ids'));
 
@@ -199,10 +180,8 @@ class DietController extends BaseController
      * @param Request $request
      * @param DietService $dietService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, DietService $dietService)
+    public function relatedInfoAction(Request $request, DietService $dietService): JsonResponse
     {
         $relatedData = $dietService->getRelatedInfo($request->get('ids'));
 

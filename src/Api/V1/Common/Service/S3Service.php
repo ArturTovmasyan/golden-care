@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use Aws\Result;
@@ -41,11 +42,11 @@ class S3Service
             $parseFile = Parser::parse($base64Data);
 
             $this->getS3Client()->putObject([
-                'Bucket'      => getenv('AWS_BUCKET'),
-                'Key'         => $fileType.'/'.$s3Id,
-                'Body'        => $parseFile->getData(),
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key' => $fileType . '/' . $s3Id,
+                'Body' => $parseFile->getData(),
                 'ContentType' => $mimeType,
-                'ACL'         => 'public-read',
+                'ACL' => 'public-read',
             ]);
 
         } catch (S3Exception $e) {
@@ -62,7 +63,7 @@ class S3Service
     {
         $result = $this->getS3Client()->getObject(array(
             'Bucket' => getenv('AWS_BUCKET'),
-            'Key'    => $fileType.'/'.$s3Id,
+            'Key' => $fileType . '/' . $s3Id,
         ));
 
         return $result;
@@ -77,7 +78,7 @@ class S3Service
     {
         $result = $this->getS3Client()->deleteObject(array(
             'Bucket' => getenv('AWS_BUCKET'),
-            'Key'    => $fileType.'/'.$s3Id,
+            'Key' => $fileType . '/' . $s3Id,
         ));
 
         return $result;

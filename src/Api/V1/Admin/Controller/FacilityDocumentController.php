@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\FacilityDocumentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\FacilityDocument;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/facility/document")
  *
  * @Grant(grant="persistence-facility_document", level="VIEW")
@@ -52,10 +40,9 @@ class FacilityDocumentController extends BaseController
      *
      * @param Request $request
      * @param FacilityDocumentService $facilityDocumentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, FacilityDocumentService $facilityDocumentService)
+    public function gridAction(Request $request, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -74,9 +61,8 @@ class FacilityDocumentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, FacilityDocument::class, 'api_admin_facility_document_grid');
     }
@@ -86,8 +72,7 @@ class FacilityDocumentController extends BaseController
      *
      * @param Request $request
      * @param FacilityDocumentService $facilityDocumentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, FacilityDocumentService $facilityDocumentService)
     {
@@ -107,16 +92,16 @@ class FacilityDocumentController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_document_get", methods={"GET"})
      *
      * @param Request $request
-     * @param FacilityDocumentService $facilityDocumentService
      * @param $id
+     * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, FacilityDocumentService $facilityDocumentService)
+    public function getAction(Request $request, $id, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $entity = $facilityDocumentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
-            $downloadUrl = $request->getScheme().'://'. $request->getHttpHost().$this->generateUrl('api_admin_facility_document_download', ['id' => $entity->getId()]);
+            $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_admin_facility_document_download', ['id' => $entity->getId()]);
 
             $entity->setDownloadUrl($downloadUrl);
         } else {
@@ -139,9 +124,8 @@ class FacilityDocumentController extends BaseController
      * @param Request $request
      * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, FacilityDocumentService $facilityDocumentService)
+    public function addAction(Request $request, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $id = $facilityDocumentService->add(
             [
@@ -169,9 +153,8 @@ class FacilityDocumentController extends BaseController
      * @param $id
      * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, FacilityDocumentService $facilityDocumentService)
+    public function editAction(Request $request, $id, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $facilityDocumentService->edit(
             $id,
@@ -194,13 +177,12 @@ class FacilityDocumentController extends BaseController
      *
      * @Grant(grant="persistence-facility_document", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, FacilityDocumentService $facilityDocumentService)
+    public function deleteAction(Request $request, $id, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $facilityDocumentService->remove($id);
 
@@ -217,10 +199,8 @@ class FacilityDocumentController extends BaseController
      * @param Request $request
      * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, FacilityDocumentService $facilityDocumentService)
+    public function deleteBulkAction(Request $request, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $facilityDocumentService->removeBulk($request->get('ids'));
 
@@ -235,10 +215,8 @@ class FacilityDocumentController extends BaseController
      * @param Request $request
      * @param FacilityDocumentService $facilityDocumentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, FacilityDocumentService $facilityDocumentService)
+    public function relatedInfoAction(Request $request, FacilityDocumentService $facilityDocumentService): JsonResponse
     {
         $relatedData = $facilityDocumentService->getRelatedInfo($request->get('ids'));
 
@@ -252,11 +230,12 @@ class FacilityDocumentController extends BaseController
     /**
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_facility_document_download", methods={"GET"})
      *
-     * @param FacilityDocumentService $facilityDocumentService
+     * @param Request $request
      * @param $id
+     * @param FacilityDocumentService $facilityDocumentService
      * @return Response
      */
-    public function downloadAction(Request $request, $id, FacilityDocumentService $facilityDocumentService)
+    public function downloadAction(Request $request, $id, FacilityDocumentService $facilityDocumentService): Response
     {
         $data = $facilityDocumentService->downloadFile($id);
 

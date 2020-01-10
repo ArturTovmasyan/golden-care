@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentMedicationService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentMedication;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/medication")
  *
  * @Grant(grant="persistence-resident-resident_medication", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentMedicationController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentMedicationService $residentMedicationService)
+    public function gridAction(Request $request, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -61,9 +48,8 @@ class ResidentMedicationController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentMedication::class, 'api_admin_resident_medication_grid');
     }
@@ -73,8 +59,7 @@ class ResidentMedicationController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentMedicationService $residentMedicationService)
     {
@@ -94,11 +79,12 @@ class ResidentMedicationController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medication_get", methods={"GET"})
      *
-     * @param ResidentMedicationService $residentMedicationService
+     * @param Request $request
      * @param $id
+     * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentMedicationService $residentMedicationService)
+    public function getAction(Request $request, $id, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -116,9 +102,8 @@ class ResidentMedicationController extends BaseController
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentMedicationService $residentMedicationService)
+    public function addAction(Request $request, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         $id = $residentMedicationService->add(
             [
@@ -156,9 +141,8 @@ class ResidentMedicationController extends BaseController
      * @param $id
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentMedicationService $residentMedicationService)
+    public function editAction(Request $request, $id, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         $residentMedicationService->edit(
             $id,
@@ -191,13 +175,12 @@ class ResidentMedicationController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_medication", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentMedicationService $residentMedicationService)
+    public function deleteAction(Request $request, $id, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         $residentMedicationService->remove($id);
 
@@ -214,10 +197,8 @@ class ResidentMedicationController extends BaseController
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentMedicationService $residentMedicationService)
+    public function deleteBulkAction(Request $request, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         $residentMedicationService->removeBulk($request->get('ids'));
 
@@ -232,10 +213,8 @@ class ResidentMedicationController extends BaseController
      * @param Request $request
      * @param ResidentMedicationService $residentMedicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentMedicationService $residentMedicationService)
+    public function relatedInfoAction(Request $request, ResidentMedicationService $residentMedicationService): JsonResponse
     {
         $relatedData = $residentMedicationService->getRelatedInfo($request->get('ids'));
 

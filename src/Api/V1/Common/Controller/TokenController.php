@@ -17,21 +17,8 @@ use FOS\OAuthServerBundle\Controller\TokenController as BaseController;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * Class TokenController
- * @package App\Api\V1\Controller\Rest
+ * @package App\Api\V1\Common\Controller
  */
 class TokenController extends BaseController
 {
@@ -48,61 +35,14 @@ class TokenController extends BaseController
     public function __construct(OAuth2 $server, EntityManager $entityManager)
     {
         parent::__construct($server);
-        $this->em          = $entityManager;
+        $this->em = $entityManager;
     }
 
     /**
-     * @api {post} /oauth/v2/token Authorization
-     * @apiVersion 1.0.0
-     * @apiName Authorization
-     * @apiGroup Common
-     * @apiPermission none
-     * @apiDescription This function is used to authorize user
-     *
-     * @apiHeader {String} Content-Type  application/json
-     *
-     * @apiParam {String} username      The unique username of the user
-     * @apiParam {String} password      The password of the user
-     * @apiParam {Int}    client_id     The client identifier of the user
-     * @apiParam {String} client_secret The client secret of the user
-     * @apiParam {String} grant_type    The grand_type for authorization
-     *
-     * @apiParamExample {json} Request-Example:
-     *     {
-     *         "username": "test",
-     *         "password": "CLIENT_PASSWORD",
-     *         "client_id": "CLIENT_ID",
-     *         "client_secret": "CLIENT_SECRET",
-     *         "grant_type": "password"
-     *     }
-     *
-     * @apiSuccess {String} access_token   The access token of client
-     * @apiSuccess {Int}    expires_in     Expired date for access token
-     * @apiSuccess {String} token_type     The token type
-     * @apiSuccess {String} scope          The available scopes
-     * @apiSuccess {String} refresh_token  The refresh token of client
-     *
-     * @apiSuccessExample {json} Sample Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *         "access_token": "YmE5YjY4MWZhNWU2MzZkM2Q2MDRhYzYVjZDZiOTMzOGFkN2ZdsmZDc4NzEzODJmZTgxNjM4NDM4MWQxZDUwOQ",
-     *         "expires_in": 604800,
-     *         "token_type": "bearer",
-     *         "scope": "user",
-     *         "refresh_token": "OTQ0NjDhmMzNiNzUwdsdsmExNWY0MDcxYmJiNmM1ZWYdsxYTBhNmZiZGYzMmRhODdkNDRhNWE3OWU1MzNhOA"
-     *     }
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *          "code": 401,
-     *          "error": "Invalid username and password combination"
-     *     }
-     *
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\ORM\ORMException
      */
-    public function tokenAction(Request $request)
+    public function tokenAction(Request $request): Response
     {
         $response = parent::tokenAction($request);
 
@@ -117,7 +57,7 @@ class TokenController extends BaseController
 
                 if ($user) {
                     $attempts = $this->em->getRepository(LoginAttempt::class)
-                        ->findBy(['login'=>$username]);
+                        ->findBy(['login' => $username]);
 
                     foreach ($attempts as $attempt) {
                         $this->em->remove($attempt);

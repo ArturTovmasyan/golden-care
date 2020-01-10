@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
@@ -85,14 +86,14 @@ class ProfileService extends BaseService
      * @param array $params
      * @throws \Exception
      */
-    public function changePassword(User $loggedUser, array $params)
+    public function changePassword(User $loggedUser, array $params): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
 
             /** @var User $user */
             $user = $this->em->getRepository(User::class)
-                             ->findOneBy(['username' => $loggedUser->getUsername()]);
+                ->findOneBy(['username' => $loggedUser->getUsername()]);
 
             $user->setOldPassword($params['password']);
             $user->setPlainPassword($params['new_password']);
@@ -117,11 +118,11 @@ class ProfileService extends BaseService
     /**
      * @param User $user
      * @param array $phones
-     * @return array
+     * @return array|null
      */
-    private function savePhones($user, array $phones = [])
+    private function savePhones(User $user, array $phones = []): ?array
     {
-        if($user->getId()) {
+        if ($user->getId()) {
             /**
              * @var UserPhone[] $oldPhones
              */
@@ -136,9 +137,9 @@ class ProfileService extends BaseService
 
         $userPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
 
             $userPhone = new UserPhone();
             $userPhone->setUser($user);
@@ -168,7 +169,7 @@ class ProfileService extends BaseService
      * @param User $loggedUser
      * @throws \Exception
      */
-    public function acceptLicense(User $loggedUser)
+    public function acceptLicense(User $loggedUser): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -194,7 +195,7 @@ class ProfileService extends BaseService
      * @param User $loggedUser
      * @throws \Exception
      */
-    public function declineLicense(User $loggedUser)
+    public function declineLicense(User $loggedUser): void
     {
         try {
             $this->em->getConnection()->beginTransaction();

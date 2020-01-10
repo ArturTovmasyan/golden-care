@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\FacilityEventService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\FacilityEvent;
@@ -10,22 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/facility/event")
  *
  * @Grant(grant="persistence-facility_event", level="VIEW")
@@ -40,10 +28,9 @@ class FacilityEventController extends BaseController
      *
      * @param Request $request
      * @param FacilityEventService $facilityEventService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, FacilityEventService $facilityEventService)
+    public function gridAction(Request $request, FacilityEventService $facilityEventService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -59,9 +46,8 @@ class FacilityEventController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, FacilityEvent::class, 'api_admin_facility_event_grid');
     }
@@ -71,8 +57,7 @@ class FacilityEventController extends BaseController
      *
      * @param Request $request
      * @param FacilityEventService $facilityEventService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, FacilityEventService $facilityEventService)
     {
@@ -88,11 +73,12 @@ class FacilityEventController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_event_get", methods={"GET"})
      *
-     * @param FacilityEventService $facilityEventService
+     * @param Request $request
      * @param $id
+     * @param FacilityEventService $facilityEventService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, FacilityEventService $facilityEventService)
+    public function getAction(Request $request, $id, FacilityEventService $facilityEventService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,9 +96,8 @@ class FacilityEventController extends BaseController
      * @param Request $request
      * @param FacilityEventService $facilityEventService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, FacilityEventService $facilityEventService)
+    public function addAction(Request $request, FacilityEventService $facilityEventService): JsonResponse
     {
         $id = $facilityEventService->add(
             [
@@ -150,9 +135,8 @@ class FacilityEventController extends BaseController
      * @param $id
      * @param FacilityEventService $facilityEventService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, FacilityEventService $facilityEventService)
+    public function editAction(Request $request, $id, FacilityEventService $facilityEventService): JsonResponse
     {
         $facilityEventService->edit(
             $id,
@@ -185,13 +169,12 @@ class FacilityEventController extends BaseController
      *
      * @Grant(grant="persistence-facility_event", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param FacilityEventService $facilityEventService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, FacilityEventService $facilityEventService)
+    public function deleteAction(Request $request, $id, FacilityEventService $facilityEventService): JsonResponse
     {
         $facilityEventService->remove($id);
 
@@ -208,10 +191,8 @@ class FacilityEventController extends BaseController
      * @param Request $request
      * @param FacilityEventService $facilityEventService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, FacilityEventService $facilityEventService)
+    public function deleteBulkAction(Request $request, FacilityEventService $facilityEventService): JsonResponse
     {
         $facilityEventService->removeBulk($request->get('ids'));
 
@@ -226,10 +207,8 @@ class FacilityEventController extends BaseController
      * @param Request $request
      * @param FacilityEventService $facilityEventService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, FacilityEventService $facilityEventService)
+    public function relatedInfoAction(Request $request, FacilityEventService $facilityEventService): JsonResponse
     {
         $relatedData = $facilityEventService->getRelatedInfo($request->get('ids'));
 
@@ -243,11 +222,12 @@ class FacilityEventController extends BaseController
     /**
      * @Route("/rsvp/{id}", requirements={"id"="\d+"}, name="api_admin_facility_event_get_is_rsvp", methods={"GET"})
      *
-     * @param FacilityEventService $facilityEventService
+     * @param Request $request
      * @param $id
+     * @param FacilityEventService $facilityEventService
      * @return JsonResponse
      */
-    public function getIsDoneAction(Request $request, $id, FacilityEventService $facilityEventService)
+    public function getIsDoneAction(Request $request, $id, FacilityEventService $facilityEventService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();

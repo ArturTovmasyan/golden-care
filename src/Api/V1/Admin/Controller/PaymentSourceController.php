@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\PaymentSourceService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\PaymentSource;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/payment/source")
  *
  * @Grant(grant="persistence-common-payment_source", level="VIEW")
@@ -39,10 +27,9 @@ class PaymentSourceController extends BaseController
      *
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, PaymentSourceService $paymentSourceService)
+    public function gridAction(Request $request, PaymentSourceService $paymentSourceService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class PaymentSourceController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, PaymentSource::class, 'api_admin_payment_source_grid');
     }
@@ -69,8 +55,7 @@ class PaymentSourceController extends BaseController
      *
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, PaymentSourceService $paymentSourceService)
     {
@@ -85,11 +70,12 @@ class PaymentSourceController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_payment_source_get", methods={"GET"})
      *
-     * @param PaymentSourceService $paymentSourceService
+     * @param Request $request
      * @param $id
+     * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, PaymentSourceService $paymentSourceService)
+    public function getAction(Request $request, $id, PaymentSourceService $paymentSourceService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class PaymentSourceController extends BaseController
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, PaymentSourceService $paymentSourceService)
+    public function addAction(Request $request, PaymentSourceService $paymentSourceService): JsonResponse
     {
         $id = $paymentSourceService->add(
             [
@@ -134,9 +119,8 @@ class PaymentSourceController extends BaseController
      * @param $id
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, PaymentSourceService $paymentSourceService)
+    public function editAction(Request $request, $id, PaymentSourceService $paymentSourceService): JsonResponse
     {
         $paymentSourceService->edit(
             $id,
@@ -156,13 +140,12 @@ class PaymentSourceController extends BaseController
      *
      * @Grant(grant="persistence-common-payment_source", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, PaymentSourceService $paymentSourceService)
+    public function deleteAction(Request $request, $id, PaymentSourceService $paymentSourceService): JsonResponse
     {
         $paymentSourceService->remove($id);
 
@@ -179,10 +162,8 @@ class PaymentSourceController extends BaseController
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, PaymentSourceService $paymentSourceService)
+    public function deleteBulkAction(Request $request, PaymentSourceService $paymentSourceService): JsonResponse
     {
         $paymentSourceService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class PaymentSourceController extends BaseController
      * @param Request $request
      * @param PaymentSourceService $paymentSourceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, PaymentSourceService $paymentSourceService)
+    public function relatedInfoAction(Request $request, PaymentSourceService $paymentSourceService): JsonResponse
     {
         $relatedData = $paymentSourceService->getRelatedInfo($request->get('ids'));
 

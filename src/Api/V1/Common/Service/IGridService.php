@@ -9,10 +9,13 @@ interface IGridService
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
-     * @return void
+     * @return mixed
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params);
 
-    /** @return array */
+    /**
+     * @param $params
+     * @return mixed
+     */
     public function list($params);
 }

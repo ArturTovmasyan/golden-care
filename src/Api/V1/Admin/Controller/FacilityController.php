@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\FacilityService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Facility;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/facility")
  *
  * @Grant(grant="persistence-facility", level="VIEW")
@@ -39,10 +27,9 @@ class FacilityController extends BaseController
      *
      * @param Request $request
      * @param FacilityService $facilityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, FacilityService $facilityService)
+    public function gridAction(Request $request, FacilityService $facilityService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class FacilityController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Facility::class, 'api_admin_facility_grid');
     }
@@ -69,8 +55,7 @@ class FacilityController extends BaseController
      *
      * @param Request $request
      * @param FacilityService $facilityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, FacilityService $facilityService)
     {
@@ -88,11 +73,12 @@ class FacilityController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_get", methods={"GET"})
      *
-     * @param FacilityService $facilityService
+     * @param Request $request
      * @param $id
+     * @param FacilityService $facilityService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, FacilityService $facilityService)
+    public function getAction(Request $request, $id, FacilityService $facilityService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,9 +96,8 @@ class FacilityController extends BaseController
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, FacilityService $facilityService)
+    public function addAction(Request $request, FacilityService $facilityService): JsonResponse
     {
         $id = $facilityService->add(
             [
@@ -149,9 +134,8 @@ class FacilityController extends BaseController
      * @param $id
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, FacilityService $facilityService)
+    public function editAction(Request $request, $id, FacilityService $facilityService): JsonResponse
     {
         $facilityService->edit(
             $id,
@@ -183,13 +167,12 @@ class FacilityController extends BaseController
      *
      * @Grant(grant="persistence-facility", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, FacilityService $facilityService)
+    public function deleteAction(Request $request, $id, FacilityService $facilityService): JsonResponse
     {
         $facilityService->remove($id);
 
@@ -206,10 +189,8 @@ class FacilityController extends BaseController
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, FacilityService $facilityService)
+    public function deleteBulkAction(Request $request, FacilityService $facilityService): JsonResponse
     {
         $facilityService->removeBulk($request->get('ids'));
 
@@ -224,10 +205,8 @@ class FacilityController extends BaseController
      * @param Request $request
      * @param FacilityService $facilityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, FacilityService $facilityService)
+    public function relatedInfoAction(Request $request, FacilityService $facilityService): JsonResponse
     {
         $relatedData = $facilityService->getRelatedInfo($request->get('ids'));
 
@@ -245,7 +224,7 @@ class FacilityController extends BaseController
      * @param FacilityService $facilityService
      * @return JsonResponse
      */
-    public function getMobileListAction(Request $request, FacilityService $facilityService)
+    public function getMobileListAction(Request $request, FacilityService $facilityService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -259,11 +238,11 @@ class FacilityController extends BaseController
      * @Route("/calendar/{id}", requirements={"id"="\d+"}, name="api_admin_facility_calendar", methods={"GET"})
      *
      * @param Request $request
-     * @param FacilityService $facilityService
      * @param $id
+     * @param FacilityService $facilityService
      * @return JsonResponse
      */
-    public function getFacilityCalendarAction(Request $request, $id, FacilityService $facilityService)
+    public function getFacilityCalendarAction(Request $request, $id, FacilityService $facilityService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

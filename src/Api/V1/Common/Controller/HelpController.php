@@ -20,17 +20,18 @@ class HelpController extends BaseController
     /**
      * @Route("", name="api_help_get", methods={"GET"})
      *
-     * @var Request $request
+     * @param Request $request
+     * @param GrantService $grantService
      * @return JsonResponse
      */
-    public function getAction(Request $request, GrantService $grantService)
+    public function getAction(Request $request, GrantService $grantService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $permissions = $grantService->getEffectiveGrants($user->getRoleObjects());
 
-        $permissions = array_keys(array_filter($permissions, function($value) {
+        $permissions = array_keys(array_filter($permissions, function ($value) {
             return $value['enabled'] === true && (array_key_exists('level', $value) ? $value['level'] > 0 : true);
         }));
 
@@ -40,7 +41,7 @@ class HelpController extends BaseController
             'method' => 'POST',
             'header' => implode("\r\n", [
                 'Content-Type: application/x-www-form-urlencoded',
-                'Content-Length: '. strlen($post_data)
+                'Content-Length: ' . \strlen($post_data)
             ]),
             'content' => $post_data
         ]];
@@ -52,7 +53,7 @@ class HelpController extends BaseController
             stream_context_create($opts)
         );
 
-        if($result !== false) {
+        if ($result !== false) {
             $result = json_decode($result, true);
         }
 

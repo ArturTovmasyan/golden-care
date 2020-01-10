@@ -1,31 +1,18 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\AssessmentFormService;
 use App\Api\V1\Common\Controller\BaseController;
-use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/assessment/form")
  *
  * @Grant(grant="persistence-assessment-form", level="VIEW")
@@ -40,10 +27,9 @@ class AssessmentFormController extends BaseController
      *
      * @param Request $request
      * @param AssessmentFormService $formService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, AssessmentFormService $formService)
+    public function gridAction(Request $request, AssessmentFormService $formService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +44,8 @@ class AssessmentFormController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Form::class, 'api_admin_assessment_form_grid');
     }
@@ -70,8 +55,7 @@ class AssessmentFormController extends BaseController
      *
      * @param Request $request
      * @param AssessmentFormService $formService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, AssessmentFormService $formService)
     {
@@ -86,11 +70,12 @@ class AssessmentFormController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_form_get", methods={"GET"})
      *
-     * @param AssessmentFormService $formService
+     * @param Request $request
      * @param $id
+     * @param AssessmentFormService $formService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentFormService $formService)
+    public function getAction(Request $request, $id, AssessmentFormService $formService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,16 +93,15 @@ class AssessmentFormController extends BaseController
      * @param Request $request
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, AssessmentFormService $formService)
+    public function addAction(Request $request, AssessmentFormService $formService): JsonResponse
     {
         $id = $formService->add(
             [
-                'title'             => $request->get('title'),
-                'space_id'          => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
                 'care_level_groups' => $request->get('care_level_groups'),
-                'categories'        => $request->get('categories'),
+                'categories' => $request->get('categories'),
             ]
         );
 
@@ -137,17 +121,16 @@ class AssessmentFormController extends BaseController
      * @param $id
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, AssessmentFormService $formService)
+    public function editAction(Request $request, $id, AssessmentFormService $formService): JsonResponse
     {
         $formService->edit(
             $id,
             [
-                'title'             => $request->get('title'),
-                'space_id'          => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
                 'care_level_groups' => $request->get('care_level_groups'),
-                'categories'        => $request->get('categories'),
+                'categories' => $request->get('categories'),
             ]
         );
 
@@ -161,13 +144,12 @@ class AssessmentFormController extends BaseController
      *
      * @Grant(grant="persistence-assessment-form", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentFormService $formService)
+    public function deleteAction(Request $request, $id, AssessmentFormService $formService): JsonResponse
     {
         $formService->remove($id);
 
@@ -184,10 +166,8 @@ class AssessmentFormController extends BaseController
      * @param Request $request
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentFormService $formService)
+    public function deleteBulkAction(Request $request, AssessmentFormService $formService): JsonResponse
     {
         $formService->removeBulk($request->get('ids'));
 
@@ -202,10 +182,8 @@ class AssessmentFormController extends BaseController
      * @param Request $request
      * @param AssessmentFormService $formService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, AssessmentFormService $formService)
+    public function relatedInfoAction(Request $request, AssessmentFormService $formService): JsonResponse
     {
         $relatedData = $formService->getRelatedInfo($request->get('ids'));
 

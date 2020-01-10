@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentHealthInsuranceService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\S3Service;
@@ -10,22 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/health/insurance")
  *
  * @Grant(grant="persistence-resident-resident_health_insurance", level="VIEW")
@@ -40,10 +28,9 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function gridAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -59,9 +46,8 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentHealthInsurance::class, 'api_admin_resident_health_insurance_grid');
     }
@@ -71,8 +57,7 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
     {
@@ -88,20 +73,20 @@ class ResidentHealthInsuranceController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_health_insurance_get", methods={"GET"})
      *
-     * @param ResidentHealthInsuranceService $residentHealthInsurance
-     * @param S3Service $s3Service
      * @param Request $request
      * @param $id
+     * @param ResidentHealthInsuranceService $residentHealthInsurance
+     * @param S3Service $s3Service
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service)
+    public function getAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance, S3Service $s3Service): JsonResponse
     {
         $entity = $residentHealthInsurance->getById($id);
 
         if ($entity !== null && $entity->getFirstFile() !== null) {
             $cmdFirst = $s3Service->getS3Client()->getCommand('GetObject', [
                 'Bucket' => getenv('AWS_BUCKET'),
-                'Key'    => $entity->getFirstFile()->getType() . '/' . $entity->getFirstFile()->getS3Id(),
+                'Key' => $entity->getFirstFile()->getType() . '/' . $entity->getFirstFile()->getS3Id(),
             ]);
             $s3RequestFirst = $s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
 
@@ -113,7 +98,7 @@ class ResidentHealthInsuranceController extends BaseController
         if ($entity !== null && $entity->getSecondFile() !== null) {
             $cmdSecond = $s3Service->getS3Client()->getCommand('GetObject', [
                 'Bucket' => getenv('AWS_BUCKET'),
-                'Key'    => $entity->getSecondFile()->getType() . '/' . $entity->getSecondFile()->getS3Id(),
+                'Key' => $entity->getSecondFile()->getType() . '/' . $entity->getSecondFile()->getS3Id(),
             ]);
             $s3RequestSecond = $s3Service->getS3Client()->createPresignedRequest($cmdSecond, '+20 minutes');
 
@@ -138,9 +123,8 @@ class ResidentHealthInsuranceController extends BaseController
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function addAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         $id = $residentHealthInsurance->add(
             [
@@ -170,9 +154,8 @@ class ResidentHealthInsuranceController extends BaseController
      * @param $id
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function editAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         $residentHealthInsurance->edit(
             $id,
@@ -197,13 +180,12 @@ class ResidentHealthInsuranceController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_health_insurance", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function deleteAction(Request $request, $id, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         $residentHealthInsurance->remove($id);
 
@@ -220,10 +202,8 @@ class ResidentHealthInsuranceController extends BaseController
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function deleteBulkAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         $residentHealthInsurance->removeBulk($request->get('ids'));
 
@@ -238,10 +218,8 @@ class ResidentHealthInsuranceController extends BaseController
      * @param Request $request
      * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function relatedInfoAction(Request $request, ResidentHealthInsuranceService $residentHealthInsurance): JsonResponse
     {
         $relatedData = $residentHealthInsurance->getRelatedInfo($request->get('ids'));
 
@@ -255,12 +233,13 @@ class ResidentHealthInsuranceController extends BaseController
     /**
      * @Route("/download/{id}/{number}", requirements={"id"="\d+", "number"="\d+"}, name="api_admin_resident_health_insurance_download", methods={"GET"})
      *
-     * @param ResidentHealthInsuranceService $residentHealthInsurance
+     * @param Request $request
      * @param $id
      * @param $number
+     * @param ResidentHealthInsuranceService $residentHealthInsurance
      * @return Response
      */
-    public function downloadAction(Request $request, $id, $number, ResidentHealthInsuranceService $residentHealthInsurance)
+    public function downloadAction(Request $request, $id, $number, ResidentHealthInsuranceService $residentHealthInsurance): Response
     {
         $data = $residentHealthInsurance->downloadFile($id, (int)$number);
 

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentMedicalHistoryConditionService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentMedicalHistoryCondition;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/history/medical/history")
  *
  * @Grant(grant="persistence-resident-resident_medical_history_condition", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function gridAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentMedicalHistoryCondition::class, 'api_admin_resident_medical_history_condition_grid');
     }
@@ -70,8 +56,7 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
     {
@@ -87,11 +72,12 @@ class ResidentMedicalHistoryConditionController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_medical_history_condition_get", methods={"GET"})
      *
-     * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
+     * @param Request $request
      * @param $id
+     * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function getAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,9 +95,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function addAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         $id = $residentMedicalHistoryConditionService->add(
             [
@@ -138,9 +123,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param $id
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function editAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         $residentMedicalHistoryConditionService->edit(
             $id,
@@ -162,13 +146,12 @@ class ResidentMedicalHistoryConditionController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_medical_history_condition", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function deleteAction(Request $request, $id, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         $residentMedicalHistoryConditionService->remove($id);
 
@@ -185,10 +168,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function deleteBulkAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         $residentMedicalHistoryConditionService->removeBulk($request->get('ids'));
 
@@ -203,10 +184,8 @@ class ResidentMedicalHistoryConditionController extends BaseController
      * @param Request $request
      * @param ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService)
+    public function relatedInfoAction(Request $request, ResidentMedicalHistoryConditionService $residentMedicalHistoryConditionService): JsonResponse
     {
         $relatedData = $residentMedicalHistoryConditionService->getRelatedInfo($request->get('ids'));
 

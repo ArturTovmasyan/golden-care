@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\UserInviteService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Model\ResponseCode;
@@ -10,27 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/user/invite")
  *
  * @Grant(grant="persistence-security-user_invite", level="VIEW")
  *
- * ClassUserInviteController
+ * Class UserInviteController
  * @package App\Api\V1\Admin\Controller
  */
 class UserInviteController extends BaseController
@@ -40,10 +28,9 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @param UserInviteService $userInviteService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, UserInviteService $userInviteService)
+    public function gridAction(Request $request, UserInviteService $userInviteService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, UserInvite::class, 'api_admin_user_invite_grid');
     }
@@ -70,8 +56,7 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @param UserInviteService $userInviteService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, UserInviteService $userInviteService)
     {
@@ -87,8 +72,8 @@ class UserInviteController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_user_invite_get", methods={"GET"})
      *
      * @param Request $request
-     * @param UserInviteService $userInviteService
      * @param $id
+     * @param UserInviteService $userInviteService
      * @return JsonResponse
      */
     public function getAction(Request $request, $id, UserInviteService $userInviteService)
@@ -109,9 +94,8 @@ class UserInviteController extends BaseController
      * @param Request $request
      * @param UserInviteService $userInviteService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, UserInviteService $userInviteService)
+    public function addAction(Request $request, UserInviteService $userInviteService): JsonResponse
     {
         $id = $userInviteService->add(
             $request->get('space_id'),
@@ -134,12 +118,12 @@ class UserInviteController extends BaseController
      *
      * @Grant(grant="persistence-security-user_invite", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param UserInviteService $userInviteService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, UserInviteService $userInviteService)
+    public function deleteAction(Request $request, $id, UserInviteService $userInviteService): JsonResponse
     {
         $userInviteService->remove($id);
 
@@ -156,9 +140,8 @@ class UserInviteController extends BaseController
      * @param Request $request
      * @param UserInviteService $userInviteService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, UserInviteService $userInviteService)
+    public function deleteBulkAction(Request $request, UserInviteService $userInviteService): JsonResponse
     {
         $userInviteService->removeBulk($request->get('ids'));
 
@@ -172,9 +155,8 @@ class UserInviteController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request)
+    public function relatedInfoAction(Request $request): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,

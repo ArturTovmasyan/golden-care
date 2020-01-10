@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\SpaceService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Space;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/space")
  *
  * @Grant(grant="persistence-security-space", level="VIEW")
@@ -39,10 +27,9 @@ class SpaceController extends BaseController
      *
      * @param Request $request
      * @param SpaceService $spaceService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, SpaceService $spaceService)
+    public function gridAction(Request $request, SpaceService $spaceService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class SpaceController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Space::class, 'api_admin_space_grid');
     }
@@ -69,8 +55,7 @@ class SpaceController extends BaseController
      *
      * @param Request $request
      * @param SpaceService $spaceService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, SpaceService $spaceService)
     {
@@ -86,11 +71,11 @@ class SpaceController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_space_get", methods={"GET"})
      *
      * @param Request $request
-     * @param SpaceService $spaceService
      * @param $id
+     * @param SpaceService $spaceService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, SpaceService $spaceService)
+    public function getAction(Request $request, $id, SpaceService $spaceService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,9 +93,8 @@ class SpaceController extends BaseController
      * @param Request $request
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, SpaceService $spaceService)
+    public function addAction(Request $request, SpaceService $spaceService): JsonResponse
     {
         $id = $spaceService->add(
             [
@@ -134,9 +118,8 @@ class SpaceController extends BaseController
      * @param $id
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, SpaceService $spaceService)
+    public function editAction(Request $request, $id, SpaceService $spaceService): JsonResponse
     {
         $spaceService->edit(
             $id,
@@ -155,13 +138,12 @@ class SpaceController extends BaseController
      *
      * @Grant(grant="persistence-security-space", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, SpaceService $spaceService)
+    public function deleteAction(Request $request, $id, SpaceService $spaceService): JsonResponse
     {
         $spaceService->remove($id);
 
@@ -178,10 +160,8 @@ class SpaceController extends BaseController
      * @param Request $request
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, SpaceService $spaceService)
+    public function deleteBulkAction(Request $request, SpaceService $spaceService): JsonResponse
     {
         $spaceService->removeBulk($request->get('ids'));
 
@@ -196,10 +176,8 @@ class SpaceController extends BaseController
      * @param Request $request
      * @param SpaceService $spaceService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, SpaceService $spaceService)
+    public function relatedInfoAction(Request $request, SpaceService $spaceService): JsonResponse
     {
         $relatedData = $spaceService->getRelatedInfo($request->get('ids'));
 

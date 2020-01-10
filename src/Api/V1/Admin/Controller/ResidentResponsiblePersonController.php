@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentResponsiblePersonService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentResponsiblePerson;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/responsible/person")
  *
  * @Grant(grant="persistence-resident-resident_responsible_person", level="VIEW")
@@ -39,10 +27,9 @@ class ResidentResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function gridAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResidentResponsiblePerson::class, 'api_admin_resident_responsible_person_grid');
     }
@@ -70,8 +56,7 @@ class ResidentResponsiblePersonController extends BaseController
      *
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
     {
@@ -87,11 +72,12 @@ class ResidentResponsiblePersonController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_responsible_person_get", methods={"GET"})
      *
-     * @param ResidentResponsiblePersonService $residentResponsiblePersonService
+     * @param Request $request
      * @param $id
+     * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function getAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -109,16 +95,15 @@ class ResidentResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function addAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $id = $residentResponsiblePersonService->add(
             [
-                'resident_id'           => $request->get('resident_id'),
+                'resident_id' => $request->get('resident_id'),
                 'responsible_person_id' => $request->get('responsible_person_id'),
-                'relationship_id'       => $request->get('relationship_id'),
-                'roles'                 => $request->get('roles'),
+                'relationship_id' => $request->get('relationship_id'),
+                'roles' => $request->get('roles'),
             ]
         );
 
@@ -138,17 +123,16 @@ class ResidentResponsiblePersonController extends BaseController
      * @param $id
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function editAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $residentResponsiblePersonService->edit(
             $id,
             [
-                'resident_id'           => $request->get('resident_id'),
+                'resident_id' => $request->get('resident_id'),
                 'responsible_person_id' => $request->get('responsible_person_id'),
-                'relationship_id'       => $request->get('relationship_id'),
-                'roles'                 => $request->get('roles'),
+                'relationship_id' => $request->get('relationship_id'),
+                'roles' => $request->get('roles'),
             ]
         );
 
@@ -162,13 +146,12 @@ class ResidentResponsiblePersonController extends BaseController
      *
      * @Grant(grant="persistence-resident-resident_responsible_person", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function deleteAction(Request $request, $id, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $residentResponsiblePersonService->remove($id);
 
@@ -185,10 +168,8 @@ class ResidentResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function deleteBulkAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $residentResponsiblePersonService->removeBulk($request->get('ids'));
 
@@ -203,10 +184,8 @@ class ResidentResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function relatedInfoAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $relatedData = $residentResponsiblePersonService->getRelatedInfo($request->get('ids'));
 
@@ -225,9 +204,8 @@ class ResidentResponsiblePersonController extends BaseController
      * @param Request $request
      * @param ResidentResponsiblePersonService $residentResponsiblePersonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function reorderAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService)
+    public function reorderAction(Request $request, ResidentResponsiblePersonService $residentResponsiblePersonService): JsonResponse
     {
         $residentResponsiblePersonService->reorder(
             [

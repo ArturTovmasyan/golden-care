@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\AssessmentTypeService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\AssessmentType;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/assessment-type")
  *
  * @Grant(grant="persistence-assessment-assessment_type", level="VIEW")
@@ -39,10 +27,9 @@ class AssessmentTypeController extends BaseController
      *
      * @param Request $request
      * @param AssessmentTypeService $assessmentTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, AssessmentTypeService $assessmentTypeService)
+    public function gridAction(Request $request, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class AssessmentTypeController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, AssessmentType::class, 'api_admin_assessment_type_grid');
     }
@@ -69,8 +55,7 @@ class AssessmentTypeController extends BaseController
      *
      * @param Request $request
      * @param AssessmentTypeService $assessmentTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, AssessmentTypeService $assessmentTypeService)
     {
@@ -85,11 +70,12 @@ class AssessmentTypeController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_type_get", methods={"GET"})
      *
-     * @param AssessmentTypeService $assessmentTypeService
+     * @param Request $request
      * @param $id
+     * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentTypeService $assessmentTypeService)
+    public function getAction(Request $request, $id, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class AssessmentTypeController extends BaseController
      * @param Request $request
      * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, AssessmentTypeService $assessmentTypeService)
+    public function addAction(Request $request, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         $id = $assessmentTypeService->add(
             [
@@ -134,9 +119,8 @@ class AssessmentTypeController extends BaseController
      * @param $id
      * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, AssessmentTypeService $assessmentTypeService)
+    public function editAction(Request $request, $id, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         $assessmentTypeService->edit(
             $id,
@@ -156,13 +140,12 @@ class AssessmentTypeController extends BaseController
      *
      * @Grant(grant="persistence-assessment-assessment_type", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentTypeService $assessmentTypeService)
+    public function deleteAction(Request $request, $id, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         $assessmentTypeService->remove($id);
 
@@ -179,10 +162,8 @@ class AssessmentTypeController extends BaseController
      * @param Request $request
      * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentTypeService $assessmentTypeService)
+    public function deleteBulkAction(Request $request, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         $assessmentTypeService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class AssessmentTypeController extends BaseController
      * @param Request $request
      * @param AssessmentTypeService $assessmentTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, AssessmentTypeService $assessmentTypeService)
+    public function relatedInfoAction(Request $request, AssessmentTypeService $assessmentTypeService): JsonResponse
     {
         $relatedData = $assessmentTypeService->getRelatedInfo($request->get('ids'));
 

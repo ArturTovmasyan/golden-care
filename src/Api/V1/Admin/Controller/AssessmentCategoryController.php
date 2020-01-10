@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\AssessmentCategoryService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\Category;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/assessment/category")
  *
  * @Grant(grant="persistence-assessment-category", level="VIEW")
@@ -39,10 +27,9 @@ class AssessmentCategoryController extends BaseController
      *
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
+    public function gridAction(Request $request, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class AssessmentCategoryController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Category::class, 'api_admin_assessment_category_grid');
     }
@@ -69,8 +55,7 @@ class AssessmentCategoryController extends BaseController
      *
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
     {
@@ -85,11 +70,12 @@ class AssessmentCategoryController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_assessment_category_get", methods={"GET"})
      *
-     * @param AssessmentCategoryService $assessmentCategoryService
+     * @param Request $request
      * @param $id
+     * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService)
+    public function getAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,16 +93,15 @@ class AssessmentCategoryController extends BaseController
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
+    public function addAction(Request $request, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         $id = $assessmentCategoryService->add(
             [
-                'title'      => $request->get('title'),
-                'space_id'   => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
                 'multi_item' => $request->get('multi_item'),
-                'rows'       => $request->get('rows')
+                'rows' => $request->get('rows')
             ]
         );
 
@@ -136,17 +121,16 @@ class AssessmentCategoryController extends BaseController
      * @param $id
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService)
+    public function editAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         $assessmentCategoryService->edit(
             $id,
             [
-                'title'      => $request->get('title'),
-                'space_id'   => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'space_id' => $request->get('space_id'),
                 'multi_item' => $request->get('multi_item'),
-                'rows'       => $request->get('rows')
+                'rows' => $request->get('rows')
             ]
         );
 
@@ -160,13 +144,12 @@ class AssessmentCategoryController extends BaseController
      *
      * @Grant(grant="persistence-assessment-category", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService)
+    public function deleteAction(Request $request, $id, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         $assessmentCategoryService->remove($id);
 
@@ -183,10 +166,8 @@ class AssessmentCategoryController extends BaseController
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
+    public function deleteBulkAction(Request $request, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         $assessmentCategoryService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class AssessmentCategoryController extends BaseController
      * @param Request $request
      * @param AssessmentCategoryService $assessmentCategoryService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, AssessmentCategoryService $assessmentCategoryService)
+    public function relatedInfoAction(Request $request, AssessmentCategoryService $assessmentCategoryService): JsonResponse
     {
         $relatedData = $assessmentCategoryService->getRelatedInfo($request->get('ids'));
 

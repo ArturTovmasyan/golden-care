@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\SpecialityService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Speciality;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/speciality")
  *
  * @Grant(grant="persistence-common-speciality", level="VIEW")
@@ -39,10 +27,9 @@ class SpecialityController extends BaseController
      *
      * @param Request $request
      * @param SpecialityService $specialityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, SpecialityService $specialityService)
+    public function gridAction(Request $request, SpecialityService $specialityService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class SpecialityController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Speciality::class, 'api_admin_speciality_grid');
     }
@@ -69,8 +55,7 @@ class SpecialityController extends BaseController
      *
      * @param Request $request
      * @param SpecialityService $specialityService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, SpecialityService $specialityService)
     {
@@ -86,11 +71,12 @@ class SpecialityController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_speciality_get", methods={"GET"})
      *
-     * @param SpecialityService $specialityService
+     * @param Request $request
      * @param $id
+     * @param SpecialityService $specialityService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, SpecialityService $specialityService)
+    public function getAction(Request $request, $id, SpecialityService $specialityService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,14 +94,13 @@ class SpecialityController extends BaseController
      * @param Request $request
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, SpecialityService $specialityService)
+    public function addAction(Request $request, SpecialityService $specialityService): JsonResponse
     {
         $id = $specialityService->add(
             [
                 'space_id' => $request->get('space_id'),
-                'title'    => $request->get('title')
+                'title' => $request->get('title')
             ]
         );
 
@@ -135,15 +120,14 @@ class SpecialityController extends BaseController
      * @param $id
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, SpecialityService $specialityService)
+    public function editAction(Request $request, $id, SpecialityService $specialityService): JsonResponse
     {
         $specialityService->edit(
             $id,
             [
                 'space_id' => $request->get('space_id'),
-                'title'    => $request->get('title')
+                'title' => $request->get('title')
             ]
         );
 
@@ -157,13 +141,12 @@ class SpecialityController extends BaseController
      *
      * @Grant(grant="persistence-common-speciality", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, SpecialityService $specialityService)
+    public function deleteAction(Request $request, $id, SpecialityService $specialityService): JsonResponse
     {
         $specialityService->remove($id);
 
@@ -180,10 +163,8 @@ class SpecialityController extends BaseController
      * @param Request $request
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, SpecialityService $specialityService)
+    public function deleteBulkAction(Request $request, SpecialityService $specialityService): JsonResponse
     {
         $specialityService->removeBulk($request->get('ids'));
 
@@ -198,10 +179,8 @@ class SpecialityController extends BaseController
      * @param Request $request
      * @param SpecialityService $specialityService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, SpecialityService $specialityService)
+    public function relatedInfoAction(Request $request, SpecialityService $specialityService): JsonResponse
     {
         $relatedData = $specialityService->getRelatedInfo($request->get('ids'));
 

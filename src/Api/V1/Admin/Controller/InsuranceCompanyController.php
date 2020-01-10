@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\InsuranceCompanyService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\InsuranceCompany;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/insurance/company")
  *
  * @Grant(grant="persistence-common-insurance_company", level="VIEW")
@@ -39,10 +27,9 @@ class InsuranceCompanyController extends BaseController
      *
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
+    public function gridAction(Request $request, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class InsuranceCompanyController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, InsuranceCompany::class, 'api_admin_insurance_company_grid');
     }
@@ -69,8 +55,7 @@ class InsuranceCompanyController extends BaseController
      *
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
     {
@@ -85,11 +70,12 @@ class InsuranceCompanyController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_insurance_company_get", methods={"GET"})
      *
-     * @param InsuranceCompanyService $insuranceCompanyService
+     * @param Request $request
      * @param $id
+     * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService)
+    public function getAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class InsuranceCompanyController extends BaseController
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
+    public function addAction(Request $request, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         $id = $insuranceCompanyService->add(
             [
@@ -134,9 +119,8 @@ class InsuranceCompanyController extends BaseController
      * @param $id
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService)
+    public function editAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         $insuranceCompanyService->edit(
             $id,
@@ -156,13 +140,12 @@ class InsuranceCompanyController extends BaseController
      *
      * @Grant(grant="persistence-common-insurance_company", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService)
+    public function deleteAction(Request $request, $id, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         $insuranceCompanyService->remove($id);
 
@@ -179,10 +162,8 @@ class InsuranceCompanyController extends BaseController
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
+    public function deleteBulkAction(Request $request, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         $insuranceCompanyService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class InsuranceCompanyController extends BaseController
      * @param Request $request
      * @param InsuranceCompanyService $insuranceCompanyService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, InsuranceCompanyService $insuranceCompanyService)
+    public function relatedInfoAction(Request $request, InsuranceCompanyService $insuranceCompanyService): JsonResponse
     {
         $relatedData = $insuranceCompanyService->getRelatedInfo($request->get('ids'));
 

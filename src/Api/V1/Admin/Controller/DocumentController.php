@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\DocumentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\S3Service;
@@ -11,22 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/document")
  *
  * @Grant(grant="persistence-common-document", level="VIEW")
@@ -41,10 +29,9 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, DocumentService $documentService)
+    public function gridAction(Request $request, DocumentService $documentService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -57,7 +44,9 @@ class DocumentController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+                $userRoleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $userRoles->toArray());
             }
         }
 
@@ -79,9 +68,8 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Document::class, 'api_admin_document_grid');
     }
@@ -91,8 +79,7 @@ class DocumentController extends BaseController
      *
      * @param Request $request
      * @param DocumentService $documentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, DocumentService $documentService)
     {
@@ -107,7 +94,9 @@ class DocumentController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function($item){return $item->getId();} , $userRoles->toArray());
+                $userRoleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $userRoles->toArray());
             }
         }
 
@@ -133,14 +122,14 @@ class DocumentController extends BaseController
      * @param S3Service $s3Service
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service)
+    public function getAction(Request $request, $id, DocumentService $documentService, S3Service $s3Service): JsonResponse
     {
         $entity = $documentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
             $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
                 'Bucket' => getenv('AWS_BUCKET'),
-                'Key'    => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
+                'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
             ]);
             $s3Request = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
@@ -165,9 +154,8 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, DocumentService $documentService)
+    public function addAction(Request $request, DocumentService $documentService): JsonResponse
     {
         $id = $documentService->add(
             [
@@ -199,9 +187,8 @@ class DocumentController extends BaseController
      * @param $id
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, DocumentService $documentService)
+    public function editAction(Request $request, $id, DocumentService $documentService): JsonResponse
     {
         $documentService->edit(
             $id,
@@ -228,13 +215,12 @@ class DocumentController extends BaseController
      *
      * @Grant(grant="persistence-common-document", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, DocumentService $documentService)
+    public function deleteAction(Request $request, $id, DocumentService $documentService): JsonResponse
     {
         $documentService->remove($id);
 
@@ -251,10 +237,8 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, DocumentService $documentService)
+    public function deleteBulkAction(Request $request, DocumentService $documentService): JsonResponse
     {
         $documentService->removeBulk($request->get('ids'));
 
@@ -269,10 +253,8 @@ class DocumentController extends BaseController
      * @param Request $request
      * @param DocumentService $documentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, DocumentService $documentService)
+    public function relatedInfoAction(Request $request, DocumentService $documentService): JsonResponse
     {
         $relatedData = $documentService->getRelatedInfo($request->get('ids'));
 
@@ -286,11 +268,12 @@ class DocumentController extends BaseController
     /**
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_document_download", methods={"GET"})
      *
-     * @param DocumentService $documentService
+     * @param Request $request
      * @param $id
+     * @param DocumentService $documentService
      * @return Response
      */
-    public function downloadAction(Request $request, $id, DocumentService $documentService)
+    public function downloadAction(Request $request, $id, DocumentService $documentService): Response
     {
         $data = $documentService->downloadFile($id);
 

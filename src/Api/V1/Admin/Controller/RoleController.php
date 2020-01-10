@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\RoleService;
 use App\Api\V1\Common\Service\GrantService;
@@ -10,22 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/role")
  *
  * @Grant(grant="persistence-security-role", level="VIEW")
@@ -40,10 +28,9 @@ class RoleController extends BaseController
      *
      * @param Request $request
      * @param RoleService $roleService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, RoleService $roleService)
+    public function gridAction(Request $request, RoleService $roleService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class RoleController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Role::class, 'api_admin_role_grid');
     }
@@ -70,9 +56,7 @@ class RoleController extends BaseController
      *
      * @param Request $request
      * @param RoleService $roleService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
-     * @throws \Throwable
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, RoleService $roleService)
     {
@@ -88,11 +72,12 @@ class RoleController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_role_get", methods={"GET"})
      *
      * @param Request $request
-     * @param RoleService $roleService
      * @param $id
+     * @param RoleService $roleService
+     * @param GrantService $grantService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, RoleService $roleService, GrantService $grantService)
+    public function getAction(Request $request, $id, RoleService $roleService, GrantService $grantService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,16 +95,14 @@ class RoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function addAction(Request $request, RoleService $roleService)
+    public function addAction(Request $request, RoleService $roleService): JsonResponse
     {
         $id = $roleService->add(
             [
-                'name'          => $request->get('name'),
-                'grants'        => $request->get('grants'),
-                'default'       => $request->get('default')
+                'name' => $request->get('name'),
+                'grants' => $request->get('grants'),
+                'default' => $request->get('default')
             ]
         );
 
@@ -139,17 +122,15 @@ class RoleController extends BaseController
      * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, RoleService $roleService)
+    public function editAction(Request $request, $id, RoleService $roleService): JsonResponse
     {
         $roleService->edit(
             $id,
             [
-                'name'          => $request->get('name'),
-                'grants'        => $request->get('grants'),
-                'default'       => $request->get('default')
+                'name' => $request->get('name'),
+                'grants' => $request->get('grants'),
+                'default' => $request->get('default')
             ]
         );
 
@@ -167,10 +148,8 @@ class RoleController extends BaseController
      * @param $id
      * @param RoleService $roleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, RoleService $roleService)
+    public function deleteAction(Request $request, $id, RoleService $roleService): JsonResponse
     {
         $roleService->remove($id);
 
@@ -187,10 +166,8 @@ class RoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, RoleService $roleService)
+    public function deleteBulkAction(Request $request, RoleService $roleService): JsonResponse
     {
         $roleService->removeBulk($request->get('ids'));
 
@@ -205,10 +182,8 @@ class RoleController extends BaseController
      * @param Request $request
      * @param RoleService $roleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, RoleService $roleService)
+    public function relatedInfoAction(Request $request, RoleService $roleService): JsonResponse
     {
         $relatedData = $roleService->getRelatedInfo($request->get('ids'));
 

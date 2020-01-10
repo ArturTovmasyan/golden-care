@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentAssessmentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Assessment\Assessment;
@@ -9,27 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident/assessment")
  *
  * @Grant(grant="persistence-resident-assessment-assessment", level="VIEW")
  *
- * Class AssessmentController
+ * Class ResidentAssessmentController
  * @package App\Api\V1\Admin\Controller
  */
 class ResidentAssessmentController extends BaseController
@@ -39,10 +27,9 @@ class ResidentAssessmentController extends BaseController
      *
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentAssessmentService $residentAssessmentService)
+    public function gridAction(Request $request, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -58,9 +45,8 @@ class ResidentAssessmentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Assessment::class, 'api_admin_resident_assessment_grid');
     }
@@ -70,8 +56,7 @@ class ResidentAssessmentController extends BaseController
      *
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentAssessmentService $residentAssessmentService)
     {
@@ -92,7 +77,7 @@ class ResidentAssessmentController extends BaseController
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
+    public function getAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,20 +95,19 @@ class ResidentAssessmentController extends BaseController
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentAssessmentService $residentAssessmentService)
+    public function addAction(Request $request, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         $id = $residentAssessmentService->add(
             [
-                'space_id'     => $request->get('space_id'),
-                'resident_id'  => $request->get('resident_id'),
-                'type_id'  => $request->get('type_id'),
-                'form_id'      => $request->get('form_id'),
-                'date'         => $request->get('date'),
+                'space_id' => $request->get('space_id'),
+                'resident_id' => $request->get('resident_id'),
+                'type_id' => $request->get('type_id'),
+                'form_id' => $request->get('form_id'),
+                'date' => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),
-                'notes'        => $request->get('notes'),
-                'rows'         => $request->get('rows'),
+                'notes' => $request->get('notes'),
+                'rows' => $request->get('rows'),
             ]
         );
 
@@ -143,21 +127,20 @@ class ResidentAssessmentController extends BaseController
      * @param $id
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
+    public function editAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         $residentAssessmentService->edit(
             $id,
             [
-                'space_id'     => $request->get('space_id'),
-                'resident_id'  => $request->get('resident_id'),
-                'type_id'  => $request->get('type_id'),
-                'form_id'      => $request->get('form_id'),
-                'date'         => $request->get('date'),
+                'space_id' => $request->get('space_id'),
+                'resident_id' => $request->get('resident_id'),
+                'type_id' => $request->get('type_id'),
+                'form_id' => $request->get('form_id'),
+                'date' => $request->get('date'),
                 'performed_by' => $request->get('performed_by'),
-                'notes'        => $request->get('notes'),
-                'rows'         => $request->get('rows'),
+                'notes' => $request->get('notes'),
+                'rows' => $request->get('rows'),
             ]
         );
 
@@ -171,13 +154,12 @@ class ResidentAssessmentController extends BaseController
      *
      * @Grant(grant="persistence-resident-assessment-assessment", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService)
+    public function deleteAction(Request $request, $id, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         $residentAssessmentService->remove($id);
 
@@ -194,10 +176,8 @@ class ResidentAssessmentController extends BaseController
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentAssessmentService $residentAssessmentService)
+    public function deleteBulkAction(Request $request, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         $residentAssessmentService->removeBulk($request->get('ids'));
 
@@ -212,10 +192,8 @@ class ResidentAssessmentController extends BaseController
      * @param Request $request
      * @param ResidentAssessmentService $residentAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentAssessmentService $residentAssessmentService)
+    public function relatedInfoAction(Request $request, ResidentAssessmentService $residentAssessmentService): JsonResponse
     {
         $relatedData = $residentAssessmentService->getRelatedInfo($request->get('ids'));
 

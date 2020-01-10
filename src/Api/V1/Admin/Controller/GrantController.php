@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- *
  * @Route("/api/v1.0/admin/grant")
  *
  * Class GrantController
@@ -24,7 +23,7 @@ class GrantController extends BaseController
      * @param GrantService $grantService
      * @return JsonResponse
      */
-    public function allAction(Request $request, GrantService $grantService)
+    public function allAction(Request $request, GrantService $grantService): JsonResponse
     {
         return $this->respondSuccess(
             JsonResponse::HTTP_OK,
@@ -41,7 +40,7 @@ class GrantController extends BaseController
      * @param GrantService $grantService
      * @return JsonResponse
      */
-    public function roleAction(Request $request, GrantService $grantService)
+    public function roleAction(Request $request, GrantService $grantService): JsonResponse
     {
         return $this->respondSuccess(
             JsonResponse::HTTP_OK,

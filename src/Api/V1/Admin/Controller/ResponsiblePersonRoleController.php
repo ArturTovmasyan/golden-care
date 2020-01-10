@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResponsiblePersonRoleService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResponsiblePersonRole;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/responsible-person-role")
  *
  * @Grant(grant="persistence-common-responsible-person-role", level="VIEW")
@@ -39,10 +27,9 @@ class ResponsiblePersonRoleController extends BaseController
      *
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function gridAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ResponsiblePersonRoleController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ResponsiblePersonRole::class, 'api_admin_responsible_person_role_grid');
     }
@@ -69,8 +55,7 @@ class ResponsiblePersonRoleController extends BaseController
      *
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
     {
@@ -86,11 +71,12 @@ class ResponsiblePersonRoleController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_responsible_person_role_get", methods={"GET"})
      *
-     * @param ResponsiblePersonRoleService $responsiblePersonRoleService
+     * @param Request $request
      * @param $id
+     * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function getAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,16 +94,15 @@ class ResponsiblePersonRoleController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function addAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         $id = $responsiblePersonRoleService->add(
             [
-                'space_id'    => $request->get('space_id'),
-                'title'       => $request->get('title'),
-                'icon'        => $request->get('icon'),
-                'emergency'   => $request->get('emergency'),
+                'space_id' => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'icon' => $request->get('icon'),
+                'emergency' => $request->get('emergency'),
                 'financially' => $request->get('financially'),
             ]
         );
@@ -138,17 +123,16 @@ class ResponsiblePersonRoleController extends BaseController
      * @param $id
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function editAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         $responsiblePersonRoleService->edit(
             $id,
             [
-                'space_id'    => $request->get('space_id'),
-                'title'       => $request->get('title'),
-                'icon'        => $request->get('icon'),
-                'emergency'   => $request->get('emergency'),
+                'space_id' => $request->get('space_id'),
+                'title' => $request->get('title'),
+                'icon' => $request->get('icon'),
+                'emergency' => $request->get('emergency'),
                 'financially' => $request->get('financially'),
             ]
         );
@@ -163,13 +147,12 @@ class ResponsiblePersonRoleController extends BaseController
      *
      * @Grant(grant="persistence-common-responsible-person-role", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function deleteAction(Request $request, $id, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         $responsiblePersonRoleService->remove($id);
 
@@ -186,10 +169,8 @@ class ResponsiblePersonRoleController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function deleteBulkAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         $responsiblePersonRoleService->removeBulk($request->get('ids'));
 
@@ -204,10 +185,8 @@ class ResponsiblePersonRoleController extends BaseController
      * @param Request $request
      * @param ResponsiblePersonRoleService $responsiblePersonRoleService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService)
+    public function relatedInfoAction(Request $request, ResponsiblePersonRoleService $responsiblePersonRoleService): JsonResponse
     {
         $relatedData = $responsiblePersonRoleService->getRelatedInfo($request->get('ids'));
 

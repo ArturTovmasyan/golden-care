@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\MedicationFormFactorService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\MedicationFormFactor;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/medication/form/factor")
  *
  * @Grant(grant="persistence-common-medication_form_factor", level="VIEW")
@@ -39,10 +27,9 @@ class MedicationFormFactorController extends BaseController
      *
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
+    public function gridAction(Request $request, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class MedicationFormFactorController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, MedicationFormFactor::class, 'api_admin_medication_form_factor_grid');
     }
@@ -69,8 +55,7 @@ class MedicationFormFactorController extends BaseController
      *
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
     {
@@ -85,11 +70,12 @@ class MedicationFormFactorController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_form_factor_get", methods={"GET"})
      *
-     * @param MedicationFormFactorService $medicationFormFactorService
+     * @param Request $request
      * @param $id
+     * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService)
+    public function getAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class MedicationFormFactorController extends BaseController
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
+    public function addAction(Request $request, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         $id = $medicationFormFactorService->add(
             [
@@ -134,9 +119,8 @@ class MedicationFormFactorController extends BaseController
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService)
+    public function editAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         $medicationFormFactorService->edit(
             $id,
@@ -156,13 +140,12 @@ class MedicationFormFactorController extends BaseController
      *
      * @Grant(grant="persistence-common-medication_form_factor", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService)
+    public function deleteAction(Request $request, $id, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         $medicationFormFactorService->remove($id);
 
@@ -179,10 +162,8 @@ class MedicationFormFactorController extends BaseController
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
+    public function deleteBulkAction(Request $request, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         $medicationFormFactorService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class MedicationFormFactorController extends BaseController
      * @param Request $request
      * @param MedicationFormFactorService $medicationFormFactorService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, MedicationFormFactorService $medicationFormFactorService)
+    public function relatedInfoAction(Request $request, MedicationFormFactorService $medicationFormFactorService): JsonResponse
     {
         $relatedData = $medicationFormFactorService->getRelatedInfo($request->get('ids'));
 

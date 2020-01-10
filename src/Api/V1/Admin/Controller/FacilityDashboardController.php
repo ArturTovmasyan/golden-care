@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\FacilityDashboardService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\FacilityDashboard;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/facility-dashboard")
  *
  * @Grant(grant="persistence-facility_dashboard", level="VIEW")
@@ -39,10 +27,9 @@ class FacilityDashboardController extends BaseController
      *
      * @param Request $request
      * @param FacilityDashboardService $facilityDashboardService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, FacilityDashboardService $facilityDashboardService)
+    public function gridAction(Request $request, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class FacilityDashboardController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, FacilityDashboard::class, 'api_admin_facility_dashboard_grid');
     }
@@ -69,8 +55,7 @@ class FacilityDashboardController extends BaseController
      *
      * @param Request $request
      * @param FacilityDashboardService $facilityDashboardService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, FacilityDashboardService $facilityDashboardService)
     {
@@ -90,11 +75,12 @@ class FacilityDashboardController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_facility_dashboard_get", methods={"GET"})
      *
-     * @param FacilityDashboardService $facilityDashboardService
+     * @param Request $request
      * @param $id
+     * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, FacilityDashboardService $facilityDashboardService)
+    public function getAction(Request $request, $id, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -112,9 +98,8 @@ class FacilityDashboardController extends BaseController
      * @param Request $request
      * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, FacilityDashboardService $facilityDashboardService)
+    public function addAction(Request $request, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         $id = $facilityDashboardService->add(
             [
@@ -142,9 +127,8 @@ class FacilityDashboardController extends BaseController
      * @param $id
      * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, FacilityDashboardService $facilityDashboardService)
+    public function editAction(Request $request, $id, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         $facilityDashboardService->edit(
             $id,
@@ -167,13 +151,12 @@ class FacilityDashboardController extends BaseController
      *
      * @Grant(grant="persistence-facility_dashboard", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, FacilityDashboardService $facilityDashboardService)
+    public function deleteAction(Request $request, $id, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         $facilityDashboardService->remove($id);
 
@@ -190,10 +173,8 @@ class FacilityDashboardController extends BaseController
      * @param Request $request
      * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, FacilityDashboardService $facilityDashboardService)
+    public function deleteBulkAction(Request $request, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         $facilityDashboardService->removeBulk($request->get('ids'));
 
@@ -208,10 +189,8 @@ class FacilityDashboardController extends BaseController
      * @param Request $request
      * @param FacilityDashboardService $facilityDashboardService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, FacilityDashboardService $facilityDashboardService)
+    public function relatedInfoAction(Request $request, FacilityDashboardService $facilityDashboardService): JsonResponse
     {
         $relatedData = $facilityDashboardService->getRelatedInfo($request->get('ids'));
 

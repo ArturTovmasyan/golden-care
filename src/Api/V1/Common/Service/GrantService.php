@@ -106,7 +106,7 @@ class GrantService
     public function hasCurrentUserEntityGrant(string $entity_name, int $level): bool
     {
         $user = $this->current_user;
-        if($user === null) {
+        if ($user === null) {
             return null;
         }
 
@@ -137,7 +137,7 @@ class GrantService
      */
     public function getEntityGrants(?User $user, string $entity_name): ?array
     {
-        if($user === null) {
+        if ($user === null) {
             return null;
         }
 
@@ -194,7 +194,7 @@ class GrantService
      * @param array|Collection $roles
      * @return array
      */
-    public function getEffectiveGrants($roles) : array
+    public function getEffectiveGrants($roles): array
     {
         $effective_role_grants = [];
 
@@ -243,7 +243,7 @@ class GrantService
     }
 
 
-    public function getGrantsByRoleIds(array $ids)
+    public function getGrantsByRoleIds(array $ids): ?array
     {
         $role_grants = [];
 
@@ -258,7 +258,7 @@ class GrantService
         return $role_grants;
     }
 
-    public function getGrantsOfRole($id)
+    public function getGrantsOfRole($id): ?array
     {
         /** @var Role $role */
         $role = $this->em->getRepository(Role::class)->find($id);
@@ -282,7 +282,7 @@ class GrantService
         return $identity_grants;
     }
 
-    public function getGrants($values, $tree = null, $parent_key = '', $parent_fields = [])
+    public function getGrants($values, $tree = null, $parent_key = '', $parent_fields = []): ?array
     {
         $grid_config = [];
 
@@ -338,7 +338,7 @@ class GrantService
     }
 
 
-    private function load()
+    private function load(): void
     {
         $this->config = Yaml::parseFile(
             $this->container->get('kernel')->getProjectDir() . self::$GRANT_CONFIG_PATH
@@ -347,27 +347,25 @@ class GrantService
         /** @var RouterInterface $router */
         $router = $this->container->get('router');
 
-        self::update_url_info($router, $this->config);
+        $this->update_url_info($router, $this->config);
 
         self::flatten(['children' => $this->config], $this->config_flat);
     }
 
-    private function update_url_info(RouterInterface $router, &$tree)
+    private function update_url_info(RouterInterface $router, &$tree): void
     {
         foreach ($tree as $key => &$node) {
             if (array_key_exists('children', $node)) {
-                self::update_url_info($router, $node['children']);
-            } else {
-                if (array_key_exists('route', $node)) {
-                    if ($router->getRouteCollection()->get($node['route']) !== null) {
-                        $node['url'] = $router->generate($node['route']/*, array('slug' => 'my-blog-post')*/);
-                    }
-                }
+                $this->update_url_info($router, $node['children']);
+            }
+
+            if (!array_key_exists('children', $node) && array_key_exists('route', $node) && $router->getRouteCollection()->get($node['route']) !== null) {
+                $node['url'] = $router->generate($node['route']/*, array('slug' => 'my-blog-post')*/);
             }
         }
     }
 
-    private static function flatten($array, &$flat = [], $keySeparator = '-', $parent_key = '')
+    private static function flatten($array, &$flat = [], $keySeparator = '-', $parent_key = ''): void
     {
         if (array_key_exists('children', $array)) {
             foreach ($array['children'] as $name => $value) {

@@ -3,9 +3,7 @@
 namespace App\Api\V1\Common\Controller;
 
 use App\Api\V1\Common\Service\Exception\FeedbackUnknownException;
-use App\Api\V1\Common\Service\GrantService;
 use App\Entity\User;
-use http\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +20,10 @@ class FeedbackController extends BaseController
     /**
      * @Route("", name="api_feedback_add", methods={"POST"})
      *
-     * @var Request $request
+     * @param Request $request
      * @return JsonResponse
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -47,7 +45,7 @@ class FeedbackController extends BaseController
             'method' => 'POST',
             'header' => implode("\r\n", [
                 'Content-Type: application/x-www-form-urlencoded',
-                'Content-Length: '. strlen($post_data)
+                'Content-Length: ' . \strlen($post_data)
             ]),
             'content' => $post_data
         ]];
@@ -59,7 +57,7 @@ class FeedbackController extends BaseController
             stream_context_create($opts)
         );
 
-        if($result !== false) {
+        if ($result !== false) {
             $result = json_decode($result, true);
         } else {
             throw new FeedbackUnknownException();

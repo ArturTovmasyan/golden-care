@@ -124,9 +124,8 @@ class BaseService
      * @param null $constraints
      * @param null $groups
      * @return bool
-     * @throws \ReflectionException
      */
-    public function validate($entity, $constraints = null, $groups = null)
+    public function validate($entity, $constraints = null, $groups = null): ?bool
     {
         $validationErrors = $this->validator->validate($entity, $constraints, $groups);
         $errors = [];

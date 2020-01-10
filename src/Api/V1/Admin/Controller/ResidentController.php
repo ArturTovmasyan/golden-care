@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Admin\Service\ResidentService;
 use App\Api\V1\Common\Controller\BaseController;
@@ -14,22 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/resident")
  *
  * @Grant(grant="persistence-resident-resident", level="VIEW")
@@ -77,10 +64,9 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param ResidentService $residentService
      * @param ResidentAdmissionService $residentAdmissionService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService)
+    public function gridAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService): JsonResponse
     {
         $residentService->setResidentAdmissionService($residentAdmissionService);
 
@@ -102,9 +88,8 @@ class ResidentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Resident::class, 'api_admin_resident_grid');
     }
@@ -114,8 +99,8 @@ class ResidentController extends BaseController
      *
      * @param Request $request
      * @param ResidentService $residentService
-     * @return JsonResponse|PdfResponse
-     * @throws \Throwable
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ResidentService $residentService, ResidentAdmissionService $residentAdmissionService)
     {
@@ -142,7 +127,7 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ResidentService $residentService)
+    public function getAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -161,9 +146,8 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @param ImageFilterService $imageFilterService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService)
+    public function addAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService): JsonResponse
     {
         $residentService->setImageFilterService($imageFilterService);
 
@@ -199,9 +183,8 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @param ImageFilterService $imageFilterService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, ResidentService $residentService, ImageFilterService $imageFilterService)
+    public function editAction(Request $request, $id, ResidentService $residentService, ImageFilterService $imageFilterService): JsonResponse
     {
         $residentService->setImageFilterService($imageFilterService);
 
@@ -242,10 +225,8 @@ class ResidentController extends BaseController
      * @param $id
      * @param ResidentService $residentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ResidentService $residentService)
+    public function deleteAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
         $residentService->remove($id);
 
@@ -262,10 +243,8 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param ResidentService $residentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ResidentService $residentService)
+    public function deleteBulkAction(Request $request, ResidentService $residentService): JsonResponse
     {
         $residentService->removeBulk($request->get('ids'));
 
@@ -280,10 +259,8 @@ class ResidentController extends BaseController
      * @param Request $request
      * @param ResidentService $residentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ResidentService $residentService)
+    public function relatedInfoAction(Request $request, ResidentService $residentService): JsonResponse
     {
         $relatedData = $residentService->getRelatedInfo($request->get('ids'));
 
@@ -304,9 +281,8 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @param ImageFilterService $imageFilterService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function photoAction(Request $request, $id, ResidentService $residentService, ImageFilterService $imageFilterService)
+    public function photoAction(Request $request, $id, ResidentService $residentService, ImageFilterService $imageFilterService): JsonResponse
     {
         $residentService->setImageFilterService($imageFilterService);
 
@@ -325,11 +301,12 @@ class ResidentController extends BaseController
     /**
      * @Route("/state/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_state", methods={"GET"})
      *
-     * @param ResidentService $residentService
+     * @param Request $request
      * @param $id
+     * @param ResidentService $residentService
      * @return JsonResponse
      */
-    public function getResidentStateAction(Request $request, $id, ResidentService $residentService)
+    public function getResidentStateAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -342,11 +319,12 @@ class ResidentController extends BaseController
     /**
      * @Route("/last/admission/{id}", requirements={"id"="\d+"}, name="api_admin_resident_get_last_admission", methods={"GET"})
      *
-     * @param ResidentAdmissionService $residentAdmissionService
+     * @param Request $request
      * @param $id
+     * @param ResidentAdmissionService $residentAdmissionService
      * @return JsonResponse
      */
-    public function getResidentLastAdmissionAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService)
+    public function getResidentLastAdmissionAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -360,11 +338,11 @@ class ResidentController extends BaseController
      * @Route("/calendar/{id}", requirements={"id"="\d+"}, name="api_admin_resident_calendar", methods={"GET"})
      *
      * @param Request $request
-     * @param ResidentService $residentService
      * @param $id
+     * @param ResidentService $residentService
      * @return JsonResponse
      */
-    public function getResidentCalendarAction(Request $request, $id, ResidentService $residentService)
+    public function getResidentCalendarAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -383,9 +361,8 @@ class ResidentController extends BaseController
      * @param $id
      * @param ResidentService $residentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function mobileEditAction(Request $request, $id, ResidentService $residentService)
+    public function mobileEditAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
         $residentService->mobileEdit(
             $id,
@@ -415,11 +392,12 @@ class ResidentController extends BaseController
     /**
      * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_admin_resident_image_download", methods={"GET"})
      *
-     * @param ResidentService $residentService
+     * @param Request $request
      * @param $id
+     * @param ResidentService $residentService
      * @return Response
      */
-    public function downloadAction(Request $request, $id, ResidentService $residentService)
+    public function downloadAction(Request $request, $id, ResidentService $residentService): Response
     {
         $data = $residentService->downloadFile($id);
 
@@ -435,9 +413,8 @@ class ResidentController extends BaseController
      * @param ResidentService $residentService
      * @param ImageFilterService $imageFilterService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function mobileUploadAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService)
+    public function mobileUploadAction(Request $request, ResidentService $residentService, ImageFilterService $imageFilterService): JsonResponse
     {
         $residentService->setImageFilterService($imageFilterService);
 

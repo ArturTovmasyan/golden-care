@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\AllergenService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Allergen;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/allergen")
  *
  * @Grant(grant="persistence-common-allergen", level="VIEW")
@@ -39,10 +27,9 @@ class AllergenController extends BaseController
      *
      * @param Request $request
      * @param AllergenService $allergenService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, AllergenService $allergenService)
+    public function gridAction(Request $request, AllergenService $allergenService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class AllergenController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Allergen::class, 'api_admin_allergen_grid');
     }
@@ -69,8 +55,7 @@ class AllergenController extends BaseController
      *
      * @param Request $request
      * @param AllergenService $allergenService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, AllergenService $allergenService)
     {
@@ -85,11 +70,12 @@ class AllergenController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_allergen_get", methods={"GET"})
      *
-     * @param AllergenService $allergenService
+     * @param Request $request
      * @param $id
+     * @param AllergenService $allergenService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, AllergenService $allergenService)
+    public function getAction(Request $request, $id, AllergenService $allergenService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class AllergenController extends BaseController
      * @param Request $request
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, AllergenService $allergenService)
+    public function addAction(Request $request, AllergenService $allergenService): JsonResponse
     {
         $id = $allergenService->add(
             [
@@ -135,9 +120,8 @@ class AllergenController extends BaseController
      * @param $id
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, AllergenService $allergenService)
+    public function editAction(Request $request, $id, AllergenService $allergenService): JsonResponse
     {
         $allergenService->edit(
             $id,
@@ -158,13 +142,12 @@ class AllergenController extends BaseController
      *
      * @Grant(grant="persistence-common-allergen", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, AllergenService $allergenService)
+    public function deleteAction(Request $request, $id, AllergenService $allergenService): JsonResponse
     {
         $allergenService->remove($id);
 
@@ -181,10 +164,8 @@ class AllergenController extends BaseController
      * @param Request $request
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, AllergenService $allergenService)
+    public function deleteBulkAction(Request $request, AllergenService $allergenService): JsonResponse
     {
         $allergenService->removeBulk($request->get('ids'));
 
@@ -199,10 +180,8 @@ class AllergenController extends BaseController
      * @param Request $request
      * @param AllergenService $allergenService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, AllergenService $allergenService)
+    public function relatedInfoAction(Request $request, AllergenService $allergenService): JsonResponse
     {
         $relatedData = $allergenService->getRelatedInfo($request->get('ids'));
 

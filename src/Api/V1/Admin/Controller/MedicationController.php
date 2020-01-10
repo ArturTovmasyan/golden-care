@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\MedicationService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Medication;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/medication")
  *
  * @Grant(grant="persistence-common-medication", level="VIEW")
@@ -39,10 +27,9 @@ class MedicationController extends BaseController
      *
      * @param Request $request
      * @param MedicationService $medicationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, MedicationService $medicationService)
+    public function gridAction(Request $request, MedicationService $medicationService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class MedicationController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Medication::class, 'api_admin_medication_grid');
     }
@@ -69,8 +55,7 @@ class MedicationController extends BaseController
      *
      * @param Request $request
      * @param MedicationService $medicationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, MedicationService $medicationService)
     {
@@ -86,11 +71,11 @@ class MedicationController extends BaseController
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_medication_get", methods={"GET"})
      *
      * @param Request $request
-     * @param MedicationService $medicationService
      * @param $id
+     * @param MedicationService $medicationService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, MedicationService $medicationService)
+    public function getAction(Request $request, $id, MedicationService $medicationService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,9 +93,8 @@ class MedicationController extends BaseController
      * @param Request $request
      * @param MedicationService $medicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function addAction(Request $request, MedicationService $medicationService)
+    public function addAction(Request $request, MedicationService $medicationService): JsonResponse
     {
         $id = $medicationService->add(
             [
@@ -135,9 +119,8 @@ class MedicationController extends BaseController
      * @param $id
      * @param MedicationService $medicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function editAction(Request $request, $id, MedicationService $medicationService)
+    public function editAction(Request $request, $id, MedicationService $medicationService): JsonResponse
     {
         $medicationService->edit(
             $id,
@@ -161,10 +144,8 @@ class MedicationController extends BaseController
      * @param $id
      * @param MedicationService $medicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, MedicationService $medicationService)
+    public function deleteAction(Request $request, $id, MedicationService $medicationService): JsonResponse
     {
         $medicationService->remove($id);
 
@@ -181,10 +162,8 @@ class MedicationController extends BaseController
      * @param Request $request
      * @param MedicationService $medicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, MedicationService $medicationService)
+    public function deleteBulkAction(Request $request, MedicationService $medicationService): JsonResponse
     {
         $medicationService->removeBulk($request->get('ids'));
 
@@ -199,10 +178,8 @@ class MedicationController extends BaseController
      * @param Request $request
      * @param MedicationService $medicationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, MedicationService $medicationService)
+    public function relatedInfoAction(Request $request, MedicationService $medicationService): JsonResponse
     {
         $relatedData = $medicationService->getRelatedInfo($request->get('ids'));
 

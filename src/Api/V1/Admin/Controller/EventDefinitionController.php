@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\EventDefinitionService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\EventDefinition;
@@ -9,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/admin/event/definition")
  *
  * @Grant(grant="persistence-common-event_definition", level="VIEW")
@@ -39,10 +27,9 @@ class EventDefinitionController extends BaseController
      *
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, EventDefinitionService $eventDefinitionService)
+    public function gridAction(Request $request, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class EventDefinitionController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, EventDefinition::class, 'api_admin_event_definition_grid');
     }
@@ -69,8 +55,7 @@ class EventDefinitionController extends BaseController
      *
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, EventDefinitionService $eventDefinitionService)
     {
@@ -88,11 +73,12 @@ class EventDefinitionController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_event_definition_get", methods={"GET"})
      *
-     * @param EventDefinitionService $eventDefinitionService
+     * @param Request $request
      * @param $id
+     * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, EventDefinitionService $eventDefinitionService)
+    public function getAction(Request $request, $id, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,9 +96,8 @@ class EventDefinitionController extends BaseController
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, EventDefinitionService $eventDefinitionService)
+    public function addAction(Request $request, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         $id = $eventDefinitionService->add(
             [
@@ -156,9 +141,8 @@ class EventDefinitionController extends BaseController
      * @param $id
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, EventDefinitionService $eventDefinitionService)
+    public function editAction(Request $request, $id, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         $eventDefinitionService->edit(
             $id,
@@ -197,13 +181,12 @@ class EventDefinitionController extends BaseController
      *
      * @Grant(grant="persistence-common-event_definition", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, EventDefinitionService $eventDefinitionService)
+    public function deleteAction(Request $request, $id, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         $eventDefinitionService->remove($id);
 
@@ -220,10 +203,8 @@ class EventDefinitionController extends BaseController
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, EventDefinitionService $eventDefinitionService)
+    public function deleteBulkAction(Request $request, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         $eventDefinitionService->removeBulk($request->get('ids'));
 
@@ -238,10 +219,8 @@ class EventDefinitionController extends BaseController
      * @param Request $request
      * @param EventDefinitionService $eventDefinitionService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, EventDefinitionService $eventDefinitionService)
+    public function relatedInfoAction(Request $request, EventDefinitionService $eventDefinitionService): JsonResponse
     {
         $relatedData = $eventDefinitionService->getRelatedInfo($request->get('ids'));
 
