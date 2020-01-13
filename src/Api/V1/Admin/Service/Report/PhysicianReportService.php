@@ -32,7 +32,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return PhysicianSimple
      */
-    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianSimple
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -50,7 +50,9 @@ class PhysicianReportService extends BaseService
         $residentIds = [];
 
         if (!empty($residents)) {
-            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $residents);
             $residentIds = array_unique($residentIds);
         }
 
@@ -65,7 +67,7 @@ class PhysicianReportService extends BaseService
         if (!empty($physicians)) {
             foreach ($physicians as $physician) {
                 foreach ($residents as $resident) {
-                    if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
+                    if ($resident['typeId'] === $physician['typeId'] && $resident['id'] === $physician['residentId']) {
                         $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? $count[$physician['typeId']][$physician['pId']] + 1 : 1;
                     }
                 }
@@ -78,7 +80,9 @@ class PhysicianReportService extends BaseService
 
             $data = array_values($data);
 
-            $typeIds = array_map(function($item){return $item['typeId'];} , $data);
+            $typeIds = array_map(function ($item) {
+                return $item['typeId'];
+            }, $data);
             $typeIds = array_unique($typeIds);
         }
 
@@ -104,7 +108,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return PhysicianFull
      */
-    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianFull
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -122,7 +126,9 @@ class PhysicianReportService extends BaseService
         $residentIds = [];
 
         if (!empty($residents)) {
-            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $residents);
             $residentIds = array_unique($residentIds);
         }
 
@@ -135,7 +141,9 @@ class PhysicianReportService extends BaseService
         $count = [];
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_map(function ($item) {
+                return $item['pId'];
+            }, $physicians);
             $physicianIds = array_unique($physicianIds);
 
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
@@ -145,7 +153,7 @@ class PhysicianReportService extends BaseService
 
             foreach ($physicians as $physician) {
                 foreach ($residents as $resident) {
-                    if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
+                    if ($resident['typeId'] === $physician['typeId'] && $resident['id'] === $physician['residentId']) {
                         $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? $count[$physician['typeId']][$physician['pId']] + 1 : 1;
                     }
                 }
@@ -182,7 +190,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentsByPhysician
      */
-    public function getResidentsByPhysicianReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getResidentsByPhysicianReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentsByPhysician
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -201,7 +209,9 @@ class PhysicianReportService extends BaseService
 
         $finalResidents = [];
         if (!empty($residents)) {
-            $residentIds = array_map(function($item){return $item['id'];} , $residents);
+            $residentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $residents);
             $residentIds = array_unique($residentIds);
 
             /** @var ResidentPhoneRepository $phoneRepo */
@@ -231,7 +241,9 @@ class PhysicianReportService extends BaseService
         $physicianResidents = [];
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_map(function ($item) {
+                return $item['pId'];
+            }, $physicians);
             $physicianIds = array_unique($physicianIds);
 
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
@@ -241,7 +253,7 @@ class PhysicianReportService extends BaseService
 
             foreach ($physicians as $physician) {
                 foreach ($finalResidents as $resident) {
-                    if ($resident['typeId'] === $physician['typeId'] &&  $resident['id'] === $physician['residentId']) {
+                    if ($resident['typeId'] === $physician['typeId'] && $resident['id'] === $physician['residentId']) {
                         $count[$physician['typeId']][$physician['pId']] = isset($count[$physician['typeId']][$physician['pId']]) ? $count[$physician['typeId']][$physician['pId']] + 1 : 1;
 
                         if (array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident)) {
@@ -271,7 +283,9 @@ class PhysicianReportService extends BaseService
 
             $data = array_values($data);
 
-            $typeNames = array_map(function($item){return $item['typeName'];} , $data);
+            $typeNames = array_map(function ($item) {
+                return $item['typeName'];
+            }, $data);
             array_multisort($typeNames, SORT_ASC, $data);
         }
 

@@ -1,4 +1,4 @@
-{{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %}Rent Report: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateEnd|date("m/d/Y") }}
+{{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %}Rent Report: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateEnd }}
 {{ data.strategy }}, {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %} Resident, Billing, Rent, Frequency, Admitted, Discharged, Days, RentDue
 {% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
 {% for datum in data.csvData %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}{% if renderedGroup == datum.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.typeId %}{% set newGroup = true %}{% endif %}{% set k = 0 %}

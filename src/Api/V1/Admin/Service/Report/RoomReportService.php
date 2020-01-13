@@ -60,7 +60,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return Payor
      */
-    public function getPayorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getPayorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Payor
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -87,14 +87,18 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
-        $residentIds = array_map(function($item){return $item['id'];} , $data);
+        $residentIds = array_map(function ($item) {
+            return $item['id'];
+        }, $data);
 
         /** @var ResidentRepository $residentRepo */
         $residentRepo = $this->em->getRepository(Resident::class);
 
         $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
+        $typeIds = array_map(function ($item) {
+            return $item['typeId'];
+        }, $residents);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -143,7 +147,7 @@ class RoomReportService extends BaseService
                 }
             }
 
-            if(!\in_array($resident['id'], $residentIds, false)) {
+            if (!\in_array($resident['id'], $residentIds, false)) {
                 $finalData[] = $resident;
             }
         }
@@ -174,7 +178,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomList
      */
-    public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -201,14 +205,18 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
-        $residentIds = array_map(function($item){return $item['id'];} , $data);
+        $residentIds = array_map(function ($item) {
+            return $item['id'];
+        }, $data);
 
         /** @var ResidentRepository $residentRepo */
         $residentRepo = $this->em->getRepository(Resident::class);
 
         $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $residents);
+        $typeIds = array_map(function ($item) {
+            return $item['typeId'];
+        }, $residents);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -253,7 +261,7 @@ class RoomReportService extends BaseService
                 }
             }
 
-            if(!\in_array($resident['id'], $residentIds, false)) {
+            if (!\in_array($resident['id'], $residentIds, false)) {
                 $finalData[] = $resident;
             }
         }
@@ -285,7 +293,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRent
      */
-    public function getRoomRentReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomRentReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRent
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -306,7 +314,7 @@ class RoomReportService extends BaseService
         $subInterval = ImtDateTimeInterval::getDateDiffForMonthAndYear($reportDate->format('Y'), $reportDate->format('m'));
 
         $dateStart = $subInterval->getStart()->format('m/d/Y');
-        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd() !== null ? $subInterval->getEnd()->format('m/d/Y') : '';
 
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
@@ -314,7 +322,9 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
-        $rentResidentIds = array_map(function($item){return $item['id'];} , $data);
+        $rentResidentIds = array_map(function ($item) {
+            return $item['id'];
+        }, $data);
         $rentResidentIds = array_unique($rentResidentIds);
 
         /** @var ResidentRepository $residentRepo */
@@ -322,9 +332,13 @@ class RoomReportService extends BaseService
 
         $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
 
-        $residentTypeIds = array_map(function($item){return $item['typeId'];} , $residents);
+        $residentTypeIds = array_map(function ($item) {
+            return $item['typeId'];
+        }, $residents);
 
-        $residentIds = array_map(function($item){return $item['id'];} , $residents);
+        $residentIds = array_map(function ($item) {
+            return $item['id'];
+        }, $residents);
 
         /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
@@ -465,7 +479,9 @@ class RoomReportService extends BaseService
 
         array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
 
-        $typeIds = array_map(function($item){return $item['typeId'];} , $changedData);
+        $typeIds = array_map(function ($item) {
+            return $item['typeId'];
+        }, $changedData);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -509,7 +525,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRentMaster
      */
-    public function getRoomRentMasterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomRentMasterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMaster
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -534,7 +550,7 @@ class RoomReportService extends BaseService
         $subInterval = ImtDateTimeInterval::getWithMonthAndYear($year, $month);
 
         $dateStart = $subInterval->getStart()->format('m/d/Y');
-        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd() !== null ? $subInterval->getEnd()->format('m/d/Y') : '';
 
         $types = [];
         switch ($type) {
@@ -620,7 +636,7 @@ class RoomReportService extends BaseService
 
                 foreach ($rents as $rent) {
                     if ($typeId === $rent['typeId']) {
-                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']) );
+                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']));
                         if (!isset($data[$typeId][$rent[$incomePer]])) {
                             $data[$typeId]['occupancy'][$rent[$incomePer]] = 0.00;
                         }
@@ -677,6 +693,7 @@ class RoomReportService extends BaseService
                     foreach ($data[$typeId]['revenue'] as $revenueKey => &$revenueValue) {
                         $revenueValue = $revenueAll === 0 ? 0 : ($revenueValue / $revenueAll) * $data[$typeId]['occupancy'];
                     }
+                    unset($revenueValue);
                     $data[$typeId]['revenue']['Vacant'] = 100 - $data[$typeId]['occupancy'];
                     $data[$typeId]['occ'] = $data[$typeId]['occupancy'];
                     $data[$typeId]['occupancy'] = (float)($data[$typeId]['occupancy'] / 100);
@@ -685,6 +702,7 @@ class RoomReportService extends BaseService
                     foreach ($data[$typeId]['revenue'] as $revenueKey => &$revenueValue) {
                         $revenueValue = number_format($revenueValue * 100, 2);
                     }
+                    unset($revenueValue);
                 }
             }
         }
@@ -712,7 +730,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRentMasterNew
      */
-    public function getRoomRentMasterNewReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomRentMasterNewReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMasterNew
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -741,7 +759,7 @@ class RoomReportService extends BaseService
         }
 
         $dateStart = $subInterval->getStart()->format('m/d/Y');
-        $dateEnd = $subInterval->getEnd()->format('m/d/Y');
+        $dateEnd = $subInterval->getEnd() !== null ? $subInterval->getEnd()->format('m/d/Y') : '';
 
         $types = [];
         switch ($type) {
@@ -818,7 +836,7 @@ class RoomReportService extends BaseService
 
                 foreach ($rents as $rent) {
                     if ($typeId === $rent['typeId']) {
-                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']) );
+                        $interval = ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged']));
                         if (!isset($data[$typeId]['occupancies'][$rent[$incomePer]])) {
                             $data[$typeId]['occupancies'][$rent[$incomePer]] = 0.00;
                         }
@@ -889,7 +907,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomVacancyList
      */
-    public function getRoomVacancyListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomVacancyListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomVacancyList
     {
         $report = new RoomVacancyList();
         $report->setData($this->getRoomVacancyList($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId));
@@ -911,7 +929,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomOccupancyRate
      */
-    public function getRoomOccupancyRateReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomOccupancyRateReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRate
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -962,7 +980,9 @@ class RoomReportService extends BaseService
 
                 $ids = [];
                 if (\count($facilityBeds)) {
-                    $ids = array_map(function($item){return $item['id'];} , $facilityBeds);
+                    $ids = array_map(function ($item) {
+                        return $item['id'];
+                    }, $facilityBeds);
                     $bedIds = array_column($facilityBeds, 'typeId', 'id');
                     $bedIds = array_count_values($bedIds);
                 }
@@ -1020,7 +1040,9 @@ class RoomReportService extends BaseService
 
                 $ids = [];
                 if (\count($apartmentBeds)) {
-                    $ids = array_map(function($item){return $item['id'];} , $apartmentBeds);
+                    $ids = array_map(function ($item) {
+                        return $item['id'];
+                    }, $apartmentBeds);
                     $bedIds = array_column($apartmentBeds, 'typeId', 'id');
                     $bedIds = array_count_values($bedIds);
                 }
@@ -1068,7 +1090,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomOccupancyRateByMonth
      */
-    public function getRoomOccupancyRateByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomOccupancyRateByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRateByMonth
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1132,7 +1154,9 @@ class RoomReportService extends BaseService
 
         $allData = $repo->getRoomOccupancyRateByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
 
-        $allTypeIds = array_map(function($item){return $item['typeId'];} , $allData);
+        $allTypeIds = array_map(function ($item) {
+            return $item['typeId'];
+        }, $allData);
         $allTypeIds = array_unique($allTypeIds);
 
         /** @var FacilityRoomRepository $facilityRoomRepo */
@@ -1209,11 +1233,11 @@ class RoomReportService extends BaseService
         foreach ($allTypeIds as $allTypeId) {
             foreach ($total as $key => $item) {
                 $data[$allTypeId][$key] = [
-                      'month' => Month::getTypes()[$key],
-                      'name' => array_key_exists($allTypeId, $typeNames) ? $typeNames[$allTypeId] : 'N/A',
-                      'potential' => $item['potential'][$allTypeId],
-                      'actual' => array_key_exists($allTypeId, $item['actual']) ?  $item['actual'][$allTypeId] : 0,
-                      'occupancy' => array_key_exists($allTypeId, $item['potential']) && $item['potential'][$allTypeId] > 0 ? number_format(($item['actual'][$allTypeId] / $item['potential'][$allTypeId]) * 100, 2, $dec_point = '.' , $thousands_sep = '') . '%' : '0%',
+                    'month' => Month::getTypes()[$key],
+                    'name' => array_key_exists($allTypeId, $typeNames) ? $typeNames[$allTypeId] : 'N/A',
+                    'potential' => $item['potential'][$allTypeId],
+                    'actual' => array_key_exists($allTypeId, $item['actual']) ? $item['actual'][$allTypeId] : 0,
+                    'occupancy' => array_key_exists($allTypeId, $item['potential']) && $item['potential'][$allTypeId] > 0 ? number_format(($item['actual'][$allTypeId] / $item['potential'][$allTypeId]) * 100, 2, $dec_point = '.', $thousands_sep = '') . '%' : '0%',
                 ];
             }
         }

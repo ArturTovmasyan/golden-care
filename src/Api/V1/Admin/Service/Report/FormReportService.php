@@ -55,7 +55,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentBirthdayList
      */
-    public function getBirthdayListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getBirthdayListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentBirthdayList
     {
         $type = $group;
         $typeId = $groupId;
@@ -88,7 +88,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BloodPressureCharting
      */
-    public function getBloodPressureChartingReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getBloodPressureChartingReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureCharting
     {
         $type = $group;
         $typeId = $groupId;
@@ -122,7 +122,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BloodPressureChart
      */
-    public function getBloodPressureChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getBloodPressureChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureChart
     {
         $type = $group;
         $typeId = $groupId;
@@ -155,7 +155,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BowelMovement
      */
-    public function getBowelMovementReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getBowelMovementReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BowelMovement
     {
         $type = $group;
         $typeId = $groupId;
@@ -188,7 +188,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ChangeoverNotes
      */
-    public function getChangeoverNotesReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getChangeoverNotesReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ChangeoverNotes
     {
         $type = $group;
         $typeId = $groupId;
@@ -221,7 +221,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return GlucoseMonitorChart
      */
-    public function getGlucoseMonitorChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getGlucoseMonitorChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): GlucoseMonitorChart
     {
         $type = $group;
         $typeId = $groupId;
@@ -254,7 +254,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return Manicure
      */
-    public function getManicureReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getManicureReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Manicure
     {
         $type = $group;
         $typeId = $groupId;
@@ -288,7 +288,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MealMonitor
      */
-    public function getMealMonitorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getMealMonitorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MealMonitor
     {
         $type = $group;
         $typeId = $groupId;
@@ -321,7 +321,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChart
      */
-    public function getMedicationChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getMedicationChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -359,7 +359,9 @@ class FormReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function($item){return $item['pId'];} , $physicians);
+            $physicianIds = array_map(function ($item) {
+                return $item['pId'];
+            }, $physicians);
             $physicianIds = array_unique($physicianIds);
 
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
@@ -391,7 +393,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChartBlank
      */
-    public function getMedicationChartBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getMedicationChartBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChartBlank
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -440,7 +442,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChart
      */
-    public function getMedicationChartNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getMedicationChartNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -466,7 +468,9 @@ class FormReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($medications)) {
-            $physicianIds = array_map(function($item){return $item['pId'];} , $medications);
+            $physicianIds = array_map(function ($item) {
+                return $item['pId'];
+            }, $medications);
             $physicianIds = array_unique($physicianIds);
 
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
@@ -498,7 +502,7 @@ class FormReportService extends BaseService
      * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued)
+    public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -548,7 +552,7 @@ class FormReportService extends BaseService
      * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued)
+    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -590,7 +594,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return NightActivity
      */
-    public function getNightActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getNightActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): NightActivity
     {
         $type = $group;
         $typeId = $groupId;
@@ -623,7 +627,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomAudit
      */
-    public function getRoomAuditReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomAuditReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomAudit
     {
         $type = $group;
         $typeId = $groupId;
@@ -657,7 +661,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ShowerSkinInspection
      */
-    public function getShowerSkinInspectionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getShowerSkinInspectionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ShowerSkinInspection
     {
         $type = $group;
         $typeId = $groupId;
@@ -669,7 +673,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, null, $this->getNotGrantResidentIds());
+        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
 
         $report = new ShowerSkinInspection();
         $report->setResidents($residents);
@@ -690,7 +694,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return AssessmentForm
      */
-    public function getAssessmentFormBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getAssessmentFormBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): AssessmentForm
     {
         /** @var FormRepository $repo */
         $repo = $this->em->getRepository(Form::class);

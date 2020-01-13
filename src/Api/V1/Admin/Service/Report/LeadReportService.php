@@ -32,7 +32,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return LeadList
      */
-    public function getLeadReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getLeadReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LeadList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -85,7 +85,9 @@ class LeadReportService extends BaseService
 
                 $facilities = [];
                 if (!empty($lead[0]['facilities'])) {
-                    $facilities = array_map(function($item){return $item['name'];} , $lead[0]['facilities']);
+                    $facilities = array_map(function ($item) {
+                        return $item['name'];
+                    }, $lead[0]['facilities']);
 
                     $stringFacilities = implode("\r\n", $facilities);
 
@@ -115,7 +117,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return ReferralList
      */
-    public function getReferralReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getReferralReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReferralList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -143,7 +145,7 @@ class LeadReportService extends BaseService
             $contactIds = [];
             foreach ($referrals as $referral) {
                 if ($referral['cId'] !== null) {
-                    $contactIds[] =  $referral['cId'];
+                    $contactIds[] = $referral['cId'];
                 }
             }
             $contactIds = array_unique($contactIds);
@@ -158,7 +160,7 @@ class LeadReportService extends BaseService
                     $finalPhones = [];
                     foreach ($contactPhones as $phone) {
                         if ($phone['cId'] === $referral['cId']) {
-                            $finalPhones[] = $phone['primary'] ? '(P)' . Phone::$typeNames[$phone['type']] . ' : ' .  $phone['number'] : Phone::$typeNames[$phone['type']] . ' : ' .  $phone['number'];
+                            $finalPhones[] = $phone['primary'] ? '(P)' . Phone::$typeNames[$phone['type']] . ' : ' . $phone['number'] : Phone::$typeNames[$phone['type']] . ' : ' . $phone['number'];
                         }
                     }
 
@@ -199,7 +201,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return ActivityList
      */
-    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
