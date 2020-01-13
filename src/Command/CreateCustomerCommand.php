@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Command;
 
 use App\Annotation\ValidationSerializedName;
@@ -60,17 +61,17 @@ class CreateCustomerCommand extends Command
     public function __construct(UserPasswordEncoderInterface $encoder, EntityManagerInterface $em, Mailer $mailer, ValidatorInterface $validator, Reader $reader)
     {
         parent::__construct();
-        $this->encoder   = $encoder;
-        $this->em        = $em;
-        $this->mailer    = $mailer;
+        $this->encoder = $encoder;
+        $this->em = $em;
+        $this->mailer = $mailer;
         $this->validator = $validator;
-        $this->reader    = $reader;
+        $this->reader = $reader;
     }
 
     /**
      *
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:create-customer')
@@ -81,15 +82,13 @@ class CreateCustomerCommand extends Command
             ->addArgument('first_name', InputArgument::REQUIRED, 'The first name of the customer.')
             ->addArgument('last_name', InputArgument::REQUIRED, 'The last name of the customer.')
             ->addArgument('email', InputArgument::REQUIRED, 'The email of the customer.')
-            ->addArgument('phone', InputArgument::REQUIRED, 'The phone of the customer.')
-        ;
+            ->addArgument('phone', InputArgument::REQUIRED, 'The phone of the customer.');
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
-     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -99,7 +98,7 @@ class CreateCustomerCommand extends Command
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
-            /** @var Role $defaultRole **/
+            /** @var Role $defaultRole * */
             $defaultRole = $roleRepo->getDefaultRole();
             if ($defaultRole === null) {
                 throw new DefaultRoleNotFoundException();
@@ -142,10 +141,10 @@ class CreateCustomerCommand extends Command
 
             $this->em->persist($user);
 
-            if($input->getArgument('phone')) { // TODO: review
+            if ($input->getArgument('phone')) { // TODO: review
                 $userPhone = new UserPhone();
                 $userPhone->setUser($user);
-                $userPhone->setCompatibility( null);
+                $userPhone->setCompatibility(null);
                 $userPhone->setType(Phone::TYPE_OFFICE);
                 $userPhone->setNumber($user->getPhone());
                 $userPhone->setPrimary(true);
@@ -187,12 +186,11 @@ class CreateCustomerCommand extends Command
      * @param null $constraints
      * @param null $groups
      * @return bool
-     * @throws \ReflectionException
      */
-    protected function validate($entity, $constraints = null, $groups = null)
+    protected function validate($entity, $constraints = null, $groups = null): ?bool
     {
         $validationErrors = $this->validator->validate($entity, $constraints, $groups);
-        $errors           = [];
+        $errors = [];
 
         if ($validationErrors->count() > 0) {
             foreach ($validationErrors as $error) {

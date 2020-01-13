@@ -8,14 +8,14 @@ use App\Entity\ResidentImage;
 use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class MigrateResidentPhotosCommand extends ContainerAwareCommand
+class MigrateResidentPhotosCommand extends Command
 {
     /** @var ImageFilterService */
     private $imageFilterService;
@@ -24,6 +24,8 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
 
     /**
      * MigrateResidentPhotosCommand constructor.
+     * @param EntityManagerInterface $em
+     * @param ImageFilterService $imageFilterService
      */
     public function __construct(EntityManagerInterface $em, ImageFilterService $imageFilterService)
     {
@@ -33,7 +35,7 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
         $this->imageFilterService = $imageFilterService;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:migrate:photos')
@@ -55,7 +57,7 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
             $file = file_get_contents($json_filename);
             $data = json_decode($file, true);
 
-            $progressBar = new ProgressBar($output, count($data));
+            $progressBar = new ProgressBar($output, \count($data));
             $progressBar->start();
 
             foreach ($data as $item) {
@@ -84,10 +86,9 @@ class MigrateResidentPhotosCommand extends ContainerAwareCommand
                 } else {
                     $output->writeln(sprintf("Resident '%d' not found.", $item['id']));
                 }
-
-                $progressBar->advance();
             }
 
+            $progressBar->advance();
             $progressBar->finish();
         } else {
             $output->writeln(sprintf("Invalid input file '%s'.", $json_filename));

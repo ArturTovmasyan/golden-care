@@ -43,35 +43,35 @@ class ConvertGridCommand extends ContainerAwareCommand
                         $output .= $file->getClassName() . "\n";
                         $output .= "/*\n* @Grid(\n";
                         foreach ($groups as $key => $group) {
-                            $output .= "*     " . $key . "={\n";
+                            $output .= '*     ' . $key . "={\n";
                             foreach ($group as $field) {
                                 $output .= "*          {\n";
 
-                                if ($field['id'] == "id") {
-                                    $field['type'] = "id";
+                                if ($field['id'] === 'id') {
+                                    $field['type'] = 'id';
                                 }
 
-                                if ($field['type'] == "enum" && $field['values']['class'] == "\App\Model\Boolean") {
-                                    $field['type'] = "boolean";
+                                if ($field['type'] === 'enum' && $field['values']['class'] === "\App\Model\Boolean") {
+                                    $field['type'] = 'boolean';
 
                                     unset($field['values']);
                                 }
 
                                 foreach ($field as $key => $value) {
-                                    if ($key == 'values') {
-                                        $value = $value['class'] . "::" . $value['method'];
+                                    if ($key === 'values') {
+                                        $value = $value['class'] . '::' . $value['method'];
                                     }
 
-                                    if (!in_array($key, [
+                                    if (!\in_array($key, [
                                         Grid::FIELD_OPTIONS[Grid::FIELD_OPTION_SORTABLE],
                                         Grid::FIELD_OPTIONS[Grid::FIELD_OPTION_FILTERABLE]
-                                    ])) {
+                                    ], false)) {
                                         $value = '"' . $value . '"';
                                     } else {
-                                        $value = $value ? "true" : "false";
+                                        $value = $value ? 'true' : 'false';
                                     }
 
-                                    $output .= "*              " . str_pad('"' . $key . '"', 12, " ") . " = " . $value . ",\n";
+                                    $output .= '*              ' . str_pad('"' . $key . '"', 12, ' ') . ' = ' . $value . ",\n";
                                 }
 
                                 $output = substr($output, 0, -2) . "\n";

@@ -30,7 +30,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "date",
- *              "type"       = "datetime",
+ *              "type"       = "date",
  *              "field"      = "ra.date"
  *          },
  *          {

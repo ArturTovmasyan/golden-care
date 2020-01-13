@@ -38,7 +38,8 @@ class FosoCleanCommand extends Command
         AccessTokenManagerInterface $accessTokenManager,
         RefreshTokenManagerInterface $refreshTokenManager,
         AuthCodeManagerInterface $authCodeManager
-    ) {
+    )
+    {
         parent::__construct();
 
         $this->accessTokenManager = $accessTokenManager;
@@ -46,7 +47,7 @@ class FosoCleanCommand extends Command
         $this->authCodeManager = $authCodeManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('oauth:clean')
@@ -56,8 +57,7 @@ The <info>%command.name%</info> command will remove expired OAuth2 tokens.
 
   <info>php %command.full_name%</info>
 EOT
-            )
-        ;
+            );
     }
 
     /**
@@ -65,12 +65,12 @@ EOT
      * @param OutputInterface $output
      * @return int|null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $services = [
-            'Access token'  => $this->accessTokenManager,
+            'Access token' => $this->accessTokenManager,
             'Refresh token' => $this->refreshTokenManager,
-            'Auth code'     => $this->authCodeManager,
+            'Auth code' => $this->authCodeManager,
         ];
 
         /** @var TokenManagerInterface $service */

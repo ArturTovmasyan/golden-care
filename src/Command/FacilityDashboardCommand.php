@@ -82,7 +82,7 @@ class FacilityDashboardCommand extends Command
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
@@ -127,10 +127,14 @@ class FacilityDashboardCommand extends Command
                 }
 
                 $longTermAdmissions = $admissionRepo->getLongTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
-                $longTermResidentIds = array_map(function($item){return $item['id'];} , $longTermAdmissions);
+                $longTermResidentIds = array_map(function ($item) {
+                    return $item['id'];
+                }, $longTermAdmissions);
 
                 $shortTermAdmissions = $admissionRepo->getShortTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
-                $shortTermResidentIds = array_map(function($item){return $item['id'];} , $shortTermAdmissions);
+                $shortTermResidentIds = array_map(function ($item) {
+                    return $item['id'];
+                }, $shortTermAdmissions);
             }
 
             /** @var LeadTemperatureRepository $leadTemperatureRepo */
@@ -174,7 +178,7 @@ class FacilityDashboardCommand extends Command
                     $allowedFacilityIds = [];
                     foreach ($userFacilities as $userFacility) {
                         if (\in_array($userFacility['id'], $userIds, false)) {
-                            $userFacilityIds =  $userFacility['facilityIds'] !== null ? explode(',', $userFacility['facilityIds']) : [];
+                            $userFacilityIds = $userFacility['facilityIds'] !== null ? explode(',', $userFacility['facilityIds']) : [];
 
                             $allowedFacilityIds = array_merge([], $userFacilityIds);
                             $allowedFacilityIds = array_unique($allowedFacilityIds);
@@ -232,7 +236,7 @@ class FacilityDashboardCommand extends Command
                     foreach ($activeAdmissions as $activeAdmission) {
                         $i = 0;
                         if ($activeAdmission['typeId'] === $facility->getId()) {
-                            $i ++;
+                            $i++;
 
                             $occupancy += $i;
                         }
@@ -254,31 +258,31 @@ class FacilityDashboardCommand extends Command
                         $h = 0;
                         if ($admission['typeId'] === $facility->getId()) {
                             if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
-                                $j ++;
+                                $j++;
 
                                 $moveInsRespite += $j;
                             }
 
                             if ($admission['admissionType'] === AdmissionType::LONG_ADMIT) {
-                                $k ++;
+                                $k++;
 
                                 $moveInsLongTerm += $k;
                             }
 
                             if ($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $shortTermResidentIds, false)) {
-                                $l ++;
+                                $l++;
 
                                 $moveOutsRespite += $l;
                             }
 
                             if ($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $longTermResidentIds, false)) {
-                                $m ++;
+                                $m++;
 
                                 $moveOutsLongTerm += $m;
                             }
 
                             if ($admission['admissionType'] === AdmissionType::PENDING_DISCHARGE) {
-                                $h ++;
+                                $h++;
 
                                 $noticeToVacate += $h;
                             }
@@ -296,7 +300,7 @@ class FacilityDashboardCommand extends Command
                     foreach ($leadTemperatures as $hotLead) {
                         $n = 0;
                         if ($hotLead['typeId'] === $facility->getId()) {
-                            $n ++;
+                            $n++;
 
                             $hotLeads += $n;
                         }
@@ -309,7 +313,7 @@ class FacilityDashboardCommand extends Command
                     foreach ($leadTourActivities as $activity) {
                         $o = 0;
                         if ($activity['typeId'] === $facility->getId()) {
-                            $o ++;
+                            $o++;
 
                             $toursPerMonth += $o;
                         }
@@ -322,7 +326,7 @@ class FacilityDashboardCommand extends Command
                     foreach ($leads as $lead) {
                         $p = 0;
                         if ($lead['typeId'] === $facility->getId()) {
-                            $p ++;
+                            $p++;
 
                             $totalInquiries += $p;
                         }
@@ -335,7 +339,7 @@ class FacilityDashboardCommand extends Command
                     foreach ($finalOutreaches as $outreach) {
                         $q = 0;
                         if ($outreach['all'] === true || ($outreach['all'] === false && \in_array($facility->getId(), $outreach['facilityIds'], false))) {
-                            $q ++;
+                            $q++;
 
                             $outreachPerMonth += $q;
                         }
@@ -379,5 +383,6 @@ class FacilityDashboardCommand extends Command
         }
 
         $this->release();
+        return 1;
     }
 }

@@ -143,11 +143,11 @@ class Outreach
      *          "api_lead_outreach_add",
      *          "api_lead_outreach_edit"
      * })
-     * @Assert\DateTime(groups={
+     * @Assert\Date(groups={
      *          "api_lead_outreach_add",
      *          "api_lead_outreach_edit"
      * })
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="date", type="date")
      * @Groups({
      *     "api_lead_outreach_list",
      *     "api_lead_outreach_get"
@@ -282,7 +282,7 @@ class Outreach
     }
 
     /**
-     * @return \DateTime|null
+     * @return \DateTime
      */
     public function getDate(): ?\DateTime
     {
@@ -290,7 +290,7 @@ class Outreach
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param \DateTime $date
      */
     public function setDate(?\DateTime $date): void
     {

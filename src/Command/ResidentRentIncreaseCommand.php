@@ -66,7 +66,7 @@ class ResidentRentIncreaseCommand extends Command
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
@@ -145,5 +145,7 @@ class ResidentRentIncreaseCommand extends Command
         }
 
         $this->release();
+
+        return 1;
     }
 }

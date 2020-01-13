@@ -3,18 +3,16 @@
 namespace App\Command;
 
 use App\Api\V1\Common\Service\GrantService;
-use App\Entity\Facility;
 use App\Entity\ResidentPhysician;
 use App\Entity\User;
 use App\Model\Grant;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class TestGrantCommand extends ContainerAwareCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:test:grant')

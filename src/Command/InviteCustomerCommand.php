@@ -47,7 +47,6 @@ class InviteCustomerCommand extends Command
      * InviteCustomerCommand constructor.
      * @param EntityManagerInterface $em
      * @param Mailer $mailer
-
      * @param Reader $reader
      * @param BaseService $baseService
      */
@@ -80,7 +79,6 @@ class InviteCustomerCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
-     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

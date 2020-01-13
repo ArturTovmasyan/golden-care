@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Command;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -30,13 +32,13 @@ class CreateUserCommand extends Command
     {
         parent::__construct();
         $this->encoder = $encoder;
-        $this->em      = $em;
+        $this->em = $em;
     }
 
     /**
      *
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:create-user')
@@ -44,8 +46,7 @@ class CreateUserCommand extends Command
             ->setHelp('This command allows you to create a user...')
             ->addArgument('username', InputArgument::REQUIRED, 'The username of the user.')
             ->addArgument('password', InputArgument::REQUIRED, 'The password of the user.')
-            ->addArgument('email', InputArgument::REQUIRED, 'The email of the user.')
-        ;
+            ->addArgument('email', InputArgument::REQUIRED, 'The email of the user.');
     }
 
     /**
@@ -57,7 +58,7 @@ class CreateUserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = new \App\Entity\User();
+        $user = new User();
         $user->setUsername($input->getArgument('username'));
         $user->setEmail($input->getArgument('email'));
         $user->setFirstName('');

@@ -65,7 +65,7 @@ class NotifyCommand extends Command
     /** @var AmazonSnsService */
     private $amazonSnsService;
 
-    public function __construct (
+    public function __construct(
         EntityManagerInterface $em,
         GrantService $grantService,
         Mailer $mailer,
@@ -85,11 +85,11 @@ class NotifyCommand extends Command
     }
 
 
-    protected function configure()
+    protected function configure(): void
     {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
@@ -154,6 +154,8 @@ class NotifyCommand extends Command
         }
 
         $this->release();
+
+        return 1;
     }
 
     /**
@@ -166,7 +168,7 @@ class NotifyCommand extends Command
      */
     public function sendSixtyDaysReportNotifications(array $emails, $facilities, $apartments, $regions, $subjectText, $message): void
     {
-        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'],$message);
+        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
 
         $date = new \DateTime('now');
 
@@ -334,29 +336,29 @@ class NotifyCommand extends Command
                 case ChangeLogType::TYPE_NEW_LEAD:
                     $title = $changeLog->getContent()['lead_name'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_LEAD];
-                    $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
+                    $date = $changeLog->getCreatedAt() !== null ? $changeLog->getCreatedAt()->format('m/d/Y H:i') : '';
 
                     break;
                 case ChangeLogType::TYPE_LEAD_UPDATED:
                     $title = $changeLog->getContent()['lead_name'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_LEAD_UPDATED];
-                    $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
+                    $date = $changeLog->getCreatedAt() !== null ? $changeLog->getCreatedAt()->format('m/d/Y H:i') : '';
 
                     break;
                 case ChangeLogType::TYPE_NEW_TASK:
                     $activityType = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']];
 
-                    $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']].': '.$changeLog->getContent()['owner'];
+                    $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']] . ': ' . $changeLog->getContent()['owner'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_NEW_TASK];
-                    $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
+                    $date = $changeLog->getCreatedAt() !== null ? $changeLog->getCreatedAt()->format('m/d/Y H:i') : '';
 
                     break;
                 case ChangeLogType::TYPE_TASK_UPDATED:
                     $activityType = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']];
 
-                    $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']].': '.$changeLog->getContent()['owner'];
+                    $title = ActivityOwnerType::getTypes()[$changeLog->getContent()['type']] . ': ' . $changeLog->getContent()['owner'];
                     $action = ChangeLogType::getTypes()[ChangeLogType::TYPE_TASK_UPDATED];
-                    $date = $changeLog->getCreatedAt()->format('m/d/Y H:i');
+                    $date = $changeLog->getCreatedAt() !== null ? $changeLog->getCreatedAt()->format('m/d/Y H:i') : '';
 
                     break;
                 default:

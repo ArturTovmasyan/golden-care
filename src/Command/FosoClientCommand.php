@@ -29,7 +29,7 @@ class FosoClientCommand extends Command
         $this->clientManager = $clientManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('oauth:create-client')
@@ -54,8 +54,7 @@ The <info>%command.name%</info> command creates a new client.
 <info>php %command.full_name% [--redirect-uri=...] [--grant-type=...]</info>
 
 EOT
-            )
-        ;
+            );
     }
 
     /**
@@ -63,7 +62,7 @@ EOT
      * @param OutputInterface $output
      * @return int|null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $io = new SymfonyStyle($input, $output);
 
