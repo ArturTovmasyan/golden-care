@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\ActivityStatusService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\ActivityStatus;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/activity-status")
  *
  * @Grant(grant="persistence-lead-activity_status", level="VIEW")
  *
  * Class ActivityStatusController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class ActivityStatusController extends BaseController
 {
@@ -39,10 +27,9 @@ class ActivityStatusController extends BaseController
      *
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ActivityStatusService $activityStatusService)
+    public function gridAction(Request $request, ActivityStatusService $activityStatusService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ActivityStatusController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ActivityStatus::class, 'api_lead_activity_status_grid');
     }
@@ -69,8 +55,7 @@ class ActivityStatusController extends BaseController
      *
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ActivityStatusService $activityStatusService)
     {
@@ -85,11 +70,12 @@ class ActivityStatusController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_activity_status_get", methods={"GET"})
      *
-     * @param ActivityStatusService $activityStatusService
+     * @param Request $request
      * @param $id
+     * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ActivityStatusService $activityStatusService)
+    public function getAction(Request $request, $id, ActivityStatusService $activityStatusService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class ActivityStatusController extends BaseController
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ActivityStatusService $activityStatusService)
+    public function addAction(Request $request, ActivityStatusService $activityStatusService): JsonResponse
     {
         $id = $activityStatusService->add(
             [
@@ -135,9 +120,8 @@ class ActivityStatusController extends BaseController
      * @param $id
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ActivityStatusService $activityStatusService)
+    public function editAction(Request $request, $id, ActivityStatusService $activityStatusService): JsonResponse
     {
         $activityStatusService->edit(
             $id,
@@ -158,13 +142,12 @@ class ActivityStatusController extends BaseController
      *
      * @Grant(grant="persistence-lead-activity_status", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ActivityStatusService $activityStatusService)
+    public function deleteAction(Request $request, $id, ActivityStatusService $activityStatusService): JsonResponse
     {
         $activityStatusService->remove($id);
 
@@ -181,10 +164,8 @@ class ActivityStatusController extends BaseController
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ActivityStatusService $activityStatusService)
+    public function deleteBulkAction(Request $request, ActivityStatusService $activityStatusService): JsonResponse
     {
         $activityStatusService->removeBulk($request->get('ids'));
 
@@ -199,10 +180,8 @@ class ActivityStatusController extends BaseController
      * @param Request $request
      * @param ActivityStatusService $activityStatusService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ActivityStatusService $activityStatusService)
+    public function relatedInfoAction(Request $request, ActivityStatusService $activityStatusService): JsonResponse
     {
         $relatedData = $activityStatusService->getRelatedInfo($request->get('ids'));
 

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\OutreachTypeService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\OutreachType;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/outreach-type")
  *
  * @Grant(grant="persistence-lead-outreach_type", level="VIEW")
  *
  * Class OutreachTypeController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class OutreachTypeController extends BaseController
 {
@@ -39,10 +27,9 @@ class OutreachTypeController extends BaseController
      *
      * @param Request $request
      * @param OutreachTypeService $outreachTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, OutreachTypeService $outreachTypeService)
+    public function gridAction(Request $request, OutreachTypeService $outreachTypeService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class OutreachTypeController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, OutreachType::class, 'api_lead_outreach_type_grid');
     }
@@ -69,8 +55,7 @@ class OutreachTypeController extends BaseController
      *
      * @param Request $request
      * @param OutreachTypeService $outreachTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, OutreachTypeService $outreachTypeService)
     {
@@ -85,11 +70,12 @@ class OutreachTypeController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_outreach_type_get", methods={"GET"})
      *
-     * @param OutreachTypeService $outreachTypeService
+     * @param Request $request
      * @param $id
+     * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, OutreachTypeService $outreachTypeService)
+    public function getAction(Request $request, $id, OutreachTypeService $outreachTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class OutreachTypeController extends BaseController
      * @param Request $request
      * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, OutreachTypeService $outreachTypeService)
+    public function addAction(Request $request, OutreachTypeService $outreachTypeService): JsonResponse
     {
         $id = $outreachTypeService->add(
             [
@@ -134,9 +119,8 @@ class OutreachTypeController extends BaseController
      * @param $id
      * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, OutreachTypeService $outreachTypeService)
+    public function editAction(Request $request, $id, OutreachTypeService $outreachTypeService): JsonResponse
     {
         $outreachTypeService->edit(
             $id,
@@ -156,13 +140,12 @@ class OutreachTypeController extends BaseController
      *
      * @Grant(grant="persistence-lead-outreach_type", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, OutreachTypeService $outreachTypeService)
+    public function deleteAction(Request $request, $id, OutreachTypeService $outreachTypeService): JsonResponse
     {
         $outreachTypeService->remove($id);
 
@@ -179,10 +162,8 @@ class OutreachTypeController extends BaseController
      * @param Request $request
      * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, OutreachTypeService $outreachTypeService)
+    public function deleteBulkAction(Request $request, OutreachTypeService $outreachTypeService): JsonResponse
     {
         $outreachTypeService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class OutreachTypeController extends BaseController
      * @param Request $request
      * @param OutreachTypeService $outreachTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, OutreachTypeService $outreachTypeService)
+    public function relatedInfoAction(Request $request, OutreachTypeService $outreachTypeService): JsonResponse
     {
         $relatedData = $outreachTypeService->getRelatedInfo($request->get('ids'));
 

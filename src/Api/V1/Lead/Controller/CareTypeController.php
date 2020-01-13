@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\CareTypeService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\CareType;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/care-type")
  *
  * @Grant(grant="persistence-lead-care_type", level="VIEW")
  *
  * Class CareTypeController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class CareTypeController extends BaseController
 {
@@ -39,10 +27,9 @@ class CareTypeController extends BaseController
      *
      * @param Request $request
      * @param CareTypeService $careTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, CareTypeService $careTypeService)
+    public function gridAction(Request $request, CareTypeService $careTypeService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class CareTypeController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, CareType::class, 'api_lead_care_type_grid');
     }
@@ -69,8 +55,7 @@ class CareTypeController extends BaseController
      *
      * @param Request $request
      * @param CareTypeService $careTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, CareTypeService $careTypeService)
     {
@@ -85,11 +70,12 @@ class CareTypeController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_care_type_get", methods={"GET"})
      *
-     * @param CareTypeService $careTypeService
+     * @param Request $request
      * @param $id
+     * @param CareTypeService $careTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, CareTypeService $careTypeService)
+    public function getAction(Request $request, $id, CareTypeService $careTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class CareTypeController extends BaseController
      * @param Request $request
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, CareTypeService $careTypeService)
+    public function addAction(Request $request, CareTypeService $careTypeService): JsonResponse
     {
         $id = $careTypeService->add(
             [
@@ -134,9 +119,8 @@ class CareTypeController extends BaseController
      * @param $id
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, CareTypeService $careTypeService)
+    public function editAction(Request $request, $id, CareTypeService $careTypeService): JsonResponse
     {
         $careTypeService->edit(
             $id,
@@ -156,13 +140,12 @@ class CareTypeController extends BaseController
      *
      * @Grant(grant="persistence-lead-care_type", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, CareTypeService $careTypeService)
+    public function deleteAction(Request $request, $id, CareTypeService $careTypeService): JsonResponse
     {
         $careTypeService->remove($id);
 
@@ -179,10 +162,8 @@ class CareTypeController extends BaseController
      * @param Request $request
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, CareTypeService $careTypeService)
+    public function deleteBulkAction(Request $request, CareTypeService $careTypeService): JsonResponse
     {
         $careTypeService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class CareTypeController extends BaseController
      * @param Request $request
      * @param CareTypeService $careTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, CareTypeService $careTypeService)
+    public function relatedInfoAction(Request $request, CareTypeService $careTypeService): JsonResponse
     {
         $relatedData = $careTypeService->getRelatedInfo($request->get('ids'));
 

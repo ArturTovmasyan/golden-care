@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\OrganizationService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Organization;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/organization")
  *
  * @Grant(grant="persistence-lead-organization", level="VIEW")
  *
  * Class OrganizationController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class OrganizationController extends BaseController
 {
@@ -39,10 +27,9 @@ class OrganizationController extends BaseController
      *
      * @param Request $request
      * @param OrganizationService $organizationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, OrganizationService $organizationService)
+    public function gridAction(Request $request, OrganizationService $organizationService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class OrganizationController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Organization::class, 'api_lead_organization_grid');
     }
@@ -69,8 +55,7 @@ class OrganizationController extends BaseController
      *
      * @param Request $request
      * @param OrganizationService $organizationService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, OrganizationService $organizationService)
     {
@@ -85,11 +70,12 @@ class OrganizationController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_organization_get", methods={"GET"})
      *
-     * @param OrganizationService $organizationService
+     * @param Request $request
      * @param $id
+     * @param OrganizationService $organizationService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, OrganizationService $organizationService)
+    public function getAction(Request $request, $id, OrganizationService $organizationService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class OrganizationController extends BaseController
      * @param Request $request
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, OrganizationService $organizationService)
+    public function addAction(Request $request, OrganizationService $organizationService): JsonResponse
     {
         $id = $organizationService->add(
             [
@@ -140,9 +125,8 @@ class OrganizationController extends BaseController
      * @param $id
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, OrganizationService $organizationService)
+    public function editAction(Request $request, $id, OrganizationService $organizationService): JsonResponse
     {
         $organizationService->edit(
             $id,
@@ -168,13 +152,12 @@ class OrganizationController extends BaseController
      *
      * @Grant(grant="persistence-lead-organization", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, OrganizationService $organizationService)
+    public function deleteAction(Request $request, $id, OrganizationService $organizationService): JsonResponse
     {
         $organizationService->remove($id);
 
@@ -191,10 +174,8 @@ class OrganizationController extends BaseController
      * @param Request $request
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, OrganizationService $organizationService)
+    public function deleteBulkAction(Request $request, OrganizationService $organizationService): JsonResponse
     {
         $organizationService->removeBulk($request->get('ids'));
 
@@ -209,10 +190,8 @@ class OrganizationController extends BaseController
      * @param Request $request
      * @param OrganizationService $organizationService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, OrganizationService $organizationService)
+    public function relatedInfoAction(Request $request, OrganizationService $organizationService): JsonResponse
     {
         $relatedData = $organizationService->getRelatedInfo($request->get('ids'));
 

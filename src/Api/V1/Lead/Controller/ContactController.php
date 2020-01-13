@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\ContactService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Contact;
@@ -10,28 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/contact")
  *
  * @Grant(grant="persistence-lead-contact", level="VIEW")
  *
  * Class ContactController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class ContactController extends BaseController
 {
@@ -40,10 +28,9 @@ class ContactController extends BaseController
      *
      * @param Request $request
      * @param ContactService $contactService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ContactService $contactService)
+    public function gridAction(Request $request, ContactService $contactService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -65,9 +52,8 @@ class ContactController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Contact::class, 'api_lead_contact_grid');
     }
@@ -77,8 +63,7 @@ class ContactController extends BaseController
      *
      * @param Request $request
      * @param ContactService $contactService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ContactService $contactService)
     {
@@ -101,11 +86,12 @@ class ContactController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_contact_get", methods={"GET"})
      *
-     * @param ContactService $contactService
+     * @param Request $request
      * @param $id
+     * @param ContactService $contactService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ContactService $contactService)
+    public function getAction(Request $request, $id, ContactService $contactService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -123,9 +109,8 @@ class ContactController extends BaseController
      * @param Request $request
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ContactService $contactService)
+    public function addAction(Request $request, ContactService $contactService): JsonResponse
     {
         $id = $contactService->add(
             [
@@ -155,9 +140,8 @@ class ContactController extends BaseController
      * @param $id
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ContactService $contactService)
+    public function editAction(Request $request, $id, ContactService $contactService): JsonResponse
     {
         $contactService->edit(
             $id,
@@ -182,13 +166,12 @@ class ContactController extends BaseController
      *
      * @Grant(grant="persistence-lead-contact", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ContactService $contactService)
+    public function deleteAction(Request $request, $id, ContactService $contactService): JsonResponse
     {
         $contactService->remove($id);
 
@@ -205,10 +188,8 @@ class ContactController extends BaseController
      * @param Request $request
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ContactService $contactService)
+    public function deleteBulkAction(Request $request, ContactService $contactService): JsonResponse
     {
         $contactService->removeBulk($request->get('ids'));
 
@@ -223,10 +204,8 @@ class ContactController extends BaseController
      * @param Request $request
      * @param ContactService $contactService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ContactService $contactService)
+    public function relatedInfoAction(Request $request, ContactService $contactService): JsonResponse
     {
         $relatedData = $contactService->getRelatedInfo($request->get('ids'));
 

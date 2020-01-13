@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\FunnelStageService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\FunnelStage;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/funnel-stage")
  *
  * @Grant(grant="persistence-lead-funnel_stage", level="VIEW")
  *
  * Class FunnelStageController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class FunnelStageController extends BaseController
 {
@@ -39,10 +27,9 @@ class FunnelStageController extends BaseController
      *
      * @param Request $request
      * @param FunnelStageService $funnelStageService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, FunnelStageService $funnelStageService)
+    public function gridAction(Request $request, FunnelStageService $funnelStageService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class FunnelStageController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, FunnelStage::class, 'api_lead_funnel_stage_grid');
     }
@@ -69,8 +55,7 @@ class FunnelStageController extends BaseController
      *
      * @param Request $request
      * @param FunnelStageService $funnelStageService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, FunnelStageService $funnelStageService)
     {
@@ -85,11 +70,12 @@ class FunnelStageController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_funnel_stage_get", methods={"GET"})
      *
-     * @param FunnelStageService $funnelStageService
+     * @param Request $request
      * @param $id
+     * @param FunnelStageService $funnelStageService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, FunnelStageService $funnelStageService)
+    public function getAction(Request $request, $id, FunnelStageService $funnelStageService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class FunnelStageController extends BaseController
      * @param Request $request
      * @param FunnelStageService $funnelStageService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, FunnelStageService $funnelStageService)
+    public function addAction(Request $request, FunnelStageService $funnelStageService): JsonResponse
     {
         $id = $funnelStageService->add(
             [
@@ -136,9 +121,8 @@ class FunnelStageController extends BaseController
      * @param $id
      * @param FunnelStageService $funnelStageService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, FunnelStageService $funnelStageService)
+    public function editAction(Request $request, $id, FunnelStageService $funnelStageService): JsonResponse
     {
         $funnelStageService->edit(
             $id,
@@ -160,13 +144,12 @@ class FunnelStageController extends BaseController
      *
      * @Grant(grant="persistence-lead-funnel_stage", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param FunnelStageService $funnelStageService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, FunnelStageService $funnelStageService)
+    public function deleteAction(Request $request, $id, FunnelStageService $funnelStageService): JsonResponse
     {
         $funnelStageService->remove($id);
 
@@ -183,10 +166,8 @@ class FunnelStageController extends BaseController
      * @param Request $request
      * @param FunnelStageService $funnelStageService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, FunnelStageService $funnelStageService)
+    public function deleteBulkAction(Request $request, FunnelStageService $funnelStageService): JsonResponse
     {
         $funnelStageService->removeBulk($request->get('ids'));
 
@@ -201,10 +182,8 @@ class FunnelStageController extends BaseController
      * @param Request $request
      * @param FunnelStageService $funnelStageService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, FunnelStageService $funnelStageService)
+    public function relatedInfoAction(Request $request, FunnelStageService $funnelStageService): JsonResponse
     {
         $relatedData = $funnelStageService->getRelatedInfo($request->get('ids'));
 

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\StageChangeReasonService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\StageChangeReason;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/stage-change-reason")
  *
  * @Grant(grant="persistence-lead-stage_change_reason", level="VIEW")
  *
  * Class StageChangeReasonController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class StageChangeReasonController extends BaseController
 {
@@ -39,10 +27,9 @@ class StageChangeReasonController extends BaseController
      *
      * @param Request $request
      * @param StageChangeReasonService $stageChangeReasonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, StageChangeReasonService $stageChangeReasonService)
+    public function gridAction(Request $request, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class StageChangeReasonController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, StageChangeReason::class, 'api_lead_stage_change_reason_grid');
     }
@@ -69,8 +55,7 @@ class StageChangeReasonController extends BaseController
      *
      * @param Request $request
      * @param StageChangeReasonService $stageChangeReasonService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, StageChangeReasonService $stageChangeReasonService)
     {
@@ -85,11 +70,12 @@ class StageChangeReasonController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_stage_change_reason_get", methods={"GET"})
      *
-     * @param StageChangeReasonService $stageChangeReasonService
+     * @param Request $request
      * @param $id
+     * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService)
+    public function getAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class StageChangeReasonController extends BaseController
      * @param Request $request
      * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, StageChangeReasonService $stageChangeReasonService)
+    public function addAction(Request $request, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         $id = $stageChangeReasonService->add(
             [
@@ -134,9 +119,8 @@ class StageChangeReasonController extends BaseController
      * @param $id
      * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService)
+    public function editAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         $stageChangeReasonService->edit(
             $id,
@@ -156,13 +140,12 @@ class StageChangeReasonController extends BaseController
      *
      * @Grant(grant="persistence-lead-stage_change_reason", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService)
+    public function deleteAction(Request $request, $id, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         $stageChangeReasonService->remove($id);
 
@@ -179,10 +162,8 @@ class StageChangeReasonController extends BaseController
      * @param Request $request
      * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, StageChangeReasonService $stageChangeReasonService)
+    public function deleteBulkAction(Request $request, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         $stageChangeReasonService->removeBulk($request->get('ids'));
 
@@ -197,10 +178,8 @@ class StageChangeReasonController extends BaseController
      * @param Request $request
      * @param StageChangeReasonService $stageChangeReasonService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, StageChangeReasonService $stageChangeReasonService)
+    public function relatedInfoAction(Request $request, StageChangeReasonService $stageChangeReasonService): JsonResponse
     {
         $relatedData = $stageChangeReasonService->getRelatedInfo($request->get('ids'));
 

@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Lead;
@@ -10,29 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/lead")
  *
  * @Grant(grant="persistence-lead-lead", level="VIEW")
  *
  * Class LeadController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class LeadController extends BaseController
 {
@@ -41,10 +29,9 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param LeadService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, LeadService $activityTypeService)
+    public function gridAction(Request $request, LeadService $activityTypeService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -67,9 +54,8 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Lead::class, 'api_lead_lead_grid');
     }
@@ -79,8 +65,7 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param LeadService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, LeadService $activityTypeService)
     {
@@ -105,11 +90,12 @@ class LeadController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_lead_get", methods={"GET"})
      *
-     * @param LeadService $activityTypeService
+     * @param Request $request
      * @param $id
+     * @param LeadService $activityTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, LeadService $activityTypeService)
+    public function getAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -128,9 +114,8 @@ class LeadController extends BaseController
      * @param LeadService $activityTypeService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, LeadService $activityTypeService, RouterInterface $router)
+    public function addAction(Request $request, LeadService $activityTypeService, RouterInterface $router): JsonResponse
     {
         $id = $activityTypeService->add(
             $router,
@@ -177,9 +162,8 @@ class LeadController extends BaseController
      * @param LeadService $activityTypeService
      * @param RouterInterface $router
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService, RouterInterface $router)
+    public function editAction(Request $request, $id, LeadService $activityTypeService, RouterInterface $router): JsonResponse
     {
         $activityTypeService->edit(
             $id,
@@ -216,13 +200,12 @@ class LeadController extends BaseController
      *
      * @Grant(grant="persistence-lead-lead", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param LeadService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, LeadService $activityTypeService)
+    public function deleteAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
     {
         $activityTypeService->remove($id);
 
@@ -239,10 +222,8 @@ class LeadController extends BaseController
      * @param Request $request
      * @param LeadService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, LeadService $activityTypeService)
+    public function deleteBulkAction(Request $request, LeadService $activityTypeService): JsonResponse
     {
         $activityTypeService->removeBulk($request->get('ids'));
 
@@ -257,10 +238,8 @@ class LeadController extends BaseController
      * @param Request $request
      * @param LeadService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, LeadService $activityTypeService)
+    public function relatedInfoAction(Request $request, LeadService $activityTypeService): JsonResponse
     {
         $relatedData = $activityTypeService->getRelatedInfo($request->get('ids'));
 

@@ -15,7 +15,7 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 /**
  * @Route("/api/v1.0/admin/resident/event")
  *
- * @Grant(grant="persistence-resident-resident_event", level="VIEW"
+ * @Grant(grant="persistence-resident-resident_event", level="VIEW")
  *
  * Class ResidentEventController
  * @package App\Api\V1\Admin\Controller

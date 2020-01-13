@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\ReferralService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Referral;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/referral")
  *
  * @Grant(grant="persistence-lead-referral", level="VIEW")
  *
  * Class ReferralController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class ReferralController extends BaseController
 {
@@ -39,10 +27,9 @@ class ReferralController extends BaseController
      *
      * @param Request $request
      * @param ReferralService $referralService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ReferralService $referralService)
+    public function gridAction(Request $request, ReferralService $referralService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -60,9 +47,8 @@ class ReferralController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Referral::class, 'api_lead_referral_grid');
     }
@@ -72,8 +58,7 @@ class ReferralController extends BaseController
      *
      * @param Request $request
      * @param ReferralService $referralService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ReferralService $referralService)
     {
@@ -91,11 +76,12 @@ class ReferralController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_referral_get", methods={"GET"})
      *
-     * @param ReferralService $referralService
+     * @param Request $request
      * @param $id
+     * @param ReferralService $referralService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ReferralService $referralService)
+    public function getAction(Request $request, $id, ReferralService $referralService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -113,9 +99,8 @@ class ReferralController extends BaseController
      * @param Request $request
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ReferralService $referralService)
+    public function addAction(Request $request, ReferralService $referralService): JsonResponse
     {
         $id = $referralService->add(
             [
@@ -143,9 +128,8 @@ class ReferralController extends BaseController
      * @param $id
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ReferralService $referralService)
+    public function editAction(Request $request, $id, ReferralService $referralService): JsonResponse
     {
         $referralService->edit(
             $id,
@@ -168,13 +152,12 @@ class ReferralController extends BaseController
      *
      * @Grant(grant="persistence-lead-referral", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ReferralService $referralService)
+    public function deleteAction(Request $request, $id, ReferralService $referralService): JsonResponse
     {
         $referralService->remove($id);
 
@@ -191,10 +174,8 @@ class ReferralController extends BaseController
      * @param Request $request
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ReferralService $referralService)
+    public function deleteBulkAction(Request $request, ReferralService $referralService): JsonResponse
     {
         $referralService->removeBulk($request->get('ids'));
 
@@ -209,10 +190,8 @@ class ReferralController extends BaseController
      * @param Request $request
      * @param ReferralService $referralService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ReferralService $referralService)
+    public function relatedInfoAction(Request $request, ReferralService $referralService): JsonResponse
     {
         $relatedData = $referralService->getRelatedInfo($request->get('ids'));
 

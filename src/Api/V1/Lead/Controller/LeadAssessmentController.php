@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Lead\Service\LeadAssessmentService;
 use App\Entity\Lead\Assessment;
@@ -10,22 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/lead/assessment")
  *
  * @Grant(grant="persistence-lead-assessment-assessment", level="VIEW")
@@ -40,10 +27,9 @@ class LeadAssessmentController extends BaseController
      *
      * @param Request $request
      * @param LeadAssessmentService $leadAssessmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, LeadAssessmentService $leadAssessmentService)
+    public function gridAction(Request $request, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -59,9 +45,8 @@ class LeadAssessmentController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Assessment::class, 'api_lead_assessment_grid');
     }
@@ -71,8 +56,7 @@ class LeadAssessmentController extends BaseController
      *
      * @param Request $request
      * @param LeadAssessmentService $leadAssessmentService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, LeadAssessmentService $leadAssessmentService)
     {
@@ -93,7 +77,7 @@ class LeadAssessmentController extends BaseController
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, LeadAssessmentService $leadAssessmentService)
+    public function getAction(Request $request, $id, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -111,9 +95,8 @@ class LeadAssessmentController extends BaseController
      * @param Request $request
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, LeadAssessmentService $leadAssessmentService)
+    public function addAction(Request $request, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         $id = $leadAssessmentService->add(
             [
@@ -142,9 +125,8 @@ class LeadAssessmentController extends BaseController
      * @param $id
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, LeadAssessmentService $leadAssessmentService)
+    public function editAction(Request $request, $id, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         $leadAssessmentService->edit(
             $id,
@@ -168,13 +150,12 @@ class LeadAssessmentController extends BaseController
      *
      * @Grant(grant="persistence-lead-assessment-assessment", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, LeadAssessmentService $leadAssessmentService)
+    public function deleteAction(Request $request, $id, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         $leadAssessmentService->remove($id);
 
@@ -191,10 +172,8 @@ class LeadAssessmentController extends BaseController
      * @param Request $request
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, LeadAssessmentService $leadAssessmentService)
+    public function deleteBulkAction(Request $request, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         $leadAssessmentService->removeBulk($request->get('ids'));
 
@@ -209,10 +188,8 @@ class LeadAssessmentController extends BaseController
      * @param Request $request
      * @param LeadAssessmentService $leadAssessmentService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, LeadAssessmentService $leadAssessmentService)
+    public function relatedInfoAction(Request $request, LeadAssessmentService $leadAssessmentService): JsonResponse
     {
         $relatedData = $leadAssessmentService->getRelatedInfo($request->get('ids'));
 

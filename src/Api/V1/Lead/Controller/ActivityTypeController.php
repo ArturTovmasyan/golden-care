@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\ActivityTypeService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\ActivityType;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/activity-type")
  *
  * @Grant(grant="persistence-lead-activity_type", level="VIEW")
  *
  * Class ActivityTypeController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class ActivityTypeController extends BaseController
 {
@@ -39,10 +27,9 @@ class ActivityTypeController extends BaseController
      *
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, ActivityTypeService $activityTypeService)
+    public function gridAction(Request $request, ActivityTypeService $activityTypeService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class ActivityTypeController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, ActivityType::class, 'api_lead_activity_type_grid');
     }
@@ -69,8 +55,7 @@ class ActivityTypeController extends BaseController
      *
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, ActivityTypeService $activityTypeService)
     {
@@ -86,11 +71,12 @@ class ActivityTypeController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_activity_type_get", methods={"GET"})
      *
-     * @param ActivityTypeService $activityTypeService
+     * @param Request $request
      * @param $id
+     * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, ActivityTypeService $activityTypeService)
+    public function getAction(Request $request, $id, ActivityTypeService $activityTypeService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -108,9 +94,8 @@ class ActivityTypeController extends BaseController
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, ActivityTypeService $activityTypeService)
+    public function addAction(Request $request, ActivityTypeService $activityTypeService): JsonResponse
     {
         $id = $activityTypeService->add(
             [
@@ -146,9 +131,8 @@ class ActivityTypeController extends BaseController
      * @param $id
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, ActivityTypeService $activityTypeService)
+    public function editAction(Request $request, $id, ActivityTypeService $activityTypeService): JsonResponse
     {
         $activityTypeService->edit(
             $id,
@@ -179,13 +163,12 @@ class ActivityTypeController extends BaseController
      *
      * @Grant(grant="persistence-lead-activity_type", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, ActivityTypeService $activityTypeService)
+    public function deleteAction(Request $request, $id, ActivityTypeService $activityTypeService): JsonResponse
     {
         $activityTypeService->remove($id);
 
@@ -202,10 +185,8 @@ class ActivityTypeController extends BaseController
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, ActivityTypeService $activityTypeService)
+    public function deleteBulkAction(Request $request, ActivityTypeService $activityTypeService): JsonResponse
     {
         $activityTypeService->removeBulk($request->get('ids'));
 
@@ -220,10 +201,8 @@ class ActivityTypeController extends BaseController
      * @param Request $request
      * @param ActivityTypeService $activityTypeService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, ActivityTypeService $activityTypeService)
+    public function relatedInfoAction(Request $request, ActivityTypeService $activityTypeService): JsonResponse
     {
         $relatedData = $activityTypeService->getRelatedInfo($request->get('ids'));
 

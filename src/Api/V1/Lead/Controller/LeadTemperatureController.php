@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\LeadTemperatureService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\LeadTemperature;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/lead-temperature")
  *
  * @Grant(grant="persistence-lead-lead_temperature", level="VIEW")
  *
  * Class LeadTemperatureController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class LeadTemperatureController extends BaseController
 {
@@ -39,10 +27,9 @@ class LeadTemperatureController extends BaseController
      *
      * @param Request $request
      * @param LeadTemperatureService $leadTemperatureService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, LeadTemperatureService $leadTemperatureService)
+    public function gridAction(Request $request, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -60,9 +47,8 @@ class LeadTemperatureController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, LeadTemperature::class, 'api_lead_lead_temperature_grid');
     }
@@ -72,8 +58,7 @@ class LeadTemperatureController extends BaseController
      *
      * @param Request $request
      * @param LeadTemperatureService $leadTemperatureService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, LeadTemperatureService $leadTemperatureService)
     {
@@ -88,11 +73,12 @@ class LeadTemperatureController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_lead_temperature_get", methods={"GET"})
      *
-     * @param LeadTemperatureService $leadTemperatureService
+     * @param Request $request
      * @param $id
+     * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, LeadTemperatureService $leadTemperatureService)
+    public function getAction(Request $request, $id, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -110,9 +96,8 @@ class LeadTemperatureController extends BaseController
      * @param Request $request
      * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, LeadTemperatureService $leadTemperatureService)
+    public function addAction(Request $request, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         $id = $leadTemperatureService->add(
             [
@@ -139,9 +124,8 @@ class LeadTemperatureController extends BaseController
      * @param $id
      * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, LeadTemperatureService $leadTemperatureService)
+    public function editAction(Request $request, $id, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         $leadTemperatureService->edit(
             $id,
@@ -163,13 +147,12 @@ class LeadTemperatureController extends BaseController
      *
      * @Grant(grant="persistence-lead-lead_temperature", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, LeadTemperatureService $leadTemperatureService)
+    public function deleteAction(Request $request, $id, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         $leadTemperatureService->remove($id);
 
@@ -186,10 +169,8 @@ class LeadTemperatureController extends BaseController
      * @param Request $request
      * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, LeadTemperatureService $leadTemperatureService)
+    public function deleteBulkAction(Request $request, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         $leadTemperatureService->removeBulk($request->get('ids'));
 
@@ -204,10 +185,8 @@ class LeadTemperatureController extends BaseController
      * @param Request $request
      * @param LeadTemperatureService $leadTemperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, LeadTemperatureService $leadTemperatureService)
+    public function relatedInfoAction(Request $request, LeadTemperatureService $leadTemperatureService): JsonResponse
     {
         $relatedData = $leadTemperatureService->getRelatedInfo($request->get('ids'));
 

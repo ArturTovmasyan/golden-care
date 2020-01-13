@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Api\V1\Lead\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Lead\Service\TemperatureService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Temperature;
@@ -9,28 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use App\Annotation\Grant as Grant;
 
 /**
- * @IgnoreAnnotation("api")
- * @IgnoreAnnotation("apiVersion")
- * @IgnoreAnnotation("apiName")
- * @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
- * @IgnoreAnnotation("apiHeader")
- * @IgnoreAnnotation("apiSuccess")
- * @IgnoreAnnotation("apiSuccessExample")
- * @IgnoreAnnotation("apiParam")
- * @IgnoreAnnotation("apiParamExample")
- * @IgnoreAnnotation("apiErrorExample")
- * @IgnoreAnnotation("apiPermission")
- *
  * @Route("/api/v1.0/lead/temperature")
  *
  * @Grant(grant="persistence-lead-temperature", level="VIEW")
  *
  * Class TemperatureController
- * @package App\Api\V1\Admin\Controller
+ * @package App\Api\V1\Lead\Controller
  */
 class TemperatureController extends BaseController
 {
@@ -39,10 +27,9 @@ class TemperatureController extends BaseController
      *
      * @param Request $request
      * @param TemperatureService $temperatureService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return JsonResponse
      */
-    public function gridAction(Request $request, TemperatureService $temperatureService)
+    public function gridAction(Request $request, TemperatureService $temperatureService): JsonResponse
     {
         return $this->respondGrid(
             $request,
@@ -57,9 +44,8 @@ class TemperatureController extends BaseController
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    public function gridOptionAction(Request $request)
+    public function gridOptionAction(Request $request): JsonResponse
     {
         return $this->getOptionsByGroupName($request, Temperature::class, 'api_lead_temperature_grid');
     }
@@ -69,8 +55,7 @@ class TemperatureController extends BaseController
      *
      * @param Request $request
      * @param TemperatureService $temperatureService
-     * @return JsonResponse|PdfResponse
-     * @throws \ReflectionException
+     * @return PdfResponse|JsonResponse|Response
      */
     public function listAction(Request $request, TemperatureService $temperatureService)
     {
@@ -85,11 +70,12 @@ class TemperatureController extends BaseController
     /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_temperature_get", methods={"GET"})
      *
-     * @param TemperatureService $temperatureService
+     * @param Request $request
      * @param $id
+     * @param TemperatureService $temperatureService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, TemperatureService $temperatureService)
+    public function getAction(Request $request, $id, TemperatureService $temperatureService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
@@ -107,9 +93,8 @@ class TemperatureController extends BaseController
      * @param Request $request
      * @param TemperatureService $temperatureService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function addAction(Request $request, TemperatureService $temperatureService)
+    public function addAction(Request $request, TemperatureService $temperatureService): JsonResponse
     {
         $id = $temperatureService->add(
             [
@@ -135,9 +120,8 @@ class TemperatureController extends BaseController
      * @param $id
      * @param TemperatureService $temperatureService
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function editAction(Request $request, $id, TemperatureService $temperatureService)
+    public function editAction(Request $request, $id, TemperatureService $temperatureService): JsonResponse
     {
         $temperatureService->edit(
             $id,
@@ -158,13 +142,12 @@ class TemperatureController extends BaseController
      *
      * @Grant(grant="persistence-lead-temperature", level="DELETE")
      *
+     * @param Request $request
      * @param $id
      * @param TemperatureService $temperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteAction(Request $request, $id, TemperatureService $temperatureService)
+    public function deleteAction(Request $request, $id, TemperatureService $temperatureService): JsonResponse
     {
         $temperatureService->remove($id);
 
@@ -181,10 +164,8 @@ class TemperatureController extends BaseController
      * @param Request $request
      * @param TemperatureService $temperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function deleteBulkAction(Request $request, TemperatureService $temperatureService)
+    public function deleteBulkAction(Request $request, TemperatureService $temperatureService): JsonResponse
     {
         $temperatureService->removeBulk($request->get('ids'));
 
@@ -199,10 +180,8 @@ class TemperatureController extends BaseController
      * @param Request $request
      * @param TemperatureService $temperatureService
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Throwable
      */
-    public function relatedInfoAction(Request $request, TemperatureService $temperatureService)
+    public function relatedInfoAction(Request $request, TemperatureService $temperatureService): JsonResponse
     {
         $relatedData = $temperatureService->getRelatedInfo($request->get('ids'));
 
