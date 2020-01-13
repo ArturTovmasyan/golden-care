@@ -2433,7 +2433,7 @@ class ResidentService extends BaseService implements IGridService
                 $chunkFileRepo = $this->em->getRepository(ChunkFile::class);
 
                 //get chunk count by requestID
-                $chunkCount = (int) $chunkFileRepo->getChunkCount($requestId, $data['userId']);
+                $chunkCount = (int)$chunkFileRepo->getChunkCount($requestId, $data['userId']);
 
                 $image = null;
 

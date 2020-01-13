@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -18,7 +19,7 @@ class ChangeLogService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ChangeLogRepository $repo */
         $repo = $this->em->getRepository(ChangeLog::class);

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -34,7 +35,7 @@ class DocumentService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var DocumentRepository $repo */
         $repo = $this->em->getRepository(Document::class);
@@ -123,7 +124,7 @@ class DocumentService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params, string $baseUrl) : ?int
+    public function add(array $params, string $baseUrl): ?int
     {
         $insert_id = null;
         try {
@@ -150,7 +151,7 @@ class DocumentService extends BaseService implements IGridService
             $ccEmails = !empty($params['emails']) ? $params['emails'] : [];
             $document->setEmails($ccEmails);
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -166,7 +167,7 @@ class DocumentService extends BaseService implements IGridService
                 $document->setFacilities(null);
             }
 
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var RoleRepository $roleRepo */
                 $roleRepo = $this->em->getRepository(Role::class);
 
@@ -200,7 +201,7 @@ class DocumentService extends BaseService implements IGridService
                     throw new FileExtensionException();
                 }
 
-                $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
@@ -219,7 +220,9 @@ class DocumentService extends BaseService implements IGridService
             $this->em->flush();
 
             if ($document->isSendEmailNotification()) {
-                $roleIds = array_map(function($item){return $item->getId();} , $document->getRoles()->toArray());
+                $roleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $document->getRoles()->toArray());
 
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
@@ -227,7 +230,9 @@ class DocumentService extends BaseService implements IGridService
 
                 $emails = [];
                 if (!empty($userFacilityIds)) {
-                    $facilityIds = array_map(function($item){return $item->getId();} , $document->getFacilities()->toArray());
+                    $facilityIds = array_map(function ($item) {
+                        return $item->getId();
+                    }, $document->getFacilities()->toArray());
 
                     foreach ($userFacilityIds as $userFacilityId) {
                         if ($userFacilityId['facilityIds'] === null) {
@@ -253,7 +258,7 @@ class DocumentService extends BaseService implements IGridService
                         $spaceName = $document->getCategory()->getSpace()->getName();
                     }
 
-                    $subject = 'New Document - '. $document->getTitle();
+                    $subject = 'New Document - ' . $document->getTitle();
 
                     $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
                         'subject' => $subject,
@@ -286,7 +291,7 @@ class DocumentService extends BaseService implements IGridService
      * @param string $baseUrl
      * @throws \Exception
      */
-    public function edit($id, array $params, string $baseUrl) : void
+    public function edit($id, array $params, string $baseUrl): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -326,7 +331,7 @@ class DocumentService extends BaseService implements IGridService
                 $entity->removeFacility($facility);
             }
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -347,7 +352,7 @@ class DocumentService extends BaseService implements IGridService
                 $entity->removeRole($role);
             }
 
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var RoleRepository $roleRepo */
                 $roleRepo = $this->em->getRepository(Role::class);
 
@@ -389,7 +394,7 @@ class DocumentService extends BaseService implements IGridService
                         throw new FileExtensionException();
                     }
 
-                    $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                    $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
@@ -409,7 +414,9 @@ class DocumentService extends BaseService implements IGridService
             $this->em->flush();
 
             if ($entity->isSendEmailNotification()) {
-                $roleIds = array_map(function($item){return $item->getId();} , $entity->getRoles()->toArray());
+                $roleIds = array_map(function ($item) {
+                    return $item->getId();
+                }, $entity->getRoles()->toArray());
 
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
@@ -417,7 +424,9 @@ class DocumentService extends BaseService implements IGridService
 
                 $emails = [];
                 if (!empty($userFacilityIds)) {
-                    $facilityIds = array_map(function($item){return $item->getId();} , $entity->getFacilities()->toArray());
+                    $facilityIds = array_map(function ($item) {
+                        return $item->getId();
+                    }, $entity->getFacilities()->toArray());
 
                     foreach ($userFacilityIds as $userFacilityId) {
                         if ($userFacilityId['facilityIds'] === null) {
@@ -443,7 +452,7 @@ class DocumentService extends BaseService implements IGridService
                         $spaceName = $entity->getCategory()->getSpace()->getName();
                     }
 
-                    $subject = 'New Document - '. $entity->getTitle();
+                    $subject = 'New Document - ' . $entity->getTitle();
 
                     $body = $this->container->get('templating')->render('@api_email/document.html.twig', array(
                         'subject' => $subject,
@@ -593,7 +602,7 @@ class DocumentService extends BaseService implements IGridService
     {
         $entity = $this->getById($id);
 
-        if(!empty($entity) && $entity->getFile() !== null) {
+        if (!empty($entity) && $entity->getFile() !== null) {
             return [$entity->getTitle(), $entity->getFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
         }
 

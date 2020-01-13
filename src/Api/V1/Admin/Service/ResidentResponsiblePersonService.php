@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -29,7 +30,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -82,7 +83,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -134,7 +135,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
             $residentResponsiblePerson->setRelationship($relationship);
 
             /* Roles - begin */
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
                 $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
 
@@ -168,7 +169,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -232,7 +233,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                 $entity->removeRole($role);
             }
 
-            if(!empty($params['roles'])) {
+            if (!empty($params['roles'])) {
                 /** @var ResponsiblePersonRoleRepository $responsiblePersonRoleRepo */
                 $responsiblePersonRoleRepo = $this->em->getRepository(ResponsiblePersonRole::class);
 
@@ -368,7 +369,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                         $value['id']
                     );
 
-                    if (!empty($rp)) {
+                    if ($rp !== null) {
                         $rp->setSortOrder($idx);
                         $this->em->persist($rp);
                     }

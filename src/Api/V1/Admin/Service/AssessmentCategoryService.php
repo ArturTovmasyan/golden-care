@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -21,7 +22,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var CategoryRepository $repo */
         $repo = $this->em->getRepository(Category::class);
@@ -58,7 +59,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -104,7 +105,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -158,9 +159,9 @@ class AssessmentCategoryService extends BaseService implements IGridService
         /**
          * @var Row $oldRow
          */
-        $oldRows      = $category->getRows();
+        $oldRows = $category->getRows();
         $oldRowsByIds = [];
-        $rowIds       = [];
+        $rowIds = [];
 
         if ($oldRows !== null) {
             foreach ($oldRows as $oldRow) {
@@ -172,7 +173,7 @@ class AssessmentCategoryService extends BaseService implements IGridService
         if (!empty($rows)) {
             foreach ($rows as $key => $row) {
                 if (isset($row['id'], $oldRowsByIds[$row['id']])) {
-                    $entity   = $oldRowsByIds[$row['id']];
+                    $entity = $oldRowsByIds[$row['id']];
                     $rowIds[] = $row['id'];
                 } else {
                     $entity = new Row();

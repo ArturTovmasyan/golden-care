@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -29,7 +30,7 @@ class ContactService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ContactRepository $repo */
         $repo = $this->em->getRepository(Contact::class);
@@ -83,7 +84,7 @@ class ContactService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -147,7 +148,7 @@ class ContactService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -234,9 +235,9 @@ class ContactService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    public function savePhones(Contact $contact, array $phones = []) : ?array
+    public function savePhones(Contact $contact, array $phones = []): ?array
     {
-        if($contact->getId() !== null) {
+        if ($contact->getId() !== null) {
 
             /** @var ContactPhoneRepository $contactPhoneRepo */
             $contactPhoneRepo = $this->em->getRepository(ContactPhone::class);
@@ -252,8 +253,8 @@ class ContactService extends BaseService implements IGridService
 
         $contactPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
 
             $contactPhone = new ContactPhone();
             $contactPhone->setContact($contact);

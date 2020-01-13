@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -24,7 +25,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -85,7 +86,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -97,9 +98,9 @@ class ResidentPhysicianService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $residentId  = $params['resident_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
             $physicianId = $params['physician_id'] ?? 0;
-            $primary = $params['primary'] ? (bool) $params['primary'] : false;
+            $primary = $params['primary'] ? (bool)$params['primary'] : false;
 
             /** @var ResidentRepository $residentRepo */
             $residentRepo = $this->em->getRepository(Resident::class);
@@ -162,7 +163,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -184,9 +185,9 @@ class ResidentPhysicianService extends BaseService implements IGridService
                 throw new ResidentPhysicianNotFoundException();
             }
 
-            $residentId  = $params['resident_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
             $physicianId = $params['physician_id'] ?? 0;
-            $primary = $params['primary'] ? (bool) $params['primary'] : false;
+            $primary = $params['primary'] ? (bool)$params['primary'] : false;
 
             /** @var ResidentRepository $residentRepo */
             $residentRepo = $this->em->getRepository(Resident::class);
@@ -346,7 +347,7 @@ class ResidentPhysicianService extends BaseService implements IGridService
                         $value['id']
                     );
 
-                    if (!empty($rp)) {
+                    if ($rp !== null) {
                         $rp->setSortOrder($idx);
                         $this->em->persist($rp);
                     }

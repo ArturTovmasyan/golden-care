@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -28,7 +29,7 @@ class OutreachService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var OutreachRepository $repo */
         $repo = $this->em->getRepository(Outreach::class);
@@ -65,7 +66,7 @@ class OutreachService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -91,7 +92,7 @@ class OutreachService extends BaseService implements IGridService
             $notes = $params['notes'] ?? '';
             $outreach->setNotes($notes);
 
-            if(!empty($params['contacts'])) {
+            if (!empty($params['contacts'])) {
                 /** @var ContactRepository $contactRepo */
                 $contactRepo = $this->em->getRepository(Contact::class);
 
@@ -132,7 +133,7 @@ class OutreachService extends BaseService implements IGridService
                 $outreach->setDate(null);
             }
 
-            if(!empty($params['participants'])) {
+            if (!empty($params['participants'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
@@ -169,7 +170,7 @@ class OutreachService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -209,7 +210,7 @@ class OutreachService extends BaseService implements IGridService
                 $entity->removeContact($contact);
             }
 
-            if(!empty($params['contacts'])) {
+            if (!empty($params['contacts'])) {
                 /** @var ContactRepository $contactRepo */
                 $contactRepo = $this->em->getRepository(Contact::class);
 
@@ -255,7 +256,7 @@ class OutreachService extends BaseService implements IGridService
                 $entity->removeUser($user);
             }
 
-            if(!empty($params['participants'])) {
+            if (!empty($params['participants'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 

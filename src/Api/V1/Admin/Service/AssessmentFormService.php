@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -26,7 +27,7 @@ class AssessmentFormService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var FormRepository $repo */
         $repo = $this->em->getRepository(Form::class);
@@ -63,7 +64,7 @@ class AssessmentFormService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -118,7 +119,7 @@ class AssessmentFormService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -186,7 +187,7 @@ class AssessmentFormService extends BaseService implements IGridService
      * @param array $categoryIds
      * @return bool
      */
-    private function saveCategories(Form $form, $categoryIds = [])
+    private function saveCategories(Form $form, $categoryIds = []): ?bool
     {
         /**
          * @var FormCategory $existingCategory
@@ -194,7 +195,7 @@ class AssessmentFormService extends BaseService implements IGridService
          * @var Category $category
          */
         $existingCategories = $form->getFormCategories();
-        $categoryIds        = array_unique($categoryIds);
+        $categoryIds = array_unique($categoryIds);
 
         if (empty($categoryIds) && $existingCategories !== null) {
             foreach ($existingCategories as $existingCategory) {
@@ -218,8 +219,8 @@ class AssessmentFormService extends BaseService implements IGridService
         }
 
         $categoryRepository = $this->em->getRepository(Category::class);
-        $categories         = $categoryRepository->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $categoryIds);
-        $categoriesById     = [];
+        $categories = $categoryRepository->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Category::class), $categoryIds);
+        $categoriesById = [];
 
         foreach ($categories as $category) {
             $categoriesById[$category->getId()] = $category;

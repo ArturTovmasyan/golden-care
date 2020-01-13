@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -27,7 +28,7 @@ class ResidentDocumentService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -80,7 +81,7 @@ class ResidentDocumentService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -112,7 +113,7 @@ class ResidentDocumentService extends BaseService implements IGridService
 
                 $this->em->persist($file);
 
-                $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
@@ -146,7 +147,7 @@ class ResidentDocumentService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -197,7 +198,7 @@ class ResidentDocumentService extends BaseService implements IGridService
 
                     $this->em->persist($file);
 
-                    $s3Id = $file->getId().'.'.MimeUtil::mime2ext($file->getMimeType());
+                    $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
@@ -350,7 +351,7 @@ class ResidentDocumentService extends BaseService implements IGridService
     {
         $entity = $this->getById($id);
 
-        if(!empty($entity) && $entity->getFile() !== null) {
+        if (!empty($entity) && $entity->getFile() !== null) {
             return [$entity->getTitle(), $entity->getFile()->getMimeType(), $this->s3Service->downloadFile($entity->getFile()->getS3Id(), $entity->getFile()->getType())];
         }
 

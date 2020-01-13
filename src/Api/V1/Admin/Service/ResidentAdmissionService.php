@@ -138,8 +138,8 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $residents = array_column($residents, 'fullName', 'id');
 
         foreach ($ids as $id) {
-            if (array_key_exists((int) $id, $residents)) {
-                $data[$id][] = $residents[(int) $id];
+            if (array_key_exists((int)$id, $residents)) {
+                $data[$id][] = $residents[(int)$id];
             } else {
                 $data[$id][] = null;
             }
@@ -163,7 +163,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @return array
      */
-    public function getActiveResidents()
+    public function getActiveResidents(): ?array
     {
         $limit = 6;
 
@@ -262,7 +262,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $typeId
      * @return array
      */
-    public function getPerPageResidents($state, $page, $perPage, $type, $typeId)
+    public function getPerPageResidents($state, $page, $perPage, $type, $typeId): ?array
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -335,7 +335,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $typeId
      * @return array
      */
-    public function getMobilePerPageResidents(RouterInterface $router, $state, $page, $perPage, $date, $type, $typeId)
+    public function getMobilePerPageResidents(RouterInterface $router, $state, $page, $perPage, $date, $type, $typeId): ?array
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -419,7 +419,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @return array
      */
-    public function getCountActiveResidents()
+    public function getCountActiveResidents(): ?array
     {
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
@@ -515,7 +515,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $inactive
      * @return array
      */
-    public function getActiveOrInactiveResidents($inactive)
+    public function getActiveOrInactiveResidents($inactive): ?array
     {
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);

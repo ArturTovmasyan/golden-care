@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -20,7 +21,7 @@ class RelationshipService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var RelationshipRepository $repo */
         $repo = $this->em->getRepository(Relationship::class);
@@ -57,7 +58,7 @@ class RelationshipService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {

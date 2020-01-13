@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -29,7 +30,7 @@ class ApartmentRoomService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ApartmentRoomRepository $repo */
         $repo = $this->em->getRepository(ApartmentRoom::class);
@@ -59,7 +60,9 @@ class ApartmentRoomService extends BaseService implements IGridService
 
         if (!empty($rooms)) {
 
-            $roomIds = array_map(function(ApartmentRoom $item){return $item->getId();} , $rooms);
+            $roomIds = array_map(function (ApartmentRoom $item) {
+                return $item->getId();
+            }, $rooms);
 
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
@@ -70,7 +73,9 @@ class ApartmentRoomService extends BaseService implements IGridService
             $apartmentBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
             $bedIds = [];
             if (\count($apartmentBeds)) {
-                $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
+                $bedIds = array_map(function ($item) {
+                    return $item['id'];
+                }, $apartmentBeds);
             }
 
             if ($vacant) {
@@ -78,7 +83,9 @@ class ApartmentRoomService extends BaseService implements IGridService
 
                 $occupancyBedIds = [];
                 if (!empty($residentAdmissions)) {
-                    $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $residentAdmissions);
+                    $occupancyBedIds = array_map(function ($item) {
+                        return $item['bedId'];
+                    }, $residentAdmissions);
                 }
 
                 /** @var ApartmentRoom $room */
@@ -141,7 +148,9 @@ class ApartmentRoomService extends BaseService implements IGridService
             $beds = $room->getBeds();
 
             if ($beds !== null) {
-                $ids = array_map(function(ApartmentBed $item){return $item->getId();} , $beds->toArray());
+                $ids = array_map(function (ApartmentBed $item) {
+                    return $item->getId();
+                }, $beds->toArray());
 
                 /** @var ResidentAdmissionRepository $admissionRepo */
                 $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
@@ -172,7 +181,7 @@ class ApartmentRoomService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -262,7 +271,7 @@ class ApartmentRoomService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -461,7 +470,8 @@ class ApartmentRoomService extends BaseService implements IGridService
      * @param int $apartmentId
      * @return mixed
      */
-    public function getLastNumber($apartmentId) {
+    public function getLastNumber($apartmentId)
+    {
         /** @var ApartmentRoomRepository $repo */
         $repo = $this->em->getRepository(ApartmentRoom::class);
 

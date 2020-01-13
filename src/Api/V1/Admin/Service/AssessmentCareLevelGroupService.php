@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -22,7 +23,7 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var CareLevelGroupRepository $repo */
         $repo = $this->em->getRepository(CareLevelGroup::class);
@@ -59,7 +60,7 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -102,7 +103,7 @@ class AssessmentCareLevelGroupService extends BaseService implements IGridServic
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**

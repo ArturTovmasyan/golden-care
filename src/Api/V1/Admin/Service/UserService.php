@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -32,7 +33,7 @@ class UserService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var UserRepository $repo */
         $repo = $this->em->getRepository(User::class);
@@ -75,7 +76,7 @@ class UserService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -95,19 +96,19 @@ class UserService extends BaseService implements IGridService
             $user->setLastName($params['last_name']);
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
-            $user->setEnabled((bool) $params['enabled']);
-            $user->setOwner((bool) $params['owner']);
+            $user->setEnabled((bool)$params['enabled']);
+            $user->setOwner((bool)$params['owner']);
             $user->setLicenseAccepted(false);
             $user->setGrants($params['grants']);
             $user->setSpace($space);
 
-            if(\count($params['roles']) > 0) {
+            if (\count($params['roles']) > 0) {
                 $user->getRoleObjects()->clear();
 
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($role_id);
-                    if($role) {
+                    if ($role) {
                         $user->getRoleObjects()->add($role);
                     }
                 }
@@ -172,24 +173,24 @@ class UserService extends BaseService implements IGridService
             $user->setLastName($params['last_name']);
             $user->setUsername(strtolower($params['username']));
             $user->setEmail($params['email']);
-            $user->setEnabled((bool) $params['enabled']);
-            $user->setOwner((bool) $params['owner']);
+            $user->setEnabled((bool)$params['enabled']);
+            $user->setOwner((bool)$params['owner']);
             $user->setGrants($params['grants']);
             $user->setSpace($space);
 
-            if(\count($params['roles']) > 0) {
+            if (\count($params['roles']) > 0) {
                 $user->getRoleObjects()->clear();
 
                 foreach ($params['roles'] as $role_id) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($role_id);
-                    if($role) {
+                    if ($role) {
                         $user->getRoleObjects()->add($role);
                     }
                 }
             }
 
-            if(!empty($params['password'])) {
+            if (!empty($params['password'])) {
                 $user->setPlainPassword($params['password']);
                 $user->setConfirmPassword($params['re_password']);
             }
@@ -198,7 +199,7 @@ class UserService extends BaseService implements IGridService
 
             $this->validate($user, null, ['api_admin_user_edit']);
 
-            if(!empty($params['password'])) {
+            if (!empty($params['password'])) {
                 $encoded = $this->encoder->encodePassword($user, $params['password']);
                 $user->setPassword($encoded);
             }
@@ -226,7 +227,7 @@ class UserService extends BaseService implements IGridService
             /** @var UserRepository $repo */
             $repo = $this->em->getRepository(User::class);
 
-            /** @var User $user **/
+            /** @var User $user * */
             $user = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $id);
 
             if ($user === null) {
@@ -236,7 +237,7 @@ class UserService extends BaseService implements IGridService
             $this->em->getConnection()->beginTransaction();
 
             $password = $this->generatePassword(8);
-            $encoded  = $this->encoder->encodePassword($user, $password);
+            $encoded = $this->encoder->encodePassword($user, $password);
 
             $user->setPlainPassword($password);
             $user->setPassword($encoded);
@@ -262,9 +263,9 @@ class UserService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones($user, array $phones = []) : ?array
+    private function savePhones($user, array $phones = []): ?array
     {
-        if($user->getId()) {
+        if ($user->getId()) {
             /** @var UserPhoneRepository $userPhoneRepo */
             $userPhoneRepo = $this->em->getRepository(UserPhone::class);
 
@@ -282,9 +283,9 @@ class UserService extends BaseService implements IGridService
 
         $userPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
 
             $userPhone = new UserPhone();
             $userPhone->setUser($user);
@@ -420,7 +421,9 @@ class UserService extends BaseService implements IGridService
 
         $entities = $repo->mobileList($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $date, $userId);
 
-        $userIds = array_map(function($item){return $item['id'];} , $entities);
+        $userIds = array_map(function ($item) {
+            return $item['id'];
+        }, $entities);
 
         /** @var UserImageRepository $imageRepo */
         $imageRepo = $this->em->getRepository(UserImage::class);
@@ -432,7 +435,7 @@ class UserService extends BaseService implements IGridService
         $phoneRepo = $this->em->getRepository(UserPhone::class);
         $phones = $phoneRepo->getByUserIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(UserPhone::class), $userIds);
 
-        $finalEntities  = [];
+        $finalEntities = [];
         if (!empty($entities)) {
             foreach ($entities as $entity) {
                 $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];

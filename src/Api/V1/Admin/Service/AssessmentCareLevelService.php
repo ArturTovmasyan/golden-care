@@ -1,15 +1,14 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AssessmentCareLevelGroupNotFoundException;
 use App\Api\V1\Common\Service\Exception\AssessmentCareLevelNotFoundException;
-use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Assessment\CareLevel;
 use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Row;
-use App\Entity\Space;
 use App\Repository\Assessment\CareLevelGroupRepository;
 use App\Repository\Assessment\CareLevelRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -24,7 +23,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var CareLevelRepository $repo */
         $repo = $this->em->getRepository(CareLevel::class);
@@ -61,7 +60,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -108,7 +107,7 @@ class AssessmentCareLevelService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**

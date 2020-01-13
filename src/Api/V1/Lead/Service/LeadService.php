@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -52,7 +53,6 @@ use App\Repository\Lead\TemperatureRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class LeadService
@@ -64,7 +64,7 @@ class LeadService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
@@ -132,12 +132,11 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
-     * @param RouterInterface $router
      * @param array $params
      * @return int|null
      * @throws \Throwable
      */
-    public function add(RouterInterface $router, array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -267,7 +266,7 @@ class LeadService extends BaseService implements IGridService
                 $lead->setPrimaryFacility(null);
             }
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 $facilityIds = array_unique($params['facilities']);
                 $facilities = $facilityRepo->findByIds($currentSpace, null, $facilityIds);
 
@@ -305,7 +304,7 @@ class LeadService extends BaseService implements IGridService
             $this->em->flush();
 
             // Creating change log
-            $changeLog = $this->leadAddChangeLog($lead, $router);
+            $changeLog = $this->leadAddChangeLog($lead);
 
             $this->em->flush();
 
@@ -327,11 +326,10 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param RouterInterface $router
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, RouterInterface $router, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -487,7 +485,7 @@ class LeadService extends BaseService implements IGridService
                 $entity->removeFacility($facility);
             }
 
-            if(!empty($params['facilities'])) {
+            if (!empty($params['facilities'])) {
                 $facilityIds = array_unique($params['facilities']);
                 $facilities = $facilityRepo->findByIds($currentSpace, null, $facilityIds);
 
@@ -523,7 +521,7 @@ class LeadService extends BaseService implements IGridService
                     $this->createLeadStateChangeActivity($entity, $lastStage);
                 }
 
-                $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity, $router);
+                $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity);
             }
 
             $this->em->flush();
@@ -763,12 +761,11 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
-     * @param RouterInterface $router
      * @return ChangeLog
      */
-    private function leadAddChangeLog(Lead $lead, RouterInterface $router): ChangeLog
+    private function leadAddChangeLog(Lead $lead): ChangeLog
     {
-        $name = $lead->getFirstName() .' '. $lead->getLastName();
+        $name = $lead->getFirstName() . ' ' . $lead->getLastName();
         $id = $lead->getId();
         $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
         $userName = $lead->getUpdatedBy() !== null ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';
@@ -846,11 +843,10 @@ class LeadService extends BaseService implements IGridService
      * @param $oldState
      * @param $newState
      * @param Lead $lead
-     * @param RouterInterface $router
      */
-    private function leadStateEditChangeLog($oldState, $newState, Lead $lead, RouterInterface $router)
+    private function leadStateEditChangeLog($oldState, $newState, Lead $lead)
     {
-        $name = $lead->getFirstName() .' '. $lead->getLastName()  ;
+        $name = $lead->getFirstName() . ' ' . $lead->getLastName();
         $id = $lead->getId();
         $ownerName = $lead->getOwner() ? ucfirst($lead->getOwner()->getFullName()) : '';
         $userName = $lead->getUpdatedBy() !== null ? ucfirst($lead->getUpdatedBy()->getFullName()) : '';

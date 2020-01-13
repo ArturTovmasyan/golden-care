@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -22,7 +23,7 @@ class PaymentSourceService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var PaymentSourceRepository $repo */
         $repo = $this->em->getRepository(PaymentSource::class);
@@ -59,7 +60,7 @@ class PaymentSourceService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -97,7 +98,7 @@ class PaymentSourceService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -176,7 +177,7 @@ class PaymentSourceService extends BaseService implements IGridService
                     }
                 }
             }
-            
+
             $this->em->remove($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -209,7 +210,9 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new PaymentSourceNotFoundException();
             }
 
-            $ids = array_map(function($item){return $item->getId();} , $paymentSources);
+            $ids = array_map(function ($item) {
+                return $item->getId();
+            }, $paymentSources);
 
             /** @var ResidentRentRepository $rentRepo */
             $rentRepo = $this->em->getRepository(ResidentRent::class);
@@ -271,7 +274,9 @@ class PaymentSourceService extends BaseService implements IGridService
             throw new PaymentSourceNotFoundException();
         }
 
-        $ids = array_map(function($item){return $item->getId();} , $entities);
+        $ids = array_map(function ($item) {
+            return $item->getId();
+        }, $entities);
 
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);

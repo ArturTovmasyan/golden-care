@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -29,7 +30,7 @@ class NotificationService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var NotificationRepository $repo */
         $repo = $this->em->getRepository(Notification::class);
@@ -66,7 +67,7 @@ class NotificationService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -94,7 +95,7 @@ class NotificationService extends BaseService implements IGridService
             $notification->setSchedule($params['schedule'] ?? null);
             $notification->setEmails($emails);
 
-            if(!empty($params['users'])) {
+            if (!empty($params['users'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
@@ -107,7 +108,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isFacility()) {
-                if(!empty($params['facilities'])) {
+                if (!empty($params['facilities'])) {
                     /** @var FacilityRepository $facilityRepo */
                     $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -123,7 +124,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isApartment()) {
-                if(!empty($params['apartments'])) {
+                if (!empty($params['apartments'])) {
                     /** @var ApartmentRepository $apartmentRepo */
                     $apartmentRepo = $this->em->getRepository(Apartment::class);
 
@@ -139,7 +140,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isRegion()) {
-                if(!empty($params['regions'])) {
+                if (!empty($params['regions'])) {
                     /** @var RegionRepository $regionRepo */
                     $regionRepo = $this->em->getRepository(Region::class);
 
@@ -175,7 +176,7 @@ class NotificationService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -217,7 +218,7 @@ class NotificationService extends BaseService implements IGridService
                 $entity->removeUser($user);
             }
 
-            if(!empty($params['users'])) {
+            if (!empty($params['users'])) {
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
@@ -235,7 +236,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isFacility()) {
-                if(!empty($params['facilities'])) {
+                if (!empty($params['facilities'])) {
                     /** @var FacilityRepository $facilityRepo */
                     $facilityRepo = $this->em->getRepository(Facility::class);
 
@@ -256,7 +257,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isApartment()) {
-                if(!empty($params['apartments'])) {
+                if (!empty($params['apartments'])) {
                     /** @var ApartmentRepository $apartmentRepo */
                     $apartmentRepo = $this->em->getRepository(Apartment::class);
 
@@ -277,7 +278,7 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isRegion()) {
-                if(!empty($params['regions'])) {
+                if (!empty($params['regions'])) {
                     /** @var RegionRepository $regionRepo */
                     $regionRepo = $this->em->getRepository(Region::class);
 

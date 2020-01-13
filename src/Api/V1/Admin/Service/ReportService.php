@@ -8,7 +8,6 @@ use App\Api\V1\Common\Service\Exception\ReportMisconfigurationException;
 use App\Api\V1\Common\Service\Exception\ReportNotFoundException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\S3Service;
-use App\Model\Report;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
@@ -96,7 +95,7 @@ class ReportService
         $this->config = Yaml::parseFile($this->container->get('kernel')->getProjectDir() . self::$REPORT_CONFIG_PATH);
     }
 
-    public function list()
+    public function list(): ?array
     {
         $config_filtered = $this->config;
 
@@ -120,8 +119,7 @@ class ReportService
      * @param Request $request
      * @param string $group
      * @param string $alias
-     * @return Report\Base
-     * @throws \Exception
+     * @return mixed
      */
     public function report(Request $request, string $group, string $alias)
     {
@@ -205,7 +203,7 @@ class ReportService
         );
     }
 
-    private function checkParameters(Request $request, string $group, string $alias)
+    private function checkParameters(Request $request, string $group, string $alias): void
     {
         $request_param_map = [
             'assessment_id' => 'assessment_id',
@@ -317,11 +315,12 @@ class ReportService
         }
     }
 
-    public function getGroupReportGrants() {
+    public function getGroupReportGrants(): ?array
+    {
         $group_grants = [];
 
         foreach ($this->config as $group => $config) {
-            if($config['show_in_group_list'] === true) {
+            if ($config['show_in_group_list'] === true) {
                 foreach ($config['reports'] as $alias => $report) {
                     $grant = sprintf('report-%s-%s', $group, $alias);
                     if ($report['show_in_group_list'] === true && $this->grantService->hasCurrentUserGrant($grant) === true) {
@@ -334,15 +333,15 @@ class ReportService
         return $group_grants;
     }
 
-    public function addGroupReportPermission(array &$permissions)
+    public function addGroupReportPermission(array &$permissions): void
     {
         $group_grants = $this->getGroupReportGrants();
 
-        $report_test = array_filter($permissions, function($value, $key) use ($group_grants) {
+        $report_test = array_filter($permissions, function ($value, $key) use ($group_grants) {
             return \in_array($key, $group_grants, false) && $value['enabled'] === true;
         }, ARRAY_FILTER_USE_BOTH);
 
-        if(\count($report_test) > 0) {
+        if (\count($report_test) > 0) {
             $permissions['report-group'] = ['enabled' => true];
         }
     }

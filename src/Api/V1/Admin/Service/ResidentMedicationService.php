@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -30,7 +31,7 @@ class ResidentMedicationService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -42,7 +43,7 @@ class ResidentMedicationService extends BaseService implements IGridService
             ->where('rm.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        if((int)$params[0]['discontinued'] !== 1) {
+        if ((int)$params[0]['discontinued'] !== 1) {
             $queryBuilder
                 ->andWhere('rm.discontinued = :discontinued')
                 ->setParameter('discontinued', 0);
@@ -68,7 +69,7 @@ class ResidentMedicationService extends BaseService implements IGridService
 
             $medication_id = null;
 
-            if(!empty($params[0]['medication_id'])) {
+            if (!empty($params[0]['medication_id'])) {
                 $medication_id = $params[0]['medication_id'];
             }
 
@@ -101,7 +102,7 @@ class ResidentMedicationService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -192,7 +193,7 @@ class ResidentMedicationService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 

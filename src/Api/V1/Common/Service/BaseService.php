@@ -343,7 +343,7 @@ class BaseService
      * @param $assessmentFormId
      * @return array
      */
-    public function getRoomVacancyList($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId)
+    public function getRoomVacancyList($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ?array
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

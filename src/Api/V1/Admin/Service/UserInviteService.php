@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -16,7 +17,6 @@ use App\Entity\UserLog;
 use App\Model\Log;
 use App\Repository\UserInviteRepository;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class UserInviteService
@@ -28,7 +28,7 @@ class UserInviteService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var UserInviteRepository $repo */
         $repo = $this->em->getRepository(UserInvite::class);
@@ -70,16 +70,16 @@ class UserInviteService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add($spaceId, $userId, $email, $owner, $roles, $baseUrl) : ?int
+    public function add($spaceId, $userId, $email, $owner, $roles, $baseUrl): ?int
     {
         $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
 
             /**
-             * @var UserInvite $userInvite|null
-             * @var Space $space|null
-             * @var User $user|null
+             * @var UserInvite $userInvite |null
+             * @var Space $space |null
+             * @var User $user |null
              */
             $userInvite = $this->em->getRepository(UserInvite::class)->findOneBy(['email' => $email]);
             $space = $this->em->getRepository(Space::class)->find($spaceId);
@@ -113,13 +113,13 @@ class UserInviteService extends BaseService implements IGridService
             $userInvite->setSpace($space);
             $userInvite->setUser($user);
 
-            if(\count($roles) > 0) {
+            if (\count($roles) > 0) {
                 $userInvite->getRoleObjects()->clear();
 
                 foreach ($roles as $roleId) {
                     /** @var Role $role */
                     $role = $this->em->getRepository(Role::class)->find($roleId);
-                    if($role) {
+                    if ($role) {
                         $userInvite->getRoleObjects()->add($role);
                     }
                 }

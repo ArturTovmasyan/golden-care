@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @Route("/api/v1.0/lead/lead")
@@ -112,13 +111,11 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param LeadService $activityTypeService
-     * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function addAction(Request $request, LeadService $activityTypeService, RouterInterface $router): JsonResponse
+    public function addAction(Request $request, LeadService $activityTypeService): JsonResponse
     {
         $id = $activityTypeService->add(
-            $router,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -160,14 +157,12 @@ class LeadController extends BaseController
      * @param Request $request
      * @param $id
      * @param LeadService $activityTypeService
-     * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService, RouterInterface $router): JsonResponse
+    public function editAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
     {
         $activityTypeService->edit(
             $id,
-            $router,
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -20,7 +21,7 @@ class CareLevelService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var CareLevelRepository $repo */
         $repo = $this->em->getRepository(CareLevel::class);
@@ -57,7 +58,7 @@ class CareLevelService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -96,7 +97,7 @@ class CareLevelService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -235,7 +236,7 @@ class CareLevelService extends BaseService implements IGridService
 
         $entities = $repo->mobileList($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $date);
 
-        $finalEntities  = [];
+        $finalEntities = [];
         if (!empty($entities)) {
             foreach ($entities as $entity) {
                 $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];

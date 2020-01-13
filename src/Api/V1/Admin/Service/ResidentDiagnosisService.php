@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -24,7 +25,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -77,7 +78,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -132,7 +133,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -235,14 +236,14 @@ class ResidentDiagnosisService extends BaseService implements IGridService
 
             $residentDiagnoses = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $ids);
 
-            if (empty( $residentDiagnoses)) {
+            if (empty($residentDiagnoses)) {
                 throw new ResidentDiagnosisNotFoundException();
             }
 
             /**
              * @var ResidentDiagnosis $residentDiagnosis
              */
-            foreach ( $residentDiagnoses as $residentDiagnosis) {
+            foreach ($residentDiagnoses as $residentDiagnosis) {
                 $this->em->remove($residentDiagnosis);
             }
 
@@ -270,7 +271,7 @@ class ResidentDiagnosisService extends BaseService implements IGridService
 
         $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $ids);
 
-        if (empty( $entities)) {
+        if (empty($entities)) {
             throw new ResidentDiagnosisNotFoundException();
         }
 

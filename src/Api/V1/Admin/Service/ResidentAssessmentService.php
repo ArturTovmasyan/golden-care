@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -39,7 +40,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['resident_id'])) {
             throw new ResidentNotFoundException();
@@ -92,7 +93,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -206,7 +207,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -237,7 +238,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $form = $formRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Form::class), $formId);
 
-            if ($form ===  null) {
+            if ($form === null) {
                 throw new AssessmentFormNotFoundException();
             }
 
@@ -247,7 +248,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
             /** @var Resident $resident */
             $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($resident ===  null) {
+            if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
@@ -256,7 +257,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
 
             $assessment = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Assessment::class), $id);
 
-            if ($assessment ===  null) {
+            if ($assessment === null) {
                 throw new AssessmentNotFoundException();
             }
 
@@ -301,20 +302,20 @@ class ResidentAssessmentService extends BaseService implements IGridService
          * @var Row $row
          * @var AssessmentRow $assessmentRow
          */
-        $categoryIdsByRowId       = [];
-        $categoriesById           = [];
-        $rowsById                 = [];
+        $categoryIdsByRowId = [];
+        $categoriesById = [];
+        $rowsById = [];
         $categoryIdsWithUniqueRow = [];
-        $formCategories           = $assessment->getForm()->getFormCategories();
+        $formCategories = $assessment->getForm()->getFormCategories();
 
         foreach ($formCategories as $formCategory) {
-            $category                           = $formCategory->getCategory();
+            $category = $formCategory->getCategory();
             $categoriesById[$category->getId()] = $category;
-            $rows                               = $category->getRows();
+            $rows = $category->getRows();
 
             foreach ($rows as $row) {
                 $categoryIdsByRowId[$row->getId()] = $category->getId();
-                $rowsById[$row->getId()]           = $row;
+                $rowsById[$row->getId()] = $row;
             }
 
             unset($category, $rows);
@@ -336,7 +337,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
                 if (isset($rowsById[$rowId])) {
                     // check multiple row availability
                     $categoryId = $categoryIdsByRowId[$rowId];
-                    $category   = $categoriesById[$categoryId];
+                    $category = $categoriesById[$categoryId];
 
                     if (!$category->isMultiItem()) {
                         if (\in_array($categoryId, $categoryIdsWithUniqueRow, false)) {
@@ -360,7 +361,7 @@ class ResidentAssessmentService extends BaseService implements IGridService
      * @param Assessment $assessment
      * @return int
      */
-    private function calculateTotalScore(Assessment $assessment) : ?int
+    private function calculateTotalScore(Assessment $assessment): ?int
     {
         /** @var AssessmentRowRepository $arRepo */
         $arRepo = $this->em->getRepository(AssessmentRow::class);

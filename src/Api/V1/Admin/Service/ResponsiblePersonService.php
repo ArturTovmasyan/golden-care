@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -29,7 +30,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ResponsiblePersonRepository $repo */
         $repo = $this->em->getRepository(ResponsiblePerson::class);
@@ -66,7 +67,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -141,7 +142,7 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
             /**
@@ -220,9 +221,9 @@ class ResponsiblePersonService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = []) : ?array
+    private function savePhones(ResponsiblePerson $responsiblePerson, array $phones = []): ?array
     {
-        if($responsiblePerson->getId() !== null) {
+        if ($responsiblePerson->getId() !== null) {
             /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
             $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
 
@@ -237,9 +238,9 @@ class ResponsiblePersonService extends BaseService implements IGridService
 
         $responsiblePersonPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
 
             $responsiblePersonPhone = new ResponsiblePersonPhone();
             $responsiblePersonPhone->setResponsiblePerson($responsiblePerson);

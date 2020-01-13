@@ -161,7 +161,7 @@ class FacilityEventService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $facilityEvent->setTitle($params['title']);
-            } else{
+            } else {
                 $facilityEvent->setTitle($definition->getTitle());
             }
 
@@ -188,7 +188,7 @@ class FacilityEventService extends BaseService implements IGridService
             $end = null;
             if ($definition && $definition->isDuration()) {
                 if (!empty($params['all_day'])) {
-                    $allDay = (bool) $params['all_day'];
+                    $allDay = (bool)$params['all_day'];
                 }
 
                 if ($allDay) {
@@ -225,7 +225,7 @@ class FacilityEventService extends BaseService implements IGridService
             $repeatEnd = null;
             if ($definition && $definition->isRepeats()) {
                 if (!empty($params['repeat'])) {
-                    $repeat = (int) $params['repeat'];
+                    $repeat = (int)$params['repeat'];
                 }
 
                 if (!\in_array($repeat, RepeatType::getTypeValues(), false)) {
@@ -250,12 +250,12 @@ class FacilityEventService extends BaseService implements IGridService
 
             $rsvp = false;
             if ($definition && $definition->isRsvp()) {
-                $rsvp = (bool) $params['rsvp'];
+                $rsvp = (bool)$params['rsvp'];
             }
 
             $facilityEvent->setRsvp($rsvp);
 
-            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool)$params['no_repeat_end'] : false;
 
             $facilityEvent->setNoRepeatEnd($noRepeatEnd);
 
@@ -372,7 +372,7 @@ class FacilityEventService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $entity->setTitle($params['title']);
-            } else{
+            } else {
                 $entity->setTitle($definition->getTitle());
             }
 
@@ -399,7 +399,7 @@ class FacilityEventService extends BaseService implements IGridService
             $end = null;
             if ($definition && $definition->isDuration()) {
                 if (!empty($params['all_day'])) {
-                    $allDay = (bool) $params['all_day'];
+                    $allDay = (bool)$params['all_day'];
                 }
 
                 if ($allDay) {
@@ -436,7 +436,7 @@ class FacilityEventService extends BaseService implements IGridService
             $repeatEnd = null;
             if ($definition && $definition->isRepeats()) {
                 if (!empty($params['repeat'])) {
-                    $repeat = (int) $params['repeat'];
+                    $repeat = (int)$params['repeat'];
                 }
 
                 if (!\in_array($repeat, RepeatType::getTypeValues(), false)) {
@@ -461,12 +461,12 @@ class FacilityEventService extends BaseService implements IGridService
 
             $rsvp = false;
             if ($definition && $definition->isRsvp()) {
-                $rsvp = (bool) $params['rsvp'];
+                $rsvp = (bool)$params['rsvp'];
             }
 
             $entity->setRsvp($rsvp);
 
-            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool) $params['no_repeat_end'] : false;
+            $noRepeatEnd = !empty($params['no_repeat_end']) ? (bool)$params['no_repeat_end'] : false;
 
             $entity->setNoRepeatEnd($noRepeatEnd);
 
@@ -496,7 +496,7 @@ class FacilityEventService extends BaseService implements IGridService
 
         /** @var FacilityEvent $entity */
         $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityEvent::class), $id);
-        
+
         if ($entity !== null && $user !== null && $this->grantService->hasCurrentUserGrant('activity-rsvp_facility_event')) {
             $isRsvp = $entity->isRsvp();
         }

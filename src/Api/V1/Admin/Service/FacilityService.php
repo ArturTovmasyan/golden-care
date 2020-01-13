@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -35,7 +36,7 @@ class FacilityService extends BaseService implements IGridService
      * @param $params
      * @return void
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var FacilityRepository $repo */
         $repo = $this->em->getRepository(Facility::class);
@@ -77,7 +78,7 @@ class FacilityService extends BaseService implements IGridService
      * @return int|null
      * @throws \Exception
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -139,7 +140,7 @@ class FacilityService extends BaseService implements IGridService
      * @param array $params
      * @throws \Exception
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -313,7 +314,7 @@ class FacilityService extends BaseService implements IGridService
             $dateTo = $dateTo->format('Y-m-d 23:59:59');
         }
 
-        $definitionId = !empty($definitionId) ? (int) $definitionId : null;
+        $definitionId = !empty($definitionId) ? (int)$definitionId : null;
 
         /** @var FacilityEventRepository $eventRepo */
         $eventRepo = $this->em->getRepository(FacilityEvent::class);
@@ -364,7 +365,7 @@ class FacilityService extends BaseService implements IGridService
 
         $entities = $repo->mobileList($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $date);
 
-        $finalEntities  = [];
+        $finalEntities = [];
         if (!empty($entities)) {
             foreach ($entities as $entity) {
                 $entity['updated_at'] = $entity['updated_at'] !== null ? $entity['updated_at']->format('Y-m-d H:i:s') : $entity['updated_at'];

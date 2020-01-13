@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -28,7 +29,7 @@ class OrganizationService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var OrganizationRepository $repo */
         $repo = $this->em->getRepository(Organization::class);
@@ -65,7 +66,7 @@ class OrganizationService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -142,7 +143,7 @@ class OrganizationService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -222,9 +223,9 @@ class OrganizationService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(Organization $organization, array $phones = []) : ?array
+    private function savePhones(Organization $organization, array $phones = []): ?array
     {
-        if($organization->getId() !== null) {
+        if ($organization->getId() !== null) {
 
             /** @var OrganizationPhoneRepository $organizationPhoneRepo */
             $organizationPhoneRepo = $this->em->getRepository(OrganizationPhone::class);
@@ -240,8 +241,8 @@ class OrganizationService extends BaseService implements IGridService
 
         $organizationPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
 
             $organizationPhone = new OrganizationPhone();
             $organizationPhone->setOrganization($organization);

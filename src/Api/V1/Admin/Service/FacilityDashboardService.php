@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -23,7 +24,7 @@ class FacilityDashboardService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var FacilityDashboardRepository $repo */
         $repo = $this->em->getRepository(FacilityDashboard::class);
@@ -86,7 +87,7 @@ class FacilityDashboardService extends BaseService implements IGridService
         while ($dateToClone >= $dateFrom) {
             $start = new \DateTime($dateToClone->format('Y-m-01 00:00:00'));
             $end = new \DateTime($dateToClone->format('Y-m-t 23:59:59'));
-            $axis = $start->format('M').'-'.$start->format('y');
+            $axis = $start->format('M') . '-' . $start->format('y');
 
             $subIntervals[$axis] = [
                 'dateFrom' => $start,
@@ -127,7 +128,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 foreach ($dashboards as $dashboard) {
                     $i = 0;
                     if ($dashboard['date'] >= $subInterval['dateFrom'] && $dashboard['date'] <= $subInterval['dateTo'] && $dashboard['facilityId'] === $facility->getId()) {
-                        $i ++;
+                        $i++;
 
                         $days += $i;
 
@@ -152,9 +153,9 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
 
                 $nestedData[$key] = [
-                    'total_capacity' => $days > 0 ? (int) round($totalCapacity / $days) : 0,
-                    'break_even' => $days > 0 ? (int) round($breakEven / $days) : 0,
-                    'capacity_yellow' => $days > 0 ? (int) round($capacityYellow / $days) : 0,
+                    'total_capacity' => $days > 0 ? (int)round($totalCapacity / $days) : 0,
+                    'break_even' => $days > 0 ? (int)round($breakEven / $days) : 0,
+                    'capacity_yellow' => $days > 0 ? (int)round($capacityYellow / $days) : 0,
                     'starting_occupancy' => $startingOccupancy,
                     'ending_occupancy' => $endingOccupancy,
                     'move_ins_respite' => $moveInsRespite,
@@ -168,7 +169,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
                     'outreach_per_month' => $outreachPerMonth,
-                    'average_room_rent' =>  $days > 0 ? round(($averageRoomRent / $days) * $subInterval['days'], 2) : 0,
+                    'average_room_rent' => $days > 0 ? round(($averageRoomRent / $days) * $subInterval['days'], 2) : 0,
                 ];
             }
 
@@ -199,7 +200,7 @@ class FacilityDashboardService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -256,7 +257,7 @@ class FacilityDashboardService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 

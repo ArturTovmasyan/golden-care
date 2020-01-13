@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -32,7 +33,7 @@ class PhysicianService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var PhysicianRepository $repo */
         $repo = $this->em->getRepository(Physician::class);
@@ -242,9 +243,9 @@ class PhysicianService extends BaseService implements IGridService
      * @param array $phones
      * @return array
      */
-    private function savePhones(Physician $physician, array $phones = []) : ?array
+    private function savePhones(Physician $physician, array $phones = []): ?array
     {
-        if($physician->getId() !== null) {
+        if ($physician->getId() !== null) {
             /** @var PhysicianPhoneRepository $physicianPhoneRepo */
             $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
 
@@ -259,9 +260,9 @@ class PhysicianService extends BaseService implements IGridService
 
         $physicianPhones = [];
 
-        foreach($phones as $phone) {
-            $primary = $phone['primary'] ? (bool) $phone['primary'] : false;
-            $smsEnabled = $phone['sms_enabled'] ? (bool) $phone['sms_enabled'] : false;
+        foreach ($phones as $phone) {
+            $primary = $phone['primary'] ? (bool)$phone['primary'] : false;
+            $smsEnabled = $phone['sms_enabled'] ? (bool)$phone['sms_enabled'] : false;
 
             $physicianPhone = new PhysicianPhone();
             $physicianPhone->setPhysician($physician);

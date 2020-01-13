@@ -21,7 +21,7 @@ class RoleService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var RoleRepository $repo */
         $repo = $this->em->getRepository(Role::class);
@@ -31,7 +31,10 @@ class RoleService extends BaseService implements IGridService
 
     public function list($params)
     {
-        return $this->em->getRepository(Role::class)->userRoles();
+        /** @var RoleRepository $repo */
+        $repo = $this->em->getRepository(Role::class);
+
+        return $repo->userRoles();
     }
 
     /**
@@ -39,7 +42,7 @@ class RoleService extends BaseService implements IGridService
      * @param GrantService $grantService
      * @return Role
      */
-    public function getById($id, GrantService $grantService) : ?Role
+    public function getById($id, GrantService $grantService): ?Role
     {
         /** @var Role $role */
         $role = $this->em->getRepository(Role::class)->find($id);
@@ -56,7 +59,7 @@ class RoleService extends BaseService implements IGridService
      * @return int|null
      * @throws \Throwable
      */
-    public function add(array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -65,7 +68,7 @@ class RoleService extends BaseService implements IGridService
             $role = new Role();
             $role->setName($params['name'] ?? '');
             $role->setGrants($params['grants'] ?? []);
-            $role->setDefault((bool) $params['default']);
+            $role->setDefault((bool)$params['default']);
 
             $this->validate($role, null, ['api_admin_role_add']);
 
@@ -102,7 +105,7 @@ class RoleService extends BaseService implements IGridService
 
             $role->setName($params['name'] ?? '');
             $role->setGrants($params['grants'] ?? []);
-            $role->setDefault((bool) $params['default']);
+            $role->setDefault((bool)$params['default']);
 
             $this->validate($role, null, ['api_admin_role_edit']);
 

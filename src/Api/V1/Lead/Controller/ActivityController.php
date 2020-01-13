@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @Route("/api/v1.0/lead/activity")
@@ -112,13 +111,11 @@ class ActivityController extends BaseController
      *
      * @param Request $request
      * @param ActivityService $activityService
-     * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function addAction(Request $request, ActivityService $activityService, RouterInterface $router): JsonResponse
+    public function addAction(Request $request, ActivityService $activityService): JsonResponse
     {
         $id = $activityService->add(
-            $router,
             [
                 'type_id' => $request->get('type_id'),
                 'owner_type' => $request->get('owner_type'),
@@ -155,14 +152,12 @@ class ActivityController extends BaseController
      * @param Request $request
      * @param $id
      * @param ActivityService $activityService
-     * @param RouterInterface $router
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, ActivityService $activityService, RouterInterface $router): JsonResponse
+    public function editAction(Request $request, $id, ActivityService $activityService): JsonResponse
     {
         $activityService->edit(
             $id,
-            $router,
             [
                 'title' => $request->get('title'),
                 'date' => $request->get('date'),

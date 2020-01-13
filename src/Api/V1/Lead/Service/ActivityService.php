@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
@@ -39,7 +40,6 @@ use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class ActivityService
@@ -51,7 +51,7 @@ class ActivityService extends BaseService implements IGridService
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
-    public function gridSelect(QueryBuilder $queryBuilder, $params) : void
+    public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         /** @var ActivityRepository $repo */
         $repo = $this->em->getRepository(Activity::class);
@@ -120,12 +120,11 @@ class ActivityService extends BaseService implements IGridService
     }
 
     /**
-     * @param RouterInterface $router
      * @param array $params
      * @return int|null
      * @throws \Throwable
      */
-    public function add(RouterInterface $router, array $params) : ?int
+    public function add(array $params): ?int
     {
         $insert_id = null;
         try {
@@ -167,7 +166,7 @@ class ActivityService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $activity->setTitle($params['title']);
-            } else{
+            } else {
                 $activity->setTitle($type->getTitle());
             }
 
@@ -399,7 +398,7 @@ class ActivityService extends BaseService implements IGridService
             $this->em->persist($activity);
 
             if ($activity->getType() !== null && $activity->getType()->isAssignTo()) {
-                $this->taskActivityAddChangeLog($activity, $router);
+                $this->taskActivityAddChangeLog($activity);
             }
 
             $this->em->flush();
@@ -417,11 +416,10 @@ class ActivityService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param RouterInterface $router
      * @param array $params
      * @throws \Throwable
      */
-    public function edit($id, RouterInterface $router, array $params) : void
+    public function edit($id, array $params): void
     {
         try {
 
@@ -457,7 +455,7 @@ class ActivityService extends BaseService implements IGridService
 
             if (!empty($params['title'])) {
                 $entity->setTitle($params['title']);
-            } else{
+            } else {
                 $entity->setTitle($type->getTitle());
             }
 
@@ -694,7 +692,7 @@ class ActivityService extends BaseService implements IGridService
             $activityChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
 
             if (!empty($activityChangeSet) && array_key_exists('status', $activityChangeSet) && $entity->getType() !== null && $entity->getType()->isAssignTo()) {
-                $this->taskActivityStatusEditChangeLog($activityChangeSet['status']['0'], $activityChangeSet['status']['1'], $entity, $router);
+                $this->taskActivityStatusEditChangeLog($activityChangeSet['status']['0'], $activityChangeSet['status']['1'], $entity);
             }
 
             $this->em->flush();
@@ -708,15 +706,14 @@ class ActivityService extends BaseService implements IGridService
 
     /**
      * @param Activity $activity
-     * @param RouterInterface $router
      */
-    private function taskActivityAddChangeLog(Activity $activity, RouterInterface $router)
+    private function taskActivityAddChangeLog(Activity $activity)
     {
         $owner = '';
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
-                $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
+                $owner = $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
                 $id = $activity->getLead()->getId();
 
                 break;
@@ -732,7 +729,7 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
-                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
+                $owner = $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
 
                 break;
@@ -744,7 +741,7 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_CONTACT:
-                $owner =  $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
+                $owner = $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
                 $id = $activity->getContact()->getId();
 
                 break;
@@ -753,7 +750,7 @@ class ActivityService extends BaseService implements IGridService
         }
 
         $userName = $activity->getUpdatedBy() !== null ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
-        $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
+        $assignToName = $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
         $date = new \DateTime('now');
 
@@ -785,15 +782,14 @@ class ActivityService extends BaseService implements IGridService
      * @param $oldStatusId
      * @param $newStatusId
      * @param Activity $activity
-     * @param RouterInterface $router
      */
-    private function taskActivityStatusEditChangeLog($oldStatusId, $newStatusId, Activity $activity, RouterInterface $router)
+    private function taskActivityStatusEditChangeLog($oldStatusId, $newStatusId, Activity $activity)
     {
         $owner = '';
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
-                $owner =  $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
+                $owner = $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
                 $id = $activity->getLead()->getId();
 
                 break;
@@ -809,7 +805,7 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_ORGANIZATION:
-                $owner =  $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
+                $owner = $activity->getOrganization() ? $activity->getOrganization()->getName() : '';
                 $id = $activity->getOrganization()->getId();
 
                 break;
@@ -821,7 +817,7 @@ class ActivityService extends BaseService implements IGridService
 
                 break;
             case ActivityOwnerType::TYPE_CONTACT:
-                $owner =  $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
+                $owner = $activity->getContact() ? $activity->getContact()->getFirstName() . ' ' . $activity->getContact()->getLastName() : '';
                 $id = $activity->getContact()->getId();
 
                 break;
@@ -830,7 +826,7 @@ class ActivityService extends BaseService implements IGridService
         }
 
         $userName = $activity->getUpdatedBy() !== null ? ucfirst($activity->getUpdatedBy()->getFullName()) : '';
-        $assignToName =  $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
+        $assignToName = $activity->getAssignTo() ? $activity->getAssignTo()->getFirstName() . ' ' . $activity->getAssignTo()->getLastName() : '';
         $dueDate = $activity->getDueDate() !== null ? $activity->getDueDate()->format('m/d/Y') : 'N/A';
 
         $currentSpace = $this->grantService->getCurrentSpace();
