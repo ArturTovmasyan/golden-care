@@ -251,7 +251,7 @@ class GrantService
             $grants = $this->getGrantsOfRole($id);
 
             if (\is_array($grants)) {
-                $role_grants = array_merge($role_grants, $grants);
+                $role_grants = array_merge([], $grants);
             }
         }
 

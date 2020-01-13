@@ -961,7 +961,7 @@ class ResidentReportService extends BaseService
                     ];
                 }
 
-                $rpArray = [];
+                $rpAllArray = [];
                 if (!empty($responsiblePersons)) {
                     /** @var ResidentResponsiblePerson $rp */
                     foreach ($responsiblePersons as $rp) {
@@ -999,7 +999,7 @@ class ResidentReportService extends BaseService
                                             'rpPhoneNumber' => $phone['number'],
                                         ];
 
-                                        if ($phone['type'] == constant('App\\Model\\Phone::TYPE_EMERGENCY')) {
+                                        if ((int)$phone['type'] === (int)\constant('App\\Model\\Phone::TYPE_EMERGENCY')) {
                                             $rpPhone = [
                                                 'rpPhoneTitle' => $phone['type'],
                                                 'rpPhoneNumber' => $phone['number'],
@@ -1009,11 +1009,11 @@ class ResidentReportService extends BaseService
                                     }
                                 }
                             }
-                            $rpArray = array_merge($rpArray, $rpPhone);
+                            $rpAllArray = array_merge($rpArray, $rpPhone);
                         }
                     }
                 }
-                $data[] = array_merge($admissionArray, $rpArray);
+                $data[] = array_merge($admissionArray, $rpAllArray);
             }
         }
 

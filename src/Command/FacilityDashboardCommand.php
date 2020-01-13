@@ -176,7 +176,7 @@ class FacilityDashboardCommand extends Command
                         if (\in_array($userFacility['id'], $userIds, false)) {
                             $userFacilityIds =  $userFacility['facilityIds'] !== null ? explode(',', $userFacility['facilityIds']) : [];
 
-                            $allowedFacilityIds = array_merge($allowedFacilityIds, $userFacilityIds);
+                            $allowedFacilityIds = array_merge([], $userFacilityIds);
                             $allowedFacilityIds = array_unique($allowedFacilityIds);
 
                             if ($userFacility['facilityIds'] === null) {

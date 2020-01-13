@@ -107,7 +107,7 @@ class NotifyCommand extends Command
 
             if ($notification->getType() !== null && $notification->getSchedule() !== null && Expression::isDue($notification->getSchedule(), new \DateTime())) {
 
-                $emails = $notification->getEmails();
+                $notificationEmails = $notification->getEmails();
                 $userEmails = [];
                 if (!empty($notification->getUsers())) {
                     /** @var User $user */
@@ -115,7 +115,7 @@ class NotifyCommand extends Command
                         $userEmails[] = $user->getEmail();
                     }
                 }
-                $emails = array_merge($emails, $userEmails);
+                $emails = array_merge($notificationEmails, $userEmails);
                 $emails = array_unique($emails);
 
                 switch ($notification->getType()->getCategory()) {
