@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -174,10 +175,6 @@ class FacilityEvent
      *     "api_admin_facility_event_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
-     * @Groups({
-     *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
-     * })
      */
     private $start;
 
@@ -188,10 +185,6 @@ class FacilityEvent
      *     "api_admin_facility_event_edit"
      * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_event_list",
-     *     "api_admin_facility_event_get"
-     * })
      */
     private $end;
 
@@ -303,6 +296,66 @@ class FacilityEvent
      * })
      */
     protected $noRepeatEnd;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("start_date")
+     * @Serializer\Groups({
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getStartDate(): ?\DateTime
+    {
+        return $this->getStart();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("start_time")
+     * @Serializer\Groups({
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getStartTime(): ?\DateTime
+    {
+        return $this->getStart();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("end_date")
+     * @Serializer\Groups({
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getEndDate(): ?\DateTime
+    {
+        return $this->getEnd();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("end_time")
+     * @Serializer\Groups({
+     *     "api_admin_facility_event_list",
+     *     "api_admin_facility_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getEndTime(): ?\DateTime
+    {
+        return $this->getEnd();
+    }
 
     /**
      * @return int

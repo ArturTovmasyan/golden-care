@@ -163,10 +163,6 @@ class CorporateEvent
      *     "api_admin_corporate_event_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
-     * @Groups({
-     *     "api_admin_corporate_event_list",
-     *     "api_admin_corporate_event_get"
-     * })
      */
     private $start;
 
@@ -177,10 +173,6 @@ class CorporateEvent
      *     "api_admin_corporate_event_edit"
      * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
-     * @Groups({
-     *     "api_admin_corporate_event_list",
-     *     "api_admin_corporate_event_get"
-     * })
      */
     private $end;
 
@@ -307,6 +299,66 @@ class CorporateEvent
      * @ORM\OneToMany(targetEntity="App\Entity\CorporateEventUser", mappedBy="event", cascade={"persist"})
      */
     private $corporateEventUsers;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("start_date")
+     * @Serializer\Groups({
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getStartDate(): ?\DateTime
+    {
+        return $this->getStart();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("start_time")
+     * @Serializer\Groups({
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getStartTime(): ?\DateTime
+    {
+        return $this->getStart();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("end_date")
+     * @Serializer\Groups({
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getEndDate(): ?\DateTime
+    {
+        return $this->getEnd();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("end_time")
+     * @Serializer\Groups({
+     *     "api_admin_corporate_event_list",
+     *     "api_admin_corporate_event_get"
+     * })
+     *
+     * @return \DateTime|null
+     */
+    public function getEndTime(): ?\DateTime
+    {
+        return $this->getEnd();
+    }
 
     /**
      * @Serializer\VirtualProperty()
