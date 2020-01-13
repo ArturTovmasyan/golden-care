@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="tbl_login_attempt")
@@ -17,7 +16,7 @@ class LoginAttempt
     /**
      * Mistakes limit before block
      */
-    const PASSWORD_ATTEMPT_LIMIT = 3;
+    public const PASSWORD_ATTEMPT_LIMIT = 3;
 
     /**
      * @var int
@@ -42,7 +41,7 @@ class LoginAttempt
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

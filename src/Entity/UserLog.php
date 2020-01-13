@@ -13,14 +13,14 @@ class UserLog
 {
     use LogAwareTrait;
 
-    const LOG_TYPE_REGISTRATION        = 1;
-    const LOG_TYPE_AUTHENTICATION      = 2;
-    const LOG_TYPE_BLOCK_USER_PASSWORD = 3;
-    const LOG_TYPE_UPDATE_PROFILE      = 4;
-    const LOG_TYPE_RESET_PASSWORD      = 5;
-    const LOG_TYPE_INVITATION          = 6;
-    const LOG_TYPE_ACCEPT_INVITATION   = 7;
-    const LOG_TYPE_REJECT_INVITATION   = 8;
+    public const LOG_TYPE_REGISTRATION = 1;
+    public const LOG_TYPE_AUTHENTICATION = 2;
+    public const LOG_TYPE_BLOCK_USER_PASSWORD = 3;
+    public const LOG_TYPE_UPDATE_PROFILE = 4;
+    public const LOG_TYPE_RESET_PASSWORD = 5;
+    public const LOG_TYPE_INVITATION = 6;
+    public const LOG_TYPE_ACCEPT_INVITATION = 7;
+    public const LOG_TYPE_REJECT_INVITATION = 8;
 
     /**
      * @var int
@@ -55,7 +55,7 @@ class UserLog
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

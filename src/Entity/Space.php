@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid as Grid;
+use App\Annotation\Grid;
 
 /**
  * @ORM\Table(name="tbl_space")
@@ -471,7 +471,7 @@ class Space
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

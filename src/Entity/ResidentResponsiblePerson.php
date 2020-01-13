@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid;
 
 /**
  * Class ResidentResponsiblePerson
@@ -125,7 +124,7 @@ class ResidentResponsiblePerson
     /**
      * @return int
      */
-    public function getId() : ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -210,7 +209,7 @@ class ResidentResponsiblePerson
     /**
      * @param ResponsiblePersonRole $role
      */
-    public function addRole(ResponsiblePersonRole $role)
+    public function addRole(ResponsiblePersonRole $role): void
     {
         $role->addResidentResponsiblePerson($this);
         $this->roles[] = $role;
@@ -219,7 +218,7 @@ class ResidentResponsiblePerson
     /**
      * @param ResponsiblePersonRole $role
      */
-    public function removeRole(ResponsiblePersonRole $role)
+    public function removeRole(ResponsiblePersonRole $role): void
     {
         $this->roles->removeElement($role);
         $role->removeResidentResponsiblePerson($this);

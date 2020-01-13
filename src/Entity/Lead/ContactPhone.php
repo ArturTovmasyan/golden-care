@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity\Lead;
 
 use App\Model\Persistence\Entity\PhoneTrait;
@@ -42,7 +43,7 @@ class ContactPhone
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

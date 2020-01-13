@@ -145,7 +145,7 @@ class CareLevelGroup
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -209,7 +209,7 @@ class CareLevelGroup
     /**
      * @param Form $form
      */
-    public function addForm($form)
+    public function addForm($form): void
     {
         $this->forms->add($form);
     }
@@ -217,7 +217,7 @@ class CareLevelGroup
     /**
      * @param Form $form
      */
-    public function removeForm(Form $form)
+    public function removeForm(Form $form): void
     {
         $this->forms->removeElement($form);
     }

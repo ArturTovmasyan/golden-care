@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity\Assessment;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
@@ -132,7 +133,7 @@ class Row
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

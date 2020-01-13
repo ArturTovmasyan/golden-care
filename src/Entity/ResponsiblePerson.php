@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Model\Persistence\Entity\PhoneTrait;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid as Grid;
+use App\Annotation\Grid;
 
 /**
  * @ORM\Table(name="tbl_responsible_person")
@@ -311,7 +310,7 @@ class ResponsiblePerson
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -508,7 +507,7 @@ class ResponsiblePerson
     /**
      * @param ResidentEvent $residentEvent
      */
-    public function addResidentEvent(ResidentEvent $residentEvent)
+    public function addResidentEvent(ResidentEvent $residentEvent): void
     {
         $this->residentEvents->add($residentEvent);
     }
@@ -516,7 +515,7 @@ class ResponsiblePerson
     /**
      * @param ResidentEvent $residentEvent
      */
-    public function removeResidentEvent(ResidentEvent $residentEvent)
+    public function removeResidentEvent(ResidentEvent $residentEvent): void
     {
         $this->residentEvents->removeElement($residentEvent);
     }

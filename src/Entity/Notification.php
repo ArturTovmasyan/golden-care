@@ -202,7 +202,7 @@ class Notification
      */
     private $regions;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

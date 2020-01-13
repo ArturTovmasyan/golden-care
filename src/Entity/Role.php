@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Annotation\Grid as Grid;
+use App\Annotation\Grid;
 
 /**
  * @ORM\Table(name="tbl_role")
@@ -162,7 +162,7 @@ class Role
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

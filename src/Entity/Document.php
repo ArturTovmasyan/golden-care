@@ -270,7 +270,7 @@ class Document
         return null;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

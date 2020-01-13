@@ -241,7 +241,7 @@ class ApartmentRoom
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -366,7 +366,9 @@ class ApartmentRoom
     {
         $beds = $this->getBeds();
         if ($beds !== null) {
-            $numbers = array_map(function($item){return strtolower($item->getNumber());} , $beds->toArray());
+            $numbers = array_map(function ($item) {
+                return strtolower($item->getNumber());
+            }, $beds->toArray());
 
             $counts = array_count_values($numbers);
 
@@ -377,7 +379,7 @@ class ApartmentRoom
             foreach ($beds as $idx => $bed) {
                 $number = strtolower($bed->getNumber());
                 if (!empty($counts[$number]) && $counts[$number] > 1) {
-                    $context->buildViolation('The number "'.$bed->getNumber().'" is already in use.')
+                    $context->buildViolation('The number "' . $bed->getNumber() . '" is already in use.')
                         ->atPath("beds.$idx.number")
                         ->addViolation();
                 }

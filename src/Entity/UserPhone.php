@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\PhoneTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Annotation\Grid as Grid;
 use JMS\Serializer\Annotation\Groups;
 
 /**
@@ -45,7 +45,7 @@ class UserPhone
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

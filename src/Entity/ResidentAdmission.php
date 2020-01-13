@@ -482,7 +482,7 @@ class ResidentAdmission
     /**
      * @return int
      */
-    public function getId() : ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -708,7 +708,7 @@ class ResidentAdmission
     /**
      * @param bool|null $polst
      */
-    public function setPolst(?bool $polst):void
+    public function setPolst(?bool $polst): void
     {
         $this->polst = $polst;
     }

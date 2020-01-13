@@ -149,7 +149,7 @@ class LeadFunnelStage
      */
     private $notes;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

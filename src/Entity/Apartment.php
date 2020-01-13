@@ -357,7 +357,7 @@ class Apartment
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -544,7 +544,7 @@ class Apartment
      *     "api_admin_apartment_get"
      * })
      */
-    public function getOccupation()
+    public function getOccupation(): ?int
     {
         $occupation = 0;
         if ($this->rooms !== null) {
@@ -570,7 +570,7 @@ class Apartment
         $capacity = $this->capacity;
 
         if ($capacity > $licenseCapacity) {
-            $context->buildViolation('The capacity "'.$capacity.'" should be less than or equal to license capacity "'.$licenseCapacity.'".')
+            $context->buildViolation('The capacity "' . $capacity . '" should be less than or equal to license capacity "' . $licenseCapacity . '".')
                 ->atPath('capacity')
                 ->addViolation();
         }

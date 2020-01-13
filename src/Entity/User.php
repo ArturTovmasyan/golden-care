@@ -11,8 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid as Grid;
-use App\Annotation\ValidationSerializedName as ValidationSerializedName;
+use App\Annotation\Grid;
+use App\Annotation\ValidationSerializedName;
 
 /**
  * @ORM\Table(name="tbl_user")
@@ -92,7 +92,7 @@ class User implements UserInterface
     /**
      * Mistakes limit before block
      */
-    const PASSWORD_MISTAKES_LIMIT = 3;
+    public const PASSWORD_MISTAKES_LIMIT = 3;
 
     /**
      * @var int
@@ -620,54 +620,52 @@ class User implements UserInterface
      * @see \Serializable::unserialize()
      * @param string $serialized
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         list (
             $this->id,
             $this->username,
             $this->password,
             $this->enabled,
-        ) = unserialize($serialized, ['allowed_classes' => false]);
+            ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
      * @param int $id
-     * @return User
      */
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
     /**
-     * @param string $firstName
-     * @return User
+     * @param $firstName
      */
-    public function setFirstName($firstName)
+    public function setFirstName($firstName): void
     {
         $this->firstName = $firstName;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -675,23 +673,23 @@ class User implements UserInterface
     /**
      * @param string $lastName
      */
-    public function setLastName($lastName)
+    public function setLastName($lastName): void
     {
         $this->lastName = $lastName;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getFullName()
+    public function getFullName(): ?string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -699,15 +697,15 @@ class User implements UserInterface
     /**
      * @param string $username
      */
-    public function setUsername($username)
+    public function setUsername($username): void
     {
         $this->username = $username;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -715,7 +713,7 @@ class User implements UserInterface
     /**
      * @param string $password
      */
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
     }
@@ -723,15 +721,15 @@ class User implements UserInterface
     /**
      * @param string $password
      */
-    public function setConfirmPassword($password)
+    public function setConfirmPassword($password): void
     {
         $this->confirmPassword = $password;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -739,7 +737,7 @@ class User implements UserInterface
     /**
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -777,26 +775,25 @@ class User implements UserInterface
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isEnabled()
+    public function isEnabled(): ?bool
     {
         return $this->enabled;
     }
 
     /**
-     * @param bool $enabled
-     * @return User
+     * @param $enabled
      */
-    public function setEnabled($enabled)
+    public function setEnabled($enabled): void
     {
         $this->enabled = $enabled;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isCompleted()
+    public function isCompleted(): ?bool
     {
         return $this->completed;
     }
@@ -804,7 +801,7 @@ class User implements UserInterface
     /**
      * @param bool $completed
      */
-    public function setCompleted($completed)
+    public function setCompleted($completed): void
     {
         $this->completed = $completed;
     }
@@ -874,9 +871,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
@@ -884,15 +881,15 @@ class User implements UserInterface
     /**
      * @param string $plainPassword
      */
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword($plainPassword): void
     {
         $this->plainPassword = $plainPassword;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getOldPassword()
+    public function getOldPassword(): ?string
     {
         return $this->oldPassword;
     }
@@ -900,15 +897,15 @@ class User implements UserInterface
     /**
      * @param string $oldPassword
      */
-    public function setOldPassword($oldPassword)
+    public function setOldPassword($oldPassword): void
     {
         $this->oldPassword = $oldPassword;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isActiveNow()
+    public function isActiveNow(): ?bool
     {
         // Delay during wich the user will be considered as still active
         $delay = new \DateTime('2 minutes ago');
@@ -924,9 +921,6 @@ class User implements UserInterface
         return null;
     }
 
-    /**
-     * @return bool
-     */
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
@@ -940,7 +934,7 @@ class User implements UserInterface
     /**
      * @param array $roles
      */
-    public function setRoles($roles)
+    public function setRoles($roles): void
     {
         $this->roles = $roles;
     }

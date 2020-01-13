@@ -273,7 +273,7 @@ class Contact
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -488,8 +488,8 @@ class Contact
     /**
      * @param ExecutionContextInterface $context
      * @Assert\Callback(groups={
-     *          "api_lead_contact_add",
-     *          "api_lead_contact_edit"
+     *      "api_lead_contact_add",
+     *      "api_lead_contact_edit"
      * })
      */
     public function areEmailsValid(ExecutionContextInterface $context): void

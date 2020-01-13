@@ -143,7 +143,7 @@ class Diet
      */
     private $residentDiets;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -173,6 +173,7 @@ class Diet
     {
         $this->color = $color;
     }
+
     /**
      * @return Space|null
      */

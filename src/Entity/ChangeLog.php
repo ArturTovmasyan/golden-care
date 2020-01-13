@@ -127,7 +127,7 @@ class ChangeLog
      */
     private $space;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

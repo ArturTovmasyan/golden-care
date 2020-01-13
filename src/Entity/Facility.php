@@ -525,7 +525,7 @@ class Facility
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -993,7 +993,7 @@ class Facility
         $capacity = $this->capacity;
 
         if ($capacity > $licenseCapacity) {
-            $context->buildViolation('The capacity "'.$capacity.'" should be less than or equal to license capacity "'.$licenseCapacity.'".')
+            $context->buildViolation('The capacity "' . $capacity . '" should be less than or equal to license capacity "' . $licenseCapacity . '".')
                 ->atPath('capacity')
                 ->addViolation();
         }
@@ -1012,7 +1012,7 @@ class Facility
         $redCapacity = $this->capacityRed;
 
         if ($redCapacity >= $yellowCapacity) {
-            $context->buildViolation('The Capacity Red Flag Warning "'.$redCapacity.'" should be less than Capacity Yellow Flag Warning "'.$yellowCapacity.'".')
+            $context->buildViolation('The Capacity Red Flag Warning "' . $redCapacity . '" should be less than Capacity Yellow Flag Warning "' . $yellowCapacity . '".')
                 ->atPath('capacityRed')
                 ->addViolation();
         }

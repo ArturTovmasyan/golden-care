@@ -177,7 +177,7 @@ class Category
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -241,7 +241,7 @@ class Category
     /**
      * @param Row $row
      */
-    public function removeRow(Row $row)
+    public function removeRow(Row $row): void
     {
         $this->rows->removeElement($row);
     }

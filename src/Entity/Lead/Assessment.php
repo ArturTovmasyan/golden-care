@@ -186,7 +186,7 @@ class Assessment
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -318,7 +318,7 @@ class Assessment
      *     "api_lead_assessment_get"
      * })
      */
-    public function getVirtualRows()
+    public function getVirtualRows(): ?array
     {
         $categories = [];
 
@@ -334,14 +334,14 @@ class Assessment
 
         /** @var AssessmentRow $assessmentRow */
         foreach ($this->assessmentRows as $assessmentRow) {
-            if(array_key_exists($assessmentRow->getRow()->getCategory()->getId(), $categories)) {
+            if (array_key_exists($assessmentRow->getRow()->getCategory()->getId(), $categories)) {
                 $categories[$assessmentRow->getRow()->getCategory()->getId()]['rows'][] = $assessmentRow->getRow()->getId();
             }
         }
 
         $rows = [];
         foreach ($categories as $category) {
-            if($category['multi']) {
+            if ($category['multi']) {
                 $rows[] = $category['rows'];
             } else {
                 $rows[] = \count($category['rows']) > 0 ? $category['rows'][0] : null;

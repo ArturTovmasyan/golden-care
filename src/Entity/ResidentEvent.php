@@ -181,7 +181,7 @@ class ResidentEvent
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -292,7 +292,7 @@ class ResidentEvent
     /**
      * @param ResponsiblePerson $responsiblePerson
      */
-    public function addResponsiblePerson(ResponsiblePerson $responsiblePerson)
+    public function addResponsiblePerson(ResponsiblePerson $responsiblePerson): void
     {
         $responsiblePerson->addResidentEvent($this);
         $this->responsiblePersons[] = $responsiblePerson;
@@ -301,7 +301,7 @@ class ResidentEvent
     /**
      * @param ResponsiblePerson $responsiblePerson
      */
-    public function removeResponsiblePerson(ResponsiblePerson $responsiblePerson)
+    public function removeResponsiblePerson(ResponsiblePerson $responsiblePerson): void
     {
         $this->responsiblePersons->removeElement($responsiblePerson);
         $responsiblePerson->removeResidentEvent($this);

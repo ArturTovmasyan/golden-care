@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
@@ -6,7 +7,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Annotation\Grid as Grid;
+use App\Annotation\Grid;
 use JMS\Serializer\Annotation\Groups;
 
 /**
@@ -377,7 +378,7 @@ class Physician
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -479,49 +480,49 @@ class Physician
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getAddress1()
+    public function getAddress1(): ?string
     {
         return $this->address_1;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getAddress2()
+    public function getAddress2(): ?string
     {
         return $this->address_2;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getWebsiteUrl()
+    public function getWebsiteUrl(): ?string
     {
         return $this->websiteUrl;
     }
 
     /**
-     * @return CityStateZip
+     * @return CityStateZip|null
      */
-    public function getCsz()
+    public function getCsz(): ?CityStateZip
     {
         return $this->csz;
     }
 
     /**
-     * @return Speciality
+     * @return Speciality|null
      */
-    public function getSpeciality(): Speciality
+    public function getSpeciality(): ?Speciality
     {
         return $this->speciality;
     }
@@ -535,9 +536,9 @@ class Physician
     }
 
     /**
-     * @param int $id
+     * @param $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -545,7 +546,7 @@ class Physician
     /**
      * @param string $address_1
      */
-    public function setAddress1($address_1)
+    public function setAddress1($address_1): void
     {
         $this->address_1 = $address_1;
     }
@@ -553,7 +554,7 @@ class Physician
     /**
      * @param string $address_2
      */
-    public function setAddress2($address_2)
+    public function setAddress2($address_2): void
     {
         $this->address_2 = $address_2;
     }
@@ -561,7 +562,7 @@ class Physician
     /**
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -569,7 +570,7 @@ class Physician
     /**
      * @param string $websiteUrl
      */
-    public function setWebsiteUrl($websiteUrl)
+    public function setWebsiteUrl($websiteUrl): void
     {
         $this->websiteUrl = $websiteUrl;
     }
@@ -577,7 +578,7 @@ class Physician
     /**
      * @param CityStateZip $csz
      */
-    public function setCsz($csz)
+    public function setCsz($csz): void
     {
         $this->csz = $csz;
     }

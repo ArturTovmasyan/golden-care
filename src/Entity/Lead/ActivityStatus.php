@@ -146,7 +146,7 @@ class ActivityStatus
      */
     private $activities;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

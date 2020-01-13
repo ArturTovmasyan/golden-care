@@ -120,7 +120,7 @@ class Speciality
      */
     private $physicians;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

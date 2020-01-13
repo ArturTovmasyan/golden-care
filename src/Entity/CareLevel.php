@@ -153,7 +153,7 @@ class CareLevel
      */
     private $residentAdmissions;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

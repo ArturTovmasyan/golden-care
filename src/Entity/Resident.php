@@ -8,8 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use App\Annotation\Grid as Grid;
-use JMS\Serializer\Annotation as Serializer;
+use App\Annotation\Grid;
 
 /**
  * @ORM\Table(name="tbl_resident")
@@ -432,7 +431,7 @@ class Resident
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

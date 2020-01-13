@@ -147,7 +147,7 @@ class Salutation
      */
     private $responsiblePersons;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

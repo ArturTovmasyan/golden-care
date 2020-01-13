@@ -477,7 +477,7 @@ class Activity
      */
     private $contact;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

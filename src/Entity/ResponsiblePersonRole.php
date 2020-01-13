@@ -187,7 +187,7 @@ class ResponsiblePersonRole
      */
     private $residentResponsiblePersons;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -285,7 +285,7 @@ class ResponsiblePersonRole
     /**
      * @param ResidentResponsiblePerson $residentResponsiblePerson
      */
-    public function addResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson)
+    public function addResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson): void
     {
         $this->residentResponsiblePersons->add($residentResponsiblePerson);
     }
@@ -293,7 +293,7 @@ class ResponsiblePersonRole
     /**
      * @param ResidentResponsiblePerson $residentResponsiblePerson
      */
-    public function removeResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson)
+    public function removeResidentResponsiblePerson(ResidentResponsiblePerson $residentResponsiblePerson): void
     {
         $this->residentResponsiblePersons->removeElement($residentResponsiblePerson);
     }

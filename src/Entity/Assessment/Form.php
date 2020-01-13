@@ -166,7 +166,7 @@ class Form
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -226,6 +226,7 @@ class Form
     {
         $this->careLevelGroups = $careLevelGroups;
 
+        /** @var CareLevelGroup $careLevelGroup */
         foreach ($careLevelGroups as $careLevelGroup) {
             $careLevelGroup->addForm($this);
         }
@@ -234,7 +235,7 @@ class Form
     /**
      * @param CareLevelGroup $careLevelGroup
      */
-    public function addCareLevelGroup($careLevelGroup)
+    public function addCareLevelGroup($careLevelGroup): void
     {
         $careLevelGroup->addForm($this);
         $this->careLevelGroups[] = $careLevelGroup;
@@ -243,7 +244,7 @@ class Form
     /**
      * @param CareLevelGroup $careLevelGroup
      */
-    public function removeCareLevelGroup(CareLevelGroup $careLevelGroup)
+    public function removeCareLevelGroup(CareLevelGroup $careLevelGroup): void
     {
         $this->careLevelGroups->removeElement($careLevelGroup);
         $careLevelGroup->removeForm($this);
@@ -260,7 +261,7 @@ class Form
     /**
      * @param ArrayCollection $formCategories
      */
-    public function setFormCategories($formCategories)
+    public function setFormCategories($formCategories): void
     {
         $this->formCategories = $formCategories;
     }
@@ -273,7 +274,7 @@ class Form
      *     "api_admin_assessment_form_get",
      * })
      */
-    public function getVirtualCategories()
+    public function getVirtualCategories(): ?array
     {
         $categories = [];
 

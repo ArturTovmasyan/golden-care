@@ -147,7 +147,7 @@ class MedicalHistoryCondition
     private $historyConditions;
 
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

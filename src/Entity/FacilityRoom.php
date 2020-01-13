@@ -241,7 +241,7 @@ class FacilityRoom
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -366,7 +366,9 @@ class FacilityRoom
     {
         $beds = $this->getBeds();
         if ($beds !== null) {
-            $numbers = array_map(function($item){return strtolower($item->getNumber());} , $beds->toArray());
+            $numbers = array_map(function ($item) {
+                return strtolower($item->getNumber());
+            }, $beds->toArray());
 
             $counts = array_count_values($numbers);
 
@@ -377,7 +379,7 @@ class FacilityRoom
             foreach ($beds as $idx => $bed) {
                 $number = strtolower($bed->getNumber());
                 if (!empty($counts[$number]) && $counts[$number] > 1) {
-                    $context->buildViolation('The number "'.$bed->getNumber().'" is already in use.')
+                    $context->buildViolation('The number "' . $bed->getNumber() . '" is already in use.')
                         ->atPath("beds.$idx.number")
                         ->addViolation();
                 }
@@ -397,7 +399,7 @@ class FacilityRoom
         $floor = $this->getFloor();
         $facility = $this->getFacility();
         if ($floor !== null && $facility !== null && $floor > $facility->getNumberOfFloors()) {
-            $context->buildViolation('The floor can not be more than "'.$facility->getNumberOfFloors().'".')
+            $context->buildViolation('The floor can not be more than "' . $facility->getNumberOfFloors() . '".')
                 ->atPath('floor')
                 ->addViolation();
         }
