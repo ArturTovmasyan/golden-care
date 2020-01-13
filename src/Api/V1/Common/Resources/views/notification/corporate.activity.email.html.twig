@@ -8,7 +8,9 @@
             {% if activity.definition.done %}
                 <tr>
                     <td colspan="2" style="word-break:keep-all;word-wrap:normal;font-weight: bold;">
-                        Please complete your task "{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.title }}{% endif %}".
+                        Please complete your task
+                        "{% if activity.title %}{{ activity.title }}{% else %}{{ activity.definition.title }}{% endif %}
+                        ".
                     </td>
                 </tr>
             {% endif %}

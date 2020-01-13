@@ -1,5 +1,6 @@
 {% extends "@api_email/base.html.twig" %}
 {% block title %}{{ subject }}{% endblock %}
 {% block content %}
-    <p>A new document - <a href="{{ baseUrl }}/documents?id={{ id }}">{{ title }}</a> has been uploaded to the {{ spaceName }} database. {% if description is not empty %} {{ description }}{% endif %}</p>
+    <p>A new document - <a href="{{ baseUrl }}/documents?id={{ id }}">{{ title }}</a> has been uploaded to
+        the {{ spaceName }} database. {% if description is not empty %} {{ description }}{% endif %}</p>
 {% endblock %}

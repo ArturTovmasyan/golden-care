@@ -29,98 +29,99 @@
             </thead>
             <tbody>
         {% endif %}
-            <tr>
-                <td><b>Physician Name</b></td>
-                <td><b>Count</b></td>
-                <td><b>Address, CSZ</b></td>
-                <td><b>Office Phone</b></td>
-                <td><b>Emergency Phone</b></td>
-                <td><b>Email</b></td>
-                <td><b>Fax</b></td>
-                <td><b>Website Url</b></td>
-            </tr>
-            <tr>
-                <td>
-                    {% if datum.firstName or datum.lastName %}
-                        {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
+        <tr>
+            <td><b>Physician Name</b></td>
+            <td><b>Count</b></td>
+            <td><b>Address, CSZ</b></td>
+            <td><b>Office Phone</b></td>
+            <td><b>Emergency Phone</b></td>
+            <td><b>Email</b></td>
+            <td><b>Fax</b></td>
+            <td><b>Website Url</b></td>
+        </tr>
+        <tr>
+            <td>
+                {% if datum.firstName or datum.lastName %}
+                    {% if datum.salutation == true %}{{ datum.salutation }}&nbsp;{% endif %}{% if datum.firstName %}{{ datum.firstName }}&nbsp;{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}
+                {% endif %}
+            </td>
+            <td>
+                {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}
+                    {{ data.count[datum.typeId][datum.pId] }}
+                {% else %}
+                    0
+                {% endif %}
+            </td>
+            <td>
+                {{ datum.address }},
+                <br/> {{ datum.city }} {{ datum.state }} {{ datum.zip }}
+            </td>
+            <td>
+                {% set a = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
+                        {% set a = a + 1 %}
+                        {{ physicianPhone.number }}<br/>
                     {% endif %}
-                </td>
-                <td>
-                    {% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}
-                        {{ data.count[datum.typeId][datum.pId] }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </td>
-                <td>
-                    {{ datum.address }},
-                    <br/> {{ datum.city }} {{ datum.state }} {{ datum.zip }}
-                </td>
-                <td>
-                    {% set a = 0 %}
-                    {% for physicianPhone in data.physicianPhones %}
-                        {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}
-                            {% set a = a + 1 %}
-                            {{ physicianPhone.number }}<br/>
-                        {% endif %}
-                    {% endfor %}
-                    {% if a == 0 %}N/A{% endif %}
-                </td>
-                <td>
-                    {% set b = 0 %}
-                    {% for physicianPhone in data.physicianPhones %}
-                        {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
-                            {% set b = b + 1 %}
-                            {{ physicianPhone.number }}<br/>
-                        {% endif %}
-                    {% endfor %}
-                    {% if b == 0 %}N/A{% endif %}
-                </td>
-                <td>
-                    {% if datum.email is defined and datum.email %}
-                        {{ datum.email }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% set c = 0 %}
-                    {% for physicianPhone in data.physicianPhones %}
-                        {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_FAX') %}
-                            {% set c = c + 1 %}
-                            {{ physicianPhone.number }}<br/>
-                        {% endif %}
-                    {% endfor %}
-                    {% if c == 0 %}N/A{% endif %}
-                </td>
-                <td>
-                    {% if datum.websiteUrl is defined and datum.websiteUrl %}
-                        {{ datum.websiteUrl }}
-                    {% endif %}
-                </td>
-            </tr>
-            {% if data.residents[datum.typeId] is defined and data.residents[datum.typeId][datum.pId] is defined %}
-                {% set residents = data.residents[datum.typeId][datum.pId] %}
-
-                <tr>
-                    <td colspan="4"><b>Resident</b></td>
-                    <td colspan="4"><b>Phones</b></td>
-                </tr>
-                {% for resident in residents %}
-                    <tr>
-                        <td colspan="4">
-                            {% if resident['number'] is defined and resident['number'] %}
-                                {{ resident['number'] }}&nbsp;
-                            {% endif %}{{ resident['fullName'] }}
-                        </td>
-                        <td colspan="4">
-                            {% if resident['phones'] is defined %}
-                                {% for phone in resident['phones'] %}
-                                    {{ phoneType(phone.type) }}{% if phone.primary == true %}(P){% endif %}:&nbsp;{{ phone.number }}<br>
-                                {% endfor %}
-                            {% endif %}
-                        </td>
-                    </tr>
                 {% endfor %}
-            {% endif %}
+                {% if a == 0 %}N/A{% endif %}
+            </td>
+            <td>
+                {% set b = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                        {% set b = b + 1 %}
+                        {{ physicianPhone.number }}<br/>
+                    {% endif %}
+                {% endfor %}
+                {% if b == 0 %}N/A{% endif %}
+            </td>
+            <td>
+                {% if datum.email is defined and datum.email %}
+                    {{ datum.email }}
+                {% endif %}
+            </td>
+            <td>
+                {% set c = 0 %}
+                {% for physicianPhone in data.physicianPhones %}
+                    {% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_FAX') %}
+                        {% set c = c + 1 %}
+                        {{ physicianPhone.number }}<br/>
+                    {% endif %}
+                {% endfor %}
+                {% if c == 0 %}N/A{% endif %}
+            </td>
+            <td>
+                {% if datum.websiteUrl is defined and datum.websiteUrl %}
+                    {{ datum.websiteUrl }}
+                {% endif %}
+            </td>
+        </tr>
+        {% if data.residents[datum.typeId] is defined and data.residents[datum.typeId][datum.pId] is defined %}
+            {% set residents = data.residents[datum.typeId][datum.pId] %}
+
+            <tr>
+                <td colspan="4"><b>Resident</b></td>
+                <td colspan="4"><b>Phones</b></td>
+            </tr>
+            {% for resident in residents %}
+                <tr>
+                    <td colspan="4">
+                        {% if resident['number'] is defined and resident['number'] %}
+                            {{ resident['number'] }}&nbsp;
+                        {% endif %}{{ resident['fullName'] }}
+                    </td>
+                    <td colspan="4">
+                        {% if resident['phones'] is defined %}
+                            {% for phone in resident['phones'] %}
+                                {{ phoneType(phone.type) }}{% if phone.primary == true %}(P){% endif %}:&nbsp;{{ phone.number }}
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
     {% endfor %}
 
     {% if not newGroup %}

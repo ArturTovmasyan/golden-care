@@ -23,62 +23,75 @@
                             <div style="height: 5px;"></div>
                             <b style="font-size: 18px !important">{{ data.strategy }}&nbsp;Events&nbsp;Report</b>
                             <p style="margin-bottom: 5px;"></p>
-                            <b style="font-size: 14px !important">{{ data.startDate|date("m/d/Y") }}&nbsp;through&nbsp;{{ data.endDate|date("m/d/Y") }}</b>
+                            <b style="font-size: 14px !important">{{ data.startDate|date("m/d/Y") }}
+                                &nbsp;through&nbsp;{{ data.endDate|date("m/d/Y") }}</b>
                         </div>
                         <div style="clear: both"></div>
                     </div>
                 </th>
             </tr>
             <tr style="">
-                <td colspan="4" style=""><b style="font-size: 18px !important; margin-left: 20px;">{{ resident.typeShorthand }}</b></td>
+                <td colspan="4" style=""><b
+                            style="font-size: 18px !important; margin-left: 20px;">{{ resident.typeShorthand }}</b></td>
             </tr>
             </thead>
             <tbody>
         {% endif %}
 
-            <tr class="dividerSecond"><td colspan="9" style="width: 20px !important; border: none"></td></tr>
-            <tr style="border: none; margin: 0;">
-                <td colspan="4" style="border: none; margin: 0; "><b style="font-size: 14px !important; margin-left: 20px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</b></td>
-            </tr>
-            {% set n = 0 %}
-            {% if resident['events'] is defined %}
-                {% for event in resident.events %}
-                        {% set n = n + 1 %}
-                        {% if n == 1  %}
-                            <tr style="margin: 0;">
-                                <td style="font-size: 13px !important; margin: 0;">
-                                    <div style="float: left; width: 11% !important; margin: 0;">Date</div>
-                                    <div style="float: left; width: 19% !important; margin: 0;">Event&nbsp;type</div>
-                                    <div style="float: left; width: 35% !important; margin: 0;">Value</div>
-                                    <div style="float: left; width: 35% !important; margin: 0;">Note</div>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        <tr style="margin: 0;">
-                            <td style="margin: 0;">
-                                <div style="float: left; width: 11% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event.date %}{{ event.date|date('m/d/Y') }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 19% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event.title %}{{ event.title }}{% else %}N/A{% endif %}</b></div>
-                                <div style="float: left; width: 35% !important; margin: 0;">
-                                    <b style="font-size: 11px !important;">
-                                        {% if event.physicianFullName %}Physician&nbsp;:&nbsp;{% if event.physicianSalutation %}{{ event.physicianSalutation }}&nbsp;{% endif %}{{ event.physicianFullName }}{% endif %}
-                                        {% if event.responsiblePersons|length > 0 %}
-                                            {% for responsiblePerson in event.responsiblePersons %}
-                                                {% if responsiblePerson.fullName %}
-                                                    {% if loop.first %}ResponsiblePersons&nbsp;:<br>{% endif %}
-                                                    {% if responsiblePerson.salutation %}{{ responsiblePerson.salutation }}&nbsp;{% endif %}{{ responsiblePerson.fullName }}{% if not loop.last %}<br>{% endif %}
-                                                {% endif %}
-                                            {% endfor %}
+        <tr class="dividerSecond">
+            <td colspan="9" style="width: 20px !important; border: none"></td>
+        </tr>
+        <tr style="border: none; margin: 0;">
+            <td colspan="4" style="border: none; margin: 0; "><b
+                        style="font-size: 14px !important; margin-left: 20px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</b>
+            </td>
+        </tr>
+        {% set n = 0 %}
+        {% if resident['events'] is defined %}
+            {% for event in resident.events %}
+                {% set n = n + 1 %}
+                {% if n == 1 %}
+                    <tr style="margin: 0;">
+                        <td style="font-size: 13px !important; margin: 0;">
+                            <div style="float: left; width: 11% !important; margin: 0;">Date</div>
+                            <div style="float: left; width: 19% !important; margin: 0;">Event&nbsp;type</div>
+                            <div style="float: left; width: 35% !important; margin: 0;">Value</div>
+                            <div style="float: left; width: 35% !important; margin: 0;">Note</div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr style="margin: 0;">
+                    <td style="margin: 0;">
+                        <div style="float: left; width: 11% !important; margin: 0;"><b
+                                    style="font-size: 11px !important;">{% if event.date %}{{ event.date|date('m/d/Y') }}{% else %}N/A{% endif %}</b>
+                        </div>
+                        <div style="float: left; width: 19% !important; margin: 0;"><b
+                                    style="font-size: 11px !important;">{% if event.title %}{{ event.title }}{% else %}N/A{% endif %}</b>
+                        </div>
+                        <div style="float: left; width: 35% !important; margin: 0;">
+                            <b style="font-size: 11px !important;">
+                                {% if event.physicianFullName %}Physician&nbsp;:&nbsp;{% if event.physicianSalutation %}{{ event.physicianSalutation }}&nbsp;{% endif %}{{ event.physicianFullName }}{% endif %}
+                                {% if event.responsiblePersons|length > 0 %}
+                                    {% for responsiblePerson in event.responsiblePersons %}
+                                        {% if responsiblePerson.fullName %}
+                                            {% if loop.first %}ResponsiblePersons&nbsp;:<br>{% endif %}
+                                            {% if responsiblePerson.salutation %}{{ responsiblePerson.salutation }}&nbsp;{% endif %}{{ responsiblePerson.fullName }}{% if not loop.last %}
+                                            <br>{% endif %}
                                         {% endif %}
-                                        {% if event.additionalDate %}Discharge&nbsp;Date&nbsp;:&nbsp;{{ event.additionalDate|date('m/d/Y') }}{% endif %}
-                                        {% if not event.physicianFullName and event.responsiblePersons|length < 1 and not event.additionalDate %}N/A{% endif %}
-                                    </b>
-                                </div>
-                                <div style="float: left; width: 35% !important; margin: 0;"><b style="font-size: 11px !important;">{% if event.notes %}{{ event.notes }}{% else %}N/A{% endif %}</b></div>
-                            </td>
-                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if event.additionalDate %}Discharge&nbsp;Date&nbsp;:&nbsp;{{ event.additionalDate|date('m/d/Y') }}{% endif %}
+                                {% if not event.physicianFullName and event.responsiblePersons|length < 1 and not event.additionalDate %}N/A{% endif %}
+                            </b>
+                        </div>
+                        <div style="float: left; width: 35% !important; margin: 0;"><b
+                                    style="font-size: 11px !important;">{% if event.notes %}{{ event.notes }}{% else %}N/A{% endif %}</b>
+                        </div>
+                    </td>
+                </tr>
 
-                {% endfor %}
-            {% endif %}
+            {% endfor %}
+        {% endif %}
         </tbody>
         </table>
     {% endfor %}

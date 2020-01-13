@@ -38,7 +38,8 @@
                                 <div style="height: 5px;"></div>
                                 <b style="font-size: 18px !important">Dining&nbsp;Restrictions</b><br/>
                                 <b style="font-size: 16px !important;">{{ resident.typeName }}</b><br/>
-                                {% if resident.diningRoom is defined and resident.diningRoom %}<b style="font-size: 14px !important">{{ resident.diningRoom }}</b><br/>{% endif %}
+                                {% if resident.diningRoom is defined and resident.diningRoom %}<b
+                                        style="font-size: 14px !important">{{ resident.diningRoom }}</b><br/>{% endif %}
                                 <b style="font-size: 14px !important">Printed&nbsp;{{ "now"|date("M d, Y") }}</b>
                                 <p style="margin-bottom: 5px;"></p>
                             </div>
@@ -47,7 +48,9 @@
                                     <div style="float: left">
                                         {% for datum in data.data %}
                                             {% if (loop.index is odd) %}
-                                                <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                                <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;">
+                                                    <span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span>
+                                                </div>
                                             {% endif %}
                                         {% endfor %}
                                     </div>
@@ -55,7 +58,9 @@
                                 <div style="float: right">
                                     {% for datum in data.data %}
                                         {% if (loop.index is even) %}
-                                            <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;"><span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span></div>
+                                            <div style="width: 230px; height: 20px; margin-bottom: 5px; background-color: {{ datum.color }}; border: solid 0.5px black !important; vertical-align: middle;">
+                                                <span style="font-size: 13px; {% if datum.color == '#ff0000' or datum.color == '#ff00ff' or datum.color == '#333399' or datum.color == '#000000' %}color: white;{% endif %}">{{ datum.title }}</span>
+                                            </div>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -67,10 +72,16 @@
                 </tr>
                 <tr>
                     {% if resident.roomNumber is defined and resident.bedNumber is defined %}
-                        <td style="margin: 0 !important;"><b style="width: 60px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Room</b></td>
+                        <td style="margin: 0 !important;"><b
+                                    style="width: 60px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Room</b>
+                        </td>
                     {% endif %}
-                    <td style="margin: 0 !important;"><b style="width: 180px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Resident</b></td>
-                    <td style="margin: 0 !important;"><b style="width: 400px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Restrictions</b></td>
+                    <td style="margin: 0 !important;"><b
+                                style="width: 180px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Resident</b>
+                    </td>
+                    <td style="margin: 0 !important;"><b
+                                style="width: 400px !important; height: 25px; vertical-align: middle; text-align: left; font-size: 13px !important; margin-bottom: 8px;">Restrictions</b>
+                    </td>
                 </tr>
             {% endif %}
             </thead>
@@ -92,7 +103,8 @@
                         {% if resident['diets'] is defined %}
                             {% for diet in resident.diets %}
                                 <div style="font-size: 12px; margin-bottom: 5px; background-color: {{ diet.color }}">
-                                    <span style="{% if diet.color == '#ff0000' or diet.color == '#ff00ff' or diet.color == '#333399' or diet.color == '#000000' %}color: white;{% endif %}">{{ diet.title }}/{{ diet.description }}</span>
+                                    <span style="{% if diet.color == '#ff0000' or diet.color == '#ff00ff' or diet.color == '#333399' or diet.color == '#000000' %}color: white;{% endif %}">{{ diet.title }}
+                                        /{{ diet.description }}</span>
                                 </div>
                             {% endfor %}
                         {% endif %}

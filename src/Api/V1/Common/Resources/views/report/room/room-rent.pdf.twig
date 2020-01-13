@@ -27,10 +27,14 @@
                     <div style="margin-bottom: 5px; float: left">
                         <div style="float: left">
                             <div style="height: 5px;"></div>
-                            <b style="font-size: 18px !important">{{ data.strategy }}&nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}Rent&nbsp;Report</b>
+                            <b style="font-size: 18px !important">{{ data.strategy }}
+                                &nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}
+                                Rent&nbsp;Report</b>
                             <p style="margin-bottom: 5px;"></p>
-                            <b style="font-size: 14px !important">{{ data.strategy }}:&nbsp;{{ datum.typeName }}</b><br/>
-                            <b style="font-size: 14px !important">{{ data.dateStart|date("m/d/Y") }}&nbsp;through&nbsp;{{ data.dateEnd }}</b>
+                            <b style="font-size: 14px !important">{{ data.strategy }}
+                                :&nbsp;{{ datum.typeName }}</b><br/>
+                            <b style="font-size: 14px !important">{{ data.dateStart|date("m/d/Y") }}
+                                &nbsp;through&nbsp;{{ data.dateEnd }}</b>
                         </div>
                     </div>
                     <div style="margin-bottom: 5px; float: right">
@@ -46,7 +50,8 @@
                 </th>
             </tr>
             <tr>
-                {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}<td><b>Room/Bed</b></td>{% endif %}
+                {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
+                    <td><b>Room/Bed</b></td>{% endif %}
                 <td><b>Resident</b></td>
                 <td><b>Billing</b></td>
                 <td><b>Rent</b></td>
@@ -61,7 +66,8 @@
         {% endif %}
 
         <tr>
-            {% if datum.number is defined and datum.number %}<td style="height: 40px; text-align: left;">{{ datum.number }}</td>{% endif %}
+            {% if datum.number is defined and datum.number %}
+                <td style="height: 40px; text-align: left;">{{ datum.number }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.fullName }}</td>
             <td style="height: 40px; text-align: left;">
                 {% if datum.responsiblePerson|length > 0 %}
@@ -73,22 +79,28 @@
                 {% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if datum.amount is defined and datum.amount %}$&nbsp;{{ datum.amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                {% if datum.amount is defined and datum.amount %}$&nbsp;{{ datum.amount|number_format(2, '.', ',') }}
+                    <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}<br/>{% else %}N/A{% endif %}
+                {% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}
+                    <br/>{% else %}N/A{% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}<br/>{% else %}N/A{% endif %}
+                {% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}
+                    <br/>{% else %}N/A{% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if datum.discharged is defined and datum.discharged %}{{ datum.discharged|date("m/d/Y") }}<br/>{% else %}N/A{% endif %}
+                {% if datum.discharged is defined and datum.discharged %}{{ datum.discharged|date("m/d/Y") }}
+                    <br/>{% else %}N/A{% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}{{ data.calcAmount[datum.id][datum.actionId].days }}<br/>{% else %}N/A{% endif %}
+                {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}{{ data.calcAmount[datum.id][datum.actionId].days }}
+                    <br/>{% else %}N/A{% endif %}
             </td>
             <td style="height: 40px; text-align: left;">
-                {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}$ {{ data.calcAmount[datum.id][datum.actionId].amount|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}$ {{ data.calcAmount[datum.id][datum.actionId].amount|number_format(2, '.', ',') }}
+                    <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
             </td>
         </tr>
         {% if datumKey+1 == data.place[renderedGroup] %}
@@ -114,7 +126,8 @@
     {% endif %}
 
     {% if not i %}
-        <b style="font-size: 18px !important">{{ data.dateStart|date("m/d/Y") }}&nbsp;through&nbsp;{{ data.dateEnd|date("m/d/Y") }} no Rents found.</b>
+        <b style="font-size: 18px !important">{{ data.dateStart|date("m/d/Y") }}
+            &nbsp;through&nbsp;{{ data.dateEnd|date("m/d/Y") }} no Rents found.</b>
     {% endif %}
 
 {% endblock %}

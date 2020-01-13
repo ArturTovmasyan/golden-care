@@ -35,7 +35,7 @@
                             <br/>
                             {% for group in data.groups %}
                                 <b>{{ group.group }}: </b>
-                                    _________________
+                                _________________
                                 <br/>
                             {% endfor %}
                         </td>
@@ -100,7 +100,8 @@
                     {% for careLevel in careLevelGroup.careLevels %}
                         <tr>
                             <td style="width: 200px;">
-                                {{ careLevel.levelLow }} - {% if careLevel.levelHigh %}{{ careLevel.levelHigh }}{% else %}+{% endif %}
+                                {{ careLevel.levelLow }}
+                                - {% if careLevel.levelHigh %}{{ careLevel.levelHigh }}{% else %}+{% endif %}
                                 ({{ careLevel.title|raw }})
                             </td>
                         </tr>

@@ -9,14 +9,22 @@
             {% for log in logs %}
                 <tr>
                     <td>
-                        <p style="margin-top: 15px;font-size: large;">{{ log['action'] }} | <a href="{{ baseUrl }}/lead/lead/{{ log['content']['lead_id'] }}">{{ log['title']|raw }}</a></p>
-                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Date:</strong> {{ log['date'] }}</p>
+                        <p style="margin-top: 15px;font-size: large;">{{ log['action'] }} | <a
+                                    href="{{ baseUrl }}/lead/lead/{{ log['content']['lead_id'] }}">{{ log['title']|raw }}</a>
+                        </p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Date:</strong> {{ log['date'] }}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>New Lead</strong></p>
-                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user <strong>{{ log['content']['user_name'] }}</strong> added new lead
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">The user
+                            <strong>{{ log['content']['user_name'] }}</strong> added new lead
                             <strong>{{ log['content']['lead_name'] }}</strong>.</p>
-                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> <a href="{{ baseUrl }}/lead/lead/{{ log['content']['lead_id'] }}">{{ log['content']['lead_name'] }}</a></p>
-                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Owner:</strong> {{ log['content']['owner'] }}</p>
-                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Name:</strong> <a
+                                    href="{{ baseUrl }}/lead/lead/{{ log['content']['lead_id'] }}">{{ log['content']['lead_name'] }}</a>
+                        </p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Owner:</strong> {{ log['content']['owner'] }}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary
+                                Facility:</strong> {{ log['content']['primary_facility'] }}</p>
                     </td>
                 </tr>
             {% endfor %}

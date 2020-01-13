@@ -30,9 +30,11 @@
                 </th>
             </tr>
             <tr style="font-size: 13px; border: none; margin-bottom: 0">
-                {% if resident.roomNumber is defined and resident.bedNumber is defined %}<td style="width: 30px !important"><b style="text-align: left">Room</b></td>{% endif %}
+                {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                    <td style="width: 30px !important"><b style="text-align: left">Room</b></td>{% endif %}
                 <td style="width: 250px !important"><b>Resident</b></td>
-                {% if resident.ambulatory is defined %}<td style="width: 30px"><b>amb*</b></td>{% endif %}
+                {% if resident.ambulatory is defined %}
+                    <td style="width: 30px"><b>amb*</b></td>{% endif %}
                 <td style="width: 250px !important"><b>Physicians</b></td>
                 <td style="width: 250px !important"><b>Emergency Contacts</b></td>
                 <td style="width: 250px !important"><b>Billing Persons</b></td>
@@ -52,15 +54,18 @@
                 </td>
             {% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
-            {% if resident.ambulatory is defined %}<td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
+            {% if resident.ambulatory is defined %}
+                <td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
                 {% if resident['physicians'] is defined %}
                     {% for physician in resident['physicians'] %}
                         <div style="margin-bottom: 10px;">
-                            {% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}<br/>{% endif %}
+                            {% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}
+                                <br/>{% endif %}
                             {% if physician.speciality %}{{ physician.speciality }}<br/>{% endif %}
                             {% if physician.address %}{{ physician.address }}<br/>{% endif %}
-                            {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}<br/>{% endif %}
+                            {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}
+                                <br/>{% endif %}
                             {% for physicianPhone in data.physicianPhones %}
                                 {% if physicianPhone.pId == physician.pId %}
                                     {% if physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
@@ -80,9 +85,11 @@
                     {% for responsiblePerson in resident['responsiblePersons'] %}
                         {% if responsiblePerson.emergency %}
                             <div style="margin-bottom: 10px;">
-                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}<br/>{% endif %}
+                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}
+                                    <br/>{% endif %}
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
-                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
+                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}
+                                    <br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}
                                     {% if responsiblePersonPhone.rpId == responsiblePerson.rpId %}
                                         {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}
@@ -99,9 +106,11 @@
                     {% for responsiblePerson in resident['responsiblePersons'] %}
                         {% if responsiblePerson.financially %}
                             <div style="margin-bottom: 10px;">
-                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}<br/>{% endif %}
+                                {% if responsiblePerson.responsiblePersonFullName %}{{ responsiblePerson.responsiblePersonFullName }}
+                                    <br/>{% endif %}
                                 {% if responsiblePerson.address %}{{ responsiblePerson.address }}<br/>{% endif %}
-                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}<br/>{% endif %}
+                                {% if responsiblePerson.city %}{{ responsiblePerson.city }},&nbsp;{{ responsiblePerson.state }}&nbsp;{{ responsiblePerson.zip }}
+                                    <br/>{% endif %}
                                 {% for responsiblePersonPhone in data.responsiblePersonPhones %}
                                     {% if responsiblePersonPhone.rpId == responsiblePerson.rpId %}
                                         {{ phoneType(responsiblePersonPhone.type) }}:&nbsp;{{ responsiblePersonPhone.number }}

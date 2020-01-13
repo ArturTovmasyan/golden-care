@@ -105,9 +105,10 @@
                         <tr>
                             <td>
                                 {% if isSelectedLevel %}<b>{% endif %}
-                                {{ careLevel.levelLow }} - {% if careLevel.levelHigh %}{{ careLevel.levelHigh }}{% else %}+{% endif %}
-                                ({{ careLevel.title }})
-                                {% if isSelectedLevel %}</b>{% endif %}
+                                    {{ careLevel.levelLow }}
+                                    - {% if careLevel.levelHigh %}{{ careLevel.levelHigh }}{% else %}+{% endif %}
+                                    ({{ careLevel.title }})
+                                    {% if isSelectedLevel %}</b>{% endif %}
                             </td>
                         </tr>
                     {% endfor %}

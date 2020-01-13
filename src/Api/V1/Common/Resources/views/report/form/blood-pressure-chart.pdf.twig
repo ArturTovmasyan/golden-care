@@ -19,30 +19,30 @@
             <table class="report-table main-table bordered">
             <tr class="divider"></tr>
             <thead>
-                <tr>
-                    <th colspan="7">
-                        <div style="font-size: 24px; text-align: center">
-                            BLOOD PRESSURE LOG
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th colspan="7">
-                        <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px; text-align: left;">
-                            {{ resident.typeName }}
-                        </div>
-                        <div style="float: right; font-size: 24px; width: 450px; margin-top: 5px; text-align: right;">
-                            {% if resident.roomNumber is defined and resident.bedNumber is defined %}
-                                {% if resident.private %}
-                                    {{ resident.roomNumber }}&nbsp;
-                                {% else %}
-                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
-                                {% endif %}
-                            {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
-                        </div>
-                        <div style="clear: both"></div>
-                    </th>
-                </tr>
+            <tr>
+                <th colspan="7">
+                    <div style="font-size: 24px; text-align: center">
+                        BLOOD PRESSURE LOG
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="7">
+                    <div style="float: left; font-size: 24px; width: 400px; margin-top: 5px; text-align: left;">
+                        {{ resident.typeName }}
+                    </div>
+                    <div style="float: right; font-size: 24px; width: 450px; margin-top: 5px; text-align: right;">
+                        {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                            {% if resident.private %}
+                                {{ resident.roomNumber }}&nbsp;
+                            {% else %}
+                                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
+                            {% endif %}
+                        {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                    </div>
+                    <div style="clear: both"></div>
+                </th>
+            </tr>
             </thead>
             <tbody>
         {% endif %}

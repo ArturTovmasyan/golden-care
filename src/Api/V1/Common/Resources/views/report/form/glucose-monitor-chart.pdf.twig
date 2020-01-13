@@ -16,407 +16,655 @@
         {% if newGroup %}
             <table class="report-table main-table bordered">
             <thead>
-                <tr>
-                    <th colspan="15">
-                        <div style="float: left; font-size: 20px; width: 400px; text-align: left;">
-                            {{ resident.typeName }}
-                        </div>
-                        <div style="float: left; font-size: 20px; width: 330px; text-align: center;">
-                            BLOOD SUGAR TRACKER
-                        </div>
-                        <div style="float: right; font-size: 20px; width: 400px; text-align: right;">
-                            {% if resident.roomNumber is defined and resident.bedNumber is defined %}
-                                {% if resident.private %}
-                                    {{ resident.roomNumber }}&nbsp;
-                                {% else %}
-                                    {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
-                                {% endif %}
-                            {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
-                        </div>
-                        <div style="clear: both"></div>
-                    </th>
-                </tr>
+            <tr>
+                <th colspan="15">
+                    <div style="float: left; font-size: 20px; width: 400px; text-align: left;">
+                        {{ resident.typeName }}
+                    </div>
+                    <div style="float: left; font-size: 20px; width: 330px; text-align: center;">
+                        BLOOD SUGAR TRACKER
+                    </div>
+                    <div style="float: right; font-size: 20px; width: 400px; text-align: right;">
+                        {% if resident.roomNumber is defined and resident.bedNumber is defined %}
+                            {% if resident.private %}
+                                {{ resident.roomNumber }}&nbsp;
+                            {% else %}
+                                {{ resident.roomNumber ~ ' ' ~ resident.bedNumber }}&nbsp;
+                            {% endif %}
+                        {% endif %}{{ resident.firstName ~ ' ' ~ resident.lastName }}
+                    </div>
+                    <div style="clear: both"></div>
+                </th>
+            </tr>
             </thead>
             <tbody>
         {% endif %}
 
         <tr>
-            <td rowspan="2" style="background-color: darkgray;"><b style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
+            <td rowspan="2" style="background-color: darkgray;"><b
+                        style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">MONDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">WEDNESDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">FRIDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
         </tr>
         <tr>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Breakfast</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Lunch</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Dinner</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Bedtime</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr class="divider"></tr>
 
         <tr>
-            <td rowspan="2" style="background-color: darkgray;"><b style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
+            <td rowspan="2" style="background-color: darkgray;"><b
+                        style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">MONDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">WEDNESDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">FRIDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
         </tr>
         <tr>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Breakfast</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Lunch</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Dinner</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Bedtime</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr class="divider"></tr>
 
         <tr>
-            <td rowspan="2" style="background-color: darkgray;"><b style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
+            <td rowspan="2" style="background-color: darkgray;"><b
+                        style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">MONDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">WEDNESDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">FRIDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
         </tr>
         <tr>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Breakfast</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Lunch</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Dinner</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Bedtime</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr class="divider"></tr>
 
         <tr>
-            <td rowspan="2" style="background-color: darkgray;"><b style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
+            <td rowspan="2" style="background-color: darkgray;"><b
+                        style="height: 30px; font-size: 16px;">WEEK&nbsp;OF:<br>___/&nbsp;___/&nbsp;___</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SUNDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">MONDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">TUESDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">WEDNESDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">THURSDAY</b></td>
             <td colspan="2"><b style="height: 15px; width: 110px !important; font-size: 16px;">FRIDAY</b></td>
-            <td colspan="2" style="background-color: lightgray"><b style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
+            <td colspan="2" style="background-color: lightgray"><b
+                        style="height: 15px; width: 110px !important; font-size: 16px;">SATURDAY</b></td>
         </tr>
         <tr>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b></td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td>
+                <b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td><b style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">before</b>
+            </td>
+            <td style="background-color: lightgray"><b
+                        style="height: 15px; !important; width: 55px !important; font-size: 14px; text-align: center;">&nbsp;after</b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Breakfast</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Lunch</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Dinner</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
         <tr>
             <td><b style="height: 15px; !important; font-size: 16px;">Bedtime</b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
             <td><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
-            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b></td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
+            <td style="background-color: lightgray"><b style="height: 15px; !important; width: 55px !important;"></b>
+            </td>
         </tr>
     {% endfor %}
 

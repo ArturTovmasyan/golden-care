@@ -16,19 +16,37 @@
             </th>
         <tr class="divider"></tr>
         <tr>
-            <td rowspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>{{ data.strategy }}</b></td>
-            <td rowspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Resident</b></td>
-            <td colspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>New&nbsp;Move-Ins</b></td>
-            <td colspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>New&nbsp;Move-Outs</b></td>
-            <td rowspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Room/Bed&nbsp;#</b></td>
-            <td rowspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Notes</b></td>
-            <td rowspan="2" style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Total&nbsp;Time&nbsp;(*)</b></td>
+            <td rowspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>{{ data.strategy }}</b></td>
+            <td rowspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Resident</b></td>
+            <td colspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>New&nbsp;Move-Ins</b></td>
+            <td colspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>New&nbsp;Move-Outs</b></td>
+            <td rowspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Room/Bed&nbsp;#</b></td>
+            <td rowspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Notes</b></td>
+            <td rowspan="2"
+                style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Total&nbsp;Time&nbsp;(*)</b></td>
         </tr>
         <tr>
-            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Short&nbsp;Term</b></td>
-            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Long&nbsp;Term</b></td>
-            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Move-Out</b></td>
-            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;"><b>Original&nbsp;Move-In</b></td>
+            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Short&nbsp;Term</b></td>
+            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Long&nbsp;Term</b></td>
+            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Move-Out</b></td>
+            <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                <b>Original&nbsp;Move-In</b></td>
         </tr>
         </thead>
         <tbody>
@@ -37,7 +55,7 @@
                 <td style="border: solid 1px black; {% if datum.sumLongTerm is defined %}background-color: darkgray; text-align: center;{% endif %}">
                     {% if datum.sumLongTerm is defined %}<b>{% endif %}
                         {% if datum.typeShorthand is defined %}{{ datum.typeShorthand }}{% endif %}
-                    {% if datum.sumLongTerm is defined %}</b>{% endif %}
+                        {% if datum.sumLongTerm is defined %}</b>{% endif %}
                 </td>
                 <td style="border: solid 1px black; {% if datum.sumLongTerm is defined %}background-color: darkgray; text-align: center;{% endif %}">
                     {% if datum.firstName is defined %}{{ datum.firstName }}&nbsp;{{ datum.lastName }}{% endif %}

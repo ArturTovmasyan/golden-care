@@ -19,7 +19,7 @@
             {{ activity.outreach.type.title }}
         {% endif %}
     {% elseif activity.ownerType == constant('App\\Model\\Lead\\ActivityOwnerType::TYPE_CONTACT') %}
-            {{ activity.contact.firstName ~ ' ' ~ activity.contact.lastName }}
+        {{ activity.contact.firstName ~ ' ' ~ activity.contact.lastName }}
     {% endif %}
 {% endblock %}
     {% block content %}

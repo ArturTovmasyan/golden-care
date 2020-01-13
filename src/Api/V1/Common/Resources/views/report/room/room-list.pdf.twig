@@ -20,36 +20,43 @@
             <span class="divider"></span>
             <span class="divider"></span>
             <table class="report-table main-table bordered" style="margin-bottom: 10px;">
-                <tr class="divider"></tr>
-                <thead>
-                    <tr>
-                        <th colspan="9">
-                            <div style="margin-bottom: 5px;">
-                                <div style="float: left">
-                                    <div style="height: 5px;"></div>
-                                    <b style="font-size: 18px !important">{{ data.strategy }}&nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}Simple&nbsp;Rent&nbsp;Roster&nbsp;Report</b>
-                                    <p style="margin-bottom: 5px;"></p>
-                                    <b style="font-size: 14px !important">{{ data.strategy }}:&nbsp;{{ datum.typeName }}</b><br/>
-                                    <b style="font-size: 14px !important">{{ data.date }}</b>
-                                </div>
-                                <div style="float: right">
-                                    <div style="height: 5px;"></div>
-                                    <b style="font-size: 18px !important">Total&nbsp;Of&nbsp;All:&nbsp;$&nbsp;{{ data.sum|number_format(2, '.', ',') }}</b>
-                                </div>
-                                <div style="clear: both"></div>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+            <tr class="divider"></tr>
+            <thead>
+            <tr>
+                <th colspan="9">
+                    <div style="margin-bottom: 5px;">
+                        <div style="float: left">
+                            <div style="height: 5px;"></div>
+                            <b style="font-size: 18px !important">{{ data.strategy }}
+                                &nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}
+                                Simple&nbsp;Rent&nbsp;Roster&nbsp;Report</b>
+                            <p style="margin-bottom: 5px;"></p>
+                            <b style="font-size: 14px !important">{{ data.strategy }}
+                                :&nbsp;{{ datum.typeName }}</b><br/>
+                            <b style="font-size: 14px !important">{{ data.date }}</b>
+                        </div>
+                        <div style="float: right">
+                            <div style="height: 5px;"></div>
+                            <b style="font-size: 18px !important">Total&nbsp;Of&nbsp;All:&nbsp;$&nbsp;{{ data.sum|number_format(2, '.', ',') }}</b>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
         {% endif %}
         {% if newGroup %}
             <tr>
-                {% if datum.roomNumber is defined and datum.bedNumber is defined %}<td><b>Room/Bed</b></td>{% endif %}
-                {% if datum.floor is defined and datum.floor %}<td><b>Floor</b></td>{% endif %}
-                {% if datum.careLevel is defined and datum.careLevel %}<td><b>Level</b></td>{% endif %}
+                {% if datum.roomNumber is defined and datum.bedNumber is defined %}
+                    <td><b>Room/Bed</b></td>{% endif %}
+                {% if datum.floor is defined and datum.floor %}
+                    <td><b>Floor</b></td>{% endif %}
+                {% if datum.careLevel is defined and datum.careLevel %}
+                    <td><b>Level</b></td>{% endif %}
                 <td><b>Resident</b></td>
-                {% if datum.city is defined and datum.city %}<td><b>Address</b></td>{% endif %}
+                {% if datum.city is defined and datum.city %}
+                    <td><b>Address</b></td>{% endif %}
                 <td><b>Rent</b></td>
                 <td><b>Frequency</b></td>
                 <td><b>Admitted</b></td>
@@ -66,15 +73,20 @@
                     {% endif %}
                 </td>
             {% endif %}
-            {% if datum.floor is defined and datum.floor %}<td style="height: 40px; text-align: left;">{{ datum.floor }}</td>{% endif %}
-            {% if datum.careLevel is defined and datum.careLevel %}<td style="height: 40px; text-align: left;">{{ datum.careLevel }}</td>{% endif %}
+            {% if datum.floor is defined and datum.floor %}
+                <td style="height: 40px; text-align: left;">{{ datum.floor }}</td>{% endif %}
+            {% if datum.careLevel is defined and datum.careLevel %}
+                <td style="height: 40px; text-align: left;">{{ datum.careLevel }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
-            {% if datum.city is defined and datum.city %}<td style="height: 40px; text-align: left;">{% if datum.address is defined and datum.address %}{{ datum.address }}<br>{% endif %}{{ datum.city }},&nbsp;{{ datum.state }}&nbsp;{{ datum.zip }}</td>{% endif %}
+            {% if datum.city is defined and datum.city %}
+                <td style="height: 40px; text-align: left;">{% if datum.address is defined and datum.address %}{{ datum.address }}
+                <br>{% endif %}{{ datum.city }},&nbsp;{{ datum.state }}&nbsp;{{ datum.zip }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</td>
             <td style="height: 40px; text-align: left;">{% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}{% else %}N/A{% endif %}</td>
             <td style="height: 40px; text-align: left;">{% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}</td>
             <td style="height: 40px; text-align: left;">
-                {% if data.calcAmount[datum.id] is defined %}$ {{ data.calcAmount[datum.id]|number_format(2, '.', ',') }}<br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                {% if data.calcAmount[datum.id] is defined %}$ {{ data.calcAmount[datum.id]|number_format(2, '.', ',') }}
+                    <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
             </td>
         </tr>
         {% if datumKey+1 == data.place[renderedGroup] %}
