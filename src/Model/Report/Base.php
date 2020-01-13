@@ -1,11 +1,11 @@
 <?php
 
-namespace  App\Model\Report;
+namespace App\Model\Report;
 
 class Base
 {
-    const ORIENTATION_PORTRAIT  = 'Portrait';
-    const ORIENTATION_LANDSCAPE = 'Landscape';
+    public const ORIENTATION_PORTRAIT = 'Portrait';
+    public const ORIENTATION_LANDSCAPE = 'Landscape';
 
     /**
      * @var string
@@ -23,21 +23,21 @@ class Base
     public function __construct()
     {
         $this->options = [
-            'orientation'      => self::ORIENTATION_PORTRAIT,
-            'page-size'        => 'Letter',
-            'margin-top'       => '13mm',
-            'margin-bottom'    => '21mm',
-            'margin-left'      => '14mm',
-            'margin-right'     => '13mm',
-            'header-left'      => '',
-            'header-right'     => '',
-            'footer-left'      => 'SeniorCare Reports',
-            'footer-right'     => 'Report page [page] of [topage] - ' . date('\ m/d/Y '),
-            'footer-center'    => '',
+            'orientation' => self::ORIENTATION_PORTRAIT,
+            'page-size' => 'Letter',
+            'margin-top' => '13mm',
+            'margin-bottom' => '21mm',
+            'margin-left' => '14mm',
+            'margin-right' => '13mm',
+            'header-left' => '',
+            'header-right' => '',
+            'footer-left' => 'SeniorCare Reports',
+            'footer-right' => 'Report page [page] of [topage] - ' . date('\ m/d/Y '),
+            'footer-center' => '',
             'footer-font-size' => 9,
-            'footer-spacing'   => 0,
-            'lowquality'       => false,
-            'encoding'         => '',
+            'footer-spacing' => 0,
+            'lowquality' => false,
+            'encoding' => '',
             'print-media-type' => false,
         ];
     }
@@ -47,7 +47,7 @@ class Base
      * @param $value
      * @return $this
      */
-    protected function addOption($key, $value)
+    protected function addOption($key, $value): self
     {
         $this->options[$key] = $value;
 
@@ -57,7 +57,7 @@ class Base
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): ?array
     {
         return $this->options;
     }

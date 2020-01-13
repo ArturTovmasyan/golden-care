@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model\Persistence\Entity;
+namespace App\Model\Persistence\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -59,7 +59,7 @@ trait LogAwareTrait
     /**
      * @return \Datetime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -67,7 +67,7 @@ trait LogAwareTrait
     /**
      * @param \Datetime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): void
     {
         $this->createdAt = $createdAt;
     }

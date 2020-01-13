@@ -52,9 +52,12 @@ class ArrayUtil
         return $array;
     }
 
-    public static function flatten1D(array $array) {
+    public static function flatten1D(array $array)
+    {
         $return = array();
-        array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+        array_walk_recursive($array, function ($a) use (&$return) {
+            $return[] = $a;
+        });
         return $return;
     }
 }

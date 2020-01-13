@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class Assessment
 {
@@ -8,14 +8,14 @@ class Assessment
      * Types
      */
     const TYPE_FILLED = 1;
-    const TYPE_BLANK  = 2;
+    const TYPE_BLANK = 2;
 
     /**
      * @var array
      */
     public static $types = [
         self::TYPE_FILLED => 'Filled',
-        self::TYPE_BLANK  => 'Blank'
+        self::TYPE_BLANK => 'Blank'
     ];
 }
 

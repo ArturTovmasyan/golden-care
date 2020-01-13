@@ -17,7 +17,7 @@ class Grant
     public static $LEVEL_UNDELETE = 5;
 
 
-    public static function str2identity(?string $identity) : int
+    public static function str2identity(?string $identity): int
     {
         switch ($identity) {
             case "ALL":
@@ -31,7 +31,7 @@ class Grant
         }
     }
 
-    public static function str2level(?string $level) : int
+    public static function str2level(?string $level): int
     {
         switch ($level) {
             case "NONE":

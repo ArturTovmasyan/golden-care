@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class Phone
 {
@@ -13,13 +13,13 @@ class Phone
     /**
      * Compatible
      */
-    const TYPE_HOME      = 1;
-    const TYPE_MOBILE    = 2;
-    const TYPE_WORK      = 3;
-    const TYPE_OFFICE    = 4;
+    const TYPE_HOME = 1;
+    const TYPE_MOBILE = 2;
+    const TYPE_WORK = 3;
+    const TYPE_OFFICE = 4;
     const TYPE_EMERGENCY = 5;
-    const TYPE_FAX       = 6;
-    const TYPE_ROOM      = 7;
+    const TYPE_FAX = 6;
+    const TYPE_ROOM = 7;
 
     /**
      * @var array
@@ -33,13 +33,13 @@ class Phone
      * @var array
      */
     public static $typeNames = [
-        self::TYPE_HOME      => 'Home',
-        self::TYPE_MOBILE    => 'Mobile',
-        self::TYPE_WORK      => 'Work',
-        self::TYPE_OFFICE    => 'Office',
+        self::TYPE_HOME => 'Home',
+        self::TYPE_MOBILE => 'Mobile',
+        self::TYPE_WORK => 'Work',
+        self::TYPE_OFFICE => 'Office',
         self::TYPE_EMERGENCY => 'Emergency',
-        self::TYPE_FAX       => 'Fax',
-        self::TYPE_ROOM      => 'Room'
+        self::TYPE_FAX => 'Fax',
+        self::TYPE_ROOM => 'Room'
     ];
 
     /**

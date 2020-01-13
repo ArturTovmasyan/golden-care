@@ -1,17 +1,17 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class User
 {
-    public const GENDER_MALE   = 1;
+    public const GENDER_MALE = 1;
     public const GENDER_FEMALE = 2;
 
     /**
      * @var array
      */
     public static $genders = [
-        self::GENDER_MALE   => 'Male',
+        self::GENDER_MALE => 'Male',
         self::GENDER_FEMALE => 'Female',
     ];
 
@@ -30,7 +30,7 @@ class User
     {
         return [
             'false' => 0,
-            'true'  => 1,
+            'true' => 1,
         ];
     }
 
@@ -41,7 +41,7 @@ class User
     {
         return [
             'false' => 0,
-            'true'  => 1,
+            'true' => 1,
         ];
     }
 
@@ -51,7 +51,7 @@ class User
     public static function genderValues()
     {
         return [
-            'Male'   => self::GENDER_MALE,
+            'Male' => self::GENDER_MALE,
             'Female' => self::GENDER_FEMALE,
         ];
     }

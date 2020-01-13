@@ -59,7 +59,7 @@ class ImtDateTimeInterval
      */
     public static function getWithMonthAndYear($year, $month): ImtDateTimeInterval
     {
-        $intervalStart = new \DateTime($year.'-'.$month.'-'.'01 00:00:00');
+        $intervalStart = new \DateTime($year . '-' . $month . '-' . '01 00:00:00');
         $intervalEnd = clone $intervalStart;
         $intervalEnd->add(new \DateInterval('P1M'));
 
@@ -73,10 +73,10 @@ class ImtDateTimeInterval
      */
     public static function getDateDiffForMonthAndYear($year, $month): ImtDateTimeInterval
     {
-        $date = new \DateTime($year.'-'.$month.'-'.'15 00:00:00');
+        $date = new \DateTime($year . '-' . $month . '-' . '15 00:00:00');
         $date = $date->format('Y-m-d');
-        $intervalStart = new \DateTime(date('Y-m-d H:i:s', strtotime($date .' -1 month')));
-        $intervalEnd = new \DateTime($year.'-'.$month.'-'.'15 00:00:00');
+        $intervalStart = new \DateTime(date('Y-m-d H:i:s', strtotime($date . ' -1 month')));
+        $intervalEnd = new \DateTime($year . '-' . $month . '-' . '15 00:00:00');
 
         return new self($intervalStart, $intervalEnd);
     }
@@ -88,7 +88,7 @@ class ImtDateTimeInterval
     {
         $yearEnd = new \DateTime('now');
         $year = $yearEnd->format('Y');
-        $yearStart = new \DateTime(date('Y-m-d H:i:s', strtotime($year .' -100 year')));
+        $yearStart = new \DateTime(date('Y-m-d H:i:s', strtotime($year . ' -100 year')));
 
         return new self($yearStart, $yearEnd);
     }

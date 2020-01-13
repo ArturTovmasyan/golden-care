@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model\Report;
+namespace App\Model\Report;
 
 use App\Entity\Assessment\CareLevelGroup;
 use App\Entity\Assessment\Category;
@@ -91,7 +91,7 @@ class AssessmentForm extends Base
     /**
      * @return string
      */
-    public function getResidentFullName()
+    public function getResidentFullName(): ?string
     {
         return $this->residentFullName;
     }
@@ -99,7 +99,7 @@ class AssessmentForm extends Base
     /**
      * @return int
      */
-    public function getTotalScore()
+    public function getTotalScore(): ?int
     {
         return $this->totalScore;
     }
@@ -107,7 +107,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getGroups()
+    public function getGroups(): ?array
     {
         return $this->groups;
     }
@@ -122,8 +122,8 @@ class AssessmentForm extends Base
          */
         foreach ($groups as $careLevelGroup) {
             $this->groups[] = [
-                'group'   => $careLevelGroup->getTitle(),
-                'level'   => 0,
+                'group' => $careLevelGroup->getTitle(),
+                'level' => 0,
                 'levelId' => 0,
             ];
         }
@@ -132,7 +132,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getAllGroups()
+    public function getAllGroups(): ?array
     {
         return $this->allGroups;
     }
@@ -148,7 +148,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getTable()
+    public function getTable(): ?array
     {
         return $this->table;
     }
@@ -167,7 +167,7 @@ class AssessmentForm extends Base
 
         if (!empty($formCategories)) {
             foreach ($formCategories as $formCategory) {
-                $category            = $formCategory->getCategory();
+                $category = $formCategory->getCategory();
                 $multiItemScoreWords = null;
 
                 $table[] = [
@@ -196,7 +196,7 @@ class AssessmentForm extends Base
         }
 
         $this->totalScore = '_________________';
-        $this->table      = $table;
+        $this->table = $table;
     }
 }
 

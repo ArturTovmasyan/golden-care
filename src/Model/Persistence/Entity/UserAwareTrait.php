@@ -30,7 +30,7 @@ trait UserAwareTrait
     /**
      * @return User|null
      */
-    public function getCreatedBy() : ?User
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }
@@ -38,7 +38,7 @@ trait UserAwareTrait
     /**
      * @param User $createdBy
      */
-    public function setCreatedBy($createdBy) : void
+    public function setCreatedBy($createdBy): void
     {
         $this->createdBy = $createdBy;
     }
@@ -46,7 +46,7 @@ trait UserAwareTrait
     /**
      * @return User|null
      */
-    public function getUpdatedBy() : ?User
+    public function getUpdatedBy(): ?User
     {
         return $this->updatedBy;
     }
@@ -54,7 +54,7 @@ trait UserAwareTrait
     /**
      * @param User $updatedBy
      */
-    public function setUpdatedBy($updatedBy) : void
+    public function setUpdatedBy($updatedBy): void
     {
         $this->updatedBy = $updatedBy;
     }

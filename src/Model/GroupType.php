@@ -1,20 +1,20 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class GroupType
 {
-    const TYPE_FACILITY  = 1;
+    const TYPE_FACILITY = 1;
     const TYPE_APARTMENT = 2;
-    const TYPE_REGION    = 3;
+    const TYPE_REGION = 3;
 
     /**
      * @var array
      */
     private static $types = [
-        self::TYPE_FACILITY  => 'Facility',
+        self::TYPE_FACILITY => 'Facility',
         self::TYPE_APARTMENT => 'Apartment',
-        self::TYPE_REGION    => 'Region',
+        self::TYPE_REGION => 'Region',
     ];
 
     /**
@@ -30,9 +30,9 @@ class GroupType
      * @var array
      */
     private static $typeValues = [
-        self::TYPE_FACILITY  => 1,
+        self::TYPE_FACILITY => 1,
         self::TYPE_APARTMENT => 2,
-        self::TYPE_REGION    => 3,
+        self::TYPE_REGION => 3,
     ];
 
     /**

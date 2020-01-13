@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model\Persistence\Entity;
+namespace App\Model\Persistence\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -27,7 +27,7 @@ trait TimeAwareTrait
     /**
      * @return \Datetime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -35,7 +35,7 @@ trait TimeAwareTrait
     /**
      * @param \Datetime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -43,7 +43,7 @@ trait TimeAwareTrait
     /**
      * @return \Datetime
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
@@ -51,7 +51,7 @@ trait TimeAwareTrait
     /**
      * @param \Datetime $updatedAt
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt($updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

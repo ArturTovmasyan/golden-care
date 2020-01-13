@@ -1,11 +1,11 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class ResidentState
 {
-    const TYPE_ACTIVE       = 'active';
-    const TYPE_INACTIVE     = 'inactive';
+    const TYPE_ACTIVE = 'active';
+    const TYPE_INACTIVE = 'inactive';
     const TYPE_NO_ADMISSION = 'no-admission';
 
     /**

@@ -1,17 +1,17 @@
 <?php
 
-namespace  App\Model\Lead;
+namespace App\Model\Lead;
 
 class State
 {
-    const TYPE_OPEN   = 1;
+    const TYPE_OPEN = 1;
     const TYPE_CLOSED = 2;
 
     /**
      * @var array
      */
     private static $types = [
-        self::TYPE_OPEN  => 'Open',
+        self::TYPE_OPEN => 'Open',
         self::TYPE_CLOSED => 'Closed',
     ];
 
@@ -27,7 +27,7 @@ class State
      * @var array
      */
     private static $typeValues = [
-        self::TYPE_OPEN  => 1,
+        self::TYPE_OPEN => 1,
         self::TYPE_CLOSED => 2,
     ];
 

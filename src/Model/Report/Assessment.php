@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model\Report;
+namespace App\Model\Report;
 
 use App\Model\Assessment as AssessmentReportType;
 use App\Entity\Assessment\AssessmentRow;
@@ -88,7 +88,7 @@ class Assessment extends Base
     /**
      * @return string
      */
-    public function getDate():string
+    public function getDate(): string
     {
         return $this->date;
     }
@@ -108,7 +108,7 @@ class Assessment extends Base
     /**
      * @param $residentFullName
      */
-    public function setResidentFullName($residentFullName)
+    public function setResidentFullName($residentFullName): void
     {
         $this->residentFullName = $residentFullName;
     }
@@ -116,7 +116,7 @@ class Assessment extends Base
     /**
      * @return string
      */
-    public function getResidentFullName()
+    public function getResidentFullName(): ?string
     {
         return $this->residentFullName;
     }
@@ -124,7 +124,7 @@ class Assessment extends Base
     /**
      * @return int
      */
-    public function getTotalScore()
+    public function getTotalScore(): ?int
     {
         return $this->totalScore;
     }
@@ -132,7 +132,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getGroups()
+    public function getGroups(): ?array
     {
         return $this->groups;
     }
@@ -151,8 +151,8 @@ class Assessment extends Base
                 foreach ($careLevelGroup->getCareLevels() as $careLevel) {
                     if ($this->totalScore >= $careLevel->getLevelLow() && ($this->totalScore <= $careLevel->getLevelHigh() || $careLevel->getLevelHigh() === null)) {
                         $this->groups[] = [
-                            'group'   => $careLevelGroup->getTitle(),
-                            'level'   => $careLevel->getTitle(),
+                            'group' => $careLevelGroup->getTitle(),
+                            'level' => $careLevel->getTitle(),
                             'levelId' => $careLevel->getId(),
                         ];
                     }
@@ -164,8 +164,8 @@ class Assessment extends Base
              */
             foreach ($groups as $careLevelGroup) {
                 $this->groups[] = [
-                    'group'   => $careLevelGroup->getTitle(),
-                    'level'   => 0,
+                    'group' => $careLevelGroup->getTitle(),
+                    'level' => 0,
                     'levelId' => 0,
                 ];
             }
@@ -175,7 +175,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getAllGroups()
+    public function getAllGroups(): ?array
     {
         return $this->allGroups;
     }
@@ -191,7 +191,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getTable()
+    public function getTable(): ?array
     {
         return $this->table;
     }
@@ -200,7 +200,7 @@ class Assessment extends Base
      * @param $formCategories
      * @param $assessmentRows
      */
-    public function setTable($formCategories, $assessmentRows)
+    public function setTable($formCategories, $assessmentRows): void
     {
         /**
          * @var FormCategory $formCategory
@@ -208,7 +208,7 @@ class Assessment extends Base
          * @var Category $category
          * @var Row $row
          */
-        $table                 = [];
+        $table = [];
         $assessmentRowsByRowId = [];
 
         if (!empty($assessmentRows)) {
@@ -219,9 +219,9 @@ class Assessment extends Base
 
         if (!empty($formCategories)) {
             foreach ($formCategories as $formCategory) {
-                $category            = $formCategory->getCategory();
-                $subScore            = 0;
-                $t                   = 0;
+                $category = $formCategory->getCategory();
+                $subScore = 0;
+                $t = 0;
                 $multiItemScoreWords = null;
 
                 $table[] = [
@@ -285,7 +285,7 @@ class Assessment extends Base
     /**
      * @param $formCategories
      */
-    public function setBlankTable($formCategories)
+    public function setBlankTable($formCategories): void
     {
         /**
          * @var FormCategory $formCategory
@@ -296,7 +296,7 @@ class Assessment extends Base
 
         if (!empty($formCategories)) {
             foreach ($formCategories as $formCategory) {
-                $category            = $formCategory->getCategory();
+                $category = $formCategory->getCategory();
                 $multiItemScoreWords = null;
 
                 $table[] = [
@@ -325,7 +325,7 @@ class Assessment extends Base
         }
 
         $this->totalScore = '_________________';
-        $this->table      = $table;
+        $this->table = $table;
     }
 }
 

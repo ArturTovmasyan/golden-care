@@ -59,17 +59,17 @@ class MainListener
      */
     public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService, Mailer $mailer)
     {
-        $this->em           = $em;
-        $this->security     = $security;
-        $this->reader       = $reader;
+        $this->em = $em;
+        $this->security = $security;
+        $this->reader = $reader;
         $this->grantService = $grantService;
-        $this->mailer       = $mailer;
+        $this->mailer = $mailer;
     }
 
     /**
      * @param GetResponseForExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         $sendEmail = false;
         $body = [];
@@ -92,7 +92,7 @@ class MainListener
                 $exception->getMessage(),
                 $exception->getStatusCode()
             );
-        }  else if ($exception instanceof AccessDeniedHttpException) {
+        } else if ($exception instanceof AccessDeniedHttpException) {
             $response = $this->respondError(
                 'Access denied to resource.',
                 $exception->getStatusCode()
@@ -134,7 +134,7 @@ class MainListener
         if ($sendEmail) {
             $currentSpace = $this->grantService->getCurrentSpace();
             $customer = $currentSpace ? $currentSpace->getName() : $event->getRequest()->getHost();
-            $subject = '[SeniorCare] Exception from customer <'.$customer.'>';
+            $subject = '[SeniorCare] Exception from customer <' . $customer . '>';
 
             $user = null;
             $facilityNames = [];
@@ -149,7 +149,9 @@ class MainListener
 
                     $facilities = $facilityRepo->findByIds($currentSpace, $facilityIds, $facilityIds);
 
-                    $facilityNames = array_map(function(Facility $item){return $item->getName();} , $facilities);
+                    $facilityNames = array_map(function (Facility $item) {
+                        return $item->getName();
+                    }, $facilities);
                 }
             }
 
@@ -166,14 +168,14 @@ class MainListener
      * @param array $headers
      * @return JsonResponse
      */
-    private function respondError($message, $code = Response::HTTP_BAD_REQUEST, $data = [], $headers = [])
+    private function respondError($message, $code = Response::HTTP_BAD_REQUEST, $data = [], $headers = []): JsonResponse
     {
-        $responseCode    = $code ?: Response::HTTP_BAD_REQUEST;
+        $responseCode = $code ?: Response::HTTP_BAD_REQUEST;
         $responseMessage = $message ?? ResponseCode::$titles[$responseCode]['message'] ?? 'Unknown exception.';
-        $headerCode      = ResponseCode::$titles[$responseCode]['httpCode'] ?? $responseCode;
+        $headerCode = ResponseCode::$titles[$responseCode]['httpCode'] ?? $responseCode;
 
         $responseData = [
-            'code'  => $responseCode,
+            'code' => $responseCode,
             'error' => $responseMessage
         ];
 
@@ -186,10 +188,8 @@ class MainListener
 
     /**
      * @param FilterControllerEvent $event
-     * @throws \ReflectionException
-     * @throws \Exception
      */
-    public function onCoreController(FilterControllerEvent $event)
+    public function onCoreController(FilterControllerEvent $event): void
     {
         // Check that the current request is a "MASTER_REQUEST"
         // Ignore any sub-request
@@ -208,7 +208,7 @@ class MainListener
 
         // Check token authentication availability
         if ($this->security->getToken()) {
-            /** @var User $user **/
+            /** @var User $user * */
             $user = $this->security->getToken()->getUser();
 
             if ($user instanceof User) {

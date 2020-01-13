@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class Boolean
 {
@@ -11,7 +11,7 @@ class Boolean
     {
         return [
             'false' => 0,
-            'true'  => 1,
+            'true' => 1,
         ];
     }
 }

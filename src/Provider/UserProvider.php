@@ -18,17 +18,17 @@ class UserProvider implements UserProviderInterface
     private $repository;
 
     /**
-     * @param UserRepository $repository
+     * UserProvider constructor.
+     * @param EntityManagerInterface $em
      */
-    function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository   = $em->getRepository('App\Entity\User');
+        $this->repository   = $em->getRepository(User::class);
     }
 
     /**
      * @param string $username
-     * @return mixed|UserInterface
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return mixed
      */
     public function loadUserByUsername($username)
     {
@@ -43,14 +43,13 @@ class UserProvider implements UserProviderInterface
 
     /**
      * @param UserInterface $user
-     * @return mixed|UserInterface
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return mixed
      */
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
         }
 
@@ -61,7 +60,7 @@ class UserProvider implements UserProviderInterface
      * @param string $class
      * @return bool
      */
-    public function supportsClass($class)
+    public function supportsClass($class): ?bool
     {
         return User::class === $class;
     }

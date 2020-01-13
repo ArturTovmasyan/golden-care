@@ -1,12 +1,12 @@
 <?php
 
-namespace  App\Model;
+namespace App\Model;
 
 class ChangeLogType
 {
-    const TYPE_NEW_LEAD     = 1;
+    const TYPE_NEW_LEAD = 1;
     const TYPE_LEAD_UPDATED = 2;
-    const TYPE_NEW_TASK     = 3;
+    const TYPE_NEW_TASK = 3;
     const TYPE_TASK_UPDATED = 4;
 
     /**

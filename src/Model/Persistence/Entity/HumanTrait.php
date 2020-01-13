@@ -30,7 +30,7 @@ trait HumanTrait
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -38,7 +38,7 @@ trait HumanTrait
     /**
      * @param string $firstName
      */
-    public function setFirstName($firstName)
+    public function setFirstName($firstName): void
     {
         $firstName = preg_replace('/\s\s+/', ' ', $firstName);
         $this->firstName = $firstName;
@@ -47,7 +47,7 @@ trait HumanTrait
     /**
      * @return string
      */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -55,7 +55,7 @@ trait HumanTrait
     /**
      * @param string $lastName
      */
-    public function setLastName($lastName)
+    public function setLastName($lastName): void
     {
         $lastName = preg_replace('/\s\s+/', ' ', $lastName);
         $this->lastName = $lastName;
@@ -64,7 +64,7 @@ trait HumanTrait
     /**
      * @return string
      */
-    public function getFullName()
+    public function getFullName(): ?string
     {
         return $this->firstName . ' ' . $this->lastName;
     }
