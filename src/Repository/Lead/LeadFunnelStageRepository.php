@@ -17,14 +17,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class LeadFunnelStageRepository
  * @package App\Repository\Lead
  */
-class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfoInterface
+class LeadFunnelStageRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(LeadFunnelStage::class, 'lfs')
@@ -221,7 +221,7 @@ class LeadFunnelStageRepository extends EntityRepository  implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('lfs.'.$mappedBy.'= :id')
+                ->where('lfs.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -20,7 +20,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(User::class, 'u')
@@ -149,7 +149,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
 
     /**
      * @param array $criteria
-     * @return array
+     * @return array|mixed
      */
     public function getUserSpaceAndOwnerCriteria(array $criteria)
     {
@@ -160,8 +160,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
                 ->andWhere('u.owner = :owner')
                 ->setParameter('owner', $criteria['owner'])
                 ->getQuery()
-                ->getResult()
-                ;
+                ->getResult();
         }
 
         return [];
@@ -219,7 +218,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('u.'.$mappedBy.'= :id')
+                ->where('u.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -313,6 +312,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

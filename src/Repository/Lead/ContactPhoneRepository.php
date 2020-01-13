@@ -124,7 +124,7 @@ class ContactPhoneRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('cp.'.$mappedBy.'= :id')
+                ->where('cp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

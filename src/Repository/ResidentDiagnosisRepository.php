@@ -22,7 +22,7 @@ class ResidentDiagnosisRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentDiagnosis::class, 'rd')
@@ -267,7 +267,7 @@ class ResidentDiagnosisRepository extends EntityRepository implements RelatedInf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rd.'.$mappedBy.'= :id')
+                ->where('rd.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

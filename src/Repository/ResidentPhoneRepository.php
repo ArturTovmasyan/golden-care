@@ -124,7 +124,7 @@ class ResidentPhoneRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rp.'.$mappedBy.'= :id')
+                ->where('rp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

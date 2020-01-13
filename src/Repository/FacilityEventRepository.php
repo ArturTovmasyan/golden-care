@@ -22,11 +22,10 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(FacilityEvent::class, 'fe')
-
             ->addSelect("
                 JSON_ARRAY(                    
                     JSON_OBJECT('User(s)', JSON_ARRAYAGG(
@@ -51,7 +50,6 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
                     )
                 ) as residents
             ")
-
             ->innerJoin(
                 Facility::class,
                 'f',
@@ -71,8 +69,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
             ->leftJoin(
                 'fe.residents',
                 'r'
-            )
-        ;
+            );
 
         if ($space !== null) {
             $queryBuilder
@@ -245,7 +242,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fe.'.$mappedBy.'= :id')
+                ->where('fe.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -291,6 +288,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
     }
 
     ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

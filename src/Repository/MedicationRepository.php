@@ -20,7 +20,7 @@ class MedicationRepository extends EntityRepository implements RelatedInfoInterf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Medication::class, 'm')
@@ -171,7 +171,7 @@ class MedicationRepository extends EntityRepository implements RelatedInfoInterf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('m.'.$mappedBy.'= :id')
+                ->where('m.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

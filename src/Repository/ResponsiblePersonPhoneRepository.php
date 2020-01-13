@@ -124,7 +124,7 @@ class ResponsiblePersonPhoneRepository extends EntityRepository implements Relat
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rpp.'.$mappedBy.'= :id')
+                ->where('rpp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

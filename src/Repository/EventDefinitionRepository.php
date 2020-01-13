@@ -20,7 +20,7 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(EventDefinition::class, 'ed')
@@ -182,7 +182,7 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ed.'.$mappedBy.'= :id')
+                ->where('ed.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

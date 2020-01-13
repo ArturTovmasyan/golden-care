@@ -22,7 +22,7 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(FacilityBed::class, 'fb')
@@ -272,7 +272,7 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fb.'.$mappedBy.'= :id')
+                ->where('fb.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

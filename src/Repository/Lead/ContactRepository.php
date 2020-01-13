@@ -15,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ContactRepository
  * @package App\Repository\Lead
  */
-class ContactRepository extends EntityRepository  implements RelatedInfoInterface
+class ContactRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -23,7 +23,7 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
      * @param QueryBuilder $queryBuilder
      * @param null $userId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null): void
     {
         $queryBuilder
             ->from(Contact::class, 'c')
@@ -264,7 +264,7 @@ class ContactRepository extends EntityRepository  implements RelatedInfoInterfac
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('c.'.$mappedBy.'= :id')
+                ->where('c.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

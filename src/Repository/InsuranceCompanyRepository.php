@@ -20,7 +20,7 @@ class InsuranceCompanyRepository extends EntityRepository implements RelatedInfo
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(InsuranceCompany::class, 'ic')
@@ -171,7 +171,7 @@ class InsuranceCompanyRepository extends EntityRepository implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ic.'.$mappedBy.'= :id')
+                ->where('ic.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

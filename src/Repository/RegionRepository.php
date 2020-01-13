@@ -20,7 +20,7 @@ class RegionRepository extends EntityRepository implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Region::class, 'r')
@@ -271,7 +271,7 @@ class RegionRepository extends EntityRepository implements RelatedInfoInterface
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('r.'.$mappedBy.'= :id')
+                ->where('r.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

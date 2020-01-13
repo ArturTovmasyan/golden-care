@@ -22,7 +22,7 @@ class ResidentMedicalHistoryConditionRepository extends EntityRepository impleme
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentMedicalHistoryCondition::class, 'rmhc')
@@ -209,7 +209,7 @@ class ResidentMedicalHistoryConditionRepository extends EntityRepository impleme
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rmhc.'.$mappedBy.'= :id')
+                ->where('rmhc.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

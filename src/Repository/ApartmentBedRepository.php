@@ -22,7 +22,7 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ApartmentBed::class, 'ab')
@@ -272,7 +272,7 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ab.'.$mappedBy.'= :id')
+                ->where('ab.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

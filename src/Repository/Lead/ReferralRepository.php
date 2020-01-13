@@ -17,7 +17,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ReferralRepository
  * @package App\Repository\Lead
  */
-class ReferralRepository extends EntityRepository  implements RelatedInfoInterface
+class ReferralRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -25,7 +25,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
      * @param QueryBuilder $queryBuilder
      * @param null $organizationId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $organizationId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $organizationId = null): void
     {
         $queryBuilder
             ->from(Referral::class, 'r')
@@ -338,7 +338,7 @@ class ReferralRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('r.'.$mappedBy.'= :id')
+                ->where('r.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

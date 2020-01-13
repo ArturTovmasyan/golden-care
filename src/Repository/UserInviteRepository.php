@@ -20,7 +20,7 @@ class UserInviteRepository extends EntityRepository
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(UserInvite::class, 'ui')
@@ -124,7 +124,7 @@ class UserInviteRepository extends EntityRepository
 
     /**
      * @param array $criteria
-     * @return array
+     * @return array|mixed
      */
     public function getUserInviteSpaceAndOwnerCriteria(array $criteria)
     {
@@ -135,8 +135,7 @@ class UserInviteRepository extends EntityRepository
                 ->andWhere('ui.owner = :owner')
                 ->setParameter('owner', $criteria['owner'])
                 ->getQuery()
-                ->getResult()
-                ;
+                ->getResult();
         }
 
         return [];

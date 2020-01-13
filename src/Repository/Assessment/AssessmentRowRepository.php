@@ -86,7 +86,7 @@ class AssessmentRowRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ar.'.$mappedBy.'= :id')
+                ->where('ar.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

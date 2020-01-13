@@ -20,7 +20,7 @@ class ResponsiblePersonRoleRepository extends EntityRepository implements Relate
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResponsiblePersonRole::class, 'rpr')
@@ -171,7 +171,7 @@ class ResponsiblePersonRoleRepository extends EntityRepository implements Relate
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rpr.'.$mappedBy.'= :id')
+                ->where('rpr.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

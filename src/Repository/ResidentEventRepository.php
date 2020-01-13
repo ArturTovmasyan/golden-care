@@ -8,7 +8,6 @@ use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
-use App\Entity\ResponsiblePerson;
 use App\Entity\Salutation;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
@@ -26,11 +25,10 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentEvent::class, 're')
-
             ->addSelect("
                 JSON_ARRAY(
                     JSON_OBJECT('Date Added', re.additionalDate),
@@ -50,7 +48,6 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                     )
                 ) as info
             ")
-
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -84,8 +81,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 'rpss',
                 Join::WITH,
                 'rpss = rps.salutation'
-            )
-        ;
+            );
 
         if ($space !== null) {
             $queryBuilder
@@ -271,7 +267,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'p.salutation = psal'
             )
-            ->leftJoin('re.responsiblePersons','rps')
+            ->leftJoin('re.responsiblePersons', 'rps')
             ->leftJoin(
                 Salutation::class,
                 'rpsal',
@@ -343,7 +339,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 Join::WITH,
                 'p.salutation = psal'
             )
-            ->leftJoin('re.responsiblePersons','rps')
+            ->leftJoin('re.responsiblePersons', 'rps')
             ->leftJoin(
                 Salutation::class,
                 'rpsal',
@@ -404,7 +400,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('re.'.$mappedBy.'= :id')
+                ->where('re.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -450,6 +446,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
     }
 
     ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

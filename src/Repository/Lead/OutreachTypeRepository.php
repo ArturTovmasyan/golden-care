@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class OutreachTypeRepository
  * @package App\Repository\Lead
  */
-class OutreachTypeRepository extends EntityRepository  implements RelatedInfoInterface
+class OutreachTypeRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(OutreachType::class, 'ot')
@@ -172,7 +172,7 @@ class OutreachTypeRepository extends EntityRepository  implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ot.'.$mappedBy.'= :id')
+                ->where('ot.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

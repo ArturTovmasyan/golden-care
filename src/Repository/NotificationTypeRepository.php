@@ -20,7 +20,7 @@ class NotificationTypeRepository extends EntityRepository implements RelatedInfo
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(NotificationType::class, 'nt')
@@ -168,7 +168,7 @@ class NotificationTypeRepository extends EntityRepository implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('nt.'.$mappedBy.'= :id')
+                ->where('nt.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

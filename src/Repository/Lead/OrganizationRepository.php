@@ -15,14 +15,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class OrganizationRepository
  * @package App\Repository\Lead
  */
-class OrganizationRepository extends EntityRepository  implements RelatedInfoInterface
+class OrganizationRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Organization::class, 'o')
@@ -204,7 +204,7 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('o.'.$mappedBy.'= :id')
+                ->where('o.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -250,6 +250,7 @@ class OrganizationRepository extends EntityRepository  implements RelatedInfoInt
     }
 
     //////for name unique by space validation
+
     /**
      * @param $spaceId
      * @param $name

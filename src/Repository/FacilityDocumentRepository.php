@@ -26,7 +26,7 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
      * @param null $facilityId
      * @param null $categoryId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null, $categoryId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null, $categoryId = null): void
     {
         $queryBuilder
             ->from(FacilityDocument::class, 'fd')
@@ -267,7 +267,7 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fd.'.$mappedBy.'= :id')
+                ->where('fd.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

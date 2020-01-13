@@ -20,7 +20,7 @@ class SpecialityRepository extends EntityRepository implements RelatedInfoInterf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Speciality::class, 'sp')
@@ -174,7 +174,7 @@ class SpecialityRepository extends EntityRepository implements RelatedInfoInterf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('sp.'.$mappedBy.'= :id')
+                ->where('sp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

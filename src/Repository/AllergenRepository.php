@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class Allergen
  * @package App\Repository
  */
-class AllergenRepository extends EntityRepository  implements RelatedInfoInterface
+class AllergenRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Allergen::class, 'a')
@@ -172,7 +172,7 @@ class AllergenRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('a.'.$mappedBy.'= :id')
+                ->where('a.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

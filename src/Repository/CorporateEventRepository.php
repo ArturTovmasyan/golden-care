@@ -23,7 +23,7 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
      * @param QueryBuilder $queryBuilder
      * @param array|null $userRoleIds
      */
-    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, array $userRoleIds = null) : void
+    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, array $userRoleIds = null): void
     {
         $queryBuilder
             ->from(CorporateEvent::class, 'ce')
@@ -36,8 +36,7 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
                 'ed = ce.definition'
             )
             ->leftJoin('ce.facilities', 'f')
-            ->leftJoin('ce.roles', 'r')
-        ;
+            ->leftJoin('ce.roles', 'r');
 
         if ($space !== null) {
             $queryBuilder
@@ -235,7 +234,7 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ce.'.$mappedBy.'= :id')
+                ->where('ce.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -275,6 +274,7 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
     }
 
     ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

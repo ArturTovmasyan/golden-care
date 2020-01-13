@@ -15,7 +15,7 @@ class SpaceRepository extends EntityRepository
     /**
      * @param QueryBuilder $queryBuilder
      */
-    public function search(QueryBuilder $queryBuilder) : void
+    public function search(QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Space::class, 's')
@@ -55,7 +55,7 @@ class SpaceRepository extends EntityRepository
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('s.'.$mappedBy.'= :id')
+                ->where('s.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

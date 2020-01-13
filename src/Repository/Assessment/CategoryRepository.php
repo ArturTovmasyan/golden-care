@@ -20,7 +20,7 @@ class CategoryRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Category::class, 'ac')
@@ -171,7 +171,7 @@ class CategoryRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ac.'.$mappedBy.'= :id')
+                ->where('ac.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

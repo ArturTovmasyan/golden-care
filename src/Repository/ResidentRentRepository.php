@@ -36,7 +36,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentRent::class, 'rr')
@@ -247,13 +247,14 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     }
 
     ////////////////////////////Resident Admission Part///////////////////////////////////////////////////
+
     /**
      * @param $type
      * @param ImtDateTimeInterval|null $reportInterval
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getResidentAdmissionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
+    public function getResidentAdmissionWithRentQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null): QueryBuilder
     {
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
@@ -466,7 +467,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -504,7 +505,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getRoomListResidentAdmissionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null) : QueryBuilder
+    public function getRoomListResidentAdmissionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null): QueryBuilder
     {
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
@@ -713,7 +714,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             )
             ->setParameter('startDate', $reportInterval->getStart())
             ->setParameter('endDate', $reportInterval->getEnd());
@@ -769,7 +770,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -823,7 +824,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -877,7 +878,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -925,7 +926,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rr.'.$mappedBy.'= :id')
+                ->where('rr.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -1053,6 +1054,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     }
 
     ///////////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
@@ -1075,7 +1077,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {

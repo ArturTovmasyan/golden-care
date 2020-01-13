@@ -42,135 +42,135 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param null $type
      * @param null $typeId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null, array $notGrantResidentIds = null, $state, $type = null, $typeId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, array $ids = null, array $notGrantResidentIds = null, $state, $type = null, $typeId = null): void
     {
         $queryBuilder
             ->from(Resident::class, 'r');
 
-            switch ($state) {
-                case ResidentState::TYPE_NO_ADMISSION:
-                    break;
-                case ResidentState::TYPE_ACTIVE || ResidentState::TYPE_INACTIVE:
-                    $queryBuilder
-                        ->addSelect(
-                    '(CASE
+        switch ($state) {
+            case ResidentState::TYPE_NO_ADMISSION:
+                break;
+            case ResidentState::TYPE_ACTIVE || ResidentState::TYPE_INACTIVE:
+                $queryBuilder
+                    ->addSelect(
+                        '(CASE
                                 WHEN fb.id IS NOT NULL AND fr.private = 1 THEN fr.number
                                 WHEN fb.id IS NOT NULL AND fr.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
                                 WHEN ab.id IS NOT NULL AND ar.private = 1 THEN ar.number
                                 WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
                                 ELSE \'\' END) as room',
-                            '(CASE
+                        '(CASE
                                 WHEN reg.id IS NOT NULL THEN ra.address
                                 ELSE \'\' END) as address',
-                            '(CASE
+                        '(CASE
                                 WHEN reg.id IS NOT NULL THEN CONCAT(csz.city, \' \',csz.stateAbbr, \', \',csz.zipMain)
                                 ELSE \'\' END) as csz_str'
-                        )
-                        ->innerJoin(
-                            ResidentAdmission::class,
-                            'ra',
-                            Join::WITH,
-                            'ra.resident = r'
-                        )
-                        ->leftJoin(
-                            FacilityBed::class,
-                            'fb',
-                            Join::WITH,
-                            'ra.facilityBed = fb'
-                        )
-                        ->leftJoin(
-                            FacilityRoom::class,
-                            'fr',
-                            Join::WITH,
-                            'fb.room = fr'
-                        )
-                        ->leftJoin(
-                            Facility::class,
-                            'f',
-                            Join::WITH,
-                            'fr.facility = f'
-                        )
-                        ->leftJoin(
-                            ApartmentBed::class,
-                            'ab',
-                            Join::WITH,
-                            'ra.apartmentBed = ab'
-                        )
-                        ->leftJoin(
-                            ApartmentRoom::class,
-                            'ar',
-                            Join::WITH,
-                            'ab.room = ar'
-                        )
-                        ->leftJoin(
-                            Apartment::class,
-                            'a',
-                            Join::WITH,
-                            'ar.apartment = a'
-                        )
-                        ->leftJoin(
-                            Region::class,
-                            'reg',
-                            Join::WITH,
-                            'ra.region = reg'
-                        )
-                        ->leftJoin(
-                            CityStateZip::class,
-                            'csz',
-                            Join::WITH,
-                            'ra.csz = csz'
-                        );
+                    )
+                    ->innerJoin(
+                        ResidentAdmission::class,
+                        'ra',
+                        Join::WITH,
+                        'ra.resident = r'
+                    )
+                    ->leftJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->leftJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->leftJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->leftJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->leftJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->leftJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    )
+                    ->leftJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    )
+                    ->leftJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'ra.csz = csz'
+                    );
 
-                    if ($state === ResidentState::TYPE_ACTIVE) {
-                        $queryBuilder
-                            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
-                            ->setParameter('admissionType', AdmissionType::DISCHARGE);
-                    }
+                if ($state === ResidentState::TYPE_ACTIVE) {
+                    $queryBuilder
+                        ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+                        ->setParameter('admissionType', AdmissionType::DISCHARGE);
+                }
 
-                    if ($state === ResidentState::TYPE_INACTIVE) {
-                        $queryBuilder
-                            ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
-                            ->setParameter('admissionType', AdmissionType::DISCHARGE);
-                    }
+                if ($state === ResidentState::TYPE_INACTIVE) {
+                    $queryBuilder
+                        ->where('ra.admissionType = :admissionType AND ra.end IS NULL')
+                        ->setParameter('admissionType', AdmissionType::DISCHARGE);
+                }
 
-                    if ($type === null && $typeId === null) {
-                        $queryBuilder
-                            ->addSelect(
-                        '(CASE
+                if ($type === null && $typeId === null) {
+                    $queryBuilder
+                        ->addSelect(
+                            '(CASE
                                     WHEN fb.id IS NOT NULL THEN f.name
                                     WHEN ab.id IS NOT NULL THEN a.name
                                     WHEN reg.id IS NOT NULL THEN reg.name
                                     ELSE \'\' END) as group_name'
-                            );
-                    } else {
-                        $queryBuilder
-                            ->andWhere('ra.groupType=:type')
-                            ->setParameter('type', $type);
+                        );
+                } else {
+                    $queryBuilder
+                        ->andWhere('ra.groupType=:type')
+                        ->setParameter('type', $type);
 
-                        switch ($type) {
-                            case GroupType::TYPE_FACILITY:
-                                $queryBuilder
-                                    ->andWhere('f.id = :typeId')
-                                    ->setParameter('typeId', $typeId);
-                                break;
-                            case GroupType::TYPE_APARTMENT:
-                                $queryBuilder
-                                    ->andWhere('a.id = :typeId')
-                                    ->setParameter('typeId', $typeId);
-                                break;
-                            case GroupType::TYPE_REGION:
-                                $queryBuilder
-                                    ->andWhere('reg.id = :typeId')
-                                    ->setParameter('typeId', $typeId);
-                                break;
-                            default:
-                                throw new IncorrectStrategyTypeException();
-                        }
+                    switch ($type) {
+                        case GroupType::TYPE_FACILITY:
+                            $queryBuilder
+                                ->andWhere('f.id = :typeId')
+                                ->setParameter('typeId', $typeId);
+                            break;
+                        case GroupType::TYPE_APARTMENT:
+                            $queryBuilder
+                                ->andWhere('a.id = :typeId')
+                                ->setParameter('typeId', $typeId);
+                            break;
+                        case GroupType::TYPE_REGION:
+                            $queryBuilder
+                                ->andWhere('reg.id = :typeId')
+                                ->setParameter('typeId', $typeId);
+                            break;
+                        default:
+                            throw new IncorrectStrategyTypeException();
                     }
-                    break;
-                default:
-                    throw new IncorrectResidentStateException();
-            }
+                }
+                break;
+            default:
+                throw new IncorrectResidentStateException();
+        }
 
         $queryBuilder
             ->innerJoin(
@@ -563,7 +563,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             ->getQuery()
             ->getResult();
     }
-    
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
@@ -599,6 +599,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     }
 
     ////////////////////////////Resident Admission Part///////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
@@ -1431,7 +1432,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('r.'.$mappedBy.'= :id')
+                ->where('r.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

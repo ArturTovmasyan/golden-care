@@ -72,7 +72,7 @@ class RowRepository extends EntityRepository implements RelatedInfoInterface
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ar.'.$mappedBy.'= :id')
+                ->where('ar.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -22,7 +22,7 @@ class AssessmentRepository extends EntityRepository implements RelatedInfoInterf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Assessment::class, 'a')
@@ -215,7 +215,7 @@ class AssessmentRepository extends EntityRepository implements RelatedInfoInterf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('a.'.$mappedBy.'= :id')
+                ->where('a.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

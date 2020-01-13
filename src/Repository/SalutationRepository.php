@@ -20,7 +20,7 @@ class SalutationRepository extends EntityRepository implements RelatedInfoInterf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Salutation::class, 'sa')
@@ -171,7 +171,7 @@ class SalutationRepository extends EntityRepository implements RelatedInfoInterf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('sa.'.$mappedBy.'= :id')
+                ->where('sa.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

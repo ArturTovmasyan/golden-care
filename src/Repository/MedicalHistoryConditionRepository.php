@@ -20,7 +20,7 @@ class MedicalHistoryConditionRepository extends EntityRepository implements Rela
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(MedicalHistoryCondition::class, 'mhc')
@@ -171,7 +171,7 @@ class MedicalHistoryConditionRepository extends EntityRepository implements Rela
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('mhc.'.$mappedBy.'= :id')
+                ->where('mhc.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

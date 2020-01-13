@@ -18,14 +18,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class LeadTemperatureRepository
  * @package App\Repository\Lead
  */
-class LeadTemperatureRepository extends EntityRepository  implements RelatedInfoInterface
+class LeadTemperatureRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(LeadTemperature::class, 'lt')
@@ -216,7 +216,7 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('lt.'.$mappedBy.'= :id')
+                ->where('lt.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -301,6 +301,7 @@ class LeadTemperatureRepository extends EntityRepository  implements RelatedInfo
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

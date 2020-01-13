@@ -20,7 +20,7 @@ class DocumentCategoryRepository extends EntityRepository implements RelatedInfo
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(DocumentCategory::class, 'dc')
@@ -171,7 +171,7 @@ class DocumentCategoryRepository extends EntityRepository implements RelatedInfo
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('dc.'.$mappedBy.'= :id')
+                ->where('dc.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

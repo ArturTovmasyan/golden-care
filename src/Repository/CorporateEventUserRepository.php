@@ -127,7 +127,7 @@ class CorporateEventUserRepository extends EntityRepository implements RelatedIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ceu.'.$mappedBy.'= :id')
+                ->where('ceu.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

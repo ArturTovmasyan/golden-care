@@ -20,7 +20,7 @@ class DiagnosisRepository extends EntityRepository implements RelatedInfoInterfa
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Diagnosis::class, 'd')
@@ -171,7 +171,7 @@ class DiagnosisRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('d.'.$mappedBy.'= :id')
+                ->where('d.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class TemperatureRepository
  * @package App\Repository\Lead
  */
-class TemperatureRepository extends EntityRepository  implements RelatedInfoInterface
+class TemperatureRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Temperature::class, 't')
@@ -173,7 +173,7 @@ class TemperatureRepository extends EntityRepository  implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('t.'.$mappedBy.'= :id')
+                ->where('t.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

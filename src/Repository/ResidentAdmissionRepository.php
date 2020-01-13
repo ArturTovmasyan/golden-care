@@ -36,11 +36,10 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentAdmission::class, 'ra')
-
             ->addSelect("
                 JSON_ARRAY(
                     JSON_OBJECT('Facility', f.name),
@@ -81,7 +80,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     JSON_OBJECT('POLST', CAST(ra.polst AS BOOLEAN))
                 ) as info
             ")
-
             ->innerJoin(
                 Resident::class,
                 'r',
@@ -723,7 +721,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         $qb
             ->addSelect(
-        '(CASE
+                '(CASE
                     WHEN fb.id IS NOT NULL THEN fb.number
                     WHEN ab.id IS NOT NULL THEN ab.number
                     ELSE \'\' END) as bed_number',
@@ -754,7 +752,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         if ($type === null && $typeId === null) {
             $qb
                 ->addSelect(
-            '(CASE
+                    '(CASE
                         WHEN fb.id IS NOT NULL THEN f.name
                         WHEN ab.id IS NOT NULL THEN a.name
                         WHEN reg.id IS NOT NULL THEN reg.name
@@ -1918,7 +1916,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param null $typeId
      * @return QueryBuilder
      */
-    public function getResidentAdmissionReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null) : QueryBuilder
+    public function getResidentAdmissionReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null): QueryBuilder
     {
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
@@ -2090,7 +2088,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -2135,11 +2133,11 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     {
         $qb = $this
             ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
-            ->andWhere('ra.admissionType !='. AdmissionType::DISCHARGE)
+            ->andWhere('ra.admissionType !=' . AdmissionType::DISCHARGE)
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
-                        WHERE ara.admissionType<'. AdmissionType::DISCHARGE .' AND ara.end IS NULL)'
+                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
         if ($space !== null) {
@@ -2196,7 +2194,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param bool $filter
      * @return QueryBuilder
      */
-    public function getResidentAdmissionMoveByMonthReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null, $filter = false) : QueryBuilder
+    public function getResidentAdmissionMoveByMonthReportQb($type, ImtDateTimeInterval $reportInterval = null, $typeId = null, $filter = false): QueryBuilder
     {
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
@@ -2378,7 +2376,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         if ($dischargedAdmissionEnds !== null) {
             $qb
-                ->andWhere('ra.admissionType ='. AdmissionType::LONG_ADMIT.' OR ra.admissionType='. AdmissionType::SHORT_ADMIT. ' OR ra.admissionType='. AdmissionType::DISCHARGE. ' OR ra.start IN (:dischargedAdmissionEnds)')
+                ->andWhere('ra.admissionType =' . AdmissionType::LONG_ADMIT . ' OR ra.admissionType=' . AdmissionType::SHORT_ADMIT . ' OR ra.admissionType=' . AdmissionType::DISCHARGE . ' OR ra.start IN (:dischargedAdmissionEnds)')
                 ->setParameter('dischargedAdmissionEnds', $dischargedAdmissionEnds);
         }
 
@@ -2513,7 +2511,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ra.'.$mappedBy.'= :id')
+                ->where('ra.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -2689,6 +2687,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

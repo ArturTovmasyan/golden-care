@@ -23,7 +23,7 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
      * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(FacilityDashboard::class, 'fd')
@@ -307,7 +307,7 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fd.'.$mappedBy.'= :id')
+                ->where('fd.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

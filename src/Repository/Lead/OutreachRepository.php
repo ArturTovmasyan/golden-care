@@ -15,14 +15,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class OutreachRepository
  * @package App\Repository\Lead
  */
-class OutreachRepository extends EntityRepository  implements RelatedInfoInterface
+class OutreachRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Outreach::class, 'ou')
@@ -215,7 +215,7 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ou.'.$mappedBy.'= :id')
+                ->where('ou.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -255,6 +255,7 @@ class OutreachRepository extends EntityRepository  implements RelatedInfoInterfa
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

@@ -21,7 +21,7 @@ class CareLevelRepository extends EntityRepository implements RelatedInfoInterfa
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(CareLevel::class, 'acl')
@@ -195,7 +195,7 @@ class CareLevelRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('acl.'.$mappedBy.'= :id')
+                ->where('acl.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

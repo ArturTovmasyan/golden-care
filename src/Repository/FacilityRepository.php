@@ -21,7 +21,7 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Facility::class, 'f')
@@ -278,7 +278,7 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('f.'.$mappedBy.'= :id')
+                ->where('f.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

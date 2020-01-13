@@ -11,10 +11,9 @@ use Doctrine\ORM\EntityRepository;
 class LoginAttemptRepository extends EntityRepository
 {
     /**
-     * @param string $login
+     * @param $login
      * @param $ip
-     * @return bool
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return mixed
      */
     public function getAttemptsCount($login, $ip)
     {

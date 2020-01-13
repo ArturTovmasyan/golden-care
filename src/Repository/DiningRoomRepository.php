@@ -23,7 +23,7 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
      * @param QueryBuilder $queryBuilder
      * @param null $facilityId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null): void
     {
         $queryBuilder
             ->from(DiningRoom::class, 'dr')
@@ -279,7 +279,7 @@ class DiningRoomRepository extends EntityRepository implements RelatedInfoInterf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('dr.'.$mappedBy.'= :id')
+                ->where('dr.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

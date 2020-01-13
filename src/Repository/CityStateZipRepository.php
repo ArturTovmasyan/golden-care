@@ -20,7 +20,7 @@ class CityStateZipRepository extends EntityRepository implements RelatedInfoInte
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(CityStateZip::class, 'csz')
@@ -171,7 +171,7 @@ class CityStateZipRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('csz.'.$mappedBy.'= :id')
+                ->where('csz.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

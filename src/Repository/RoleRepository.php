@@ -16,7 +16,6 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
     public function search(QueryBuilder $queryBuilder)
     {
@@ -29,7 +28,8 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
      * This function used for getting role list when adding user.
      * @return mixed
      */
-    public function userRoles() {
+    public function userRoles()
+    {
         $qb = $this
             ->createQueryBuilder('r')
             ->where('r.id != :id_sc_admin')
@@ -57,8 +57,7 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     /**
-     * @return Role
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return mixed
      */
     public function getDefaultRole()
     {
@@ -73,7 +72,7 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
 
     /**
      * @param array $criteria
-     * @return array
+     * @return array|mixed
      */
     public function getRoleByDefaultCriteria(array $criteria)
     {
@@ -82,8 +81,7 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
                 ->andWhere('r.default = :default')
                 ->setParameter('default', $criteria['default'])
                 ->getQuery()
-                ->getResult()
-                ;
+                ->getResult();
         }
 
         return [];
@@ -105,7 +103,7 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('r.'.$mappedBy.'= :id')
+                ->where('r.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

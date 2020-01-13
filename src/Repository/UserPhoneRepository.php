@@ -123,7 +123,7 @@ class UserPhoneRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('up.'.$mappedBy.'= :id')
+                ->where('up.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

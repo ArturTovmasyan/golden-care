@@ -21,7 +21,7 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ChangeLog::class, 'cl')
@@ -180,7 +180,7 @@ class ChangeLogRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('cl.'.$mappedBy.'= :id')
+                ->where('cl.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

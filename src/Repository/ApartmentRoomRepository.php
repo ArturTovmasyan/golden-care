@@ -22,7 +22,7 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
      * @param array|null $apartmentEntityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ApartmentRoom::class, 'ar')
@@ -265,7 +265,8 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
      * @param $apartmentId
      * @return mixed
      */
-    public function getLastNumber(Space $space = null, array $entityGrants = null, $apartmentId) {
+    public function getLastNumber(Space $space = null, array $entityGrants = null, $apartmentId)
+    {
         $qb = $this
             ->createQueryBuilder('ar')
             ->select('MAX(ar.number) as max_room_number')
@@ -317,7 +318,7 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ar.'.$mappedBy.'= :id')
+                ->where('ar.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

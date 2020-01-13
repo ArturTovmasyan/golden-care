@@ -26,7 +26,7 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $userRoleIds
      * @param null $categoryId
      */
-    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, $isAdmin = false, array $userRoleIds = null, $categoryId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, $facilityEntityGrants, QueryBuilder $queryBuilder, $isAdmin = false, array $userRoleIds = null, $categoryId = null): void
     {
         $queryBuilder
             ->from(Document::class, 'd')
@@ -251,7 +251,7 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('d.'.$mappedBy.'= :id')
+                ->where('d.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

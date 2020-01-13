@@ -23,7 +23,7 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
      * @param QueryBuilder $queryBuilder
      * @param null $facilityId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null): void
     {
         $queryBuilder
             ->from(FacilityRoom::class, 'fr')
@@ -272,7 +272,8 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
      * @param $facilityId
      * @return mixed
      */
-    public function getLastNumber(Space $space = null, array $entityGrants = null, $facilityId) {
+    public function getLastNumber(Space $space = null, array $entityGrants = null, $facilityId)
+    {
         $qb = $this
             ->createQueryBuilder('fr')
             ->select('MAX(fr.number) as max_room_number')
@@ -324,7 +325,7 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fr.'.$mappedBy.'= :id')
+                ->where('fr.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

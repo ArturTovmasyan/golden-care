@@ -23,7 +23,7 @@ class PhysicianRepository extends EntityRepository implements RelatedInfoInterfa
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Physician::class, 'p')
@@ -200,7 +200,7 @@ class PhysicianRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('p.'.$mappedBy.'= :id')
+                ->where('p.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

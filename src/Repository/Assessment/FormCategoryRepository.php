@@ -78,7 +78,7 @@ class FormCategoryRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('afc.'.$mappedBy.'= :id')
+                ->where('afc.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

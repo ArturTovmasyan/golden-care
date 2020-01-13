@@ -20,7 +20,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class LeadRepository
  * @package App\Repository\Lead
  */
-class LeadRepository extends EntityRepository  implements RelatedInfoInterface
+class LeadRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -30,7 +30,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
      * @param null $userId
      * @param array|null $facilityEntityGrants
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null): void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -296,7 +296,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('l.'.$mappedBy.'= :id')
+                ->where('l.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -443,6 +443,7 @@ class LeadRepository extends EntityRepository  implements RelatedInfoInterface
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

@@ -22,7 +22,7 @@ class ResidentMedicationAllergyRepository extends EntityRepository implements Re
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentMedicationAllergy::class, 'rma')
@@ -266,7 +266,7 @@ class ResidentMedicationAllergyRepository extends EntityRepository implements Re
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rma.'.$mappedBy.'= :id')
+                ->where('rma.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -24,7 +24,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentMedication::class, 'rm')
@@ -74,7 +74,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
 
         $queryBuilder
             ->groupBy('rm.id')
-            ->orderBy('rm.discontinued','ASC');
+            ->orderBy('rm.discontinued', 'ASC');
     }
 
     /**
@@ -129,7 +129,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
         }
 
         return $qb
-            ->orderBy('rm.discontinued','ASC')
+            ->orderBy('rm.discontinued', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -404,7 +404,7 @@ class ResidentMedicationRepository extends EntityRepository implements RelatedIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rm.'.$mappedBy.'= :id')
+                ->where('rm.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

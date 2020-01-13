@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class CareTypeRepository
  * @package App\Repository\Lead
  */
-class CareTypeRepository extends EntityRepository  implements RelatedInfoInterface
+class CareTypeRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(CareType::class, 'ct')
@@ -172,7 +172,7 @@ class CareTypeRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ct.'.$mappedBy.'= :id')
+                ->where('ct.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

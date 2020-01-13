@@ -80,7 +80,7 @@ class OrganizationPhoneRepository extends EntityRepository implements RelatedInf
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('op.'.$mappedBy.'= :id')
+                ->where('op.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -27,7 +27,7 @@ use Doctrine\ORM\QueryBuilder;
  * Class ActivityRepository
  * @package App\Repository\Lead
  */
-class ActivityRepository extends EntityRepository  implements RelatedInfoInterface
+class ActivityRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
@@ -37,7 +37,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
      * @param null $id
      * @param null $userId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $ownerType = null, $id = null, $userId = null) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $ownerType = null, $id = null, $userId = null): void
     {
         $queryBuilder
             ->from(Activity::class, 'a')
@@ -526,7 +526,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('a.'.$mappedBy.'= :id')
+                ->where('a.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
@@ -766,6 +766,7 @@ class ActivityRepository extends EntityRepository  implements RelatedInfoInterfa
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants

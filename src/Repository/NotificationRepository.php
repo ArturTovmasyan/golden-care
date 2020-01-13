@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\Diet;
 use App\Entity\Notification;
 use App\Entity\NotificationType;
-use App\Entity\Resident;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -23,7 +21,7 @@ class NotificationRepository extends EntityRepository implements RelatedInfoInte
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Notification::class, 'n')
@@ -201,7 +199,7 @@ class NotificationRepository extends EntityRepository implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('n.'.$mappedBy.'= :id')
+                ->where('n.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class FunnelStageRepository
  * @package App\Repository\Lead
  */
-class FunnelStageRepository extends EntityRepository  implements RelatedInfoInterface
+class FunnelStageRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(FunnelStage::class, 'fs')
@@ -173,7 +173,7 @@ class FunnelStageRepository extends EntityRepository  implements RelatedInfoInte
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('fs.'.$mappedBy.'= :id')
+                ->where('fs.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

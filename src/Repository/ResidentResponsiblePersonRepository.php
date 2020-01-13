@@ -26,7 +26,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ResidentResponsiblePerson::class, 'rrp')
@@ -136,8 +136,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
             ->addOrderBy('rrp.sortOrder', 'ASC')
             ->addOrderBy("CONCAT(
             CASE WHEN rps IS NOT NULL THEN CONCAT(rps.title, ' ') ELSE '' END, 
-            rp.firstName, ' ', rp.lastName)", 'ASC')
-        ;
+            rp.firstName, ' ', rp.lastName)", 'ASC');
 
         return $qb
             ->getQuery()
@@ -338,7 +337,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 Join::WITH,
                 'rp.csz = csz'
             )
-            ->leftJoin('rrp.roles','rs')
+            ->leftJoin('rrp.roles', 'rs')
             ->where('r.id IN (:residentIds)')
             ->setParameter('residentIds', $residentIds);
 
@@ -389,7 +388,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('rrp.'.$mappedBy.'= :id')
+                ->where('rrp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

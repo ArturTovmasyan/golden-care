@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class ActivityStatusRepository
  * @package App\Repository\Lead
  */
-class ActivityStatusRepository extends EntityRepository  implements RelatedInfoInterface
+class ActivityStatusRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(ActivityStatus::class, 'ast')
@@ -172,7 +172,7 @@ class ActivityStatusRepository extends EntityRepository  implements RelatedInfoI
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ast.'.$mappedBy.'= :id')
+                ->where('ast.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

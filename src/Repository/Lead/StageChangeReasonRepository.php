@@ -13,14 +13,14 @@ use Doctrine\ORM\QueryBuilder;
  * Class StageChangeReasonRepository
  * @package App\Repository\Lead
  */
-class StageChangeReasonRepository extends EntityRepository  implements RelatedInfoInterface
+class StageChangeReasonRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(StageChangeReason::class, 'scr')
@@ -172,7 +172,7 @@ class StageChangeReasonRepository extends EntityRepository  implements RelatedIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('scr.'.$mappedBy.'= :id')
+                ->where('scr.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

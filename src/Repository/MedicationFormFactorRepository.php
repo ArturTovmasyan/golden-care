@@ -20,7 +20,7 @@ class MedicationFormFactorRepository extends EntityRepository implements Related
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(MedicationFormFactor::class, 'mff')
@@ -171,7 +171,7 @@ class MedicationFormFactorRepository extends EntityRepository implements Related
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('mff.'.$mappedBy.'= :id')
+                ->where('mff.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -21,7 +21,7 @@ class ApartmentRepository extends EntityRepository implements RelatedInfoInterfa
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(Apartment::class, 'a')
@@ -116,9 +116,9 @@ class ApartmentRepository extends EntityRepository implements RelatedInfoInterfa
         }
 
         if ($entityGrants !== null) {
-                 $qb
-                     ->andWhere('a.id IN (:grantIds)')
-                     ->setParameter('grantIds', $entityGrants);
+            $qb
+                ->andWhere('a.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
         }
 
         return $qb
@@ -278,7 +278,7 @@ class ApartmentRepository extends EntityRepository implements RelatedInfoInterfa
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('a.'.$mappedBy.'= :id')
+                ->where('a.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

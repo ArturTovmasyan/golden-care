@@ -32,7 +32,7 @@ class ChunkFileRepository extends EntityRepository
     /**
      * @param $requestId
      * @param $userId
-     * @return int
+     * @return mixed
      */
     public function getChunkCount($requestId, $userId)
     {

@@ -20,7 +20,7 @@ class CareLevelGroupRepository extends EntityRepository implements RelatedInfoIn
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(CareLevelGroup::class, 'aclg')
@@ -171,7 +171,7 @@ class CareLevelGroupRepository extends EntityRepository implements RelatedInfoIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('aclg.'.$mappedBy.'= :id')
+                ->where('aclg.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

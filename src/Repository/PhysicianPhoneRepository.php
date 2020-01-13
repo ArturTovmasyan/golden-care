@@ -124,7 +124,7 @@ class PhysicianPhoneRepository extends EntityRepository implements RelatedInfoIn
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('pp.'.$mappedBy.'= :id')
+                ->where('pp.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 

@@ -21,7 +21,7 @@ class PaymentSourceRepository extends EntityRepository implements RelatedInfoInt
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder) : void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
             ->from(PaymentSource::class, 'ps')
@@ -210,7 +210,7 @@ class PaymentSourceRepository extends EntityRepository implements RelatedInfoInt
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('ps.'.$mappedBy.'= :id')
+                ->where('ps.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
