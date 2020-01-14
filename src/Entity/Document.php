@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *              "field"      = "d.emails"
  *          },
  *          {
- *              "id"         = "date_uploaded",
+ *              "id"         = "date_modified",
  *              "type"       = "datetime",
  *              "field"      = "d.updatedAt"
  *          },
@@ -260,13 +260,13 @@ class Document
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("date_uploaded")
+     * @Serializer\SerializedName("date_modified")
      * @Serializer\Groups({
      *     "api_admin_document_list",
      *     "api_admin_document_get"
      * })
      */
-    public function getDateUploaded(): ?\DateTime
+    public function getDateModified(): ?\DateTime
     {
         return $this->getUpdatedAt();
     }
