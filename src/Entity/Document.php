@@ -42,8 +42,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *              "field"      = "CONCAT(TRIM(SUBSTRING(d.description, 1, 100)), CASE WHEN LENGTH(d.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
+ *              "id"         = "date_created",
+ *              "type"       = "datetime",
+ *              "field"      = "d.createdAt"
+ *          },
+ *          {
  *              "id"         = "date_uploaded",
- *              "type"       = "date",
+ *              "type"       = "datetime",
  *              "field"      = "d.updatedAt"
  *          },
  *          {

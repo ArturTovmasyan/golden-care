@@ -45,9 +45,14 @@ use JMS\Serializer\Annotation as Serializer;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "date",
+ *              "id"         = "date_created",
  *              "type"       = "datetime",
  *              "field"      = "fd.createdAt"
+ *          },
+ *          {
+ *              "id"         = "date_modified",
+ *              "type"       = "datetime",
+ *              "field"      = "fd.updatedAt"
  *          },
  *          {
  *              "id"         = "user",
