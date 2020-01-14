@@ -295,6 +295,7 @@ class CorporateEventRepository extends EntityRepository implements RelatedInfoIn
                 'ce.start AS start',
                 'ce.end AS end',
                 'ce.rsvp AS rsvp',
+                'ce.allDay AS all_day',
                 'ce.done AS done',
                 'ce.notes AS notes'
             )

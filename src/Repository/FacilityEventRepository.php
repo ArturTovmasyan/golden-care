@@ -308,6 +308,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
                 'fe.start AS start',
                 'fe.end AS end',
                 'fe.rsvp AS rsvp',
+                'fe.allDay AS all_day',
                 'fe.notes AS notes'
             )
             ->join('fe.facility', 'f')
@@ -371,6 +372,7 @@ class FacilityEventRepository extends EntityRepository implements RelatedInfoInt
                 'fe.end AS end',
                 'fe.notes AS notes',
                 'fe.rsvp AS rsvp',
+                'fe.allDay AS all_day',
                 'f.id AS facility_id',
                 'f.name AS facility_name'
             )
