@@ -42,16 +42,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *              "field"      = "CONCAT(TRIM(SUBSTRING(d.description, 1, 100)), CASE WHEN LENGTH(d.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
- *              "id"         = "date_created",
- *              "type"       = "datetime",
- *              "field"      = "d.createdAt"
- *          },
- *          {
- *              "id"         = "date_uploaded",
- *              "type"       = "datetime",
- *              "field"      = "d.updatedAt"
- *          },
- *          {
  *              "id"         = "owner",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
@@ -60,6 +50,16 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *              "id"         = "emails",
  *              "type"       = "string",
  *              "field"      = "d.emails"
+ *          },
+ *          {
+ *              "id"         = "date_uploaded",
+ *              "type"       = "datetime",
+ *              "field"      = "d.updatedAt"
+ *          },
+ *          {
+ *              "id"         = "date_created",
+ *              "type"       = "datetime",
+ *              "field"      = "d.createdAt"
  *          }
  *     }
  * )
@@ -243,6 +243,19 @@ class Document
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("date_created")
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    public function getDateCreated(): ?\DateTime
+    {
+        return $this->getCreatedAt();
     }
 
     /**

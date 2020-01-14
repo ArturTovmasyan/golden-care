@@ -45,21 +45,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "date_created",
- *              "type"       = "datetime",
- *              "field"      = "fd.createdAt"
- *          },
- *          {
- *              "id"         = "date_modified",
- *              "type"       = "datetime",
- *              "field"      = "fd.updatedAt"
- *          },
- *          {
- *              "id"         = "user",
- *              "type"       = "string",
- *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
- *          },
- *          {
  *              "id"         = "facility",
  *              "type"       = "string",
  *              "field"      = "f.name"
@@ -68,6 +53,21 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "description",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(fd.description, 1, 100)), CASE WHEN LENGTH(fd.description) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "user",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
+ *          },
+ *          {
+ *              "id"         = "date_modified",
+ *              "type"       = "datetime",
+ *              "field"      = "fd.updatedAt"
+ *          },
+ *          {
+ *              "id"         = "date_created",
+ *              "type"       = "datetime",
+ *              "field"      = "fd.createdAt"
  *          }
  *     }
  * )

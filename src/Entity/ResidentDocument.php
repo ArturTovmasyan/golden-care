@@ -40,9 +40,9 @@ use JMS\Serializer\Annotation as Serializer;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "date_created",
- *              "type"       = "datetime",
- *              "field"      = "rd.createdAt"
+ *              "id"         = "user",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
  *          },
  *          {
  *              "id"         = "date_modified",
@@ -50,9 +50,9 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "rd.updatedAt"
  *          },
  *          {
- *              "id"         = "user",
- *              "type"       = "string",
- *              "field"      = "CONCAT(u.firstName, ' ', u.lastName)"
+ *              "id"         = "date_created",
+ *              "type"       = "datetime",
+ *              "field"      = "rd.createdAt"
  *          }
  *     }
  * )
