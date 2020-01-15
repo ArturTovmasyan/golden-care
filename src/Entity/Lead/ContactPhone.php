@@ -5,7 +5,6 @@ namespace App\Entity\Lead;
 use App\Model\Persistence\Entity\PhoneTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Annotation\Grid as Grid;
 use JMS\Serializer\Annotation\Groups;
 
 /**
