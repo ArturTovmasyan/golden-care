@@ -29,7 +29,7 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
     {
         $queryBuilder
             ->from(FacilityBed::class, 'fb')
-            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.facilityBed afb JOIN ra.resident r WHERE afb.id=fb.id AND ra.admissionType < :admissionType AND ra.end IS NULL) AS resident')
+            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.facilityBed afb JOIN ra.resident r WHERE afb.id=fb.id AND ra.admissionType < :admissionType AND ra.end IS NULL GROUP BY afb.id) AS resident')
             ->innerJoin(
                 FacilityRoom::class,
                 'fr',

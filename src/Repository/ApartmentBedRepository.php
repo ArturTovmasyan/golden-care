@@ -29,7 +29,7 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
     {
         $queryBuilder
             ->from(ApartmentBed::class, 'ab')
-            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.apartmentBed aab JOIN ra.resident r WHERE aab.id=ab.id AND ra.admissionType < :admissionType AND ra.end IS NULL) AS resident')
+            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.apartmentBed aab JOIN ra.resident r WHERE aab.id=ab.id AND ra.admissionType < :admissionType AND ra.end IS NULL GROUP BY aab.id) AS resident')
             ->innerJoin(
                 ApartmentRoom::class,
                 'ar',
