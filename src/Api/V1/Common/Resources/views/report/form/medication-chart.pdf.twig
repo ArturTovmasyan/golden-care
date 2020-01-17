@@ -7,7 +7,7 @@
         <table class="report-table main-table bordered" style="margin: 0;">
         <thead>
         <tr>
-            <td colspan="34" style="width: 100%; font-size: 14px !important; margin: 0; padding: 0;">
+            <td colspan="34" style="width: 100%; font-size: 13px !important; margin: 0; padding: 0;">
                 <div style="float: left; margin: 0; padding: 0;">
                     {% if data.images[resident.id] is defined %}
                         <img src="{{ data.images[resident.id] }}"
@@ -16,7 +16,7 @@
                         <div style="display: block; margin: 0 auto; padding: 0; height: 100px; width: 100px; border: 1px solid black;"></div>
                     {% endif %}
                 </div>
-                <div style="float: left; height: 100px; width: 380px; padding-left: 5px; padding-right: 5px;">
+                <div style="float: left; height: 100px; width: 370px; padding-left: 5px; padding-right: 5px;">
                     <b style="font-size: 16px;">
                         {% if resident['firstName'] %}{{ resident['firstName'] }}{% if resident['lastName'] %}&nbsp;{{ resident['lastName'] }}{% endif %}{% else %}N/A{% endif %}
                     </b>
@@ -24,8 +24,7 @@
                         <div style="float: left; width: 62%">
                             {% if resident['birthday'] is defined and resident['birthday'] %}
                                 <div>Birthday&nbsp;-&nbsp;{{ resident['birthday']|date("F") }}
-                                    &nbsp;{{ resident['birthday']|date("d") }}
-                                    ,&nbsp;{{ resident['birthday']|date("Y") }}</div>
+                                    &nbsp;{{ resident['birthday']|date("d") }},&nbsp;{{ resident['birthday']|date("Y") }}</div>
                             {% else %}
                                 <div>Birthday&nbsp;-&nbsp;N/A</div>
                             {% endif %}
@@ -90,7 +89,7 @@
                 </div>
                 <div style="float: left; margin: 0; padding: 0;">
                     <div style="height: 5px;"></div>
-                    <p style="margin: 0; text-align: center;"><b style="font-size: 20px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
+                    <p style="margin: 0; text-align: center;"><b style="font-size: 18px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
                     </p>
                     <p style="margin: 0;">{% if resident['typeName'] is defined %}<b
                                 style="font-size: 13px !important;">{{ resident['typeName'] }}&nbsp;</b>{% endif %}
@@ -113,7 +112,7 @@
                     </p>
                 </div>
                 <div style="float: right; margin: 0; padding: 0;">
-                    <p><b style="font-size: 16px !important">___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</b>
+                    <p><b style="font-size: 16px !important">_________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</b>
                     </p>
                 </div>
                 <div style="clear: both"></div>
@@ -924,7 +923,7 @@
                     {% if key <= medCount - 1 %}
                         <thead>
                         <tr>
-                            <td colspan="34" style="width: 100%; font-size: 14px !important; margin: 0; padding: 0;">
+                            <td colspan="34" style="width: 100%; font-size: 13px !important; margin: 0; padding: 0;">
                                 <div style="float: left; margin: 0; padding: 0;">
                                     {% if data.images[resident.id] is defined %}
                                         <img src="{{ data.images[resident.id] }}"
@@ -933,7 +932,7 @@
                                         <div style="display: block; margin: 0 auto; padding: 0; height: 100px; width: 100px; border: 1px solid black;"></div>
                                     {% endif %}
                                 </div>
-                                <div style="float: left; height: 100px; width: 380px; padding-left: 5px; padding-right: 5px;">
+                                <div style="float: left; height: 100px; width: 370px; padding-left: 5px; padding-right: 5px;">
                                     <b style="font-size: 16px;">
                                         {% if resident['firstName'] %}{{ resident['firstName'] }}{% if resident['lastName'] %}&nbsp;{{ resident['lastName'] }}{% endif %}{% else %}N/A{% endif %}
                                     </b>
@@ -941,8 +940,7 @@
                                         <div style="float: left; width: 62%">
                                             {% if resident['birthday'] is defined and resident['birthday'] %}
                                                 <div>Birthday&nbsp;-&nbsp;{{ resident['birthday']|date("F") }}
-                                                    &nbsp;{{ resident['birthday']|date("d") }}
-                                                    ,&nbsp;{{ resident['birthday']|date("Y") }}</div>
+                                                    &nbsp;{{ resident['birthday']|date("d") }},&nbsp;{{ resident['birthday']|date("Y") }}</div>
                                             {% else %}
                                                 <div>Birthday&nbsp;-&nbsp;N/A</div>
                                             {% endif %}
@@ -1007,7 +1005,7 @@
                                 </div>
                                 <div style="float: left; margin: 0; padding: 0;">
                                     <div style="height: 5px;"></div>
-                                    <p style="margin: 0; text-align: center;"><b style="font-size: 20px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
+                                    <p style="margin: 0; text-align: center;"><b style="font-size: 18px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
                                     </p>
                                     <p style="margin: 0;">{% if resident['typeName'] is defined %}<b
                                                 style="font-size: 13px !important;">{{ resident['typeName'] }}&nbsp;</b>{% endif %}
@@ -1030,7 +1028,7 @@
                                     </p>
                                 </div>
                                 <div style="float: right; margin: 0; padding: 0;">
-                                    <p><b style="font-size: 16px !important">___________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</b>
+                                    <p><b style="font-size: 16px !important">_________________&nbsp;(Mo)&nbsp;_______&nbsp;(Yr)</b>
                                     </p>
                                 </div>
                                 <div style="clear: both"></div>
