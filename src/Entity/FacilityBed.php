@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class FacilityBed
@@ -35,15 +34,39 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "fb.id"
  *          },
  *          {
- *              "id"         = "number",
+ *              "id"         = "facility_name",
  *              "type"       = "string",
- *              "field"      = "fb.number",
- *              "link"       = ":edit"
+ *              "field"      = "f.name"
+ *          },
+ *          {
+ *              "id"         = "facility_shorthand",
+ *              "type"       = "string",
+ *              "field"      = "f.shorthand"
+ *          },
+ *          {
+ *              "id"         = "floor",
+ *              "type"       = "string",
+ *              "field"      = "fr.floor"
  *          },
  *          {
  *              "id"         = "room",
  *              "type"       = "string",
- *              "field"      = "fr.name"
+ *              "field"      = "fr.number"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "field"      = "fb.number"
+ *          },
+ *          {
+ *              "id"         = "enabled",
+ *              "type"       = "bool",
+ *              "field"      = "fb.enabled"
+ *          },
+ *          {
+ *              "id"         = "resident",
+ *              "type"       = "string",
+ *              "field"      = ""
  *          }
  *     }
  * )

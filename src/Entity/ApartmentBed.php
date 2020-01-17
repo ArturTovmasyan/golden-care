@@ -34,15 +34,39 @@ use App\Annotation\Grid;
  *              "field"      = "ab.id"
  *          },
  *          {
- *              "id"         = "number",
+ *              "id"         = "apartment_name",
  *              "type"       = "string",
- *              "field"      = "ab.number",
- *              "link"       = ":edit"
+ *              "field"      = "a.name"
+ *          },
+ *          {
+ *              "id"         = "apartment_shorthand",
+ *              "type"       = "string",
+ *              "field"      = "a.shorthand"
+ *          },
+ *          {
+ *              "id"         = "floor",
+ *              "type"       = "string",
+ *              "field"      = "ar.floor"
  *          },
  *          {
  *              "id"         = "room",
  *              "type"       = "string",
- *              "field"      = "ar.name"
+ *              "field"      = "ar.number"
+ *          },
+ *          {
+ *              "id"         = "number",
+ *              "type"       = "string",
+ *              "field"      = "ab.number"
+ *          },
+ *          {
+ *              "id"         = "enabled",
+ *              "type"       = "bool",
+ *              "field"      = "ab.enabled"
+ *          },
+ *          {
+ *              "id"         = "resident",
+ *              "type"       = "string",
+ *              "field"      = ""
  *          }
  *     }
  * )

@@ -7,6 +7,7 @@ use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Space;
+use App\Model\AdmissionType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -20,27 +21,37 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $apartmentId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
+    public function search(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, QueryBuilder $queryBuilder, $apartmentId = null): void
     {
         $queryBuilder
             ->from(ApartmentBed::class, 'ab')
+            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.apartmentBed aab JOIN ra.resident r WHERE aab.id=ab.id AND ra.admissionType < :admissionType AND ra.end IS NULL) AS resident')
             ->innerJoin(
                 ApartmentRoom::class,
                 'ar',
                 Join::WITH,
                 'ar = ab.room'
-            );
+            )
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            )
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($apartmentId !== null) {
+            $queryBuilder
+                ->where('a.id = :apartmentId')
+                ->setParameter('apartmentId', $apartmentId);
+        }
 
         if ($space !== null) {
             $queryBuilder
-                ->innerJoin(
-                    Apartment::class,
-                    'a',
-                    Join::WITH,
-                    'a = ar.apartment'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -57,8 +68,78 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($apartmentEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
         $queryBuilder
+            ->orderBy('a.shorthand', 'ASC')
+            ->addOrderBy('ar.number', 'ASC')
+            ->addOrderBy('ab.number', 'ASC')
             ->groupBy('ab.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $apartmentEntityGrants
+     * @param null $apartmentId
+     * @return mixed
+     */
+    public function list(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null, $apartmentId = null)
+    {
+        $qb = $this->createQueryBuilder('ab')
+            ->innerJoin(
+                ApartmentRoom::class,
+                'ar',
+                Join::WITH,
+                'ar = ab.room'
+            )
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            );
+
+        if ($apartmentId !== null) {
+            $qb
+                ->where('a.id = :apartmentId')
+                ->setParameter('apartmentId', $apartmentId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = a.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($apartmentEntityGrants !== null) {
+            $qb
+                ->andWhere('a.id IN (:apartmentGrantIds)')
+                ->setParameter('apartmentGrantIds', $apartmentEntityGrants);
+        }
+
+        return $qb
+            ->orderBy('a.shorthand', 'ASC')
+            ->addOrderBy('ar.number', 'ASC')
+            ->addOrderBy('ab.number', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

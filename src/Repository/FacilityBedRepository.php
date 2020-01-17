@@ -7,6 +7,7 @@ use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Space;
+use App\Model\AdmissionType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -20,27 +21,37 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $facilityId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null): void
     {
         $queryBuilder
             ->from(FacilityBed::class, 'fb')
+            ->addSelect('(SELECT DISTINCT CONCAT(COALESCE(r.firstName, \'\'), \' \', COALESCE(r.lastName, \'\')) FROM \App\Entity\ResidentAdmission ra JOIN ra.facilityBed afb JOIN ra.resident r WHERE afb.id=fb.id AND ra.admissionType < :admissionType AND ra.end IS NULL) AS resident')
             ->innerJoin(
                 FacilityRoom::class,
                 'fr',
                 Join::WITH,
                 'fr = fb.room'
-            );
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            )
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($facilityId !== null) {
+            $queryBuilder
+                ->where('f.id = :facilityId')
+                ->setParameter('facilityId', $facilityId);
+        }
 
         if ($space !== null) {
             $queryBuilder
-                ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'f = fr.facility'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -57,8 +68,78 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         $queryBuilder
+            ->orderBy('f.shorthand', 'ASC')
+            ->addOrderBy('fr.number', 'ASC')
+            ->addOrderBy('fb.number', 'ASC')
             ->groupBy('fb.id');
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
+     * @param null $facilityId
+     * @return mixed
+     */
+    public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $facilityId = null)
+    {
+        $qb = $this->createQueryBuilder('fb')
+            ->innerJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'fr = fb.room'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            );
+
+        if ($facilityId !== null) {
+            $qb
+                ->where('f.id = :facilityId')
+                ->setParameter('facilityId', $facilityId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fb.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
+        return $qb
+            ->orderBy('f.shorthand', 'ASC')
+            ->addOrderBy('fr.number', 'ASC')
+            ->addOrderBy('fb.number', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
