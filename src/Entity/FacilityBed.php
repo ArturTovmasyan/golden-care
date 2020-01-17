@@ -303,7 +303,8 @@ class FacilityBed
      * @param string|null $value
      * @return string|null
      */
-    public static function gridOccupiedBy(?string $value): ?string {
-        return $value === null ? 'Unoccupied' : $value;
+    public static function gridOccupiedBy(?string $value): ?string
+    {
+        return $value ?? 'Unoccupied';
     }
 }
