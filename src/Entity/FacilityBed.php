@@ -60,7 +60,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "enabled",
- *              "type"       = "bool",
+ *              "type"       = "boolean",
  *              "field"      = "fb.enabled"
  *          },
  *          {
