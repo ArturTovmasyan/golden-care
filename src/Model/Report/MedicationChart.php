@@ -30,6 +30,11 @@ class MedicationChart extends Base
     private $physicianPhones = [];
 
     /**
+     * @var array
+     */
+    private $images = [];
+
+    /**
      * MealMonitor constructor.
      */
     public function __construct()
@@ -123,6 +128,22 @@ class MedicationChart extends Base
     public function getPhysicianPhones(): ?array
     {
         return $this->physicianPhones;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param $images
+     */
+    public function setImages($images): void
+    {
+        $this->images = $images;
     }
 }
 
