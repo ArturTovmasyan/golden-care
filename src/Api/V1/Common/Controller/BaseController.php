@@ -165,6 +165,8 @@ class BaseController extends AbstractController
             'data' => $paginator->getQuery()->getArrayResult()
         ];
 
+        $this->getGrid($entityName)->renderCallback($data['data'], $groupName);
+
         $serializationContext = SerializationContext::create()->setSerializeNull(true);
         if (!empty($groupName)) {
             $serializationContext->setGroups([$groupName]);

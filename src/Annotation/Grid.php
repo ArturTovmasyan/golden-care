@@ -21,6 +21,7 @@ class Grid
     const FIELD_OPTION_AVAILABLE_VALUES = 'values';
     const FIELD_OPTION_LINK             = 'link';
     const FIELD_OPTION_HIDDEN           = 'hidden';
+    const FIELD_OPTION_CALLBACK         = 'callback';
     const FIELD_OPTION_SORT_TYPE        = 'sort_type';
 
     /**
@@ -51,6 +52,7 @@ class Grid
         self::FIELD_OPTION_AVAILABLE_VALUES,
         self::FIELD_OPTION_LINK,
         self::FIELD_OPTION_HIDDEN,
+        self::FIELD_OPTION_CALLBACK,
         self::FIELD_OPTION_SORT_TYPE
     ];
 
@@ -413,5 +415,27 @@ class Grid
         }
 
         return $this;
+    }
+
+    public function renderCallback(&$data, $groupName) {
+        $callback = [];
+
+        foreach ($data as &$item) {
+            foreach ($item as $key => $value) {
+                $field_options = $this->groupsById[$groupName][$key];
+                if(!array_key_exists($key, $callback)) {
+                    if(array_key_exists('callback', $field_options)) {
+                        $callback[$key] = explode("::", $field_options['callback']);
+                    } else {
+                        $callback[$key] = null;
+                    }
+                }
+
+                $class = $callback[$key] != null ? $callback[$key][0] : null;
+                $method =  $callback[$key] != null ? $callback[$key][1] : null;
+
+                $item[$key] = $callback[$key] !== null ? $class::$method($value) : $value;
+            }
+        }
     }
 }

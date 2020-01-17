@@ -66,7 +66,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "resident",
  *              "type"       = "string",
- *              "field"      = ""
+ *              "field"      = "",
+ *              "callback"   = "App\Entity\ApartmentBed::gridOccupiedBy"
  *          }
  *     }
  * )
@@ -294,5 +295,13 @@ class ApartmentBed
     public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
     {
         $this->residentAdmissions = $residentAdmissions;
+    }
+
+    /**
+     * @param string|null $value
+     * @return string|null
+     */
+    public static function gridOccupiedBy(?string $value): ?string {
+        return $value === null ? 'Unoccupied' : $value;
     }
 }
