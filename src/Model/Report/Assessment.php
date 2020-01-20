@@ -124,7 +124,7 @@ class Assessment extends Base
     /**
      * @return int
      */
-    public function getTotalScore(): ?int
+    public function getTotalScore()
     {
         return $this->totalScore;
     }
@@ -175,7 +175,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getAllGroups(): ?array
+    public function getAllGroups()
     {
         return $this->allGroups;
     }
