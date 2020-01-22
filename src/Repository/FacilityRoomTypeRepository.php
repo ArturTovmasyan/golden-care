@@ -27,12 +27,26 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
     {
         $queryBuilder
             ->from(FacilityRoomType::class, 'frt')
+            ->addSelect("
+                JSON_ARRAY(                    
+                    JSON_OBJECT('Care Level', JSON_ARRAYAGG(
+                            COALESCE(cl.title,'')
+                        )
+                    ),
+                    JSON_OBJECT('Amount', JSON_ARRAYAGG(
+                            COALESCE(br.amount,'')
+                        )
+                    )
+                ) as base_rates
+            ")
             ->innerJoin(
                 Facility::class,
                 'f',
                 Join::WITH,
                 'f = frt.facility'
-            );
+            )
+            ->join('frt.baseRates', 'br')
+            ->join('br.careLevel', 'cl');
 
         if ($facilityId !== null) {
             $queryBuilder

@@ -51,6 +51,12 @@ use App\Annotation\Grid;
  *              "id"         = "description",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(frt.description, 1, 100)), CASE WHEN LENGTH(frt.description) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "base_rates",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "base_rates"
  *          }
  *     }
  * )
