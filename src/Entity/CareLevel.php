@@ -76,7 +76,9 @@ class CareLevel
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
      *     "api_admin_contract_get_active",
-     *     "api_admin_resident_get_last_admission"
+     *     "api_admin_resident_get_last_admission",
+     *     "api_admin_facility_room_type_list",
+     *     "api_admin_facility_room_type_get"
      * })
      */
     private $id;
@@ -106,7 +108,9 @@ class CareLevel
      *     "api_admin_contract_list",
      *     "api_admin_contract_get",
      *     "api_admin_contract_get_active",
-     *     "api_admin_resident_get_last_admission"
+     *     "api_admin_resident_get_last_admission",
+     *     "api_admin_facility_room_type_list",
+     *     "api_admin_facility_room_type_get"
      * })
      */
     private $title;
@@ -152,6 +156,12 @@ class CareLevel
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="careLevel", cascade={"remove", "persist"})
      */
     private $residentAdmissions;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\BaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
+     */
+    private $baseRates;
 
     public function getId(): ?int
     {
@@ -214,5 +224,21 @@ class CareLevel
     public function setResidentAdmissions(ArrayCollection $residentAdmissions): void
     {
         $this->residentAdmissions = $residentAdmissions;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBaseRates(): ArrayCollection
+    {
+        return $this->baseRates;
+    }
+
+    /**
+     * @param ArrayCollection $baseRates
+     */
+    public function setBaseRates(ArrayCollection $baseRates): void
+    {
+        $this->baseRates = $baseRates;
     }
 }

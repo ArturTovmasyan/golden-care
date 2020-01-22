@@ -6,20 +6,10 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CorporateEventUserRepository")
- * @UniqueEntity(
- *     fields={"event", "user"},
- *     errorPath="user",
- *     message="The user is already in use for this Corporate Event.",
- *     groups={
- *          "api_admin_facility_document_add",
- *          "api_admin_facility_document_edit"
- *     }
- * )
  * @ORM\Table(name="tbl_corporate_event_user")
  */
 class CorporateEventUser

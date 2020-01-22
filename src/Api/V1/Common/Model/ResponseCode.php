@@ -159,6 +159,8 @@ class ResponseCode
     const DUPLICATE_RESIDENT_EXCEPTION                           = 759;
     const ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    = 760;
     const ACTIVE_RESIDENT_EXIST_IN_BED_EXCEPTION                 = 761;
+    const FACILITY_ROOM_TYPE_NOT_FOUND_EXCEPTION                 = 762;
+    const BASE_RATE_NOT_FOUND_EXCEPTION                          = 763;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -319,6 +321,8 @@ class ResponseCode
         self::DUPLICATE_RESIDENT_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please choose different Resident.'],
         self::ASSESSMENT_TYPE_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment Type not found.'],
         self::ACTIVE_RESIDENT_EXIST_IN_BED_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Before disable the Bed first assign the Resident to another Bed.'],
+        self::FACILITY_ROOM_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Room Type not found.'],
+        self::BASE_RATE_NOT_FOUND_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate not found.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

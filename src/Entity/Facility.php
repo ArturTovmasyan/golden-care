@@ -138,7 +138,9 @@ class Facility
      *     "api_admin_facility_event_list",
      *     "api_admin_facility_event_get",
      *     "api_admin_corporate_event_list",
-     *     "api_admin_corporate_event_get"
+     *     "api_admin_corporate_event_get",
+     *     "api_admin_facility_room_type_list",
+     *     "api_admin_facility_room_type_get"
      * })
      */
     private $id;
@@ -184,7 +186,9 @@ class Facility
      *     "api_admin_facility_event_list",
      *     "api_admin_facility_event_get",
      *     "api_admin_corporate_event_list",
-     *     "api_admin_corporate_event_get"
+     *     "api_admin_corporate_event_get",
+     *     "api_admin_facility_room_type_list",
+     *     "api_admin_facility_room_type_get"
      * })
      */
     private $name;
@@ -971,7 +975,7 @@ class Facility
      *     "api_admin_facility_get"
      * })
      */
-    public function getOccupation()
+    public function getOccupation(): ?int
     {
         $occupation = 0;
         if ($this->rooms !== null) {

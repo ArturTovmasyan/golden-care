@@ -283,6 +283,14 @@ persistence:
       title: 'FacilityEvent'
       class: App\Entity\FacilityEvent
       route: api_admin_facility_event_list
+    facility_room_type:
+      title: 'FacilityRoomType'
+      class: App\Entity\FacilityRoomType
+      route: api_admin_facility_room_type_list
+    base_rate:
+      title: 'BaseRate'
+      class: App\Entity\BaseRate
+      route: api_admin_base_rate_list
 
     region:
       title: 'Region'
