@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\BaseRateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
@@ -104,7 +105,14 @@ class FacilityRoomTypeService extends BaseService implements IGridService
             $facilityRoomType->setTitle($params['title']);
             $facilityRoomType->setPrivate($params['private']);
             $facilityRoomType->setDescription($params['description'] ?? '');
-            $facilityRoomType->setBaseRates($this->saveBaseRates($currentSpace, $facilityRoomType, $params['base_rates'] ?? []));
+
+            $baseRates = $this->saveBaseRates($currentSpace, $facilityRoomType, $params['base_rates'] ?? []);
+
+            if (\count($baseRates) < 1) {
+                throw new BaseRateNotBeBlankException();
+            }
+
+            $facilityRoomType->setBaseRates($baseRates);
 
             $this->validate($facilityRoomType, null, ['api_admin_facility_room_type_add']);
 
@@ -161,7 +169,14 @@ class FacilityRoomTypeService extends BaseService implements IGridService
             $entity->setTitle($params['title']);
             $entity->setPrivate($params['private']);
             $entity->setDescription($params['description'] ?? '');
-            $entity->setBaseRates($this->saveBaseRates($currentSpace, $entity, $params['base_rates'] ?? []));
+
+            $baseRates = $this->saveBaseRates($currentSpace, $entity, $params['base_rates'] ?? []);
+
+            if (\count($baseRates) < 1) {
+                throw new BaseRateNotBeBlankException();
+            }
+
+            $entity->setBaseRates($baseRates);
 
             $this->validate($entity, null, ['api_admin_facility_room_type_edit']);
 
