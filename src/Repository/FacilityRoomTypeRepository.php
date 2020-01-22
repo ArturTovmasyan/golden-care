@@ -27,18 +27,7 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
     {
         $queryBuilder
             ->from(FacilityRoomType::class, 'frt')
-            ->addSelect("
-                JSON_ARRAY(                    
-                    JSON_OBJECT('Care Level', JSON_ARRAYAGG(
-                            COALESCE(cl.title,'')
-                        )
-                    ),
-                    JSON_OBJECT('Amount', JSON_ARRAYAGG(
-                            COALESCE(br.amount,'')
-                        )
-                    )
-                ) as base_rates
-            ")
+            ->addSelect("GROUP_CONCAT(DISTINCT CONCAT(COALESCE(cl.title,''), ' : ', COALESCE(br.amount, '')) SEPARATOR ', ') AS base_rates")
             ->innerJoin(
                 Facility::class,
                 'f',
