@@ -33,11 +33,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "link"       = "/facility/:id"
  *          },
  *          {
- *              "id"         = "description",
- *              "type"       = "string",
- *              "field"      = "CONCAT(TRIM(SUBSTRING(f.description, 1, 100)), CASE WHEN LENGTH(f.description) > 100 THEN '…' ELSE '' END)"
- *          },
- *          {
  *              "id"         = "shorthand",
  *              "type"       = "string",
  *              "field"      = "f.shorthand"
@@ -58,6 +53,11 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "f.address"
  *          },
  *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
+ *          },
+ *          {
  *              "id"         = "license",
  *              "type"       = "string",
  *              "field"      = "f.license"
@@ -71,16 +71,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "capacity",
  *              "type"       = "string",
  *              "field"      = "f.capacity"
- *          },
- *          {
- *              "id"         = "number_of_floors",
- *              "type"       = "number",
- *              "field"      = "f.numberOfFloors"
- *          },
- *          {
- *              "id"         = "csz_str",
- *              "type"       = "string",
- *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
  *          },
  *          {
  *              "id"         = "capacity_red",
