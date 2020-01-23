@@ -24,7 +24,8 @@
                         <div style="float: left; width: 62%">
                             {% if resident['birthday'] is defined and resident['birthday'] %}
                                 <div>Birthday&nbsp;-&nbsp;{{ resident['birthday']|date("F") }}
-                                    &nbsp;{{ resident['birthday']|date("d") }},&nbsp;{{ resident['birthday']|date("Y") }}</div>
+                                    &nbsp;{{ resident['birthday']|date("d") }}
+                                    ,&nbsp;{{ resident['birthday']|date("Y") }}</div>
                             {% else %}
                                 <div>Birthday&nbsp;-&nbsp;N/A</div>
                             {% endif %}
@@ -91,24 +92,23 @@
                     <div style="height: 5px;"></div>
                     <p style="margin: 0; text-align: center;"><b style="font-size: 18px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
                     </p>
-                    <p style="margin: 0;">{% if resident['typeName'] is defined %}<b
+                    <p style="margin: 0; text-align: center;">{% if resident['typeName'] is defined %}<b
                                 style="font-size: 12px !important;">{{ resident['typeName'] }}&nbsp;</b>{% endif %}
-                        {% if resident['address'] is defined and resident['address'] %}<b
-                                style="font-size: 12px !important;">Address:
-                            &nbsp;{{ resident['address'] }}</b>{% endif %}
                     </p>
-                    <p style="margin: 0;">
-                        {% if resident['typePhone'] is defined and resident['typePhone'] %}<b
-                                style="font-size: 12px !important;">Phone:
-                            &nbsp;{{ resident['typePhone'] }}</b>{% endif %}
-                        {% if resident['typeFax'] is defined and resident['typeFax'] %}<b
-                                style="font-size: 12px !important;">Fax:&nbsp;{{ resident['typeFax'] }}</b>{% endif %}
-                        {% if resident['license'] is defined and resident['license'] %}<br><b
-                                style="font-size: 12px !important;">License:&nbsp;
-                            #{{ resident['license'] }}</b>{% endif %}
-                        {% if resident['city'] is defined and resident['city'] %}<b
-                                style="font-size: 12px !important;">{{ resident['city'] }}&nbsp;{{ resident['state'] }}
-                            &nbsp;{{ resident['zip'] }}</b>{% endif %}
+                    <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['address'] is defined and resident['address'] %}
+                            {{ resident['address'] }}{% endif %}
+                    </p>
+                    <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['city'] is defined and resident['city'] %}
+                            {{ resident['city'] }},&nbsp;{{ resident['stateAbbr'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                    </p>
+                    <p style="margin: 0; font-size: 12px !important; text-align: center;">
+                        {% if resident['typePhone'] is defined and resident['typePhone'] %}
+                            Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}{% if resident['typePhone'] is defined and resident['typeFax'] is defined %},&nbsp;{% endif %}
+                        {% if resident['typeFax'] is defined and resident['typeFax'] %}
+                            Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
+                    </p>
+                    <p style="margin: 0; text-align: center;">{% if resident['license'] is defined and resident['license'] %}
+                            <b style="font-size: 12px !important;">License&nbsp;{{ resident['license'] }}</b>{% endif %}
                     </p>
                 </div>
                 <div style="float: right; margin: 0; padding: 0;">
@@ -943,7 +943,8 @@
                                         <div style="float: left; width: 62%">
                                             {% if resident['birthday'] is defined and resident['birthday'] %}
                                                 <div>Birthday&nbsp;-&nbsp;{{ resident['birthday']|date("F") }}
-                                                    &nbsp;{{ resident['birthday']|date("d") }},&nbsp;{{ resident['birthday']|date("Y") }}</div>
+                                                    &nbsp;{{ resident['birthday']|date("d") }}
+                                                    ,&nbsp;{{ resident['birthday']|date("Y") }}</div>
                                             {% else %}
                                                 <div>Birthday&nbsp;-&nbsp;N/A</div>
                                             {% endif %}
@@ -1010,24 +1011,23 @@
                                     <div style="height: 5px;"></div>
                                     <p style="margin: 0; text-align: center;"><b style="font-size: 18px !important;">Monthly&nbsp;Medication&nbsp;Chart</b>
                                     </p>
-                                    <p style="margin: 0;">{% if resident['typeName'] is defined %}<b
+                                    <p style="margin: 0; text-align: center;">{% if resident['typeName'] is defined %}<b
                                                 style="font-size: 12px !important;">{{ resident['typeName'] }}&nbsp;</b>{% endif %}
-                                        {% if resident['address'] is defined and resident['address'] %}<b
-                                                style="font-size: 12px !important;">Address:
-                                            &nbsp;{{ resident['address'] }}</b>{% endif %}
                                     </p>
-                                    <p style="margin: 0;">
-                                        {% if resident['typePhone'] is defined and resident['typePhone'] %}<b
-                                                style="font-size: 12px !important;">Phone:
-                                            &nbsp;{{ resident['typePhone'] }}</b>{% endif %}
-                                        {% if resident['typeFax'] is defined and resident['typeFax'] %}<b
-                                                style="font-size: 12px !important;">Fax:&nbsp;{{ resident['typeFax'] }}</b>{% endif %}
-                                        {% if resident['license'] is defined and resident['license'] %}<br><b
-                                                style="font-size: 12px !important;">License:&nbsp;
-                                            #{{ resident['license'] }}</b>{% endif %}
-                                        {% if resident['city'] is defined and resident['city'] %}<b
-                                                style="font-size: 12px !important;">{{ resident['city'] }}&nbsp;{{ resident['state'] }}
-                                            &nbsp;{{ resident['zip'] }}</b>{% endif %}
+                                    <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['address'] is defined and resident['address'] %}
+                                            {{ resident['address'] }}{% endif %}
+                                    </p>
+                                    <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['city'] is defined and resident['city'] %}
+                                            {{ resident['city'] }},&nbsp;{{ resident['stateAbbr'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                                    </p>
+                                    <p style="margin: 0; font-size: 12px !important; text-align: center;">
+                                        {% if resident['typePhone'] is defined and resident['typePhone'] %}
+                                            Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}{% if resident['typePhone'] is defined and resident['typeFax'] is defined %},&nbsp;{% endif %}
+                                        {% if resident['typeFax'] is defined and resident['typeFax'] %}
+                                            Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
+                                    </p>
+                                    <p style="margin: 0; text-align: center;">{% if resident['license'] is defined and resident['license'] %}
+                                            <b style="font-size: 12px !important;">License&nbsp;{{ resident['license'] }}</b>{% endif %}
                                     </p>
                                 </div>
                                 <div style="float: right; margin: 0; padding: 0;">

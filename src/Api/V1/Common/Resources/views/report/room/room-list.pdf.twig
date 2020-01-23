@@ -80,7 +80,7 @@
             <td style="height: 40px; text-align: left;">{{ datum.firstName ~ ' ' ~ datum.lastName }}</td>
             {% if datum.city is defined and datum.city %}
                 <td style="height: 40px; text-align: left;">{% if datum.address is defined and datum.address %}{{ datum.address }}
-                <br>{% endif %}{{ datum.city }},&nbsp;{{ datum.state }}&nbsp;{{ datum.zip }}</td>{% endif %}
+                <br>{% endif %}{{ datum.city }},&nbsp;{{ datum.stateAbbr }}&nbsp;{{ datum.zip }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{% if datum.amount is defined and datum.amount %}$ {{ datum.amount|number_format(2, '.', ',') }}{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}</td>
             <td style="height: 40px; text-align: left;">{% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}{% else %}N/A{% endif %}</td>
             <td style="height: 40px; text-align: left;">{% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}</td>

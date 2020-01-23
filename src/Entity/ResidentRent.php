@@ -71,7 +71,6 @@ class ResidentRent
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -89,7 +88,6 @@ class ResidentRent
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -108,7 +106,6 @@ class ResidentRent
      * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -123,7 +120,6 @@ class ResidentRent
      * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -144,7 +140,6 @@ class ResidentRent
      * })
      * @ORM\Column(name="rent_period", type="integer", length=1)
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -173,7 +168,6 @@ class ResidentRent
      *          "api_admin_resident_rent_edit"
      * })
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -191,7 +185,6 @@ class ResidentRent
      *          "api_admin_resident_rent_edit"
      * })
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -209,7 +202,6 @@ class ResidentRent
      *          "api_admin_resident_rent_edit"
      * })
      * @Groups({
-     *     "api_admin_resident_rent_grid",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })

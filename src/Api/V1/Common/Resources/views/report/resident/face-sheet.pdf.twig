@@ -30,7 +30,7 @@
                             {% if resident['typePhone'] is defined and resident['typePhone'] %}Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}
                             {% if resident['typeFax'] is defined and resident['typeFax'] %}Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
                             {% if resident['license'] is defined and resident['license'] %}License:&nbsp;#{{ resident['license'] }}{% endif %}
-                            {% if resident['city'] is defined and resident['city'] %}{{ resident['city'] }}&nbsp;{{ resident['state'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                            {% if resident['city'] is defined and resident['city'] %}{{ resident['city'] }}&nbsp;{{ resident['stateAbbr'] }}&nbsp;{{ resident['zip'] }}{% endif %}
                         </p>
                         <div style="height: 10px;"></div>
                     </div>
@@ -655,7 +655,7 @@
                                     {% if resident['typePhone'] is defined and resident['typePhone'] %}Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}
                                     {% if resident['typeFax'] is defined and resident['typeFax'] %}Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
                                     {% if resident['license'] is defined and resident['license'] %}License:&nbsp;#{{ resident['license'] }}{% endif %}
-                                    {% if resident['city'] is defined and resident['city'] %}{{ resident['city'] }}&nbsp;{{ resident['state'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                                    {% if resident['city'] is defined and resident['city'] %}{{ resident['city'] }}&nbsp;{{ resident['stateAbbr'] }}&nbsp;{{ resident['zip'] }}{% endif %}
                                 </p>
                                 <div style="height: 10px;"></div>
                             </div>

@@ -1251,7 +1251,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         ra.polst as polst,
                         ra.ambulatory as ambulatory,
                         ra.careGroup as careGroup,
-                        cl.title as careLevel'
+                        cl.title as careLevel,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
                     )
                     ->innerJoin(
                         FacilityBed::class,
@@ -1276,6 +1279,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'cl',
                         Join::WITH,
                         'ra.careLevel = cl'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'f.csz = csz'
                     );
 
                 $qb
@@ -1298,8 +1307,11 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         ar.number as roomNumber,
                         ar.private as private,
                         ar.floor as floor,
-                        ab.number as bedNumber
-                        ab.id as bedId'
+                        ab.number as bedNumber,
+                        ab.id as bedId,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
                     )
                     ->innerJoin(
                         ApartmentBed::class,
@@ -1318,6 +1330,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'a',
                         Join::WITH,
                         'ar.apartment = a'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'a.csz = csz'
                     );
 
                 $qb
@@ -1336,7 +1354,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                     ->addSelect(
                         'ra.address as address,
                         csz.city as city,
-                        csz.stateAbbr as state,
+                        csz.stateAbbr as stateAbbr,
                         csz.zipMain as zip,
                         reg.id as typeId,
                         reg.name as typeName,
