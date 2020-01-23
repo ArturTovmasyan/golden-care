@@ -99,7 +99,7 @@ class AssessmentForm extends Base
     /**
      * @return int
      */
-    public function getTotalScore(): ?int
+    public function getTotalScore()
     {
         return $this->totalScore;
     }
