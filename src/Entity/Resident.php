@@ -14,6 +14,40 @@ use App\Annotation\Grid;
  * @ORM\Table(name="tbl_resident")
  * @ORM\Entity(repositoryClass="App\Repository\ResidentRepository")
  * @Grid(
+ *     api_admin_resident_compact_grid={
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "r.id"
+ *          },
+ *          {
+ *              "id"         = "room",
+ *              "type"       = "string",
+ *              "field"      = "room"
+ *          },
+ *          {
+ *              "id"         = "full_name",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(sal.title,''), ' ', COALESCE(r.firstName, ''), ' ', COALESCE(r.middleName, ''), ' ', COALESCE(r.lastName, ''))",
+ *              "link"       = "/resident/:id"
+ *          },
+ *          {
+ *              "id"         = "address",
+ *              "type"       = "string",
+ *              "field"      = "address"
+ *          },
+ *          {
+ *              "id"         = "csz_str",
+ *              "type"       = "string",
+ *              "field"      = "csz_str"
+ *          },
+ *          {
+ *              "id"         = "group_name",
+ *              "type"       = "string",
+ *              "field"      = "group_name"
+ *          },
+ *     },
  *     api_admin_resident_grid={
  *          {
  *              "id"         = "id",

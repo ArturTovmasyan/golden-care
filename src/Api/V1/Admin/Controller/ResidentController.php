@@ -73,7 +73,7 @@ class ResidentController extends BaseController
         return $this->respondGrid(
             $request,
             Resident::class,
-            'api_admin_resident_grid',
+            $request->get('compact') ? 'api_admin_resident_compact_grid' : 'api_admin_resident_grid',
             $residentService,
             [
                 'type' => $request->get('type'),
@@ -91,7 +91,7 @@ class ResidentController extends BaseController
      */
     public function gridOptionAction(Request $request): JsonResponse
     {
-        return $this->getOptionsByGroupName($request, Resident::class, 'api_admin_resident_grid');
+        return $this->getOptionsByGroupName($request, Resident::class, $request->get('compact') ? 'api_admin_resident_compact_grid' : 'api_admin_resident_grid');
     }
 
     /**
