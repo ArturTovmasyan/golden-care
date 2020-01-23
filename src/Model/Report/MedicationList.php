@@ -15,6 +15,11 @@ class MedicationList extends Base
     private $discontinued;
 
     /**
+     * @var array
+     */
+    private $images = [];
+
+    /**
      * MealMonitor constructor.
      */
     public function __construct()
@@ -71,6 +76,22 @@ class MedicationList extends Base
     public function setDiscontinued(bool $discontinued): void
     {
         $this->discontinued = $discontinued;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param $images
+     */
+    public function setImages($images): void
+    {
+        $this->images = $images;
     }
 }
 

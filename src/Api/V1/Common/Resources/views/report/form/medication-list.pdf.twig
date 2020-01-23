@@ -11,21 +11,113 @@
             <tr class="divider"></tr>
             <thead>
             <tr>
-                <th colspan="11">
-                    <div style="float: left">
-                        <p style="font-size: 20px !important; text-align: left;">Medication List Report</p>
-                        <p style="font-size: 16px !important; text-align: left;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</p>
-                        <p style="text-align: left;">DOB: {{ resident.birthday|date("m/d/Y") }}</p>
-                    </div>
-                    <div style="float: right">
-                        {% if resident.typeName is defined %}
-                            <p style="font-size: 16px !important; text-align: right;">{{ resident.typeName }}</p>
-                            <p style="text-align: right;">{% if resident.address is defined and resident.address %}{{ resident.address }}{% endif %}</p>
-                            <p style="text-align: right;">{% if residentlicense is defined and residentlicense %}#{{ residentlicense }}{% endif %}</p>
+                <td colspan="11" style="width: 100%; font-size: 13px !important; margin: 0; padding: 0;">
+                    <div style="float: left; margin: 0; padding: 0;">
+                        {% if data.images[resident.id] is defined %}
+                            <img src="{{ data.images[resident.id] }}"
+                                 style="display: block; margin: 0 auto; padding: 0; height: 100px; width: 100px; border: 1px solid black;"/>
+                        {% else %}
+                            <div style="display: block; margin: 0 auto; padding: 0; height: 100px; width: 100px; border: 1px solid black;"></div>
                         {% endif %}
                     </div>
+                    <div style="float: left; height: 100px; width: 370px; padding-left: 5px; padding-right: 10px;">
+                        <b style="font-size: 16px;">
+                            {% if resident['firstName'] %}{{ resident['firstName'] }}{% if resident['lastName'] %}&nbsp;{{ resident['lastName'] }}{% endif %}{% else %}N/A{% endif %}
+                        </b>
+                        <div style="width: 100%;">
+                            <div style="float: left; width: 62%">
+                                {% if resident['birthday'] is defined and resident['birthday'] %}
+                                    <div>Birthday&nbsp;-&nbsp;{{ resident['birthday']|date("F") }}
+                                        &nbsp;{{ resident['birthday']|date("d") }}
+                                        ,&nbsp;{{ resident['birthday']|date("Y") }}</div>
+                                {% else %}
+                                    <div>Birthday&nbsp;-&nbsp;N/A</div>
+                                {% endif %}
+                            </div>
+                            <div style="float: left; width: 38%">
+                                {% if resident['floor'] is defined %}
+                                    <div>
+                                        Floor&nbsp;-&nbsp;{% if resident.floor %}{{ resident.floor }}{% else %}N/A{% endif %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div style="float: left; width: 62%">
+                                {% if resident['birthday'] is defined and resident['birthday'] %}
+                                    <div>Age&nbsp;-&nbsp;{{ age(resident['birthday']|date("m/d/Y")) }}</div>
+                                {% else %}
+                                    <div>Age&nbsp;-&nbsp;N/A</div>
+                                {% endif %}
+                            </div>
+                            <div style="float: left; width: 38%">
+                                {% if resident['careGroup'] is defined %}
+                                    <div>
+                                        Group&nbsp;-&nbsp;{% if resident['careGroup'] %}{{ resident['careGroup'] }}{% else %}N/A{% endif %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div style="float: left; width: 62%">
+                                Sex&nbsp;-&nbsp;{% if resident['gender'] == 1 %}Male{% elseif resident['gender'] == 2 %}Female{% endif %}
+                            </div>
+                            <div style="float: left; width: 38%">
+                                {% if resident['careLevel'] is defined %}
+                                    <div>
+                                        Care&nbsp;Level&nbsp;-&nbsp;{% if resident['careLevel'] %}{{ resident['careLevel'] }}{% else %}N/A{% endif %}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div style="float: left; width: 62%">
+                                &nbsp;
+                            </div>
+                            <div style="float: left; width: 38%">
+                                {% if resident['bedNumber'] is defined and resident['bedNumber'] %}
+                                    <div>
+                                        {% if resident['private'] %}Room{% else %}Room/Bed{% endif %}&nbsp;-&nbsp;
+                                        {% if resident['roomNumber'] %}
+                                            {{ resident['roomNumber'] }}&nbsp;
+                                        {% endif %}
+                                        {% if resident['bedNumber'] %}
+                                            {% if resident['private'] %}
+                                                &nbsp;
+                                            {% else %}
+                                                {{ resident['bedNumber'] }}
+                                            {% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="float: right; margin: 0; padding: 0;">
+                        <div style="height: 5px;"></div>
+                        <p style="margin: 0; text-align: center;"><b style="font-size: 18px !important;">Medication&nbsp;List</b>
+                        </p>
+                        <p style="margin: 0; text-align: center;">{% if resident['typeName'] is defined %}<b
+                                    style="font-size: 12px !important;">{{ resident['typeName'] }}&nbsp;</b>{% endif %}
+                        </p>
+                        <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['address'] is defined and resident['address'] %}
+                                {{ resident['address'] }}{% endif %}
+                        </p>
+                        <p style="margin: 0; font-size: 12px !important; text-align: center;">{% if resident['city'] is defined and resident['city'] %}
+                                {{ resident['city'] }},&nbsp;{{ resident['stateAbbr'] }}&nbsp;{{ resident['zip'] }}{% endif %}
+                        </p>
+                        <p style="margin: 0; font-size: 12px !important; text-align: center;">
+                            {% if resident['typePhone'] is defined and resident['typePhone'] %}
+                                Phone:&nbsp;{{ resident['typePhone'] }}{% endif %}{% if resident['typePhone'] is defined and resident['typePhone'] and resident['typeFax'] is defined and resident['typeFax'] %},&nbsp;{% endif %}{% if resident['typeFax'] is defined and resident['typeFax'] %}Fax:&nbsp;{{ resident['typeFax'] }}{% endif %}
+                        </p>
+                        <p style="margin: 0; text-align: center;">{% if resident['license'] is defined and resident['license'] %}
+                                <b style="font-size: 12px !important;">License&nbsp;{{ resident['license'] }}</b>{% endif %}
+                        </p>
+                    </div>
                     <div style="clear: both"></div>
-                </th>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="11" style="border: none; height: 5px; width: 100%;"></td>
             </tr>
             </thead>
             <tbody>

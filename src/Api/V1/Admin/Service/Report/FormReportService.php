@@ -532,7 +532,7 @@ class FormReportService extends BaseService
         /** @var ResidentRepository $repo */
         $repo = $this->em->getRepository(Resident::class);
 
-        $residents = $repo->getAdmissionResidentsInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
+        $residents = $repo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
         $residentIds = [];
         $residentsById = [];
 
@@ -546,10 +546,17 @@ class FormReportService extends BaseService
 
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
+        /** @var ResidentImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+        $images = $imageRepo->findByIds($residentIds);
+        $images = array_column($images, 'photo_150_150', 'id');
+
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
         $report->setDiscontinued($discontinued);
+        $report->setImages($images);
 
         return $report;
     }
@@ -589,10 +596,17 @@ class FormReportService extends BaseService
 
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
+        /** @var ResidentImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(ResidentImage::class);
+
+        $images = $imageRepo->findByIds($residentIds);
+        $images = array_column($images, 'photo_150_150', 'id');
+
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
         $report->setDiscontinued($discontinued);
+        $report->setImages($images);
 
         return $report;
     }
