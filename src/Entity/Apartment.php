@@ -300,11 +300,6 @@ class Apartment
      * })
      */
     private $bedsLicensed;
-    /**
-     * @var int
-     * @ORM\Column(name="license_capacity", type="integer", nullable=true)
-     */
-    private $licenseCapacity;
 
     /**
      * @var int
@@ -326,11 +321,6 @@ class Apartment
      * })
      */
     private $bedsTarget;
-    /**
-     * @var int
-     * @ORM\Column(name="capacity", type="integer", nullable=true)
-     */
-    private $capacity;
 
     /**
      * @var Space

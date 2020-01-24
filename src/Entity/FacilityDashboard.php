@@ -145,11 +145,6 @@ class FacilityDashboard
      * })
      */
     private $bedsTarget;
-    /**
-     * @var int
-     * @ORM\Column(name="total_capacity", type="integer", nullable=true)
-     */
-    private $totalCapacity;
 
     /**
      * @var int
@@ -192,11 +187,6 @@ class FacilityDashboard
      * })
      */
     private $yellowFlag;
-    /**
-     * @var int
-     * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
-     */
-    private $capacityYellow;
 
     /**
      * @var int

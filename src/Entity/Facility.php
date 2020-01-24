@@ -341,11 +341,6 @@ class Facility
      * })
      */
     private $bedsLicensed;
-    /**
-     * @var int
-     * @ORM\Column(name="license_capacity", type="integer", nullable=true)
-     */
-    private $licenseCapacity;
 
     /**
      * @var int
@@ -367,11 +362,6 @@ class Facility
      * })
      */
     private $bedsTarget;
-    /**
-     * @var int
-     * @ORM\Column(name="capacity", type="integer", nullable=true)
-     */
-    private $capacity;
 
     /**
      * @var int
@@ -414,11 +404,6 @@ class Facility
      * })
      */
     private $redFlag;
-    /**
-     * @var int
-     * @ORM\Column(name="capacity_red", type="integer", nullable=true)
-     */
-    private $capacityRed;
 
     /**
      * @var int
@@ -440,11 +425,6 @@ class Facility
      * })
      */
     private $yellowFlag;
-    /**
-     * @var int
-     * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
-     */
-    private $capacityYellow;
 
     /**
      * @var Space
