@@ -23,6 +23,7 @@ class Grid
     const FIELD_OPTION_HIDDEN           = 'hidden';
     const FIELD_OPTION_CALLBACK         = 'callback';
     const FIELD_OPTION_SORT_TYPE        = 'sort_type';
+    const FIELD_OPTION_COLUMN_GROUP     = 'col_group';
 
     /**
      * Field types
@@ -53,7 +54,8 @@ class Grid
         self::FIELD_OPTION_LINK,
         self::FIELD_OPTION_HIDDEN,
         self::FIELD_OPTION_CALLBACK,
-        self::FIELD_OPTION_SORT_TYPE
+        self::FIELD_OPTION_SORT_TYPE,
+        self::FIELD_OPTION_COLUMN_GROUP
     ];
 
     /**
@@ -107,6 +109,7 @@ class Grid
                     self::FIELD_OPTION_LINK             => null,
                     self::FIELD_OPTION_HIDDEN           => false,
                     self::FIELD_OPTION_SORT_TYPE        => null,
+                    self::FIELD_OPTION_COLUMN_GROUP     => null,
                 ];
 
                 foreach ($groupOption as $key => $fieldOption) {
