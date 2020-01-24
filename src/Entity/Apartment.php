@@ -64,12 +64,20 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "beds_licensed",
  *              "type"       = "string",
+ *              "col_group"  = "beds",
  *              "field"      = "a.bedsLicensed"
  *          },
  *          {
  *              "id"         = "beds_target",
  *              "type"       = "string",
+ *              "col_group"  = "beds",
  *              "field"      = "a.bedsTarget"
+ *          },
+ *          {
+ *              "id"         = "beds_configured",
+ *              "type"       = "number",
+ *              "col_group"  = "beds",
+ *              "field"      = "(SELECT COUNT(ab) FROM \App\Entity\ApartmentBed ab JOIN ab.room r JOIN r.apartment ra WHERE ra.id=a.id AND ab.enabled=1)"
  *          },
  *          {
  *              "id"         = "csz_str",
@@ -295,10 +303,6 @@ class Apartment
     /**
      * @var int
      * @ORM\Column(name="license_capacity", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
-     * })
      */
     private $licenseCapacity;
 
@@ -325,10 +329,6 @@ class Apartment
     /**
      * @var int
      * @ORM\Column(name="capacity", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
-     * })
      */
     private $capacity;
 
@@ -348,6 +348,14 @@ class Apartment
      * })
      */
     private $space;
+
+    /**
+     * @var int
+     * @Groups({
+     *     "api_admin_apartment_get"
+     * })
+     */
+    private $bedsConfigured;
 
     /**
      * @var ArrayCollection
@@ -489,6 +497,22 @@ class Apartment
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getBedsConfigured(): ?int
+    {
+        return $this->bedsConfigured;
+    }
+
+    /**
+     * @param int|null $bedsConfigured
+     */
+    public function setBedsConfigured(?int $bedsConfigured): void
+    {
+        $this->bedsConfigured = $bedsConfigured;
     }
 
     /**

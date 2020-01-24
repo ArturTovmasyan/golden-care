@@ -65,12 +65,20 @@ use JMS\Serializer\Annotation as Serializer;
  *          {
  *              "id"         = "beds_licensed",
  *              "type"       = "string",
+ *              "col_group"  = "beds",
  *              "field"      = "f.bedsLicensed"
  *          },
  *          {
  *              "id"         = "beds_target",
  *              "type"       = "string",
+ *              "col_group"  = "beds",
  *              "field"      = "f.bedsTarget"
+ *          },
+ *          {
+ *              "id"         = "beds_configured",
+ *              "type"       = "number",
+ *              "col_group"  = "beds",
+ *              "field"      = "(SELECT COUNT(fb) FROM \App\Entity\FacilityBed fb JOIN fb.room r JOIN r.facility rf WHERE rf.id=f.id AND fb.enabled=1)"
  *          },
  *          {
  *              "id"         = "red_flag",
@@ -81,11 +89,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "id"         = "yellow_flag",
  *              "type"       = "string",
  *              "field"      = "f.yellowFlag"
- *          },
- *          {
- *              "id"         = "beds_configured",
- *              "type"       = "number",
- *              "field"      = "(SELECT COUNT(fb) FROM \App\Entity\FacilityBed fb JOIN fb.room r JOIN r.facility rf WHERE rf.id=f.id AND fb.enabled=1)"
  *          },
  *          {
  *              "id"         = "space",
@@ -341,10 +344,6 @@ class Facility
     /**
      * @var int
      * @ORM\Column(name="license_capacity", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
-     * })
      */
     private $licenseCapacity;
 
@@ -371,10 +370,6 @@ class Facility
     /**
      * @var int
      * @ORM\Column(name="capacity", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
-     * })
      */
     private $capacity;
 
@@ -422,10 +417,6 @@ class Facility
     /**
      * @var int
      * @ORM\Column(name="capacity_red", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
-     * })
      */
     private $capacityRed;
 
@@ -452,10 +443,6 @@ class Facility
     /**
      * @var int
      * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_list",
-     *     "api_admin_facility_get"
-     * })
      */
     private $capacityYellow;
 

@@ -338,6 +338,35 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
     }
 
     /**
+     * @param $apartmentId
+     * @return mixed
+     */
+    public function getBedCount($apartmentId)
+    {
+        $qb = $this
+            ->createQueryBuilder('ab')
+            ->select('COUNT(ab.id)')
+            ->innerJoin(
+                ApartmentRoom::class,
+                'ar',
+                Join::WITH,
+                'ar = ab.room'
+            )
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            )
+            ->where('a.id = :apartmentId AND ab.enabled=1')
+            ->setParameter('apartmentId', $apartmentId);
+
+        return $qb
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param null $mappedBy

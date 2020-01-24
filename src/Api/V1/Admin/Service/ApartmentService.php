@@ -7,9 +7,11 @@ use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\ApartmentNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ApartmentBed;
 use App\Entity\CityStateZip;
 use App\Entity\Apartment;
 use App\Entity\Space;
+use App\Repository\ApartmentBedRepository;
 use App\Repository\ApartmentRepository;
 use App\Repository\CityStateZipRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -53,7 +55,18 @@ class ApartmentService extends BaseService implements IGridService
         /** @var ApartmentRepository $repo */
         $repo = $this->em->getRepository(Apartment::class);
 
-        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $id);
+        $apartment = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $id);
+
+        if ($apartment !== null) {
+            /** @var ApartmentBedRepository $bedRepo */
+            $bedRepo = $this->em->getRepository(ApartmentBed::class);
+
+            $bedsConfigured = $bedRepo->getBedCount($apartment->getId());
+
+            $apartment->setBedsConfigured($bedsConfigured);
+        }
+
+        return $apartment;
     }
 
     /**

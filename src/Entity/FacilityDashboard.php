@@ -148,10 +148,6 @@ class FacilityDashboard
     /**
      * @var int
      * @ORM\Column(name="total_capacity", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
-     * })
      */
     private $totalCapacity;
 
@@ -199,10 +195,6 @@ class FacilityDashboard
     /**
      * @var int
      * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
-     * @Groups({
-     *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
-     * })
      */
     private $capacityYellow;
 
