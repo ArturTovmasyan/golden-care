@@ -108,9 +108,9 @@ class FacilityDashboardService extends BaseService implements IGridService
         foreach ($facilities as $facility) {
             foreach ($subIntervals as $key => $subInterval) {
                 $days = 0;
-                $totalCapacity = 0;
+                $bedsTarget = 0;
                 $breakEven = 0;
-                $capacityYellow = 0;
+                $yellowFlag = 0;
                 $startingOccupancy = 0;
                 $endingOccupancy = 0;
                 $moveInsRespite = 0;
@@ -132,9 +132,9 @@ class FacilityDashboardService extends BaseService implements IGridService
 
                         $days += $i;
 
-                        $totalCapacity += $dashboard['totalCapacity'];
+                        $bedsTarget += $dashboard['bedsTarget'];
                         $breakEven += $dashboard['breakEven'];
-                        $capacityYellow += $dashboard['capacityYellow'];
+                        $yellowFlag += $dashboard['yellowFlag'];
                         if ($dashboard['date']->format('Y-m-d H:i:s') === $subInterval['dateFrom']->format('Y-m-d H:i:s')) {
                             $startingOccupancy = $dashboard['occupancy'];
                         }
@@ -153,9 +153,9 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
 
                 $nestedData[$key] = [
-                    'total_capacity' => $days > 0 ? (int)round($totalCapacity / $days) : 0,
+                    'beds_target' => $days > 0 ? (int)round($bedsTarget / $days) : 0,
                     'break_even' => $days > 0 ? (int)round($breakEven / $days) : 0,
-                    'capacity_yellow' => $days > 0 ? (int)round($capacityYellow / $days) : 0,
+                    'yellow_flag' => $days > 0 ? (int)round($yellowFlag / $days) : 0,
                     'starting_occupancy' => $startingOccupancy,
                     'ending_occupancy' => $endingOccupancy,
                     'move_ins_respite' => $moveInsRespite,
@@ -218,15 +218,15 @@ class FacilityDashboardService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $totalCapacity = $params['totalCapacity'] ? (int)$params['totalCapacity'] : 0;
+            $bedsTarget = $params['bedsTarget'] ? (int)$params['bedsTarget'] : 0;
             $breakEven = $params['breakEven'] ? (int)$params['breakEven'] : 0;
-            $capacityYellow = $params['capacityYellow'] ? (int)$params['capacityYellow'] : 0;
+            $yellowFlag = $params['yellowFlag'] ? (int)$params['yellowFlag'] : 0;
 
             $facilityDashboard = new FacilityDashboard();
             $facilityDashboard->setFacility($facility);
-            $facilityDashboard->setTotalCapacity($totalCapacity);
+            $facilityDashboard->setBedsTarget($bedsTarget);
             $facilityDashboard->setBreakEven($breakEven);
-            $facilityDashboard->setCapacityYellow($capacityYellow);
+            $facilityDashboard->setYellowFlag($yellowFlag);
 
             $date = $params['date'];
 
@@ -287,14 +287,14 @@ class FacilityDashboardService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $totalCapacity = $params['totalCapacity'] ? (int)$params['totalCapacity'] : 0;
+            $bedsTarget = $params['bedsTarget'] ? (int)$params['bedsTarget'] : 0;
             $breakEven = $params['breakEven'] ? (int)$params['breakEven'] : 0;
-            $capacityYellow = $params['capacityYellow'] ? (int)$params['capacityYellow'] : 0;
+            $yellowFlag = $params['yellowFlag'] ? (int)$params['yellowFlag'] : 0;
 
             $entity->setFacility($facility);
-            $entity->setTotalCapacity($totalCapacity);
+            $entity->setBedsTarget($bedsTarget);
             $entity->setBreakEven($breakEven);
-            $entity->setCapacityYellow($capacityYellow);
+            $entity->setYellowFlag($yellowFlag);
 
             $date = $params['date'];
 

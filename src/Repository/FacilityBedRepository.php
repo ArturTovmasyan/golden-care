@@ -285,6 +285,35 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
     }
 
     /**
+     * @param $facilityId
+     * @return mixed
+     */
+    public function getBedCount($facilityId)
+    {
+        $qb = $this
+            ->createQueryBuilder('fb')
+            ->select('COUNT(fb.id)')
+            ->innerJoin(
+                FacilityRoom::class,
+                'fr',
+                Join::WITH,
+                'fr = fb.room'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            )
+            ->where('f.id = :facilityId AND fb.enabled=1')
+            ->setParameter('facilityId', $facilityId);
+
+        return $qb
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $ids

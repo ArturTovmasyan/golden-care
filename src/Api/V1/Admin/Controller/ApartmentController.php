@@ -106,8 +106,8 @@ class ApartmentController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'license_capacity' => $request->get('license_capacity'),
-                'capacity' => $request->get('capacity'),
+                'beds_licensed' => $request->get('beds_licensed'),
+                'beds_target' => $request->get('beds_target'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -142,8 +142,8 @@ class ApartmentController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'license_capacity' => $request->get('license_capacity'),
-                'capacity' => $request->get('capacity'),
+                'beds_licensed' => $request->get('beds_licensed'),
+                'beds_target' => $request->get('beds_target'),
                 'space_id' => $request->get('space_id')
             ]
         );

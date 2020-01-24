@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
+use App\Entity\FacilityBed;
 use App\Entity\FacilityEvent;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
@@ -17,6 +18,7 @@ use App\Entity\ResidentRentIncrease;
 use App\Entity\Space;
 use App\Model\GroupType;
 use App\Repository\CityStateZipRepository;
+use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityEventRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\ResidentAdmissionRepository;
@@ -70,7 +72,19 @@ class FacilityService extends BaseService implements IGridService
         /** @var FacilityRepository $repo */
         $repo = $this->em->getRepository(Facility::class);
 
-        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
+        /** @var Facility $facility */
+        $facility = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class), $id);
+
+        if ($facility !== null) {
+            /** @var FacilityBedRepository $bedRepo */
+            $bedRepo = $this->em->getRepository(FacilityBed::class);
+
+            $bedsConfigured = $bedRepo->getBedCount($facility->getId());
+
+            $facility->setBedsConfigured($bedsConfigured);
+        }
+
+        return $facility;
     }
 
     /**
@@ -112,11 +126,11 @@ class FacilityService extends BaseService implements IGridService
             $facility->setAddress($params['address']);
             $facility->setLicense($params['license']);
             $facility->setCsz($csz);
-            $facility->setLicenseCapacity((int)$params['license_capacity']);
-            $facility->setCapacity((int)$params['capacity']);
+            $facility->setBedsLicensed((int)$params['beds_licensed']);
+            $facility->setBedsTarget((int)$params['beds_target']);
             $facility->setNumberOfFloors((int)$params['number_of_floors']);
-            $facility->setCapacityRed((int)$params['capacity_red']);
-            $facility->setCapacityYellow((int)$params['capacity_yellow']);
+            $facility->setRedFlag((int)$params['red_flag']);
+            $facility->setYellowFlag((int)$params['yellow_flag']);
             $facility->setSpace($space);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
@@ -185,11 +199,11 @@ class FacilityService extends BaseService implements IGridService
             $entity->setAddress($params['address']);
             $entity->setLicense($params['license']);
             $entity->setCsz($csz);
-            $entity->setLicenseCapacity((int)$params['license_capacity']);
-            $entity->setCapacity((int)$params['capacity']);
+            $entity->setBedsLicensed((int)$params['beds_licensed']);
+            $entity->setBedsTarget((int)$params['beds_target']);
             $entity->setNumberOfFloors((int)$params['number_of_floors']);
-            $entity->setCapacityRed((int)$params['capacity_red']);
-            $entity->setCapacityYellow((int)$params['capacity_yellow']);
+            $entity->setRedFlag((int)$params['red_flag']);
+            $entity->setYellowFlag((int)$params['yellow_flag']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_facility_edit']);

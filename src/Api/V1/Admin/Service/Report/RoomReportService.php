@@ -1001,8 +1001,8 @@ class RoomReportService extends BaseService
                     $data[] = [
                         'typeId' => $facility->getId(),
                         'name' => $facility->getName(),
-                        'capacity' => $facility->getCapacity(),
-                        'licenseCapacity' => $facility->getLicenseCapacity(),
+                        'bedsTarget' => $facility->getBedsTarget(),
+                        'bedsLicensed' => $facility->getBedsLicensed(),
                         'availableCount' => array_key_exists($facility->getId(), $bedIds) ? $bedIds[$facility->getId()] : 0,
                         'occupiedCount' => array_key_exists($facility->getId(), $occupancyBedIds) ? $occupancyBedIds[$facility->getId()] : 0,
                     ];
@@ -1061,8 +1061,8 @@ class RoomReportService extends BaseService
                     $data[] = [
                         'typeId' => $apartment->getId(),
                         'name' => $apartment->getName(),
-                        'capacity' => $apartment->getCapacity(),
-                        'licenseCapacity' => $apartment->getLicenseCapacity(),
+                        'bedsTarget' => $apartment->getBedsTarget(),
+                        'bedsLicensed' => $apartment->getBedsLicensed(),
                         'availableCount' => array_key_exists($apartment->getId(), $bedIds) ? $bedIds[$apartment->getId()] : 0,
                         'occupiedCount' => array_key_exists($apartment->getId(), $occupancyBedIds) ? $occupancyBedIds[$apartment->getId()] : 0,
                     ];

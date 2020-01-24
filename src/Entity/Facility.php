@@ -63,24 +63,29 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "f.license"
  *          },
  *          {
- *              "id"         = "license_capacity",
+ *              "id"         = "beds_licensed",
  *              "type"       = "string",
- *              "field"      = "f.licenseCapacity"
+ *              "field"      = "f.bedsLicensed"
  *          },
  *          {
- *              "id"         = "capacity",
+ *              "id"         = "beds_target",
  *              "type"       = "string",
- *              "field"      = "f.capacity"
+ *              "field"      = "f.bedsTarget"
  *          },
  *          {
- *              "id"         = "capacity_red",
+ *              "id"         = "red_flag",
  *              "type"       = "string",
- *              "field"      = "f.capacityRed"
+ *              "field"      = "f.redFlag"
  *          },
  *          {
- *              "id"         = "capacity_yellow",
+ *              "id"         = "yellow_flag",
  *              "type"       = "string",
- *              "field"      = "f.capacityYellow"
+ *              "field"      = "f.yellowFlag"
+ *          },
+ *          {
+ *              "id"         = "beds_configured",
+ *              "type"       = "number",
+ *              "field"      = "(SELECT COUNT(fb) FROM \App\Entity\FacilityBed fb JOIN fb.room r JOIN r.facility rf WHERE rf.id=f.id AND fb.enabled=1)"
  *          },
  *          {
  *              "id"         = "space",
@@ -150,7 +155,6 @@ class Facility
      * })
      * @ORM\Column(name="name", type="string", length=100)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_dining_room_list",
@@ -194,7 +198,6 @@ class Facility
      *          "api_admin_facility_edit"
      * })
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -216,7 +219,6 @@ class Facility
      * })
      * @ORM\Column(name="shorthand", type="string", length=100)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get",
      *     "api_admin_facility_bed_list",
@@ -239,7 +241,6 @@ class Facility
      * })
      * @ORM\Column(name="phone", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -257,7 +258,6 @@ class Facility
      * })
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -278,7 +278,6 @@ class Facility
      * })
      * @ORM\Column(name="address", type="string", length=100)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -296,7 +295,6 @@ class Facility
      *          "api_admin_facility_edit"
      * })
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -314,7 +312,6 @@ class Facility
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -334,9 +331,17 @@ class Facility
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
      * })
-     * @ORM\Column(name="license_capacity", type="integer")
+     * @ORM\Column(name="beds_licensed", type="integer")
      * @Groups({
-     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $bedsLicensed;
+    /**
+     * @var int
+     * @ORM\Column(name="license_capacity", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -356,9 +361,17 @@ class Facility
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
      * })
-     * @ORM\Column(name="capacity", type="integer")
+     * @ORM\Column(name="beds_target", type="integer")
      * @Groups({
-     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $bedsTarget;
+    /**
+     * @var int
+     * @ORM\Column(name="capacity", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -380,7 +393,6 @@ class Facility
      * })
      * @ORM\Column(name="number_of_floors", type="integer", length=1)
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -400,9 +412,17 @@ class Facility
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
      * })
-     * @ORM\Column(name="capacity_red", type="integer")
+     * @ORM\Column(name="red_flag", type="integer")
      * @Groups({
-     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $redFlag;
+    /**
+     * @var int
+     * @ORM\Column(name="capacity_red", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -422,9 +442,17 @@ class Facility
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit"
      * })
-     * @ORM\Column(name="capacity_yellow", type="integer")
+     * @ORM\Column(name="yellow_flag", type="integer")
      * @Groups({
-     *     "api_admin_facility_grid",
+     *     "api_admin_facility_list",
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $yellowFlag;
+    /**
+     * @var int
+     * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -442,12 +470,19 @@ class Facility
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
      */
     private $space;
+
+    /**
+     * @var int
+     * @Groups({
+     *     "api_admin_facility_get"
+     * })
+     */
+    private $bedsConfigured;
 
     /**
      * @var ArrayCollection
@@ -606,24 +641,24 @@ class Facility
         $this->license = $license;
     }
 
-    public function getLicenseCapacity(): ?int
+    public function getBedsLicensed(): ?int
     {
-        return $this->licenseCapacity;
+        return $this->bedsLicensed;
     }
 
-    public function setLicenseCapacity($licenseCapacity): void
+    public function setBedsLicensed($bedsLicensed): void
     {
-        $this->licenseCapacity = $licenseCapacity;
+        $this->bedsLicensed = $bedsLicensed;
     }
 
-    public function getCapacity(): ?int
+    public function getBedsTarget(): ?int
     {
-        return $this->capacity;
+        return $this->bedsTarget;
     }
 
-    public function setCapacity($capacity): void
+    public function setBedsTarget($bedsTarget): void
     {
-        $this->capacity = $capacity;
+        $this->bedsTarget = $bedsTarget;
     }
 
     public function getNumberOfFloors(): ?int
@@ -649,33 +684,33 @@ class Facility
     /**
      * @return int|null
      */
-    public function getCapacityRed(): ?int
+    public function getRedFlag(): ?int
     {
-        return $this->capacityRed;
+        return $this->redFlag;
     }
 
     /**
-     * @param int|null $capacityRed
+     * @param int|null $redFlag
      */
-    public function setCapacityRed(?int $capacityRed): void
+    public function setRedFlag(?int $redFlag): void
     {
-        $this->capacityRed = $capacityRed;
+        $this->redFlag = $redFlag;
     }
 
     /**
      * @return int|null
      */
-    public function getCapacityYellow(): ?int
+    public function getYellowFlag(): ?int
     {
-        return $this->capacityYellow;
+        return $this->yellowFlag;
     }
 
     /**
-     * @param int|null $capacityYellow
+     * @param int|null $yellowFlag
      */
-    public function setCapacityYellow(?int $capacityYellow): void
+    public function setYellowFlag(?int $yellowFlag): void
     {
-        $this->capacityYellow = $capacityYellow;
+        $this->yellowFlag = $yellowFlag;
     }
 
     public function getSpace(): ?Space
@@ -686,6 +721,22 @@ class Facility
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getBedsConfigured(): ?int
+    {
+        return $this->bedsConfigured;
+    }
+
+    /**
+     * @param int|null $bedsConfigured
+     */
+    public function setBedsConfigured(?int $bedsConfigured): void
+    {
+        $this->bedsConfigured = $bedsConfigured;
     }
 
     /**
@@ -960,7 +1011,6 @@ class Facility
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("occupation")
      * @Groups({
-     *     "api_admin_facility_grid",
      *     "api_admin_facility_list",
      *     "api_admin_facility_get"
      * })
@@ -985,14 +1035,14 @@ class Facility
      *     "api_admin_facility_edit"
      * })
      */
-    public function areCapacityValid(ExecutionContextInterface $context): void
+    public function areBedsTargetValid(ExecutionContextInterface $context): void
     {
-        $licenseCapacity = $this->licenseCapacity;
-        $capacity = $this->capacity;
+        $bedsLicensed = $this->bedsLicensed;
+        $bedsTarget = $this->bedsTarget;
 
-        if ($capacity > $licenseCapacity) {
-            $context->buildViolation('The capacity "' . $capacity . '" should be less than or equal to license capacity "' . $licenseCapacity . '".')
-                ->atPath('capacity')
+        if ($bedsTarget > $bedsLicensed) {
+            $context->buildViolation('The Beds Target "' . $bedsTarget . '" should be less than or equal to Beds Licensed "' . $bedsLicensed . '".')
+                ->atPath('bedsTarget')
                 ->addViolation();
         }
     }
@@ -1004,14 +1054,14 @@ class Facility
      *     "api_admin_facility_edit"
      * })
      */
-    public function areCapacityRedValid(ExecutionContextInterface $context): void
+    public function areRedFlagValid(ExecutionContextInterface $context): void
     {
-        $yellowCapacity = $this->capacityYellow;
-        $redCapacity = $this->capacityRed;
+        $yellowFlag = $this->yellowFlag;
+        $redFlag = $this->redFlag;
 
-        if ($redCapacity >= $yellowCapacity) {
-            $context->buildViolation('The Capacity Red Flag Warning "' . $redCapacity . '" should be less than Capacity Yellow Flag Warning "' . $yellowCapacity . '".')
-                ->atPath('capacityRed')
+        if ($redFlag >= $yellowFlag) {
+            $context->buildViolation('The Red Flag "' . $redFlag . '" should be less than Yellow Flag "' . $yellowFlag . '".')
+                ->atPath('redFlag')
                 ->addViolation();
         }
     }

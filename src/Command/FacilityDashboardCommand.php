@@ -227,9 +227,9 @@ class FacilityDashboardCommand extends Command
                 $entity = new FacilityDashboard();
                 $entity->setFacility($facility);
                 $entity->setDate($date);
-                $entity->setTotalCapacity($facility->getCapacity());
-                $entity->setBreakEven($facility->getCapacityRed());
-                $entity->setCapacityYellow($facility->getCapacityYellow());
+                $entity->setBedsTarget($facility->getBedsTarget());
+                $entity->setBreakEven($facility->getRedFlag());
+                $entity->setYellowFlag($facility->getYellowFlag());
 
                 $occupancy = 0;
                 if (!empty($activeAdmissions)) {

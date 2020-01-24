@@ -62,14 +62,14 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "a.license"
  *          },
  *          {
- *              "id"         = "license_capacity",
+ *              "id"         = "beds_licensed",
  *              "type"       = "string",
- *              "field"      = "a.licenseCapacity"
+ *              "field"      = "a.bedsLicensed"
  *          },
  *          {
- *              "id"         = "capacity",
+ *              "id"         = "beds_target",
  *              "type"       = "string",
- *              "field"      = "a.capacity"
+ *              "field"      = "a.bedsTarget"
  *          },
  *          {
  *              "id"         = "csz_str",
@@ -153,7 +153,6 @@ class Apartment
      *          "api_admin_apartment_edit"
      * })
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -175,7 +174,6 @@ class Apartment
      * })
      * @ORM\Column(name="shorthand", type="string", length=100)
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get",
      *     "api_admin_apartment_bed_list",
@@ -197,7 +195,6 @@ class Apartment
      * })
      * @ORM\Column(name="phone", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -215,7 +212,6 @@ class Apartment
      * })
      * @ORM\Column(name="fax", type="string", length=20, nullable=true)
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -236,7 +232,6 @@ class Apartment
      * })
      * @ORM\Column(name="address", type="string", length=100)
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -254,7 +249,6 @@ class Apartment
      *           "api_admin_apartment_edit"
      * })
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -272,7 +266,6 @@ class Apartment
      *   @ORM\JoinColumn(name="id_csz", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -292,9 +285,17 @@ class Apartment
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit"
      * })
-     * @ORM\Column(name="license_capacity", type="integer")
+     * @ORM\Column(name="beds_licensed", type="integer")
      * @Groups({
-     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
+     */
+    private $bedsLicensed;
+    /**
+     * @var int
+     * @ORM\Column(name="license_capacity", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -314,9 +315,17 @@ class Apartment
      *          "api_admin_apartment_add",
      *          "api_admin_apartment_edit"
      * })
-     * @ORM\Column(name="capacity", type="integer")
+     * @ORM\Column(name="beds_target", type="integer")
      * @Groups({
-     *     "api_admin_apartment_grid",
+     *     "api_admin_apartment_list",
+     *     "api_admin_apartment_get"
+     * })
+     */
+    private $bedsTarget;
+    /**
+     * @var int
+     * @ORM\Column(name="capacity", type="integer", nullable=true)
+     * @Groups({
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -334,7 +343,6 @@ class Apartment
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -345,7 +353,6 @@ class Apartment
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ApartmentRoom", mappedBy="apartment", cascade={"remove", "persist"})
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -444,24 +451,24 @@ class Apartment
         $this->license = $license;
     }
 
-    public function getLicenseCapacity(): ?int
+    public function getBedsLicensed(): ?int
     {
-        return $this->licenseCapacity;
+        return $this->bedsLicensed;
     }
 
-    public function setLicenseCapacity($licenseCapacity): void
+    public function setBedsLicensed($bedsLicensed): void
     {
-        $this->licenseCapacity = $licenseCapacity;
+        $this->bedsLicensed = $bedsLicensed;
     }
 
-    public function getCapacity(): ?int
+    public function getBedsTarget(): ?int
     {
-        return $this->capacity;
+        return $this->bedsTarget;
     }
 
-    public function setCapacity($capacity): void
+    public function setBedsTarget($bedsTarget): void
     {
-        $this->capacity = $capacity;
+        $this->bedsTarget = $bedsTarget;
     }
 
     public function getCsz(): ?CityStateZip
@@ -543,7 +550,6 @@ class Apartment
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("occupation")
      * @Groups({
-     *     "api_admin_apartment_grid",
      *     "api_admin_apartment_list",
      *     "api_admin_apartment_get"
      * })
@@ -568,14 +574,14 @@ class Apartment
      *     "api_admin_apartment_edit"
      * })
      */
-    public function areCapacityValid(ExecutionContextInterface $context): void
+    public function areBedsTargetValid(ExecutionContextInterface $context): void
     {
-        $licenseCapacity = $this->licenseCapacity;
-        $capacity = $this->capacity;
+        $bedsLicensed = $this->bedsLicensed;
+        $bedsTarget = $this->bedsTarget;
 
-        if ($capacity > $licenseCapacity) {
-            $context->buildViolation('The capacity "' . $capacity . '" should be less than or equal to license capacity "' . $licenseCapacity . '".')
-                ->atPath('capacity')
+        if ($bedsTarget > $bedsLicensed) {
+            $context->buildViolation('The Beds Target "' . $bedsTarget . '" should be less than or equal to Beds Licensed "' . $bedsLicensed . '".')
+                ->atPath('bedsTarget')
                 ->addViolation();
         }
     }

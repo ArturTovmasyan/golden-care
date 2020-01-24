@@ -32,9 +32,9 @@ use App\Annotation\Grid;
  *              "field"      = "fd.date"
  *          },
  *          {
- *              "id"         = "total_capacity",
+ *              "id"         = "beds_target",
  *              "type"       = "number",
- *              "field"      = "fd.totalCapacity"
+ *              "field"      = "fd.bedsTarget"
  *          },
  *          {
  *              "id"         = "break_even",
@@ -42,9 +42,9 @@ use App\Annotation\Grid;
  *              "field"      = "fd.breakEven"
  *          },
  *          {
- *              "id"         = "capacity_yellow",
+ *              "id"         = "yellow_flag",
  *              "type"       = "number",
- *              "field"      = "fd.capacityYellow"
+ *              "field"      = "fd.yellowFlag"
  *          },
  *          {
  *              "id"         = "occupancy",
@@ -138,7 +138,16 @@ class FacilityDashboard
      *          "api_admin_facility_dashboard_add",
      *          "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="total_capacity", type="integer")
+     * @ORM\Column(name="beds_target", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $bedsTarget;
+    /**
+     * @var int
+     * @ORM\Column(name="total_capacity", type="integer", nullable=true)
      * @Groups({
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
@@ -180,7 +189,16 @@ class FacilityDashboard
      *          "api_admin_facility_dashboard_add",
      *          "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="capacity_yellow", type="integer")
+     * @ORM\Column(name="yellow_flag", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $yellowFlag;
+    /**
+     * @var int
+     * @ORM\Column(name="capacity_yellow", type="integer", nullable=true)
      * @Groups({
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
@@ -421,17 +439,17 @@ class FacilityDashboard
     /**
      * @return int|null
      */
-    public function getTotalCapacity(): ?int
+    public function getBedsTarget(): ?int
     {
-        return $this->totalCapacity;
+        return $this->bedsTarget;
     }
 
     /**
-     * @param int|null $totalCapacity
+     * @param int|null $bedsTarget
      */
-    public function setTotalCapacity(?int $totalCapacity): void
+    public function setBedsTarget(?int $bedsTarget): void
     {
-        $this->totalCapacity = $totalCapacity;
+        $this->bedsTarget = $bedsTarget;
     }
 
     /**
@@ -453,17 +471,17 @@ class FacilityDashboard
     /**
      * @return int|null
      */
-    public function getCapacityYellow(): ?int
+    public function getYellowFlag(): ?int
     {
-        return $this->capacityYellow;
+        return $this->yellowFlag;
     }
 
     /**
-     * @param int|null $capacityYellow
+     * @param int|null $yellowFlag
      */
-    public function setCapacityYellow(?int $capacityYellow): void
+    public function setYellowFlag(?int $yellowFlag): void
     {
-        $this->capacityYellow = $capacityYellow;
+        $this->yellowFlag = $yellowFlag;
     }
 
     /**

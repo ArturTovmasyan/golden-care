@@ -109,11 +109,11 @@ class FacilityController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'license_capacity' => $request->get('license_capacity'),
-                'capacity' => $request->get('capacity'),
+                'beds_licensed' => $request->get('beds_licensed'),
+                'beds_target' => $request->get('beds_target'),
                 'number_of_floors' => $request->get('number_of_floors'),
-                'capacity_red' => $request->get('capacity_red'),
-                'capacity_yellow' => $request->get('capacity_yellow'),
+                'red_flag' => $request->get('red_flag'),
+                'yellow_flag' => $request->get('yellow_flag'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -148,11 +148,11 @@ class FacilityController extends BaseController
                 'address' => $request->get('address'),
                 'license' => $request->get('license') ?? '',
                 'csz_id' => $request->get('csz_id'),
-                'license_capacity' => $request->get('license_capacity'),
-                'capacity' => $request->get('capacity'),
+                'beds_licensed' => $request->get('beds_licensed'),
+                'beds_target' => $request->get('beds_target'),
                 'number_of_floors' => $request->get('number_of_floors'),
-                'capacity_red' => $request->get('capacity_red'),
-                'capacity_yellow' => $request->get('capacity_yellow'),
+                'red_flag' => $request->get('red_flag'),
+                'yellow_flag' => $request->get('yellow_flag'),
                 'space_id' => $request->get('space_id')
             ]
         );

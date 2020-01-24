@@ -95,8 +95,8 @@ class ApartmentService extends BaseService implements IGridService
             $apartment->setAddress($params['address']);
             $apartment->setLicense($params['license']);
             $apartment->setCsz($csz);
-            $apartment->setLicenseCapacity((int)$params['license_capacity']);
-            $apartment->setCapacity((int)$params['capacity']);
+            $apartment->setBedsLicensed((int)$params['beds_licensed']);
+            $apartment->setBedsTarget((int)$params['beds_target']);
             $apartment->setSpace($space);
 
             $this->validate($apartment, null, ['api_admin_apartment_add']);
@@ -165,8 +165,8 @@ class ApartmentService extends BaseService implements IGridService
             $entity->setAddress($params['address']);
             $entity->setLicense($params['license']);
             $entity->setCsz($csz);
-            $entity->setLicenseCapacity((int)$params['license_capacity']);
-            $entity->setCapacity((int)$params['capacity']);
+            $entity->setBedsLicensed((int)$params['beds_licensed']);
+            $entity->setBedsTarget((int)$params['beds_target']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_apartment_edit']);
