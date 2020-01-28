@@ -107,7 +107,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getGroups(): ?array
+    public function getGroups()
     {
         return $this->groups;
     }
@@ -132,7 +132,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getAllGroups(): ?array
+    public function getAllGroups()
     {
         return $this->allGroups;
     }
@@ -148,7 +148,7 @@ class AssessmentForm extends Base
     /**
      * @return array
      */
-    public function getTable(): ?array
+    public function getTable()
     {
         return $this->table;
     }

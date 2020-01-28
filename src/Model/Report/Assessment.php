@@ -132,7 +132,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getGroups(): ?array
+    public function getGroups()
     {
         return $this->groups;
     }
@@ -191,7 +191,7 @@ class Assessment extends Base
     /**
      * @return array
      */
-    public function getTable(): ?array
+    public function getTable()
     {
         return $this->table;
     }
