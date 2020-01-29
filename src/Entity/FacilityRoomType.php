@@ -75,6 +75,8 @@ class FacilityRoomType
      * @Groups({
      *     "api_admin_facility_room_type_list",
      *     "api_admin_facility_room_type_get",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
@@ -98,6 +100,8 @@ class FacilityRoomType
      * @Groups({
      *     "api_admin_facility_room_type_list",
      *     "api_admin_facility_room_type_get",
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get"
      * })
