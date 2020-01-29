@@ -128,6 +128,10 @@ persistence:
           title: 'PaymentSource'
           class: App\Entity\PaymentSource
           route: api_admin_payment_source_list
+        source_base_rate:
+          title: 'SourceBaseRate'
+          class: App\Entity\SourceBaseRate
+          route: api_admin_source_base_rate_list
         notification_type:
           title: 'NotificationType'
           class: App\Entity\NotificationType

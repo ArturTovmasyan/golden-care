@@ -78,7 +78,9 @@ class CareLevel
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_get_last_admission",
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
      * })
      */
     private $id;
@@ -110,7 +112,9 @@ class CareLevel
      *     "api_admin_contract_get_active",
      *     "api_admin_resident_get_last_admission",
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
      * })
      */
     private $title;
@@ -162,6 +166,12 @@ class CareLevel
      * @ORM\OneToMany(targetEntity="App\Entity\BaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
      */
     private $baseRates;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\SourceBaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
+     */
+    private $sourceBaseRates;
 
     public function getId(): ?int
     {
@@ -240,5 +250,21 @@ class CareLevel
     public function setBaseRates(ArrayCollection $baseRates): void
     {
         $this->baseRates = $baseRates;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSourceBaseRates(): ArrayCollection
+    {
+        return $this->sourceBaseRates;
+    }
+
+    /**
+     * @param ArrayCollection $sourceBaseRates
+     */
+    public function setSourceBaseRates(ArrayCollection $sourceBaseRates): void
+    {
+        $this->sourceBaseRates = $sourceBaseRates;
     }
 }

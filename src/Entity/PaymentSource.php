@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use App\Model\SourcePeriod;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -40,6 +41,33 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "away_reduction",
+ *              "type"       = "boolean",
+ *              "field"      = "ps.awayReduction"
+ *          },
+ *          {
+ *              "id"         = "period",
+ *              "type"       = "enum",
+ *              "field"      = "ps.period",
+ *              "values"     = "\App\Model\SourcePeriod::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "amount",
+ *              "type"       = "number",
+ *              "field"      = "ps.amount"
+ *          },
+ *          {
+ *              "id"         = "care_level_adjustment",
+ *              "type"       = "boolean",
+ *              "field"      = "ps.careLevelAdjustment"
+ *          },
+ *          {
+ *              "id"         = "base_rates",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "base_rates"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -58,7 +86,6 @@ class PaymentSource
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_payment_source_grid",
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_lead_lead_list",
@@ -82,7 +109,6 @@ class PaymentSource
      * })
      * @ORM\Column(name="title", type="string", length=50)
      * @Groups({
-     *     "api_admin_payment_source_grid",
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_lead_lead_list",
@@ -90,6 +116,83 @@ class PaymentSource
      * })
      */
     private $title;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="away_reduction", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $awayReduction;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_payment_source_add",
+     *     "api_admin_payment_source_edit"
+     * })
+     * @Assert\Choice(
+     *     callback={"App\Model\SourcePeriod","getTypeValues"},
+     *     groups={
+     *         "api_admin_payment_source_add",
+     *         "api_admin_payment_source_edit"
+     * })
+     * @ORM\Column(name="rent_period", type="integer", length=1)
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $period = SourcePeriod::MONTHLY;
+
+    /**
+     * @var float
+     * @ORM\Column(name="amount", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_payment_source_add",
+     *     "api_admin_payment_source_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
+     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
+     *      groups={
+     *          "api_admin_payment_source_add",
+     *          "api_admin_payment_source_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_payment_source_add",
+     *          "api_admin_payment_source_edit"
+     * })
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $amount;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="care_level_adjustment", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $careLevelAdjustment;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SourceBaseRate", mappedBy="paymentSource", cascade={"persist"})
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $baseRates;
 
     /**
      * @var Space
@@ -102,7 +205,6 @@ class PaymentSource
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
-     *     "api_admin_payment_source_grid",
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"
      * })
@@ -145,6 +247,86 @@ class PaymentSource
     public function setTitle(?string $title): void
     {
         $this->title = preg_replace('/\s\s+/', ' ', $title);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAwayReduction(): bool
+    {
+        return $this->awayReduction;
+    }
+
+    /**
+     * @param bool $awayReduction
+     */
+    public function setAwayReduction(bool $awayReduction): void
+    {
+        $this->awayReduction = $awayReduction;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPeriod(): ?int
+    {
+        return $this->period;
+    }
+
+    /**
+     * @param int|null $period
+     */
+    public function setPeriod(?int $period): void
+    {
+        $this->period = $period;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param float|null $amount
+     */
+    public function setAmount(?float $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCareLevelAdjustment(): bool
+    {
+        return $this->careLevelAdjustment;
+    }
+
+    /**
+     * @param bool $careLevelAdjustment
+     */
+    public function setCareLevelAdjustment(bool $careLevelAdjustment): void
+    {
+        $this->careLevelAdjustment = $careLevelAdjustment;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBaseRates()
+    {
+        return $this->baseRates;
+    }
+
+    /**
+     * @param mixed $baseRates
+     */
+    public function setBaseRates($baseRates): void
+    {
+        $this->baseRates = $baseRates;
     }
 
     /**
