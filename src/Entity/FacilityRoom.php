@@ -39,6 +39,11 @@ use App\Annotation\Grid;
  *              "field"      = "f.name"
  *          },
  *          {
+ *              "id"         = "type",
+ *              "type"       = "string",
+ *              "field"      = "frt.title"
+ *          },
+ *          {
  *              "id"         = "shorthand",
  *              "type"       = "string",
  *              "field"      = "f.shorthand"
@@ -58,7 +63,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "private",
  *              "type"       = "boolean",
- *              "field"      = "fr.private"
+ *              "field"      = "frt.private"
  *          },
  *          {
  *              "id"         = "bed_count",
@@ -122,6 +127,23 @@ class FacilityRoom
      * })
      */
     private $facility;
+
+    /**
+     * @var FacilityRoomType
+     * @Assert\NotNull(message = "Please select a Type", groups={
+     *     "api_admin_facility_room_add",
+     *     "api_admin_facility_room_edit"
+     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\FacilityRoomType", inversedBy="rooms")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_type", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     */
+    private $type;
 
     /**
      * @var string
@@ -235,7 +257,7 @@ class FacilityRoom
      *     "api_admin_resident_get_last_admission"
      * })
      */
-    private $private;
+    private $private = false;
 
     public function __construct()
     {
@@ -272,6 +294,22 @@ class FacilityRoom
     public function setFacility(?Facility $facility): void
     {
         $this->facility = $facility;
+    }
+
+    /**
+     * @return FacilityRoomType|null
+     */
+    public function getType(): ?FacilityRoomType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param FacilityRoomType|null $type
+     */
+    public function setType(?FacilityRoomType $type): void
+    {
+        $this->type = $type;
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
+use App\Entity\FacilityRoomType;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -45,13 +46,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     JSON_OBJECT('Facility', f.name),
                     JSON_OBJECT(
                         CASE
-                            WHEN fr.private = 1 THEN 'Room'
-                            WHEN fr.private = 0 THEN 'Room (Bed)'
+                            WHEN frt.private = 1 THEN 'Room'
+                            WHEN frt.private = 0 THEN 'Room (Bed)'
                             ELSE 'Room (Bed)' END
                         , 
                         CASE
-                            WHEN fr.private = 1 THEN fr.number
-                            WHEN fr.private = 0 THEN CONCAT(fr.number, ' (', fb.number, ')')
+                            WHEN frt.private = 1 THEN fr.number
+                            WHEN frt.private = 0 THEN CONCAT(fr.number, ' (', fb.number, ')')
                             ELSE CONCAT(fr.number, ' (', fb.number, ')') END
                     ),
                     JSON_OBJECT('Dining Room', dr.title),
@@ -103,6 +104,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'f',
                 Join::WITH,
                 'f = fr.facility'
+            )
+            ->leftJoin(
+                FacilityRoomType::class,
+                'frt',
+                Join::WITH,
+                'frt = fr.type'
             )
             ->leftJoin(
                 ApartmentBed::class,
@@ -597,13 +604,14 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
-                        'fbr.private AS private',
+                        'fbrfrt.private AS private',
                         'fb.number AS bed_number',
                         'fbrf.id AS type_id'
                     )
                     ->join('ra.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
                     ->orderBy('fbr.number')
                     ->addOrderBy('fb.number');
 
@@ -698,6 +706,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->leftJoin('ra.facilityBed', 'fb')
             ->leftJoin('fb.room', 'fr')
             ->leftJoin('fr.facility', 'f')
+            ->leftJoin('fr.type', 'frt')
             ->leftJoin('ra.apartmentBed', 'ab')
             ->leftJoin('ab.room', 'ar')
             ->leftJoin('ar.apartment', 'a')
@@ -730,7 +739,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     WHEN ab.id IS NOT NULL THEN ar.number
                     ELSE \'\' END) as room_number',
                 '(CASE
-                    WHEN fb.id IS NOT NULL THEN fr.private
+                    WHEN fb.id IS NOT NULL THEN frt.private
                     WHEN ab.id IS NOT NULL THEN ar.private
                     ELSE false END) as private',
                 '(CASE
@@ -860,6 +869,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->leftJoin('ra.facilityBed', 'fb')
             ->leftJoin('fb.room', 'fr')
             ->leftJoin('fr.facility', 'f')
+            ->leftJoin('fr.type', 'frt')
             ->leftJoin('ra.apartmentBed', 'ab')
             ->leftJoin('ab.room', 'ar')
             ->leftJoin('ar.apartment', 'a')
@@ -901,7 +911,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     WHEN ab.id IS NOT NULL THEN ar.number
                     ELSE \'\' END) as room_number',
                 '(CASE
-                    WHEN fb.id IS NOT NULL THEN fr.private
+                    WHEN fb.id IS NOT NULL THEN frt.private
                     WHEN ab.id IS NOT NULL THEN ar.private
                     ELSE false END) as private',
                 '(CASE
@@ -1154,12 +1164,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
-                        'fbr.private AS private',
+                        'fbrfrt.private AS private',
                         'fb.number AS bed_number'
                     )
                     ->join('ra.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
                     ->andWhere('fbrf.id=:id')
                     ->setParameter('id', $id)
                     ->orderBy('fbr.number')
@@ -1253,13 +1264,14 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
-                        'fbr.private AS private',
+                        'fbrfrt.private AS private',
                         'fb.number AS bed_number',
                         'fbrf.id AS type_id'
                     )
                     ->join('ra.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
                     ->orderBy('fbr.number')
                     ->addOrderBy('fb.number');
 
@@ -1380,12 +1392,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 $qb
                     ->addSelect(
                         'fbr.number AS room_number',
-                        'fbr.private AS private',
+                        'fbrfrt.private AS private',
                         'fb.number AS bed_number'
                     )
                     ->join('ra.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
                     ->andWhere('fbrf.id=:id')
                     ->setParameter('id', $id)
                     ->orderBy('fbr.number')
@@ -1951,7 +1964,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId,
                         ra.careGroup as careGroup,
@@ -1974,6 +1987,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     )
                     ->innerJoin(
                         CareLevel::class,
@@ -2235,7 +2254,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId,
                         ra.careGroup as careGroup,
@@ -2258,6 +2277,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     )
                     ->innerJoin(
                         CareLevel::class,
@@ -2587,7 +2612,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fb.number as bedNumber,
                         fb.id as bedId'
                     )
@@ -2608,6 +2633,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     );
 
                 break;

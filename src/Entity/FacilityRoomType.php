@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -73,7 +74,9 @@ class FacilityRoomType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
      * })
      */
     private $id;
@@ -94,7 +97,9 @@ class FacilityRoomType
      * @ORM\Column(name="title", type="string", length=50)
      * @Groups({
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
      * })
      */
     private $title;
@@ -151,6 +156,12 @@ class FacilityRoomType
      * })
      */
     private $baseRates;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoom", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $rooms;
 
     /**
      * @return int
@@ -246,5 +257,21 @@ class FacilityRoomType
     public function setBaseRates($baseRates): void
     {
         $this->baseRates = $baseRates;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRooms(): ArrayCollection
+    {
+        return $this->rooms;
+    }
+
+    /**
+     * @param ArrayCollection $rooms
+     */
+    public function setRooms(ArrayCollection $rooms): void
+    {
+        $this->rooms = $rooms;
     }
 }

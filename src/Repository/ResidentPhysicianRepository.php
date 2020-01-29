@@ -8,6 +8,7 @@ use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
+use App\Entity\FacilityRoomType;
 use App\Entity\Physician;
 use App\Entity\Region;
 use App\Entity\Resident;
@@ -429,7 +430,7 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                         f.name as typeName,
                         f.shorthand as typeShorthand,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fb.number as bedNumber'
                     )
                     ->innerJoin(
@@ -449,6 +450,12 @@ class ResidentPhysicianRepository extends EntityRepository implements RelatedInf
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     );
 
                 $qb

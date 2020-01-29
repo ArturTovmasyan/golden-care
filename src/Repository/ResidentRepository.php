@@ -14,6 +14,7 @@ use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
+use App\Entity\FacilityRoomType;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -54,8 +55,8 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 $queryBuilder
                     ->addSelect(
                         '(CASE
-                                WHEN fb.id IS NOT NULL AND fr.private = 1 THEN fr.number
-                                WHEN fb.id IS NOT NULL AND fr.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
+                                WHEN fb.id IS NOT NULL AND frt.private = 1 THEN fr.number
+                                WHEN fb.id IS NOT NULL AND frt.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
                                 WHEN ab.id IS NOT NULL AND ar.private = 1 THEN ar.number
                                 WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
                                 ELSE \'\' END) as room',
@@ -89,6 +90,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->leftJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     )
                     ->leftJoin(
                         ApartmentBed::class,
@@ -654,7 +661,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.address as address,
                         f.license as license,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         f.numberOfFloors as numberOfFloors'
@@ -676,6 +683,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     );
 
                 $qb
@@ -857,7 +870,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.address as address,
                         f.license as license,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         ra.careGroup as careGroup'
@@ -885,6 +898,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     );
 
                 $qb
@@ -1044,7 +1063,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.phone as typePhone,
                         f.fax as typeFax,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         dr.title as diningRoom'
@@ -1072,6 +1091,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     );
 
                 $qb
@@ -1243,7 +1268,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         f.phone as typePhone,
                         f.fax as typeFax,
                         fr.number as roomNumber,
-                        fr.private as private,
+                        frt.private as private,
                         fr.floor as floor,
                         fb.id as bedId,
                         fb.number as bedNumber,
@@ -1273,6 +1298,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         'f',
                         Join::WITH,
                         'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
                     )
                     ->innerJoin(
                         CareLevel::class,

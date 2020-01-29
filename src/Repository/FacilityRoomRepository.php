@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
+use App\Entity\FacilityRoomType;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -32,6 +33,12 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
                 'f',
                 Join::WITH,
                 'f = fr.facility'
+            )
+            ->innerJoin(
+                FacilityRoomType::class,
+                'frt',
+                Join::WITH,
+                'frt = fr.type'
             );
 
         if ($facilityId !== null) {

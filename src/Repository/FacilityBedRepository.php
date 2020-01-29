@@ -329,13 +329,14 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
                 type.id AS typeId,
                 type.name AS typeName,
                 r.number AS roomNumber,
-                r.private AS private,
+                frt.private AS private,
                 r.floor AS floor,
                 r.notes AS notes,
                 fb.number AS bedNumber
             ')
             ->join('fb.room', 'r')
             ->join('r.facility', 'type')
+            ->join('r.type', 'frt')
             ->where('r.id IN (:ids)')
             ->andWhere('fb.enabled=1')
             ->setParameter('ids', $ids);

@@ -162,6 +162,9 @@ class ResponseCode
     const FACILITY_ROOM_TYPE_NOT_FOUND_EXCEPTION                 = 762;
     const BASE_RATE_NOT_FOUND_EXCEPTION                          = 763;
     const BASE_RATE_NOT_BE_BLANK_EXCEPTION                       = 764;
+    const INVALID_PRIVATE_ROOM_EXCEPTION                         = 765;
+    const INVALID_SHARED_ROOM_EXCEPTION                          = 766;
+    const FACILITY_ROOM_TYPE_FACILITY_CHANGED_EXCEPTION          = 767;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -257,11 +260,11 @@ class ResponseCode
         self::APARTMENT_BED_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Apartment Bed not found.'],
         self::ASSESSMENT_ROW_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Assessment Row not found.'],
         self::START_GREATER_END_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the End date.'],
-        self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date cannot not be blank.'],
+        self::END_DATE_NOT_BE_BLANK_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'End date cannot be blank.'],
         self::INCORRECT_STRATEGY_TYPE_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect strategy. Available types: Facility, Apartment or Region.'],
         self::CAN_NOT_REMOVE_BED_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Bed has a Resident. Move Resident to another bed.'],
         self::LEAD_CONTACT_ORGANIZATION_CHANGED_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The Organization of Contact has been changed. Please choose another Contact.'],
-        self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region cannot hav a bed.'],
+        self::REGION_CAN_NOT_HAVE_BED_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Region cannot have a bed.'],
         self::UNHANDLED_RENT_PERIOD_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid entry for rent period.'],
         self::RESIDENT_ADMISSION_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Admission not found.'],
         self::USER_ALREADY_INVITED_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'User is already invited to SeniorCare.'],
@@ -311,7 +314,6 @@ class ResponseCode
         self::FACILITY_DASHBOARD_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Dashboard not found.'],
         self::FACILITY_DOCUMENT_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Document not found.'],
         self::RESIDENT_RENT_INCREASE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Rent Increase not found.'],
-        self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::THE_NAME_IS_ALREADY_IN_USE_IN_THIS_SPACE_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The name is already in use in this space.'],
         self::FACILITY_EVENT_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Event not found.'],
         self::USER_NOT_BE_BLANK_EXCEPTION                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select an User.'],
@@ -324,7 +326,11 @@ class ResponseCode
         self::ACTIVE_RESIDENT_EXIST_IN_BED_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Before disable the Bed first assign the Resident to another Bed.'],
         self::FACILITY_ROOM_TYPE_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Facility Room Type not found.'],
         self::BASE_RATE_NOT_FOUND_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate not found.'],
-        self::BASE_RATE_NOT_BE_BLANK_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate cannot not be blank.'],
+        self::BASE_RATE_NOT_BE_BLANK_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate cannot be blank.'],
+        self::INVALID_PRIVATE_ROOM_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Private Room cannot have more than one enabled bed.'],
+        self::INVALID_SHARED_ROOM_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Shared Room cannot have less than two enabled beds.'],
+        self::FACILITY_ROOM_TYPE_FACILITY_CHANGED_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The Facility of Room Type has been changed. Please choose another Room Type.'],
+        self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],
