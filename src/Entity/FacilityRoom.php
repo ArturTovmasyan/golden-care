@@ -140,7 +140,8 @@ class FacilityRoom
      * })
      * @Groups({
      *     "api_admin_facility_room_list",
-     *     "api_admin_facility_room_get"
+     *     "api_admin_facility_room_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $type;

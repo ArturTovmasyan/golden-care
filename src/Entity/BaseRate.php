@@ -60,7 +60,8 @@ class BaseRate
      * )
      * @Groups({
      *      "api_admin_facility_room_type_list",
-     *      "api_admin_facility_room_type_get"
+     *      "api_admin_facility_room_type_get",
+     *      "api_admin_resident_admission_get_active"
      * })
      */
     private $careLevel;
@@ -88,7 +89,8 @@ class BaseRate
      * })
      * @Groups({
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $amount;

@@ -78,7 +78,8 @@ class FacilityRoomType
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $id;
@@ -103,7 +104,8 @@ class FacilityRoomType
      *     "api_admin_facility_room_list",
      *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $title;
@@ -147,7 +149,8 @@ class FacilityRoomType
      * @ORM\Column(name="private", type="boolean", options={"default" = 0})
      * @Groups({
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $private;
@@ -156,7 +159,8 @@ class FacilityRoomType
      * @ORM\OneToMany(targetEntity="App\Entity\BaseRate", mappedBy="roomType", cascade={"persist"})
      * @Groups({
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $baseRates;
