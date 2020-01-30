@@ -186,7 +186,7 @@ class PaymentSource
     private $careLevelAdjustment;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SourceBaseRate", mappedBy="paymentSource", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRate", mappedBy="paymentSource", cascade={"persist"})
      * @Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"

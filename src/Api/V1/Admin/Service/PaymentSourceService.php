@@ -11,12 +11,12 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CareLevel;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentRent;
-use App\Entity\SourceBaseRate;
+use App\Entity\PaymentSourceBaseRate;
 use App\Entity\Space;
 use App\Repository\CareLevelRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentRentRepository;
-use App\Repository\SourceBaseRateRepository;
+use App\Repository\PaymentSourceBaseRateRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -188,10 +188,10 @@ class PaymentSourceService extends BaseService implements IGridService
         if ($paymentSource->getId() !== null) {
             $validationGroup = 'api_admin_source_base_rate_edit';
 
-            /** @var SourceBaseRateRepository $baseRateRepo */
-            $baseRateRepo = $this->em->getRepository(SourceBaseRate::class);
+            /** @var  PaymentSourceBaseRateRepository $baseRateRepo */
+            $baseRateRepo = $this->em->getRepository(PaymentSourceBaseRate::class);
 
-            $oldRates = $baseRateRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(SourceBaseRate::class), $paymentSource);
+            $oldRates = $baseRateRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(PaymentSourceBaseRate::class), $paymentSource);
 
             foreach ($oldRates as $rate) {
                 $this->em->remove($rate);
@@ -215,7 +215,7 @@ class PaymentSourceService extends BaseService implements IGridService
 
             $amount = !empty($baseRate['amount']) ? $baseRate['amount'] : null;
 
-            $paymentSourceBaseRate = new SourceBaseRate();
+            $paymentSourceBaseRate = new PaymentSourceBaseRate();
             $paymentSourceBaseRate->setPaymentSource($paymentSource);
             $paymentSourceBaseRate->setCareLevel($careLevel);
             $paymentSourceBaseRate->setAmount($amount);

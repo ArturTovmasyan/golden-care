@@ -169,7 +169,7 @@ class CareLevel
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\SourceBaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
      */
     private $sourceBaseRates;
 
