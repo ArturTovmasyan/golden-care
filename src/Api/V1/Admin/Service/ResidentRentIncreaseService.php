@@ -3,11 +3,14 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\RentReasonNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentRentIncreaseNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\RentReason;
 use App\Entity\Resident;
 use App\Entity\ResidentRentIncrease;
+use App\Repository\RentReasonRepository;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -81,19 +84,31 @@ class ResidentRentIncreaseService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             $residentId = $params['resident_id'] ?? 0;
 
             /** @var ResidentRepository $residentRepo */
             $residentRepo = $this->em->getRepository(Resident::class);
 
             /** @var Resident $resident */
-            $resident = $residentRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
             if ($resident === null) {
                 throw new ResidentNotFoundException();
             }
 
-            $reason = $params['reason'] ? (int)$params['reason'] : 0;
+            $reasonId = $params['reason_id'] ?? 0;
+
+            /** @var RentReasonRepository $reasonRepo */
+            $reasonRepo = $this->em->getRepository(RentReason::class);
+
+            /** @var RentReason $reason */
+            $reason = $reasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RentReason::class), $reasonId);
+
+            if ($reason === null) {
+                throw new RentReasonNotFoundException();
+            }
 
             $residentRentIncrease = new ResidentRentIncrease();
             $residentRentIncrease->setResident($resident);
@@ -165,7 +180,17 @@ class ResidentRentIncreaseService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            $reason = $params['reason'] ? (int)$params['reason'] : 0;
+            $reasonId = $params['reason_id'] ?? 0;
+
+            /** @var RentReasonRepository $reasonRepo */
+            $reasonRepo = $this->em->getRepository(RentReason::class);
+
+            /** @var RentReason $reason */
+            $reason = $reasonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RentReason::class), $reasonId);
+
+            if ($reason === null) {
+                throw new RentReasonNotFoundException();
+            }
 
             $entity->setResident($resident);
             $entity->setReason($reason);

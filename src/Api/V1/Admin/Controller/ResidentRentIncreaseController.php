@@ -101,7 +101,7 @@ class ResidentRentIncreaseController extends BaseController
         $id = $residentRentService->add(
             [
                 'resident_id' => $request->get('resident_id'),
-                'reason' => $request->get('reason'),
+                'reason_id' => $request->get('reason_id'),
                 'amount' => $request->get('amount'),
                 'effective_date' => $request->get('effective_date'),
                 'notification_date' => $request->get('notification_date'),
@@ -131,7 +131,7 @@ class ResidentRentIncreaseController extends BaseController
             $id,
             [
                 'resident_id' => $request->get('resident_id'),
-                'reason' => $request->get('reason'),
+                'reason_id' => $request->get('reason_id'),
                 'amount' => $request->get('amount'),
                 'effective_date' => $request->get('effective_date'),
                 'notification_date' => $request->get('notification_date'),

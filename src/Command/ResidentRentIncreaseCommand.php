@@ -7,7 +7,6 @@ use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentRentIncrease;
-use App\Model\RentIncreaseReason;
 use App\Model\RentPeriod;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRentRepository;
@@ -113,7 +112,7 @@ class ResidentRentIncreaseCommand extends Command
                                 $residentRent->setEnd(null);
                                 $residentRent->setPeriod(RentPeriod::MONTHLY);
                                 $residentRent->setAmount($increase->getAmount());
-                                $residentRent->setNotes(RentIncreaseReason::getTypeNames()[$increase->getReason()]);
+                                $residentRent->setNotes($increase->getReason() !== null ? $increase->getReason()->getTitle() : '');
                                 $residentRent->setSource([]);
                                 $residentRent->setCreatedBy($increase->getCreatedBy());
                                 $residentRent->setUpdatedBy($increase->getCreatedBy());

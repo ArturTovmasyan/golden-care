@@ -24,7 +24,6 @@ use App\Model\ChangeLogType;
 use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\NotificationTypeCategoryType;
-use App\Model\RentIncreaseReason;
 use App\Repository\ChangeLogRepository;
 use App\Repository\CorporateEventRepository;
 use App\Repository\FacilityEventRepository;
@@ -556,7 +555,7 @@ class NotifyCommand extends Command
 
                                 $body = $this->container->get('templating')->render('@api_notification/resident.rent.increase.email.html.twig', array(
                                     'increase' => $increase,
-                                    'reason' => RentIncreaseReason::getTypeNames()[$increase->getReason()],
+                                    'reason' => $increase->getReason() !== null ? $increase->getReason()->getTitle() : '',
                                     'subject' => $subject
                                 ));
 

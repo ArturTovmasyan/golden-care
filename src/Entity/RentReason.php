@@ -64,7 +64,9 @@ class RentReason
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_rent_reason_list",
-     *     "api_admin_rent_reason_get"
+     *     "api_admin_rent_reason_get",
+     *     "api_admin_resident_rent_increase_list",
+     *     "api_admin_resident_rent_increase_get"
      * })
      */
     private $id;
@@ -88,7 +90,9 @@ class RentReason
      * @ORM\Column(name="title", type="string", length=200)
      * @Groups({
      *     "api_admin_rent_reason_list",
-     *     "api_admin_rent_reason_get"
+     *     "api_admin_rent_reason_get",
+     *     "api_admin_resident_rent_increase_list",
+     *     "api_admin_resident_rent_increase_get"
      * })
      */
     private $title;
@@ -127,6 +131,12 @@ class RentReason
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentRentIncrease", mappedBy="reason", cascade={"remove", "persist"})
+     */
+    private $residentRentIncreases;
 
     public function getId(): ?int
     {
@@ -174,5 +184,21 @@ class RentReason
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentRentIncreases(): ArrayCollection
+    {
+        return $this->residentRentIncreases;
+    }
+
+    /**
+     * @param ArrayCollection $residentRentIncreases
+     */
+    public function setResidentRentIncreases(ArrayCollection $residentRentIncreases): void
+    {
+        $this->residentRentIncreases = $residentRentIncreases;
     }
 }

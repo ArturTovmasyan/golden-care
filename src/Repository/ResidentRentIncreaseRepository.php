@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\RentReason;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentRentIncrease;
@@ -31,6 +32,12 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
                 'r',
                 Join::WITH,
                 'r = rri.resident'
+            )
+            ->innerJoin(
+                RentReason::class,
+                'rrn',
+                Join::WITH,
+                'rrn = rri.reason'
             );
 
         if ($space !== null) {
@@ -260,10 +267,11 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
             ->select(
                 'rri.id AS id',
                 'rri.amount AS amount',
-                'rri.reason AS reason',
+                'rrn.title AS reason',
                 'rri.effectiveDate AS start'
             )
             ->join('rri.resident', 'r')
+            ->join('rri.reason', 'rrn')
             ->where('r.id=:id')
             ->setParameter('id', $id);
 
@@ -318,7 +326,7 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
             ->select(
                 'rri.id AS id',
                 'rri.amount AS amount',
-                'rri.reason AS reason',
+                'rrn.title AS reason',
                 'rri.effectiveDate AS start',
                 'r.id AS resident_id',
                 'r.firstName AS first_name',
@@ -327,6 +335,7 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
                 'fb.number AS bed_number'
             )
             ->join('rri.resident', 'r')
+            ->join('rri.reason', 'rrn')
             ->innerJoin(
                 ResidentAdmission::class,
                 'ra',

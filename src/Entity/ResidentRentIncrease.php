@@ -24,9 +24,8 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "reason",
- *              "type"       = "enum",
- *              "field"      = "rri.reason",
- *              "values"     = "\App\Model\RentIncreaseReason::getTypeDefaultNames"
+ *              "type"       = "string",
+ *              "field"      = "rrn.title"
  *          },
  *          {
  *              "id"         = "amount",
@@ -81,18 +80,15 @@ class ResidentRentIncrease
     private $resident;
 
     /**
-     * @var int
-     * @Assert\NotBlank(groups={
+     * @var RentReason
+     * @Assert\NotNull(message = "Please select a Rent Reason", groups={
      *     "api_admin_resident_rent_increase_add",
      *     "api_admin_resident_rent_increase_edit"
      * })
-     * @Assert\Choice(
-     *     callback={"App\Model\RentIncreaseReason","getTypeValues"},
-     *     groups={
-     *         "api_admin_resident_rent_increase_add",
-     *         "api_admin_resident_rent_increase_edit"
+     * @ORM\ManyToOne(targetEntity="App\Entity\RentReason", inversedBy="residentRentIncreases")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_rent_reason", referencedColumnName="id", onDelete="CASCADE")
      * })
-     * @ORM\Column(name="reason", type="smallint")
      * @Groups({
      *     "api_admin_resident_rent_increase_list",
      *     "api_admin_resident_rent_increase_get"
@@ -197,17 +193,17 @@ class ResidentRentIncrease
     }
 
     /**
-     * @return int|null
+     * @return RentReason|null
      */
-    public function getReason(): ?int
+    public function getReason(): ?RentReason
     {
         return $this->reason;
     }
 
     /**
-     * @param int|null $reason
+     * @param RentReason|null $reason
      */
-    public function setReason(?int $reason): void
+    public function setReason(?RentReason $reason): void
     {
         $this->reason = $reason;
     }
