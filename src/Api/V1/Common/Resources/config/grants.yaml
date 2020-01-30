@@ -120,6 +120,11 @@ persistence:
           class: App\Entity\CityStateZip
           route: api_admin_city_state_zip_list
 
+        rent_reason:
+          title: 'RentReason'
+          class: App\Entity\RentReason
+          route: api_admin_rent_reason_list
+
         event_definition:
           title: 'EventDefinition'
           class: App\Entity\EventDefinition

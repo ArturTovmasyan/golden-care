@@ -140,7 +140,9 @@ class Space
      *     "api_admin_document_category_list",
      *     "api_admin_document_category_get",
      *     "api_admin_assessment_type_list",
-     *     "api_admin_assessment_type_get"
+     *     "api_admin_assessment_type_get",
+     *     "api_admin_rent_reason_list",
+     *     "api_admin_rent_reason_get"
      * })
      */
     private $id;
@@ -233,7 +235,9 @@ class Space
      *     "api_admin_document_category_list",
      *     "api_admin_document_category_get",
      *     "api_admin_assessment_type_list",
-     *     "api_admin_assessment_type_get"
+     *     "api_admin_assessment_type_get",
+     *     "api_admin_rent_reason_list",
+     *     "api_admin_rent_reason_get"
      * })
      */
     private $name;
@@ -459,6 +463,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\AssessmentType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $assessmentTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\RentReason", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $rentReasons;
 
     /**
      * Space constructor.
@@ -1090,5 +1100,21 @@ class Space
     public function setAssessmentTypes(ArrayCollection $assessmentTypes): void
     {
         $this->assessmentTypes = $assessmentTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRentReasons(): ArrayCollection
+    {
+        return $this->rentReasons;
+    }
+
+    /**
+     * @param ArrayCollection $rentReasons
+     */
+    public function setRentReasons(ArrayCollection $rentReasons): void
+    {
+        $this->rentReasons = $rentReasons;
     }
 }

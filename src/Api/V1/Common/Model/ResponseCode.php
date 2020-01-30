@@ -165,6 +165,7 @@ class ResponseCode
     const INVALID_PRIVATE_ROOM_EXCEPTION                         = 765;
     const INVALID_SHARED_ROOM_EXCEPTION                          = 766;
     const FACILITY_ROOM_TYPE_FACILITY_CHANGED_EXCEPTION          = 767;
+    const RENT_REASON_NOT_FOUND_EXCEPTION                        = 768;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -330,6 +331,7 @@ class ResponseCode
         self::INVALID_PRIVATE_ROOM_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Private Room cannot have more than one enabled bed.'],
         self::INVALID_SHARED_ROOM_EXCEPTION                          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Shared Room cannot have less than two enabled beds.'],
         self::FACILITY_ROOM_TYPE_FACILITY_CHANGED_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'The Facility of Room Type has been changed. Please choose another Room Type.'],
+        self::RENT_REASON_NOT_FOUND_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Rent Reason not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
