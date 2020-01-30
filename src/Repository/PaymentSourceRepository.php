@@ -25,7 +25,7 @@ class PaymentSourceRepository extends EntityRepository implements RelatedInfoInt
     {
         $queryBuilder
             ->from(PaymentSource::class, 'ps')
-            ->addSelect('JSON_ARRAYAGG(JSON_OBJECT(cl.title, br.amount)) AS base_rates')
+            ->addSelect('JSON_ARRAYAGG(CASE WHEN cl.title IS NOT NULL THEN JSON_OBJECT(cl.title, br.amount) ELSE \'\' END) AS base_rates')
             ->innerJoin(
                 Space::class,
                 's',
