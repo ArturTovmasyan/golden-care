@@ -107,6 +107,7 @@ class ResidentRentController extends BaseController
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
                 'source' => $request->get('source'),
+                'reason_id' => $request->get('reason_id'),
             ]
         );
 
@@ -139,6 +140,7 @@ class ResidentRentController extends BaseController
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
                 'source' => $request->get('source'),
+                'reason_id' => $request->get('reason_id'),
             ]
         );
 

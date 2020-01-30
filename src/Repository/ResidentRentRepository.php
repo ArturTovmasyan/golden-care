@@ -14,6 +14,7 @@ use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\FacilityRoomType;
 use App\Entity\Region;
+use App\Entity\RentReason;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentRent;
@@ -47,7 +48,13 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 'r',
                 Join::WITH,
                 'r = rr.resident'
-            );
+            )
+            ->leftJoin(
+                RentReason::class,
+                'rrn',
+                Join::WITH,
+                'rrn = rr.reason'
+            );;
 
         if ($space !== null) {
             $queryBuilder

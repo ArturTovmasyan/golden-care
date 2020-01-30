@@ -113,6 +113,7 @@ class ResidentRentIncreaseCommand extends Command
                                 $residentRent->setPeriod(RentPeriod::MONTHLY);
                                 $residentRent->setAmount($increase->getAmount());
                                 $residentRent->setNotes($increase->getReason() !== null ? $increase->getReason()->getTitle() : '');
+                                $residentRent->setReason($increase->getReason() ?? null);
                                 $residentRent->setSource([]);
                                 $residentRent->setCreatedBy($increase->getCreatedBy());
                                 $residentRent->setUpdatedBy($increase->getCreatedBy());

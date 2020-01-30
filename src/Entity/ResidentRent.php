@@ -47,6 +47,11 @@ use App\Annotation\Grid;
  *              "field"      = "rr.amount"
  *          },
  *          {
+ *              "id"         = "reason",
+ *              "type"       = "string",
+ *              "field"      = "rrn.title"
+ *          },
+ *          {
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(rr.notes, 1, 100)), CASE WHEN LENGTH(rr.notes) > 100 THEN '…' ELSE '' END)"
@@ -209,6 +214,19 @@ class ResidentRent
     private $source = [];
 
     /**
+     * @var RentReason
+     * @ORM\ManyToOne(targetEntity="App\Entity\RentReason", inversedBy="residentRents")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_rent_reason", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
+     * })
+     */
+    private $reason;
+
+    /**
      * @return int
      */
     public function getId(): ?int
@@ -322,5 +340,21 @@ class ResidentRent
     public function setSource(array $source): void
     {
         $this->source = $source;
+    }
+
+    /**
+     * @return RentReason|null
+     */
+    public function getReason(): ?RentReason
+    {
+        return $this->reason;
+    }
+
+    /**
+     * @param RentReason|null $reason
+     */
+    public function setReason(?RentReason $reason): void
+    {
+        $this->reason = $reason;
     }
 }

@@ -66,7 +66,9 @@ class RentReason
      *     "api_admin_rent_reason_list",
      *     "api_admin_rent_reason_get",
      *     "api_admin_resident_rent_increase_list",
-     *     "api_admin_resident_rent_increase_get"
+     *     "api_admin_resident_rent_increase_get",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
      * })
      */
     private $id;
@@ -92,7 +94,9 @@ class RentReason
      *     "api_admin_rent_reason_list",
      *     "api_admin_rent_reason_get",
      *     "api_admin_resident_rent_increase_list",
-     *     "api_admin_resident_rent_increase_get"
+     *     "api_admin_resident_rent_increase_get",
+     *     "api_admin_resident_rent_list",
+     *     "api_admin_resident_rent_get"
      * })
      */
     private $title;
@@ -137,6 +141,12 @@ class RentReason
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentRentIncrease", mappedBy="reason", cascade={"remove", "persist"})
      */
     private $residentRentIncreases;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentRent", mappedBy="reason", cascade={"remove", "persist"})
+     */
+    private $residentRents;
 
     public function getId(): ?int
     {
@@ -200,5 +210,21 @@ class RentReason
     public function setResidentRentIncreases(ArrayCollection $residentRentIncreases): void
     {
         $this->residentRentIncreases = $residentRentIncreases;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentRents(): ArrayCollection
+    {
+        return $this->residentRents;
+    }
+
+    /**
+     * @param ArrayCollection $residentRents
+     */
+    public function setResidentRents(ArrayCollection $residentRents): void
+    {
+        $this->residentRents = $residentRents;
     }
 }
