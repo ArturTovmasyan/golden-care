@@ -297,24 +297,31 @@ class RoomReportService extends BaseService
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
-        $type = $group;
+        $type = (int)$group;
         $typeId = $groupId;
 
         if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
         }
 
-        $now = new \DateTime('now');
-        $reportDate = $now;
+        $dateStart = $dateEnd = new \DateTime('now');
+        $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
 
         if (!empty($date)) {
-            $reportDate = new \DateTime($date);
+            $dateStart = $dateEnd = new \DateTime($date);
+            $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
         }
 
-        $subInterval = ImtDateTimeInterval::getDateDiffForMonthAndYear($reportDate->format('Y'), $reportDate->format('m'));
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
 
-        $dateStart = $subInterval->getStart()->format('m/d/Y');
-        $dateEnd = $subInterval->getEnd() !== null ? $subInterval->getEnd()->format('m/d/Y') : '';
+        if ($dateStart > $dateEnd) {
+            throw new StartGreaterEndDateException();
+        }
+
+        $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
 
         /** @var ResidentRentRepository $repo */
         $repo = $this->em->getRepository(ResidentRent::class);
@@ -330,7 +337,7 @@ class RoomReportService extends BaseService
         /** @var ResidentRepository $residentRepo */
         $residentRepo = $this->em->getRepository(Resident::class);
 
-        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
+        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrIdWithInterval($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds(), $subInterval);
 
         $residentTypeIds = array_map(function ($item) {
             return $item['typeId'];
@@ -506,8 +513,8 @@ class RoomReportService extends BaseService
         $report->setTotal($total);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
-        $report->setDateStart($dateStart);
-        $report->setDateEnd($dateEnd);
+        $report->setDateStart($dateStart->format('m/d/Y'));
+        $report->setDateEnd($dateEnd->format('m/d/Y'));
 
         return $report;
     }

@@ -331,7 +331,7 @@ room:
       parameters:
         group:
           select_all: true
-        date: "m/d/Y"
+        date: "m/Y"
     room-rent-master:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
       title: 'Room Rent Master: Historical Rent Graphs, Data - for Finance Use only'

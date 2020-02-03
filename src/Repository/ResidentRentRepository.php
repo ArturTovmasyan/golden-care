@@ -793,6 +793,16 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
+        if ($type === GroupType::TYPE_FACILITY && $reportInterval) {
+            if ($reportInterval->getEnd()) {
+                $qb
+                    ->andWhere('f.createdAt IS NULL OR f.createdAt <= :end');
+            } else {
+                $qb
+                    ->andWhere('f.createdAt IS NULL OR f.createdAt < :start');
+            }
+        }
+
         if ($space !== null) {
             $qb
                 ->innerJoin(
