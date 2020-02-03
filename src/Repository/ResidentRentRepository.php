@@ -781,12 +781,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
-                        FROM App:ResidentRent mrr 
-                        JOIN mrr.resident res 
-                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end)
-                        GROUP BY res.id)'
-            )
+//            ->andWhere('rr.id IN (SELECT MAX(mrr.id)
+//                        FROM App:ResidentRent mrr
+//                        JOIN mrr.resident res
+//                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end)
+//                        GROUP BY res.id)'
+//            )
             ->andWhere('r.id IN (SELECT ar.id 
                         FROM App:ResidentAdmission ara 
                         JOIN ara.resident ar 
