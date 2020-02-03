@@ -157,4 +157,42 @@ class RentPeriodFactory
 
         return $period->calculateForFacilityDashboard($rentInterval, $amount);
     }
+
+    /**
+     * @param ImtDateTimeInterval $rentInterval
+     * @param $period
+     * @param $amount
+     * @return array
+     */
+    public function calculateForRoomRentInterval(ImtDateTimeInterval $rentInterval, $period, $amount): array
+    {
+        $period = $this->getPeriod($period);
+        $subIntervalStartFormatted = $this->subInterval->getStart()->format('Y-m-d 00:00:00');
+        $subIntervalEndFormatted = $this->subInterval->getEnd()->format('Y-m-d 23:59:59');
+
+        $rentIntervalStartFormatted = $rentInterval->getStart()->format('Y-m-d 00:00:00');
+        $rentIntervalEndFormatted = $rentInterval->getEnd()->format('Y-m-d 23:59:59');
+
+
+        $dateTimeStart = $subIntervalStartFormatted > $rentIntervalStartFormatted ? $subIntervalStartFormatted : $rentIntervalStartFormatted;
+        if ($rentInterval->getEnd() === null) {
+            $dateTimeEnd = $subIntervalEndFormatted;
+        } else {
+            $dateTimeEnd = $rentIntervalEndFormatted > $subIntervalEndFormatted ? $subIntervalEndFormatted : $rentIntervalEndFormatted;
+        }
+
+        $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
+            new \DateTime($dateTimeStart),
+            new \DateTime($dateTimeEnd)
+        );
+        $days = $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days;
+        if ($overlappingInterval->getEnd()->format('d') === $overlappingInterval->getEnd()->format('t')) {
+            ++$days;
+        }
+
+        return array(
+            'amount' => $period->calculateForInterval($overlappingInterval, $amount),
+            'days' => $days,
+        );
+    }
 }

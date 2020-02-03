@@ -409,7 +409,7 @@ class RoomReportService extends BaseService
             $sum = 0.00;
             foreach ($data as $rent) {
                 if ($residentTypeId === $rent['typeId']) {
-                    $calculationResults = $rentPeriodFactory->calculateForInterval(
+                    $calculationResults = $rentPeriodFactory->calculateForRoomRentInterval(
                         ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
                         $rent['period'],
                         $rent['amount']

@@ -213,7 +213,7 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new CareLevelNotFoundException();
             }
 
-            $amount = !empty($baseRate['amount']) ? $baseRate['amount'] : null;
+            $amount = !empty($baseRate['amount']) ? $baseRate['amount'] : 0;
 
             $paymentSourceBaseRate = new PaymentSourceBaseRate();
             $paymentSourceBaseRate->setPaymentSource($paymentSource);
