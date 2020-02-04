@@ -34,15 +34,15 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "fd.id"
  *          },
  *          {
- *              "id"         = "category",
- *              "type"       = "string",
- *              "field"      = "dc.title"
- *          },
- *          {
  *              "id"         = "title",
  *              "type"       = "string",
  *              "field"      = "fd.title",
- *              "link"       = ":edit"
+ *              "link"       = ":download"
+ *          },
+ *          {
+ *              "id"         = "category",
+ *              "type"       = "string",
+ *              "field"      = "dc.title"
  *          },
  *          {
  *              "id"         = "facility",
