@@ -68,6 +68,8 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
         }
 
         $queryBuilder
+            ->orderBy('f.name', 'ASC')
+            ->addOrderBy('frt.title', 'ASC')
             ->groupBy('frt.id');
     }
 
@@ -112,6 +114,7 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
         }
 
         $qb
+            ->orderBy('f.name', 'ASC')
             ->addOrderBy('frt.title', 'ASC');
 
         return $qb

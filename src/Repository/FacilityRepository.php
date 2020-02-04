@@ -51,6 +51,7 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $queryBuilder
+            ->orderBy('f.name', 'ASC')
             ->groupBy('f.id');
     }
 
@@ -83,7 +84,7 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
-            ->addOrderBy('f.name', 'ASC');
+            ->orderBy('f.name', 'ASC');
 
         return $qb
             ->getQuery()
