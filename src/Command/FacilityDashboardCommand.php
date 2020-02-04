@@ -18,6 +18,7 @@ use App\Entity\ResidentRent;
 use App\Entity\User;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
+use App\Model\RentPeriod;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
@@ -213,7 +214,7 @@ class FacilityDashboardCommand extends Command
                         'typeId' => $rent['typeId'],
                         'amount' => $rentPeriodFactory->calculateForFacilityDashboard(
                             ImtDateTimeInterval::getWithDateTimes($subInterval->getStart(), $subInterval->getEnd()),
-                            $rent['period'],
+                            RentPeriod::MONTHLY,
                             $rent['amount']
                         )
                     ];

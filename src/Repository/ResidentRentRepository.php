@@ -288,7 +288,6 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 'ra.id as actionId',
                 'rr.id as rentId',
                 'rr.amount as amount',
-                'rr.period as period',
                 '(CASE WHEN rr.start > = ra.start THEN rr.start ELSE ra.start END) as admitted',
                 '(CASE
                     WHEN rr.end IS NULL AND ra.end IS NULL THEN ra.end
@@ -548,8 +547,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 AND minra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r)
                 ) as admitted',
                 'rr.id as rentId',
-                'rr.amount as amount',
-                'rr.period as period'
+                'rr.amount as amount'
             );
 
         if ($reportInterval) {
@@ -1158,7 +1156,6 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->select(
                 'rr.id AS id',
                 'rr.amount AS amount',
-                'rr.period AS period',
                 'rr.start AS start',
                 'rr.end AS end',
                 'rr.notes AS notes'
@@ -1219,7 +1216,6 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->select(
                 'rr.id AS id',
                 'rr.amount AS amount',
-                'rr.period AS period',
                 'rr.start AS start',
                 'rr.end AS end',
                 'rr.notes AS notes',

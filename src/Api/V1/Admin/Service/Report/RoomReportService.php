@@ -22,6 +22,7 @@ use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePersonRole;
 use App\Model\GroupType;
 use App\Model\Month;
+use App\Model\RentPeriod;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
 use App\Model\Report\RoomOccupancyRate;
@@ -117,7 +118,7 @@ class RoomReportService extends BaseService
                 if ($currentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         $interval,
-                        $rent['period'],
+                        RentPeriod::MONTHLY,
                         $rent['amount']
                     );
 
@@ -140,7 +141,7 @@ class RoomReportService extends BaseService
                 if ($datum['id'] === $resident['id']) {
                     $resident['rentId'] = $datum['rentId'];
                     $resident['amount'] = $datum['amount'];
-                    $resident['period'] = $datum['period'];
+                    $resident['period'] = RentPeriod::MONTHLY;
                     $resident['sources'] = $datum['sources'];
 
                     $finalData[] = $resident;
@@ -235,7 +236,7 @@ class RoomReportService extends BaseService
                 if ($currentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')),
-                        $rent['period'],
+                        RentPeriod::MONTHLY,
                         $rent['amount']
                     );
 
@@ -255,7 +256,7 @@ class RoomReportService extends BaseService
                 if ($datum['id'] === $resident['id']) {
                     $resident['rentId'] = $datum['rentId'];
                     $resident['amount'] = $datum['amount'];
-                    $resident['period'] = $datum['period'];
+                    $resident['period'] = RentPeriod::MONTHLY;
 
                     $finalData[] = $resident;
                 }
@@ -411,7 +412,7 @@ class RoomReportService extends BaseService
                 if ($residentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForRoomRentInterval(
                         ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
-                        $rent['period'],
+                        RentPeriod::MONTHLY,
                         $rent['amount']
                     );
 
@@ -438,7 +439,7 @@ class RoomReportService extends BaseService
             $rentArray = [
                 'fullName' => $rent['firstName'] . ' ' . $rent['lastName'],
                 'number' => $number,
-                'period' => $rent['period'],
+                'period' => RentPeriod::MONTHLY,
                 'rentId' => $rent['rentId'],
                 'actionId' => $rent['actionId'],
                 'amount' => $rent['amount'],
@@ -650,7 +651,7 @@ class RoomReportService extends BaseService
                         $data[$typeId]['occupancy'][$rent[$incomePer]] += $rentPeriodFactory->calculateOccupancyForInterval($interval);
                         $calculationResults = $rentPeriodFactory->calculateForInterval(
                             $interval,
-                            $rent['period'],
+                            RentPeriod::MONTHLY,
                             $rent['amount']
                         );
                         $amount = $calculationResults['amount'];
@@ -850,7 +851,7 @@ class RoomReportService extends BaseService
                         $data[$typeId]['occupancies'][$rent[$incomePer]] += $rentPeriodFactory->calculateOccupancyForInterval($interval);
                         $calculationResults = $rentPeriodFactory->calculateForInterval(
                             $interval,
-                            $rent['period'],
+                            RentPeriod::MONTHLY,
                             $rent['amount']
                         );
                         $amount = $calculationResults['amount'];

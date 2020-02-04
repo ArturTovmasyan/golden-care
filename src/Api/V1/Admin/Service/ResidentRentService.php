@@ -115,12 +115,9 @@ class ResidentRentService extends BaseService implements IGridService
                 }
             }
 
-            $period = $params['period'] ? (int)$params['period'] : 0;
-
             $residentRent = new ResidentRent();
             $residentRent->setResident($resident);
             $residentRent->setReason($reason);
-            $residentRent->setPeriod($period);
             $residentRent->setAmount($params['amount']);
             $residentRent->setNotes($params['notes']);
 
@@ -231,11 +228,8 @@ class ResidentRentService extends BaseService implements IGridService
                 }
             }
 
-            $period = $params['period'] ? (int)$params['period'] : 0;
-
             $entity->setResident($resident);
             $entity->setReason($reason);
-            $entity->setPeriod($period);
             $entity->setAmount($params['amount']);
             $entity->setNotes($params['notes']);
 

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Model\RentPeriod;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,12 +33,6 @@ use App\Annotation\Grid;
  *              "type"       = "date",
  *              "field"      = "rr.end",
  *              "link"       = ":edit"
- *          },
- *          {
- *              "id"         = "period",
- *              "type"       = "enum",
- *              "field"      = "rr.period",
- *              "values"     = "\App\Model\RentPeriod::getTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "amount",
@@ -130,26 +123,6 @@ class ResidentRent
      * })
      */
     private $end;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_rent_add",
-     *     "api_admin_resident_rent_edit"
-     * })
-     * @Assert\Choice(
-     *     callback={"App\Model\RentPeriod","getTypeValues"},
-     *     groups={
-     *         "api_admin_resident_rent_add",
-     *         "api_admin_resident_rent_edit"
-     * })
-     * @ORM\Column(name="rent_period", type="integer", length=1)
-     * @Groups({
-     *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
-     * })
-     */
-    private $period = RentPeriod::MONTHLY;
 
     /**
      * @var float
@@ -288,16 +261,6 @@ class ResidentRent
     public function setEnd($end): void
     {
         $this->end = $end;
-    }
-
-    public function getPeriod(): ?int
-    {
-        return $this->period;
-    }
-
-    public function setPeriod($period): void
-    {
-        $this->period = $period;
     }
 
     /**
