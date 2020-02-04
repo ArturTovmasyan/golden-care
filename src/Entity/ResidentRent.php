@@ -45,15 +45,16 @@ use App\Annotation\Grid;
  *              "field"      = "rrn.title"
  *          },
  *          {
- *              "id"         = "notes",
- *              "type"       = "string",
- *              "field"      = "CONCAT(TRIM(SUBSTRING(rr.notes, 1, 100)), CASE WHEN LENGTH(rr.notes) > 100 THEN '…' ELSE '' END)"
- *          },
- *          {
  *              "id"         = "info",
  *              "sortable"   = false,
  *              "type"       = "json",
  *              "field"      = "info"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "sortable"   = false,
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(rr.notes, 1, 100)), CASE WHEN LENGTH(rr.notes) > 100 THEN '…' ELSE '' END)"
  *          }
  *     }
  * )
