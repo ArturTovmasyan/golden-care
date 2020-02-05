@@ -8,6 +8,7 @@ use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Facility;
+use App\Entity\FacilityBed;
 use App\Entity\FacilityDashboard;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\Lead;
@@ -19,6 +20,7 @@ use App\Entity\User;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Model\RentPeriod;
+use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
@@ -98,6 +100,8 @@ class FacilityDashboardCommand extends Command
 
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
+            /** @var FacilityBedRepository $bedRepo */
+            $bedRepo = $this->em->getRepository(FacilityBed::class);
 
             $facilities = $facilityRepo->list($currentSpace, null);
 
@@ -228,9 +232,11 @@ class FacilityDashboardCommand extends Command
                 $entity = new FacilityDashboard();
                 $entity->setFacility($facility);
                 $entity->setDate($date);
+                $entity->setBedsLicensed($facility->getBedsLicensed());
                 $entity->setBedsTarget($facility->getBedsTarget());
-                $entity->setBreakEven($facility->getRedFlag());
+                $entity->setBedsConfigured($bedRepo->getBedCount($facility->getId()));
                 $entity->setYellowFlag($facility->getYellowFlag());
+                $entity->setRedFlag($facility->getRedFlag());
 
                 $occupancy = 0;
                 if (!empty($activeAdmissions)) {

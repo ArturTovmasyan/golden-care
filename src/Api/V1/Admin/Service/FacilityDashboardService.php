@@ -108,9 +108,11 @@ class FacilityDashboardService extends BaseService implements IGridService
         foreach ($facilities as $facility) {
             foreach ($subIntervals as $key => $subInterval) {
                 $days = 0;
+                $bedsLicensed = 0;
                 $bedsTarget = 0;
-                $breakEven = 0;
+                $bedsConfigured = 0;
                 $yellowFlag = 0;
+                $redFlag = 0;
                 $startingOccupancy = 0;
                 $endingOccupancy = 0;
                 $moveInsRespite = 0;
@@ -132,9 +134,11 @@ class FacilityDashboardService extends BaseService implements IGridService
 
                         $days += $i;
 
+                        $bedsLicensed += $dashboard['bedsLicensed'];
                         $bedsTarget += $dashboard['bedsTarget'];
-                        $breakEven += $dashboard['breakEven'];
+                        $bedsConfigured += $dashboard['bedsConfigured'];
                         $yellowFlag += $dashboard['yellowFlag'];
+                        $redFlag += $dashboard['redFlag'];
                         if ($dashboard['date']->format('Y-m-d H:i:s') === $subInterval['dateFrom']->format('Y-m-d H:i:s')) {
                             $startingOccupancy = $dashboard['occupancy'];
                         }
@@ -153,9 +157,11 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
 
                 $nestedData[$key] = [
+                    'beds_licensed' => $days > 0 ? (int)round($bedsLicensed / $days) : 0,
                     'beds_target' => $days > 0 ? (int)round($bedsTarget / $days) : 0,
-                    'break_even' => $days > 0 ? (int)round($breakEven / $days) : 0,
+                    'beds_configured' => $days > 0 ? (int)round($bedsConfigured / $days) : 0,
                     'yellow_flag' => $days > 0 ? (int)round($yellowFlag / $days) : 0,
+                    'red_flag' => $days > 0 ? (int)round($redFlag / $days) : 0,
                     'starting_occupancy' => $startingOccupancy,
                     'ending_occupancy' => $endingOccupancy,
                     'move_ins_respite' => $moveInsRespite,
@@ -218,15 +224,19 @@ class FacilityDashboardService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $bedsTarget = $params['bedsTarget'] ? (int)$params['bedsTarget'] : 0;
-            $breakEven = $params['breakEven'] ? (int)$params['breakEven'] : 0;
-            $yellowFlag = $params['yellowFlag'] ? (int)$params['yellowFlag'] : 0;
+            $bedsLicensed = $params['beds_licensed'] ? (int)$params['beds_licensed'] : 0;
+            $bedsTarget = $params['beds_target'] ? (int)$params['beds_target'] : 0;
+            $bedsConfigured = $params['beds_configured'] ? (int)$params['beds_configured'] : 0;
+            $yellowFlag = $params['yellow_flag'] ? (int)$params['yellow_flag'] : 0;
+            $redFlag = $params['red_flag'] ? (int)$params['red_flag'] : 0;
 
             $facilityDashboard = new FacilityDashboard();
             $facilityDashboard->setFacility($facility);
+            $facilityDashboard->setBedsLicensed($bedsLicensed);
             $facilityDashboard->setBedsTarget($bedsTarget);
-            $facilityDashboard->setBreakEven($breakEven);
+            $facilityDashboard->setBedsConfigured($bedsConfigured);
             $facilityDashboard->setYellowFlag($yellowFlag);
+            $facilityDashboard->setRedFlag($redFlag);
 
             $date = $params['date'];
 
@@ -287,14 +297,18 @@ class FacilityDashboardService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $bedsTarget = $params['bedsTarget'] ? (int)$params['bedsTarget'] : 0;
-            $breakEven = $params['breakEven'] ? (int)$params['breakEven'] : 0;
-            $yellowFlag = $params['yellowFlag'] ? (int)$params['yellowFlag'] : 0;
+            $bedsLicensed = $params['beds_licensed'] ? (int)$params['beds_licensed'] : 0;
+            $bedsTarget = $params['beds_target'] ? (int)$params['beds_target'] : 0;
+            $bedsConfigured = $params['beds_configured'] ? (int)$params['beds_configured'] : 0;
+            $yellowFlag = $params['yellow_flag'] ? (int)$params['yellow_flag'] : 0;
+            $redFlag = $params['red_flag'] ? (int)$params['red_flag'] : 0;
 
             $entity->setFacility($facility);
+            $entity->setBedsLicensed($bedsLicensed);
             $entity->setBedsTarget($bedsTarget);
-            $entity->setBreakEven($breakEven);
+            $entity->setBedsConfigured($bedsConfigured);
             $entity->setYellowFlag($yellowFlag);
+            $entity->setRedFlag($redFlag);
 
             $date = $params['date'];
 

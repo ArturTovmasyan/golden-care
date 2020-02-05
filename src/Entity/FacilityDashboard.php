@@ -32,19 +32,29 @@ use App\Annotation\Grid;
  *              "field"      = "fd.date"
  *          },
  *          {
+ *              "id"         = "beds_licensed",
+ *              "type"       = "number",
+ *              "field"      = "fd.bedsLicensed"
+ *          },
+ *          {
  *              "id"         = "beds_target",
  *              "type"       = "number",
  *              "field"      = "fd.bedsTarget"
  *          },
  *          {
- *              "id"         = "break_even",
+ *              "id"         = "beds_configured",
  *              "type"       = "number",
- *              "field"      = "fd.breakEven"
+ *              "field"      = "fd.bedsConfigured"
  *          },
  *          {
  *              "id"         = "yellow_flag",
  *              "type"       = "number",
  *              "field"      = "fd.yellowFlag"
+ *          },
+ *          {
+ *              "id"         = "red_flag",
+ *              "type"       = "number",
+ *              "field"      = "fd.redFlag"
  *          },
  *          {
  *              "id"         = "occupancy",
@@ -138,6 +148,27 @@ class FacilityDashboard
      *          "api_admin_facility_dashboard_add",
      *          "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="beds_licensed", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $bedsLicensed;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/^[1-9][0-9]*$/",
+     *      message="The value should be numeric.",
+     *      groups={
+     *          "api_admin_facility_dashboard_add",
+     *          "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="beds_target", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -159,11 +190,37 @@ class FacilityDashboard
      *          "api_admin_facility_dashboard_add",
      *          "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="break_even", type="integer")
+     * @ORM\Column(name="beds_configured", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
      *     "api_admin_facility_dashboard_get"
      * })
+     */
+    private $bedsConfigured;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/^[1-9][0-9]*$/",
+     *      message="The value should be numeric.",
+     *      groups={
+     *          "api_admin_facility_dashboard_add",
+     *          "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="red_flag", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $redFlag;
+    /**
+     * @var int
+     * @ORM\Column(name="break_even", type="integer", nullable=true)
      */
     private $breakEven;
 
@@ -421,6 +478,22 @@ class FacilityDashboard
     /**
      * @return int|null
      */
+    public function getBedsLicensed(): ?int
+    {
+        return $this->bedsLicensed;
+    }
+
+    /**
+     * @param int|null $bedsLicensed
+     */
+    public function setBedsLicensed(?int $bedsLicensed): void
+    {
+        $this->bedsLicensed = $bedsLicensed;
+    }
+
+    /**
+     * @return int|null
+     */
     public function getBedsTarget(): ?int
     {
         return $this->bedsTarget;
@@ -437,17 +510,33 @@ class FacilityDashboard
     /**
      * @return int|null
      */
-    public function getBreakEven(): ?int
+    public function getBedsConfigured(): ?int
     {
-        return $this->breakEven;
+        return $this->bedsConfigured;
     }
 
     /**
-     * @param int|null $breakEven
+     * @param int|null $bedsConfigured
      */
-    public function setBreakEven(?int $breakEven): void
+    public function setBedsConfigured(?int $bedsConfigured): void
     {
-        $this->breakEven = $breakEven;
+        $this->bedsConfigured = $bedsConfigured;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRedFlag(): ?int
+    {
+        return $this->redFlag;
+    }
+
+    /**
+     * @param int|null $redFlag
+     */
+    public function setRedFlag(?int $redFlag): void
+    {
+        $this->redFlag = $redFlag;
     }
 
     /**

@@ -105,9 +105,11 @@ class FacilityDashboardController extends BaseController
             [
                 'facility_id' => $request->get('facility_id'),
                 'date' => $request->get('date'),
+                'beds_licensed' => $request->get('beds_licensed'),
                 'beds_target' => $request->get('beds_target'),
-                'breakEven' => $request->get('breakEven'),
+                'beds_configured' => $request->get('beds_configured'),
                 'yellow_flag' => $request->get('yellow_flag'),
+                'red_flag' => $request->get('red_flag'),
             ]
         );
 
@@ -135,9 +137,11 @@ class FacilityDashboardController extends BaseController
             [
                 'facility_id' => $request->get('facility_id'),
                 'date' => $request->get('date'),
+                'beds_licensed' => $request->get('beds_licensed'),
                 'beds_target' => $request->get('beds_target'),
-                'breakEven' => $request->get('breakEven'),
+                'beds_configured' => $request->get('beds_configured'),
                 'yellow_flag' => $request->get('yellow_flag'),
+                'red_flag' => $request->get('red_flag'),
             ]
         );
 
