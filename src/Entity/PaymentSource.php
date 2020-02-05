@@ -149,24 +149,24 @@ class PaymentSource
 
     /**
      * @var float
-     * @ORM\Column(name="amount", type="float", length=10)
+     * @ORM\Column(name="amount", type="float", length=10, nullable=true)
      * @Assert\NotBlank(groups={
-     *     "api_admin_payment_source_add",
-     *     "api_admin_payment_source_edit"
+     *     "api_admin_payment_source_amount_add",
+     *     "api_admin_payment_source_amount_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
-     *          "api_admin_payment_source_add",
-     *          "api_admin_payment_source_edit"
+     *          "api_admin_payment_source_amount_add",
+     *          "api_admin_payment_source_amount_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_payment_source_add",
-     *          "api_admin_payment_source_edit"
+     *          "api_admin_payment_source_amount_add",
+     *          "api_admin_payment_source_amount_edit"
      * })
      * @Groups({
      *     "api_admin_payment_source_list",

@@ -88,7 +88,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setTitle($params['title']);
             $paymentSource->setAwayReduction((bool)$params['away_reduction']);
             $paymentSource->setPeriod($period);
-            $paymentSource->setAmount($params['amount']);
             $paymentSource->setCareLevelAdjustment($careLevelAdjustment);
             $paymentSource->setSpace($space);
 
@@ -101,6 +100,14 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setBaseRates($baseRates);
 
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
+
+            if ($careLevelAdjustment === true) {
+                $paymentSource->setAmount(null);
+            } else {
+                $paymentSource->setAmount($params['amount']);
+            }
+
+            $this->validate($paymentSource, null, ['api_admin_payment_source_amount_add']);
 
             $this->em->persist($paymentSource);
             $this->em->flush();
@@ -152,7 +159,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setTitle($params['title']);
             $entity->setAwayReduction((bool)$params['away_reduction']);
             $entity->setPeriod($period);
-            $entity->setAmount($params['amount']);
             $entity->setCareLevelAdjustment($careLevelAdjustment);
             $entity->setSpace($space);
 
@@ -165,6 +171,14 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setBaseRates($baseRates);
 
             $this->validate($entity, null, ['api_admin_payment_source_edit']);
+
+            if ($careLevelAdjustment === true) {
+                $entity->setAmount(null);
+            } else {
+                $entity->setAmount($params['amount']);
+            }
+
+            $this->validate($entity, null, ['api_admin_payment_source_amount_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();
