@@ -105,9 +105,9 @@ class PaymentSourceService extends BaseService implements IGridService
                 $paymentSource->setAmount(null);
             } else {
                 $paymentSource->setAmount($params['amount']);
-            }
 
-            $this->validate($paymentSource, null, ['api_admin_payment_source_amount_add']);
+                $this->validate($paymentSource, null, ['api_admin_payment_source_amount_add']);
+            }
 
             $this->em->persist($paymentSource);
             $this->em->flush();
@@ -176,9 +176,9 @@ class PaymentSourceService extends BaseService implements IGridService
                 $entity->setAmount(null);
             } else {
                 $entity->setAmount($params['amount']);
-            }
 
-            $this->validate($entity, null, ['api_admin_payment_source_amount_edit']);
+                $this->validate($entity, null, ['api_admin_payment_source_amount_edit']);
+            }
 
             $this->em->persist($entity);
             $this->em->flush();
