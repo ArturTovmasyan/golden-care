@@ -24,6 +24,7 @@ class Grid
     const FIELD_OPTION_CALLBACK         = 'callback';
     const FIELD_OPTION_SORT_TYPE        = 'sort_type';
     const FIELD_OPTION_COLUMN_GROUP     = 'col_group';
+    const FIELD_OPTION_COLUMN_WIDTH     = 'width';
 
     /**
      * Field types
@@ -56,7 +57,8 @@ class Grid
         self::FIELD_OPTION_HIDDEN,
         self::FIELD_OPTION_CALLBACK,
         self::FIELD_OPTION_SORT_TYPE,
-        self::FIELD_OPTION_COLUMN_GROUP
+        self::FIELD_OPTION_COLUMN_GROUP,
+        self::FIELD_OPTION_COLUMN_WIDTH
     ];
 
     /**
@@ -111,6 +113,7 @@ class Grid
                     self::FIELD_OPTION_HIDDEN           => false,
                     self::FIELD_OPTION_SORT_TYPE        => null,
                     self::FIELD_OPTION_COLUMN_GROUP     => null,
+                    self::FIELD_OPTION_COLUMN_WIDTH     => 0,
                 ];
 
                 foreach ($groupOption as $key => $fieldOption) {

@@ -26,66 +26,85 @@ use App\Annotation\Grid;
  *              "id"         = "medication",
  *              "type"       = "string",
  *              "field"      = "m.title",
- *              "link"       = ":edit"
+ *              "link"       = ":edit",
+ *              "width"      = "10rem"
  *          },
  *          {
  *              "id"         = "form_factor",
  *              "type"       = "string",
  *              "field"      = "ff.title",
- *              "sortable"   = false
+ *              "sortable"   = false,
+ *              "width"      = "6rem"
  *          },
  *          {
  *              "id"         = "dosage",
  *              "type"       = "string",
  *              "field"      = "CONCAT(rm.dosage, ' (', rm.dosageUnit, ')')",
- *              "sortable"   = false
+ *              "sortable"   = false,
+ *              "width"      = "4rem"
  *          },
  *          {
  *              "id"         = "am",
  *              "type"       = "string",
- *              "field"      = "rm.am"
+ *              "field"      = "rm.am",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "nn",
  *              "type"       = "string",
- *              "field"      = "rm.nn"
+ *              "field"      = "rm.nn",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "pm",
  *              "type"       = "string",
- *              "field"      = "rm.pm"
+ *              "field"      = "rm.pm",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "hs",
  *              "type"       = "string",
- *              "field"      = "rm.hs"
+ *              "field"      = "rm.hs",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "prn",
  *              "type"       = "boolean",
- *              "field"      = "rm.prn"
+ *              "field"      = "rm.prn",
+ *              "sortable"   = false,
+ *              "width"      = "3rem"
  *          },
  *          {
  *              "id"         = "discontinued",
  *              "type"       = "boolean",
- *              "field"      = "rm.discontinued"
+ *              "field"      = "rm.discontinued",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "treatment",
  *              "type"       = "boolean",
- *              "field"      = "rm.treatment"
+ *              "field"      = "rm.treatment",
+ *              "sortable"   = false,
+ *              "width"      = "2.5rem"
  *          },
  *          {
  *              "id"         = "notes",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(rm.notes, 1, 100)), CASE WHEN LENGTH(rm.notes) > 100 THEN '…' ELSE '' END)",
- *              "sortable"   = false
+ *              "sortable"   = false,
+ *              "width"      = "10rem"
  *          },
  *          {
  *              "id"         = "prescription_number",
  *              "type"       = "string",
  *              "field"      = "rm.prescriptionNumber",
- *              "sortable"   = false
+ *              "sortable"   = false,
+ *              "width"      = "7rem"
  *          },
  *          {
  *              "id"         = "hidden_discontinued",
