@@ -117,10 +117,13 @@ class RentPeriodFactory
         if (($dateTimeStart >= $rentIntervalStart && (($rentIntervalEnd !== null && $dateTimeStart <= $rentIntervalEnd) || $rentIntervalEnd === null)) &&
             ($dateTimeEnd >= $rentIntervalStart && (($rentIntervalEnd !== null && $dateTimeEnd <= $rentIntervalEnd) || $rentIntervalEnd === null))) {
             $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
-                $dateTimeStart,
-                $dateTimeEnd
+                new \DateTime($dateTimeStart->format('Y-m-d 00:00:00')),
+                new \DateTime($dateTimeEnd->format('Y-m-d 00:00:00'))
             );
-            $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days + 1 : 0;
+            $days = $overlappingInterval->getEnd() !== null ? $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days : 0;
+            if ($overlappingInterval->getEnd()->format('d') === $overlappingInterval->getEnd()->format('t')) {
+                ++$days;
+            }
         }
 
         return array(

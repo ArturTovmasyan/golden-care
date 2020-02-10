@@ -2152,12 +2152,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     {
         $qb = $this
             ->getResidentAdmissionReportQb($type, $reportInterval, $typeId)
-            ->andWhere('ra.admissionType !=' . AdmissionType::DISCHARGE)
-            ->andWhere('r.id IN (SELECT ar.id 
-                        FROM App:ResidentAdmission ara 
-                        JOIN ara.resident ar 
-                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
-            );
+            ->andWhere('ra.admissionType < :admissionType')
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+//            ->andWhere('r.id IN (SELECT ar.id
+//                        FROM App:ResidentAdmission ara
+//                        JOIN ara.resident ar
+//                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
+//            );
 
         if ($space !== null) {
             $qb
