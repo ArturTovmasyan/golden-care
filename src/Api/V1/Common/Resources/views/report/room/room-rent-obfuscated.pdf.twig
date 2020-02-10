@@ -60,12 +60,6 @@
                 {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
                     <td><b>Room/Bed</b></td>{% endif %}
                 <td><b>Resident</b></td>
-                <td><b>Billing</b></td>
-                <td><b>Rent</b></td>
-                <td><b>Frequency</b></td>
-                <td><b>Admitted</b></td>
-                <td><b>Discharged</b></td>
-                <td><b>Days</b></td>
                 <td><b>RentDue</b></td>
             </tr>
             </thead>
@@ -76,35 +70,6 @@
             {% if datum.number is defined and datum.number %}
                 <td style="height: 40px; text-align: left;">{{ datum.number }}</td>{% endif %}
             <td style="height: 40px; text-align: left;">{{ datum.fullName }}</td>
-            <td style="height: 40px; text-align: left;">
-                {% if datum.responsiblePerson|length > 0 %}
-                    {% for responsiblePerson in datum.responsiblePerson %}
-                        {{ responsiblePerson }}<br/>
-                    {% endfor %}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td style="height: 40px; text-align: left;">
-                {% if datum.amount is defined and datum.amount %}$&nbsp;{{ datum.amount|number_format(2, '.', ',') }}
-                    <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
-            </td>
-            <td style="height: 40px; text-align: left;">
-                {% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}
-                    <br/>{% else %}N/A{% endif %}
-            </td>
-            <td style="height: 40px; text-align: left;">
-                {% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}
-                    <br/>{% else %}N/A{% endif %}
-            </td>
-            <td style="height: 40px; text-align: left;">
-                {% if datum.discharged is defined and datum.discharged %}{{ datum.discharged|date("m/d/Y") }}
-                    <br/>{% else %}N/A{% endif %}
-            </td>
-            <td style="height: 40px; text-align: left;">
-                {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}{{ data.calcAmount[datum.id][datum.actionId].days }}
-                    <br/>{% else %}N/A{% endif %}
-            </td>
             <td style="height: 40px; text-align: left;">
                 {% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}$ {{ data.calcAmount[datum.id][datum.actionId].amount|number_format(2, '.', ',') }}
                     <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}

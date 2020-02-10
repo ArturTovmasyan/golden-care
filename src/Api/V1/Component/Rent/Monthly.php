@@ -24,6 +24,16 @@ class Monthly extends RentPeriod
         return $amount * $monthsCount + ($amount * 12 * $daysCount / 365);
     }
 
+    public function calculateForRoomRentInterval(ImtDateTimeInterval $subInterval, $amount)
+    {
+        $diff = $subInterval->getEnd()->diff($subInterval->getStart());
+        $monthsCount = $diff->y * 12 + $diff->m;
+        $daysCount = $diff->d + 1;
+
+        // Mick provided formula.
+        return $amount * $monthsCount + ($amount * 12 * $daysCount / 365);
+    }
+
     public function calculateForFacilityDashboard(ImtDateTimeInterval $subInterval, $amount)
     {
         $diff = $subInterval->getEnd()->diff($subInterval->getStart());

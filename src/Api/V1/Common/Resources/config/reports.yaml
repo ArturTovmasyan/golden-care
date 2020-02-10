@@ -332,6 +332,16 @@ room:
         group:
           select_all: true
         date: "m/Y"
+    room-rent-obfuscated:
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentReport
+      title: 'Room Rent, Obfuscated: Monthly Rent Report'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "m/Y"
     room-rent-master:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
       title: 'Room Rent Master: Historical Rent Graphs, Data - for Finance Use only'

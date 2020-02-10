@@ -335,81 +335,23 @@ class RoomReportService extends BaseService
         }, $data);
         $rentResidentIds = array_unique($rentResidentIds);
 
-        /** @var ResidentRepository $residentRepo */
-        $residentRepo = $this->em->getRepository(Resident::class);
-
-        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrIdWithInterval($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds(), $subInterval);
-
-        $residentTypeIds = array_map(function ($item) {
+        $rentTypeIds = array_map(function ($item) {
             return $item['typeId'];
-        }, $residents);
-
-        $residentIds = array_map(function ($item) {
-            return $item['id'];
-        }, $residents);
+        }, $data);
 
         /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
 
-        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
-
-        $changedResidentData = [];
-        foreach ($residents as $resident) {
-            if (!\in_array($resident['id'], $rentResidentIds, false)) {
-                if (array_key_exists('roomNumber', $resident) && array_key_exists('bedNumber', $resident)) {
-                    if ($resident['private']) {
-                        $number = $resident['roomNumber'] . ' ';
-                    } else {
-                        $number = $resident['roomNumber'] . ' ' . $resident['bedNumber'];
-                    }
-                } else {
-                    $number = null;
-                }
-
-                $residentArray = [
-                    'fullName' => $resident['firstName'] . ' ' . $resident['lastName'],
-                    'number' => $number,
-                    'actionId' => $resident['actionId'],
-                    'id' => 0,
-                    'typeName' => $resident['typeName'],
-                    'typeId' => $resident['typeId'],
-                    'typeShorthand' => $resident['typeShorthand'],
-                    'responsiblePerson' => [],
-                ];
-                $rpResidentArray = array();
-                /** @var ResidentResponsiblePerson $responsiblePerson */
-                foreach ($responsiblePersons as $responsiblePerson) {
-                    $isFinancially = false;
-                    if (!empty($responsiblePerson->getRoles())) {
-                        /** @var ResponsiblePersonRole $role */
-                        foreach ($responsiblePerson->getRoles() as $role) {
-                            if ($role->isFinancially() === true) {
-                                $isFinancially = true;
-                            }
-                        }
-                    }
-
-                    $rpResidentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
-                    $rpId = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getId() : 0;
-                    $rpFullName = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getFirstName() . ' ' . $responsiblePerson->getResponsiblePerson()->getLastName() : '';
-                    $rpRelationship = $responsiblePerson->getRelationship() ? $responsiblePerson->getRelationship()->getTitle() : '';
-
-                    if ($isFinancially === true && $rpResidentId === $resident['id']) {
-                        $rpResidentArray['responsiblePerson'][$rpId] = $rpFullName . ' (' . $rpRelationship . ')';
-                    }
-                }
-                $changedResidentData[] = array_merge($residentArray, $rpResidentArray);
-            }
-        }
-
-        $residentTypeIds = array_unique($residentTypeIds);
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $rentResidentIds);
 
         $calcAmount = [];
         $total = [];
-        foreach ($residentTypeIds as $residentTypeId) {
+        $residentCount = [];
+        foreach ($rentTypeIds as $rentTypeId) {
             $sum = 0.00;
+            $count = [];
             foreach ($data as $rent) {
-                if ($residentTypeId === $rent['typeId']) {
+                if ($rentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForRoomRentInterval(
                         ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
                         RentPeriod::MONTHLY,
@@ -419,9 +361,14 @@ class RoomReportService extends BaseService
                     $calcAmount[$rent['id']][$rent['actionId']] = ['days' => $calculationResults['days'], 'amount' => $calculationResults['amount']];
 
                     $sum += $calculationResults['amount'];
+
+                    $count[] = $rent['id'];
                 }
             }
-            $total[$residentTypeId] = $sum;
+            $total[$rentTypeId] = $sum;
+
+            $count = array_unique($count);
+            $residentCount[$rentTypeId] = \count($count);
         }
 
         $changedData = [];
@@ -438,6 +385,7 @@ class RoomReportService extends BaseService
 
             $rentArray = [
                 'fullName' => $rent['firstName'] . ' ' . $rent['lastName'],
+                'fullNameShort' => $rent['firstName'] . ' ' . strtoupper($rent['lastName'][0]),
                 'number' => $number,
                 'period' => RentPeriod::MONTHLY,
                 'rentId' => $rent['rentId'],
@@ -476,8 +424,6 @@ class RoomReportService extends BaseService
             $changedData[] = array_merge($rentArray, $rpArray);
         }
 
-        $changedData = array_merge($changedData, $changedResidentData);
-
         $typeNames = [];
         $numbers = [];
         foreach ($changedData as $k => $changedDatum) {
@@ -512,6 +458,7 @@ class RoomReportService extends BaseService
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
+        $report->setResidentCount($residentCount);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDateStart($dateStart->format('m/d/Y'));
