@@ -34,15 +34,13 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
         if (empty($params) || empty($params[0]['room_type_id'])) {
-            throw new FacilityRoomTypeNotFoundException();
+            $roomTypeId = $params[0]['room_type_id'];
+
+            $queryBuilder
+                ->where('br.roomType = :roomTypeId')
+                ->setParameter('roomTypeId', $roomTypeId);
         }
-
-        $roomTypeId = $params[0]['room_type_id'];
-
-        $queryBuilder
-            ->where('br.roomType = :roomTypeId')
-            ->setParameter('roomTypeId', $roomTypeId);
-
+        
         /** @var FacilityRoomBaseRateRepository $repo */
         $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
 
