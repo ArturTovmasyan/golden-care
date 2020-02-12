@@ -476,6 +476,81 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $id
      * @return mixed
      */
+    public function getActiveWithFacilityRoomBaseRateByResident(Space $space = null, array $entityGrants = null, $id)
+    {
+        $now = new \DateTime('now');
+
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'ra.id AS id',
+                'ra.groupType AS group_type',
+                'ra.admissionType AS admission_type',
+                'ra.date AS date',
+                'ra.start AS start',
+                'ra.end AS end',
+                'fb.id AS bed_id',
+                'fb.number AS bed_number',
+                'fbr.id AS room_id',
+                'fbr.number AS room_number',
+                'fbr.floor AS floor',
+                'f.id AS facility_id',
+                'f.name AS facility_name',
+                'f.shorthand AS facility_shorthand',
+                'frt.id AS room_type_id',
+                'frt.title AS room_type_title',
+                'frt.private AS private',
+                'br.date AS base_rate_date',
+                'JSON_ARRAYAGG(JSON_OBJECT(cl.title, brl.amount)) AS base_rates'
+            )
+            ->join('ra.resident', 'r')
+            ->join('ra.facilityBed', 'fb')
+            ->join('fb.room', 'fbr')
+            ->join('fbr.facility', 'f')
+            ->join('fbr.type', 'frt')
+            ->join('frt.baseRates', 'br')
+            ->join('br.levels', 'brl')
+            ->join('brl.careLevel', 'cl')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('r.id=:id')
+            ->andWhere('br.date < :now')
+            ->setParameter('id', $id)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->setParameter('now', $now);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('ra.id', 'DESC')
+            ->addOrderBy('br.date', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
     public function getInactiveByResident(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this->createQueryBuilder('ra');

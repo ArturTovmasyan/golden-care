@@ -3,45 +3,47 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
-use App\Entity\FacilityRoomType;
 use App\Entity\Facility;
+use App\Entity\FacilityRoomBaseRate;
+use App\Entity\FacilityRoomType;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class FacilityRoomTypeRepository
+ * Class FacilityRoomBaseRateRepository
  * @package App\Repository
  */
-class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfoInterface
+class FacilityRoomBaseRateRepository extends EntityRepository implements RelatedInfoInterface
 {
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
-     * @param null $facilityId
      */
-    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $facilityId = null): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
     {
         $queryBuilder
-            ->from(FacilityRoomType::class, 'frt')
+            ->from(FacilityRoomBaseRate::class, 'br')
+            ->addSelect('JSON_ARRAYAGG(JSON_OBJECT(cl.title, brl.amount)) AS base_rates')
             ->innerJoin(
-                Facility::class,
-                'f',
+                FacilityRoomType::class,
+                'frt',
                 Join::WITH,
-                'f = frt.facility'
-            );
-
-        if ($facilityId !== null) {
-            $queryBuilder
-                ->where('f.id = :facilityId')
-                ->setParameter('facilityId', $facilityId);
-        }
+                'frt = br.roomType'
+            )
+            ->join('br.levels', 'brl')
+            ->join('brl.careLevel', 'cl');
 
         if ($space !== null) {
             $queryBuilder
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'f = frt.facility'
+                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -54,31 +56,32 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
 
         if ($entityGrants !== null) {
             $queryBuilder
-                ->andWhere('frt.id IN (:grantIds)')
+                ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        if ($facilityEntityGrants !== null) {
-            $queryBuilder
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
         $queryBuilder
-            ->orderBy('f.name', 'ASC')
-            ->addOrderBy('frt.title', 'ASC')
-            ->groupBy('frt.id');
+            ->groupBy('br.id');
     }
 
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param array|null $facilityEntityGrants
+     * @param $id
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null)
+    public function getBy(Space $space = null, array $entityGrants = null, $id)
     {
-        $qb = $this->createQueryBuilder('frt');
+        $qb = $this
+            ->createQueryBuilder('br')
+            ->innerJoin(
+                FacilityRoomType::class,
+                'frt',
+                Join::WITH,
+                'frt = br.roomType'
+            )
+            ->where('frt.id = :id')
+            ->setParameter('id', $id);
 
         if ($space !== null) {
             $qb
@@ -100,19 +103,9 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('frt.id IN (:grantIds)')
+                ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
-
-        if ($facilityEntityGrants !== null) {
-            $qb
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
-        $qb
-            ->orderBy('f.name', 'ASC')
-            ->addOrderBy('frt.title', 'ASC');
 
         return $qb
             ->getQuery()
@@ -122,63 +115,19 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param array|null $facilityEntityGrants
      * @param $id
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id)
+    public function getOne(Space $space = null, array $entityGrants = null, $id)
     {
         $qb = $this
-            ->createQueryBuilder('frt')
+            ->createQueryBuilder('br')
             ->innerJoin(
-                Facility::class,
-                'f',
+                FacilityRoomType::class,
+                'frt',
                 Join::WITH,
-                'f = frt.facility'
+                'frt = br.roomType'
             )
-            ->where('f.id = :id')
-            ->setParameter('id', $id);
-
-        if ($space !== null) {
-            $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = f.space'
-                )
-                ->andWhere('s = :space')
-                ->setParameter('space', $space);
-        }
-
-        if ($entityGrants !== null) {
-            $qb
-                ->andWhere('frt.id IN (:grantIds)')
-                ->setParameter('grantIds', $entityGrants);
-        }
-
-        if ($facilityEntityGrants !== null) {
-            $qb
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param Space|null $space
-     * @param array|null $entityGrants
-     * @param array|null $facilityEntityGrants
-     * @param $id
-     * @return mixed
-     */
-    public function getOne(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id)
-    {
-        $qb = $this
-            ->createQueryBuilder('frt')
             ->innerJoin(
                 Facility::class,
                 'f',
@@ -191,7 +140,7 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
                 Join::WITH,
                 's = f.space'
             )
-            ->where('frt.id = :id')
+            ->where('br.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -202,14 +151,8 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('frt.id IN (:grantIds)')
+                ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
-        }
-
-        if ($facilityEntityGrants !== null) {
-            $qb
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
         return $qb
@@ -220,19 +163,75 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param array|null $facilityEntityGrants
+     * @param $roomTypeId
+     * @param $date
+     * @return mixed
+     */
+    public function getByDate(Space $space = null, array $entityGrants = null, $roomTypeId, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('br')
+            ->innerJoin(
+                FacilityRoomType::class,
+                'frt',
+                Join::WITH,
+                'frt = br.roomType'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = frt.facility'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = f.space'
+            )
+            ->where('frt.id = :roomTypeId')
+            ->andWhere('br.date = :date')
+            ->setParameter('roomTypeId', $roomTypeId)
+            ->setParameter('date', $date);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('br.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param $ids
      * @return mixed
      */
-    public function findByIds(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $ids)
+    public function findByIds(Space $space = null, array $entityGrants = null, $ids)
     {
         $qb = $this
-            ->createQueryBuilder('frt')
-            ->where('frt.id IN (:ids)')
+            ->createQueryBuilder('br')
+            ->where('br.id IN (:ids)')
             ->setParameter('ids', $ids);
 
         if ($space !== null) {
             $qb
+                ->innerJoin(
+                    FacilityRoomType::class,
+                    'frt',
+                    Join::WITH,
+                    'frt = br.roomType'
+                )
                 ->innerJoin(
                     Facility::class,
                     'f',
@@ -249,19 +248,13 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
                 ->setParameter('space', $space);
         }
 
-        if ($facilityEntityGrants !== null) {
-            $qb
-                ->andWhere('f.id IN (:facilityGrantIds)')
-                ->setParameter('facilityGrantIds', $facilityEntityGrants);
-        }
-
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('frt.id IN (:grantIds)')
+                ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 
-        return $qb->groupBy('frt.id')
+        return $qb->groupBy('br.id')
             ->getQuery()
             ->getResult();
     }
@@ -277,35 +270,41 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
     public function getRelatedData(Space $space = null, array $entityGrants = null, $mappedBy = null, $id = null, array $ids = null)
     {
         $qb = $this
-            ->createQueryBuilder('frt')
-            ->select('frt.title');
+            ->createQueryBuilder('br')
+            ->innerJoin(
+                FacilityRoomType::class,
+                'frt',
+                Join::WITH,
+                'frt = br.roomType'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = frt.facility'
+            )
+            ->select('br.date as date');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
-                ->where('frt.' . $mappedBy . '= :id')
+                ->where('br.' . $mappedBy . '= :id')
                 ->setParameter('id', $id);
         }
 
         if ($ids !== null) {
             $qb
-                ->andWhere('frt.id IN (:ids)')
+                ->andWhere('br.id IN (:ids)')
                 ->setParameter('ids', $ids);
         }
 
         if ($mappedBy === null && $id === null && $ids === null) {
             $qb
-                ->andWhere('frt.id IN (:array)')
+                ->andWhere('br.id IN (:array)')
                 ->setParameter('array', []);
         }
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'f = frt.facility'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -318,7 +317,7 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
 
         if ($entityGrants !== null) {
             $qb
-                ->andWhere('frt.id IN (:grantIds)')
+                ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
         }
 

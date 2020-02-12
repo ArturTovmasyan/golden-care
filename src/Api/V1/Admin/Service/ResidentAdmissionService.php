@@ -161,6 +161,18 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
+     * @param $id
+     * @return ResidentAdmission|null|object
+     */
+    public function getActiveWithFacilityRoomBaseRateByResidentId($id)
+    {
+        /** @var ResidentAdmissionRepository $repo */
+        $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        return $repo->getActiveWithFacilityRoomBaseRateByResident($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $id);
+    }
+
+    /**
      * @return array
      */
     public function getActiveResidents(): ?array

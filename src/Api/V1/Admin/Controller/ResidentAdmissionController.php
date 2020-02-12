@@ -308,6 +308,24 @@ class ResidentAdmissionController extends BaseController
     }
 
     /**
+     * @Route("/{id}/active/base-rate", requirements={"id"="\d+"}, name="api_admin_resident_admission_get_active_resident_with_base_rate", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     */
+    public function getActiveResidentWithFacilityRoomBaseRateAction(Request $request, $id, ResidentAdmissionService $residentAdmissionService): JsonResponse
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentAdmissionService->getActiveWithFacilityRoomBaseRateByResidentId($id),
+            ['api_admin_resident_admission_get_active_with_base_rate']
+        );
+    }
+
+    /**
      * @Route("/active/first", name="api_admin_resident_admission_get_active_first_residents", methods={"GET"})
      *
      * @param Request $request

@@ -116,8 +116,7 @@ class FacilityRoomTypeController extends BaseController
                 'facility_id' => $request->get('facility_id'),
                 'title' => $request->get('title'),
                 'private' => $request->get('private'),
-                'description' => $request->get('description'),
-                'base_rates' => $request->get('base_rates')
+                'description' => $request->get('description')
             ]
         );
 
@@ -146,8 +145,7 @@ class FacilityRoomTypeController extends BaseController
                 'facility_id' => $request->get('facility_id'),
                 'title' => $request->get('title'),
                 'private' => $request->get('private'),
-                'description' => $request->get('description'),
-                'base_rates' => $request->get('base_rates')
+                'description' => $request->get('description')
             ]
         );
 

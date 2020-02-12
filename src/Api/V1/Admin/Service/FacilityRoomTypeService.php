@@ -3,17 +3,11 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\BaseRateNotBeBlankException;
-use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\BaseRate;
-use App\Entity\CareLevel;
 use App\Entity\FacilityRoomType;
 use App\Entity\Facility;
-use App\Repository\BaseRateRepository;
-use App\Repository\CareLevelRepository;
 use App\Repository\FacilityRoomTypeRepository;
 use App\Repository\FacilityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -106,14 +100,6 @@ class FacilityRoomTypeService extends BaseService implements IGridService
             $facilityRoomType->setPrivate($params['private']);
             $facilityRoomType->setDescription($params['description'] ?? '');
 
-            $baseRates = $this->saveBaseRates($currentSpace, $facilityRoomType, $params['base_rates'] ?? []);
-
-            if (\count($baseRates) < 1) {
-                throw new BaseRateNotBeBlankException();
-            }
-
-            $facilityRoomType->setBaseRates($baseRates);
-
             $this->validate($facilityRoomType, null, ['api_admin_facility_room_type_add']);
 
             $this->em->persist($facilityRoomType);
@@ -170,14 +156,6 @@ class FacilityRoomTypeService extends BaseService implements IGridService
             $entity->setPrivate($params['private']);
             $entity->setDescription($params['description'] ?? '');
 
-            $baseRates = $this->saveBaseRates($currentSpace, $entity, $params['base_rates'] ?? []);
-
-            if (\count($baseRates) < 1) {
-                throw new BaseRateNotBeBlankException();
-            }
-
-            $entity->setBaseRates($baseRates);
-
             $this->validate($entity, null, ['api_admin_facility_room_type_edit']);
 
             $this->em->persist($entity);
@@ -188,60 +166,6 @@ class FacilityRoomTypeService extends BaseService implements IGridService
 
             throw $e;
         }
-    }
-
-    /**
-     * @param $currentSpace
-     * @param FacilityRoomType $facilityRoomType
-     * @param array $baseRates
-     * @return array|null
-     */
-    private function saveBaseRates($currentSpace, FacilityRoomType $facilityRoomType, array $baseRates = []): ?array
-    {
-        $validationGroup = 'api_admin_base_rate_add';
-        if ($facilityRoomType->getId() !== null) {
-            $validationGroup = 'api_admin_base_rate_edit';
-
-            /** @var BaseRateRepository $baseRateRepo */
-            $baseRateRepo = $this->em->getRepository(BaseRate::class);
-
-            $oldRates = $baseRateRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(BaseRate::class), $facilityRoomType);
-
-            foreach ($oldRates as $rate) {
-                $this->em->remove($rate);
-            }
-        }
-
-        $facilityRoomTypeBaseRates = [];
-
-        foreach ($baseRates as $baseRate) {
-            $careLevelId = $baseRate['care_level_id'] ?? 0;
-
-            /** @var CareLevelRepository $careLevelRepo */
-            $careLevelRepo = $this->em->getRepository(CareLevel::class);
-
-            /** @var CareLevel $careLevel */
-            $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $careLevelId);
-
-            if ($careLevel === null) {
-                throw new CareLevelNotFoundException();
-            }
-
-            $amount = !empty($baseRate['amount']) ? $baseRate['amount'] : null;
-
-            $facilityRoomTypeBaseRate = new BaseRate();
-            $facilityRoomTypeBaseRate->setRoomType($facilityRoomType);
-            $facilityRoomTypeBaseRate->setCareLevel($careLevel);
-            $facilityRoomTypeBaseRate->setAmount($amount);
-
-            $this->validate($facilityRoomTypeBaseRate, null, [$validationGroup]);
-
-            $this->em->persist($facilityRoomTypeBaseRate);
-
-            $facilityRoomTypeBaseRates[] = $facilityRoomTypeBaseRate;
-        }
-
-        return $facilityRoomTypeBaseRates;
     }
 
     /**

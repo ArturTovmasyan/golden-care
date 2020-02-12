@@ -52,12 +52,6 @@ use App\Annotation\Grid;
  *              "id"         = "description",
  *              "type"       = "string",
  *              "field"      = "CONCAT(TRIM(SUBSTRING(frt.description, 1, 100)), CASE WHEN LENGTH(frt.description) > 100 THEN '…' ELSE '' END)"
- *          },
- *          {
- *              "id"         = "base_rates",
- *              "sortable"   = false,
- *              "type"       = "json_sorted",
- *              "field"      = "base_rates"
  *          }
  *     }
  * )
@@ -79,6 +73,8 @@ class FacilityRoomType
      *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get",
+     *     "api_admin_facility_room_base_rate_get",
+     *     "api_admin_facility_room_base_rate_list",
      *     "api_admin_resident_admission_get_active"
      * })
      */
@@ -105,6 +101,8 @@ class FacilityRoomType
      *     "api_admin_facility_room_get",
      *     "api_admin_resident_rent_list",
      *     "api_admin_resident_rent_get",
+     *     "api_admin_facility_room_base_rate_get",
+     *     "api_admin_facility_room_base_rate_list",
      *     "api_admin_resident_admission_get_active"
      * })
      */
@@ -156,12 +154,7 @@ class FacilityRoomType
     private $private;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\BaseRate", mappedBy="roomType", cascade={"persist"})
-     * @Groups({
-     *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get",
-     *     "api_admin_resident_admission_get_active"
-     * })
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomBaseRate", mappedBy="roomType", cascade={"persist"})
      */
     private $baseRates;
 
