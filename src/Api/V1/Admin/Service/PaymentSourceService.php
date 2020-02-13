@@ -3,20 +3,14 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\BaseRateNotBeBlankException;
-use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\CareLevel;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentRent;
-use App\Entity\PaymentSourceBaseRate;
 use App\Entity\Space;
-use App\Repository\CareLevelRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentRentRepository;
-use App\Repository\PaymentSourceBaseRateRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -91,14 +85,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setCareLevelAdjustment($careLevelAdjustment);
             $paymentSource->setSpace($space);
 
-            $baseRates = $this->saveBaseRates($currentSpace, $paymentSource, $careLevelAdjustment === true && $params['base_rates'] ? $params['base_rates'] : []);
-
-            if ($careLevelAdjustment === true && \count($baseRates) < 1) {
-                throw new BaseRateNotBeBlankException();
-            }
-
-            $paymentSource->setBaseRates($baseRates);
-
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
 
             if ($careLevelAdjustment === true) {
@@ -162,14 +148,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setCareLevelAdjustment($careLevelAdjustment);
             $entity->setSpace($space);
 
-            $baseRates = $this->saveBaseRates($currentSpace, $entity, $careLevelAdjustment === true && $params['base_rates'] ? $params['base_rates'] : []);
-
-            if ($careLevelAdjustment === true && \count($baseRates) < 1) {
-                throw new BaseRateNotBeBlankException();
-            }
-
-            $entity->setBaseRates($baseRates);
-
             $this->validate($entity, null, ['api_admin_payment_source_edit']);
 
             if ($careLevelAdjustment === true) {
@@ -188,60 +166,6 @@ class PaymentSourceService extends BaseService implements IGridService
 
             throw $e;
         }
-    }
-
-    /**
-     * @param $currentSpace
-     * @param PaymentSource $paymentSource
-     * @param array $baseRates
-     * @return array|null
-     */
-    private function saveBaseRates($currentSpace, PaymentSource $paymentSource, array $baseRates = []): ?array
-    {
-        $validationGroup = 'api_admin_source_base_rate_add';
-        if ($paymentSource->getId() !== null) {
-            $validationGroup = 'api_admin_source_base_rate_edit';
-
-            /** @var  PaymentSourceBaseRateRepository $baseRateRepo */
-            $baseRateRepo = $this->em->getRepository(PaymentSourceBaseRate::class);
-
-            $oldRates = $baseRateRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(PaymentSourceBaseRate::class), $paymentSource);
-
-            foreach ($oldRates as $rate) {
-                $this->em->remove($rate);
-            }
-        }
-
-        $paymentSourceBaseRates = [];
-
-        foreach ($baseRates as $baseRate) {
-            $careLevelId = $baseRate['care_level_id'] ?? 0;
-
-            /** @var CareLevelRepository $careLevelRepo */
-            $careLevelRepo = $this->em->getRepository(CareLevel::class);
-
-            /** @var CareLevel $careLevel */
-            $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $careLevelId);
-
-            if ($careLevel === null) {
-                throw new CareLevelNotFoundException();
-            }
-
-            $amount = !empty($baseRate['amount']) ? $baseRate['amount'] : 0;
-
-            $paymentSourceBaseRate = new PaymentSourceBaseRate();
-            $paymentSourceBaseRate->setPaymentSource($paymentSource);
-            $paymentSourceBaseRate->setCareLevel($careLevel);
-            $paymentSourceBaseRate->setAmount($amount);
-
-            $this->validate($paymentSourceBaseRate, null, [$validationGroup]);
-
-            $this->em->persist($paymentSourceBaseRate);
-
-            $paymentSourceBaseRates[] = $paymentSourceBaseRate;
-        }
-
-        return $paymentSourceBaseRates;
     }
 
     /**

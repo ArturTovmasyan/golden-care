@@ -6,9 +6,12 @@ use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use App\Model\SourcePeriod;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
@@ -62,12 +65,6 @@ use App\Annotation\Grid;
  *              "field"      = "ps.careLevelAdjustment"
  *          },
  *          {
- *              "id"         = "base_rates",
- *              "sortable"   = false,
- *              "type"       = "json_sorted",
- *              "field"      = "base_rates"
- *          },
- *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -88,6 +85,8 @@ class PaymentSource
      * @Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get",
      *     "api_lead_lead_list",
      *     "api_lead_lead_get"
      * })
@@ -111,6 +110,8 @@ class PaymentSource
      * @Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get",
      *     "api_lead_lead_list",
      *     "api_lead_lead_get"
      * })
@@ -186,11 +187,9 @@ class PaymentSource
     private $careLevelAdjustment;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRate", mappedBy="paymentSource", cascade={"persist"})
-     * @Groups({
-     *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
-     * })
+     * @ORM\OrderBy({"date" = "DESC"})
      */
     private $baseRates;
 
@@ -216,6 +215,35 @@ class PaymentSource
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="paymentType", cascade={"remove", "persist"})
      */
     private $leads;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("base_rates")
+     * @Serializer\Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     * @return Collection|PaymentSourceBaseRate[]|null
+     */
+    public function getRates()
+    {
+        $now = new \DateTime('now');
+
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->lt('date', $now))
+            ->orderBy(array('date' => Criteria::DESC))
+            ->setMaxResults(1)
+        ;
+
+        /** @var PaymentSourceBaseRate[] $data */
+        $data = $this->baseRates->matching($criteria);
+
+        if(\count($data) > 0) {
+            $data = $data[0]->getLevels();
+        }
+
+        return $data;
+    }
 
     /**
      * @return int

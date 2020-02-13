@@ -80,7 +80,9 @@ class CareLevel
      *     "api_admin_facility_room_base_rate_get",
      *     "api_admin_facility_room_base_rate_list",
      *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
+     *     "api_admin_payment_source_get",
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get"
      * })
      */
     private $id;
@@ -114,7 +116,9 @@ class CareLevel
      *     "api_admin_facility_room_base_rate_get",
      *     "api_admin_facility_room_base_rate_list",
      *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
+     *     "api_admin_payment_source_get",
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get"
      * })
      */
     private $title;
@@ -169,7 +173,7 @@ class CareLevel
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRate", mappedBy="careLevel", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRateCareLevel", mappedBy="careLevel", cascade={"remove", "persist"})
      */
     private $sourceBaseRates;
 

@@ -7,10 +7,38 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
+use App\Annotation\Grid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PaymentSourceBaseRateRepository")
- * @ORM\Table(name="tbl_payment_source_care_level")
+ * @ORM\Table(name="tbl_payment_source_base_rate")
+ * @Grid(
+ *     api_admin_payment_source_base_rate_grid={
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "sbr.id"
+ *          },
+ *          {
+ *              "id"         = "payment_source",
+ *              "type"       = "string",
+ *              "field"      = "ps.title"
+ *          },
+ *          {
+ *              "id"         = "date",
+ *              "type"       = "date",
+ *              "field"      = "sbr.date",
+ *          },
+ *          {
+ *              "id"         = "base_rates",
+ *              "sortable"   = false,
+ *              "type"       = "json_sorted",
+ *              "field"      = "base_rates"
+ *          }
+ *     }
+ * )
  */
 class PaymentSourceBaseRate
 {
@@ -23,8 +51,8 @@ class PaymentSourceBaseRate
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
-     *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get"
      * })
      */
     private $id;
@@ -38,60 +66,46 @@ class PaymentSourceBaseRate
      * @Assert\NotNull(
      *      message = "Please select a Payment Source",
      *      groups={
-     *          "api_admin_source_base_rate_edit",
-     *          "api_admin_source_base_rate_add"
+     *          "api_admin_payment_source_base_rate_edit",
+     *          "api_admin_payment_source_base_rate_add"
      *      }
      * )
+     * @Groups({
+     *     "api_admin_payment_source_base_rate_list",
+     *     "api_admin_payment_source_base_rate_get"
+     * })
      */
     private $paymentSource;
 
     /**
-     * @var CareLevel
-     * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel", inversedBy="sourceBaseRates", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *      @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="CASCADE")
+     * @var \DateTime
+     * @Assert\NotBlank(groups={
+     *     "api_admin_payment_source_base_rate_add",
+     *     "api_admin_payment_source_base_rate_edit"
      * })
-     * @Assert\NotNull(
-     *      message = "Please select a Care Level",
-     *      groups={
-     *          "api_admin_source_base_rate_edit",
-     *          "api_admin_source_base_rate_add"
-     *      }
-     * )
+     * @Assert\DateTime(groups={
+     *     "api_admin_payment_source_base_rate_add",
+     *     "api_admin_payment_source_base_rate_edit"
+     * })
+     * @ORM\Column(name="date", type="datetime")
      * @Groups({
-     *      "api_admin_payment_source_list",
-     *      "api_admin_payment_source_get"
+     *     "api_admin_payment_source_base_rate_get",
+     *     "api_admin_payment_source_base_rate_list"
      * })
      */
-    private $careLevel;
+    private $date;
 
     /**
-     * @var float
-     * @ORM\Column(name="amount", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_source_base_rate_add",
-     *     "api_admin_source_base_rate_edit"
-     * })
-     * @Assert\Regex(
-     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
-     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
-     *      groups={
-     *          "api_admin_source_base_rate_add",
-     *          "api_admin_source_base_rate_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_source_base_rate_add",
-     *          "api_admin_source_base_rate_edit"
-     * })
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRateCareLevel", mappedBy="baseRate", cascade={"persist"})
+     * @Serializer\SerializedName("base_rates")
      * @Groups({
+     *     "api_admin_payment_source_base_rate_get",
+     *     "api_admin_payment_source_base_rate_list",
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"
      * })
      */
-    private $amount;
+    private $levels;
 
     /**
      * @return int
@@ -126,34 +140,34 @@ class PaymentSourceBaseRate
     }
 
     /**
-     * @return CareLevel|null
+     * @return \DateTime|null
      */
-    public function getCareLevel(): ?CareLevel
+    public function getDate(): ?\DateTime
     {
-        return $this->careLevel;
+        return $this->date;
     }
 
     /**
-     * @param CareLevel|null $careLevel
+     * @param \DateTime|null $date
      */
-    public function setCareLevel(?CareLevel $careLevel): void
+    public function setDate(?\DateTime $date): void
     {
-        $this->careLevel = $careLevel;
+        $this->date = $date;
     }
 
     /**
-     * @return float|null
+     * @return mixed
      */
-    public function getAmount(): ?float
+    public function getLevels()
     {
-        return $this->amount;
+        return $this->levels;
     }
 
     /**
-     * @param float|null $amount
+     * @param mixed $levels
      */
-    public function setAmount(?float $amount): void
+    public function setLevels($levels): void
     {
-        $this->amount = $amount;
+        $this->levels = $levels;
     }
 }

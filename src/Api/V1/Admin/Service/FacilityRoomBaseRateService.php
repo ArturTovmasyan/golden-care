@@ -9,7 +9,6 @@ use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\DuplicateBaseRateByDateException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomTypeNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
-use App\Entity\Assessment\Row;
 use App\Entity\Facility;
 use App\Entity\FacilityRoomBaseRate;
 use App\Entity\CareLevel;
@@ -340,7 +339,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
         }
 
         /** @var FacilityRoomBaseRateRepository $repo */
-        $repo = $this->em->getRepository(Row::class);
+        $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
 
         $entities = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $ids);
 

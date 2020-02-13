@@ -103,7 +103,6 @@ class PaymentSourceController extends BaseController
                 'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'care_level_adjustment' => $request->get('care_level_adjustment'),
-                'base_rates' => $request->get('base_rates'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -135,7 +134,6 @@ class PaymentSourceController extends BaseController
                 'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'care_level_adjustment' => $request->get('care_level_adjustment'),
-                'base_rates' => $request->get('base_rates'),
                 'space_id' => $request->get('space_id')
             ]
         );
