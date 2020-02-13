@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -175,9 +176,9 @@ class FacilityRoomType
      * @Serializer\Groups({
      *     "api_admin_resident_admission_get_active"
      * })
-     * @return ArrayCollection
+     * @return Collection|FacilityRoomBaseRate[]|null
      */
-    public function getRates(): ?ArrayCollection
+    public function getRates()
     {
         $now = new \DateTime('now');
 
@@ -187,7 +188,14 @@ class FacilityRoomType
             ->setMaxResults(1)
         ;
 
-        return $this->baseRates->matching($criteria);
+        /** @var FacilityRoomBaseRate[] $data */
+        $data = $this->baseRates->matching($criteria);
+
+        if(\count($data) > 0) {
+            $data = $data[0]->getLevels();
+        }
+
+        return $data;
     }
 
     /**
