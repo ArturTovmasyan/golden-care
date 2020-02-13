@@ -53,6 +53,7 @@ class FacilityRoomBaseRate
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",
      *     "api_admin_facility_room_base_rate_list",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $id;
@@ -90,7 +91,8 @@ class FacilityRoomBaseRate
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",
-     *     "api_admin_facility_room_base_rate_list"
+     *     "api_admin_facility_room_base_rate_list",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $date;
@@ -100,7 +102,8 @@ class FacilityRoomBaseRate
      * @Serializer\SerializedName("base_rates")
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",
-     *     "api_admin_facility_room_base_rate_list"
+     *     "api_admin_facility_room_base_rate_list",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $levels;

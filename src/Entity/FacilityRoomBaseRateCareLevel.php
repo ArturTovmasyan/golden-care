@@ -26,7 +26,8 @@ class FacilityRoomBaseRateCareLevel
      *     "api_admin_facility_room_base_rate_get",
      *     "api_admin_facility_room_base_rate_list",
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $id;
@@ -62,7 +63,8 @@ class FacilityRoomBaseRateCareLevel
      * )
      * @Groups({
      *      "api_admin_facility_room_base_rate_get",
-     *      "api_admin_facility_room_base_rate_list"
+     *      "api_admin_facility_room_base_rate_list",
+     *      "api_admin_resident_admission_get_active"
      * })
      */
     private $careLevel;
@@ -90,7 +92,8 @@ class FacilityRoomBaseRateCareLevel
      * })
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",
-     *     "api_admin_facility_room_base_rate_list"
+     *     "api_admin_facility_room_base_rate_list",
+     *     "api_admin_resident_admission_get_active"
      * })
      */
     private $amount;

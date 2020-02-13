@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
@@ -154,15 +156,39 @@ class FacilityRoomType
     private $private;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomBaseRate", mappedBy="roomType", cascade={"persist"})
+     * @ORM\OrderBy({"date" = "DESC"})
      */
     private $baseRates;
+
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoom", mappedBy="type", cascade={"remove", "persist"})
      */
     private $rooms;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("base_rates")
+     * @Serializer\Groups({
+     *     "api_admin_resident_admission_get_active"
+     * })
+     * @return ArrayCollection
+     */
+    public function getRates(): ?ArrayCollection
+    {
+        $now = new \DateTime('now');
+
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->lt('date', $now))
+            ->orderBy(array('date' => Criteria::DESC))
+            ->setMaxResults(1)
+        ;
+
+        return $this->baseRates->matching($criteria);
+    }
 
     /**
      * @return int
