@@ -21,8 +21,9 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
+     * @param null $roomTypeId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $roomTypeId = null): void
     {
         $queryBuilder
             ->from(FacilityRoomBaseRate::class, 'br')
@@ -35,6 +36,12 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
             )
             ->join('br.levels', 'brl')
             ->join('brl.careLevel', 'cl');
+
+        if ($roomTypeId !== null) {
+            $queryBuilder
+                ->andWhere('frt.id = :roomTypeId')
+                ->setParameter('roomTypeId', $roomTypeId);
+        }
 
         if ($space !== null) {
             $queryBuilder
@@ -61,16 +68,17 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
         }
 
         $queryBuilder
+            ->orderBy('br.date', 'DESC')
             ->groupBy('br.id');
     }
 
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param $id
+     * @param null $id
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id)
+    public function getBy(Space $space = null, array $entityGrants = null, $id = null)
     {
         $qb = $this
             ->createQueryBuilder('br')
@@ -79,9 +87,13 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
                 'frt',
                 Join::WITH,
                 'frt = br.roomType'
-            )
-            ->where('frt.id = :id')
-            ->setParameter('id', $id);
+            );
+
+        if ($id !== null) {
+            $qb
+                ->where('frt.id = :id')
+                ->setParameter('id', $id);
+        }
 
         if ($space !== null) {
             $qb
@@ -108,6 +120,7 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
         }
 
         return $qb
+            ->orderBy('br.date', 'DESC')
             ->getQuery()
             ->getResult();
     }

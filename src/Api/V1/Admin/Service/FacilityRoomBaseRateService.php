@@ -33,18 +33,15 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
-        if (empty($params) || empty($params[0]['room_type_id'])) {
+        $roomTypeId = null;
+        if (!empty($params) || !empty($params[0]['room_type_id'])) {
             $roomTypeId = $params[0]['room_type_id'];
-
-            $queryBuilder
-                ->where('br.roomType = :roomTypeId')
-                ->setParameter('roomTypeId', $roomTypeId);
         }
-        
+
         /** @var FacilityRoomBaseRateRepository $repo */
         $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $queryBuilder);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $queryBuilder, $roomTypeId);
     }
 
     /**
@@ -53,16 +50,15 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['room_type_id'])) {
+        $roomTypeId = null;
+        if (!empty($params) || !empty($params[0]['room_type_id'])) {
             $roomTypeId = $params[0]['room_type_id'];
-
-            /** @var FacilityRoomBaseRateRepository $repo */
-            $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
-
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $roomTypeId);
         }
 
-        throw new FacilityRoomTypeNotFoundException();
+        /** @var FacilityRoomBaseRateRepository $repo */
+        $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
+
+        return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $roomTypeId);
     }
 
     /**
