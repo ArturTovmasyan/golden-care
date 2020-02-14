@@ -183,7 +183,7 @@ class FacilityDocument
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("file")
      * @Serializer\Groups({
-     *     "api_admin_facility_document_list"
+     *     "api_admin_facility_document_list",
      *     "api_admin_facility_document_get"
      * })
      */
