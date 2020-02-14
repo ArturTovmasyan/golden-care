@@ -58,7 +58,24 @@ class ResidentDocumentService extends BaseService implements IGridService
             /** @var ResidentDocumentRepository $repo */
             $repo = $this->em->getRepository(ResidentDocument::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDocument::class), $residentId);
+            $list = $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentDocument::class), $residentId);
+
+            /** @var Document $entity */
+            foreach ($list as $entity) {
+                if ($entity !== null && $entity->getFile() !== null) {
+                    $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                        'Bucket' => getenv('AWS_BUCKET'),
+                        'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
+                    ]);
+                    $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                    $entity->setDownloadUrl((string)$request->getUri());
+                } else {
+                    $entity->setDownloadUrl(null);
+                }
+            }
+
+            return $list;
         }
 
         throw new ResidentNotFoundException();

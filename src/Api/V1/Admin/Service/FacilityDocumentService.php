@@ -55,21 +55,37 @@ class FacilityDocumentService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $facilityId = null;
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
-
-            $categoryId = null;
-            if (!empty($params[0]['category_id'])) {
-                $categoryId = $params[0]['category_id'];
-            }
-
-            /** @var FacilityDocumentRepository $repo */
-            $repo = $this->em->getRepository(FacilityDocument::class);
-
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId, $categoryId);
         }
 
-        throw new FacilityNotFoundException();
+        $categoryId = null;
+        if (!empty($params[0]['category_id'])) {
+            $categoryId = $params[0]['category_id'];
+        }
+
+        /** @var FacilityDocumentRepository $repo */
+        $repo = $this->em->getRepository(FacilityDocument::class);
+
+        $list = $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId, $categoryId);
+
+        /** @var Document $entity */
+        foreach ($list as $entity) {
+            if ($entity !== null && $entity->getFile() !== null) {
+                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                    'Bucket' => getenv('AWS_BUCKET'),
+                    'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
+                ]);
+                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                $entity->setDownloadUrl((string)$request->getUri());
+            } else {
+                $entity->setDownloadUrl(null);
+            }
+        }
+
+        return $list;
     }
 
     /**

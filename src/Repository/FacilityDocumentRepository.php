@@ -98,7 +98,7 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
      * @param null $categoryId
      * @return mixed
      */
-    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id, $categoryId = null)
+    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id = null, $categoryId = null)
     {
         $qb = $this
             ->createQueryBuilder('fd')
@@ -113,9 +113,13 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
                 'dc',
                 Join::WITH,
                 'dc = fd.category'
-            )
-            ->where('f.id = :id')
-            ->setParameter('id', $id);
+            );
+
+        if ($id !== null) {
+            $qb
+                ->where('f.id = :id')
+                ->setParameter('id', $id);
+        }
 
         if ($categoryId !== null) {
             $qb
