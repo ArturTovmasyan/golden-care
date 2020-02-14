@@ -148,8 +148,8 @@ class ResidentDocument
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("date_created")
      * @Serializer\Groups({
-     *     "api_admin_facility_document_list",
-     *     "api_admin_facility_document_get"
+     *     "api_admin_resident_document_list",
+     *     "api_admin_resident_document_get"
      * })
      */
     public function getDateCreated(): ?\DateTime
@@ -161,8 +161,8 @@ class ResidentDocument
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("date_modified")
      * @Serializer\Groups({
-     *     "api_admin_facility_document_list",
-     *     "api_admin_facility_document_get"
+     *     "api_admin_resident_document_list",
+     *     "api_admin_resident_document_get"
      * })
      */
     public function getDateModified(): ?\DateTime
@@ -174,8 +174,8 @@ class ResidentDocument
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("owner")
      * @Serializer\Groups({
-     *     "api_admin_facility_document_list",
-     *     "api_admin_facility_document_get"
+     *     "api_admin_resident_document_list",
+     *     "api_admin_resident_document_get"
      * })
      */
     public function getOwner(): ?string
