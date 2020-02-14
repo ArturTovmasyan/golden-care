@@ -133,7 +133,10 @@ class ResidentDocument
     /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("file")
-     * @Serializer\Groups({"api_admin_resident_document_get"})
+     * @Serializer\Groups({
+     *     "api_admin_resident_document_list",
+     *     "api_admin_resident_document_get"
+     * })
      */
     public function getResidentDocumentFile(): ?string
     {
