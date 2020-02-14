@@ -49,54 +49,49 @@ class ImageFilterService
 
         $base64 = $image->getPhoto();
 
-        $image->setPhoto3535($base64);
-        $image->setPhoto150150($base64);
-        $image->setPhoto300300($base64);
+        $base64Items = explode(';base64,', $base64);
+        $base64Image = $base64Items[1];
 
-//
-//        $base64Items = explode(';base64,', $base64);
-//        $base64Image = $base64Items[1];
-//
-//        $base64FirstPart = explode(':', $base64Items[0]);
-//        $mimeType = $base64FirstPart[1];
-//
-//        $mimeTypeParts = explode('/', $mimeType);
-//        $format = $mimeTypeParts[1];
-//
-//        if (!\in_array($format, $filterService['extensions'], false)) {
-//            throw new FileExtensionException();
-//        }
-//
-//        //create binary
-//        $binary = new Binary(base64_decode($base64Image), $mimeType, $format);
-//
-//        //create all filter images
-//        /** @var FilterManager $filterManager */
-//        $filterManager = $this->container->get('liip_imagine.filter.manager');
-//
-//        //get all image filters
-//        $filters = $filterManager->getFilterConfiguration()->all();
-//        $filters = array_keys($filters);
-//
-//        $binary = $filterManager->applyFilter($binary, $filters[1]);
-//
-//        unset($filters[0], $filters[1]);
-//
-//        //create cache versions for files
-//        foreach ($filters as $key => $filter) {
-//            $data = $filterManager->applyFilter($binary, $filter)->getContent();
-//            if ($data) {
-//                $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
-//
-//                if ($key === 2) {
-//                    $image->setPhoto3535($base64);
-//                } elseif ($key === 3) {
-//                    $image->setPhoto150150($base64);
-//                } elseif ($key === 4) {
-//                    $image->setPhoto300300($base64);
-//                }
-//            }
-//        }
+        $base64FirstPart = explode(':', $base64Items[0]);
+        $mimeType = $base64FirstPart[1];
+
+        $mimeTypeParts = explode('/', $mimeType);
+        $format = $mimeTypeParts[1];
+
+        if (!\in_array($format, $filterService['extensions'], false)) {
+            throw new FileExtensionException();
+        }
+
+        //create binary
+        $binary = new Binary(base64_decode($base64Image), $mimeType, $format);
+
+        //create all filter images
+        /** @var FilterManager $filterManager */
+        $filterManager = $this->container->get('liip_imagine.filter.manager');
+
+        //get all image filters
+        $filters = $filterManager->getFilterConfiguration()->all();
+        $filters = array_keys($filters);
+
+        $binary = $filterManager->applyFilter($binary, $filters[1]);
+
+        unset($filters[0], $filters[1]);
+
+        //create cache versions for files
+        foreach ($filters as $key => $filter) {
+            $data = $filterManager->applyFilter($binary, $filter)->getContent();
+            if ($data) {
+                $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
+
+                if ($key === 2) {
+                    $image->setPhoto3535($base64);
+                } elseif ($key === 3) {
+                    $image->setPhoto150150($base64);
+                } elseif ($key === 4) {
+                    $image->setPhoto300300($base64);
+                }
+            }
+        }
 
         $this->em->persist($image);
     }
