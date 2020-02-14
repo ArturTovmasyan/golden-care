@@ -147,8 +147,11 @@ class FacilityDocumentRepository extends EntityRepository implements RelatedInfo
                 ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
+        $qb
+            ->orderBy('fd.updatedAt', 'DESC')
+            ->addOrderBy('fd.title', 'ASC');
+
         return $qb
-            ->orderBy('fd.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

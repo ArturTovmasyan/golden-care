@@ -144,6 +144,7 @@ class DocumentRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
+            ->orderBy('d.updatedAt', 'DESC')
             ->addOrderBy('d.title', 'ASC');
 
         return $qb

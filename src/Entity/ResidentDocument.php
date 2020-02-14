@@ -144,6 +144,32 @@ class ResidentDocument
         return null;
     }
 
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("date_created")
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    public function getDateCreated(): ?\DateTime
+    {
+        return $this->getCreatedAt();
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("date_modified")
+     * @Serializer\Groups({
+     *     "api_admin_document_list",
+     *     "api_admin_document_get"
+     * })
+     */
+    public function getDateModified(): ?\DateTime
+    {
+        return $this->getUpdatedAt();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

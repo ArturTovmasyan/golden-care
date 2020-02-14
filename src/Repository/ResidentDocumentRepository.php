@@ -99,8 +99,11 @@ class ResidentDocumentRepository extends EntityRepository implements RelatedInfo
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $qb
+            ->orderBy('rd.updatedAt', 'DESC')
+            ->addOrderBy('rd.title', 'ASC');
+
         return $qb
-            ->orderBy('rd.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
