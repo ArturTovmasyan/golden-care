@@ -293,7 +293,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             $pdfFileService = $this->container->getParameter('pdf_file_service');
 
             $firstFile = $entity->getFirstFile();
-            if (!empty($fileFirst !== null)) {
+            if ($fileFirst !== null) {
                 if (!StringUtil::starts_with($fileFirst, 'http')) {
                     if ($firstFile !== null) {
                         $this->s3Service->removeFile($firstFile->getS3Id(), $firstFile->getType());
@@ -337,7 +337,7 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             }
 
             $secondFile = $entity->getSecondFile();
-            if (!empty($fileSecond !== null)) {
+            if ($fileSecond !== null) {
                 if (!StringUtil::starts_with($fileSecond, 'http')) {
                     if ($secondFile !== null) {
                         $this->s3Service->removeFile($secondFile->getS3Id(), $secondFile->getType());
