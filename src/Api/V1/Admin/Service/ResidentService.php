@@ -2365,7 +2365,7 @@ class ResidentService extends BaseService implements IGridService
         $entity = $this->getById($id);
 
         if (!empty($entity) && $entity->getImage() !== null) {
-            $parseFile = Parser::parse($entity->getImage()->getPhoto300300());
+            $parseFile = Parser::parse($entity->getImage()->getPhoto());
 
             return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
         }

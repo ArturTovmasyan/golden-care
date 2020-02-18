@@ -353,7 +353,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
         $result = [];
         $residents = [];
-        $total = 0;
+        $total = 1;
         $inactive = false;
         if ($state === ResidentState::TYPE_NO_ADMISSION) {
             /** @var ResidentRepository $repo */
@@ -375,6 +375,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             $residents = $repo->getMobilePerPageActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $page, $perPage, $date, $inactive, $type, $typeId);
             $total = $repo->getCountActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $this->getNotGrantResidentIds(), $date, $inactive, $type, $typeId);
+        }
+
+        if ($total > 0 && $perPage > 0) {
+            $total = (int)ceil($total/$perPage);
         }
 
         $finalResidents = [];
