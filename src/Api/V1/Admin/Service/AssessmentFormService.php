@@ -187,7 +187,7 @@ class AssessmentFormService extends BaseService implements IGridService
      * @param array $categoryIds
      * @return bool
      */
-    private function saveCategories(Form $form, $categoryIds = []): ?bool
+    private function saveCategories(Form $form, $categoryIds = [])
     {
         /**
          * @var FormCategory $existingCategory
