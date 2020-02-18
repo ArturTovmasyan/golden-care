@@ -104,6 +104,9 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
 
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
+                $dateFormatted = $date->format('Y-m-d 00:00:00');
+
+                $date = new \DateTime($dateFormatted);
 
                 /** @var FacilityRoomBaseRateRepository $repo */
                 $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
@@ -182,6 +185,9 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
 
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
+                $dateFormatted = $date->format('Y-m-d 00:00:00');
+
+                $date = new \DateTime($dateFormatted);
             }
 
             $entity->setDate($date);

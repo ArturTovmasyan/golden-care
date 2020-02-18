@@ -103,6 +103,9 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
 
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
+                $dateFormatted = $date->format('Y-m-d 00:00:00');
+
+                $date = new \DateTime($dateFormatted);
 
                 /** @var PaymentSourceBaseRateRepository $repo */
                 $repo = $this->em->getRepository(PaymentSourceBaseRate::class);
@@ -185,6 +188,9 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
 
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
+                $dateFormatted = $date->format('Y-m-d 00:00:00');
+
+                $date = new \DateTime($dateFormatted);
             }
 
             $entity->setDate($date);
