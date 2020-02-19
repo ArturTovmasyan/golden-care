@@ -427,13 +427,22 @@ physician:
 
 health:
   title: 'Data Health Reports'
-  show_in_resident_list: true
+  show_in_resident_list: false
   show_in_group_list: true
   reports:
     resident-rps:
       service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getResidentRpsReport
       title: 'Resident RPs: List of residents who do not have RPs assigned'
-      show_in_resident_list: true
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        group:
+          select_all: true
+    missing-rent-records:
+      service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getMissingRentRecordsReport
+      title: 'Missing Rent Records: List of Active Residents who do not have a valid Room Rent Record'
+      show_in_resident_list: false
       show_in_group_list: true
       formats: ['csv']
       parameters:
