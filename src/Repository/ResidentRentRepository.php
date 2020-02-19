@@ -430,58 +430,29 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $type
-     * @param ImtDateTimeInterval|null $reportInterval
+     * @param ImtDateTimeInterval $reportInterval
      * @param null $typeId
      * @param array|null $notGrantResidentIds
      * @return mixed
      */
-    public function getAdmissionRentsWithSources(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval = null, $typeId = null, array $notGrantResidentIds = null)
+    public function getAdmissionRentsWithSources(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null, array $notGrantResidentIds = null)
     {
         $qb = $this
             ->getResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
-            ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
-                        FROM App:ResidentRent mrr 
-                        JOIN mrr.resident res 
-                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end)
+            ->andWhere('ra.admissionType < :admissionType')
+            ->andWhere('ra.id IN (SELECT MAX(mra.id)
+                        FROM App:ResidentAdmission mra
+                        JOIN mra.resident mrar
+                        WHERE (mra.end IS NULL OR mra.end > = :start) AND (mra.start < = :end) AND mra.admissionType < :admissionType
+                        GROUP BY mrar.id)'
+            )
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id)
+                        FROM App:ResidentRent mrr
+                        JOIN mrr.resident res
+                        WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end) AND (mrr.end IS NULL OR mrr.end > = :start) AND (mrr.start < = :end)
                         GROUP BY res.id)'
-            );
-
-        if ($reportInterval) {
-            if ($reportInterval->getEnd()) {
-                $qb
-                    ->andWhere('ra.id IN (SELECT MAX(mra.id)
-                        FROM App:ResidentAdmission mra
-                        JOIN mra.resident mrar
-                        WHERE (mra.end IS NULL OR mra.end > = :startDate) AND (mra.start < = :endDate)
-                        GROUP BY mrar.id)'
-                    )
-                    ->setParameter('startDate', $reportInterval->getStart())
-                    ->setParameter('endDate', $reportInterval->getEnd());
-            } else {
-                $qb
-                    ->andWhere('ra.id IN (SELECT MAX(mra.id)
-                        FROM App:ResidentAdmission mra
-                        JOIN mra.resident mrar
-                        WHERE (mra.end IS NULL OR mra.end > = :startDate)
-                        GROUP BY mrar.id)'
-                    )
-                    ->setParameter('startDate', $reportInterval->getStart());
-            }
-        } else {
-            $qb
-                ->andWhere('ra.id IN (SELECT MAX(mra.id)
-                    FROM App:ResidentAdmission mra
-                    JOIN mra.resident mrar
-                    GROUP BY mrar.id)'
-                );
-        }
-
-        $qb
-            ->andWhere('r.id IN (SELECT ar.id 
-                        FROM App:ResidentAdmission ara 
-                        JOIN ara.resident ar 
-                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
-            );
+            )
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
 
         if ($space !== null) {
             $qb

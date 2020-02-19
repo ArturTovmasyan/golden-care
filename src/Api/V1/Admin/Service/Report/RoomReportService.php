@@ -41,7 +41,6 @@ use App\Repository\PaymentSourceRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentRentRepository;
-use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Util\Common\ImtDateTimeInterval;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -88,18 +87,9 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
-        $residentIds = array_map(function ($item) {
-            return $item['id'];
-        }, $data);
-
-        /** @var ResidentRepository $residentRepo */
-        $residentRepo = $this->em->getRepository(Resident::class);
-
-        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
-
         $typeIds = array_map(function ($item) {
             return $item['typeId'];
-        }, $residents);
+        }, $data);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -135,26 +125,8 @@ class RoomReportService extends BaseService
 
         $sources = $sourceRepo->getPaymentSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(PaymentSource::class));
 
-        $finalData = [];
-        foreach ($residents as $resident) {
-            foreach ($data as $datum) {
-                if ($datum['id'] === $resident['id']) {
-                    $resident['rentId'] = $datum['rentId'];
-                    $resident['amount'] = $datum['amount'];
-                    $resident['period'] = RentPeriod::MONTHLY;
-                    $resident['sources'] = $datum['sources'];
-
-                    $finalData[] = $resident;
-                }
-            }
-
-            if (!\in_array($resident['id'], $residentIds, false)) {
-                $finalData[] = $resident;
-            }
-        }
-
         $report = new Payor();
-        $report->setData($finalData);
+        $report->setData($data);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
