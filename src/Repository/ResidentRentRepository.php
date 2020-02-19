@@ -566,12 +566,16 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         'f.id as typeId,
                         f.name as typeName,
                         f.shorthand as typeShorthand,
+                        f.address as address,
                         fr.number as roomNumber,
                         frt.private as private,
                         fr.floor as floor,
                         fb.number as bedNumber,
                         fb.id as bedId,
-                        cl.title as careLevel'
+                        cl.title as careLevel,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
                     )
                     ->innerJoin(
                         FacilityBed::class,
@@ -602,6 +606,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         'cl',
                         Join::WITH,
                         'ra.careLevel = cl'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'f.csz = csz'
                     );
 
                 $qb
@@ -621,11 +631,15 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         'a.id as typeId,
                         a.name as typeName,
                         a.shorthand as typeShorthand,
+                        a.address as address,
                         ar.number as roomNumber,
                         ar.private as private,
                         ar.floor as floor,
                         ab.number as bedNumber
-                        ab.id as bedId'
+                        ab.id as bedId,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
                     )
                     ->innerJoin(
                         ApartmentBed::class,
@@ -644,6 +658,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         'a',
                         Join::WITH,
                         'ar.apartment = a'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'a.csz = csz'
                     );
 
                 $qb
@@ -665,7 +685,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         reg.shorthand as typeShorthand,
                         ra.address as address,
                         csz.city as city,
-                        csz.stateAbbr as state,
+                        csz.stateAbbr as stateAbbr,
                         csz.zipMain as zip,
                         cl.title as careLevel'
                     )
@@ -717,6 +737,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     {
         $qb = $this
             ->getRoomListResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('ra.admissionType < :admissionType')
             ->andWhere('rr.id IN (SELECT MAX(mrr.id) 
                         FROM App:ResidentRent mrr 
                         JOIN mrr.resident res 
@@ -729,11 +750,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         WHERE (mra.start < = :endDate AND mra.start > = :startDate) OR (mra.start < :startDate AND (mra.end IS NULL OR mra.end > :startDate))
                         GROUP BY mrar.id)'
             )
-            ->andWhere('r.id IN (SELECT ar.id 
-                        FROM App:ResidentAdmission ara 
-                        JOIN ara.resident ar 
-                        WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
-            )
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
             ->setParameter('startDate', $reportInterval->getStart())
             ->setParameter('endDate', $reportInterval->getEnd());
 

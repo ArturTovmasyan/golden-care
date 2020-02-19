@@ -206,18 +206,9 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
-        $residentIds = array_map(function ($item) {
-            return $item['id'];
-        }, $data);
-
-        /** @var ResidentRepository $residentRepo */
-        $residentRepo = $this->em->getRepository(Resident::class);
-
-        $residents = $residentRepo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, null, $this->getNotGrantResidentIds());
-
         $typeIds = array_map(function ($item) {
             return $item['typeId'];
-        }, $residents);
+        }, $data);
         $countTypeIds = array_count_values($typeIds);
         $place = [];
         $i = 0;
@@ -250,25 +241,8 @@ class RoomReportService extends BaseService
 
         $vacants = $this->getRoomVacancyList($type, $groupAll, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
-        $finalData = [];
-        foreach ($residents as $resident) {
-            foreach ($data as $datum) {
-                if ($datum['id'] === $resident['id']) {
-                    $resident['rentId'] = $datum['rentId'];
-                    $resident['amount'] = $datum['amount'];
-                    $resident['period'] = RentPeriod::MONTHLY;
-
-                    $finalData[] = $resident;
-                }
-            }
-
-            if (!\in_array($resident['id'], $residentIds, false)) {
-                $finalData[] = $resident;
-            }
-        }
-
         $report = new RoomList();
-        $report->setData($finalData);
+        $report->setData($data);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
