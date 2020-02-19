@@ -2481,6 +2481,11 @@ class ResidentService extends BaseService implements IGridService
 
                         $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
 
+                        $now = new \DateTime('now');
+                        $resident->setUpdatedAt($now);
+
+                        $this->em->persist($resident);
+
                         $this->em->flush();
                     }
 
