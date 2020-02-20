@@ -141,17 +141,17 @@ class DataHealthReportService extends BaseService
             }
         }
 
-        $moreThanTwoEndDateNullIds = [];
+        $moreThanOneEndDateNullIds = [];
         foreach ($modifiedRents as $key => $modifiedRent) {
-            $countMoreThanTwoEndDateNull = 0;
+            $countMoreThanOneEndDateNull = 0;
             foreach ($modifiedRent as $rent) {
                 if ($rent['end'] === null) {
-                    ++$countMoreThanTwoEndDateNull;
+                    ++$countMoreThanOneEndDateNull;
                 }
             }
 
-            if ($countMoreThanTwoEndDateNull > 1) {
-                $moreThanTwoEndDateNullIds[] = $key;
+            if ($countMoreThanOneEndDateNull > 1) {
+                $moreThanOneEndDateNullIds[] = $key;
             }
         }
 
@@ -174,7 +174,7 @@ class DataHealthReportService extends BaseService
                 }
             }
 
-            if ($isOverlap && !\in_array($key, $moreThanTwoEndDateNullIds, false)) {
+            if ($isOverlap && !\in_array($key, $moreThanOneEndDateNullIds, false)) {
                 $overlapIds[] = $key;
             }
         }
@@ -189,7 +189,7 @@ class DataHealthReportService extends BaseService
         $report->setResidents($residents);
         $report->setRentResidentIds($rentResidentIds);
         $report->setEndDateInThePastIds($endDateInThePastIds);
-        $report->setMoreThanTwoEndDateNullIds($moreThanTwoEndDateNullIds);
+        $report->setMoreThanOneEndDateNullIds($moreThanOneEndDateNullIds);
         $report->setOverlapIds($overlapIds);
         $report->setStrategyId($type);
 

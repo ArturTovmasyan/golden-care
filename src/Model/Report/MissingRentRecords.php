@@ -10,7 +10,7 @@ class MissingRentRecords extends Base
     private $residents = [];
     private $rentResidentIds = [];
     private $endDateInThePastIds = [];
-    private $moreThanTwoEndDateNullIds = [];
+    private $moreThanOneEndDateNullIds = [];
     private $overlapIds = [];
 
     /**
@@ -72,19 +72,19 @@ class MissingRentRecords extends Base
     }
 
     /**
-     * @param $moreThanTwoEndDateNullIds
+     * @param $moreThanOneEndDateNullIds
      */
-    public function setMoreThanTwoEndDateNullIds($moreThanTwoEndDateNullIds): void
+    public function setMoreThanOneEndDateNullIds($moreThanOneEndDateNullIds): void
     {
-        $this->moreThanTwoEndDateNullIds = $moreThanTwoEndDateNullIds;
+        $this->moreThanOneEndDateNullIds = $moreThanOneEndDateNullIds;
     }
 
     /**
      * @return array
      */
-    public function getMoreThanTwoEndDateNullIds(): ?array
+    public function getMoreThanOneEndDateNullIds(): ?array
     {
-        return $this->moreThanTwoEndDateNullIds;
+        return $this->moreThanOneEndDateNullIds;
     }
 
     /**
