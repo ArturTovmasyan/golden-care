@@ -18,7 +18,7 @@ BEGIN
 
   IF payment_source_title IS NOT NULL THEN
     SELECT JSON_ARRAY_APPEND(payment_source, '$',
-                             JSON_OBJECT(payment_source_title, payment_source_amount)) INTO payment_source;
+                             JSON_OBJECT(payment_source_title, ROUND(payment_source_amount, 2))) INTO payment_source;
   END IF;
 
   SELECT i + 1 INTO i;
