@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
+use App\Api\V1\Common\Service\Exception\TimeSpanIsGreaterThan12MonthsException;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Diet;
 use App\Entity\ResidentHealthInsurance;
@@ -1147,170 +1148,206 @@ class ResidentReportService extends BaseService
         $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
         $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
 
-        if (!empty($date)) {
-            $dateStart = $dateEnd = new \DateTime($date);
+        if (!empty($dateFrom)) {
+            $dateStart = new \DateTime($dateFrom);
             $dateStartFormatted = $dateStart->format('m/01/Y 00:00:00');
+        }
+
+        if (!empty($dateTo)) {
+            $dateEnd = new \DateTime($dateTo);
             $dateEndFormatted = $dateEnd->format('m/t/Y 23:59:59');
         }
 
         $dateStart = new \DateTime($dateStartFormatted);
         $dateEnd = new \DateTime($dateEndFormatted);
+        $dateEndClone = clone $dateEnd;
 
         if ($dateStart > $dateEnd) {
             throw new StartGreaterEndDateException();
         }
 
-        $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
+        $diff = $dateEnd->diff($dateStart);
+        $diffYear = (int)$diff->format('%Y');
+        $diffMonth = (int)$diff->format('%m');
+
+        if ($diffYear * 12 + $diffMonth >= 12) {
+            throw new TimeSpanIsGreaterThan12MonthsException();
+        }
+
+        $interval = [];
+        while ($dateEndClone->diff($dateStart)->days > 0 && \count($interval) <= 12) {
+            $start = new \DateTime($dateEndClone->format('Y-m-01 00:00:00'));
+            $end = new \DateTime($dateEndClone->format('Y-m-t 23:59:59'));
+
+            $interval[] = [
+                'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
+                'date' => $start->format('F') . ' ' . $start->format('y')
+            ];
+
+            $dateEndClone->modify('last day of previous month');
+        }
+
+        $interval = array_reverse($interval);
 
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
-        $admissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), null, true);
+        $finalData = [];
+        $finalTotalDays = [];
+        $finalGrandTotal = [];
+        foreach ($interval as $subVal) {
+            $subInterval = ImtDateTimeInterval::getWithDateTimes($subVal['subInterval']->getStart(), $subVal['subInterval']->getEnd());
+            $rentPeriodFactory = clone RentPeriodFactory::getFactory($subVal['subInterval']);
 
-        $dischargedAdmissionEnds = null;
-        foreach ($admissions as $admission) {
-            if ($admission['admissionType'] === AdmissionType::DISCHARGE && $admission['discharged'] !== null) {
-                $dischargedAdmissionEnds[] = $admission['discharged']->format('Y-m-d H:i:s');
+            $admissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), null, true);
+
+            $dischargedAdmissionEnds = null;
+            foreach ($admissions as $admission) {
+                if ($admission['admissionType'] === AdmissionType::DISCHARGE && $admission['discharged'] !== null) {
+                    $dischargedAdmissionEnds[] = $admission['discharged']->format('Y-m-d H:i:s');
+                }
             }
-        }
 
-        $filteredAdmissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), $dischargedAdmissionEnds, false);
+            $filteredAdmissions = $repo->getResidentMoveByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds(), $dischargedAdmissionEnds, false);
 
-        $modifiedAdmissions = [];
-        $dischargedAdmissions = [];
-        $minAdmitDates = [];
-        foreach ($filteredAdmissions as $key => $admission) {
-            if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
-                if ($admission['id'] === $filteredAdmissions[$key - 1]['id']) {
-                    $minAdmitDates[$admission['actionId']] = $filteredAdmissions[$key - 1]['admitted'];
-                    $admission['original'] = $minAdmitDates[$admission['actionId']];
+            $modifiedAdmissions = [];
+            $dischargedAdmissions = [];
+            $minAdmitDates = [];
+            foreach ($filteredAdmissions as $key => $admission) {
+                if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
+                    if ($admission['id'] === $filteredAdmissions[$key - 1]['id']) {
+                        $minAdmitDates[$admission['actionId']] = $filteredAdmissions[$key - 1]['admitted'];
+                        $admission['original'] = $minAdmitDates[$admission['actionId']];
+                    }
+
+                    $dischargedAdmissions[] = $admission;
+                } else {
+                    $admission['original'] = null;
                 }
 
-                $dischargedAdmissions[] = $admission;
-            } else {
-                $admission['original'] = null;
+                $modifiedAdmissions[] = $admission;
             }
 
-            $modifiedAdmissions[] = $admission;
-        }
+            $admissionTypes = [
+                AdmissionType::LONG_ADMIT,
+                AdmissionType::SHORT_ADMIT,
+                AdmissionType::DISCHARGE,
+            ];
 
-        $admissionTypes = [
-            AdmissionType::LONG_ADMIT,
-            AdmissionType::SHORT_ADMIT,
-            AdmissionType::DISCHARGE,
-        ];
-
-        $finalAdmissions = [];
-        foreach ($modifiedAdmissions as $admission) {
-            if ($admission['admitted'] >= $dateStart && \in_array($admission['admissionType'], $admissionTypes, false)) {
-                $finalAdmissions[] = $admission;
-            }
-        }
-
-        $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
-
-        $totalDays = [];
-        foreach ($dischargedAdmissions as $admission) {
-            $sumDays = 0;
-            if (array_key_exists($admission['actionId'], $minAdmitDates) && $minAdmitDates[$admission['actionId']] !== null) {
-                $minAdmitDate = $minAdmitDates[$admission['actionId']];
-            } else {
-                $minAdmitDate = $subInterval->getStart();
+            $finalAdmissions = [];
+            foreach ($modifiedAdmissions as $admission) {
+                if (\in_array($admission['admissionType'], $admissionTypes, false) && $admission['admitted'] >= $subVal['subInterval']->getStart()) {
+                    $finalAdmissions[] = $admission;
+                }
             }
 
-            $calculationResults = $rentPeriodFactory->calculateForMoveReportInterval(
-                ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $admission['admitted'])
-            );
+            $totalDays = [];
+            foreach ($dischargedAdmissions as $admission) {
+                $sumDays = 0;
+                if (array_key_exists($admission['actionId'], $minAdmitDates) && $minAdmitDates[$admission['actionId']] !== null) {
+                    $minAdmitDate = $minAdmitDates[$admission['actionId']];
+                } else {
+                    $minAdmitDate = $subInterval->getStart();
+                }
 
-            $sumDays += $calculationResults['days'];
-            $totalDays[$admission['actionId']] = $sumDays;
-        }
+                $calculationResults = $rentPeriodFactory->calculateForMoveReportInterval(
+                    ImtDateTimeInterval::getWithDateTimes($minAdmitDate, $admission['admitted'])
+                );
 
-        $types = array_column($finalAdmissions, 'typeShorthand', 'typeId');
+                $sumDays += $calculationResults['days'];
+                $totalDays[$admission['actionId']] = $sumDays;
+            }
 
-        $totalByFacility = [];
-        $grandTotal = [];
-        foreach ($types as $typeId => $typeShorthand) {
-            $sumLongTerm = 0;
-            $sumShortTerm = 0;
-            $sumMoveOut = 0;
-            $totalLongTerm = 0;
-            $totalShortTerm = 0;
-            $totalMoveOut = 0;
-            foreach ($finalAdmissions as $admission) {
-                $i = 0;
-                $j = 0;
-                $k = 0;
-                $x = 0;
-                $y = 0;
-                $z = 0;
-                if ($typeId === $admission['typeId']) {
+            $types = array_column($finalAdmissions, 'typeShorthand', 'typeId');
+
+            $totalByFacility = [];
+            $grandTotal = [];
+            foreach ($types as $typeId => $typeShorthand) {
+                $sumLongTerm = 0;
+                $sumShortTerm = 0;
+                $sumMoveOut = 0;
+                $totalLongTerm = 0;
+                $totalShortTerm = 0;
+                $totalMoveOut = 0;
+                foreach ($finalAdmissions as $admission) {
+                    $i = 0;
+                    $j = 0;
+                    $k = 0;
+                    $x = 0;
+                    $y = 0;
+                    $z = 0;
+                    if ($typeId === $admission['typeId']) {
+                        if ($admission['admissionType'] === AdmissionType::LONG_ADMIT) {
+                            $i++;
+
+                            $sumLongTerm += $i;
+                        }
+
+                        if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
+                            $j++;
+
+                            $sumShortTerm += $j;
+                        }
+
+                        if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
+                            $k++;
+
+                            $sumMoveOut += $k;
+                        }
+                    }
+
                     if ($admission['admissionType'] === AdmissionType::LONG_ADMIT) {
-                        $i++;
+                        $x++;
 
-                        $sumLongTerm += $i;
+                        $totalLongTerm += $x;
                     }
 
                     if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
-                        $j++;
+                        $y++;
 
-                        $sumShortTerm += $j;
+                        $totalShortTerm += $y;
                     }
 
                     if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
-                        $k++;
+                        $z++;
 
-                        $sumMoveOut += $k;
+                        $totalMoveOut += $z;
                     }
                 }
 
-                if ($admission['admissionType'] === AdmissionType::LONG_ADMIT) {
-                    $x++;
+                $totalByFacility[$typeId] = [
+                    'typeShorthand' => $typeShorthand . ' Total',
+                    'sumLongTerm' => $sumLongTerm,
+                    'sumShortTerm' => $sumShortTerm,
+                    'sumMoveOut' => $sumMoveOut,
+                ];
 
-                    $totalLongTerm += $x;
-                }
-
-                if ($admission['admissionType'] === AdmissionType::SHORT_ADMIT) {
-                    $y++;
-
-                    $totalShortTerm += $y;
-                }
-
-                if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
-                    $z++;
-
-                    $totalMoveOut += $z;
-                }
+                $grandTotal = [
+                    'sumLongTerm' => $totalLongTerm,
+                    'sumShortTerm' => $totalShortTerm,
+                    'sumMoveOut' => $totalMoveOut,
+                ];
             }
 
-            $totalByFacility[$typeId] = [
-                'typeShorthand' => $typeShorthand . ' Total',
-                'sumLongTerm' => $sumLongTerm,
-                'sumShortTerm' => $sumShortTerm,
-                'sumMoveOut' => $sumMoveOut,
-            ];
+            $data = array_merge($finalAdmissions, $totalByFacility);
 
-            $grandTotal = [
-                'sumLongTerm' => $totalLongTerm,
-                'sumShortTerm' => $totalShortTerm,
-                'sumMoveOut' => $totalMoveOut,
-            ];
+            $typeShorthands = array_map(function ($item) {
+                return $item['typeShorthand'];
+            }, $data);
+
+            array_multisort($typeShorthands, SORT_ASC, $data);
+
+            $finalTotalDays[$subVal['date']] = $totalDays;
+            $finalGrandTotal[$subVal['date']] = $grandTotal;
+            $finalData[$subVal['date']] = $data;
         }
 
-        $finalAdmissions = array_merge($finalAdmissions, $totalByFacility);
-
-        $typeShorthands = array_map(function ($item) {
-            return $item['typeShorthand'];
-        }, $finalAdmissions);
-        array_multisort($typeShorthands, SORT_ASC, $finalAdmissions);
-
         $report = new ResidentMoveByMonth();
-        $report->setData($finalAdmissions);
-        $report->setDays($totalDays);
-        $report->setGrandTotal($grandTotal);
+        $report->setData($finalData);
+        $report->setDays($finalTotalDays);
+        $report->setGrandTotal($finalGrandTotal);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
-        $report->setDate($dateStartFormatted);
 
         return $report;
     }

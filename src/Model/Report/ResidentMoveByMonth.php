@@ -30,11 +30,6 @@ class ResidentMoveByMonth extends Base
     private $strategyId;
 
     /**
-     * @var string
-     */
-    private $date;
-
-    /**
      * ResidentMoveByMonth constructor.
      */
     public function __construct()
@@ -126,22 +121,6 @@ class ResidentMoveByMonth extends Base
     public function getStrategyId()
     {
         return $this->strategyId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param string $date
-     */
-    public function setDate(string $date): void
-    {
-        $this->date = $date;
     }
 }
 
