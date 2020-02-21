@@ -441,7 +441,7 @@ class UserService extends BaseService implements IGridService
                 $entity['last_activity_at'] = $entity['last_activity_at'] !== null ? $entity['last_activity_at']->format('Y-m-d H:i:s') : $entity['last_activity_at'];
 
                 if (array_key_exists($entity['id'], $images)) {
-                    $entity['photo'] = $router->generate('api_admin_user_image_download', ['id' => $entity['id']], UrlGeneratorInterface::ABSOLUTE_URL.'?mobile');
+                    $entity['photo'] = $router->generate('api_admin_user_image_download', ['id' => $entity['id']], UrlGeneratorInterface::ABSOLUTE_URL).'?mobile';
                 } else {
                     $entity['photo'] = null;
                 }
