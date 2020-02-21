@@ -9,16 +9,15 @@ use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CorporateEvent;
 use App\Entity\Facility;
+use App\Entity\Image;
 use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
-use App\Entity\UserImage;
 use App\Entity\UserPhone;
 use App\Repository\CorporateEventRepository;
-use App\Repository\UserImageRepository;
+use App\Repository\ImageRepository;
 use App\Repository\UserPhoneRepository;
 use App\Repository\UserRepository;
-use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -425,11 +424,11 @@ class UserService extends BaseService implements IGridService
             return $item['id'];
         }, $entities);
 
-        /** @var UserImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(UserImage::class);
+        /** @var ImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(Image::class);
 
-        $images = $imageRepo->findByIds($userIds);
-        $images = array_column($images, 'photo_150_150', 'id');
+        $images = $imageRepo->findByUserIds($userIds);
+        $images = array_column($images, 'id', 'id');
 
         /** @var UserPhoneRepository $phoneRepo */
         $phoneRepo = $this->em->getRepository(UserPhone::class);
@@ -442,7 +441,7 @@ class UserService extends BaseService implements IGridService
                 $entity['last_activity_at'] = $entity['last_activity_at'] !== null ? $entity['last_activity_at']->format('Y-m-d H:i:s') : $entity['last_activity_at'];
 
                 if (array_key_exists($entity['id'], $images)) {
-                    $entity['photo'] = $router->generate('api_admin_user_image_download', ['id' => $entity['id']], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $entity['photo'] = $router->generate('api_admin_user_image_download', ['id' => $entity['id']], UrlGeneratorInterface::ABSOLUTE_URL.'?mobile');
                 } else {
                     $entity['photo'] = null;
                 }
@@ -462,16 +461,15 @@ class UserService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param bool $isMobile
      * @return array
      */
-    public function downloadFile($id): array
+    public function downloadFile($id, $isMobile = false): array
     {
         $entity = $this->getById($id);
 
         if (!empty($entity) && $entity->getImage() !== null) {
-            $parseFile = Parser::parse($entity->getImage()->getPhoto300300());
-
-            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
+            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $entity->getImage()->getMimeType(), $this->s3Service->downloadFile($isMobile ? $entity->getImage()->getS3Id() : $entity->getImage()->getS3Id300300(), $entity->getImage()->getType())];
         }
 
         return [null, null, null];

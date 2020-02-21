@@ -262,9 +262,11 @@ class UserController extends BaseController
      */
     public function downloadAction(Request $request, $id, UserService $userService): Response
     {
-        $data = $userService->downloadFile($id);
+        $isMobile = $request->query->has('mobile') ? true : false;
 
-        return $this->respondImageFile($data[0], $data[1], $data[2]);
+        $data = $userService->downloadFile($id, $isMobile);
+
+        return $this->respondResource($data[0], $data[1], $data[2]);
     }
 
     /**

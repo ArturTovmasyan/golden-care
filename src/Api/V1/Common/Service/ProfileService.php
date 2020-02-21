@@ -2,11 +2,16 @@
 
 namespace App\Api\V1\Common\Service;
 
+use App\Api\V1\Admin\Service\UserService;
+use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
+use App\Entity\Image;
 use App\Entity\User;
-use App\Entity\UserImage;
 use App\Entity\UserPhone;
-use App\Repository\UserImageRepository;
+use App\Model\FileType;
+use App\Util\MimeUtil;
+use App\Util\StringUtil;
+use DataURI\Parser;
 
 /**
  * Class ProfileService
@@ -25,6 +30,23 @@ class ProfileService extends BaseService
     public function setImageFilterService(ImageFilterService $imageFilterService): void
     {
         $this->imageFilterService = $imageFilterService;
+    }
+
+    /**
+     * @param UserService $userService
+     * @param $id
+     * @param bool $isMe
+     * @return array
+     */
+    public function downloadFile($userService, $id, $isMe = false): array
+    {
+        $entity = $userService->getById($id);
+
+        if (!empty($entity) && $entity->getImage() !== null) {
+            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $entity->getImage()->getMimeType(), $this->s3Service->downloadFile($isMe ? $entity->getImage()->getS3Id3535() : $entity->getImage()->getS3Id150150(), $entity->getImage()->getType())];
+        }
+
+        return [null, null, null];
     }
 
     /**
@@ -48,28 +70,10 @@ class ProfileService extends BaseService
 
             $this->em->persist($user);
 
-            // save photo
-            if (!empty($params['avatar'])) {
-                /** @var UserImageRepository $imageRepo */
-                $imageRepo = $this->em->getRepository(UserImage::class);
+            $photo = !empty($params['avatar']) ? $params['avatar'] : null;
 
-                $image = $imageRepo->getBy($user->getId());
-
-                if ($image === null) {
-                    $image = new UserImage();
-                }
-
-                $image->setUser($user);
-                $image->setPhoto($params['avatar']);
-
-                $this->validate($user, null, ['api_admin_user_image_edit']);
-
-                $this->em->persist($image);
-
-                if ($image) {
-                    $this->imageFilterService->createAllFilterVersion($image);
-                }
-            }
+            // save image
+            $this->saveImage($user, $photo);
 
             $this->em->flush();
 
@@ -78,6 +82,61 @@ class ProfileService extends BaseService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param $photo
+     */
+    private function saveImage(User $user, $photo): void
+    {
+        $filterService = $this->container->getParameter('filter_service');
+
+        $image = $user->getImage();
+        if ($photo !== null) {
+            if (!StringUtil::starts_with($photo, 'http')) {
+                if ($image !== null) {
+                    $this->s3Service->removeFile($image->getS3Id(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id3535(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id150150(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id300300(), $image->getType());
+                } else {
+                    $image = new Image();
+                }
+
+                $parseFile = Parser::parse($photo);
+                $base64Image = $parseFile->getData();
+                $mimeType = $parseFile->getMimeType();
+                $format = MimeUtil::mime2ext($mimeType);
+
+                $image->setMimeType($mimeType);
+                $image->setType(FileType::TYPE_AVATAR);
+                $image->setUser($user);
+
+                $this->validate($image, null, ['api_admin_user_image_edit']);
+
+                $this->em->persist($image);
+
+                //validate image
+                if (!\in_array($format, $filterService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+                $image->setS3Id($s3Id);
+                $this->em->persist($image);
+
+                $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
+
+                $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+            }
+        } elseif ($photo === null && $image !== null) {
+            $this->s3Service->removeFile($image->getS3Id(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id3535(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id150150(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id300300(), $image->getType());
+            $this->em->remove($image);
         }
     }
 

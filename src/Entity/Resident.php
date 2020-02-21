@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -286,20 +287,6 @@ class Resident
     private $middleName;
 
     /**
-     * @var string
-     * @Assert\Image(
-     *     maxSize="6000000",
-     *     mimeTypes = {
-     *          "image/jpeg",
-     *          "image/jpg",
-     *          "image/gif",
-     *          "image/png"
-     *     }
-     * )
-     */
-    private $file;
-
-    /**
      * @var \DateTime
      * @ORM\Column(name="birthday", type="date")
      * @Assert\Date(groups={
@@ -365,13 +352,33 @@ class Resident
     private $phones;
 
     /**
-     * @var ResidentImage
-     * @ORM\OneToOne(targetEntity="App\Entity\ResidentImage", mappedBy="resident", cascade={"remove", "persist"})
-     * @Groups({
-     *      "api_admin_resident_get"
-     * })
+     * @var Image
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="resident", cascade={"remove", "persist"})
      */
     private $image;
+
+    /**
+     * @var string $downloadUrl
+     */
+    private $downloadUrl;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("image")
+     * @Serializer\Groups({
+     *     "api_admin_resident_list",
+     *     "api_admin_resident_get"
+     * })
+     * @return null|string
+     */
+    public function getResidentImage(): ?string
+    {
+        if ($this->getImage() !== null) {
+            return $this->getDownloadUrl();
+        }
+
+        return null;
+    }
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="resident")
@@ -565,22 +572,6 @@ class Resident
     }
 
     /**
-     * @return string
-     */
-    public function getFile(): string
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param string $file
-     */
-    public function setFile($file): void
-    {
-        $this->file = $file;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getBirthday(): \DateTime
@@ -645,17 +636,17 @@ class Resident
     }
 
     /**
-     * @return ResidentImage|null
+     * @return Image|null
      */
-    public function getImage(): ?ResidentImage
+    public function getImage(): ?Image
     {
         return $this->image;
     }
 
     /**
-     * @param ResidentImage|null $image
+     * @param Image|null $image
      */
-    public function setImage(?ResidentImage $image): void
+    public function setImage(?Image $image): void
     {
         $this->image = $image;
     }
@@ -937,5 +928,21 @@ class Resident
     {
         $this->facilityEvents->removeElement($facilityEvent);
         $facilityEvent->removeResident($this);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDownloadUrl(): ?string
+    {
+        return $this->downloadUrl;
+    }
+
+    /**
+     * @param null|string $downloadUrl
+     */
+    public function setDownloadUrl(?string $downloadUrl): void
+    {
+        $this->downloadUrl = $downloadUrl;
     }
 }

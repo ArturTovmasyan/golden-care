@@ -33,7 +33,7 @@ class UserImage
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
      * })
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="image")
+     * @ORM\OneToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -58,9 +58,6 @@ class UserImage
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
      * })
-     * @Groups({
-     *     "api_profile_me"
-     * })
      */
     private $photo_35_35;
 
@@ -70,9 +67,6 @@ class UserImage
      * @Assert\NotBlank(groups={
      *     "api_admin_user_image_add",
      *     "api_admin_user_image_edit"
-     * })
-     * @Groups({
-     *     "api_profile_view"
      * })
      */
     private $photo_150_150;

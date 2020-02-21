@@ -29,10 +29,10 @@ use App\Entity\CityStateZip;
 use App\Entity\DiningRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
+use App\Entity\Image;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
-use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
@@ -42,9 +42,9 @@ use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\DiningRoomRepository;
 use App\Repository\FacilityBedRepository;
+use App\Repository\ImageRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
-use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -218,16 +218,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
 
                 $images = [];
+                $imageTypes = [];
+                $imageS3Ids = [];
                 if (!empty($groupResidents)) {
                     $residentIds = array_map(function ($item) {
                         return $item['id'];
                     }, $groupResidents);
 
-                    /** @var ResidentImageRepository $imageRepo */
-                    $imageRepo = $this->em->getRepository(ResidentImage::class);
+                    /** @var ImageRepository $imageRepo */
+                    $imageRepo = $this->em->getRepository(Image::class);
 
-                    $images = $imageRepo->findByIds($residentIds);
-                    $images = array_column($images, 'photo_150_150', 'id');
+                    $images = $imageRepo->findByResidentIds($residentIds);
+                    $imageTypes = array_column($images, 'type', 'id');
+                    $imageS3Ids = array_column($images, 's3Id', 'id');
+                    $images = array_column($images, 'id', 'id');
                 }
 
                 foreach ($groupArray as $group) {
@@ -241,7 +245,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         if ($groupResident['type_id'] === $group['id']) {
 
                             if (array_key_exists($groupResident['id'], $images)) {
-                                $groupResident['photo'] = $images[$groupResident['id']];
+                                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                                    'Bucket' => getenv('AWS_BUCKET'),
+                                    'Key' => $imageTypes[$groupResident['id']] . '/' . $imageS3Ids[$groupResident['id']],
+                                ]);
+                                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                                $groupResident['photo'] = (string)$request->getUri();
                             } else {
                                 $groupResident['photo'] = null;
                             }
@@ -310,15 +320,23 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 return $item['id'];
             }, $residents);
 
-            /** @var ResidentImageRepository $imageRepo */
-            $imageRepo = $this->em->getRepository(ResidentImage::class);
+            /** @var ImageRepository $imageRepo */
+            $imageRepo = $this->em->getRepository(Image::class);
 
-            $images = $imageRepo->findByIds($residentIds);
-            $images = array_column($images, 'photo_150_150', 'id');
+            $images = $imageRepo->findByResidentIds($residentIds);
+            $imageTypes = array_column($images, 'type', 'id');
+            $imageS3Ids = array_column($images, 's3Id', 'id');
+            $images = array_column($images, 'id', 'id');
 
             foreach ($residents as $resident) {
                 if (array_key_exists($resident['id'], $images)) {
-                    $resident['photo'] = $images[$resident['id']];
+                    $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                        'Bucket' => getenv('AWS_BUCKET'),
+                        'Key' => $imageTypes[$resident['id']] . '/' . $imageS3Ids[$resident['id']],
+                    ]);
+                    $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                    $resident['photo'] = (string)$request->getUri();
                 } else {
                     $resident['photo'] = null;
                 }
@@ -387,11 +405,11 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 return $item['id'];
             }, $residents);
 
-            /** @var ResidentImageRepository $imageRepo */
-            $imageRepo = $this->em->getRepository(ResidentImage::class);
+            /** @var ImageRepository $imageRepo */
+            $imageRepo = $this->em->getRepository(Image::class);
 
-            $images = $imageRepo->findByIds($residentIds);
-            $images = array_column($images, 'photo_150_150', 'id');
+            $images = $imageRepo->findByResidentIds($residentIds);
+            $images = array_column($images, 'id', 'id');
 
             /** @var ResidentPhoneRepository $phoneRepo */
             $phoneRepo = $this->em->getRepository(ResidentPhone::class);
@@ -407,7 +425,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 if (array_key_exists($resident['id'], $images)) {
-                    $resident['photo'] = $router->generate('api_admin_resident_image_download', ['id' => $resident['id']], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $resident['photo'] = $router->generate('api_admin_resident_image_download', ['id' => $resident['id']], UrlGeneratorInterface::ABSOLUTE_URL).'?mobile';
                 } else {
                     $resident['photo'] = null;
                 }
@@ -575,16 +593,20 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 $images = [];
+                $imageTypes = [];
+                $imageS3Ids = [];
                 if (!empty($groupResidents)) {
                     $residentIds = array_map(function ($item) {
                         return $item['id'];
                     }, $groupResidents);
 
-                    /** @var ResidentImageRepository $imageRepo */
-                    $imageRepo = $this->em->getRepository(ResidentImage::class);
+                    /** @var ImageRepository $imageRepo */
+                    $imageRepo = $this->em->getRepository(Image::class);
 
-                    $images = $imageRepo->findByIds($residentIds);
-                    $images = array_column($images, 'photo_150_150', 'id');
+                    $images = $imageRepo->findByResidentIds($residentIds);
+                    $imageTypes = array_column($images, 'type', 'id');
+                    $imageS3Ids = array_column($images, 's3Id', 'id');
+                    $images = array_column($images, 'id', 'id');
                 }
 
                 foreach ($groupArray as $group) {
@@ -593,7 +615,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
                             $groupResident['type_name'] = $group['name'];
 
                             if (array_key_exists($groupResident['id'], $images)) {
-                                $groupResident['photo'] = $images[$groupResident['id']];
+                                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                                    'Bucket' => getenv('AWS_BUCKET'),
+                                    'Key' => $imageTypes[$groupResident['id']] . '/' . $imageS3Ids[$groupResident['id']],
+                                ]);
+                                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                                $groupResident['photo'] = (string)$request->getUri();
                             } else {
                                 $groupResident['photo'] = null;
                             }

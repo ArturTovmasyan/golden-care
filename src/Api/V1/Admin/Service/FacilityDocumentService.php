@@ -70,7 +70,7 @@ class FacilityDocumentService extends BaseService implements IGridService
 
         $list = $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityDocument::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId, $categoryId);
 
-        /** @var Document $entity */
+        /** @var FacilityDocument $entity */
         foreach ($list as $entity) {
             if ($entity !== null && $entity->getFile() !== null) {
                 $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [

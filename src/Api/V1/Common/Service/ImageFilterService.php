@@ -2,9 +2,7 @@
 
 namespace App\Api\V1\Common\Service;
 
-use App\Api\V1\Common\Service\Exception\FileExtensionException;
-use App\Entity\ResidentImage;
-use App\Entity\UserImage;
+use App\Entity\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
@@ -27,43 +25,37 @@ class ImageFilterService
     protected $container;
 
     /**
+     * @var S3Service
+     */
+    protected $s3Service;
+
+    /**
      * ImageFilterService constructor.
      * @param EntityManagerInterface $em
      * @param ContainerInterface $container
+     * @param S3Service $s3Service
      */
     public function __construct(
         EntityManagerInterface $em,
-        ContainerInterface $container
+        ContainerInterface $container,
+        S3Service $s3Service
     )
     {
         $this->em = $em;
         $this->container = $container;
+        $this->s3Service = $s3Service;
     }
 
     /**
-     * @param ResidentImage|UserImage $image
+     * @param Image $image
+     * @param $base64Image
+     * @param $mimeType
+     * @param $format
      */
-    public function createAllFilterVersion($image): void
+    public function createAllFilterVersion($image, $base64Image, $mimeType, $format): void
     {
-        $filterService = $this->container->getParameter('filter_service');
-
-        $base64 = $image->getPhoto();
-
-        $base64Items = explode(';base64,', $base64);
-        $base64Image = $base64Items[1];
-
-        $base64FirstPart = explode(':', $base64Items[0]);
-        $mimeType = $base64FirstPart[1];
-
-        $mimeTypeParts = explode('/', $mimeType);
-        $format = $mimeTypeParts[1];
-
-        if (!\in_array($format, $filterService['extensions'], false)) {
-            throw new FileExtensionException();
-        }
-
         //create binary
-        $binary = new Binary(base64_decode($base64Image), $mimeType, $format);
+        $binary = new Binary($base64Image, $mimeType, $format);
 
         //create all filter images
         /** @var FilterManager $filterManager */
@@ -77,18 +69,27 @@ class ImageFilterService
 
         unset($filters[0], $filters[1]);
 
-        //create cache versions for files
+        //create cache versions for images
         foreach ($filters as $key => $filter) {
             $data = $filterManager->applyFilter($binary, $filter)->getContent();
             if ($data) {
                 $base64 = 'data:image/' . $format . ';base64,' . base64_encode($data);
 
                 if ($key === 2) {
-                    $image->setPhoto3535($base64);
+                    $s3Id3535 = $image->getId() . '_35_35.' . $format;
+                    $image->setS3Id3535($s3Id3535);
+
+                    $this->s3Service->uploadFile($base64, $s3Id3535, $image->getType(), $image->getMimeType());
                 } elseif ($key === 3) {
-                    $image->setPhoto150150($base64);
+                    $s3Id150150 = $image->getId() . '_150_150.' . $format;
+                    $image->setS3Id150150($s3Id150150);
+
+                    $this->s3Service->uploadFile($base64, $s3Id150150, $image->getType(), $image->getMimeType());
                 } elseif ($key === 4) {
-                    $image->setPhoto300300($base64);
+                    $s3Id300300 = $image->getId() . '_300_300.' . $format;
+                    $image->setS3Id300300($s3Id300300);
+
+                    $this->s3Service->uploadFile($base64, $s3Id300300, $image->getType(), $image->getMimeType());
                 }
             }
         }

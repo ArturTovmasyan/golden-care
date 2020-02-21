@@ -15,7 +15,6 @@ use App\Entity\ResidentAllergen;
 use App\Entity\ResidentDiagnosis;
 use App\Entity\ResidentDiet;
 use App\Entity\ResidentEvent;
-use App\Entity\ResidentImage;
 use App\Entity\ResidentMedication;
 use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
@@ -41,7 +40,6 @@ use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentDiagnosisRepository;
 use App\Repository\ResidentDietRepository;
 use App\Repository\ResidentEventRepository;
-use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentMedicationAllergyRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentPhysicianRepository;
@@ -114,8 +112,6 @@ class ResidentReportService extends BaseService
         $eventRepo = $this->em->getRepository(ResidentEvent::class);
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
 
         $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
@@ -127,8 +123,6 @@ class ResidentReportService extends BaseService
         $admissions = $admissionRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentIds, $type);
         $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
         $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -197,7 +191,7 @@ class ResidentReportService extends BaseService
         $report->setEvents($events);
         $report->setRents($rents);
         $report->setDiscontinued($discontinued);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -358,8 +352,6 @@ class ResidentReportService extends BaseService
         $eventRepo = $this->em->getRepository(ResidentEvent::class);
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
 
         $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
@@ -370,8 +362,6 @@ class ResidentReportService extends BaseService
         $physicians = $physicianRepo->getByNoAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $residentIds);
         $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
         $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -438,7 +428,7 @@ class ResidentReportService extends BaseService
         $report->setEvents($events);
         $report->setRents($rents);
         $report->setDiscontinued($discontinued);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -493,8 +483,6 @@ class ResidentReportService extends BaseService
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
 
         $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
@@ -503,8 +491,6 @@ class ResidentReportService extends BaseService
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
         $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -568,7 +554,7 @@ class ResidentReportService extends BaseService
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
         $report->setPhysicianPhones($physicianPhones);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -616,8 +602,6 @@ class ResidentReportService extends BaseService
         $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
         /** @var ResidentPhysicianRepository $physicianRepo */
         $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
 
         $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
         $medications = $medicationRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
@@ -626,8 +610,6 @@ class ResidentReportService extends BaseService
         $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
         $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
         $physicians = $physicianRepo->getByNoAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $residentIds);
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
@@ -691,7 +673,7 @@ class ResidentReportService extends BaseService
         $report->setResponsiblePersonPhones($responsiblePersonPhones);
         $report->setPhysicians($physicians);
         $report->setPhysicianPhones($physicianPhones);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }

@@ -39,7 +39,7 @@ class ResidentImage
      *     "api_admin_resident_image_edit",
      *     "api_admin_resident_image_add_mobile"
      * })
-     * @ORM\OneToOne(targetEntity="App\Entity\Resident", inversedBy="image")
+     * @ORM\OneToOne(targetEntity="App\Entity\Resident")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })

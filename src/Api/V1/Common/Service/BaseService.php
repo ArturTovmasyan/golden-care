@@ -12,6 +12,7 @@ use App\Entity\ChunkFile;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
+use App\Entity\Image;
 use App\Entity\Region;
 use App\Entity\ResidentAdmission;
 use App\Entity\Role;
@@ -25,6 +26,7 @@ use App\Repository\ChunkFileRepository;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\FacilityRoomRepository;
+use App\Repository\ImageRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Util\Mailer;
@@ -533,5 +535,30 @@ class BaseService
     {
         $query = $this->em->createQuery('DELETE App:ChunkFile ch WHERE ch.requestId = :requestId')->setParameter('requestId', $requestId);
         $query->execute();
+    }
+
+    /**
+     * @param $residentIds
+     * @return array
+     */
+    public function getResidentImages($residentIds): array
+    {
+        /** @var ImageRepository $imageRepo */
+        $imageRepo = $this->em->getRepository(Image::class);
+
+        $images = $imageRepo->findByResidentIds($residentIds);
+
+        $result = [];
+        foreach ($images as  $image) {
+            $cmdFirst = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key' => $image['type'] . '/' . $image['s3Id'],
+            ]);
+            $s3RequestFirst = $this->s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
+
+            $result[$image['id']] = (string)$s3RequestFirst->getUri();
+        }
+
+        return $result;
     }
 }

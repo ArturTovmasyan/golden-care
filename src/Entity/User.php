@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 use App\Annotation\ValidationSerializedName;
 
@@ -538,14 +539,33 @@ class User implements UserInterface
     private $licenseAccepted;
 
     /**
-     * @var UserImage
-     * @ORM\OneToOne(targetEntity="App\Entity\UserImage", mappedBy="user", cascade={"remove", "persist"})
-     * @Groups({
+     * @var Image
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="user", cascade={"remove", "persist"})
+     */
+    private $image;
+
+    /**
+     * @var string $downloadUrl
+     */
+    private $downloadUrl;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("image")
+     * @Serializer\Groups({
      *     "api_profile_view",
      *     "api_profile_me"
      * })
+     * @return null|string
      */
-    private $image;
+    public function getUserImage(): ?string
+    {
+        if ($this->getImage() !== null) {
+            return $this->getDownloadUrl();
+        }
+
+        return null;
+    }
 
     /**
      * @var string
@@ -1025,17 +1045,17 @@ class User implements UserInterface
     }
 
     /**
-     * @return UserImage|null
+     * @return Image|null
      */
-    public function getImage(): ?UserImage
+    public function getImage(): ?Image
     {
         return $this->image;
     }
 
     /**
-     * @param UserImage|null $image
+     * @param Image|null $image
      */
-    public function setImage(?UserImage $image): void
+    public function setImage(?Image $image): void
     {
         $this->image = $image;
     }
@@ -1235,5 +1255,21 @@ class User implements UserInterface
     public function setCorporateEventUsers(ArrayCollection $corporateEventUsers): void
     {
         $this->corporateEventUsers = $corporateEventUsers;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDownloadUrl(): ?string
+    {
+        return $this->downloadUrl;
+    }
+
+    /**
+     * @param null|string $downloadUrl
+     */
+    public function setDownloadUrl(?string $downloadUrl): void
+    {
+        $this->downloadUrl = $downloadUrl;
     }
 }

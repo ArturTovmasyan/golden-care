@@ -5,6 +5,7 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
+use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\Exception\IncompleteChunkDataException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\PhoneSinglePrimaryException;
@@ -18,15 +19,16 @@ use App\Entity\CareLevel;
 use App\Entity\ChunkFile;
 use App\Entity\CityStateZip;
 use App\Entity\FacilityEvent;
+use App\Entity\Image;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
-use App\Entity\ResidentImage;
 use App\Entity\ResidentPhone;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentRentIncrease;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\FileType;
 use App\Model\GroupType;
 use App\Repository\CareLevelRepository;
 use App\Repository\ChunkFileRepository;
@@ -34,12 +36,13 @@ use App\Repository\CityStateZipRepository;
 use App\Repository\FacilityEventRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentEventRepository;
-use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentPhoneRepository;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\SalutationRepository;
+use App\Util\MimeUtil;
+use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -171,7 +174,24 @@ class ResidentService extends BaseService implements IGridService
             }
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $ids, $this->getNotGrantResidentIds());
+        $list = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $ids, $this->getNotGrantResidentIds());
+
+        /** @var Resident $entity */
+        foreach ($list as $entity) {
+            if ($entity !== null && $entity->getImage() !== null) {
+                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                    'Bucket' => getenv('AWS_BUCKET'),
+                    'Key' => $entity->getImage()->getType() . '/' . $entity->getImage()->getS3Id(),
+                ]);
+                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+                $entity->setDownloadUrl((string)$request->getUri());
+            } else {
+                $entity->setDownloadUrl(null);
+            }
+        }
+
+        return $list;
     }
 
     /**
@@ -251,23 +271,43 @@ class ResidentService extends BaseService implements IGridService
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
             $this->validate($resident, null, ['api_admin_resident_add']);
-            $this->em->persist($resident);
 
-            // save photo
-            if (!empty($params['photo'])) {
-                $image = new ResidentImage();
+            $photo = !empty($params['photo']) ? $params['photo'] : null;
 
+            $filterService = $this->container->getParameter('filter_service');
+
+            // save image
+            if ($photo !== null) {
+                $image = new Image();
+
+                $parseFile = Parser::parse($photo);
+                $base64Image = $parseFile->getData();
+                $mimeType = $parseFile->getMimeType();
+                $format = MimeUtil::mime2ext($mimeType);
+
+                $image->setMimeType($mimeType);
+                $image->setType(FileType::TYPE_RESIDENT_IMAGE);
                 $image->setResident($resident);
-                $image->setPhoto($params['photo']);
+
+                $this->validate($image, null, ['api_admin_resident_image_add']);
 
                 $this->em->persist($image);
 
-                if ($image) {
-                    $this->imageFilterService->createAllFilterVersion($image);
-
-                    $this->validate($image, null, ['api_admin_resident_image_add']);
+                //validate image
+                if (!\in_array($format, $filterService['extensions'], false)) {
+                    throw new FileExtensionException();
                 }
+
+                $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+                $image->setS3Id($s3Id);
+                $this->em->persist($image);
+
+                $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
+
+                $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
             }
+
+            $this->em->persist($resident);
 
             $this->em->flush();
 
@@ -341,30 +381,11 @@ class ResidentService extends BaseService implements IGridService
             $resident->setPhones($this->savePhones($resident, $params['phones'] ?? []));
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
-            $this->em->persist($resident);
 
-            // save photo
-            if (!empty($params['photo'])) {
-                /** @var ResidentImageRepository $imageRepo */
-                $imageRepo = $this->em->getRepository(ResidentImage::class);
+            $photo = !empty($params['photo']) ? $params['photo'] : null;
 
-                $image = $imageRepo->getBy($resident->getId());
-
-                if ($image === null) {
-                    $image = new ResidentImage();
-                }
-
-                $image->setResident($resident);
-                $image->setPhoto($params['photo']);
-
-                $this->em->persist($image);
-
-                if ($image) {
-                    $this->imageFilterService->createAllFilterVersion($image);
-
-                    $this->validate($image, null, ['api_admin_resident_image_edit']);
-                }
-            }
+            // save image
+            $this->saveImage($resident, $photo);
 
             // save admission
             /** @var ResidentAdmissionRepository $admissionRepo */
@@ -402,6 +423,61 @@ class ResidentService extends BaseService implements IGridService
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param Resident $resident
+     * @param $photo
+     */
+    private function saveImage(Resident $resident, $photo)
+    {
+        $filterService = $this->container->getParameter('filter_service');
+
+        $image = $resident->getImage();
+        if ($photo !== null) {
+            if (!StringUtil::starts_with($photo, 'http')) {
+                if ($image !== null) {
+                    $this->s3Service->removeFile($image->getS3Id(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id3535(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id150150(), $image->getType());
+                    $this->s3Service->removeFile($image->getS3Id300300(), $image->getType());
+                } else {
+                    $image = new Image();
+                }
+
+                $parseFile = Parser::parse($photo);
+                $base64Image = $parseFile->getData();
+                $mimeType = $parseFile->getMimeType();
+                $format = MimeUtil::mime2ext($mimeType);
+
+                $image->setMimeType($mimeType);
+                $image->setType(FileType::TYPE_RESIDENT_IMAGE);
+                $image->setResident($resident);
+
+                $this->validate($image, null, ['api_admin_resident_image_edit']);
+
+                $this->em->persist($image);
+
+                //validate image
+                if (!\in_array($format, $filterService['extensions'], false)) {
+                    throw new FileExtensionException();
+                }
+
+                $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+                $image->setS3Id($s3Id);
+                $this->em->persist($image);
+
+                $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
+
+                $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+            }
+        } elseif ($photo === null && $image !== null) {
+            $this->s3Service->removeFile($image->getS3Id(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id3535(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id150150(), $image->getType());
+            $this->s3Service->removeFile($image->getS3Id300300(), $image->getType());
+            $this->em->remove($image);
         }
     }
 
@@ -668,27 +744,10 @@ class ResidentService extends BaseService implements IGridService
                 throw new ResidentNotFoundException();
             }
 
-            if (!empty($params['photo'])) {
-                /** @var ResidentImageRepository $imageRepo */
-                $imageRepo = $this->em->getRepository(ResidentImage::class);
+            $photo = !empty($params['photo']) ? $params['photo'] : null;
 
-                $image = $imageRepo->getBy($resident->getId());
-
-                if ($image === null) {
-                    $image = new ResidentImage();
-                }
-
-                $image->setResident($resident);
-                $image->setPhoto($params['photo']);
-
-                $this->validate($image, null, ['api_admin_resident_image_edit']);
-
-                $this->em->persist($image);
-
-                if ($image) {
-                    $this->imageFilterService->createAllFilterVersion($image);
-                }
-            }
+            // save image
+            $this->saveImage($resident, $photo);
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -2358,16 +2417,15 @@ class ResidentService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param bool $isMobile
      * @return array
      */
-    public function downloadFile($id): array
+    public function downloadFile($id, $isMobile = false): array
     {
         $entity = $this->getById($id);
 
         if (!empty($entity) && $entity->getImage() !== null) {
-            $parseFile = Parser::parse($entity->getImage()->getPhoto());
-
-            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $parseFile->getMimeType(), $parseFile->getData()];
+            return [strtolower($entity->getFirstName() . '_' . $entity->getLastName()), $entity->getImage()->getMimeType(), $this->s3Service->downloadFile($isMobile ? $entity->getImage()->getS3Id() : $entity->getImage()->getS3Id300300(), $entity->getImage()->getType())];
         }
 
         return [null, null, null];
@@ -2387,8 +2445,8 @@ class ResidentService extends BaseService implements IGridService
             $userId = $params['user_id'] ?? 0;
             $extension = 'jpeg';
 
-            /** @var ResidentImage $existImage */
-            $existImage = $this->em->getRepository(ResidentImage::class)->findOneBy(['requestId' => $requestId]);
+            /** @var Image $existImage */
+            $existImage = $this->em->getRepository(Image::class)->findOneBy(['requestId' => $requestId]);
 
             if ($existImage !== null) {
                 $insert_id = $existImage->getResident() ? $existImage->getResident()->getId() : null;
@@ -2460,26 +2518,39 @@ class ResidentService extends BaseService implements IGridService
 
                     // save photo
                     if (!empty($base64)) {
-                        /** @var ResidentImageRepository $imageRepo */
-                        $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-                        $image = $imageRepo->getBy($resident->getId());
-
-                        if ($image === null) {
-                            $image = new ResidentImage();
+                        $image = $resident->getImage();
+                        if ($image !== null) {
+                            $this->s3Service->removeFile($image->getS3Id(), $image->getType());
+                            $this->s3Service->removeFile($image->getS3Id3535(), $image->getType());
+                            $this->s3Service->removeFile($image->getS3Id150150(), $image->getType());
+                            $this->s3Service->removeFile($image->getS3Id300300(), $image->getType());
+                        } else {
+                            $image = new Image();
                         }
 
                         $base64 = 'data:image/' . $extension . ';base64,' . $base64;
 
-                        $image->setResident($resident);
-                        $image->setPhoto($base64);
+                        $parseFile = Parser::parse($base64);
+                        $base64Image = $parseFile->getData();
+                        $mimeType = $parseFile->getMimeType();
+                        $format = MimeUtil::mime2ext($mimeType);
+
+                        $image->setMimeType($mimeType);
+                        $image->setType(FileType::TYPE_RESIDENT_IMAGE);
                         $image->setRequestId($requestId);
+                        $image->setResident($resident);
+
+                        $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
 
                         $this->em->persist($image);
 
-                        $this->imageFilterService->createAllFilterVersion($image);
+                        $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+                        $image->setS3Id($s3Id);
+                        $this->em->persist($image);
 
-                        $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+                        $this->s3Service->uploadFile($base64, $s3Id, $image->getType(), $image->getMimeType());
+
+                        $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
 
                         $now = new \DateTime('now');
                         $resident->setUpdatedAt($now);
@@ -2488,7 +2559,6 @@ class ResidentService extends BaseService implements IGridService
 
                         $this->em->flush();
                     }
-
                 }
                 $this->em->getConnection()->commit();
 

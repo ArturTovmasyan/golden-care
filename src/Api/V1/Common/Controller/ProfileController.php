@@ -3,6 +3,7 @@
 namespace App\Api\V1\Common\Controller;
 
 use App\Api\V1\Admin\Service\ReportService;
+use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Api\V1\Common\Service\ProfileService;
@@ -39,12 +40,42 @@ class ProfileController extends BaseController
         $reportService->addGroupReportPermission($permissions);
         $user->setPermissions($permissions);
 
+        if ($user !== null && $user->getImage() !== null) {
+            if ($request->get('type') === 'me') {
+                $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_profile_user_image_download', ['id' => $user->getId()]) . '?me';
+            } else {
+                $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_profile_user_image_download', ['id' => $user->getId()]);
+            }
+
+            $user->setDownloadUrl($downloadUrl);
+        } else {
+            $user->setDownloadUrl(null);
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
             $user,
             ['api_profile_' . $type]
         );
+    }
+
+    /**
+     * @Route("/download/{id}", requirements={"id"="\d+"}, name="api_profile_user_image_download", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ProfileService $profileService
+     * @param UserService $userService
+     * @return Response
+     */
+    public function downloadAction(Request $request, $id, ProfileService $profileService, UserService $userService): Response
+    {
+        $isMe = $request->query->has('me') ? true : false;
+
+        $data = $profileService->downloadFile($userService, $id, $isMe);
+
+        return $this->respondResource($data[0], $data[1], $data[2]);
     }
 
     /**

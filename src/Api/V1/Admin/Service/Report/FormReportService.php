@@ -10,7 +10,6 @@ use App\Entity\PhysicianPhone;
 use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAllergen;
-use App\Entity\ResidentImage;
 use App\Entity\ResidentMedication;
 use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
@@ -35,7 +34,6 @@ use App\Repository\FacilityRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAllergenRepository;
-use App\Repository\ResidentImageRepository;
 use App\Repository\ResidentMedicationAllergyRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentPhysicianRepository;
@@ -372,19 +370,13 @@ class FormReportService extends BaseService
             $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
         }
 
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
-
         $report = new MedicationChart();
         $report->setResidents($residents);
         $report->setMedications($medications);
         $report->setAllergens($allergens);
         $report->setResidentPhysicians($physicians);
         $report->setPhysicianPhones($physicianPhones);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -488,18 +480,12 @@ class FormReportService extends BaseService
             $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
         }
 
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
-
         $report = new MedicationChart();
         $report->setResidents($residents);
         $report->setMedications($medications);
         $report->setAllergens($allergens);
         $report->setPhysicianPhones($physicianPhones);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -546,17 +532,11 @@ class FormReportService extends BaseService
 
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
-
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
         $report->setDiscontinued($discontinued);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
@@ -596,17 +576,11 @@ class FormReportService extends BaseService
 
         $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
 
-        /** @var ResidentImageRepository $imageRepo */
-        $imageRepo = $this->em->getRepository(ResidentImage::class);
-
-        $images = $imageRepo->findByIds($residentIds);
-        $images = array_column($images, 'photo_150_150', 'id');
-
         $report = new MedicationList();
         $report->setResidents($residentsById);
         $report->setMedications($medications);
         $report->setDiscontinued($discontinued);
-        $report->setImages($images);
+        $report->setImages($this->getResidentImages($residentIds));
 
         return $report;
     }
