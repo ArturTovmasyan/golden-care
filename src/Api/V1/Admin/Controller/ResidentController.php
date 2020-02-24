@@ -129,16 +129,6 @@ class ResidentController extends BaseController
      */
     public function getAction(Request $request, $id, ResidentService $residentService): JsonResponse
     {
-        $entity = $residentService->getById($id);
-
-        if ($entity !== null && $entity->getImage() !== null) {
-            $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_admin_resident_image_download', ['id' => $entity->getId()]);
-
-            $entity->setDownloadUrl($downloadUrl);
-        } else {
-            $entity->setDownloadUrl(null);
-        }
-
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',

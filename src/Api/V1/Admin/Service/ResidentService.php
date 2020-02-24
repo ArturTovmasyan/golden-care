@@ -208,6 +208,18 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
+        if ($resident !== null && $resident->getImage() !== null) {
+            $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key' => $resident->getImage()->getType() . '/' . $resident->getImage()->getS3Id(),
+            ]);
+            $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+            $resident->setDownloadUrl((string)$request->getUri());
+        } else {
+            $resident->setDownloadUrl(null);
+        }
+
         return $resident;
     }
 

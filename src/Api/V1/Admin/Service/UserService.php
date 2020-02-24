@@ -67,6 +67,18 @@ class UserService extends BaseService implements IGridService
             throw new UserNotFoundException();
         }
 
+        if ($user !== null && $user->getImage() !== null) {
+            $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key' => $user->getImage()->getType() . '/' . $user->getImage()->getS3Id(),
+            ]);
+            $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+            $user->setDownloadUrl((string)$request->getUri());
+        } else {
+            $user->setDownloadUrl(null);
+        }
+
         return $user;
     }
 
