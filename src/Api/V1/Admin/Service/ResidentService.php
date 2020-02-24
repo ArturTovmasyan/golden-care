@@ -283,6 +283,9 @@ class ResidentService extends BaseService implements IGridService
                 $parseFile = Parser::parse($photo);
                 $base64Image = $parseFile->getData();
                 $mimeType = $parseFile->getMimeType();
+                if ($mimeType === 'image/jpg') {
+                    $mimeType = 'image/jpeg';
+                }
                 $format = MimeUtil::mime2ext($mimeType);
 
                 $image->setMimeType($mimeType);
@@ -449,6 +452,9 @@ class ResidentService extends BaseService implements IGridService
                 $parseFile = Parser::parse($photo);
                 $base64Image = $parseFile->getData();
                 $mimeType = $parseFile->getMimeType();
+                if ($mimeType === 'image/jpg') {
+                    $mimeType = 'image/jpeg';
+                }
                 $format = MimeUtil::mime2ext($mimeType);
 
                 $image->setMimeType($mimeType);

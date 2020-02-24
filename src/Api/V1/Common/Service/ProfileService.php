@@ -108,6 +108,9 @@ class ProfileService extends BaseService
                 $parseFile = Parser::parse($photo);
                 $base64Image = $parseFile->getData();
                 $mimeType = $parseFile->getMimeType();
+                if ($mimeType === 'image/jpg') {
+                    $mimeType = 'image/jpeg';
+                }
                 $format = MimeUtil::mime2ext($mimeType);
 
                 $image->setMimeType($mimeType);
