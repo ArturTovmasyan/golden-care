@@ -2546,10 +2546,10 @@ class ResidentService extends BaseService implements IGridService
                             $image = new Image();
                         }
 
+                        $decodedData = base64_decode($base64);
                         $base64 = 'data:image/' . $extension . ';base64,' . $base64;
 
                         $parseFile = Parser::parse($base64);
-                        $base64Image = $parseFile->getData();
                         $mimeType = $parseFile->getMimeType();
                         $format = MimeUtil::mime2ext($mimeType);
 
@@ -2568,7 +2568,7 @@ class ResidentService extends BaseService implements IGridService
 
                         $this->s3Service->uploadFile($base64, $s3Id, $image->getType(), $image->getMimeType());
 
-                        $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+                        $this->imageFilterService->createAllFilterVersion($image, $decodedData, $mimeType, $format);
 
                         $now = new \DateTime('now');
                         $resident->setUpdatedAt($now);
