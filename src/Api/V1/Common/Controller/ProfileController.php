@@ -7,6 +7,7 @@ use App\Api\V1\Admin\Service\UserService;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Api\V1\Common\Service\ProfileService;
+use App\Api\V1\Common\Service\S3Service;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,9 +30,10 @@ class ProfileController extends BaseController
      * @param ProfileService $profileService
      * @param GrantService $grantService
      * @param ReportService $reportService
+     * @param S3Service $s3Service
      * @return JsonResponse
      */
-    public function getAction(Request $request, $type, ProfileService $profileService, GrantService $grantService, ReportService $reportService): JsonResponse
+    public function getAction(Request $request, $type, ProfileService $profileService, GrantService $grantService, ReportService $reportService, S3Service $s3Service): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -41,13 +43,13 @@ class ProfileController extends BaseController
         $user->setPermissions($permissions);
 
         if ($user !== null && $user->getImage() !== null) {
-            if ($request->get('type') === 'me') {
-                $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_profile_user_image_download', ['id' => $user->getId()]) . '?me';
-            } else {
-                $downloadUrl = $request->getScheme() . '://' . $request->getHttpHost() . $this->generateUrl('api_profile_user_image_download', ['id' => $user->getId()]);
-            }
+            $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
+                'Bucket' => getenv('AWS_BUCKET'),
+                'Key' => $user->getImage()->getType() . '/' . $user->getImage()->getS3Id(),
+            ]);
+            $result = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
-            $user->setDownloadUrl($downloadUrl);
+            $user->setDownloadUrl((string)$result->getUri());
         } else {
             $user->setDownloadUrl(null);
         }
