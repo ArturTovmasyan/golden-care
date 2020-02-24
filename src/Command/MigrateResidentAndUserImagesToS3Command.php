@@ -115,6 +115,8 @@ class MigrateResidentAndUserImagesToS3Command extends Command
                         $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
 
                         $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+
+                        $output->writeln('Resident image id: ' . $residentImage->getId());
                     }
                 }
             }
@@ -155,6 +157,8 @@ class MigrateResidentAndUserImagesToS3Command extends Command
                         $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
 
                         $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+
+                        $output->writeln('User image id: ' . $userImage->getId());
                     }
                 }
             }
