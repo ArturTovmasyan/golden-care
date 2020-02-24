@@ -5,7 +5,6 @@ namespace App\Api\V1\Common\Service;
 use Aws\Result;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
-use DataURI\Parser;
 
 /**
  * Class S3Service
@@ -39,14 +38,15 @@ class S3Service
     public function uploadFile($base64Data, $s3Id, $fileType, $mimeType): void
     {
         try {
-            $parseFile = Parser::parse($base64Data);
+            $explodeData = explode(',', $base64Data);
+            $decodedData = base64_decode(end($explodeData));
 
             $this->getS3Client()->putObject([
                 'Bucket' => getenv('AWS_BUCKET'),
                 'Key' => $fileType . '/' . $s3Id,
-                'Body' => $parseFile->getData(),
+                'Body' => $decodedData,
                 'ContentType' => $mimeType,
-                'ACL' => 'public-read',
+                'ACL' => 'public-read'
             ]);
 
         } catch (S3Exception $e) {
