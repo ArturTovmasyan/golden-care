@@ -5,8 +5,6 @@ namespace App\Command;
 use App\Api\V1\Common\Service\Exception\ValidationException;
 use App\Api\V1\Common\Service\S3Service;
 use App\Entity\Image;
-use App\Entity\ResidentImage;
-use App\Entity\UserImage;
 use App\Model\FileType;
 use App\Util\MimeUtil;
 use DataURI\Parser;
@@ -73,116 +71,116 @@ class MigrateResidentAndUserImagesToS3Command extends Command
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
 
-            return 0;
+            return 1;
         }
 
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            $residentImages = $this->em->getRepository(ResidentImage::class)->findAll();
-
-            if (!empty($residentImages)) {
-                /** @var ResidentImage $residentImage */
-                foreach ($residentImages as $residentImage) {
-                    $photo = $residentImage->getPhoto();
-
-                    // save image
-                    if ($photo !== null) {
-                        $image = new Image();
-
-                        $explodeData = explode(',', $photo);
-                        $base64Image = base64_decode(end($explodeData));
-                        $parseFile = Parser::parse($photo);
-                        $mimeType = $parseFile->getMimeType();
-                        if ($mimeType === 'image/jpg') {
-                            $mimeType = 'image/jpeg';
-                        }
-                        $format = MimeUtil::mime2ext($mimeType);
-
-                        $image->setMimeType($mimeType);
-                        $image->setType(FileType::TYPE_RESIDENT_IMAGE);
-                        $image->setResident($residentImage->getResident());
-                        $image->setCreatedAt($residentImage->getCreatedAt());
-                        $image->setUpdatedAt($residentImage->getUpdatedAt());
-                        $image->setCreatedBy($residentImage->getCreatedBy());
-                        $image->setUpdatedBy($residentImage->getUpdatedBy());
-
-                        $this->em->persist($image);
-
-                        $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
-                        $image->setS3Id($s3Id);
-                        $this->em->persist($image);
-
-                        $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
-
-                        $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
-
-                        $output->writeln('Resident image id: ' . $residentImage->getId());
-                    }
-                }
-            }
-
-            $userImages = $this->em->getRepository(UserImage::class)->findAll();
-
-            if (!empty($userImages)) {
-                /** @var UserImage $userImage */
-                foreach ($userImages as $userImage) {
-                    $photo = $userImage->getPhoto();
-
-                    // save image
-                    if ($photo !== null) {
-                        $image = new Image();
-
-                        $explodeData = explode(',', $photo);
-                        $base64Image = base64_decode(end($explodeData));
-                        $parseFile = Parser::parse($photo);
-                        $mimeType = $parseFile->getMimeType();
-                        if ($mimeType === 'image/jpg') {
-                            $mimeType = 'image/jpeg';
-                        }
-                        $format = MimeUtil::mime2ext($mimeType);
-
-                        $image->setMimeType($mimeType);
-                        $image->setType(FileType::TYPE_AVATAR);
-                        $image->setUser($userImage->getUser());
-                        $image->setCreatedAt($userImage->getCreatedAt());
-                        $image->setUpdatedAt($userImage->getUpdatedAt());
-                        $image->setCreatedBy($userImage->getCreatedBy());
-                        $image->setUpdatedBy($userImage->getUpdatedBy());
-
-                        $this->em->persist($image);
-
-                        $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
-                        $image->setS3Id($s3Id);
-                        $this->em->persist($image);
-
-                        $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
-
-                        $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
-
-                        $output->writeln('User image id: ' . $userImage->getId());
-                    }
-                }
-            }
-
-            $this->em->flush();
-
-            $this->em->getConnection()->commit();
-
-            $output->writeln('Successfully migrated');
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            if ($e instanceof ValidationException) {
-                $output->writeln($e->getErrors());
-            } else {
-                $output->writeln($e->getMessage());
-            }
-        }
+//        try {
+//            $this->em->getConnection()->beginTransaction();
+//
+//            $residentImages = $this->em->getRepository(ResidentImage::class)->findAll();
+//
+//            if (!empty($residentImages)) {
+//                /** @var ResidentImage $residentImage */
+//                foreach ($residentImages as $residentImage) {
+//                    $photo = $residentImage->getPhoto();
+//
+//                    // save image
+//                    if ($photo !== null) {
+//                        $image = new Image();
+//
+//                        $explodeData = explode(',', $photo);
+//                        $base64Image = base64_decode(end($explodeData));
+//                        $parseFile = Parser::parse($photo);
+//                        $mimeType = $parseFile->getMimeType();
+//                        if ($mimeType === 'image/jpg') {
+//                            $mimeType = 'image/jpeg';
+//                        }
+//                        $format = MimeUtil::mime2ext($mimeType);
+//
+//                        $image->setMimeType($mimeType);
+//                        $image->setType(FileType::TYPE_RESIDENT_IMAGE);
+//                        $image->setResident($residentImage->getResident());
+//                        $image->setCreatedAt($residentImage->getCreatedAt());
+//                        $image->setUpdatedAt($residentImage->getUpdatedAt());
+//                        $image->setCreatedBy($residentImage->getCreatedBy());
+//                        $image->setUpdatedBy($residentImage->getUpdatedBy());
+//
+//                        $this->em->persist($image);
+//
+//                        $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+//                        $image->setS3Id($s3Id);
+//                        $this->em->persist($image);
+//
+//                        $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
+//
+//                        $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+//
+//                        $output->writeln('Resident image id: ' . $residentImage->getId());
+//                    }
+//                }
+//            }
+//
+//            $userImages = $this->em->getRepository(UserImage::class)->findAll();
+//
+//            if (!empty($userImages)) {
+//                /** @var UserImage $userImage */
+//                foreach ($userImages as $userImage) {
+//                    $photo = $userImage->getPhoto();
+//
+//                    // save image
+//                    if ($photo !== null) {
+//                        $image = new Image();
+//
+//                        $explodeData = explode(',', $photo);
+//                        $base64Image = base64_decode(end($explodeData));
+//                        $parseFile = Parser::parse($photo);
+//                        $mimeType = $parseFile->getMimeType();
+//                        if ($mimeType === 'image/jpg') {
+//                            $mimeType = 'image/jpeg';
+//                        }
+//                        $format = MimeUtil::mime2ext($mimeType);
+//
+//                        $image->setMimeType($mimeType);
+//                        $image->setType(FileType::TYPE_AVATAR);
+//                        $image->setUser($userImage->getUser());
+//                        $image->setCreatedAt($userImage->getCreatedAt());
+//                        $image->setUpdatedAt($userImage->getUpdatedAt());
+//                        $image->setCreatedBy($userImage->getCreatedBy());
+//                        $image->setUpdatedBy($userImage->getUpdatedBy());
+//
+//                        $this->em->persist($image);
+//
+//                        $s3Id = $image->getId() . '.' . MimeUtil::mime2ext($image->getMimeType());
+//                        $image->setS3Id($s3Id);
+//                        $this->em->persist($image);
+//
+//                        $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
+//
+//                        $this->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+//
+//                        $output->writeln('User image id: ' . $userImage->getId());
+//                    }
+//                }
+//            }
+//
+//            $this->em->flush();
+//
+//            $this->em->getConnection()->commit();
+//
+//            $output->writeln('Successfully migrated');
+//        } catch (\Exception $e) {
+//            $this->em->getConnection()->rollBack();
+//
+//            if ($e instanceof ValidationException) {
+//                $output->writeln($e->getErrors());
+//            } else {
+//                $output->writeln($e->getMessage());
+//            }
+//        }
 
         $this->release();
 
-        return 1;
+        return 0;
     }
 
     /**

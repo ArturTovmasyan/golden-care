@@ -218,11 +218,6 @@ class FacilityDashboard
      * })
      */
     private $redFlag;
-    /**
-     * @var int
-     * @ORM\Column(name="break_even", type="integer", nullable=true)
-     */
-    private $breakEven;
 
     /**
      * @var int

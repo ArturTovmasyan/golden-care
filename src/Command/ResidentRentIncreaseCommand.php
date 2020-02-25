@@ -69,7 +69,7 @@ class ResidentRentIncreaseCommand extends Command
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
 
-            return 0;
+            return 1;
         }
 
         try {
@@ -144,6 +144,6 @@ class ResidentRentIncreaseCommand extends Command
 
         $this->release();
 
-        return 1;
+        return 0;
     }
 }

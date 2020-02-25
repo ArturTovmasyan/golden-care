@@ -245,21 +245,6 @@ class FacilityRoom
      */
     private $beds;
 
-    /**
-     * @var bool
-     * @ORM\Column(name="private", type="boolean", options={"default" = 0})
-     * @Groups({
-     *     "api_admin_facility_room_grid",
-     *     "api_admin_facility_room_list",
-     *     "api_admin_facility_room_get",
-     *     "api_admin_resident_admission_get_active",
-     *     "api_admin_resident_get",
-     *     "api_admin_contract_get_active",
-     *     "api_admin_resident_get_last_admission"
-     * })
-     */
-    private $private = false;
-
     public function __construct()
     {
         $this->beds = new ArrayCollection();
@@ -380,22 +365,6 @@ class FacilityRoom
     public function removeBed($bed): void
     {
         $this->beds->removeElement($bed);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPrivate(): bool
-    {
-        return $this->private;
-    }
-
-    /**
-     * @param bool $private
-     */
-    public function setPrivate(bool $private): void
-    {
-        $this->private = $private;
     }
 
     /**
