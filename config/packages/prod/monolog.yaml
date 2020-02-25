@@ -27,3 +27,7 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.emails.log"
             channels: ["app"]
+        main_listener:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.listener.log"
+            channels: ["app"]

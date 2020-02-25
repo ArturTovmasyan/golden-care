@@ -13,6 +13,7 @@ use App\Repository\FacilityRepository;
 use App\Util\Mailer;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -50,20 +51,27 @@ class MainListener
     protected $mailer;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * MainListener constructor.
      * @param EntityManagerInterface $em
      * @param Security $security
      * @param Reader $reader
      * @param GrantService $grantService
      * @param Mailer $mailer
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService, Mailer $mailer)
+    public function __construct(EntityManagerInterface $em, Security $security, Reader $reader, GrantService $grantService, Mailer $mailer, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->security = $security;
         $this->reader = $reader;
         $this->grantService = $grantService;
         $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     /**
@@ -203,6 +211,11 @@ class MainListener
             ($event->getRequest()->getContentType() === 'application/json' || $event->getRequest()->getContentType() === 'json')
         ) {
             $content = $event->getRequest()->getContent();
+
+            if ($content === null) {
+                $this->logger->debug($event->getRequest()->getUri(), []);
+            }
+
             $event->getRequest()->request->add(json_decode($content, true));
         }
 
