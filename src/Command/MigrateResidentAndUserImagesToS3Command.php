@@ -90,8 +90,9 @@ class MigrateResidentAndUserImagesToS3Command extends Command
                     if ($photo !== null) {
                         $image = new Image();
 
+                        $explodeData = explode(',', $photo);
+                        $base64Image = base64_decode(end($explodeData));
                         $parseFile = Parser::parse($photo);
-                        $base64Image = $parseFile->getData();
                         $mimeType = $parseFile->getMimeType();
                         if ($mimeType === 'image/jpg') {
                             $mimeType = 'image/jpeg';
@@ -132,8 +133,9 @@ class MigrateResidentAndUserImagesToS3Command extends Command
                     if ($photo !== null) {
                         $image = new Image();
 
+                        $explodeData = explode(',', $photo);
+                        $base64Image = base64_decode(end($explodeData));
                         $parseFile = Parser::parse($photo);
-                        $base64Image = $parseFile->getData();
                         $mimeType = $parseFile->getMimeType();
                         if ($mimeType === 'image/jpg') {
                             $mimeType = 'image/jpeg';
