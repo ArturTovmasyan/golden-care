@@ -530,6 +530,13 @@ report:
           title: "Physician Roster Full: List of physicians, with contact information and resident count"
         residents-by-physician:
           title: "Physicians with Resident Roster: List of Physicians, including contact information and names of Residents"
+    health:
+      title: "Data Health Reports"
+      children:
+        resident-rps:
+          title: "Resident RPs: List of residents who do not have RPs assigned"
+        missing-rent-records:
+          title: "Missing Rent Records: List of Active Residents who do not have a valid Room Rent record"
     assessment:
       title: "Assessment Reports"
       children:
