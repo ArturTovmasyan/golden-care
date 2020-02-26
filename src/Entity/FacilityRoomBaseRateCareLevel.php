@@ -74,6 +74,7 @@ class FacilityRoomBaseRateCareLevel
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\GreaterThan(
      *      value = 0,
+     *      message = "This value should be greater than ${{ value }}.",
      *      groups={
      *          "api_admin_facility_room_base_rate_edit",
      *          "api_admin_facility_room_base_rate_add"
@@ -81,6 +82,7 @@ class FacilityRoomBaseRateCareLevel
      * )
      * @Assert\LessThan(
      *      value = 1000000,
+     *      message = "This value should be less than ${{ value }}.",
      *      groups={
      *          "api_admin_facility_room_base_rate_edit",
      *          "api_admin_facility_room_base_rate_add"
