@@ -72,24 +72,20 @@ class PaymentSourceBaseRateCareLevel
     /**
      * @var float
      * @ORM\Column(name="amount", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_payment_source_base_rate_add",
-     *     "api_admin_payment_source_base_rate_edit"
-     * })
-     * @Assert\Regex(
-     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
-     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
+     * @Assert\GreaterThan(
+     *      value = 0,
      *      groups={
-     *          "api_admin_payment_source_base_rate_add",
-     *          "api_admin_payment_source_base_rate_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *          "api_admin_payment_source_base_rate_edit",
+     *          "api_admin_payment_source_base_rate_add"
+     *      }
+     * )
+     * @Assert\LessThan(
+     *      value = 1000000,
      *      groups={
-     *          "api_admin_payment_source_base_rate_add",
-     *          "api_admin_payment_source_base_rate_edit"
-     * })
+     *          "api_admin_payment_source_base_rate_edit",
+     *          "api_admin_payment_source_base_rate_add"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_payment_source_base_rate_get",
      *     "api_admin_payment_source_base_rate_list",

@@ -247,7 +247,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
                 throw new CareLevelNotFoundException();
             }
 
-            $amount = !empty($rate['amount']) ? $rate['amount'] : null;
+            $amount = !empty($rate['amount']) ? $rate['amount'] : 0;
 
             $level = new FacilityRoomBaseRateCareLevel();
             $level->setBaseRate($baseRate);
