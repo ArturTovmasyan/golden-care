@@ -442,7 +442,16 @@ health:
           select_all: true
     missing-rent-records:
       service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getMissingRentRecordsReport
-      title: 'Missing Rent Records: List of Active Residents who do not have a valid Room Rent Record'
+      title: 'Missing Rent Records: List of Active Residents who do not have a valid Room Rent record'
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        group:
+          select_all: true
+    invalid-rent-amount:
+      service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getInvalidRentAmountReport
+      title: 'Invalid Rent Amount Records: List of Residents who do not have a valid Room Rent amount'
       show_in_resident_list: false
       show_in_group_list: true
       formats: ['csv']

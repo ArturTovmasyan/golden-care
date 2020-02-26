@@ -7,6 +7,7 @@ use App\Entity\Resident;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Model\GroupType;
+use App\Model\Report\InvalidRentAmount;
 use App\Model\Report\MissingRentRecords;
 use App\Model\Report\ResidentRps;
 use App\Repository\ResidentRentRepository;
@@ -191,6 +192,43 @@ class DataHealthReportService extends BaseService
         $report->setEndDateInThePastIds($endDateInThePastIds);
         $report->setMoreThanOneEndDateNullIds($moreThanOneEndDateNullIds);
         $report->setOverlapIds($overlapIds);
+        $report->setStrategyId($type);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @param $discontinued
+     * @return InvalidRentAmount
+     */
+    public function getInvalidRentAmountReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): InvalidRentAmount
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+        $residents = $rentRepo->getZeroAmountResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type);
+
+        $report = new InvalidRentAmount();
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setResidents($residents);
         $report->setStrategyId($type);
 
         return $report;

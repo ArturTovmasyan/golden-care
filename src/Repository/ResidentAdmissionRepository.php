@@ -742,6 +742,120 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param $type
      * @param array|null $ids
+     * @return QueryBuilder
+     */
+    public function getResidentsQb(Space $space = null, array $entityGrants = null, $type, array $ids = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS firstName',
+                'r.lastName AS lastName',
+                'ra.id as actionId',
+                '(SELECT DISTINCT mra.start FROM App:ResidentAdmission mra
+                WHERE mra.resident=r
+                AND mra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r) 
+                )
+                as admitted',
+                'ra.start AS  admissionStart',
+                'ra.admissionType AS  admissionType'
+            )
+            ->join('ra.resident', 'r')
+            ->where('ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS roomNumber',
+                        'fbrfrt.private AS private',
+                        'fb.number AS bedNumber',
+                        'fbrf.id AS typeId',
+                        'fbrf.name AS typeName'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
+                    ->orderBy('fbr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('fbrf.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS roomNumber',
+                        'abr.private AS private',
+                        'ab.number AS bedNumber',
+                        'abra.id AS typeId',
+                        'abra.name AS typeName'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra')
+                    ->orderBy('abr.number')
+                    ->addOrderBy('ab.number');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('abra.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id AS typeId',
+                        'reg.name AS typeName'
+                    )
+                    ->join('ra.region', 'reg')
+                    ->orderBy('reg.name');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('reg.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
      * @return mixed
      */
     public function getActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null)
