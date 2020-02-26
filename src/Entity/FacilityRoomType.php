@@ -172,7 +172,7 @@ class FacilityRoomType
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("base_rates")
+     * @Serializer\SerializedName("levels")
      * @Serializer\Groups({
      *     "api_admin_resident_admission_get_active"
      * })

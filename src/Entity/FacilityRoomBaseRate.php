@@ -7,7 +7,6 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -99,7 +98,6 @@ class FacilityRoomBaseRate
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomBaseRateCareLevel", mappedBy="baseRate", cascade={"persist"})
-     * @Serializer\SerializedName("base_rates")
      * @Assert\Valid(groups={
      *      "api_admin_facility_room_base_rate_add",
      *      "api_admin_facility_room_base_rate_edit"

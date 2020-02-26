@@ -218,7 +218,7 @@ class PaymentSource
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("base_rates")
+     * @Serializer\SerializedName("levels")
      * @Serializer\Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"
