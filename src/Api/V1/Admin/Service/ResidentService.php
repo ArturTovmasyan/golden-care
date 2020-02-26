@@ -431,6 +431,8 @@ class ResidentService extends BaseService implements IGridService
                 $this->em->persist($lastAction);
             }
 
+            $this->em->persist($resident);
+
             $this->em->flush();
 
             $this->em->getConnection()->commit();

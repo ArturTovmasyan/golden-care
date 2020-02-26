@@ -226,10 +226,7 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
      */
     private function saveLevels($currentSpace, PaymentSourceBaseRate $baseRate, array $baseRates = []): ?array
     {
-        $validationGroup = 'api_admin_payment_source_base_rate_care_level_add';
         if ($baseRate->getId() !== null) {
-            $validationGroup = 'api_admin_payment_source_base_rate_care_level_edit';
-
             /** @var PaymentSourceBaseRateCareLevelRepository $levelRepo */
             $levelRepo = $this->em->getRepository(PaymentSourceBaseRateCareLevel::class);
 
@@ -261,8 +258,6 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
             $level->setBaseRate($baseRate);
             $level->setCareLevel($careLevel);
             $level->setAmount($amount);
-
-            $this->validate($level, null, [$validationGroup]);
 
             $this->em->persist($level);
 

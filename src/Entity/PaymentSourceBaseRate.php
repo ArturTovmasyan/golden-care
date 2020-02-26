@@ -98,6 +98,10 @@ class PaymentSourceBaseRate
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRateCareLevel", mappedBy="baseRate", cascade={"persist"})
      * @Serializer\SerializedName("base_rates")
+     * @Assert\Valid(groups={
+     *      "api_admin_payment_source_base_rate_add",
+     *      "api_admin_payment_source_base_rate_edit"
+     * })
      * @Groups({
      *     "api_admin_payment_source_base_rate_get",
      *     "api_admin_payment_source_base_rate_list",

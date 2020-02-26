@@ -41,8 +41,8 @@ class FacilityRoomBaseRateCareLevel
      * @Assert\NotNull(
      *      message = "Please select a Base Rate",
      *      groups={
-     *          "api_admin_facility_room_base_rate_care_level_edit",
-     *          "api_admin_facility_room_base_rate_care_level_add"
+     *          "api_admin_facility_room_base_rate_edit",
+     *          "api_admin_facility_room_base_rate_add"
      *      }
      * )
      */
@@ -57,8 +57,8 @@ class FacilityRoomBaseRateCareLevel
      * @Assert\NotNull(
      *      message = "Please select a Care Level",
      *      groups={
-     *          "api_admin_facility_room_base_rate_care_level_edit",
-     *          "api_admin_facility_room_base_rate_care_level_add"
+     *          "api_admin_facility_room_base_rate_edit",
+     *          "api_admin_facility_room_base_rate_add"
      *      }
      * )
      * @Groups({
@@ -73,22 +73,22 @@ class FacilityRoomBaseRateCareLevel
      * @var float
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
-     *     "api_admin_facility_room_base_rate_care_level_add",
-     *     "api_admin_facility_room_base_rate_care_level_edit"
+     *     "api_admin_facility_room_base_rate_add",
+     *     "api_admin_facility_room_base_rate_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
-     *          "api_admin_facility_room_base_rate_care_level_add",
-     *          "api_admin_facility_room_base_rate_care_level_edit"
+     *          "api_admin_facility_room_base_rate_add",
+     *          "api_admin_facility_room_base_rate_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
-     *          "api_admin_facility_room_base_rate_care_level_add",
-     *          "api_admin_facility_room_base_rate_care_level_edit"
+     *          "api_admin_facility_room_base_rate_add",
+     *          "api_admin_facility_room_base_rate_edit"
      * })
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",

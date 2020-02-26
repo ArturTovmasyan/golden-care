@@ -100,6 +100,10 @@ class FacilityRoomBaseRate
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomBaseRateCareLevel", mappedBy="baseRate", cascade={"persist"})
      * @Serializer\SerializedName("base_rates")
+     * @Assert\Valid(groups={
+     *      "api_admin_facility_room_base_rate_add",
+     *      "api_admin_facility_room_base_rate_edit"
+     * })
      * @Groups({
      *     "api_admin_facility_room_base_rate_get",
      *     "api_admin_facility_room_base_rate_list",
