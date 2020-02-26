@@ -27,7 +27,7 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
     {
         $queryBuilder
             ->from(FacilityRoomBaseRate::class, 'br')
-            ->addSelect('JSON_ARRAYAGG(CASE WHEN cl.title IS NOT NULL THEN JSON_OBJECT(cl.title, brl.amount) ELSE \'\' END) AS levels')
+            ->addSelect('JSON_ARRAYAGG(CASE WHEN cl.title IS NOT NULL THEN JSON_OBJECT(cl.title, brl.amount) ELSE \'\' END) AS base_rates')
             ->innerJoin(
                 FacilityRoomType::class,
                 'frt',

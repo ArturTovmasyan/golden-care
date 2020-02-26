@@ -26,7 +26,7 @@ class PaymentSourceBaseRateRepository extends EntityRepository implements Relate
     {
         $queryBuilder
             ->from(PaymentSourceBaseRate::class, 'sbr')
-            ->addSelect('JSON_ARRAYAGG(CASE WHEN cl.title IS NOT NULL THEN JSON_OBJECT(cl.title, brl.amount) ELSE \'\' END) AS levels')
+            ->addSelect('JSON_ARRAYAGG(CASE WHEN cl.title IS NOT NULL THEN JSON_OBJECT(cl.title, brl.amount) ELSE \'\' END) AS base_rates')
             ->innerJoin(
                 PaymentSource::class,
                 'ps',
