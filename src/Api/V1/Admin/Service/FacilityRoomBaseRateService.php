@@ -121,7 +121,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
 
             $baseRate->setDate($date);
 
-            $levels = $this->saveLevels($currentSpace, $baseRate, $params['base_rates'] ?? []);
+            $levels = $this->saveLevels($currentSpace, $baseRate, $params['levels'] ?? []);
 
             if (\count($levels) < 1) {
                 throw new BaseRateNotBeBlankException();
@@ -192,7 +192,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
 
             $entity->setDate($date);
 
-            $levels = $this->saveLevels($currentSpace, $entity, $params['base_rates'] ?? []);
+            $levels = $this->saveLevels($currentSpace, $entity, $params['levels'] ?? []);
 
             if (\count($levels) < 1) {
                 throw new BaseRateNotBeBlankException();

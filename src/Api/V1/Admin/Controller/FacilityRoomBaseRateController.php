@@ -102,7 +102,7 @@ class FacilityRoomBaseRateController extends BaseController
             [
                 'room_type_id' => $request->get('room_type_id'),
                 'date' => $request->get('date'),
-                'base_rates' => $request->get('base_rates')
+                'levels' => $request->get('levels')
 
             ]
         );
@@ -131,7 +131,7 @@ class FacilityRoomBaseRateController extends BaseController
             [
                 'room_type_id' => $request->get('room_type_id'),
                 'date' => $request->get('date'),
-                'base_rates' => $request->get('base_rates')
+                'levels' => $request->get('levels')
             ]
         );
 

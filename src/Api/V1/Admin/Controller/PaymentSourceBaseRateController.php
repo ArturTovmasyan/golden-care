@@ -101,7 +101,7 @@ class PaymentSourceBaseRateController extends BaseController
             [
                 'payment_source_id' => $request->get('payment_source_id'),
                 'date' => $request->get('date'),
-                'base_rates' => $request->get('base_rates')
+                'levels' => $request->get('levels')
 
             ]
         );
@@ -130,7 +130,7 @@ class PaymentSourceBaseRateController extends BaseController
             [
                 'payment_source_id' => $request->get('payment_source_id'),
                 'date' => $request->get('date'),
-                'base_rates' => $request->get('base_rates')
+                'levels' => $request->get('levels')
             ]
         );
 

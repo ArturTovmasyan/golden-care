@@ -122,7 +122,7 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
 
             $careLevelAdjustment = $paymentSource->isCareLevelAdjustment();
 
-            $levels = $this->saveLevels($currentSpace, $baseRate, $careLevelAdjustment && !empty($params['base_rates']) ? $params['base_rates'] : []);
+            $levels = $this->saveLevels($currentSpace, $baseRate, $careLevelAdjustment && !empty($params['levels']) ? $params['levels'] : []);
 
             if ($careLevelAdjustment && \count($levels) < 1) {
                 throw new BaseRateNotBeBlankException();
@@ -197,7 +197,7 @@ class PaymentSourceBaseRateService extends BaseService implements IGridService
 
             $careLevelAdjustment = $paymentSource->isCareLevelAdjustment();
 
-            $levels = $this->saveLevels($currentSpace, $entity, $careLevelAdjustment === true && $params['base_rates'] ? $params['base_rates'] : []);
+            $levels = $this->saveLevels($currentSpace, $entity, $careLevelAdjustment === true && $params['levels'] ? $params['levels'] : []);
 
             if ($careLevelAdjustment && \count($levels) < 1) {
                 throw new BaseRateNotBeBlankException();
