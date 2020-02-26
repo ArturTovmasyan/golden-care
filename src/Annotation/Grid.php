@@ -38,7 +38,9 @@ class Grid
     const FIELD_TYPE_DATETIME           = 'datetime';
     const FIELD_TYPE_ENUM               = 'enum';
     const FIELD_TYPE_JSON               = 'json';
+    const FIELD_TYPE_JSON_HORIZ         = 'json_horizontal';
     const FIELD_TYPE_JSON_SORTED        = 'json_sorted';
+    const FIELD_TYPE_JSON_HORIZ_SORTED  = 'json_sorted_horizontal';
     const FIELD_TYPE_ICON               = 'icon';
     const FIELD_TYPE_COLOR              = 'color';
     const FIELD_TYPE_CRON               = 'cron';
@@ -242,8 +244,15 @@ class Grid
             return false;
         }
 
+        $json_types = [
+            self::FIELD_TYPE_JSON,
+            self::FIELD_TYPE_JSON_HORIZ,
+            self::FIELD_TYPE_JSON_SORTED,
+            self::FIELD_TYPE_JSON_HORIZ_SORTED
+        ];
+
         foreach ($fields as $field) {
-            if(($field['type'] !== self::FIELD_TYPE_JSON || $field['type'] !== self::FIELD_TYPE_JSON_SORTED) && $field['field'] !== "" && $field['field'] !== $field['id']) {
+            if(in_array($field['type'], $json_types) && $field['field'] !== "" && $field['field'] !== $field['id']) {
                 $this->queryBuilder->addSelect(sprintf("%s as %s", $field['field'], $field['id']));
             }
         }

@@ -34,7 +34,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "base_rates",
  *              "sortable"   = false,
- *              "type"       = "json_sorted",
+ *              "type"       = "json_sorted_horizontal",
  *              "field"      = "base_rates"
  *          }
  *     }
