@@ -10,6 +10,11 @@ class InvalidRentAmount extends Base
     private $residents = [];
 
     /**
+     * @var array
+     */
+    private $averageRent = [];
+
+    /**
      * @var string
      */
     private $strategy;
@@ -41,6 +46,22 @@ class InvalidRentAmount extends Base
     public function setResidents($residents): void
     {
         $this->residents = $residents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAverageRent(): ?array
+    {
+        return $this->averageRent;
+    }
+
+    /**
+     * @param $averageRent
+     */
+    public function setAverageRent($averageRent): void
+    {
+        $this->averageRent = $averageRent;
     }
 
     /**

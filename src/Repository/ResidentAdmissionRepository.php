@@ -742,9 +742,10 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param $type
      * @param array|null $ids
+     * @param bool $active
      * @return QueryBuilder
      */
-    public function getResidentsQb(Space $space = null, array $entityGrants = null, $type, array $ids = null): QueryBuilder
+    public function getResidentsQb(Space $space = null, array $entityGrants = null, $type, array $ids = null, $active = false): QueryBuilder
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -766,6 +767,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->where('ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
             ->setParameter('type', $type);
+
+        if ($active) {
+            $qb
+                ->andWhere('ra.admissionType < :admissionType')
+                ->setParameter('admissionType', AdmissionType::DISCHARGE);
+        }
 
         if ($space !== null) {
             $qb
@@ -791,6 +798,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->addSelect(
                         'fbr.number AS roomNumber',
                         'fbrfrt.private AS private',
+                        'fbrfrt.id AS roomTypeId',
                         'fb.number AS bedNumber',
                         'fbrf.id AS typeId',
                         'fbrf.name AS typeName'

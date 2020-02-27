@@ -254,6 +254,8 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getResult();
     }
 
+    ////For Data Health Report Section (With Resident Admission Part)///////////////////////////////////////////////////
+
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
@@ -322,12 +324,65 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
 
         /** @var QueryBuilder $qb */
         $qb = $admissionRepo
-            ->getResidentsQb(null, null, $type);
+            ->getResidentsQb(null, null, $type, null, false);
 
         $qb
             ->from(ResidentRent::class, 'rr')
             ->andWhere('rr.resident = r')
             ->andWhere('rr.amount = 0')
+            ->addSelect(
+                'rr.id as rentId',
+                'rr.amount as amount',
+                'rr.start as start',
+                'rr.end as end'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->addOrderBy('r.id')
+            ->addOrderBy('rr.start')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @return mixed
+     */
+    public function getMoreThanZeroAmountActiveResidentRents(Space $space = null, array $entityGrants = null, $type)
+    {
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getResidentsQb(null, null, $type, null, true);
+
+        $qb
+            ->from(ResidentRent::class, 'rr')
+            ->andWhere('rr.resident = r')
+            ->andWhere('rr.amount > 0')
             ->addSelect(
                 'rr.id as rentId',
                 'rr.amount as amount',

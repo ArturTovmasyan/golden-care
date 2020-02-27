@@ -326,4 +326,57 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIdsWithRates(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('frt')
+            ->join('frt.baseRates', 'br')
+            ->join('br.levels', 'l')
+            ->where('frt.id IN (:ids)')
+            ->andWhere('br.date = (SELECT MAX(mbr.date) FROM App:FacilityRoomBaseRate mbr JOIN mbr.roomType mrt WHERE mbr.date <= :now AND mrt.id = frt.id GROUP BY mrt.id) ')
+            ->setParameter('ids', $ids)
+            ->setParameter('now', new \DateTime('now'));
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Facility::class,
+                    'f',
+                    Join::WITH,
+                    'f = frt.facility'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('frt.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb->groupBy('frt.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
