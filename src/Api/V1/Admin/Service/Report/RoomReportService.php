@@ -28,6 +28,7 @@ use App\Model\Report\RoomList;
 use App\Model\Report\RoomOccupancyRate;
 use App\Model\Report\RoomOccupancyRateByMonth;
 use App\Model\Report\RoomRent;
+use App\Model\Report\RoomRentByYear;
 use App\Model\Report\RoomRentMaster;
 use App\Model\Report\RoomRentMasterNew;
 use App\Model\Report\RoomVacancyList;
@@ -409,6 +410,227 @@ class RoomReportService extends BaseService
         $report->setStrategyId($type);
         $report->setDateStart($dateStart->format('m/d/Y'));
         $report->setDateEnd($dateEnd->format('m/d/Y'));
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return RoomRentByYear
+     */
+    public function getRoomRentByYearReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentByYear
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = (int)$group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $now = new \DateTime('now');
+        if (!empty($date)) {
+            $date = new \DateTime('01/01/'.$date.' 00:00:00');
+
+            if ($date->format('Y') ===  $now->format('Y')) {
+                $dateStartFormatted = $now->format('01/01/Y 00:00:00');
+                $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+            } else {
+                $dateStartFormatted = $date->format('01/01/Y 00:00:00');
+                $dateEndFormatted = $date->format('12/t/Y 23:59:59');
+            }
+        } else {
+            $dateStartFormatted = $now->format('01/01/Y 00:00:00');
+            $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+        }
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+        $dateEndClone = clone $dateEnd;
+
+        if ($dateStart > $dateEnd) {
+            throw new StartGreaterEndDateException();
+        }
+
+        $interval = [];
+        while ($dateEndClone->diff($dateStart)->days > 0 && \count($interval) <= 12) {
+            $start = new \DateTime($dateEndClone->format('Y-m-01 00:00:00'));
+            $end = new \DateTime($dateEndClone->format('Y-m-t 23:59:59'));
+
+            $interval[] = [
+                'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
+                'date' => $start->format('F') . ' ' . $start->format('y')
+            ];
+
+            $dateEndClone->modify('last day of previous month');
+        }
+
+        $interval = array_reverse($interval);
+
+        /** @var ResidentRentRepository $repo */
+        $repo = $this->em->getRepository(ResidentRent::class);
+
+        $finalData = [];
+        $finalCsvData = [];
+        $finalCalcAmount = [];
+        $finalPlace = [];
+        $finalTotal = [];
+        $finalResidentCount = [];
+        foreach ($interval as $subVal) {
+            $subInterval = ImtDateTimeInterval::getWithDateTimes($subVal['subInterval']->getStart(), $subVal['subInterval']->getEnd());
+            $rentPeriodFactory = clone RentPeriodFactory::getFactory($subVal['subInterval']);
+
+            $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
+
+            $rentResidentIds = array_map(function ($item) {
+                return $item['id'];
+            }, $data);
+            $rentResidentIds = array_unique($rentResidentIds);
+
+            $rentTypeIds = array_map(function ($item) {
+                return $item['typeId'];
+            }, $data);
+
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+            $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $rentResidentIds);
+
+            $calcAmount = [];
+            $total = [];
+            $residentCount = [];
+            foreach ($rentTypeIds as $rentTypeId) {
+                $sum = 0.00;
+                $count = [];
+                foreach ($data as $rent) {
+                    if ($rentTypeId === $rent['typeId']) {
+                        $calculationResults = $rentPeriodFactory->calculateForRoomRentByYearInterval($subVal['subInterval'],
+                            ImtDateTimeInterval::getWithDateTimes(new \DateTime($rent['admitted']), new \DateTime($rent['discharged'])),
+                            RentPeriod::MONTHLY,
+                            $rent['amount']
+                        );
+
+                        $calcAmount[$rent['id']][$rent['actionId']] = ['days' => $calculationResults['days'], 'amount' => $calculationResults['amount']];
+
+                        $sum += $calculationResults['amount'];
+
+                        $count[] = $rent['id'];
+                    }
+                }
+                $total[$rentTypeId] = $sum;
+
+                $count = array_unique($count);
+                $residentCount[$rentTypeId] = \count($count);
+            }
+
+            $changedData = [];
+            foreach ($data as $rent) {
+                if (array_key_exists('roomNumber', $rent) && array_key_exists('bedNumber', $rent)) {
+                    if ($rent['private']) {
+                        $number = $rent['roomNumber'] . ' ';
+                    } else {
+                        $number = $rent['roomNumber'] . ' ' . $rent['bedNumber'];
+                    }
+                } else {
+                    $number = null;
+                }
+
+                $rentArray = [
+                    'fullName' => $rent['firstName'] . ' ' . $rent['lastName'],
+                    'fullNameShort' => $rent['firstName'] . ' ' . strtoupper($rent['lastName'][0]),
+                    'number' => $number,
+                    'period' => RentPeriod::MONTHLY,
+                    'rentId' => $rent['rentId'],
+                    'actionId' => $rent['actionId'],
+                    'amount' => $rent['amount'],
+                    'id' => $rent['id'],
+                    'admitted' => $rent['admitted'],
+                    'discharged' => $rent['discharged'],
+                    'typeName' => $rent['typeName'],
+                    'typeId' => $rent['typeId'],
+                    'typeShorthand' => $rent['typeShorthand'],
+                    'responsiblePerson' => [],
+                ];
+                $rpArray = array();
+                /** @var ResidentResponsiblePerson $responsiblePerson */
+                foreach ($responsiblePersons as $responsiblePerson) {
+                    $isFinancially = false;
+                    if (!empty($responsiblePerson->getRoles())) {
+                        /** @var ResponsiblePersonRole $role */
+                        foreach ($responsiblePerson->getRoles() as $role) {
+                            if ($role->isFinancially() === true) {
+                                $isFinancially = true;
+                            }
+                        }
+                    }
+
+                    $rpResidentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
+                    $rpId = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getId() : 0;
+                    $rpFullName = $responsiblePerson->getResponsiblePerson() ? $responsiblePerson->getResponsiblePerson()->getFirstName() . ' ' . $responsiblePerson->getResponsiblePerson()->getLastName() : '';
+                    $rpRelationship = $responsiblePerson->getRelationship() ? $responsiblePerson->getRelationship()->getTitle() : '';
+
+                    if ($isFinancially === true && $rpResidentId === $rent['id']) {
+                        $rpArray['responsiblePerson'][$rpId] = $rpFullName . ' (' . $rpRelationship . ')';
+                    }
+                }
+                $changedData[] = array_merge($rentArray, $rpArray);
+            }
+
+            $typeNames = [];
+            $numbers = [];
+            foreach ($changedData as $k => $changedDatum) {
+                $typeNames[$k][] = $changedDatum['typeName'] ?? '';
+                $numbers[$k][] = $changedDatum['number'] ?? '';
+            }
+
+            array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
+
+            $typeIds = array_map(function ($item) {
+                return $item['typeId'];
+            }, $changedData);
+            $countTypeIds = array_count_values($typeIds);
+            $place = [];
+            $i = 0;
+            foreach ($countTypeIds as $key => $value) {
+                $i += $value;
+                $place[$key] = $i;
+            }
+
+            //for CSV report
+            $csvData = [];
+            foreach ($changedData as $changedDatum) {
+                $string_version = implode("\r\n", $changedDatum['responsiblePerson']);
+                $changedDatum['responsiblePerson'] = $string_version;
+                $csvData[] = $changedDatum;
+            }
+
+            $finalData[$subVal['date']] = $changedData;
+            $finalCsvData[$subVal['date']] = $csvData;
+            $finalCalcAmount[$subVal['date']] = $calcAmount;
+            $finalPlace[$subVal['date']] = $place;
+            $finalTotal[$subVal['date']] = $total;
+            $finalResidentCount[$subVal['date']] = $residentCount;
+        }
+
+        $report = new RoomRentByYear();
+        $report->setData($finalData);
+        $report->setCsvData($finalCsvData);
+        $report->setCalcAmount($finalCalcAmount);
+        $report->setPlace($finalPlace);
+        $report->setTotal($finalTotal);
+        $report->setResidentCount($finalResidentCount);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
 
         return $report;
     }

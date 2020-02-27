@@ -1,0 +1,14 @@
+{% for date, monthData in data.csvData %}
+{{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %}Rent Report: {{ date }}
+{% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
+{% for datum in monthData %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}{% if renderedGroup == datum.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.typeId %}{% set newGroup = true %}{% endif %}{% set k = 0 %}
+{% if newGroup %}
+
+{% for key, sum in data.total[date] %}{% if key == datum.typeId %}{{ datum.typeShorthand }} SUM,"$ {{ sum|number_format(2, '.', ',') }}"{% endif %}{% endfor %},
+{% for key, count in data.residentCount[date] %}{% if key == datum.typeId %}{{ datum.typeShorthand }} Resident Count,{{ count }}{% endif %}{% endfor %},
+{{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Billing,Rent,Frequency,Admitted,Discharged,Days,RentDue
+{% endif %}
+    {{ datum.typeName }},{% if datum.number is defined and datum.number %}{{ datum.number }},{% endif %}{{ datum.fullName }},{% if datum.responsiblePerson is defined and datum.responsiblePerson %}"{{ datum.responsiblePerson|raw }}"{% else %}N/A{% endif %},{% if datum.amount is defined and datum.amount %}"$ {{ datum.amount|number_format(2, '.', ',') }}"{% else %}"$ {{ 0|number_format(2, '.', ',') }}"{% endif %},{% if datum.period is defined and datum.period %}"{{ rentPeriod(datum.period) }}"{% else %}N/A{% endif %},{% if datum.admitted is defined and datum.admitted %}"{{ datum.admitted|date("m/d/Y") }}"{% else %}N/A{% endif %},{% if datum.discharged is defined and datum.discharged %}"{{ datum.discharged|date("m/d/Y") }}"{% else %}N/A{% endif %},{% if data.calcAmount[date][datum.id] is defined and data.calcAmount[date][datum.id][datum.actionId] is defined %}{{ data.calcAmount[date][datum.id][datum.actionId].days }}{% else %}N/A{% endif %},{% if data.calcAmount[date][datum.id] is defined and data.calcAmount[date][datum.id][datum.actionId] is defined %}"$ {{ data.calcAmount[date][datum.id][datum.actionId].amount|number_format(2, '.', ',') }}"{% else %}"$ {{ 0|number_format(2, '.', ',') }}"{% endif %},
+{% endfor %}
+
+{% endfor %}

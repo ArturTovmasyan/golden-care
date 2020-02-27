@@ -343,6 +343,16 @@ room:
         group:
           select_all: true
         date: "m/Y"
+    room-rent-by-year:
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentByYearReport
+      title: 'Room Rent: Monthly Room Rent by Year'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['pdf', 'csv']
+      parameters:
+        group:
+          select_all: true
+        date: "Y"
     room-rent-master:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentMasterReport
       title: 'Room Rent Master: Historical Rent Graphs, Data - for Finance Use only'

@@ -511,6 +511,8 @@ report:
           title: "Room Rent: Monthly Rent Report."
         room-rent-obfuscated:
           title: "Room Rent, Obfuscated: Monthly Rent Report."
+        room-rent-by-year:
+          title: "Room Rent: Monthly Room Rent by Year."
         room-rent-master:
           title: "Room Rent Master: Historical Rent Graphs, Data - for Finance Use only."
         room-rent-master-new:

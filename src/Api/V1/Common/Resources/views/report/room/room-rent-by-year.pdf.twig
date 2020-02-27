@@ -1,0 +1,151 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% for date, monthData in data.data %}
+        {% set renderedGroup = null %}
+        {% set newGroup = false %}
+        {% set i = false %}
+        {% for datumKey, datum in monthData %}
+            {% set i = true %}
+            {% if renderedGroup == datum.typeId %}
+                {% set newGroup = false %}
+            {% else %}
+                {% set renderedGroup = datum.typeId %}
+                {% set newGroup = true %}
+            {% endif %}
+
+            {% if newGroup %}
+                <div class="page"></div>
+                <span class="divider"></span>
+                <span class="divider"></span>
+                <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+                <tr class="divider"></tr>
+                <thead>
+                <tr>
+                    <th colspan="10">
+                        <div style="margin-bottom: 5px; float: left">
+                            <div style="float: left">
+                                <div style="height: 5px;"></div>
+                                <b style="font-size: 18px !important">{{ data.strategy }}
+                                    &nbsp;{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room&nbsp;{% endif %}
+                                    Rent&nbsp;Report</b>
+                                <p style="margin-bottom: 5px;"></p>
+                                <b style="font-size: 14px !important">{{ data.strategy }}
+                                    :&nbsp;{{ datum.typeName }}</b><br/>
+                                <b style="font-size: 14px !important">{{ date }}</b>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 5px; float: right">
+                            <b style="font-size: 18px !important">
+                                {% for key, sum in data.total[date] %}
+                                    {% if key == renderedGroup %}
+                                        Total:&nbsp;$&nbsp;{{ sum|number_format(2, '.', ',') }}
+                                    {% endif %}
+                                {% endfor %}
+                            </b><br>
+                            <b style="font-size: 18px !important">
+                                {% for key, count in data.residentCount[date] %}
+                                    {% if key == renderedGroup %}
+                                        Resident&nbsp;Count:&nbsp;{{ count }}
+                                    {% endif %}
+                                {% endfor %}
+                            </b>
+                        </div>
+                        <div style="clear: both"></div>
+                    </th>
+                </tr>
+                <tr>
+                    {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
+                        <td><b>Room/Bed</b></td>{% endif %}
+                    <td><b>Resident</b></td>
+                    <td><b>Billing</b></td>
+                    <td><b>Rent</b></td>
+                    <td><b>Frequency</b></td>
+                    <td><b>Admitted</b></td>
+                    <td><b>Discharged</b></td>
+                    <td><b>Days</b></td>
+                    <td><b>RentDue</b></td>
+                </tr>
+                </thead>
+                <tbody>
+            {% endif %}
+
+            <tr>
+                {% if datum.number is defined and datum.number %}
+                    <td style="height: 40px; text-align: left;">{{ datum.number }}</td>{% endif %}
+                <td style="height: 40px; text-align: left;">{{ datum.fullName }}</td>
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.responsiblePerson|length > 0 %}
+                        {% for responsiblePerson in datum.responsiblePerson %}
+                            {{ responsiblePerson }}<br/>
+                        {% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.amount is defined and datum.amount %}$&nbsp;{{ datum.amount|number_format(2, '.', ',') }}
+                        <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.period is defined and datum.period %}{{ rentPeriod(datum.period) }}
+                        <br/>{% else %}N/A{% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.admitted is defined and datum.admitted %}{{ datum.admitted|date("m/d/Y") }}
+                        <br/>{% else %}N/A{% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if datum.discharged is defined and datum.discharged %}{{ datum.discharged|date("m/d/Y") }}
+                        <br/>{% else %}N/A{% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if data.calcAmount[date][datum.id] is defined and data.calcAmount[date][datum.id][datum.actionId] is defined %}{{ data.calcAmount[date][datum.id][datum.actionId].days }}
+                        <br/>{% else %}N/A{% endif %}
+                </td>
+                <td style="height: 40px; text-align: left;">
+                    {% if data.calcAmount[date][datum.id] is defined and data.calcAmount[date][datum.id][datum.actionId] is defined %}$ {{ data.calcAmount[date][datum.id][datum.actionId].amount|number_format(2, '.', ',') }}
+                        <br/>{% else %}$&nbsp;{{ 0|number_format(2, '.', ',') }}{% endif %}
+                </td>
+            </tr>
+            {% if datumKey+1 == data.place[date][renderedGroup] %}
+                <tr>
+                    <td colspan="10">
+                        <div style="margin-bottom: 5px; float: left">
+                            <b style="font-size: 20px !important">
+                                {% for key, count in data.residentCount[date] %}
+                                    {% if key == renderedGroup %}
+                                        Resident&nbsp;Count:&nbsp;{{ count }}
+                                    {% endif %}
+                                {% endfor %}
+                            </b>
+                        </div>
+                        <div style="margin-bottom: 5px; float: right">
+                            <b style="font-size: 20px !important">
+                                {% for key, sum in data.total[date] %}
+                                    {% if key == renderedGroup %}
+                                        Total:&nbsp;$&nbsp;{{ sum|number_format(2, '.', ',') }}
+                                    {% endif %}
+                                {% endfor %}
+                            </b>
+                        </div>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+
+        {% if not newGroup %}
+            </tbody>
+            </table>
+        {% endif %}
+
+        {% if not i %}
+            <b style="font-size: 18px !important">No Rents found in {{ date }}.</b>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
