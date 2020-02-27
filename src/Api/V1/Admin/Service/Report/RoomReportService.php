@@ -440,7 +440,7 @@ class RoomReportService extends BaseService
 
         $now = new \DateTime('now');
         if (!empty($date)) {
-            $date = new \DateTime('01/01/'.$date.' 00:00:00');
+            $date = new \DateTime($date);
 
             if ($date->format('Y') ===  $now->format('Y')) {
                 $dateStartFormatted = $now->format('01/01/Y 00:00:00');
