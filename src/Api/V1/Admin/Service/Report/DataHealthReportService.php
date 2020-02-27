@@ -283,6 +283,12 @@ class DataHealthReportService extends BaseService
 
         $finalResidents = array_merge($residentRents, $activeResidentRents);
 
+        $typeNames = array_map(function ($item) {
+            return $item['typeName'];
+        }, $finalResidents);
+
+        array_multisort($typeNames, SORT_ASC, $finalResidents);
+
         $report = new InvalidRentAmount();
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($finalResidents);
