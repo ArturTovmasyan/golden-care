@@ -221,6 +221,7 @@ class DataHealthReportService extends BaseService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         $type = $group;
+        $typeId = $groupId;
 
         if (!\in_array($type, GroupType::getTypeValues(), false)) {
             throw new InvalidParameterException('group');
@@ -229,12 +230,12 @@ class DataHealthReportService extends BaseService
         /** @var ResidentRentRepository $rentRepo */
         $rentRepo = $this->em->getRepository(ResidentRent::class);
 
-        $residentRents = $rentRepo->getZeroAmountResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type);
+        $residentRents = $rentRepo->getZeroAmountResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type, $typeId);
 
         $activeResidentRents = [];
         $averageRent = [];
         if ((int)$type === GroupType::TYPE_FACILITY) {
-            $activeResidents = $rentRepo->getMoreThanZeroAmountActiveResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type);
+            $activeResidents = $rentRepo->getMoreThanZeroAmountActiveResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type, $typeId);
 
             $roomTypeIds = array_map(function ($item) {
                 return $item['roomTypeId'];

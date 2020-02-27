@@ -313,10 +313,16 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $type
+     * @param null $typeId
      * @return mixed
      */
-    public function getZeroAmountResidentRents(Space $space = null, array $entityGrants = null, $type)
+    public function getZeroAmountResidentRents(Space $space = null, array $entityGrants = null, $type, $typeId = null)
     {
+        $typeIds = null;
+        if ($typeId !== null) {
+            $typeIds = [$typeId];
+        }
+
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
             ->getEntityManager()
@@ -324,7 +330,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
 
         /** @var QueryBuilder $qb */
         $qb = $admissionRepo
-            ->getResidentsQb(null, null, $type, null, false);
+            ->getResidentsQb(null, null, $type, $typeIds, false);
 
         $qb
             ->from(ResidentRent::class, 'rr')
@@ -366,10 +372,16 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $type
+     * @param null $typeId
      * @return mixed
      */
-    public function getMoreThanZeroAmountActiveResidentRents(Space $space = null, array $entityGrants = null, $type)
+    public function getMoreThanZeroAmountActiveResidentRents(Space $space = null, array $entityGrants = null, $type, $typeId = null)
     {
+        $typeIds = null;
+        if ($typeId !== null) {
+            $typeIds = [$typeId];
+        }
+
         /** @var ResidentAdmissionRepository $admissionRepo */
         $admissionRepo = $this
             ->getEntityManager()
@@ -377,7 +389,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
 
         /** @var QueryBuilder $qb */
         $qb = $admissionRepo
-            ->getResidentsQb(null, null, $type, null, true);
+            ->getResidentsQb(null, null, $type, $typeIds, true);
 
         $qb
             ->from(ResidentRent::class, 'rr')
