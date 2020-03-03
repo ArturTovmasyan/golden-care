@@ -305,10 +305,14 @@ class Grid
                 if ($field['id'] !== 'space' && $field['type'] === self::FIELD_TYPE_TEXT) {
                     $searchItems = $this->computePermutations(preg_split('/\s+/', $params['query']));
 
+                    $i = 0;
                     foreach($searchItems as $searchItem) {
+                        $query_id = sprintf('query_%d', $i);
                         $like = implode('%', $searchItem);
-                        $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
-                        $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $like));
+                        $this->queryBuilder->orHaving(sprintf('%s LIKE :%s', $query_id, $field['id']));
+                        $this->queryBuilder->setParameter($query_id, sprintf('%%%s%%', $like));
+
+                        $i++;
                     }
                 }
             }
