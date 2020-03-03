@@ -109,10 +109,9 @@ class FacilityDashboardCommand extends Command
                 throw new FacilityNotFoundException();
             }
 
-//            $yesterday = new \DateTime('-1 day');
-//            $dateFormatted = $yesterday->format('Y-m-d 00:00:00');
-//            $date = new \DateTime($dateFormatted);
-            $date = new \DateTime('2020-02-25 00:00:00');
+            $yesterday = new \DateTime('-1 day');
+            $dateFormatted = $yesterday->format('Y-m-d 00:00:00');
+            $date = new \DateTime($dateFormatted);
 
             $startDate = $date;
             $endDate = new \DateTime($date->format('Y-m-d 23:59:59'));
@@ -376,10 +375,7 @@ class FacilityDashboardCommand extends Command
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 
                 $this->em->persist($entity);
-                dump($entity);
             }
-
-            exit;
 
             $this->em->flush();
 
