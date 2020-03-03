@@ -309,7 +309,7 @@ class Grid
                     foreach($searchItems as $searchItem) {
                         $query_id = sprintf('query_%d', $i);
                         $like = implode('%', $searchItem);
-                        $this->queryBuilder->orHaving(sprintf('%s LIKE :%s', $query_id, $field['id']));
+                        $this->queryBuilder->orHaving(sprintf('%s LIKE :%s', $field['id'], $query_id));
                         $this->queryBuilder->setParameter($query_id, sprintf('%%%s%%', $like));
 
                         $i++;
