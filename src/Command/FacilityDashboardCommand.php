@@ -109,17 +109,21 @@ class FacilityDashboardCommand extends Command
                 throw new FacilityNotFoundException();
             }
 
-            $yesterday = new \DateTime('-1 day');
-            $dateFormatted = $yesterday->format('Y-m-d 00:00:00');
-            $date = new \DateTime($dateFormatted);
+//            $yesterday = new \DateTime('-1 day');
+//            $dateFormatted = $yesterday->format('Y-m-d 00:00:00');
+//            $date = new \DateTime($dateFormatted);
+            $date = new \DateTime('2020-02-25 00:00:00');
 
             $startDate = $date;
             $endDate = new \DateTime($date->format('Y-m-d 23:59:59'));
 
+            $monthStartDate = new \DateTime($startDate->format('Y-m-01 00:00:00'));
+            $monthEndDate = new \DateTime($endDate->format('Y-m-t 23:59:59'));
+
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
             $activeAdmissions = $admissionRepo->getActiveResidentsForFacilityDashboard($currentSpace, null, null);
-            $admissions = $admissionRepo->getResidentsForFacilityDashboard($currentSpace, null, null, $startDate, $endDate);
+            $admissions = $admissionRepo->getResidentsForFacilityDashboard($currentSpace, null, null, $monthStartDate, $monthEndDate);
 
             $dischargedResidentIds = [];
             $longTermResidentIds = [];
@@ -144,19 +148,19 @@ class FacilityDashboardCommand extends Command
 
             /** @var LeadTemperatureRepository $leadTemperatureRepo */
             $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
-            $leadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+            $leadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             /** @var ActivityRepository $activityRepo */
             $activityRepo = $this->em->getRepository(Activity::class);
-            $leadTourActivities = $activityRepo->getLeadTourActivitiesForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+            $leadTourActivities = $activityRepo->getLeadTourActivitiesForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             /** @var LeadRepository $leadRepo */
             $leadRepo = $this->em->getRepository(Lead::class);
-            $leads = $leadRepo->getLeadsForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+            $leads = $leadRepo->getLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);
-            $outreaches = $outreachRepo->getOutreachesForFacilityDashboard($currentSpace, null, $startDate, $endDate);
+            $outreaches = $outreachRepo->getOutreachesForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             $finalOutreaches = [];
             if (!empty($outreaches)) {
@@ -205,7 +209,7 @@ class FacilityDashboardCommand extends Command
 
             /** @var ResidentRentRepository $rentRepo */
             $rentRepo = $this->em->getRepository(ResidentRent::class);
-            $subInterval = ImtDateTimeInterval::getWithDateTimes($startDate, $endDate);
+            $subInterval = ImtDateTimeInterval::getWithDateTimes($monthStartDate, $monthEndDate);
 
             $residentRents = $rentRepo->getAdmissionRoomRentDataForFacilityDashboard($currentSpace, null, GroupType::TYPE_FACILITY, $subInterval, null, null);
             $rents = [];
@@ -372,7 +376,10 @@ class FacilityDashboardCommand extends Command
                 $this->baseService->validate($entity, null, ['api_admin_facility_dashboard_add']);
 
                 $this->em->persist($entity);
+                dump($entity);
             }
+
+            exit;
 
             $this->em->flush();
 

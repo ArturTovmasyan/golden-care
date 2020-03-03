@@ -143,16 +143,16 @@ class FacilityDashboardService extends BaseService implements IGridService
                             $startingOccupancy = $dashboard['occupancy'];
                         }
                         $endingOccupancy = $dashboard['occupancy'];
-                        $moveInsRespite += $dashboard['moveInsRespite'];
-                        $moveInsLongTerm += $dashboard['moveInsLongTerm'];
-                        $moveOutsRespite += $dashboard['moveOutsRespite'];
-                        $moveOutsLongTerm += $dashboard['moveOutsLongTerm'];
-                        $hotLeads += $dashboard['hotLeads'];
-                        $noticeToVacate += $dashboard['noticeToVacate'];
-                        $toursPerMonth += $dashboard['toursPerMonth'];
-                        $totalInquiries += $dashboard['totalInquiries'];
-                        $outreachPerMonth += $dashboard['outreachPerMonth'];
-                        $averageRoomRent += $dashboard['averageRoomRent'];
+                        $moveInsRespite = $dashboard['moveInsRespite'];
+                        $moveInsLongTerm = $dashboard['moveInsLongTerm'];
+                        $moveOutsRespite = $dashboard['moveOutsRespite'];
+                        $moveOutsLongTerm = $dashboard['moveOutsLongTerm'];
+                        $hotLeads = $dashboard['hotLeads'];
+                        $noticeToVacate = $dashboard['noticeToVacate'];
+                        $toursPerMonth = $dashboard['toursPerMonth'];
+                        $totalInquiries = $dashboard['totalInquiries'];
+                        $outreachPerMonth = $dashboard['outreachPerMonth'];
+                        $averageRoomRent = $dashboard['averageRoomRent'];
                     }
                 }
 
@@ -175,7 +175,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
                     'outreach_per_month' => $outreachPerMonth,
-                    'average_room_rent' => $days > 0 ? round(($averageRoomRent / $days) * $subInterval['days'], 2) : 0,
+                    'average_room_rent' => $averageRoomRent,
                 ];
             }
 
