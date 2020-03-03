@@ -285,7 +285,8 @@ class FacilityDashboardCommand extends Command
                                 $moveOutsRespite += $l;
                             }
 
-                            if ($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $longTermResidentIds, false)) {
+                            if (($admission['admissionType'] === AdmissionType::DISCHARGE && \in_array($admission['id'], $longTermResidentIds, false)) ||
+                                ($admission['admissionType'] === AdmissionType::DISCHARGE && !\in_array($admission['id'], $shortTermResidentIds, false))) {
                                 $m++;
 
                                 $moveOutsLongTerm += $m;
