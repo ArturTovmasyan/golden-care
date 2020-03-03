@@ -303,8 +303,13 @@ class Grid
         if(!empty($params['query'])) {
             foreach ($fields as $field) {
                 if ($field['id'] !== 'space' && $field['type'] === self::FIELD_TYPE_TEXT) {
-                    $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
-                    $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $params['query']));
+                    $searchItems = $this->computePermutations(preg_split('/\s+/', $params['query']));
+
+                    foreach($searchItems as $searchItem) {
+                        $like = implode('%', $searchItem);
+                        $this->queryBuilder->orHaving(sprintf('%s LIKE :query', $field['id']));
+                        $this->queryBuilder->setParameter('query', sprintf('%%%s%%', $like));
+                    }
                 }
             }
         }
@@ -453,5 +458,30 @@ class Grid
                 $item[$key] = $callback[$key] !== null ? $class::$method($value) : $value;
             }
         }
+    }
+
+    private function computePermutations(array $array) : array {
+        $result = [];
+
+        $recurse = function($array, $start_i = 0) use (&$result, &$recurse) {
+            if ($start_i === count($array)-1) {
+                array_push($result, $array);
+            }
+
+            for ($i = $start_i; $i < count($array); $i++) {
+                //Swap array value at $i and $start_i
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+
+                //Recurse
+                $recurse($array, $start_i + 1);
+
+                //Restore old order
+                $t = $array[$i]; $array[$i] = $array[$start_i]; $array[$start_i] = $t;
+            }
+        };
+
+        $recurse($array);
+
+        return $result;
     }
 }
