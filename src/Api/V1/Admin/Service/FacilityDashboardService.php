@@ -46,23 +46,9 @@ class FacilityDashboardService extends BaseService implements IGridService
         /** @var FacilityRepository $facilityRepo */
         $facilityRepo = $this->em->getRepository(Facility::class);
 
-        $dateFrom = $dateTo = new \DateTime('now');
-        $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-        $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-
         $facilityId = null;
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
-
-            if (!empty($params[0]['date_from'])) {
-                $dateFrom = new \DateTime($params[0]['date_from']);
-                $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-            }
-
-            if (!empty($params[0]['date_to'])) {
-                $dateTo = new \DateTime($params[0]['date_to']);
-                $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-            }
 
             $facilities = $facilityRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
         } else {
@@ -71,6 +57,20 @@ class FacilityDashboardService extends BaseService implements IGridService
 
         if (empty($facilities)) {
             throw new FacilityNotFoundException();
+        }
+
+        $dateFrom = $dateTo = new \DateTime('now');
+        $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+        $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
+
+        if (!empty($params) && !empty($params[0]['date_from'])) {
+            $dateFrom = new \DateTime($params[0]['date_from']);
+            $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+        }
+
+        if (!empty($params) && !empty($params[0]['date_to'])) {
+            $dateTo = new \DateTime($params[0]['date_to']);
+            $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
         }
 
         $dateFrom = new \DateTime($dateFromFormatted);
