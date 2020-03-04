@@ -110,37 +110,25 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
                 $end->setTime(23, 59, 59);
 
-                $subIntervals[$end->format('W')] = [
+                $subIntervals['W' . '-' . $end->format('W')] = [
                     'dateFrom' => $start,
                     'dateTo' => $end,
                     'days' => $end->diff($start)->days + 1
                 ];
             }
         } else {
-            if ($type === self::TYPE_MONTHLY) {
-                $dateFrom = new \DateTime('now');
-                $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-                $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
+            $dateFrom = $dateTo = new \DateTime('now');
+            $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+            $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
 
-                if (!empty($params) && !empty($params[0]['date_from'])) {
-                    $dateFrom = new \DateTime($params[0]['date_from']);
-                    $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-                    $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
-                }
-            } else {
-                $dateFrom = $dateTo = new \DateTime('now');
+            if (!empty($params) && !empty($params[0]['date_from'])) {
+                $dateFrom = new \DateTime($params[0]['date_from']);
                 $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+            }
+
+            if (!empty($params) && !empty($params[0]['date_to'])) {
+                $dateTo = new \DateTime($params[0]['date_to']);
                 $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-
-                if (!empty($params) && !empty($params[0]['date_from'])) {
-                    $dateFrom = new \DateTime($params[0]['date_from']);
-                    $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-                }
-
-                if (!empty($params) && !empty($params[0]['date_to'])) {
-                    $dateTo = new \DateTime($params[0]['date_to']);
-                    $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-                }
             }
 
             $dateFrom = new \DateTime($dateFromFormatted);
