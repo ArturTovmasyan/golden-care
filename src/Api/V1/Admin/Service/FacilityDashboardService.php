@@ -20,6 +20,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class FacilityDashboardService extends BaseService implements IGridService
 {
+    private const TYPE_MONTHLY = 1;
+    private const TYPE_WEEKLY = 2;
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
@@ -47,8 +50,14 @@ class FacilityDashboardService extends BaseService implements IGridService
         $facilityRepo = $this->em->getRepository(Facility::class);
 
         $facilityId = null;
+        $type = null;
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
+
+            $type = self::TYPE_MONTHLY;
+            if (!empty($params[0]['type'])) {
+                $type = (int)$params[0]['type'];
+            }
 
             $facilities = $facilityRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityId);
         } else {
@@ -59,46 +68,108 @@ class FacilityDashboardService extends BaseService implements IGridService
             throw new FacilityNotFoundException();
         }
 
-        $dateFrom = $dateTo = new \DateTime('now');
-        $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
-        $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-
-        if (!empty($params) && !empty($params[0]['date_from'])) {
-            $dateFrom = new \DateTime($params[0]['date_from']);
+        if ($type === self::TYPE_WEEKLY) {
+            $dateFrom = new \DateTime('now');
             $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+            $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
+
+            if (!empty($params) && !empty($params[0]['date_from'])) {
+                $dateFrom = new \DateTime($params[0]['date_from']);
+                $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+                $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
+            }
+
+            $dateFrom = new \DateTime($dateFromFormatted);
+            $dateTo = new \DateTime($dateToFormatted);
+
+            if ($dateFrom > $dateTo) {
+                throw new StartGreaterEndDateException();
+            }
+
+            $interval = ImtDateTimeInterval::getWithDateTimes($dateFrom, $dateTo);
+
+            $dateInterval = new \DateInterval('P1D');
+            $dateRange = new \DatePeriod($dateFrom, $dateInterval, $dateTo);
+
+            $weekNumber = 1;
+            $weeks = [];
+            foreach ($dateRange as $date) {
+                $weeks[$weekNumber][] = $date->format('Y-m-d');
+                if ((int)$date->format('w') === 6) {
+                    $weekNumber++;
+                }
+            }
+
+            $subIntervals = [];
+            foreach ($weeks as $axis => $week) {
+                $start = new \DateTime(array_shift($week));
+                if (\count($weeks[$axis]) === 1) {
+                    $end = new \DateTime($start->format('Y-m-d'));
+                } else {
+                    $end = new \DateTime(array_pop($week));
+                }
+                $end->setTime(23, 59, 59);
+
+                $subIntervals[$end->format('W')] = [
+                    'dateFrom' => $start,
+                    'dateTo' => $end,
+                    'days' => $end->diff($start)->days + 1
+                ];
+            }
+        } else {
+            if ($type === self::TYPE_MONTHLY) {
+                $dateFrom = new \DateTime('now');
+                $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+                $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
+
+                if (!empty($params) && !empty($params[0]['date_from'])) {
+                    $dateFrom = new \DateTime($params[0]['date_from']);
+                    $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+                    $dateToFormatted = $dateFrom->format('Y-m-t 23:59:59');
+                }
+            } else {
+                $dateFrom = $dateTo = new \DateTime('now');
+                $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+                $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
+
+                if (!empty($params) && !empty($params[0]['date_from'])) {
+                    $dateFrom = new \DateTime($params[0]['date_from']);
+                    $dateFromFormatted = $dateFrom->format('Y-m-01 00:00:00');
+                }
+
+                if (!empty($params) && !empty($params[0]['date_to'])) {
+                    $dateTo = new \DateTime($params[0]['date_to']);
+                    $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
+                }
+            }
+
+            $dateFrom = new \DateTime($dateFromFormatted);
+            $dateTo = new \DateTime($dateToFormatted);
+
+            if ($dateFrom > $dateTo) {
+                throw new StartGreaterEndDateException();
+            }
+
+            $interval = ImtDateTimeInterval::getWithDateTimes($dateFrom, $dateTo);
+            $dateToClone = clone $dateTo;
+
+            $subIntervals = [];
+            while ($dateToClone >= $dateFrom) {
+                $start = new \DateTime($dateToClone->format('Y-m-01 00:00:00'));
+                $end = new \DateTime($dateToClone->format('Y-m-t 23:59:59'));
+                $axis = $start->format('M') . '-' . $start->format('y');
+
+                $subIntervals[$axis] = [
+                    'dateFrom' => $start,
+                    'dateTo' => $end,
+                    'days' => $end->diff($start)->days + 1,
+                ];
+
+                $dateToClone->modify('last day of previous month');
+            }
+
+            $subIntervals = array_reverse($subIntervals);
         }
-
-        if (!empty($params) && !empty($params[0]['date_to'])) {
-            $dateTo = new \DateTime($params[0]['date_to']);
-            $dateToFormatted = $dateTo->format('Y-m-t 23:59:59');
-        }
-
-        $dateFrom = new \DateTime($dateFromFormatted);
-        $dateTo = new \DateTime($dateToFormatted);
-
-        if ($dateFrom > $dateTo) {
-            throw new StartGreaterEndDateException();
-        }
-
-        $interval = ImtDateTimeInterval::getWithDateTimes($dateFrom, $dateTo);
-        $dateToClone = clone $dateTo;
-
-        $subIntervals = [];
-        while ($dateToClone >= $dateFrom) {
-            $start = new \DateTime($dateToClone->format('Y-m-01 00:00:00'));
-            $end = new \DateTime($dateToClone->format('Y-m-t 23:59:59'));
-            $axis = $start->format('M') . '-' . $start->format('y');
-
-            $subIntervals[$axis] = [
-                'dateFrom' => $start,
-                'dateTo' => $end,
-                'days' => $end->diff($start)->days + 1,
-            ];
-
-            $dateToClone->modify('last day of previous month');
-        }
-
-        $subIntervals = array_reverse($subIntervals);
 
         $dashboards = $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityDashboard::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $interval, $facilityId);
 

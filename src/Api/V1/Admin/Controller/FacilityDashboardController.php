@@ -68,6 +68,7 @@ class FacilityDashboardController extends BaseController
                 'facility_id' => $request->get('facility_id'),
                 'date_from' => $request->get('date_from'),
                 'date_to' => $request->get('date_to'),
+                'type' => $request->get('type'),
             ]
         );
     }
