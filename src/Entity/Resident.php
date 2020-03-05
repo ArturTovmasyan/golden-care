@@ -381,6 +381,28 @@ class Resident
     }
 
     /**
+     * @var string $downloadString
+     */
+    private $downloadString;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("photo")
+     * @Serializer\Groups({
+     *     "api_admin_resident_get"
+     * })
+     * @return null|string
+     */
+    public function getResidentPhoto(): ?string
+    {
+        if ($this->getImage() !== null) {
+            return $this->getDownloadString();
+        }
+
+        return null;
+    }
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Assessment\Assessment", mappedBy="resident")
      */
     private $assessments;
@@ -944,5 +966,21 @@ class Resident
     public function setDownloadUrl(?string $downloadUrl): void
     {
         $this->downloadUrl = $downloadUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDownloadString()
+    {
+        return $this->downloadString;
+    }
+
+    /**
+     * @param mixed $downloadString
+     */
+    public function setDownloadString($downloadString): void
+    {
+        $this->downloadString = $downloadString;
     }
 }
