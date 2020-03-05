@@ -213,7 +213,7 @@ class ResidentService extends BaseService implements IGridService
         if ($resident !== null && $resident->getImage() !== null) {
             /** @var Image $image */
             $image = $resident->getImage();
-            $awsData = $this->s3Service->downloadFile($image->getS3Id150150(), $image->getType());
+            $awsData = $this->s3Service->downloadFile($image->getS3Id(), $image->getType());
 
             if ($awsData !== null) {
                 /** @var Stream $stream */
