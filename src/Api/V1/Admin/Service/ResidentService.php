@@ -209,6 +209,7 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
+        $resident->setDownloadUrl(null);
         if ($resident !== null && $resident->getImage() !== null) {
             $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
                 'Bucket' => getenv('AWS_BUCKET'),
@@ -217,12 +218,7 @@ class ResidentService extends BaseService implements IGridService
             $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
             $resident->setDownloadString((string)$request->getUri());
-        } else {
-            $resident->setDownloadString(null);
-        }
 
-        $resident->setDownloadUrl(null);
-        if ($resident !== null && $resident->getImage() !== null) {
             /** @var Image $image */
             $image = $resident->getImage();
             $awsData = $this->s3Service->downloadFile($image->getS3Id(), $image->getType());
@@ -240,6 +236,8 @@ class ResidentService extends BaseService implements IGridService
                     $resident->setDownloadUrl($base64);
                 }
             }
+        } else {
+            $resident->setDownloadString(null);
         }
 
         return $resident;
