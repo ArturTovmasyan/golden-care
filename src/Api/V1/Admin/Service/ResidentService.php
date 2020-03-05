@@ -45,6 +45,7 @@ use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use DataURI\Parser;
 use Doctrine\ORM\QueryBuilder;
+use GuzzleHttp\Psr7\Stream;
 
 /**
  * Class ResidentService
@@ -208,16 +209,25 @@ class ResidentService extends BaseService implements IGridService
          */
         $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $id);
 
+        $resident->setDownloadUrl(null);
         if ($resident !== null && $resident->getImage() !== null) {
-            $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $resident->getImage()->getType() . '/' . $resident->getImage()->getS3Id(),
-            ]);
-            $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            /** @var Image $image */
+            $image = $resident->getImage();
+            $awsData = $this->s3Service->downloadFile($image->getS3Id150150(), $image->getType());
 
-            $resident->setDownloadUrl((string)$request->getUri());
-        } else {
-            $resident->setDownloadUrl(null);
+            if ($awsData !== null) {
+                /** @var Stream $stream */
+                $stream = $awsData['Body'];
+
+                if ($stream !== null) {
+                    $data = $stream->getContents();
+
+                    $stream->close();
+
+                    $base64 = 'data:' . $image->getMimeType() . ';base64,' . base64_encode($data);
+                    $resident->setDownloadUrl($base64);
+                }
+            }
         }
 
         return $resident;
