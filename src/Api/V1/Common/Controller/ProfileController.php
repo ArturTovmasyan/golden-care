@@ -42,6 +42,7 @@ class ProfileController extends BaseController
         $reportService->addGroupReportPermission($permissions);
         $user->setPermissions($permissions);
 
+        $user->setDownloadUrl(null);
         if ($user !== null && $user->getImage() !== null) {
             $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
                 'Bucket' => getenv('AWS_BUCKET'),
@@ -50,9 +51,7 @@ class ProfileController extends BaseController
             $result = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
             $user->setDownloadUrl((string)$result->getUri());
-        } else {
-            $user->setDownloadUrl(null);
-        }
+        } 
 
         return $this->respondSuccess(
             Response::HTTP_OK,
