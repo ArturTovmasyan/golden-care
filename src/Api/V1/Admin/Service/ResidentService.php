@@ -179,6 +179,7 @@ class ResidentService extends BaseService implements IGridService
 
         /** @var Resident $entity */
         foreach ($list as $entity) {
+            $entity->setDownloadUrl(null);
             if ($entity !== null && $entity->getImage() !== null) {
                 $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
                     'Bucket' => getenv('AWS_BUCKET'),
@@ -187,8 +188,6 @@ class ResidentService extends BaseService implements IGridService
                 $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
                 $entity->setDownloadUrl((string)$request->getUri());
-            } else {
-                $entity->setDownloadUrl(null);
             }
         }
 
