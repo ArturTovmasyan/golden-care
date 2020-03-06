@@ -51,7 +51,7 @@ class ProfileController extends BaseController
             $result = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
 
             $user->setDownloadUrl((string)$result->getUri());
-        } 
+        }
 
         return $this->respondSuccess(
             Response::HTTP_OK,
