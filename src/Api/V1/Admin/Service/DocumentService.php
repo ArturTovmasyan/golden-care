@@ -151,12 +151,17 @@ class DocumentService extends BaseService implements IGridService
             $ccEmails = !empty($params['emails']) ? $params['emails'] : [];
             $document->setEmails($ccEmails);
 
-            if (!empty($params['facilities'])) {
+            $facilityAll = (bool)$params['facilities_all'];
+            if (!empty($params['facilities']) || $facilityAll) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
-                $facilityIds = array_unique($params['facilities']);
-                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                if ($facilityAll) {
+                    $facilities = $facilityRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                } else {
+                    $facilityIds = array_unique($params['facilities']);
+                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                }
 
                 if (!empty($facilities)) {
                     $document->setFacilities($facilities);
@@ -220,7 +225,7 @@ class DocumentService extends BaseService implements IGridService
             $this->em->flush();
 
             if ($document->isSendEmailNotification()) {
-                $roleIds = array_map(function ($item) {
+                $roleIds = array_map(static function (Role $item) {
                     return $item->getId();
                 }, $document->getRoles()->toArray());
 
@@ -230,7 +235,7 @@ class DocumentService extends BaseService implements IGridService
 
                 $emails = [];
                 if (!empty($userFacilityIds)) {
-                    $facilityIds = array_map(function ($item) {
+                    $facilityIds = array_map(static function (Facility $item) {
                         return $item->getId();
                     }, $document->getFacilities()->toArray());
 
@@ -331,12 +336,17 @@ class DocumentService extends BaseService implements IGridService
                 $entity->removeFacility($facility);
             }
 
-            if (!empty($params['facilities'])) {
+            $facilityAll = (bool)$params['facilities_all'];
+            if (!empty($params['facilities']) || $facilityAll) {
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
-                $facilityIds = array_unique($params['facilities']);
-                $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                if ($facilityAll) {
+                    $facilities = $facilityRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                } else {
+                    $facilityIds = array_unique($params['facilities']);
+                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                }
 
                 if (!empty($facilities)) {
                     $entity->setFacilities($facilities);
@@ -414,7 +424,7 @@ class DocumentService extends BaseService implements IGridService
             $this->em->flush();
 
             if ($entity->isSendEmailNotification()) {
-                $roleIds = array_map(function ($item) {
+                $roleIds = array_map(static function (Role $item) {
                     return $item->getId();
                 }, $entity->getRoles()->toArray());
 
@@ -424,7 +434,7 @@ class DocumentService extends BaseService implements IGridService
 
                 $emails = [];
                 if (!empty($userFacilityIds)) {
-                    $facilityIds = array_map(function ($item) {
+                    $facilityIds = array_map(static function (Facility $item) {
                         return $item->getId();
                     }, $entity->getFacilities()->toArray());
 

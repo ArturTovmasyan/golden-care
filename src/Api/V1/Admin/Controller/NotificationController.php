@@ -104,6 +104,7 @@ class NotificationController extends BaseController
                 'emails' => $request->get('emails'),
                 'users' => $request->get('users'),
                 'facilities' => $request->get('facilities'),
+                'facilities_all' => $request->get('facilities_all'),
                 'apartments' => $request->get('apartments'),
                 'regions' => $request->get('regions')
             ]
@@ -137,6 +138,7 @@ class NotificationController extends BaseController
                 'emails' => $request->get('emails'),
                 'users' => $request->get('users'),
                 'facilities' => $request->get('facilities'),
+                'facilities_all' => $request->get('facilities_all'),
                 'apartments' => $request->get('apartments'),
                 'regions' => $request->get('regions')
             ]

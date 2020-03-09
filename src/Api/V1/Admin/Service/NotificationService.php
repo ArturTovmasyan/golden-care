@@ -108,15 +108,22 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isFacility()) {
-                if (!empty($params['facilities'])) {
+                $facilityAll = (bool)$params['facilities_all'];
+                if (!empty($params['facilities']) || $facilityAll) {
                     /** @var FacilityRepository $facilityRepo */
                     $facilityRepo = $this->em->getRepository(Facility::class);
 
-                    $facilityIds = array_unique($params['facilities']);
-                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                    if ($facilityAll) {
+                        $facilities = $facilityRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                    } else {
+                        $facilityIds = array_unique($params['facilities']);
+                        $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                    }
 
                     if (!empty($facilities)) {
                         $notification->setFacilities($facilities);
+                    } else {
+                        $notification->setFacilities(null);
                     }
                 }
             } else {
@@ -133,6 +140,8 @@ class NotificationService extends BaseService implements IGridService
 
                     if (!empty($apartments)) {
                         $notification->setApartments($apartments);
+                    } else {
+                        $notification->setApartments(null);
                     }
                 }
             } else {
@@ -149,6 +158,8 @@ class NotificationService extends BaseService implements IGridService
 
                     if (!empty($regions)) {
                         $notification->setRegions($regions);
+                    } else {
+                        $notification->setRegions(null);
                     }
                 }
             } else {
@@ -236,15 +247,22 @@ class NotificationService extends BaseService implements IGridService
             }
 
             if ($type->isFacility()) {
-                if (!empty($params['facilities'])) {
+                $facilityAll = (bool)$params['facilities_all'];
+                if (!empty($params['facilities']) || $facilityAll) {
                     /** @var FacilityRepository $facilityRepo */
                     $facilityRepo = $this->em->getRepository(Facility::class);
 
-                    $facilityIds = array_unique($params['facilities']);
-                    $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                    if ($facilityAll) {
+                        $facilities = $facilityRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                    } else {
+                        $facilityIds = array_unique($params['facilities']);
+                        $facilities = $facilityRepo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class), $facilityIds);
+                    }
 
                     if (!empty($facilities)) {
                         $entity->setFacilities($facilities);
+                    } else {
+                        $entity->setFacilities(null);
                     }
                 }
             } else {
@@ -266,6 +284,8 @@ class NotificationService extends BaseService implements IGridService
 
                     if (!empty($apartments)) {
                         $entity->setApartments($apartments);
+                    } else {
+                        $entity->setApartments(null);
                     }
                 }
             } else {
@@ -287,6 +307,8 @@ class NotificationService extends BaseService implements IGridService
 
                     if (!empty($regions)) {
                         $entity->setRegions($regions);
+                    } else {
+                        $entity->setRegions(null);
                     }
                 }
             } else {
