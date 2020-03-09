@@ -1313,7 +1313,7 @@ class ResidentReportService extends BaseService
 
             $data = array_merge($finalAdmissions, $totalByFacility);
 
-            $typeShorthands = array_map(function ($item) {
+            $typeShorthands = array_map(static function ($item) {
                 return $item['typeShorthand'];
             }, $data);
 
