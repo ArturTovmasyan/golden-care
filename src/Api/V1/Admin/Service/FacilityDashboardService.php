@@ -100,6 +100,13 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
             }
 
+            function find_saturday($date) {
+                if (date('w', strtotime($date)) == 6) {
+                    return date('m-d-Y', strtotime($date));
+                }
+                return date('m-d-Y', strtotime('last Saturday', strtotime($date)));
+            }
+
             $subIntervals = [];
             foreach ($weeks as $axis => $week) {
                 $start = new \DateTime(array_shift($week));
@@ -110,7 +117,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 }
                 $end->setTime(23, 59, 59);
 
-                $subIntervals['W' . '-' . $end->format('W')] = [
+                $subIntervals['W' . '-' . $end->format('W') . ' ' . find_saturday($end->format('Y-m-d'))] = [
                     'dateFrom' => $start,
                     'dateTo' => $end,
                     'days' => $end->diff($start)->days + 1
