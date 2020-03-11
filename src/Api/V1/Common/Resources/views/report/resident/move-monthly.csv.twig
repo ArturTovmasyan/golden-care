@@ -6,7 +6,6 @@ New Move-Ins,,,,,,
 {% for datum in monthData %}
 {% if datum.admissionType is not defined or (datum.admissionType is defined and datum.admissionType != constant('App\\Model\\AdmissionType::DISCHARGE')) %}
 {% if datum.typeShorthand is defined %}{{ datum.typeShorthand }}{% endif %},{% if datum.firstName is defined %}"{{ datum.firstName|raw }} {{ datum.lastName|raw }}"{% endif %},{% if datum.admissionType is defined and datum.admissionType == constant('App\\Model\\AdmissionType::SHORT_ADMIT') %}{% if datum.admitted is defined %}{{ datum.admitted|date("m/d/Y") }}{% endif %}{% endif %}{% if datum.sumShortTerm is defined %}{{ datum.sumShortTerm }}{% endif %},{% if datum.admissionType is defined and datum.admissionType == constant('App\\Model\\AdmissionType::LONG_ADMIT') %}{% if datum.admitted is defined %}{{ datum.admitted|date("m/d/Y") }}{% endif %}{% endif %}{% if datum.sumLongTerm is defined %}{{ datum.sumLongTerm }}{% endif %},{% if datum.roomNumber is defined and datum.bedNumber is defined %}{% if datum.private %}"{{ datum.roomNumber }} "{% else %}"{{ datum.roomNumber }} {{ datum.bedNumber }}"{% endif %}{% endif %},{% if datum.notes is defined %}"{{ datum.notes }}"{% endif %},
-
 {% endif %}
 {% endfor %}
 Grand Total,,{% if data.grandTotal[date]['sumShortTerm'] is defined %}{{ data.grandTotal[date]['sumShortTerm'] }}{% else %}0{% endif %},{% if data.grandTotal[date]['sumLongTerm'] is defined %}{{ data.grandTotal[date]['sumLongTerm'] }}{% else %}0{% endif %},,,
