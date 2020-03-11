@@ -1,4 +1,4 @@
-{{ data.strategy }} Name, Room/Bed Number, Notes
+{{ data.strategy }} Name,Room/Bed Number,Notes
 {% for datum in data.data %}
-    {{ datum.typeName }},{% if datum.private %}{{ datum.roomNumber }} {% else %}{{ datum.roomNumber }} {{ datum.bedNumber }}{% endif %}, {{ datum.notes }},
+{{ datum.typeName }},{% if datum.private %}{{ datum.roomNumber }}{% else %}{{ datum.roomNumber }} {{ datum.bedNumber }}{% endif %},"{{ datum.notes|raw }}"
 {% endfor %}
