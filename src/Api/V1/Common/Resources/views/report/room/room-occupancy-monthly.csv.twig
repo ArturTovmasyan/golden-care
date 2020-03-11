@@ -9,9 +9,9 @@ Occupancy - Cumulative: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateE
 
 {% for datum in facility %}{% if loop.first %}{{ datum.name }}{% endif %}{% endfor %},Potential Resident Days,{% for datum in facility %}{{ datum.potential }}{% if not loop.last %},{% endif %}{% endfor %}
 
-,Actual Resident Days,{% for datum in facility %}{{ datum.actual }},{% endfor %}
+,Actual Resident Days,{% for datum in facility %}{{ datum.actual }}{% if not loop.last %},{% endif %}{% endfor %}
 
-,Occupancy(%),{% for datum in facility %}{{ datum.occupancy }},{% endfor %}
+,Occupancy(%),{% for datum in facility %}{{ datum.occupancy }}{% if not loop.last %},{% endif %}{% endfor %}
 
 ,{% for facility in data.data %}{% if loop.first %}{% for datum in facility %},{% endfor %}{% endif %}{% endfor %}
 
