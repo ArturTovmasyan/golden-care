@@ -3,45 +3,49 @@
 {% if resident.id not in data.rentResidentIds %}
 {% set i = i + 1 %}
 {% if i == 1 %}
-Missing
+Missing,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},
 {{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Admitted
 {% endif %}
-{{ resident.typeName }}, {% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }} {% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %},
+{{ resident.typeName }},{% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }}{% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}
+
 {% endif %}
 {% endfor %}
-
+,,,
 {% set j = 0 %}
 {% for resident in data.residents %}
 {% if resident.id in data.endDateInThePastIds %}
 {% set j = j + 1 %}
 {% if j == 1 %}
-End Date In The Past
+End Date In The Past,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},
 {{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Admitted
 {% endif %}
-{{ resident.typeName }}, {% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }} {% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %},
+{{ resident.typeName }},{% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }}{% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}
+
 {% endif %}
 {% endfor %}
-
+,,,
 {% set k = 0 %}
 {% for resident in data.residents %}
 {% if resident.id in data.moreThanOneEndDateNullIds %}
 {% set k = k + 1 %}
 {% if k == 1 %}
-More Than One End Date Null
+More Than One End Date Null,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},
 {{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Admitted
 {% endif %}
-{{ resident.typeName }}, {% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }} {% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %},
+{{ resident.typeName }},{% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }}{% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}
+
 {% endif %}
 {% endfor %}
-
+,,,
 {% set l = 0 %}
 {% for resident in data.residents %}
 {% if resident.id in data.overlapIds %}
 {% set l = l + 1 %}
 {% if l == 1 %}
-Overlap
+Overlap,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},
 {{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Admitted
 {% endif %}
-{{ resident.typeName }}, {% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }} {% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %},
+{{ resident.typeName }},{% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }}{% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %}
+
 {% endif %}
 {% endfor %}
