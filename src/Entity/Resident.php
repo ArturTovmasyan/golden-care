@@ -969,17 +969,17 @@ class Resident
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getDownloadString()
+    public function getDownloadString(): ?string
     {
         return $this->downloadString;
     }
 
     /**
-     * @param mixed $downloadString
+     * @param null|string $downloadString
      */
-    public function setDownloadString($downloadString): void
+    public function setDownloadString(?string $downloadString): void
     {
         $this->downloadString = $downloadString;
     }
