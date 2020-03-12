@@ -17,6 +17,7 @@ use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
+use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ChangeLog;
@@ -35,6 +36,7 @@ use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\Temperature;
 use App\Entity\PaymentSource;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
@@ -51,6 +53,7 @@ use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\TemperatureRepository;
 use App\Repository\PaymentSourceRepository;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -297,6 +300,184 @@ class LeadService extends BaseService implements IGridService
             // Creating lead temperature
             $temperatureId = $params['temperature_id'] ?? 0;
             $this->createLeadTemperature($lead, $temperatureId);
+
+            // Creating initial contact activity
+            $this->createLeadInitialContactActivity($lead, false);
+
+            $this->em->flush();
+
+            // Creating change log
+            $changeLog = $this->leadAddChangeLog($lead);
+
+            $this->em->flush();
+
+            if ($changeLog !== null) {
+                $this->sendNewLeadChangeLogNotification($changeLog, $params['base_url']);
+            }
+
+            $this->em->getConnection()->commit();
+
+            $insert_id = $lead->getId();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+
+        return $insert_id;
+    }
+
+    /**
+     * @param array $params
+     * @return int|null
+     * @throws \Throwable
+     */
+    public function addZapier(array $params): ?int
+    {
+        $insert_id = null;
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            $facility = null;
+            if (!empty($params['from'])) {
+                $from = explode(' <', $params['from']);
+                $facilityName = strtolower($from[0]);
+
+                /** @var FacilityRepository $facilityRepo */
+                $facilityRepo = $this->em->getRepository(Facility::class);
+
+                /** @var Facility $facility */
+                $facility = $facilityRepo->findOneBy(['name' => $facilityName]);
+            }
+
+            if ($facility === null) {
+                throw new FacilityNotFoundException();
+            }
+
+            $lead = new Lead();
+            $lead->setPrimaryFacility($facility);
+            $lead->setFirstName('Unknown');
+            $lead->setLastName('Unknown');
+            $lead->setCareType(null);
+            $lead->setPaymentType(null);
+
+            $roleName = 'Facility Admin';
+            /** @var RoleRepository $roleRepo */
+            $roleRepo = $this->em->getRepository(Role::class);
+
+            /** @var Role $role */
+            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+            if ($role === null) {
+                throw new RoleNotFoundException();
+            }
+
+            /** @var UserRepository $ownerRepo */
+            $ownerRepo = $this->em->getRepository(User::class);
+            $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+            $ownerId = 0;
+            if (!empty($userFacilityIds)) {
+                foreach ($userFacilityIds as $userFacilityId) {
+                    if ($userFacilityId['facilityIds'] === null) {
+                        $ownerId = $userFacilityId['id'];
+                        break;
+                    }
+
+                    if ($userFacilityId['facilityIds'] !== null) {
+                        $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                        if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                            $ownerId = $userFacilityId['id'];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            /** @var User $owner */
+            $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
+
+            if ($owner === null) {
+                throw new UserNotFoundException();
+            }
+
+            $lead->setOwner($owner);
+
+            $lead->setState(State::TYPE_OPEN);
+            $lead->setInitialContactDate(new \DateTime('now'));
+
+            $rpFirstName = '';
+            $rpLastName = '';
+            if (!empty($params['name'])) {
+                $name = explode(' ', $params['name']);
+                $rpLastName = array_pop($name);
+                if (!empty($name)) {
+                    $rpFirstName = implode(' ', $name);
+                }
+            }
+            $lead->setResponsiblePersonFirstName($rpFirstName);
+            $lead->setResponsiblePersonLastName($rpLastName);
+            $lead->setResponsiblePersonAddress1(null);
+            $lead->setResponsiblePersonAddress2(null);
+            $lead->setResponsiblePersonCsz(null);
+            $lead->setResponsiblePersonCsz(null);
+
+            if (!empty($params['phone'])) {
+                $phoneExplode = explode(')', $params['phone']);
+                $phone = $phoneExplode[0] . ') ' . $phoneExplode[1];
+                $lead->setResponsiblePersonPhone($phone);
+            } else {
+                $lead->setResponsiblePersonPhone(null);
+            }
+
+            if (!empty($params['email'])) {
+                $lead->setResponsiblePersonEmail($params['email']);
+            } else {
+                $lead->setResponsiblePersonEmail(null);
+            }
+
+            if ($lead->getResponsiblePersonPhone() === null && $lead->getResponsiblePersonEmail() === null) {
+                throw new LeadRpPhoneOrEmailNotBeBlankException();
+            }
+
+            $notes = $params['message'] ?? '';
+
+            $lead->setNotes($notes);
+
+            $this->validate($lead, null, ['api_lead_lead_add']);
+
+            $this->em->persist($lead);
+
+            // Creating lead funnel stage
+            $funnelStageName = 'Contact';
+            /** @var FunnelStageRepository $funnelStageRepo */
+            $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
+
+            /** @var FunnelStage $funnelStage */
+            $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName)]);
+
+            if ($funnelStage === null) {
+                throw new FunnelStageNotFoundException();
+            }
+
+            $this->createLeadFunnelStage($lead, $funnelStage->getId());
+
+            // Creating lead temperature
+            $temperatureName = 'None';
+            /** @var TemperatureRepository $temperatureRepo */
+            $temperatureRepo = $this->em->getRepository(Temperature::class);
+
+            /** @var Temperature $temperature */
+            $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName)]);
+
+            if ($temperature === null) {
+                throw new TemperatureNotFoundException();
+            }
+
+            $this->createLeadTemperature($lead, $temperature->getId());
 
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);

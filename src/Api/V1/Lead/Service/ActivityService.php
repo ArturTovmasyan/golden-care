@@ -768,7 +768,7 @@ class ActivityService extends BaseService implements IGridService
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_NEW_TASK);
         $changeLog->setContent($content);
-        $changeLog->setOwner($activity->getAssignTo() ?? null);
+        $changeLog->setOwner($activity->getAssignTo());
 
         $space = $activity->getStatus() ? $activity->getStatus()->getSpace() : null;
         $changeLog->setSpace($space);

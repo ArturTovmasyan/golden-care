@@ -150,6 +150,35 @@ class LeadController extends BaseController
     }
 
     /**
+     * @Route("/zapier", name="api_lead_lead_zapier_add", methods={"POST"})
+     *
+     * @Grant(grant="persistence-lead-lead", level="ADD")
+     *
+     * @param Request $request
+     * @param LeadService $activityTypeService
+     * @return JsonResponse
+     */
+    public function addZapierAction(Request $request, LeadService $activityTypeService): JsonResponse
+    {
+        $id = $activityTypeService->addZapier(
+            [
+                'from' => $request->get('from'),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'phone' => $request->get('phone'),
+                'message' => $request->get('message'),
+                'base_url' => $request->getSchemeAndHttpHost(),
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED,
+            '',
+            [$id]
+        );
+    }
+
+    /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_lead_edit", methods={"PUT"})
      *
      * @Grant(grant="persistence-lead-lead", level="EDIT")
