@@ -1,3 +1,4 @@
+{% spaceless %}
 Occupancy - Cumulative: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateEnd|date("m/d/Y") }},{% for facility in data.data %}{% if loop.first %}{% for datum in facility %},{% endfor %}{% endif %}{% endfor %}
 
 ,{% for facility in data.data %}{% if loop.first %}{% for datum in facility %},{% endfor %}{% endif %}{% endfor %}
@@ -16,3 +17,4 @@ Occupancy - Cumulative: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateE
 ,{% for facility in data.data %}{% if loop.first %}{% for datum in facility %},{% endfor %}{% endif %}{% endfor %}
 
 {% endfor %}
+{% endspaceless %}

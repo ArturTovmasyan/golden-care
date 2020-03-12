@@ -1,3 +1,4 @@
+{% spaceless %}
 {% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
 {% for date, monthData in data.data %}
 Move-in/Move-Out: {{ date }},,,,,,
@@ -21,3 +22,4 @@ New Move-Outs,,,,,,
 Grand Total,,{% if data.grandTotal[date]['sumMoveOut'] is defined %}{{ data.grandTotal[date]['sumMoveOut'] }}{% else %}0{% endif %},,,,
 ,,,,,,
 {% endfor %}
+{% endspaceless %}

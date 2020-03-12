@@ -1,5 +1,7 @@
+{% spaceless %}
 {{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}Resident,Admitted,Discharged,Average Rent,Amount
 {% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
 {% for resident in data.residents %}{% if groupName != resident.typeName %}{% set groupName = resident.typeName %}{% endif %}{% if renderedGroup == resident.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = resident.typeId %}{% set newGroup = true %}{% endif %}
 {{ resident.typeName }},{% if resident.roomNumber is defined and resident.bedNumber is defined %}{% if resident.private %}{{ resident.roomNumber }}{% else %}{{ resident.roomNumber }} {{ resident.bedNumber }}{% endif %},{% endif %}"{{ resident.firstName }} {{ resident.lastName }}",{% if resident.admitted is defined and resident.admitted %}{{ resident.admitted|date("m/d/Y") }}{% else %}N/A{% endif %},{% if resident.admissionType == constant('App\\Model\\AdmissionType::DISCHARGE') and resident.admissionStart is defined and resident.admissionStart %}{{ resident.admissionStart|date("m/d/Y") }}{% else %}N/A{% endif %},"$ {{ data.averageRent[resident.roomTypeId]|number_format(2, '.', ',') }}","$ {{ resident.amount|number_format(2, '.', ',') }}"
 {% endfor %}
+{% endspaceless %}

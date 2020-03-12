@@ -1,3 +1,4 @@
+{% spaceless %}
 {{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %} Rent Master Report:,{{ data.dateStart|date("m/d/Y") }} - {{ data.dateEnd }}{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},,{% endif %},
 {{ data.strategy }},Gross Revenue,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Avg Num of avail rooms,{% endif %}Avg Income Per {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed{% else %}Resident{% endif %}{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},% Occupancy For the Month{% endif %}
 
@@ -5,3 +6,4 @@
 {{ datum.typeName }},"$ {{ datum.grossRevenue }}",{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}{{ datum.avgNum }},{% endif %}"$ {{ datum.incomePer }}"{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{{ datum.occupancy }} %{% endif %}
 
 {% endfor %}
+{% endspaceless %}

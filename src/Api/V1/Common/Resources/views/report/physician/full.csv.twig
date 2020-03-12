@@ -1,8 +1,10 @@
+{% spaceless %}
 {{ data.strategy }},Physician Name,Count,Address/CSZ,Office Phone,Emergency Phone,Fax,Email,Website Url
 {% set groupName = null %}
 {% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}
 {{ datum.typeName }},"{% if datum.salutation is defined and datum.salutation %}{{ datum.salutation }} {% endif %}{% if datum.firstName %}{{ datum.firstName }}{% endif %}{% if datum.lastName %}{{ datum.lastName }}{% endif %}",{% if data.count[datum.typeId] is defined and data.count[datum.typeId][datum.pId] is defined %}{{ data.count[datum.typeId][datum.pId] }}{% else %}0{% endif %},"{{ datum.address }} - {{ datum.city }} {{ datum.state }} {{ datum.zip }}",{% for physicianPhone in data.physicianPhones %}{% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_OFFICE') %}"{{ physicianPhone.number }}"{% endif %}{% endfor %},{% for physicianPhone in data.physicianPhones %}{% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}"{{ physicianPhone.number }}"{% endif %}{% endfor %},{% for physicianPhone in data.physicianPhones %}{% if physicianPhone.pId == datum.pId and physicianPhone.type == constant('App\\Model\\Phone::TYPE_FAX') %}"{{ physicianPhone.number }}"{% endif %}{% endfor %},"{{ datum.email }}","{{ datum.websiteUrl }}"
 {% endfor %}
+{% endspaceless %}
 
 
 

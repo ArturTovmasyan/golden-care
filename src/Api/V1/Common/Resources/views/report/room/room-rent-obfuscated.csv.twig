@@ -1,3 +1,4 @@
+{% spaceless %}
 {{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %}Rent Report: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateEnd }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},
 {% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
 {% for datum in data.csvData %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}{% if renderedGroup == datum.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.typeId %}{% set newGroup = true %}{% endif %}{% set k = 0 %}
@@ -10,3 +11,4 @@
 {{ datum.typeName }},{% if datum.number is defined and datum.number %}{{ datum.number }},{% endif %}{{ datum.fullNameShort }},{% if data.calcAmount[datum.id] is defined and data.calcAmount[datum.id][datum.actionId] is defined %}"$ {{ data.calcAmount[datum.id][datum.actionId].amount|number_format(2, '.', ',') }}"{% else %}"$ {{ 0|number_format(2, '.', ',') }}"{% endif %}
 
 {% endfor %}
+{% endspaceless %}

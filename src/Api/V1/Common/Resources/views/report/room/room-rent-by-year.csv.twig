@@ -1,3 +1,4 @@
+{% spaceless %}
 {% for date, monthData in data.csvData %}
 {{ data.strategy }} {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room {% endif %}Rent Report: {{ date }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},,,,,,,
 {% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
@@ -13,3 +14,4 @@
 {% endfor %}
 ,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %},{% endif %},,,,,,,
 {% endfor %}
+{% endspaceless %}

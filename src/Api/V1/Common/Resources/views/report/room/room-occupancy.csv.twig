@@ -1,5 +1,7 @@
+{% spaceless %}
 {{ data.strategy }} Name,Beds Target,Beds Licensed,Available Rooms,Resident Count,Occupancy Rate
 {% for datum in data.data %}
 {{ datum.name }},{{ datum.bedsTarget }},{{ datum.bedsLicensed }},{{ datum.availableCount }},{{ datum.occupiedCount }},{% if datum.availableCount > 0 %}"{{ ((datum.occupiedCount / datum.availableCount) * 100)|number_format(2) }} %"{% else %}0.00 %{% endif %}
 
 {% endfor %}
+{% endspaceless %}

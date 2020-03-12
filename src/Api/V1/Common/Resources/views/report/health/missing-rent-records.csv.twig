@@ -1,3 +1,4 @@
+{% spaceless %}
 {% set i = 0 %}
 {% for resident in data.residents %}
 {% if resident.id not in data.rentResidentIds %}
@@ -49,3 +50,4 @@ Overlap,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') 
 
 {% endif %}
 {% endfor %}
+{% endspaceless %}
