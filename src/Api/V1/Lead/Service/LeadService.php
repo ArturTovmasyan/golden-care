@@ -453,7 +453,7 @@ class LeadService extends BaseService implements IGridService
             $rpLastName = '';
             if (!empty($params['name'])) {
                 $name = explode(' ', $params['name']);
-                $rpLastName = array_pop($name);
+                $rpFirstName = $rpLastName = array_pop($name);
                 if (!empty($name)) {
                     $rpFirstName = implode(' ', $name);
                 }
@@ -466,8 +466,7 @@ class LeadService extends BaseService implements IGridService
             $lead->setResponsiblePersonCsz(null);
 
             if (!empty($params['phone'])) {
-                $phoneExplode = explode(')', $params['phone']);
-                $phone = $phoneExplode[0] . ') ' . $phoneExplode[1];
+                $phone = $this->formatPhoneUs($params['phone']);
                 $lead->setResponsiblePersonPhone($phone);
             } else {
                 $lead->setResponsiblePersonPhone(null);
@@ -546,6 +545,32 @@ class LeadService extends BaseService implements IGridService
         }
 
         return $insert_id;
+    }
+
+    private function formatPhoneUs($phone) {
+        if(!isset($phone{3})) { return ''; }
+        //strip out everything but numbers
+        $phone = preg_replace('/\D/', '', $phone);
+        $length = strlen($phone);
+
+        if ($length < 7) {
+            return null;
+        }
+
+        switch($length) {
+            case 7:
+                return preg_replace('/(\d{3})(\d{4})/', '$1-$2', $phone);
+                break;
+            case 10:
+                return preg_replace('/(\d{3})(\d{3})(\d{4})/', '($1) $2-$3', $phone);
+                break;
+            case 11:
+                return preg_replace('/(\d{1})(\d{3})(\d{3})(\d{4})/', '$1($2) $3-$4', $phone);
+                break;
+            default:
+                return $phone;
+                break;
+        }
     }
 
     /**

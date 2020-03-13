@@ -46,7 +46,7 @@ class ZapierController extends BaseController
         return $this->respondSuccess(
             Response::HTTP_CREATED,
             '',
-            [$id]
+            ['id' => $id]
         );
     }
 }
