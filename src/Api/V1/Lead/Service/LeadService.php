@@ -521,13 +521,13 @@ class LeadService extends BaseService implements IGridService
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
 
-            // Creating task activity
-            $this->createZapierTaskActivity($lead, $isBookATour, $params);
-
             $this->em->flush();
 
             // Creating change log
             $changeLog = $this->leadAddChangeLog($lead);
+
+            // Creating task activity
+            $this->createZapierTaskActivity($lead, $isBookATour, $params);
 
             $this->em->flush();
 
@@ -548,27 +548,22 @@ class LeadService extends BaseService implements IGridService
     }
 
     private function formatPhoneUs($phone) {
-        if(!isset($phone{3})) { return ''; }
         //strip out everything but numbers
         $phone = preg_replace('/\D/', '', $phone);
         $length = strlen($phone);
 
-        if ($length < 7) {
-            return null;
-        }
-
         switch($length) {
             case 7:
-                return preg_replace('/(\d{3})(\d{4})/', '$1-$2', $phone);
+                return preg_replace('/(\d{3})(\d{4})/', '(000) $1-$2', $phone);
                 break;
             case 10:
                 return preg_replace('/(\d{3})(\d{3})(\d{4})/', '($1) $2-$3', $phone);
                 break;
             case 11:
-                return preg_replace('/(\d{1})(\d{3})(\d{3})(\d{4})/', '$1($2) $3-$4', $phone);
+                return preg_replace('/(\d{1})(\d{3})(\d{3})(\d{4})/', '($2) $3-$4', $phone);
                 break;
             default:
-                return $phone;
+                return null;
                 break;
         }
     }
@@ -1100,6 +1095,11 @@ class LeadService extends BaseService implements IGridService
         $changeLog->setContent($content);
         $changeLog->setOwner($lead->getOwner());
         $changeLog->setSpace($lead->getOwner()->getSpace());
+
+        if ($this->grantService->getCurrentSpace() === null) {
+            $changeLog->setCreatedBy($lead->getOwner());
+            $changeLog->setUpdatedBy($lead->getOwner());
+        }
 
         $this->validate($changeLog, null, ['api_admin_change_log_add']);
 

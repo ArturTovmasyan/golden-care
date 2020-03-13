@@ -770,6 +770,11 @@ class ActivityService extends BaseService implements IGridService
         $changeLog->setContent($content);
         $changeLog->setOwner($activity->getAssignTo());
 
+        if ($this->grantService->getCurrentSpace() === null) {
+            $changeLog->setCreatedBy($activity->getAssignTo());
+            $changeLog->setUpdatedBy($activity->getAssignTo());
+        }
+
         $space = $activity->getStatus() ? $activity->getStatus()->getSpace() : null;
         $changeLog->setSpace($space);
 
