@@ -3,7 +3,6 @@
 namespace App\Api\V1\Lead\Controller;
 
 use App\Annotation\Grant;
-use App\Api\V1\Lead\Service\ActivityService;
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Lead;
@@ -139,38 +138,6 @@ class LeadController extends BaseController
                 'referral' => $request->get('referral'),
                 'funnel_stage_id' => $request->get('funnel_stage_id'),
                 'temperature_id' => $request->get('temperature_id'),
-                'base_url' => $request->getSchemeAndHttpHost(),
-            ]
-        );
-
-        return $this->respondSuccess(
-            Response::HTTP_CREATED,
-            '',
-            [$id]
-        );
-    }
-
-    /**
-     * @Route("/zapier", name="api_lead_lead_zapier_add", methods={"POST"})
-     *
-     * @Grant(grant="persistence-lead-lead", level="ADD")
-     *
-     * @param Request $request
-     * @param LeadService $leadService
-     * @param ActivityService $activityService
-     * @return JsonResponse
-     */
-    public function addZapierAction(Request $request, LeadService $leadService, ActivityService $activityService): JsonResponse
-    {
-        $leadService->setActivityService($activityService);
-
-        $id = $leadService->addZapier(
-            [
-                'from' => $request->get('from'),
-                'name' => $request->get('name'),
-                'email' => $request->get('email'),
-                'phone' => $request->get('phone'),
-                'message' => $request->get('message'),
                 'base_url' => $request->getSchemeAndHttpHost(),
             ]
         );

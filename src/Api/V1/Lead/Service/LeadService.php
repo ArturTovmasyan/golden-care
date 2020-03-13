@@ -18,6 +18,8 @@ use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
+use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
+use App\Api\V1\Common\Service\Exception\SubjectNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ChangeLog;
@@ -37,6 +39,7 @@ use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\Temperature;
 use App\Entity\PaymentSource;
 use App\Entity\Role;
+use App\Entity\Space;
 use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
@@ -351,7 +354,29 @@ class LeadService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
-            $currentSpace = $this->grantService->getCurrentSpace();
+            $spaces = $this->em->getRepository(Space::class)->findAll();
+
+            $currentSpace = null;
+            if (!empty($spaces)) {
+                $currentSpace = $spaces[0];
+            }
+
+            if ($currentSpace === null) {
+                throw new SpaceNotFoundException();
+            }
+
+            $subject = null;
+            $isBookATour = false;
+            if (!empty($params['subject'])) {
+                $subject = $params['subject'];
+                if (stripos($subject, 'book') !== false) {
+                    $isBookATour = true;
+                }
+            }
+
+            if ($subject === null) {
+                throw new SubjectNotBeBlankException();
+            }
 
             $facility = null;
             if (!empty($params['from'])) {
@@ -418,6 +443,8 @@ class LeadService extends BaseService implements IGridService
             }
 
             $lead->setOwner($owner);
+            $lead->setCreatedBy($owner);
+            $lead->setUpdatedBy($owner);
 
             $lead->setState(State::TYPE_OPEN);
             $lead->setInitialContactDate(new \DateTime('now'));
@@ -496,7 +523,7 @@ class LeadService extends BaseService implements IGridService
             $this->createLeadInitialContactActivity($lead, false);
 
             // Creating task activity
-            $this->createZapierTaskActivity($lead);
+            $this->createZapierTaskActivity($lead, $isBookATour, $params);
 
             $this->em->flush();
 
@@ -523,8 +550,10 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
+     * @param $isBookATour
+     * @param $params
      */
-    private function createZapierTaskActivity(Lead $lead)
+    private function createZapierTaskActivity(Lead $lead, $isBookATour, $params)
     {
         /** @var ActivityTypeRepository $typeRepo */
         $typeRepo = $this->em->getRepository(ActivityType::class);
@@ -539,13 +568,14 @@ class LeadService extends BaseService implements IGridService
         $initialContactDate = $lead->getInitialContactDate();
         $rpFullName = $lead->getResponsiblePersonFirstName() . ' ' . $lead->getResponsiblePersonLastName();
         $notes = 'You have a new web form contact from ' . $rpFullName . '; they said ' . $lead->getNotes() . '. Please follow-up by email at ' . $lead->getResponsiblePersonEmail() . '. When you have followed up, update the Lead information in the database, and change the status of this task to Done.  You can find this Lead in your My Dashboard in the database.';
+        $title = $isBookATour ? 'Book a Tour' : 'Web Contact Form Follow-up';
 
         $activity = new Activity();
         $activity->setLead($lead);
         $activity->setType($type);
         $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
         $activity->setDate($initialContactDate);
-        $activity->setTitle('Web Contact Form Follow-up');
+        $activity->setTitle($title);
         $activity->setNotes($notes);
 
         if ($type->getDefaultStatus()) {
@@ -557,8 +587,12 @@ class LeadService extends BaseService implements IGridService
         }
 
         if ($initialContactDate !== null && $type->isDueDate()) {
-            $dueDate = clone $initialContactDate;
-            $activity->setDueDate($dueDate->add(new \DateInterval('P5D')));
+            if (!empty($params['preferred_date'])) {
+                $activity->setDueDate(new \DateTime($params['preferred_date']));
+            } else {
+                $dueDate = clone $initialContactDate;
+                $activity->setDueDate($dueDate->add(new \DateInterval('P5D')));
+            }
         }
 
         if ($initialContactDate !== null && $type->isReminderDate()) {

@@ -168,6 +168,7 @@ class ResponseCode
     const RENT_REASON_NOT_FOUND_EXCEPTION                        = 768;
     const DUPLICATE_BASE_RATE_BY_DATE_EXCEPTION                  = 769;
     const PAYMENT_SOURCE_DUPLICATE_BASE_RATE_BY_DATE_EXCEPTION   = 770;
+    const SUBJECT_NOT_BE_BLANK_EXCEPTION                         = 771;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -336,6 +337,7 @@ class ResponseCode
         self::RENT_REASON_NOT_FOUND_EXCEPTION                        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Rent Reason not found.'],
         self::DUPLICATE_BASE_RATE_BY_DATE_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate with this date and Room Type already exists.'],
         self::PAYMENT_SOURCE_DUPLICATE_BASE_RATE_BY_DATE_EXCEPTION   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Base Rate with this date and Payment Source already exists.'],
+        self::SUBJECT_NOT_BE_BLANK_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Subject cannot be blank.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
