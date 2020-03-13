@@ -145,6 +145,10 @@ class FacilityDashboardCommand extends Command
                 }, $shortTermAdmissions);
             }
 
+            /** @var LeadRepository $leadRepo */
+            $leadRepo = $this->em->getRepository(Lead::class);
+            $monthWebLeads = $leadRepo->getWebLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
+
             /** @var LeadTemperatureRepository $leadTemperatureRepo */
             $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
             $leadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
@@ -153,8 +157,6 @@ class FacilityDashboardCommand extends Command
             $activityRepo = $this->em->getRepository(Activity::class);
             $leadTourActivities = $activityRepo->getLeadTourActivitiesForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
-            /** @var LeadRepository $leadRepo */
-            $leadRepo = $this->em->getRepository(Lead::class);
             $leads = $leadRepo->getLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             /** @var OutreachRepository $outreachRepo */
@@ -305,6 +307,19 @@ class FacilityDashboardCommand extends Command
                 $entity->setMoveOutsRespite($moveOutsRespite);
                 $entity->setMoveOutsLongTerm($moveOutsLongTerm);
                 $entity->setNoticeToVacate($noticeToVacate);
+
+                $webLeads = 0;
+                if (!empty($monthWebLeads)) {
+                    foreach ($monthWebLeads as $webLead) {
+                        $r = 0;
+                        if ($webLead['typeId'] === $facility->getId()) {
+                            $r++;
+
+                            $webLeads += $r;
+                        }
+                    }
+                }
+                $entity->setWebLeads($webLeads);
 
                 $hotLeads = 0;
                 if (!empty($leadTemperatures)) {

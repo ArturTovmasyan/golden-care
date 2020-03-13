@@ -395,6 +395,7 @@ class LeadService extends BaseService implements IGridService
             }
 
             $lead = new Lead();
+            $lead->setWebLead(true);
             $lead->setPrimaryFacility($facility);
             $lead->setFirstName('Unknown');
             $lead->setLastName('Unknown');

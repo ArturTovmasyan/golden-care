@@ -425,6 +425,12 @@ class Lead
     private $notes;
 
     /**
+     * @var bool
+     * @ORM\Column(name="web_lead", type="boolean")
+     */
+    private $webLead = false;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="lead", cascade={"remove", "persist"})
      */
@@ -760,6 +766,22 @@ class Lead
     public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWebLead(): bool
+    {
+        return $this->webLead;
+    }
+
+    /**
+     * @param bool $webLead
+     */
+    public function setWebLead(bool $webLead): void
+    {
+        $this->webLead = $webLead;
     }
 
     /**

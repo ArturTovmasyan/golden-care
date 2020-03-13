@@ -316,6 +316,20 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="web_leads", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $webLeads = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="hot_leads", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -628,6 +642,22 @@ class FacilityDashboard
     public function setMoveOutsLongTerm(?int $moveOutsLongTerm): void
     {
         $this->moveOutsLongTerm = $moveOutsLongTerm;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getWebLeads(): ?int
+    {
+        return $this->webLeads;
+    }
+
+    /**
+     * @param int|null $webLeads
+     */
+    public function setWebLeads(?int $webLeads): void
+    {
+        $this->webLeads = $webLeads;
     }
 
     /**

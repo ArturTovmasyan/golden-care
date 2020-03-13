@@ -185,6 +185,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $moveInsLongTerm = 0;
                 $moveOutsRespite = 0;
                 $moveOutsLongTerm = 0;
+                $webLeads = 0;
                 $hotLeads = 0;
                 $noticeToVacate = 0;
                 $projectedNearTermOccupancy = 0;//?
@@ -213,6 +214,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $moveInsLongTerm = $dashboard['moveInsLongTerm'];
                         $moveOutsRespite = $dashboard['moveOutsRespite'];
                         $moveOutsLongTerm = $dashboard['moveOutsLongTerm'];
+                        $webLeads = $dashboard['webLeads'];
                         $hotLeads = $dashboard['hotLeads'];
                         $noticeToVacate = $dashboard['noticeToVacate'];
                         $toursPerMonth = $dashboard['toursPerMonth'];
@@ -234,6 +236,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'move_ins_long_term' => $moveInsLongTerm,
                     'move_outs_respite' => $moveOutsRespite,
                     'move_outs_long_term' => $moveOutsLongTerm,
+                    'web_leads' => $webLeads,
                     'hot_leads' => $hotLeads,
                     'notice_to_vacate' => $noticeToVacate,
                     'projected_near_term_occupancy' => $projectedNearTermOccupancy,
