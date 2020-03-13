@@ -64,6 +64,19 @@ use Doctrine\ORM\QueryBuilder;
 class LeadService extends BaseService implements IGridService
 {
     /**
+     * @var ActivityService
+     */
+    private $activityService;
+
+    /**
+     * @param ActivityService $activityService
+     */
+    public function setActivityService(ActivityService $activityService)
+    {
+        $this->activityService = $activityService;
+    }
+
+    /**
      * @param QueryBuilder $queryBuilder
      * @param $params
      */
@@ -349,7 +362,7 @@ class LeadService extends BaseService implements IGridService
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
                 /** @var Facility $facility */
-                $facility = $facilityRepo->findOneBy(['name' => $facilityName]);
+                $facility = $facilityRepo->findOneBy(['name' => $facilityName, 'space' => $currentSpace]);
             }
 
             if ($facility === null) {
@@ -457,7 +470,7 @@ class LeadService extends BaseService implements IGridService
             $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
 
             /** @var FunnelStage $funnelStage */
-            $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName)]);
+            $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName), 'space' => $currentSpace]);
 
             if ($funnelStage === null) {
                 throw new FunnelStageNotFoundException();
@@ -471,7 +484,7 @@ class LeadService extends BaseService implements IGridService
             $temperatureRepo = $this->em->getRepository(Temperature::class);
 
             /** @var Temperature $temperature */
-            $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName)]);
+            $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName), 'space' => $currentSpace]);
 
             if ($temperature === null) {
                 throw new TemperatureNotFoundException();
@@ -481,6 +494,9 @@ class LeadService extends BaseService implements IGridService
 
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
+
+            // Creating task activity
+            $this->createZapierTaskActivity($lead);
 
             $this->em->flush();
 
@@ -503,6 +519,64 @@ class LeadService extends BaseService implements IGridService
         }
 
         return $insert_id;
+    }
+
+    /**
+     * @param Lead $lead
+     */
+    private function createZapierTaskActivity(Lead $lead)
+    {
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+
+        /** @var ActivityType $type */
+        $type = $typeRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), 10);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        $initialContactDate = $lead->getInitialContactDate();
+        $rpFullName = $lead->getResponsiblePersonFirstName() . ' ' . $lead->getResponsiblePersonLastName();
+        $notes = 'You have a new web form contact from ' . $rpFullName . '; they said ' . $lead->getNotes() . '. Please follow-up by email at ' . $lead->getResponsiblePersonEmail() . '. When you have followed up, update the Lead information in the database, and change the status of this task to Done.  You can find this Lead in your My Dashboard in the database.';
+
+        $activity = new Activity();
+        $activity->setLead($lead);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
+        $activity->setDate($initialContactDate);
+        $activity->setTitle('Web Contact Form Follow-up');
+        $activity->setNotes($notes);
+
+        if ($type->getDefaultStatus()) {
+            $activity->setStatus($type->getDefaultStatus());
+        }
+
+        if ($type->isAssignTo()) {
+            $activity->setAssignTo($lead->getOwner());
+        }
+
+        if ($initialContactDate !== null && $type->isDueDate()) {
+            $dueDate = clone $initialContactDate;
+            $activity->setDueDate($dueDate->add(new \DateInterval('P5D')));
+        }
+
+        if ($initialContactDate !== null && $type->isReminderDate()) {
+            $reminderDate = clone $initialContactDate;
+            $activity->setReminderDate($reminderDate->add(new \DateInterval('P2D')));
+        }
+
+        $activity->setFacility(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+
+        $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
+
+        if ($activity->getType() !== null && $activity->getType()->isAssignTo()) {
+            $this->activityService->taskActivityAddChangeLog($activity);
+        }
     }
 
     /**

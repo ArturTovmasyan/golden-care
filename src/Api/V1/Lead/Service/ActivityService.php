@@ -707,7 +707,7 @@ class ActivityService extends BaseService implements IGridService
     /**
      * @param Activity $activity
      */
-    private function taskActivityAddChangeLog(Activity $activity)
+    public function taskActivityAddChangeLog(Activity $activity)
     {
         $owner = '';
 

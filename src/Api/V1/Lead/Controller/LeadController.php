@@ -3,6 +3,7 @@
 namespace App\Api\V1\Lead\Controller;
 
 use App\Annotation\Grant;
+use App\Api\V1\Lead\Service\ActivityService;
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Lead;
@@ -27,10 +28,10 @@ class LeadController extends BaseController
      * @Route("/grid", name="api_lead_lead", methods={"GET"})
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function gridAction(Request $request, LeadService $activityTypeService): JsonResponse
+    public function gridAction(Request $request, LeadService $leadService): JsonResponse
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -39,7 +40,7 @@ class LeadController extends BaseController
             $request,
             Lead::class,
             'api_lead_lead_grid',
-            $activityTypeService,
+            $leadService,
             [
                 'all' => $request->get('all'),
                 'my' => $request->get('my'),
@@ -63,10 +64,10 @@ class LeadController extends BaseController
      * @Route("", name="api_lead_lead_list", methods={"GET"})
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return PdfResponse|JsonResponse|Response
      */
-    public function listAction(Request $request, LeadService $activityTypeService)
+    public function listAction(Request $request, LeadService $leadService)
     {
         /** @var User $user */
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -75,7 +76,7 @@ class LeadController extends BaseController
             $request,
             Lead::class,
             'api_lead_lead_list',
-            $activityTypeService,
+            $leadService,
             [
                 'all' => $request->get('all'),
                 'free' => $request->get('free'),
@@ -91,15 +92,15 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param $id
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function getAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
+    public function getAction(Request $request, $id, LeadService $leadService): JsonResponse
     {
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $activityTypeService->getById($id),
+            $leadService->getById($id),
             ['api_lead_lead_get']
         );
     }
@@ -110,12 +111,12 @@ class LeadController extends BaseController
      * @Grant(grant="persistence-lead-lead", level="ADD")
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function addAction(Request $request, LeadService $activityTypeService): JsonResponse
+    public function addAction(Request $request, LeadService $leadService): JsonResponse
     {
-        $id = $activityTypeService->add(
+        $id = $leadService->add(
             [
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
@@ -155,12 +156,15 @@ class LeadController extends BaseController
      * @Grant(grant="persistence-lead-lead", level="ADD")
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
+     * @param ActivityService $activityService
      * @return JsonResponse
      */
-    public function addZapierAction(Request $request, LeadService $activityTypeService): JsonResponse
+    public function addZapierAction(Request $request, LeadService $leadService, ActivityService $activityService): JsonResponse
     {
-        $id = $activityTypeService->addZapier(
+        $leadService->setActivityService($activityService);
+
+        $id = $leadService->addZapier(
             [
                 'from' => $request->get('from'),
                 'name' => $request->get('name'),
@@ -185,12 +189,12 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param $id
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
+    public function editAction(Request $request, $id, LeadService $leadService): JsonResponse
     {
-        $activityTypeService->edit(
+        $leadService->edit(
             $id,
             [
                 'first_name' => $request->get('first_name'),
@@ -226,12 +230,12 @@ class LeadController extends BaseController
      *
      * @param Request $request
      * @param $id
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function deleteAction(Request $request, $id, LeadService $activityTypeService): JsonResponse
+    public function deleteAction(Request $request, $id, LeadService $leadService): JsonResponse
     {
-        $activityTypeService->remove($id);
+        $leadService->remove($id);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -244,12 +248,12 @@ class LeadController extends BaseController
      * @Grant(grant="persistence-lead-lead", level="DELETE")
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, LeadService $activityTypeService): JsonResponse
+    public function deleteBulkAction(Request $request, LeadService $leadService): JsonResponse
     {
-        $activityTypeService->removeBulk($request->get('ids'));
+        $leadService->removeBulk($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -260,12 +264,12 @@ class LeadController extends BaseController
      * @Route("/related/info", name="api_lead_lead_related_info", methods={"POST"})
      *
      * @param Request $request
-     * @param LeadService $activityTypeService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function relatedInfoAction(Request $request, LeadService $activityTypeService): JsonResponse
+    public function relatedInfoAction(Request $request, LeadService $leadService): JsonResponse
     {
-        $relatedData = $activityTypeService->getRelatedInfo($request->get('ids'));
+        $relatedData = $leadService->getRelatedInfo($request->get('ids'));
 
         return $this->respondSuccess(
             Response::HTTP_OK,
