@@ -75,6 +75,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
         }
 
         $queryBuilder
+            ->orderBy('rr.start', 'DESC')
             ->groupBy('rr.id');
     }
 
