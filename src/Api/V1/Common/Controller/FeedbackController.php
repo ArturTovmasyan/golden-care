@@ -69,4 +69,55 @@ class FeedbackController extends BaseController
             $result
         );
     }
+
+
+///////  As alternative decision
+//    /**
+//     * @Route("", name="api_feedback_add", methods={"POST"})
+//     *
+//     * @param Request $request
+//     * @return JsonResponse
+//     */
+//    public function addAction(Request $request): JsonResponse
+//    {
+//        /** @var User $user */
+//        $user = $this->get('security.token_storage')->getToken()->getUser();
+//
+//        $subject = $request->get('subject');
+//        $message = $request->get('message');
+//
+//        $post_data = http_build_query([
+//            'domain' => $request->getHost(),
+//            'username' => $user->getUsername(),
+//            'email' => $user->getEmail(),
+//            'full_name' => $user->getFullName(),
+//            'subject' => $subject,
+//            'message' => $message,
+//            'date' => (new \DateTime())->format('Y-m-d H:i:s')
+//        ]);
+//
+//        $url = 'https://console.seniorcaresw.com/backend/api/5766d45bdba1152105abfd9662e55140/feedback';
+//
+//        $ch = curl_init();
+//
+//        curl_setopt($ch,CURLOPT_URL, $url);
+//        curl_setopt($ch,CURLOPT_POST, 1);
+//        curl_setopt($ch,CURLOPT_POSTFIELDS, $post_data);
+//
+//        $result = curl_exec($ch);
+//
+//        curl_close($ch);
+//
+//        if ($result !== false) {
+//            $result = json_decode($result, true);
+//        } else {
+//            throw new FeedbackUnknownException();
+//        }
+//
+//        return $this->respondSuccess(
+//            Response::HTTP_OK,
+//            '',
+//            $result
+//        );
+//    }
 }

@@ -117,6 +117,7 @@ class ResidentRentIncreaseCommand extends Command
                                 $this->em->persist($rent);
 
                                 $increase->setDone(true);
+                                $increase->setUpdatedBy($increase->getCreatedBy());
 
                                 $this->em->persist($increase);
                             }
