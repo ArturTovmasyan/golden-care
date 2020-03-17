@@ -41,6 +41,12 @@ use App\Annotation\Grid;
  *              "id"         = "notification_date",
  *              "type"       = "date",
  *              "field"      = "rri.notificationDate"
+ *          },
+ *          {
+ *              "id"         = "done",
+ *              "type"       = "boolean",
+ *              "field"      = "rri.done",
+ *              "sortable"   = false
  *          }
  *     }
  * )
@@ -161,6 +167,16 @@ class ResidentRentIncrease
     private $notificationDate;
 
     /**
+     * @var bool
+     * @ORM\Column(name="done", type="boolean")
+     * @Groups({
+     *     "api_admin_resident_rent_increase_list",
+     *     "api_admin_resident_rent_increase_get"
+     * })
+     */
+    private $done = false;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -254,5 +270,21 @@ class ResidentRentIncrease
     public function setNotificationDate(?\DateTime $notificationDate): void
     {
         $this->notificationDate = $notificationDate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDone(): bool
+    {
+        return $this->done;
+    }
+
+    /**
+     * @param bool $done
+     */
+    public function setDone(bool $done): void
+    {
+        $this->done = $done;
     }
 }

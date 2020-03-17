@@ -77,16 +77,10 @@ class ResidentRentIncreaseCommand extends Command
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $now = new \DateTime('now');
-            $startDateFormatted = $now->format('Y-m-d 00:00:00');
-            $endDateFormatted = $now->format('Y-m-d 23:59:59');
-            $startDate = new \DateTime($startDateFormatted);
-            $endDate = new \DateTime($endDateFormatted);
-
             /** @var ResidentRentIncreaseRepository $increaseRepo */
             $increaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
 
-            $increases = $increaseRepo->getRentIncreasesForCronJob($currentSpace, null, $startDate, $endDate);
+            $increases = $increaseRepo->getRentIncreasesForCronJob($currentSpace, null);
 
             if (!empty($increases)) {
                 $residentIds = array_map(static function (ResidentRentIncrease $item) {
@@ -121,6 +115,10 @@ class ResidentRentIncreaseCommand extends Command
                                 $rent->setEnd($increase->getEffectiveDate());
 
                                 $this->em->persist($rent);
+
+                                $increase->setDone(true);
+
+                                $this->em->persist($increase);
                             }
                         }
                     }

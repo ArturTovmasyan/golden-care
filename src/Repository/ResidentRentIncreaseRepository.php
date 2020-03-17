@@ -389,11 +389,9 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param $startDate
-     * @param $endDate
      * @return mixed
      */
-    public function getRentIncreasesForCronJob(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    public function getRentIncreasesForCronJob(Space $space = null, array $entityGrants = null)
     {
         $qb = $this->createQueryBuilder('rri')
             ->innerJoin(
@@ -402,10 +400,8 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
                 Join::WITH,
                 'r = rri.resident'
             )
-            ->where('rri.effectiveDate <= :endDate AND rri.effectiveDate >= :startDate')
-            ->andWhere('rri.effectiveDate = (SELECT MAX(mri.effectiveDate) FROM App:ResidentRentIncrease mri JOIN mri.resident mr WHERE mr.id = r.id GROUP BY mr.id)')
-            ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate);
+            ->where('rri.done = 0')
+            ->andWhere('rri.effectiveDate = (SELECT MAX(mri.effectiveDate) FROM App:ResidentRentIncrease mri JOIN mri.resident mr WHERE mr.id = r.id GROUP BY mr.id)');
 
         if ($space !== null) {
             $qb
@@ -426,6 +422,7 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
         }
 
         return $qb
+            ->orderBy('rri.effectiveDate', 'ASC')
             ->getQuery()
             ->getResult();
     }
