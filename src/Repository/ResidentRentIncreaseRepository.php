@@ -101,6 +101,7 @@ class ResidentRentIncreaseRepository extends EntityRepository implements Related
         }
 
         return $qb
+            ->orderBy('rri.effectiveDate', 'DESC')
             ->getQuery()
             ->getResult();
     }

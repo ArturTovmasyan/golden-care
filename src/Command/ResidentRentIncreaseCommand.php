@@ -89,7 +89,7 @@ class ResidentRentIncreaseCommand extends Command
             $increases = $increaseRepo->getRentIncreasesForCronJob($currentSpace, null, $startDate, $endDate);
 
             if (!empty($increases)) {
-                $residentIds = array_map(function (ResidentRentIncrease $item) {
+                $residentIds = array_map(static function (ResidentRentIncrease $item) {
                     return $item->getResident() ? $item->getResident()->getId() : 0;
                 }, $increases);
 
@@ -111,7 +111,7 @@ class ResidentRentIncreaseCommand extends Command
                                 $residentRent->setEnd(null);
                                 $residentRent->setAmount($increase->getAmount());
                                 $residentRent->setNotes($increase->getReason() !== null ? $increase->getReason()->getTitle() : '');
-                                $residentRent->setReason($increase->getReason() ?? null);
+                                $residentRent->setReason($increase->getReason());
                                 $residentRent->setSource([]);
                                 $residentRent->setCreatedBy($increase->getCreatedBy());
                                 $residentRent->setUpdatedBy($increase->getCreatedBy());
