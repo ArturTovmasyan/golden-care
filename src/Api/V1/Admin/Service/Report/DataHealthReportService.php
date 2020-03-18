@@ -51,7 +51,7 @@ class DataHealthReportService extends BaseService
         $repo = $this->em->getRepository(Resident::class);
 
         $residents = $repo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
-        $residentIds = array_map(function ($item) {
+        $residentIds = array_map(static function ($item) {
             return $item['id'];
         }, $residents);
 
@@ -62,8 +62,8 @@ class DataHealthReportService extends BaseService
 
         $responsiblePersonResidentIds = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonResidentIds = array_map(function ($item) {
-                return $item->getResident()->getId();
+            $responsiblePersonResidentIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResident() !== null ? $item->getResident()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonResidentIds = array_unique($responsiblePersonResidentIds);
         }
@@ -283,7 +283,7 @@ class DataHealthReportService extends BaseService
 
         $finalResidents = array_merge($residentRents, $activeResidentRents);
 
-        $typeNames = array_map(function ($item) {
+        $typeNames = array_map(static function ($item) {
             return $item['typeName'];
         }, $finalResidents);
 

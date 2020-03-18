@@ -467,7 +467,12 @@ class LeadService extends BaseService implements IGridService
             $lead->setResponsiblePersonCsz(null);
 
             if (!empty($params['phone'])) {
-                $phone = $this->formatPhoneUs($params['phone']);
+                if (!empty($params['message']) && stripos($params['message'], $params['phone']) !== false) {
+                    $phone = null;
+                } else {
+                    $phone = $this->formatPhoneUs($params['phone']);
+                }
+
                 $lead->setResponsiblePersonPhone($phone);
             } else {
                 $lead->setResponsiblePersonPhone(null);
