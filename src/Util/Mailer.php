@@ -404,4 +404,30 @@ class Mailer
 
         return $status;
     }
+
+    /**
+     * @param $subject
+     * @param $body
+     * @return mixed
+     */
+    public function sendZapier($subject, $body)
+    {
+        $from = 'webcontactforms@ciminocare.com';
+        $to = 'dlk78uqb@robot.zapier.com';
+
+        $mailer = $this->container->get('mailer');
+        $message = (new \Swift_Message($subject))
+            ->setFrom($from)
+            ->setTo($to)
+            ->setBody($body, self::BODY);
+
+        $status = $mailer->send($message);
+
+        $this->logger->critical($subject, array(
+            'status' => $status,
+            'email_to' => $to
+        ));
+
+        return $status;
+    }
 }

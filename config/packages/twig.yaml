@@ -7,3 +7,4 @@ twig:
         '%kernel.project_dir%/src/Api/V1/Common/Resources/views/email': 'api_email'
         '%kernel.project_dir%/src/Api/V1/Common/Resources/views/report': 'api_report'
         '%kernel.project_dir%/src/Api/V1/Common/Resources/views/notification': 'api_notification'
+        '%kernel.project_dir%/src/Api/V1/Common/Resources/views/zapier': 'api_zapier'
