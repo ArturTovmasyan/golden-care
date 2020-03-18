@@ -680,13 +680,19 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     ->addSelect(
                         'fbr.number AS room_number',
                         'fbrfrt.private AS private',
+                        'fbrfrt.id AS roomTypeId',
+                        'fbrfrt.title AS roomType',
                         'fb.number AS bed_number',
-                        'fbrf.id AS type_id'
+                        'fbrf.id AS type_id',
+                        'fbrf.name AS typeName',
+                        'cl.title as careLevel',
+                        'cl.id as careLevelId'
                     )
                     ->join('ra.facilityBed', 'fb')
                     ->join('fb.room', 'fbr')
                     ->join('fbr.facility', 'fbrf')
                     ->join('fbr.type', 'fbrfrt')
+                    ->join('ra.careLevel', 'cl')
                     ->orderBy('fbr.number')
                     ->addOrderBy('fb.number');
 
@@ -702,7 +708,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'abr.number AS room_number',
                         'abr.private AS private',
                         'ab.number AS bed_number',
-                        'abra.id AS type_id'
+                        'abra.id AS type_id',
+                        'abra.name AS typeName'
                     )
                     ->join('ra.apartmentBed', 'ab')
                     ->join('ab.room', 'abr')
@@ -719,9 +726,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             case GroupType::TYPE_REGION:
                 $qb
                     ->addSelect(
-                        'reg.id AS type_id'
+                        'reg.id AS type_id',
+                        'reg.name AS typeName',
+                        'cl.title as careLevel',
+                        'cl.id as careLevelId'
                     )
                     ->join('ra.region', 'reg')
+                    ->join('ra.careLevel', 'cl')
                     ->orderBy('reg.name');
 
                 if ($ids !== null) {

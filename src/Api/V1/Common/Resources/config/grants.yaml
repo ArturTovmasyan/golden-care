@@ -541,6 +541,8 @@ report:
           title: "Missing Rent Records: List of Active Residents who do not have a valid Room Rent record"
         invalid-rent-amount:
           title: "Invalid Rent Amount Records: List of Residents who do not have a valid Room Rent amount"
+        rents-current-vs-base:
+          title: "Room Rents Current vs. Base"
     assessment:
       title: "Assessment Reports"
       children:

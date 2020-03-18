@@ -429,6 +429,67 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getResult();
     }
 
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getCurrentRentsByActiveResidents(Space $space = null, array $entityGrants = null, $type, $typeId = null)
+    {
+        $typeIds = null;
+        if ($typeId !== null) {
+            $typeIds = [$typeId];
+        }
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getActiveResidentsQb(null, null, $type, $typeIds);
+
+        $qb
+            ->from(ResidentRent::class, 'rr')
+            ->andWhere('rr.resident = r')
+            ->andWhere('rr.end IS NULL')
+            ->andWhere('rr.id IN (SELECT MAX(mrr.id) FROM App:ResidentRent mrr JOIN mrr.resident res WHERE mrr.end IS NULL GROUP BY res.id)')
+            ->addSelect(
+                'ra.id as actionId',
+                'rr.id as rentId',
+                'rr.amount as amount',
+                'rr.start as start',
+                'rr.end as end'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->addOrderBy('r.id')
+            ->addOrderBy('rr.start')
+            ->getQuery()
+            ->getResult();
+    }
+
     ////////////////////////////Resident Admission Part///////////////////////////////////////////////////
 
     /**

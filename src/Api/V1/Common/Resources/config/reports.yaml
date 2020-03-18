@@ -468,6 +468,15 @@ health:
       parameters:
         group:
           select_all: true
+    rents-current-vs-base:
+      service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getRentsCurrentVsBaseReport
+      title: 'Room Rents Current vs. Base'
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        group:
+          select_all: true
 
 assessment:
   title: 'Assessment Reports'

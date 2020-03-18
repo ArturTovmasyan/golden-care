@@ -13,6 +13,7 @@ use App\Entity\ResidentResponsiblePerson;
 use App\Model\GroupType;
 use App\Model\Report\InvalidRentAmount;
 use App\Model\Report\MissingRentRecords;
+use App\Model\Report\RentsCurrentVsBase;
 use App\Model\Report\ResidentRps;
 use App\Repository\FacilityRoomTypeRepository;
 use App\Repository\ResidentRentRepository;
@@ -237,7 +238,7 @@ class DataHealthReportService extends BaseService
         if ((int)$type === GroupType::TYPE_FACILITY) {
             $activeResidents = $rentRepo->getMoreThanZeroAmountActiveResidentRents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type, $typeId);
 
-            $roomTypeIds = array_map(function ($item) {
+            $roomTypeIds = array_map(static function ($item) {
                 return $item['roomTypeId'];
             }, $activeResidents);
 
@@ -293,6 +294,108 @@ class DataHealthReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($finalResidents);
         $report->setAverageRent($averageRent);
+        $report->setStrategyId($type);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @param $discontinued
+     * @return RentsCurrentVsBase
+     */
+    public function getRentsCurrentVsBaseReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): RentsCurrentVsBase
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if ((int)$type !== GroupType::TYPE_FACILITY) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+        $activeResidents = $rentRepo->getCurrentRentsByActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $type, $typeId);
+
+        $roomTypeIds = array_map(static function ($item) {
+            return $item['roomTypeId'];
+        }, $activeResidents);
+
+        $roomTypeIds = array_unique($roomTypeIds);
+
+        /** @var FacilityRoomTypeRepository $roomTypeRepo */
+        $roomTypeRepo = $this->em->getRepository(FacilityRoomType::class);
+
+        $roomTypes = $roomTypeRepo->findByIdsWithRates($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $roomTypeIds);
+
+        $baseRates = [];
+        /** @var FacilityRoomType $roomType */
+        foreach ($roomTypes as $roomType) {
+            $roomTypeId = $roomType->getId();
+
+            /** @var FacilityRoomBaseRate $baseRate */
+            $baseRate = $roomType->getBaseRates()[0];
+
+            /** @var FacilityRoomBaseRateCareLevel $level */
+            foreach ($baseRate->getLevels() as $level) {
+                if ($level->getCareLevel() !== null) {
+                    $baseRates[$roomTypeId][$level->getCareLevel()->getId()] = $level->getAmount();
+                }
+            }
+        }
+
+        $finalResidents = [];
+        foreach ($activeResidents as $resident) {
+            $roomTypeId = $resident['roomTypeId'];
+            $careLevelId = $resident['careLevelId'];
+            $amount = $resident['amount'];
+
+            if (array_key_exists($roomTypeId, $baseRates) && array_key_exists($careLevelId, $baseRates[$roomTypeId])) {
+                $value = $amount - $baseRates[$roomTypeId][$careLevelId];
+
+                $finalValue = $value > 0 ? number_format($value, 2, '.', ',') : '(' . number_format(abs($value), 2, '.', ',') . ')';
+
+                $finalResidents[] = [
+                    'typeId' => $resident['type_id'],
+                    'typeName' => $resident['typeName'],
+                    'firstName' => $resident['first_name'],
+                    'lastName' => $resident['last_name'],
+                    'careLevel' => $resident['careLevel'],
+                    'roomType' => $resident['roomType'],
+                    'baseRate' => $baseRates[$roomTypeId][$careLevelId],
+                    'value' => $finalValue,
+                ];
+            } else {
+                $finalValue = $amount > 0 ? number_format($amount, 2, '.', ',') : '(' . number_format(abs($amount), 2, '.', ',') . ')';
+
+                $finalResidents[] = [
+                    'typeId' => $resident['type_id'],
+                    'typeName' => $resident['typeName'],
+                    'firstName' => $resident['first_name'],
+                    'lastName' => $resident['last_name'],
+                    'careLevel' => $resident['careLevel'],
+                    'roomType' => $resident['roomType'],
+                    'baseRate' => 0,
+                    'value' => $finalValue,
+                ];
+            }
+        }
+
+        $report = new RentsCurrentVsBase();
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setResidents($finalResidents);
         $report->setStrategyId($type);
 
         return $report;

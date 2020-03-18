@@ -1,0 +1,9 @@
+{% spaceless %}
+{{ data.strategy }},Resident,Care Level,Room Type,Room Rent Base,Over/(Under)
+{% set renderedGroup = null %}{% set newGroup = false %}
+{% if data.residents|length > 0 %}
+{% for resident in data.residents %}{% if renderedGroup == resident.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = resident.typeId %}{% set newGroup = true %}{% endif %}
+"{{ resident.typeName }}","{{ resident.firstName }} {{ resident.lastName }}","{{ resident.careLevel }}","{{ resident.roomType }}","{{ resident.baseRate }}","{{ resident.value }}"
+{% endfor %}
+{% endif %}
+{% endspaceless %}
