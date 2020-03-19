@@ -393,6 +393,12 @@ class DataHealthReportService extends BaseService
             }
         }
 
+        $typeNames = array_map(static function ($item) {
+            return $item['typeName'];
+        }, $finalResidents);
+
+        array_multisort($typeNames, SORT_ASC, $finalResidents);
+
         $report = new RentsCurrentVsBase();
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($finalResidents);
