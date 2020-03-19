@@ -44,9 +44,6 @@ class LeadController extends BaseController
                 'all' => $request->get('all'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId(),
-                'facility_id' => $request->get('facility_id'),
-                'date_from' => $request->get('date_from'),
-                'date_to' => $request->get('date_to')
             ]
         );
     }
@@ -84,7 +81,10 @@ class LeadController extends BaseController
                 'free' => $request->get('free'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId(),
-                'contact_id' => $request->get('contact_id')
+                'contact_id' => $request->get('contact_id'),
+                'facility_id' => $request->get('facility_id'),
+                'date_from' => $request->get('date_from'),
+                'date_to' => $request->get('date_to')
             ]
         );
     }

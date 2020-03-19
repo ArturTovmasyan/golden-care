@@ -29,9 +29,8 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param $all
      * @param null $userId
      * @param array|null $facilityEntityGrants
-     * @param array|null $ids
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null, array $ids = null): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null): void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -88,12 +87,6 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             }
         }
 
-        if ($ids !== null) {
-            $queryBuilder
-                ->andWhere('l.id IN (:ids)')
-                ->setParameter('ids', $ids);
-        }
-
         if ($space !== null) {
             $queryBuilder
                 ->innerJoin(
@@ -123,11 +116,12 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param $all
      * @param $free
      * @param null $userId
-     * @param null $contactId
      * @param array|null $facilityEntityGrants
+     * @param null $contactId
+     * @param array|null $ids
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null, $contactId = null)
+    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null, $contactId = null, array $ids = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -174,6 +168,12 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                 ->leftJoin('r.contact', 'c')
                 ->andWhere('c.id = :contactId')
                 ->setParameter('contactId', $contactId);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('l.id IN (:ids)')
+                ->setParameter('ids', $ids);
         }
 
         if ($space !== null) {

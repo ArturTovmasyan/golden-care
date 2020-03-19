@@ -91,6 +91,32 @@ class LeadService extends BaseService implements IGridService
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
 
+        $all = false;
+        if (!empty($params) && isset($params[0]['all'])) {
+            $all = true;
+        }
+
+        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+
+        $userId = null;
+        if ($facilityEntityGrants !== null || (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
+            $userId = $params[0]['user_id'];
+        }
+
+        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function list($params)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
         $isParams = !empty($params);
 
         if ($isParams && !empty($params[0]['facility_id']) && !empty($params[0]['date_from']) && !empty($params[0]['date_to'])) {
@@ -106,8 +132,13 @@ class LeadService extends BaseService implements IGridService
                 return $item['leadId'];
             }, $hotLeadTemperatures);
 
-            $repo->search($currentSpace, null, $queryBuilder, false, null, null, $ids);
+            return $repo->list($currentSpace, null, false, false, null, null, null, $ids);
         } else {
+            $free = false;
+            if ($isParams && isset($params[0]['free'])) {
+                $free = true;
+            }
+
             $all = false;
             if ($isParams && isset($params[0]['all'])) {
                 $all = true;
@@ -120,43 +151,14 @@ class LeadService extends BaseService implements IGridService
                 $userId = $params[0]['user_id'];
             }
 
-            $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants, null);
+            $contactId = null;
+            if (!empty($params) && !empty($params[0]['contact_id'])) {
+                $contactId = $params[0]['contact_id'];
+                $free = false;
+            }
+
+            return $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants, $contactId);
         }
-    }
-
-    /**
-     * @param $params
-     * @return mixed
-     */
-    public function list($params)
-    {
-        /** @var LeadRepository $repo */
-        $repo = $this->em->getRepository(Lead::class);
-
-        $free = false;
-        if (!empty($params) && isset($params[0]['free'])) {
-            $free = true;
-        }
-
-        $all = false;
-        if (!empty($params) && isset($params[0]['all'])) {
-            $all = true;
-        }
-
-        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
-
-        $userId = null;
-        if ($facilityEntityGrants !== null || (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
-            $userId = $params[0]['user_id'];
-        }
-
-        $contactId = null;
-        if (!empty($params) && !empty($params[0]['contact_id'])) {
-            $contactId = $params[0]['contact_id'];
-            $free = false;
-        }
-
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants, $contactId);
     }
 
     /**
