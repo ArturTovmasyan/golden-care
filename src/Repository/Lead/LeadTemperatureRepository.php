@@ -307,10 +307,25 @@ class LeadTemperatureRepository extends EntityRepository implements RelatedInfoI
      * @param array|null $entityGrants
      * @param $startDate
      * @param $endDate
+     * @param null $facilityId
      * @return mixed
      */
-    public function getHotLeadsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    public function getHotLeadsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate, $facilityId = null)
     {
+        /** @var TemperatureRepository $temperatureRepo */
+        $temperatureRepo = $this
+            ->getEntityManager()
+            ->getRepository(Temperature::class);
+
+        /** @var Temperature $hot */
+        $hot = $temperatureRepo
+            ->getLast($space, null);
+
+        $hotId = 0;
+        if ($hot !== null) {
+            $hotId = $hot->getId();
+        }
+
         $qb = $this
             ->createQueryBuilder('lt')
             ->select(
@@ -337,10 +352,17 @@ class LeadTemperatureRepository extends EntityRepository implements RelatedInfoI
                 'f = l.primaryFacility'
             )
             ->where('lt.createdAt >= :startDate AND lt.createdAt <= :endDate AND l.state = :state')
-            ->andWhere('t.value = (SELECT MAX(mt.value) FROM App:Lead\LeadTemperature mlt JOIN mlt.temperature mt JOIN mlt.lead ml WHERE ml.id = l.id GROUP BY ml.id)')
+            ->andWhere('t.id = :hotId')
             ->setParameter('state', State::TYPE_OPEN)
             ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate);
+            ->setParameter('endDate', $endDate)
+            ->setParameter('hotId', $hotId);
+
+        if ($facilityId !== null) {
+            $qb
+                ->andWhere('f.id = :facilityId')
+                ->setParameter('facilityId', $facilityId);
+        }
 
         if ($space !== null) {
             $qb

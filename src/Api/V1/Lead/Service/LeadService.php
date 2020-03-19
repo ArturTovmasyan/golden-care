@@ -52,6 +52,7 @@ use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\FunnelStageRepository;
 use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
+use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OrganizationRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\TemperatureRepository;
@@ -85,22 +86,42 @@ class LeadService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
 
-        $all = false;
-        if (!empty($params) && isset($params[0]['all'])) {
-            $all = true;
+        $isParams = !empty($params);
+
+        if ($isParams && !empty($params[0]['facility_id']) && !empty($params[0]['date_from']) && !empty($params[0]['date_to'])) {
+            $dateFrom = new \DateTime($params[0]['date_from']);
+            $dateTo = new \DateTime($params[0]['date_to']);
+            $facilityId = $params[0]['facility_id'];
+
+            /** @var LeadTemperatureRepository $leadTemperatureRepo */
+            $leadTemperatureRepo = $this->em->getRepository(LeadTemperature::class);
+            $hotLeadTemperatures = $leadTemperatureRepo->getHotLeadsForFacilityDashboard($currentSpace, null, $dateFrom, $dateTo, $facilityId);
+
+            $ids = array_map(static function ($item) {
+                return $item['leadId'];
+            }, $hotLeadTemperatures);
+
+            $repo->search($currentSpace, null, $queryBuilder, false, null, null, $ids);
+        } else {
+            $all = false;
+            if ($isParams && isset($params[0]['all'])) {
+                $all = true;
+            }
+
+            $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
+
+            $userId = null;
+            if ($facilityEntityGrants !== null || ($isParams && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
+                $userId = $params[0]['user_id'];
+            }
+
+            $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants, null);
         }
-
-        $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
-
-        $userId = null;
-        if ($facilityEntityGrants !== null || (!empty($params) && isset($params[0]['my']) && !empty($params[0]['user_id']))) {
-            $userId = $params[0]['user_id'];
-        }
-
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants);
     }
 
     /**
@@ -630,6 +651,11 @@ class LeadService extends BaseService implements IGridService
         $activity->setReferral(null);
         $activity->setOrganization(null);
 
+        if ($this->grantService->getCurrentSpace() === null) {
+            $activity->setCreatedBy($lead->getOwner());
+            $activity->setUpdatedBy($lead->getOwner());
+        }
+
         $this->validate($activity, null, ['api_lead_lead_activity_add']);
 
         $this->em->persist($activity);
@@ -957,6 +983,11 @@ class LeadService extends BaseService implements IGridService
         $leadFunnelStage->setDate($lead->getInitialContactDate());
         $leadFunnelStage->setNotes($funnelStage->getTitle());
 
+        if ($this->grantService->getCurrentSpace() === null) {
+            $leadFunnelStage->setCreatedBy($lead->getOwner());
+            $leadFunnelStage->setUpdatedBy($lead->getOwner());
+        }
+
         $this->validate($leadFunnelStage, null, ['api_lead_lead_funnel_stage_add']);
 
         $this->em->persist($leadFunnelStage);
@@ -991,6 +1022,11 @@ class LeadService extends BaseService implements IGridService
         $leadTemperature->setTemperature($temperature);
         $leadTemperature->setDate($lead->getInitialContactDate());
         $leadTemperature->setNotes($temperature->getTitle());
+
+        if ($this->grantService->getCurrentSpace() === null) {
+            $leadTemperature->setCreatedBy($lead->getOwner());
+            $leadTemperature->setUpdatedBy($lead->getOwner());
+        }
 
         $this->validate($leadTemperature, null, ['api_lead_lead_temperature_add']);
 
@@ -1029,6 +1065,11 @@ class LeadService extends BaseService implements IGridService
         $activity->setFacility(null);
         $activity->setReferral(null);
         $activity->setOrganization(null);
+
+        if ($this->grantService->getCurrentSpace() === null) {
+            $activity->setCreatedBy($lead->getOwner());
+            $activity->setUpdatedBy($lead->getOwner());
+        }
 
         $this->validate($activity, null, ['api_lead_lead_activity_add']);
 

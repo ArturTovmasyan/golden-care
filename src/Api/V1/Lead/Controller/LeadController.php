@@ -43,7 +43,10 @@ class LeadController extends BaseController
             [
                 'all' => $request->get('all'),
                 'my' => $request->get('my'),
-                'user_id' => $user->getId()
+                'user_id' => $user->getId(),
+                'facility_id' => $request->get('facility_id'),
+                'date_from' => $request->get('date_from'),
+                'date_to' => $request->get('date_to')
             ]
         );
     }

@@ -248,4 +248,41 @@ class TemperatureRepository extends EntityRepository implements RelatedInfoInter
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getLast(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = t.space'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('t.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('t.value', 'DESC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

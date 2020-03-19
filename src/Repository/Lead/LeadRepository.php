@@ -29,8 +29,9 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param $all
      * @param null $userId
      * @param array|null $facilityEntityGrants
+     * @param array|null $ids
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null, array $ids = null): void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -85,6 +86,12 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                     ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
                     ->setParameter('facilityGrantIds', $facilityEntityGrants);
             }
+        }
+
+        if ($ids !== null) {
+            $queryBuilder
+                ->andWhere('l.id IN (:ids)')
+                ->setParameter('ids', $ids);
         }
 
         if ($space !== null) {
