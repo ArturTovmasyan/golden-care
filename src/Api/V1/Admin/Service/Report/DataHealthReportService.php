@@ -365,7 +365,7 @@ class DataHealthReportService extends BaseService
             if (array_key_exists($roomTypeId, $baseRates) && array_key_exists($careLevelId, $baseRates[$roomTypeId])) {
                 $value = $amount - $baseRates[$roomTypeId][$careLevelId];
 
-                $finalValue = $value > 0 ? number_format($value, 2, '.', ',') : '(' . number_format(abs($value), 2, '.', ',') . ')';
+                $finalValue = $value > 0 ? number_format($value, 2, '.', ',') : '( ' . number_format(abs($value), 2, '.', ',') . ' )';
 
                 $finalResidents[] = [
                     'typeId' => $resident['type_id'],
@@ -378,7 +378,7 @@ class DataHealthReportService extends BaseService
                     'value' => $finalValue,
                 ];
             } else {
-                $finalValue = $amount > 0 ? number_format($amount, 2, '.', ',') : '(' . number_format(abs($amount), 2, '.', ',') . ')';
+                $finalValue = $amount > 0 ? number_format($amount, 2, '.', ',') : '( ' . number_format(abs($amount), 2, '.', ',') . ' )';
 
                 $finalResidents[] = [
                     'typeId' => $resident['type_id'],
