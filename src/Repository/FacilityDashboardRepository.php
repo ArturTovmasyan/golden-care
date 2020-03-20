@@ -354,4 +354,62 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param null $facilityId
+     * @return mixed
+     */
+    public function getRoomTypeValues(Space $space = null, array $entityGrants = null, $startDate, $endDate, $facilityId = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('fd')
+            ->select(
+                'fd.roomTypeValues as roomTypeValues'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fd.facility'
+            )
+            ->where('fd.date >= :startDate AND fd.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($facilityId !== null) {
+            $qb
+                ->andWhere('f.id = :facilityId')
+                ->setParameter('facilityId', $facilityId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fd.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('fd.date', 'DESC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

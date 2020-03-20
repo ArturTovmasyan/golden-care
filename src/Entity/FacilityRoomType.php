@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
@@ -196,6 +197,30 @@ class FacilityRoomType
         }
 
         return $data;
+    }
+
+    /**
+     * @var int
+     * @Groups({
+     *     "api_admin_facility_room_type_list"
+     * })
+     */
+    private $countRooms;
+
+    /**
+     * @return int|null
+     */
+    public function getCountRooms(): ?int
+    {
+        return $this->countRooms;
+    }
+
+    /**
+     * @param int|null $countRooms
+     */
+    public function setCountRooms(?int $countRooms): void
+    {
+        $this->countRooms = $countRooms;
     }
 
     /**

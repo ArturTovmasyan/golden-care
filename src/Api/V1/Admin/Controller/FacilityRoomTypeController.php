@@ -78,7 +78,11 @@ class FacilityRoomTypeController extends BaseController
             FacilityRoomType::class,
             'api_admin_facility_room_type_list',
             $facilityRoomTypeService,
-            ['facility_id' => $request->get('facility_id')]
+            [
+                'facility_id' => $request->get('facility_id'),
+                'date_from' => $request->get('date_from'),
+                'date_to' => $request->get('date_to')
+            ]
         );
     }
 

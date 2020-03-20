@@ -255,6 +255,12 @@ class FacilityDashboard
     private $occupancy = 0;
 
     /**
+     * @var array $roomTypeValues
+     * @ORM\Column(name="room_type_values", type="json_array", nullable=true)
+     */
+    private $roomTypeValues = [];
+
+    /**
      * @var int
      * @Assert\NotBlank(groups={
      *     "api_admin_facility_dashboard_add",
@@ -578,6 +584,22 @@ class FacilityDashboard
     public function setOccupancy(?int $occupancy): void
     {
         $this->occupancy = $occupancy;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoomTypeValues(): array
+    {
+        return $this->roomTypeValues;
+    }
+
+    /**
+     * @param array $roomTypeValues
+     */
+    public function setRoomTypeValues(array $roomTypeValues): void
+    {
+        $this->roomTypeValues = $roomTypeValues;
     }
 
     /**

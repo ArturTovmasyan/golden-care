@@ -119,6 +119,7 @@ class LeadService extends BaseService implements IGridService
 
         $isParams = !empty($params);
 
+        // for hot leads link in facility dashboard
         if ($isParams && !empty($params[0]['facility_id']) && !empty($params[0]['date_from']) && !empty($params[0]['date_to'])) {
             $dateFrom = new \DateTime($params[0]['date_from']);
             $dateTo = new \DateTime($params[0]['date_to']);

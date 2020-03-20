@@ -10,6 +10,7 @@ use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityDashboard;
+use App\Entity\FacilityRoom;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
@@ -22,6 +23,7 @@ use App\Model\GroupType;
 use App\Model\RentPeriod;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\FacilityRoomRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
@@ -232,6 +234,11 @@ class FacilityDashboardCommand extends Command
                 }
             }
 
+            /** @var FacilityRoomRepository $facilityRoomRepo */
+            $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
+
+            $roomTypeIds = [];
+            $roomTypeValues = [];
             /** @var Facility $facility */
             foreach ($facilities as $facility) {
                 $entity = new FacilityDashboard();
@@ -244,6 +251,8 @@ class FacilityDashboardCommand extends Command
                 $entity->setRedFlag($facility->getRedFlag());
 
                 $occupancy = 0;
+                $roomTypeValues[$facility->getId()] = [];
+                $roomTypeIds[$facility->getId()] = [];
                 if (!empty($activeAdmissions)) {
                     foreach ($activeAdmissions as $activeAdmission) {
                         $i = 0;
@@ -251,10 +260,29 @@ class FacilityDashboardCommand extends Command
                             $i++;
 
                             $occupancy += $i;
+
+                            $roomTypeIds[$facility->getId()][] = $activeAdmission['roomTypeId'];
                         }
+                    }
+
+                    $roomTypeIds[$facility->getId()] = array_unique($roomTypeIds[$facility->getId()]);
+                    $roomTypeIds[$facility->getId()] = array_values($roomTypeIds[$facility->getId()]);
+
+                    $rooms = $facilityRoomRepo->getByRoomTypeIds($currentSpace, null, null, $roomTypeIds[$facility->getId()]);
+
+                    foreach ($roomTypeIds[$facility->getId()] as $roomTypeId) {
+                        $countRooms = 0;
+                        foreach ($rooms as $room) {
+                            if ($room['roomTypeId'] === $roomTypeId) {
+                                ++$countRooms;
+                            }
+                        }
+
+                        $roomTypeValues[$facility->getId()][$roomTypeId] = $countRooms;
                     }
                 }
                 $entity->setOccupancy($occupancy);
+                $entity->setRoomTypeValues($roomTypeValues[$facility->getId()]);
 
                 $moveInsRespite = 0;
                 $moveInsLongTerm = 0;

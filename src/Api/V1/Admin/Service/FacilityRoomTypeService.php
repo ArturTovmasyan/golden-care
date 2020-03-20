@@ -6,8 +6,10 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityRoomTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\FacilityDashboard;
 use App\Entity\FacilityRoomType;
 use App\Entity\Facility;
+use App\Repository\FacilityDashboardRepository;
 use App\Repository\FacilityRoomTypeRepository;
 use App\Repository\FacilityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -51,7 +53,35 @@ class FacilityRoomTypeService extends BaseService implements IGridService
         if (!empty($params) && !empty($params[0]['facility_id'])) {
             $facilityId = $params[0]['facility_id'];
 
-            return $repo->getBy($currentSpace, $entityGrants, $facilityEntityGrants, $facilityId);
+            if (empty($params[0]['date_from']) && empty($params[0]['date_to'])) {
+                return $repo->getBy($currentSpace, $entityGrants, $facilityEntityGrants, $facilityId);
+            }
+
+            // for ending occupancy link in facility dashboard
+            if (!empty($params[0]['date_from']) && !empty($params[0]['date_to'])) {
+                $dateFrom = new \DateTime($params[0]['date_from']);
+                $dateTo = new \DateTime($params[0]['date_to']);
+
+                /** @var FacilityDashboardRepository $facilityDashboardRepo */
+                $facilityDashboardRepo = $this->em->getRepository(FacilityDashboard::class);
+                $dashboard = $facilityDashboardRepo->getRoomTypeValues($currentSpace, null, $dateFrom, $dateTo, $facilityId);
+
+                $roomTypes = [];
+                if ($dashboard !== null && !empty($dashboard['roomTypeValues'])) {
+                    $roomTypeValues = $dashboard['roomTypeValues'];
+                    $roomTypeIds = array_keys($roomTypeValues);
+
+                    $roomTypes = $repo->list($currentSpace, null, null, $roomTypeIds);
+                    /** @var FacilityRoomType $roomType */
+                    foreach ($roomTypes as $roomType) {
+                        if (array_key_exists($roomType->getId(), $roomTypeValues)) {
+                            $roomType->setCountRooms($roomTypeValues[$roomType->getId()]);
+                        }
+                    }
+                }
+
+                return $roomTypes;
+            }
         }
 
         return $repo->list($currentSpace, $entityGrants, $facilityEntityGrants);

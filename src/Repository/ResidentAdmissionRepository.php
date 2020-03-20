@@ -2937,11 +2937,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->select(
                 'r.id AS id',
                 'f.id AS typeId',
+                'frt.id AS roomTypeId',
                 'ra.admissionType AS admissionType'
             )
             ->join('ra.resident', 'r')
             ->join('ra.facilityBed', 'fb')
             ->join('fb.room', 'fr')
+            ->join('fr.type', 'frt')
             ->join('fr.facility', 'f')
             ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')

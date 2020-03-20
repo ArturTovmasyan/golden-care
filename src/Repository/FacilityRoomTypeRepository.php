@@ -74,9 +74,10 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param array|null $facilityEntityGrants
+     * @param array|null $ids
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, array $ids = null)
     {
         $qb = $this->createQueryBuilder('frt');
 
@@ -96,6 +97,12 @@ class FacilityRoomTypeRepository extends EntityRepository implements RelatedInfo
                 )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
+        }
+
+        if ($ids !== null) {
+            $qb
+                ->andWhere('frt.id IN (:ids)')
+                ->setParameter('ids', $ids);
         }
 
         if ($entityGrants !== null) {
