@@ -353,6 +353,7 @@ class LeadTemperatureRepository extends EntityRepository implements RelatedInfoI
             )
             ->where('lt.createdAt >= :startDate AND lt.createdAt <= :endDate AND l.state = :state')
             ->andWhere('t.id = :hotId')
+            ->andWhere('lt.date = (SELECT MAX(mlt.date) FROM App:Lead\LeadTemperature mlt JOIN mlt.temperature mt JOIN mlt.lead ml WHERE ml.id = l.id GROUP BY ml.id)')
             ->setParameter('state', State::TYPE_OPEN)
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
