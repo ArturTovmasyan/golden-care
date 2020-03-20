@@ -410,10 +410,9 @@ class Mailer
      * @param $body
      * @return mixed
      */
-    public function sendZapier($subject, $body)
+    public function sendZapier($from, $subject, $body)
     {
-        $from = 'webcontactforms@ciminocare.com';
-        $to = 'dlk78uqb@robot.zapier.com';
+        $to = 'webcontactforms@ciminocare.com';
 
         $mailer = $this->container->get('mailer');
         $message = (new \Swift_Message($subject))

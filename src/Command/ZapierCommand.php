@@ -53,15 +53,38 @@ class ZapierCommand extends Command
             return 1;
         }
 
-        $render = '@api_zapier/template' . $input->getArgument('template') . '.html.twig';
+        $template = $input->getArgument('template');
+
+        $render = '@api_zapier/template' . $template . '.html.twig';
 
         $body = $this->container->get('templating')->render($render, [
 
         ]);
 
-        $subject = 'This is a test zapier email';
+        switch ($template) {
+            case '1':
+                $subject = 'New submission from Book a Tour';
+                $from = ['imt.tester1@gmail.com' => 'Auburn Oaks'];
+                break;
+            case '2':
+                $subject = 'New submission from Book a Tour';
+                $from = ['imt.tester1@gmail.com' => 'Citrus Heights Terrace'];
+                break;
+            case '3':
+                $subject = 'New submission from Contact Form';
+                $from = ['imt.tester1@gmail.com' => 'Auburn Oaks'];
+                break;
+            case '4':
+                $subject = 'New submission from Contact Form';
+                $from = ['imt.tester1@gmail.com' => 'Citrus Heights Terrace'];
+                break;
+            case '5':
+                $subject = 'New submission from Contact Form';
+                $from = ['imt.tester1@gmail.com' => 'Auburn Oaks'];
+                break;
+        }
 
-        $this->mailer->sendZapier($subject, $body);
+        $this->mailer->sendZapier($from, $subject, $body);
 
         $this->release();
 
