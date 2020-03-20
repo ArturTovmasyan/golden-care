@@ -138,7 +138,7 @@ class FacilityDashboardCommand extends Command
 
                 $longTermAdmissions = $admissionRepo->getLongTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
                 $longTermResidentIds = array_map(static function ($item) {
-                    return $item['leadId'];
+                    return $item['id'];
                 }, $longTermAdmissions);
 
                 $shortTermAdmissions = $admissionRepo->getShortTermAdmittedResidentIds($currentSpace, null, null, $dischargedResidentIds);
