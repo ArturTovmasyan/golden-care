@@ -38,10 +38,10 @@ class ReportCsvViewController extends BaseController
         }
 
         $now = new \DateTime('now');
-//        $now = strtotime($now->format('Y-m-d H:i:s'));
-//        if ($now > $reportCsvView->getExpiresAt()) {
-//            throw new CsvReportHashHasExpiredException();
-//        }
+        $now = strtotime($now->format('Y-m-d H:i:s'));
+        if ($now > $reportCsvView->getExpiresAt()) {
+            throw new CsvReportHashHasExpiredException();
+        }
 
         $params = $reportCsvView->getParams();
         $group = $params['group'];
