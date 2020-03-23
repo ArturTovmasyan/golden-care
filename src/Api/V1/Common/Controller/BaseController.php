@@ -268,12 +268,13 @@ class BaseController extends AbstractController
      * @param Request $request
      * @param string $group
      * @param string $alias
+     * @param bool $isHash
      * @param ReportService $reportService
      * @return PdfResponse|Response
      */
-    protected function respondReport(Request $request, string $group, string $alias, ReportService $reportService)
+    protected function respondReport(Request $request, string $group, string $alias, bool $isHash, ReportService $reportService)
     {
-        $report = $reportService->report($request, $group, $alias);
+        $report = $reportService->report($request, $group, $alias, $isHash);
 
         if ($request->get('template')) {
             $file = '@api_report/' . $group . '/' . $request->get('template') . '.' . $request->get('format') . '.twig';

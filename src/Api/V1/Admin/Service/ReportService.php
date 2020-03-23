@@ -119,9 +119,10 @@ class ReportService
      * @param Request $request
      * @param string $group
      * @param string $alias
+     * @param bool $isHash
      * @return mixed
      */
-    public function report(Request $request, string $group, string $alias)
+    public function report(Request $request, string $group, string $alias, bool $isHash)
     {
         if (!array_key_exists($group, $this->config) || !array_key_exists($alias, $this->config[$group]['reports'])) {
             throw new ReportNotFoundException();
@@ -138,7 +139,7 @@ class ReportService
         }
 
         $grant = sprintf('report-%s-%s', $group, $alias);
-        if ($this->grantService->hasCurrentUserGrant($grant) === false) {
+        if ($isHash === false && $this->grantService->hasCurrentUserGrant($grant) === false) {
             throw new AccessDeniedHttpException();
         }
 
@@ -187,6 +188,7 @@ class ReportService
         $request_assessmentFormId = $request->get('assessment_form_id') ? (int)$request->get('assessment_form_id') : null;
 
         $discontinued = $request->get('discontinued') ? (bool)$request->get('discontinued') : false;
+        $hash = $request->get('hash') ? (bool)$request->get('hash') : false;
 
         return $service->$action(
             $request_group,
@@ -199,7 +201,8 @@ class ReportService
             $request_dateTo,
             $request_assessmentId,
             $request_assessmentFormId,
-            $discontinued
+            $discontinued,
+            $hash
         );
     }
 

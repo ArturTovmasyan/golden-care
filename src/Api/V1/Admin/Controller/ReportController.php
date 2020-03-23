@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Admin\Service\ReportService;
+use App\Entity\ReportCsvView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,15 +44,52 @@ class ReportController extends BaseController
      * @param $group
      * @param $alias
      * @param ReportService $reportService
-     * @return PdfResponse|Response
+     * @return PdfResponse|Response|string
+     * @throws \Exception
      */
     public function getAction(Request $request, $group, $alias, ReportService $reportService)
     {
-        return $this->respondReport(
-            $request,
-            $group,
-            $alias,
-            $reportService
-        );
+        if (!empty($request->get('hash') && (bool)$request->get('hash') === true)) {
+            try {
+                $this->em->getConnection()->beginTransaction();
+
+                $hash = hash('sha256', (random_bytes(32)) . time());
+                $expiresAt = strtotime(date('Y-m-d H:i:s', strtotime('+1 hour')));
+                $getParams = $request->query->all();
+                if (array_key_exists('hash', $getParams)) {
+                    unset($getParams['hash']);
+                }
+                $params = array_merge(['group' => $group, 'alias' => $alias], $getParams);
+
+                $reportCsvView = new ReportCsvView();
+                $reportCsvView->setHash($hash);
+                $reportCsvView->setExpiresAt($expiresAt);
+                $reportCsvView->setParams($params);
+
+                $this->em->persist($reportCsvView);
+
+                $this->em->flush();
+
+                $this->em->getConnection()->commit();
+
+                return $this->respondSuccess(
+                    Response::HTTP_OK,
+                    '',
+                    [$reportCsvView->getHash()]
+                );
+            } catch (\Exception $e) {
+                $this->em->getConnection()->rollBack();
+
+                throw $e;
+            }
+        } else {
+            return $this->respondReport(
+                $request,
+                $group,
+                $alias,
+                false,
+                $reportService
+            );
+        }
     }
 }
