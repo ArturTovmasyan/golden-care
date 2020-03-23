@@ -38,6 +38,13 @@ security:
             stateless: true
             anonymous: true
 
+        api_report_csv_view:
+            pattern:   ^/api/v1.0/report/csv-view/([a-z0-9]+)
+            fos_oauth: false
+            security:  false
+            stateless: true
+            anonymous: true
+
         api:
             pattern:   ^/api/v1.0/*
             fos_oauth: true
