@@ -85,7 +85,10 @@ class WebLeadGrabberCommand extends Command
                         $output->writeln(sprintf("ID - %s, Subject - %s\n", $message_info->getId(), $subject));
 //                        $this->markRead($user, $service, $message_info->getId());
 
-                        $this->leadService->addWebLeadFromCommand($data, $input->getArgument('domain'));
+                        $protocol = getenv('APP_ENV') === 'prod' ? 'https://' : 'http://';
+                        $baseUrl = $protocol . $input->getArgument('domain');
+
+                        $this->leadService->addWebLeadFromCommand($data, $baseUrl);
                     }
                 }
             }
