@@ -13,6 +13,7 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use PHPHtmlParser\Dom;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -45,7 +46,8 @@ class WebLeadGrabberCommand extends Command
         $this
             ->setName('app:webleadgrabber')
             ->setDescription('Zapier email.')
-            ->setHelp('This command allows you to send zapier email...');
+            ->setHelp('This command allows you to send zapier email...')
+            ->addArgument('domain', InputArgument::REQUIRED, 'The domain of the customer.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): ?int
@@ -83,7 +85,7 @@ class WebLeadGrabberCommand extends Command
                         $output->writeln(sprintf("ID - %s, Subject - %s\n", $message_info->getId(), $subject));
 //                        $this->markRead($user, $service, $message_info->getId());
 
-                        $this->leadService->addWebLeadFromCommand($data, getenv('BASE_URL'));
+                        $this->leadService->addWebLeadFromCommand($data, $input->getArgument('domain'));
                     }
                 }
             }
