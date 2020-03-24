@@ -2,7 +2,8 @@
 
 namespace App\Command;
 
-use App\Util\Mailer;
+use App\Api\V1\Lead\Service\ActivityService;
+use App\Api\V1\Lead\Service\LeadService;
 use Exception;
 use Google_Client;
 use Google_Service_Gmail;
@@ -12,30 +13,26 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use PHPHtmlParser\Dom;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WebLeadGrabberCommand extends Command
 {
     use LockableTrait;
 
-    protected $grantService;
+    /** @var LeadService */
+    private $leadService;
 
-    /** @var Mailer */
-    private $mailer;
-
-    /** @var ContainerInterface */
-    private $container;
+    /** @var ActivityService */
+    private $activityService;
 
     public function __construct(
-        Mailer $mailer,
-        ContainerInterface $container
+        LeadService $leadService,
+        ActivityService $activityService
     )
     {
-        $this->mailer = $mailer;
-        $this->container = $container;
+        $this->leadService = $leadService;
+        $this->activityService = $activityService;
 
         parent::__construct();
     }
@@ -67,9 +64,11 @@ class WebLeadGrabberCommand extends Command
             $user = 'me';
             $results = $service->users_messages->listUsersMessages($user, ['q' => 'IN:INBOX IS:UNREAD']);
 
-            if (count($results->getMessages()) == 0) {
+            if (count($results->getMessages()) === 0) {
                 print "No messages found.\n";
             } else {
+                $this->leadService->setActivityService($this->activityService);
+
                 print "Messages:\n";
                 foreach ($results->getMessages() as $message_info) {
                     $message = $service->users_messages->get($user, $message_info->getId());
@@ -84,8 +83,7 @@ class WebLeadGrabberCommand extends Command
                         $output->writeln(sprintf("ID - %s, Subject - %s\n", $message_info->getId(), $subject));
 //                        $this->markRead($user, $service, $message_info->getId());
 
-                        // TODO(vsarmen): Armen add service call here
-                        dump($data);
+                        $this->leadService->addWebLeadFromCommand($data, getenv('BASE_URL'));
                     }
                 }
             }
@@ -113,9 +111,8 @@ class WebLeadGrabberCommand extends Command
             'New submission from Contact Form'
         ];
 
-        if (!\in_array($subject, $known_subjects)) {
-            return null;
-        } else {
+        $data = null;
+        if (\in_array($subject, $known_subjects, false)) {
             $dom = new Dom();
             $dom->load($message);
             $table = $dom->find('tr > td > table');
@@ -132,9 +129,9 @@ class WebLeadGrabberCommand extends Command
                     $data[$header] = trim(strip_tags($value));
                 }
             }
-
-            return $data;
         }
+
+        return $data;
     }
 
     /**
@@ -178,7 +175,7 @@ class WebLeadGrabberCommand extends Command
 
                 // Check to see if there was an error.
                 if (array_key_exists('error', $accessToken)) {
-                    throw new Exception(join(', ', $accessToken));
+                    throw new Exception(implode(', ', $accessToken));
                 }
             }
             // Save the token to a file.
@@ -194,7 +191,7 @@ class WebLeadGrabberCommand extends Command
     private function getMessageHeader($headers, $name)
     {
         foreach ($headers as $header) {
-            if ($header['name'] == $name) {
+            if ($header['name'] === $name) {
                 return $header['value'];
             }
         }
@@ -247,21 +244,22 @@ class WebLeadGrabberCommand extends Command
     /**
      * @param Google_Service_Gmail_MessagePart|Google_Service_Gmail_MessagePart[] $parts
      * @return bool|false|string
-     * @throws \Throwable
      */
     private function decodeMessageParts($parts)
     {
         foreach ($parts as $part) {
-            if ($part->getMimeType() === 'text/html' && $part->getBody())
-                if ($result = $this->decodeMessageBody($part->getBody()->getData()))
+            if ($part->getMimeType() === 'text/html' && $part->getBody()) {
+                if ($result = $this->decodeMessageBody($part->getBody()->getData())) {
                     return $result;
+                }
+            }
         }
 
         /** @var Google_Service_Gmail_MessagePart $part */
         foreach ($parts as $part) {
-            if ($result = $this->decodeMessageParts($part->getParts()))
+            if ($result = $this->decodeMessageParts($part->getParts())) {
                 return $result;
+            }
         }
     }
-
 }

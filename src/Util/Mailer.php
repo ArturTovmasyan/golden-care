@@ -404,29 +404,4 @@ class Mailer
 
         return $status;
     }
-
-    /**
-     * @param $subject
-     * @param $body
-     * @return mixed
-     */
-    public function sendZapier($from, $subject, $body)
-    {
-        $to = 'webcontactforms@ciminocare.com';
-
-        $mailer = $this->container->get('mailer');
-        $message = (new \Swift_Message($subject))
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody($body, self::BODY);
-
-        $status = $mailer->send($message);
-
-        $this->logger->critical($subject, array(
-            'status' => $status,
-            'email_to' => $to
-        ));
-
-        return $status;
-    }
 }

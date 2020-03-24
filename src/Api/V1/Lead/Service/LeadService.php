@@ -369,10 +369,11 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param array $params
+     * @param $baseUrl
      * @return int|null
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function addZapier(array $params): ?int
+    public function addWebLeadFromCommand(array $params, $baseUrl): ?int
     {
         $insert_id = null;
         try {
@@ -390,9 +391,9 @@ class LeadService extends BaseService implements IGridService
             }
 
             $subject = null;
-            $isBookATour = false;
-            if (!empty($params['subject'])) {
-                $subject = $params['subject'];
+                $isBookATour = false;
+            if (!empty($params['Subject'])) {
+                $subject = $params['Subject'];
                 if (stripos($subject, 'book') !== false) {
                     $isBookATour = true;
                 }
@@ -403,8 +404,8 @@ class LeadService extends BaseService implements IGridService
             }
 
             $facility = null;
-            if (!empty($params['from'])) {
-                $from = explode(' <', $params['from']);
+            if (!empty($params['From'])) {
+                $from = explode(' <', $params['From']);
                 $facilityName = strtolower($from[0]);
 
                 /** @var FacilityRepository $facilityRepo */
@@ -476,8 +477,8 @@ class LeadService extends BaseService implements IGridService
 
             $rpFirstName = '';
             $rpLastName = '';
-            if (!empty($params['name'])) {
-                $name = explode(' ', $params['name']);
+            if (!empty($params['Name'])) {
+                $name = explode(' ', $params['Name']);
                 $rpFirstName = $rpLastName = array_pop($name);
                 if (!empty($name)) {
                     $rpFirstName = implode(' ', $name);
@@ -490,11 +491,11 @@ class LeadService extends BaseService implements IGridService
             $lead->setResponsiblePersonCsz(null);
             $lead->setResponsiblePersonCsz(null);
 
-            if (!empty($params['phone'])) {
-                if (!empty($params['message']) && stripos($params['message'], $params['phone']) !== false) {
+            if (!empty($params['Phone'])) {
+                if (!empty($params['Message']) && stripos($params['Message'], $params['Phone']) !== false) {
                     $phone = null;
                 } else {
-                    $phone = $this->formatPhoneUs($params['phone']);
+                    $phone = $this->formatPhoneUs($params['Phone']);
                 }
 
                 $lead->setResponsiblePersonPhone($phone);
@@ -502,8 +503,8 @@ class LeadService extends BaseService implements IGridService
                 $lead->setResponsiblePersonPhone(null);
             }
 
-            if (!empty($params['email'])) {
-                $lead->setResponsiblePersonEmail($params['email']);
+            if (!empty($params['Email'])) {
+                $lead->setResponsiblePersonEmail($params['Email']);
             } else {
                 $lead->setResponsiblePersonEmail(null);
             }
@@ -512,7 +513,7 @@ class LeadService extends BaseService implements IGridService
                 throw new LeadRpPhoneOrEmailNotBeBlankException();
             }
 
-            $notes = $params['message'] ?? '';
+            $notes = $params['Message'] ?? '';
 
             $lead->setNotes($notes);
 
@@ -557,12 +558,12 @@ class LeadService extends BaseService implements IGridService
             $changeLog = $this->leadAddChangeLog($lead);
 
             // Creating task activity
-            $this->createZapierTaskActivity($lead, $isBookATour, $params);
+            $this->createWebLeadTaskActivity($lead, $isBookATour);
 
             $this->em->flush();
 
             if ($changeLog !== null) {
-                $this->sendNewLeadChangeLogNotification($changeLog, $params['base_url']);
+                $this->sendNewLeadChangeLogNotification($changeLog, $baseUrl);
             }
 
             $this->em->getConnection()->commit();
@@ -601,9 +602,8 @@ class LeadService extends BaseService implements IGridService
     /**
      * @param Lead $lead
      * @param $isBookATour
-     * @param $params
      */
-    private function createZapierTaskActivity(Lead $lead, $isBookATour, $params)
+    private function createWebLeadTaskActivity(Lead $lead, $isBookATour)
     {
         /** @var ActivityTypeRepository $typeRepo */
         $typeRepo = $this->em->getRepository(ActivityType::class);
@@ -637,12 +637,8 @@ class LeadService extends BaseService implements IGridService
         }
 
         if ($initialContactDate !== null && $type->isDueDate()) {
-            if (!empty($params['preferred_date'])) {
-                $activity->setDueDate(new \DateTime($params['preferred_date']));
-            } else {
-                $dueDate = clone $initialContactDate;
-                $activity->setDueDate($dueDate->add(new \DateInterval('P5D')));
-            }
+            $dueDate = clone $initialContactDate;
+            $activity->setDueDate($dueDate->add(new \DateInterval('P5D')));
         }
 
         if ($initialContactDate !== null && $type->isReminderDate()) {
