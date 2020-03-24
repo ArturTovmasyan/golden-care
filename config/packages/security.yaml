@@ -31,13 +31,6 @@ security:
             stateless: true
             anonymous: true
 
-        api_zapier:
-            pattern:   ^/api/v1.0/lead/zapier/af7dbdcb11823e3d719453b918d6d25e4afd3ece14a6982887a1908ea3c984295a1428765ae9e0f613d5b261235e2331793f00742c99cbc2da44189f13ad99c1
-            fos_oauth: false
-            security:  false
-            stateless: true
-            anonymous: true
-
         api_report_csv_view:
             pattern:   ^/api/v1.0/report/csv-view/([a-z0-9]+)
             fos_oauth: false
