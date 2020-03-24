@@ -83,6 +83,7 @@ class WebLeadGrabberCommand extends Command
 
                     if ($data !== null) {
                         $output->writeln(sprintf("ID - %s, Subject - %s\n", $message_info->getId(), $subject));
+                        dump($data);
 //                        $this->markRead($user, $service, $message_info->getId());
 
                         $protocol = getenv('APP_ENV') === 'prod' ? 'https://' : 'http://';
