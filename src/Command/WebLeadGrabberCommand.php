@@ -149,7 +149,7 @@ class WebLeadGrabberCommand extends Command
         $client = new Google_Client();
         $client->setApplicationName('Gmail API PHP Quickstart');
         $client->setScopes(Google_Service_Gmail::GMAIL_MODIFY);
-        $client->setAuthConfig('gmail_client_id.json');
+        $client->setAuthConfig('/srv/_vcs/backend/gmail_client_id.json');
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
 
@@ -157,7 +157,7 @@ class WebLeadGrabberCommand extends Command
         // The file gmail_token.json stores the user's access and refresh tokens, and is
         // created automatically when the authorization flow completes for the first
         // time.
-        $tokenPath = 'gmail_token.json';
+        $tokenPath = '/srv/_vcs/backend/gmail_token.json';
         if (file_exists($tokenPath)) {
             $accessToken = json_decode(file_get_contents($tokenPath), true);
             $client->setAccessToken($accessToken);
