@@ -8,6 +8,7 @@ use App\Api\V1\Common\Controller\BaseController;
 use App\Api\V1\Common\Service\Exception\IncorrectResidentStateException;
 use App\Entity\ResidentAdmission;
 use App\Model\ResidentState;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service_locator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +26,9 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class ResidentAdmissionController extends BaseController
 {
+    private const ORDER_ASC = 'ASC';
+    private const ORDER_DESC = 'DESC';
+
     /**
      * @Route("/grid", name="api_admin_resident_admission_grid", methods={"GET"})
      *
@@ -334,10 +338,28 @@ class ResidentAdmissionController extends BaseController
      */
     public function getActiveFirstResidentsAction(Request $request, ResidentAdmissionService $residentAdmissionService): JsonResponse
     {
+        $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
+        $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
+        $residentId = !empty($request->get('resident_id')) ? (int)$request->get('resident_id') : null;
+        $resident = null;
+        if (!empty($request->get('resident'))) {
+            $resident = self::ORDER_ASC;
+            if (in_array(strtoupper((string)$request->get('resident')), [self::ORDER_ASC, self::ORDER_DESC], false)) {
+                $resident = strtoupper((string)$request->get('resident'));
+            }
+        }
+        $room = null;
+        if (!empty($request->get('room'))) {
+            $room = self::ORDER_ASC;
+            if (in_array(strtoupper((string)$request->get('room')), [self::ORDER_ASC, self::ORDER_DESC], false)) {
+                $room = strtoupper((string)$request->get('room'));
+            }
+        }
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getActiveResidents(),
+            $residentAdmissionService->getActiveResidents($type, $typeId, $residentId, $resident, $room),
             ['api_admin_resident_get_active']
         );
     }

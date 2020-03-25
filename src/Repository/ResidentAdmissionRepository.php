@@ -889,6 +889,187 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $ids
+     * @param null $residentId
+     * @param null $resident
+     * @param null $room
+     * @param bool $isFilter
+     * @return mixed
+     */
+    public function getMainActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null, $residentId = null, $resident = null, $room = null, $isFilter = false)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'r.firstName AS first_name',
+                'r.lastName AS last_name',
+                'r.middleName AS middle_name',
+                'rs.title AS salutation'
+            )
+            ->join('ra.resident', 'r')
+            ->leftJoin('r.salutation', 'rs')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'fbr.number AS room_number',
+                        'fbrfrt.private AS private',
+                        'fbrfrt.id AS roomTypeId',
+                        'fbrfrt.title AS roomType',
+                        'fb.number AS bed_number',
+                        'fbrf.id AS type_id',
+                        'fbrf.name AS typeName',
+                        'cl.title as careLevel',
+                        'cl.id as careLevelId'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'fbrf')
+                    ->join('fbr.type', 'fbrfrt')
+                    ->join('ra.careLevel', 'cl');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('fbrf.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+
+                if ($residentId !== null) {
+                    $qb
+                        ->andWhere('r.id = :residentId')
+                        ->setParameter('residentId', $residentId);
+                }
+
+                if ($isFilter) {
+                    if ($resident !== null) {
+                        $qb
+                            ->addOrderBy('r.lastName', $resident);
+                    }
+
+                    if ($room !== null) {
+                        $qb
+                            ->addOrderBy('fbr.number', $room)
+                            ->addOrderBy('fb.number');
+                    }
+                } else {
+                    $qb
+                        ->orderBy('fbr.number')
+                        ->addOrderBy('fb.number');
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'abr.number AS room_number',
+                        'abr.private AS private',
+                        'ab.number AS bed_number',
+                        'abra.id AS type_id',
+                        'abra.name AS typeName'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'abra');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('abra.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+
+                if ($residentId !== null) {
+                    $qb
+                        ->andWhere('r.id = :residentId')
+                        ->setParameter('residentId', $residentId);
+                }
+
+                if ($isFilter) {
+                    if ($resident !== null) {
+                        $qb
+                            ->addOrderBy('r.lastName', $resident);
+                    }
+
+                    if ($room !== null) {
+                        $qb
+                            ->addOrderBy('abr.number', $room)
+                            ->addOrderBy('ab.number');
+                    }
+                } else {
+                    $qb
+                        ->orderBy('abr.number')
+                        ->addOrderBy('ab.number');
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id AS type_id',
+                        'reg.name AS typeName',
+                        'cl.title as careLevel',
+                        'cl.id as careLevelId'
+                    )
+                    ->join('ra.region', 'reg')
+                    ->join('ra.careLevel', 'cl');
+
+                if ($ids !== null) {
+                    $qb
+                        ->andWhere('reg.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                }
+
+                if ($residentId !== null) {
+                    $qb
+                        ->andWhere('r.id = :residentId')
+                        ->setParameter('residentId', $residentId);
+                }
+
+                if ($isFilter) {
+                    if ($resident !== null) {
+                        $qb
+                            ->addOrderBy('r.lastName', $resident);
+                    }
+                } else {
+                    $qb
+                        ->orderBy('reg.name');
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array|null $notGrantResidentIds
      * @param $page
      * @param $perPage

@@ -58,6 +58,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class ResidentAdmissionService extends BaseService implements IGridService
 {
+    private const LIMIT = 30;
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param $params
@@ -173,14 +175,22 @@ class ResidentAdmissionService extends BaseService implements IGridService
     }
 
     /**
-     * @return array
+     * @param $type
+     * @param $typeId
+     * @param $residentId
+     * @param $resident
+     * @param $room
+     * @return array|null
      */
-    public function getActiveResidents(): ?array
+    public function getActiveResidents($type, $typeId, $residentId, $resident, $room): ?array
     {
-        $limit = 6;
-
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
+
+        $isFilter = true;
+        if ($type === null && $typeId === null && $residentId === null && $resident === null && $room === null) {
+            $isFilter = false;
+        }
 
         $data = [
             [
@@ -200,28 +210,42 @@ class ResidentAdmissionService extends BaseService implements IGridService
             ]
         ];
 
+        if ($type !== null) {
+            foreach ($data as $key => $datum) {
+                if ($datum['groupType'] !== $type) {
+                    unset($data[$key]);
+                }
+            }
+            $data = array_values($data);
+        }
+
         $result = [];
         foreach ($data as $strategy) {
             $groupRepo = $this->em->getRepository($strategy['entityClass']);
 
             $groups = [];
             $groupIds = null;
-            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
+            if ($typeId !== null) {
+                $groupList = $groupRepo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']), $typeId);
+            } else {
+                $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
+            }
+
             if (!empty($groupList)) {
-                $groupIds = array_map(function ($item) {
+                $groupIds = array_map(static function ($item) {
                     return $item->getId();
                 }, $groupList);
-                $groupArray = array_map(function ($item) {
+                $groupArray = array_map(static function ($item) {
                     return ['id' => $item->getId(), 'name' => $item->getName()];
                 }, $groupList);
 
-                $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
+                $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds, $residentId, $resident, $room, $isFilter);
 
                 $images = [];
                 $imageTypes = [];
                 $imageS3Ids = [];
                 if (!empty($groupResidents)) {
-                    $residentIds = array_map(function ($item) {
+                    $residentIds = array_map(static function ($item) {
                         return $item['id'];
                     }, $groupResidents);
 
@@ -259,7 +283,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                             ++$i;
                             $currentGroup['residents'][] = $groupResident;
                         }
-                        if ($i === $limit) {
+                        if ($i === self::LIMIT) {
                             break;
                         }
                     }
