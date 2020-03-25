@@ -340,7 +340,6 @@ class ResidentAdmissionController extends BaseController
     {
         $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
         $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
-        $residentId = !empty($request->get('resident_id')) ? (int)$request->get('resident_id') : null;
         $resident = null;
         if (!empty($request->get('resident'))) {
             $resident = self::ORDER_ASC;
@@ -359,7 +358,7 @@ class ResidentAdmissionController extends BaseController
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getActiveResidents($type, $typeId, $residentId, $resident, $room),
+            $residentAdmissionService->getActiveResidents($type, $typeId, $resident, $room),
             ['api_admin_resident_get_active']
         );
     }

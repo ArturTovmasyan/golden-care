@@ -891,13 +891,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param array|null $entityGrants
      * @param $type
      * @param array|null $ids
-     * @param null $residentId
      * @param null $resident
      * @param null $room
      * @param bool $isFilter
      * @return mixed
      */
-    public function getMainActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null, $residentId = null, $resident = null, $room = null, $isFilter = false)
+    public function getMainActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null, $resident = null, $room = null, $isFilter = false)
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -960,12 +959,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         ->setParameter('ids', $ids);
                 }
 
-                if ($residentId !== null) {
-                    $qb
-                        ->andWhere('r.id = :residentId')
-                        ->setParameter('residentId', $residentId);
-                }
-
                 if ($isFilter) {
                     if ($resident !== null) {
                         $qb
@@ -1002,12 +995,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         ->setParameter('ids', $ids);
                 }
 
-                if ($residentId !== null) {
-                    $qb
-                        ->andWhere('r.id = :residentId')
-                        ->setParameter('residentId', $residentId);
-                }
-
                 if ($isFilter) {
                     if ($resident !== null) {
                         $qb
@@ -1040,12 +1027,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     $qb
                         ->andWhere('reg.id IN (:ids)')
                         ->setParameter('ids', $ids);
-                }
-
-                if ($residentId !== null) {
-                    $qb
-                        ->andWhere('r.id = :residentId')
-                        ->setParameter('residentId', $residentId);
                 }
 
                 if ($isFilter) {

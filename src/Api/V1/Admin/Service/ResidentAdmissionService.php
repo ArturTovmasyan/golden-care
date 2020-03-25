@@ -179,18 +179,17 @@ class ResidentAdmissionService extends BaseService implements IGridService
     /**
      * @param $type
      * @param $typeId
-     * @param $residentId
      * @param $resident
      * @param $room
      * @return array|null
      */
-    public function getActiveResidents($type, $typeId, $residentId, $resident, $room): ?array
+    public function getActiveResidents($type, $typeId, $resident, $room): ?array
     {
         /** @var ResidentAdmissionRepository $repo */
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
         $isFilter = true;
-        if ($type === null && $typeId === null && $residentId === null && $resident === null && $room === null) {
+        if ($type === null && $typeId === null && $resident === null && $room === null) {
             $isFilter = false;
         }
 
@@ -241,7 +240,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     return ['id' => $item->getId(), 'name' => $item->getName()];
                 }, $groupList);
 
-                $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds, $residentId, $resident, $room, $isFilter);
+                $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds, $resident, $room, $isFilter);
 
                 $images = [];
                 $imageTypes = [];
