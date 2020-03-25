@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\RentReasonNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentRentNegativeRemainingTotalException;
@@ -121,10 +122,20 @@ class ResidentRentService extends BaseService implements IGridService
             $residentRent->setAmount($params['amount']);
             $residentRent->setNotes($params['notes']);
 
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            /** @var ResidentRent $lastRent */
+            $lastRent = $rentRepo->getLastRent($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentId);
+
             $start = $params['start'];
 
             if (!empty($start)) {
                 $start = new \DateTime($params['start']);
+
+                if ($lastRent !== null && $start <= $lastRent->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $residentRent->setStart($start);
@@ -148,7 +159,7 @@ class ResidentRentService extends BaseService implements IGridService
             $source = [];
 
             if (!empty($paymentSources)) {
-                $amounts = array_map(function ($item) {
+                $amounts = array_map(static function ($item) {
                     return $item['amount'];
                 }, $paymentSources);
                 $sum = array_sum($amounts);
@@ -161,6 +172,13 @@ class ResidentRentService extends BaseService implements IGridService
             }
 
             $residentRent->setSource($source);
+
+            if ($lastRent !== null) {
+                $lastRentEnd = clone $residentRent->getStart();
+                $lastRent->setEnd(date_modify($lastRentEnd, '-1 day'));
+
+                $this->em->persist($lastRent);
+            }
 
             $this->validate($residentRent, null, ['api_admin_resident_rent_add']);
 
@@ -237,6 +255,48 @@ class ResidentRentService extends BaseService implements IGridService
 
             if (!empty($start)) {
                 $start = new \DateTime($params['start']);
+
+                /** @var ResidentRent|null $previousRent */
+                $previousRent = null;
+                /** @var ResidentRent|null $nextRent */
+                $nextRent = null;
+
+                $rents = $repo->getByOrderedStartDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentId);
+
+                if (\count($rents) <= 1) {
+                    $previousRent = null;
+                    $nextRent = null;
+                } else {
+                    $length = \count($rents);
+
+                    /**
+                     * @var  $key
+                     * @var ResidentRent $rent
+                     */
+                    foreach ($rents as $key => $rent) {
+                        if ($rent->getId() === $entity->getId()) {
+                            if ($key >= $length - 1) {
+                                $previousRent = $rents[$key - 1];
+                                $nextRent = null;
+                            } else {
+                                $nextRent = $rents[$key + 1];
+                                if ($key === 0) {
+                                    $previousRent = null;
+                                } else {
+                                    $previousRent = $rents[$key - 1];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($previousRent !== null && $start <= $previousRent->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
+
+                if ($nextRent !== null && $start >= $nextRent->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $entity->setStart($start);
@@ -260,7 +320,7 @@ class ResidentRentService extends BaseService implements IGridService
             $source = [];
 
             if (!empty($paymentSources)) {
-                $amounts = array_map(function ($item) {
+                $amounts = array_map(static function ($item) {
                     return $item['amount'];
                 }, $paymentSources);
                 $sum = array_sum($amounts);

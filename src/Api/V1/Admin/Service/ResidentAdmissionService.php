@@ -729,7 +729,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
             /** @var ResidentAdmission $lastAction */
-            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+            $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentId);
 
             $admitTypesArray = [
                 AdmissionType::LONG_ADMIT,
@@ -761,7 +761,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $entity->setGroupType($lastAction->getGroupType());
             } else {
                 /** @var ResidentAdmission $admitAction */
-                $admitAction = $admissionRepo->getOneAdmitAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $params['resident_id']);
+                $admitAction = $admissionRepo->getOneAdmitAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentId);
 
                 if ($lastAction !== null && $admitAction !== null && \in_array($admissionType, $admitTypesArray, false)) {
                     throw new ResidentAdmitOnlyOneTimeException();
@@ -778,7 +778,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $rentRepo = $this->em->getRepository(ResidentRent::class);
 
             /** @var ResidentRent $lastRent */
-            $lastRent = $rentRepo->getLastRent($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $params['resident_id']);
+            $lastRent = $rentRepo->getLastRent($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentId);
 
             $date = $params['date'];
             if (!empty($date)) {
