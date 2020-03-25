@@ -135,7 +135,7 @@ class WebLeadGrabberCommand extends Command
 
                 for ($i = 0; $i < $tds->count(); $i += 3) {
                     $header = strip_tags($tds[$i]->find('strong')->innerHTML);
-                    $value = preg_replace('<br\s*/?>', "\r\n", $tds[$i + 2]->innerHTML);
+                    $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
                     $data[$header] = trim(strip_tags($value));
                 }
             }
