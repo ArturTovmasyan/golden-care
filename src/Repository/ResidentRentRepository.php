@@ -209,6 +209,45 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getLastRent(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('rr')
+            ->join('rr.resident', 'r')
+            ->where('r.id=:id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rr.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rr.start', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param array $residentIds
      * @return mixed
      */

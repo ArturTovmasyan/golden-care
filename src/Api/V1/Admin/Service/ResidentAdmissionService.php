@@ -34,6 +34,7 @@ use App\Entity\Region;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentPhone;
+use App\Entity\ResidentRent;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Model\ResidentState;
@@ -46,6 +47,7 @@ use App\Repository\ImageRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentPhoneRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -340,7 +342,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
         $finalResidents = [];
         if (!empty($residents)) {
-            $residentIds = array_map(function ($item) {
+            $residentIds = array_map(static function ($item) {
                 return $item['id'];
             }, $residents);
 
@@ -425,7 +427,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
         $finalResidents = [];
         if (!empty($residents)) {
-            $residentIds = array_map(function ($item) {
+            $residentIds = array_map(static function ($item) {
                 return $item['id'];
             }, $residents);
 
@@ -508,10 +510,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $groupIds = null;
             $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
             if (!empty($groupList)) {
-                $groupIds = array_map(function ($item) {
+                $groupIds = array_map(static function ($item) {
                     return $item->getId();
                 }, $groupList);
-                $groupArray = array_map(function ($item) {
+                $groupArray = array_map(static function ($item) {
                     return ['id' => $item->getId(), 'name' => $item->getName()];
                 }, $groupList);
 
@@ -603,10 +605,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $groupIds = null;
             $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($strategy['entityClass']));
             if (!empty($groupList)) {
-                $groupIds = array_map(function ($item) {
+                $groupIds = array_map(static function ($item) {
                     return $item->getId();
                 }, $groupList);
-                $groupArray = array_map(function ($item) {
+                $groupArray = array_map(static function ($item) {
                     return ['id' => $item->getId(), 'name' => $item->getName()];
                 }, $groupList);
 
@@ -620,7 +622,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $imageTypes = [];
                 $imageS3Ids = [];
                 if (!empty($groupResidents)) {
-                    $residentIds = array_map(function ($item) {
+                    $residentIds = array_map(static function ($item) {
                         return $item['id'];
                     }, $groupResidents);
 
@@ -773,6 +775,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setAdmissionType($admissionType);
             $entity->setNotes($params['notes']);
 
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            /** @var ResidentRent $lastRent */
+            $lastRent = $rentRepo->getLastRent($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $params['resident_id']);
+
             $date = $params['date'];
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
@@ -786,6 +794,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     throw new InvalidEffectiveDateException();
                 }
 
+                if ($admissionType === AdmissionType::DISCHARGE && $lastRent !== null && $date <= $lastRent->getStart()) {
+                    throw new InvalidEffectiveDateException();
+                }
+
                 $entity->setStart($date);
             } else {
                 $entity->setDate(null);
@@ -796,6 +808,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $lastAction->setEnd($entity->getStart());
 
                 $this->em->persist($lastAction);
+            }
+
+            if ($admissionType === AdmissionType::DISCHARGE && $lastRent !== null) {
+                $lastRent->setEnd($entity->getStart());
+
+                $this->em->persist($lastRent);
             }
 
             $addMode = true;
