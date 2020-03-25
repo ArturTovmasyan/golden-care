@@ -21,6 +21,16 @@ use App\Annotation\Grid;
  *              "field"      = "br.id"
  *          },
  *          {
+ *              "id"         = "facility",
+ *              "type"       = "string",
+ *              "field"      = "f.name"
+ *          },
+ *          {
+ *              "id"         = "private",
+ *              "type"       = "boolean",
+ *              "field"      = "frt.private"
+ *          },
+ *          {
  *              "id"         = "room_type",
  *              "type"       = "string",
  *              "field"      = "frt.title"
