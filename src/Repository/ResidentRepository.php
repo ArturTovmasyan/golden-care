@@ -1764,6 +1764,183 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $type
+     * @param array|null $typeIds
+     * @param array|null $notGrantResidentIds
+     * @return mixed
+     */
+    public function getAdmissionResidentsInfoByMultiTypeIds(Space $space = null, array $entityGrants = null, $type, array $typeIds = null, array $notGrantResidentIds = null)
+    {
+        /**
+         * @var ResidentAdmission $admission
+         */
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->select(
+                'r.id as id, 
+                    r.firstName as firstName, 
+                    r.lastName as lastName,
+                    ra.groupType as type'
+            )
+            ->innerJoin(
+                ResidentAdmission::class,
+                'ra',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        fr.number as roomNumber,
+                        frt.private as private,
+                        fb.number as bedNumber'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
+                    );
+
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeIds) {
+                    $qb
+                        ->andWhere('f.id IN (:typeIds)')
+                        ->setParameter('typeIds', $typeIds);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        ar.number as roomNumber,
+                        ar.private as private,
+                        ab.number as bedNumber'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    );
+
+                $qb
+                    ->orderBy('a.name')
+                    ->addOrderBy('ar.number')
+                    ->addOrderBy('ab.number');
+
+                if ($typeIds) {
+                    $qb
+                        ->andWhere('a.id IN (:typeIds)')
+                        ->setParameter('typeIds', $typeIds);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.shorthand as typeShorthand,
+                        reg.name as typeName'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    );
+
+                $qb
+                    ->orderBy('reg.name');
+
+                if ($typeIds) {
+                    $qb
+                        ->andWhere('reg.id IN (:typeIds)')
+                        ->setParameter('typeIds', $typeIds);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

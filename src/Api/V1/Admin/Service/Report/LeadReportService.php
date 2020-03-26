@@ -22,6 +22,8 @@ class LeadReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -32,7 +34,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return LeadList
      */
-    public function getLeadReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LeadList
+    public function getLeadReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LeadList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -107,6 +109,8 @@ class LeadReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -117,7 +121,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return ReferralList
      */
-    public function getReferralReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReferralList
+    public function getReferralReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReferralList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -191,6 +195,8 @@ class LeadReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -201,7 +207,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return ActivityList
      */
-    public function getActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
+    public function getActivityReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

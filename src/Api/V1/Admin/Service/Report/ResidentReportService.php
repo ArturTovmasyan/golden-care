@@ -31,6 +31,7 @@ use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentEvent as ReportResidentEvent;
 use App\Model\Report\ResidentMoveByMonth;
 use App\Model\Report\ResidentSimpleRoster;
+use App\Model\Report\ResponsiblePersonEmails;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
@@ -58,6 +59,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -69,7 +72,7 @@ class ResidentReportService extends BaseService
      * @param $discontinued
      * @return Profile
      */
-    public function getProfileReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
+    public function getProfileReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -126,8 +129,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -139,7 +142,7 @@ class ResidentReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function ($item) {
+            $physicianIds = array_map(static function ($item) {
                 return $item['pId'];
             }, $physicians);
             $physicianIds = array_unique($physicianIds);
@@ -307,6 +310,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -318,7 +323,7 @@ class ResidentReportService extends BaseService
      * @param $discontinued
      * @return Profile
      */
-    public function getProfileNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
+    public function getProfileNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -365,8 +370,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -378,7 +383,7 @@ class ResidentReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function ($item) {
+            $physicianIds = array_map(static function ($item) {
                 return $item['pId'];
             }, $physicians);
             $physicianIds = array_unique($physicianIds);
@@ -436,6 +441,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -446,7 +453,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return FaceSheet
      */
-    public function getFaceSheetReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
+    public function getFaceSheetReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -494,8 +501,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -507,7 +514,7 @@ class ResidentReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function ($item) {
+            $physicianIds = array_map(static function ($item) {
                 return $item['pId'];
             }, $physicians);
             $physicianIds = array_unique($physicianIds);
@@ -562,6 +569,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -572,7 +581,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return FaceSheet
      */
-    public function getFaceSheetNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
+    public function getFaceSheetNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -613,8 +622,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -626,7 +635,7 @@ class ResidentReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function ($item) {
+            $physicianIds = array_map(static function ($item) {
                 return $item['pId'];
             }, $physicians);
             $physicianIds = array_unique($physicianIds);
@@ -681,6 +690,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -691,7 +702,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentDetailedRoster
      */
-    public function getDetailedRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentDetailedRoster
+    public function getDetailedRosterReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentDetailedRoster
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -724,7 +735,7 @@ class ResidentReportService extends BaseService
 
         $physicianPhones = [];
         if (!empty($physicians)) {
-            $physicianIds = array_map(function ($item) {
+            $physicianIds = array_map(static function ($item) {
                 return $item['pId'];
             }, $physicians);
             $physicianIds = array_unique($physicianIds);
@@ -739,8 +750,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -763,6 +774,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -773,7 +786,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentSimpleRoster
      */
-    public function getSimpleRosterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentSimpleRoster
+    public function getSimpleRosterReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentSimpleRoster
     {
         $type = $group;
         $typeId = $groupId;
@@ -789,10 +802,10 @@ class ResidentReportService extends BaseService
         $typeIds = [];
         $numberOfFloors = [];
 
-        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
+        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupMulti, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         if (!empty($residents)) {
-            $typeIds = array_map(function ($item) {
+            $typeIds = array_map(static function ($item) {
                 return $item['typeId'];
             }, $residents);
             $typeIds = array_unique($typeIds);
@@ -815,6 +828,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -825,7 +840,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return DietaryRestriction
      */
-    public function getDietaryRestrictionsReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): DietaryRestriction
+    public function getDietaryRestrictionsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): DietaryRestriction
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -867,6 +882,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -877,7 +894,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return SixtyDays
      */
-    public function getSixtyDaysReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): SixtyDays
+    public function getSixtyDaysReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): SixtyDays
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -908,7 +925,7 @@ class ResidentReportService extends BaseService
         $residentIds = [];
 
         if (!empty($admissions)) {
-            $residentIds = array_map(function ($item) {
+            $residentIds = array_map(static function ($item) {
                 return $item['id'];
             }, $admissions);
             $residentIds = array_unique($residentIds);
@@ -921,8 +938,8 @@ class ResidentReportService extends BaseService
 
         $responsiblePersonPhones = [];
         if (!empty($responsiblePersons)) {
-            $responsiblePersonIds = array_map(function ($item) {
-                return $item->getResponsiblePerson()->getId();
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
             }, $responsiblePersons);
             $responsiblePersonIds = array_unique($responsiblePersonIds);
 
@@ -1040,6 +1057,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -1050,7 +1069,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ReportResidentEvent
      */
-    public function getEventReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportResidentEvent
+    public function getEventReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportResidentEvent
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1105,6 +1124,8 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -1115,7 +1136,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentMoveByMonth
      */
-    public function getResidentMoveByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentMoveByMonth
+    public function getResidentMoveByMonthReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentMoveByMonth
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1328,6 +1349,115 @@ class ResidentReportService extends BaseService
         $report->setData($finalData);
         $report->setDays($finalTotalDays);
         $report->setGrandTotal($finalGrandTotal);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return ResponsiblePersonEmails
+     */
+    public function getResponsiblePersonEmailsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResponsiblePersonEmails
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeIds = null;
+        if ($groupMulti !== null && $groupIds !== null) {
+            $typeIds = !empty($groupIds) && !empty($groupIds[0]) ? $groupIds : [];
+        }
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getAdmissionResidentsInfoByMultiTypeIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeIds, $this->getNotGrantResidentIds());
+
+        $data = [];
+        if (!empty($residents)) {
+            $residentIds = array_map(static function ($item) {
+                return $item['id'];
+            }, $residents);
+
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+            $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+            $rpResidentIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResident() ? $item->getResident()->getId() : 0;
+            }, $responsiblePersons);
+
+            foreach ($residents as $resident) {
+                $room = '';
+                if (array_key_exists('roomNumber', $resident)) {
+                    if ($resident['private']) {
+                        $room = $resident['roomNumber'];
+                    } else {
+                        $room = $resident['roomNumber'] . ' ' . $resident['bedNumber'];
+                    }
+                }
+
+                if (!in_array($resident['id'], $rpResidentIds, false)) {
+                    $data[] = [
+                        'id' => $residentId,
+                        'firstName' => $resident['firstName'],
+                        'lastName' => $resident['lastName'],
+                        'room' => $room,
+                        'typeId' => $resident['typeId'],
+                        'typeName' => $resident['typeName'],
+                        'rpFirstName' => '',
+                        'rpLastName' => '',
+                        'rpId' => 0,
+                        'rpAddress' => '',
+                        'rpEmail' => '',
+                        'rpSalutation' => '',
+                    ];
+                }
+
+                if (!empty($responsiblePersons)) {
+                    /** @var ResidentResponsiblePerson $responsiblePerson */
+                    foreach ($responsiblePersons as $responsiblePerson) {
+                        $residentId = $responsiblePerson->getResident() ? $responsiblePerson->getResident()->getId() : 0;
+
+                        if ($residentId === $resident['id'] && $responsiblePerson->getResponsiblePerson() !== null) {
+                            $data[] = [
+                                'id' => $residentId,
+                                'firstName' => $resident['firstName'],
+                                'lastName' => $resident['lastName'],
+                                'room' => $room,
+                                'typeId' => $resident['typeId'],
+                                'typeName' => $resident['typeName'],
+                                'rpFirstName' => $responsiblePerson->getResponsiblePerson()->getFirstName(),
+                                'rpLastName' => $responsiblePerson->getResponsiblePerson()->getLastName(),
+                                'rpId' => $responsiblePerson->getResponsiblePerson()->getId(),
+                                'rpAddress' => $responsiblePerson->getResponsiblePerson()->getAddress1(),
+                                'rpEmail' => $responsiblePerson->getResponsiblePerson()->getEmail() ?: 'N/A',
+                                'rpSalutation' => $responsiblePerson->getResponsiblePerson()->getSalutation() ? $responsiblePerson->getResponsiblePerson()->getSalutation()->getTitle() : '',
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        $report = new ResponsiblePersonEmails();
+        $report->setData($data);
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
 

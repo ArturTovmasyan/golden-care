@@ -45,6 +45,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -55,7 +57,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentBirthdayList
      */
-    public function getBirthdayListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentBirthdayList
+    public function getBirthdayListReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentBirthdayList
     {
         $type = $group;
         $typeId = $groupId;
@@ -78,6 +80,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -88,7 +92,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BloodPressureCharting
      */
-    public function getBloodPressureChartingReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureCharting
+    public function getBloodPressureChartingReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureCharting
     {
         $type = $group;
         $typeId = $groupId;
@@ -112,6 +116,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -122,7 +128,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BloodPressureChart
      */
-    public function getBloodPressureChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureChart
+    public function getBloodPressureChartReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BloodPressureChart
     {
         $type = $group;
         $typeId = $groupId;
@@ -145,6 +151,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -155,7 +163,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return BowelMovement
      */
-    public function getBowelMovementReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BowelMovement
+    public function getBowelMovementReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): BowelMovement
     {
         $type = $group;
         $typeId = $groupId;
@@ -178,6 +186,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -188,7 +198,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ChangeoverNotes
      */
-    public function getChangeoverNotesReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ChangeoverNotes
+    public function getChangeoverNotesReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ChangeoverNotes
     {
         $type = $group;
         $typeId = $groupId;
@@ -211,6 +221,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -221,7 +233,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return GlucoseMonitorChart
      */
-    public function getGlucoseMonitorChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): GlucoseMonitorChart
+    public function getGlucoseMonitorChartReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): GlucoseMonitorChart
     {
         $type = $group;
         $typeId = $groupId;
@@ -244,6 +256,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -254,7 +268,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return Manicure
      */
-    public function getManicureReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Manicure
+    public function getManicureReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Manicure
     {
         $type = $group;
         $typeId = $groupId;
@@ -278,6 +292,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -288,7 +304,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MealMonitor
      */
-    public function getMealMonitorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MealMonitor
+    public function getMealMonitorReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MealMonitor
     {
         $type = $group;
         $typeId = $groupId;
@@ -311,6 +327,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -321,7 +339,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChart
      */
-    public function getMedicationChartReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
+    public function getMedicationChartReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -384,6 +402,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -394,7 +414,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChartBlank
      */
-    public function getMedicationChartBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChartBlank
+    public function getMedicationChartBlankReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChartBlank
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -433,6 +453,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -443,7 +465,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return MedicationChart
      */
-    public function getMedicationChartNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
+    public function getMedicationChartNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): MedicationChart
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -493,6 +515,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -504,7 +528,7 @@ class FormReportService extends BaseService
      * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
+    public function getMedicationListReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -544,6 +568,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -555,7 +581,7 @@ class FormReportService extends BaseService
      * @param $discontinued
      * @return MedicationList
      */
-    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
+    public function getMedicationListNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MedicationList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -588,6 +614,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -598,7 +626,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return NightActivity
      */
-    public function getNightActivityReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): NightActivity
+    public function getNightActivityReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): NightActivity
     {
         $type = $group;
         $typeId = $groupId;
@@ -621,6 +649,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -631,7 +661,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomAudit
      */
-    public function getRoomAuditReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomAudit
+    public function getRoomAuditReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomAudit
     {
         $type = $group;
         $typeId = $groupId;
@@ -655,6 +685,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -665,7 +697,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return ShowerSkinInspection
      */
-    public function getShowerSkinInspectionReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ShowerSkinInspection
+    public function getShowerSkinInspectionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ShowerSkinInspection
     {
         $type = $group;
         $typeId = $groupId;
@@ -688,6 +720,8 @@ class FormReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -698,7 +732,7 @@ class FormReportService extends BaseService
      * @param $assessmentFormId
      * @return AssessmentForm
      */
-    public function getAssessmentFormBlankReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): AssessmentForm
+    public function getAssessmentFormBlankReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): AssessmentForm
     {
         /** @var FormRepository $repo */
         $repo = $this->em->getRepository(Form::class);

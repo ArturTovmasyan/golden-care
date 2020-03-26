@@ -1,0 +1,7 @@
+{% spaceless %}
+{{ data.strategy }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}Room/Bed,{% endif %}First Name,Last Name,Responsible Person Salutation,Responsible Person First Name,Responsible Person Last Name,Responsible Person Email
+{% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
+{% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}{% if renderedGroup == datum.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.typeId %}{% set newGroup = true %}{% endif %}
+{{ datum.typeName }},{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}"{{ datum.room }}",{% endif %}"{{ datum.firstName }}","{{ datum.lastName }}","{{ datum.rpSalutation }}","{{ datum.rpFirstName }}","{{ datum.rpLastName }}","{{ datum.rpEmail }}"
+{% endfor %}
+{% endspaceless %}

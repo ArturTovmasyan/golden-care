@@ -51,6 +51,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -61,7 +63,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return Payor
      */
-    public function getPayorReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Payor
+    public function getPayorReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): Payor
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -142,6 +144,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -152,7 +156,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomList
      */
-    public function getRoomListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomList
+    public function getRoomListReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -212,7 +216,7 @@ class RoomReportService extends BaseService
             $total[$currentTypeId] = $sum;
         }
 
-        $vacants = $this->getRoomVacancyList($type, $groupAll, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
+        $vacants = $this->getRoomVacancyList($type, $groupAll, $groupMulti, $groupIds, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         $report = new RoomList();
         $report->setData($data);
@@ -231,6 +235,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -241,7 +247,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRent
      */
-    public function getRoomRentReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRent
+    public function getRoomRentReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRent
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -417,6 +423,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -427,7 +435,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRentByYear
      */
-    public function getRoomRentByYearReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentByYear
+    public function getRoomRentByYearReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentByYear
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -638,6 +646,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -648,7 +658,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRentMaster
      */
-    public function getRoomRentMasterReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMaster
+    public function getRoomRentMasterReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMaster
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -798,7 +808,7 @@ class RoomReportService extends BaseService
 
                 if ($type !== GroupType::TYPE_REGION) {
 
-                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null, null);
+                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupMulti, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null, null);
 
                     $availableCount = [];
                     foreach ($occupancyRate->getData() as $val) {
@@ -843,6 +853,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -853,7 +865,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomRentMasterNew
      */
-    public function getRoomRentMasterNewReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMasterNew
+    public function getRoomRentMasterNewReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomRentMasterNew
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -988,7 +1000,7 @@ class RoomReportService extends BaseService
                     $data[$typeId]['occupancy'] = number_format($data[$typeId]['occupancy'] * 100, 2);
                     $data[$typeId]['occupancy'] = $data[$typeId]['occupancy'] > 100 ? 100 : $data[$typeId]['occupancy'];
 
-                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null, null);
+                    $occupancyRate = $this->getRoomOccupancyRateReport($group, $groupAll, $groupMulti, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, null, null);
 
                     foreach ($occupancyRate->getData() as $val) {
                         if ($val['typeId'] === $typeId) {
@@ -1020,6 +1032,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -1030,10 +1044,10 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomVacancyList
      */
-    public function getRoomVacancyListReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomVacancyList
+    public function getRoomVacancyListReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomVacancyList
     {
         $report = new RoomVacancyList();
-        $report->setData($this->getRoomVacancyList($group, $groupAll, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId));
+        $report->setData($this->getRoomVacancyList($group, $groupAll, $groupMulti, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId));
         $report->setStrategy(GroupType::getTypes()[$group]);
 
         return $report;
@@ -1042,6 +1056,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -1052,7 +1068,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomOccupancyRate
      */
-    public function getRoomOccupancyRateReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRate
+    public function getRoomOccupancyRateReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRate
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1203,6 +1219,8 @@ class RoomReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -1213,7 +1231,7 @@ class RoomReportService extends BaseService
      * @param $assessmentFormId
      * @return RoomOccupancyRateByMonth
      */
-    public function getRoomOccupancyRateByMonthReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRateByMonth
+    public function getRoomOccupancyRateByMonthReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomOccupancyRateByMonth
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

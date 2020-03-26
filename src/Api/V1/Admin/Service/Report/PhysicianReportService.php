@@ -22,6 +22,8 @@ class PhysicianReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -32,7 +34,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return PhysicianSimple
      */
-    public function getSimpleReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianSimple
+    public function getSimpleReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianSimple
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -98,6 +100,8 @@ class PhysicianReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -108,7 +112,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return PhysicianFull
      */
-    public function getFullReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianFull
+    public function getFullReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): PhysicianFull
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -180,6 +184,8 @@ class PhysicianReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
+     * @param bool|null $groupMulti
+     * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
      * @param $residentId
@@ -190,7 +196,7 @@ class PhysicianReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentsByPhysician
      */
-    public function getResidentsByPhysicianReport($group, ?bool $groupAll, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentsByPhysician
+    public function getResidentsByPhysicianReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentsByPhysician
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
