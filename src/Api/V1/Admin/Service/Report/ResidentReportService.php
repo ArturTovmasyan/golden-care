@@ -59,7 +59,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -72,7 +71,7 @@ class ResidentReportService extends BaseService
      * @param $discontinued
      * @return Profile
      */
-    public function getProfileReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
+    public function getProfileReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -310,7 +309,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -323,7 +321,7 @@ class ResidentReportService extends BaseService
      * @param $discontinued
      * @return Profile
      */
-    public function getProfileNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
+    public function getProfileNoAdmissionReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): Profile
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -441,7 +439,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -453,7 +450,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return FaceSheet
      */
-    public function getFaceSheetReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
+    public function getFaceSheetReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -569,7 +566,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -581,7 +577,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return FaceSheet
      */
-    public function getFaceSheetNoAdmissionReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
+    public function getFaceSheetNoAdmissionReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): FaceSheet
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -690,7 +686,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -702,7 +697,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentDetailedRoster
      */
-    public function getDetailedRosterReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentDetailedRoster
+    public function getDetailedRosterReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentDetailedRoster
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -774,7 +769,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -786,7 +780,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentSimpleRoster
      */
-    public function getSimpleRosterReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentSimpleRoster
+    public function getSimpleRosterReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentSimpleRoster
     {
         $type = $group;
         $typeId = $groupId;
@@ -802,7 +796,7 @@ class ResidentReportService extends BaseService
         $typeIds = [];
         $numberOfFloors = [];
 
-        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupMulti, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
+        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         if (!empty($residents)) {
             $typeIds = array_map(static function ($item) {
@@ -828,7 +822,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -840,7 +833,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return DietaryRestriction
      */
-    public function getDietaryRestrictionsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): DietaryRestriction
+    public function getDietaryRestrictionsReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): DietaryRestriction
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -882,7 +875,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -894,7 +886,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return SixtyDays
      */
-    public function getSixtyDaysReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): SixtyDays
+    public function getSixtyDaysReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): SixtyDays
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1057,7 +1049,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -1069,7 +1060,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ReportResidentEvent
      */
-    public function getEventReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportResidentEvent
+    public function getEventReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportResidentEvent
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1124,7 +1115,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -1136,7 +1126,7 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResidentMoveByMonth
      */
-    public function getResidentMoveByMonthReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentMoveByMonth
+    public function getResidentMoveByMonthReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentMoveByMonth
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1358,7 +1348,6 @@ class ResidentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -1370,14 +1359,14 @@ class ResidentReportService extends BaseService
      * @param $assessmentFormId
      * @return ResponsiblePersonEmails
      */
-    public function getResponsiblePersonEmailsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResponsiblePersonEmails
+    public function getResponsiblePersonEmailsReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResponsiblePersonEmails
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
         $type = $group;
         $typeIds = null;
-        if ($groupMulti !== null && $groupIds !== null) {
-            $typeIds = !empty($groupIds) && !empty($groupIds[0]) ? $groupIds : [];
+        if (!empty($groupIds)) {
+            $typeIds = !empty($groupIds[0]) ? $groupIds : [];
         }
 
         if (!\in_array($type, GroupType::getTypeValues(), false)) {

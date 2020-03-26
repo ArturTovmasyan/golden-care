@@ -16,7 +16,6 @@ class AssessmentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -28,7 +27,7 @@ class AssessmentReportService extends BaseService
      * @param $assessmentFormId
      * @return ReportAssessment
      */
-    public function getBlankReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportAssessment
+    public function getBlankReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportAssessment
     {
         return $this->getReportByType($assessmentId, AssessmentReportType::TYPE_BLANK);
     }
@@ -36,7 +35,6 @@ class AssessmentReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -48,7 +46,7 @@ class AssessmentReportService extends BaseService
      * @param $assessmentFormId
      * @return ReportAssessment
      */
-    public function getFilledReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportAssessment
+    public function getFilledReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportAssessment
     {
         return $this->getReportByType($assessmentId, AssessmentReportType::TYPE_FILLED);
     }

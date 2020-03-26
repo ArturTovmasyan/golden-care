@@ -26,7 +26,6 @@ class DataHealthReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -39,7 +38,7 @@ class DataHealthReportService extends BaseService
      * @param $discontinued
      * @return ResidentRps
      */
-    public function getResidentRpsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): ResidentRps
+    public function getResidentRpsReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): ResidentRps
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -89,7 +88,6 @@ class DataHealthReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -102,7 +100,7 @@ class DataHealthReportService extends BaseService
      * @param $discontinued
      * @return MissingRentRecords
      */
-    public function getMissingRentRecordsReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MissingRentRecords
+    public function getMissingRentRecordsReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MissingRentRecords
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -210,7 +208,6 @@ class DataHealthReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -223,7 +220,7 @@ class DataHealthReportService extends BaseService
      * @param $discontinued
      * @return InvalidRentAmount
      */
-    public function getInvalidRentAmountReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): InvalidRentAmount
+    public function getInvalidRentAmountReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): InvalidRentAmount
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -308,7 +305,6 @@ class DataHealthReportService extends BaseService
     /**
      * @param $group
      * @param bool|null $groupAll
-     * @param bool|null $groupMulti
      * @param $groupIds
      * @param $groupId
      * @param bool|null $residentAll
@@ -321,7 +317,7 @@ class DataHealthReportService extends BaseService
      * @param $discontinued
      * @return RentsCurrentVsBase
      */
-    public function getRentsCurrentVsBaseReport($group, ?bool $groupAll, ?bool $groupMulti, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): RentsCurrentVsBase
+    public function getRentsCurrentVsBaseReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): RentsCurrentVsBase
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
