@@ -133,7 +133,7 @@ class ResidentRentService extends BaseService implements IGridService
             if (!empty($start)) {
                 $start = new \DateTime($params['start']);
 
-                if ($lastRent !== null && $start <= $lastRent->getStart()) {
+                if ($lastRent !== null && $start->format('Y-m-d') <= $lastRent->getStart()->format('Y-m-d')) {
                     throw new InvalidEffectiveDateException();
                 }
             }
