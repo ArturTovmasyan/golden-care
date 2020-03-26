@@ -68,7 +68,9 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
         }
 
         $queryBuilder
-            ->orderBy('br.date', 'DESC')
+            ->orderBy('f.name', 'ASC')
+            ->addOrderBy('frt.private', 'DESC')
+            ->addOrderBy('frt.title', 'ASC')
             ->groupBy('br.id');
     }
 
