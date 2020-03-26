@@ -93,6 +93,16 @@ resident:
         discontinued: true
         resident:
           select_all: false
+    responsible-person-emails:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getResponsiblePersonEmailsReport
+      title: 'Responsible Person Emails: List of Residents Responsible Persons'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv']
+      parameters:
+        group:
+            select_all: true
+            select_multi: true
     simple-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSimpleRosterReport
       title: 'Simple Roster: Simple list of Residents, sorted by Room Number'

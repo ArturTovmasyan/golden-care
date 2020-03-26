@@ -455,6 +455,8 @@ report:
           title: "Profile: Profile for selected resident / all residents"
         profile-no-admission:
           title: "Profile: Profile for selected resident / all residents (pre-admit)"
+        responsible-person-emails:
+          title: "Responsible Person Emails: List of Residents Responsible Persons"
         simple-roster:
           title: "Simple Roster: Simple list of Residents, sorted by Room Number"
     form:

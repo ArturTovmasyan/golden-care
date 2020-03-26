@@ -175,6 +175,8 @@ class ReportService
 
         $request_group = $request->get('type') ? (int)$request->get('type') : null;
         $request_groupAll = $request->get('type_all') ? (bool)$request->get('type_all') : null;
+        $request_groupMulti = $request->get('type_multi') ? (bool)$request->get('type_multi') : null;
+        $request_groupIds = $request->get('type_ids') ? (array)$request->get('type_ids') : null;
         $request_groupId = $request->get('type_id') ? (int)$request->get('type_id') : null;
 
         $request_residentAll = $request->get('resident_all') ? (bool)$request->get('resident_all') : null;
@@ -193,6 +195,8 @@ class ReportService
         return $service->$action(
             $request_group,
             $request_groupAll,
+            $request_groupMulti,
+            $request_groupIds,
             $request_groupId,
             $request_residentAll,
             $request_residentId,
@@ -213,6 +217,8 @@ class ReportService
 
             'group' => 'type',
             'group_all' => 'type_all',
+            'group_multi' => 'type_multi',
+            'group_ids' => 'type_ids',
             'group_id' => 'type_id',
 
             'resident_id' => 'resident_id',
@@ -230,6 +236,8 @@ class ReportService
 
         $group = $request->get('type') ?? null;
         $groupAll = $request->get('type_all') ?? null;
+        $groupMulti = $request->get('type_multi') ?? null;
+        $groupIds = $request->get('type_ids') ?? null;
         $groupId = $request->get('type_id') ?? null;
 
         $residentAll = $request->get('resident_all') ?? null;
@@ -242,7 +250,9 @@ class ReportService
         $configParameter = [];
         $configParameter['group'] = array_key_exists('group', $parameters);
         $configParameter['group_id'] = $configParameter['group'];
+        $configParameter['group_ids'] = $configParameter['group'];
         $configParameter['group_all'] = $configParameter['group'] ? $parameters['group']['select_all'] : false;
+        $configParameter['group_multi'] = $configParameter['group'] && array_key_exists('select_multi', $parameters['group']) ? $parameters['group']['select_multi'] : false;
 
         $configParameter['resident'] = array_key_exists('resident', $parameters);
         $configParameter['resident_all'] = $configParameter['resident'] ? $parameters['resident']['select_all'] : false;
@@ -291,19 +301,37 @@ class ReportService
         }
 
         if ($configParameter['resident'] === false && $configParameter['group'] === true) {
-            if (($groupId === null && $groupAll === null) || ($groupId !== null && $groupAll !== null)) {
+            if (($groupId === null && $groupAll === null && $groupMulti === null && $groupIds === null) || ($groupId !== null && $groupAll !== null && ($groupMulti !== null || $groupIds !== null))) {
                 throw new IncorrectReportParameterException([
                     $request_param_map['group_id'],
-                    $request_param_map['group_all']
+                    $request_param_map['group_all'],
+                    $request_param_map['group_multi'],
+                    $request_param_map['group_ids']
                 ]);
             }
 
-            if ($groupId === null) {
+            if ($groupId === null && $groupIds === null && $groupMulti === null) {
                 if ($groupAll === null && $configParameter['group_all'] === true) {
                     throw new IncorrectReportParameterException([$request_param_map['group_all']]);
                 }
                 if ($groupAll !== null && $configParameter['group_all'] === false) {
                     throw new IncorrectReportParameterException([$request_param_map['group_all']]);
+                }
+            }
+
+            if ($groupId === null && $groupAll === null) {
+                if ($groupMulti === null && $configParameter['group_multi'] === true) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_multi']]);
+                }
+                if ($groupMulti !== null && $configParameter['group_multi'] === false) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_multi']]);
+                }
+
+                if ($groupIds === null && $configParameter['group_ids'] === true) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_ids']]);
+                }
+                if ($groupIds !== null && $configParameter['group_ids'] === false) {
+                    throw new IncorrectReportParameterException([$request_param_map['group_ids']]);
                 }
             }
         }
@@ -312,6 +340,8 @@ class ReportService
             throw new IncorrectReportParameterException([
                 $request_param_map['group_id'],
                 $request_param_map['group_all'],
+                $request_param_map['group_multi'],
+                $request_param_map['group_ids'],
                 $request_param_map['resident_id'],
                 $request_param_map['resident_all']
             ]);
