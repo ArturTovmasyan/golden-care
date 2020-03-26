@@ -372,65 +372,65 @@ class ResponsiblePerson
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getAddress1(): string
+    public function getAddress1(): ?string
     {
         return $this->address_1;
     }
 
     /**
-     * @param string $address1
+     * @param null|string $address1
      */
-    public function setAddress1(string $address1): void
+    public function setAddress1(?string $address1): void
     {
         $this->address_1 = $address1;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getAddress2(): string
+    public function getAddress2(): ?string
     {
         return $this->address_2;
     }
 
     /**
-     * @param string $address2
+     * @param null|string $address2
      */
-    public function setAddress2(string $address2): void
+    public function setAddress2(?string $address2): void
     {
         $this->address_2 = $address2;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
-     * @param string $email
+     * @param null|string $email
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
     /**
-     * @return CityStateZip
+     * @return CityStateZip|null
      */
-    public function getCsz(): CityStateZip
+    public function getCsz(): ?CityStateZip
     {
         return $this->csz;
     }
 
     /**
-     * @param CityStateZip $csz
+     * @param CityStateZip|null $csz
      */
-    public function setCsz(CityStateZip $csz): void
+    public function setCsz(?CityStateZip $csz): void
     {
         $this->csz = $csz;
     }
