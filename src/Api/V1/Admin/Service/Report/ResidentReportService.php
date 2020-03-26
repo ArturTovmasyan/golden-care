@@ -1447,7 +1447,7 @@ class ResidentReportService extends BaseService
                                 'rpLastName' => $responsiblePerson->getResponsiblePerson()->getLastName(),
                                 'rpId' => $responsiblePerson->getResponsiblePerson()->getId(),
                                 'rpAddress' => $responsiblePerson->getResponsiblePerson()->getAddress1(),
-                                'rpEmail' => $responsiblePerson->getResponsiblePerson()->getEmail() ?: 'N/A',
+                                'rpEmail' => !empty($responsiblePerson->getResponsiblePerson()->getEmail()) ? $responsiblePerson->getResponsiblePerson()->getEmail() : 'N/A',
                                 'rpSalutation' => $responsiblePerson->getResponsiblePerson()->getSalutation() ? $responsiblePerson->getResponsiblePerson()->getSalutation()->getTitle() : '',
                             ];
                         }
