@@ -25,11 +25,6 @@ use App\Annotation\Grid;
  *              "field"      = "el.createdAt"
  *          },
  *          {
- *              "id"         = "success",
- *              "type"       = "boolean",
- *              "field"      = "el.success"
- *          },
- *          {
  *              "id"         = "subject",
  *              "type"       = "string",
  *              "field"      = "el.subject"
@@ -43,6 +38,11 @@ use App\Annotation\Grid;
  *              "id"         = "emails",
  *              "type"       = "string",
  *              "field"      = "el.emails"
+ *          },
+ *          {
+ *              "id"         = "success",
+ *              "type"       = "boolean",
+ *              "field"      = "el.success"
  *          }
  *     }
  * )
