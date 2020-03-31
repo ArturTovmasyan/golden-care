@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\FileExtensionException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Document;
 use App\Entity\DocumentCategory;
+use App\Entity\EmailLog;
 use App\Entity\Facility;
 use App\Entity\File;
 use App\Entity\Role;
@@ -274,7 +275,16 @@ class DocumentService extends BaseService implements IGridService
                         'baseUrl' => $baseUrl
                     ));
 
-                    $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
+                    $status = $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
+
+                    $emailLog = new EmailLog();
+                    $emailLog->setSuccess($status);
+                    $emailLog->setSubject($subject);
+                    $emailLog->setSpace($spaceName);
+                    $emailLog->setEmails($emails);
+
+                    $this->em->persist($emailLog);
+                    $this->em->flush();
                 }
             }
 
@@ -473,7 +483,16 @@ class DocumentService extends BaseService implements IGridService
                         'baseUrl' => $baseUrl
                     ));
 
-                    $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
+                    $status = $this->mailer->sendDocumentNotification($emails, $subject, $body, $spaceName);
+
+                    $emailLog = new EmailLog();
+                    $emailLog->setSuccess($status);
+                    $emailLog->setSubject($subject);
+                    $emailLog->setSpace($spaceName);
+                    $emailLog->setEmails($emails);
+
+                    $this->em->persist($emailLog);
+                    $this->em->flush();
                 }
             }
 

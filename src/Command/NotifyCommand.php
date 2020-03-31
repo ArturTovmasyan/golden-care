@@ -11,6 +11,7 @@ use App\Entity\Apartment;
 use App\Entity\ChangeLog;
 use App\Entity\CorporateEvent;
 use App\Entity\CorporateEventUser;
+use App\Entity\EmailLog;
 use App\Entity\Facility;
 use App\Entity\FacilityEvent;
 use App\Entity\Lead\Activity;
@@ -192,7 +193,9 @@ class NotifyCommand extends Command
                     $spaceName = $facility->getSpace()->getName();
                 }
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+                $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $emails);
             }
         }
         if (!empty($apartments)) {
@@ -216,7 +219,9 @@ class NotifyCommand extends Command
                     $spaceName = $apartment->getSpace()->getName();
                 }
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+                $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $emails);
             }
         }
         if (!empty($regions)) {
@@ -240,7 +245,9 @@ class NotifyCommand extends Command
                     $spaceName = $region->getSpace()->getName();
                 }
 
-                $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+                $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $emails);
             }
         }
     }
@@ -306,7 +313,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
             }
         }
     }
@@ -392,7 +401,9 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+
+            $this->saveEmailLog($status, $subject, $spaceName, $emails);
         }
     }
 
@@ -436,7 +447,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
             }
         }
     }
@@ -485,7 +498,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
             }
         }
     }
@@ -559,12 +574,43 @@ class NotifyCommand extends Command
                                     'subject' => $subject
                                 ));
 
-                                $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+
+                                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * @param $status
+     * @param $subject
+     * @param $spaceName
+     * @param $emails
+     * @throws \Exception
+     */
+    private function saveEmailLog($status, $subject, $spaceName, $emails): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $emailLog = new EmailLog();
+            $emailLog->setSuccess($status);
+            $emailLog->setSubject($subject);
+            $emailLog->setSpace($spaceName);
+            $emailLog->setEmails($emails);
+
+            $this->em->persist($emailLog);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 }

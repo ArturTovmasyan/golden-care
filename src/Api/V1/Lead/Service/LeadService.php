@@ -24,6 +24,7 @@ use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ChangeLog;
 use App\Entity\CityStateZip;
+use App\Entity\EmailLog;
 use App\Entity\Facility;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
@@ -1195,7 +1196,16 @@ class LeadService extends BaseService implements IGridService
                 'subject' => $subject
             ));
 
-            $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+
+            $emailLog = new EmailLog();
+            $emailLog->setSuccess($status);
+            $emailLog->setSubject($subject);
+            $emailLog->setSpace($spaceName);
+            $emailLog->setEmails($emails);
+
+            $this->em->persist($emailLog);
+            $this->em->flush();
         }
     }
 
