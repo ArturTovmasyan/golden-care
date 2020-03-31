@@ -149,6 +149,10 @@ persistence:
           title: 'ChangeLog'
           class: App\Entity\ChangeLog
           route: api_admin_change_log_list
+        email_log:
+          title: 'EmailLog'
+          class: App\Entity\EmailLog
+          route: api_admin_email_log_list
 
         relationship:
           title: 'Relationship'

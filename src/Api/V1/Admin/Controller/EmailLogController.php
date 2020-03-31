@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Admin\Controller;
 
+use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\EmailLogService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\EmailLog;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/api/v1.0/admin/email-log")
+ *
+ * @Grant(grant="persistence-common-email_log", level="VIEW")
  *
  * Class EmailLogController
  * @package App\Api\V1\Admin\Controller
