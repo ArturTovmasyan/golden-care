@@ -36,7 +36,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "emails",
- *              "type"       = "string",
+ *              "type"       = "string_array",
  *              "field"      = "el.emails"
  *          },
  *          {

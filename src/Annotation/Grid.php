@@ -31,6 +31,7 @@ class Grid
      */
     const FIELD_TYPE_ID                 = 'id';
     const FIELD_TYPE_TEXT               = 'string';
+    const FIELD_TYPE_TEXT_ARRAY         = 'string_array';
     const FIELD_TYPE_BOOLEAN            = 'boolean';
     const FIELD_TYPE_NUMBER             = 'number';
     const FIELD_TYPE_DATE               = 'date';
@@ -302,7 +303,7 @@ class Grid
 
         if(!empty($params['query'])) {
             foreach ($fields as $field) {
-                if ($field['id'] !== 'space' && $field['type'] === self::FIELD_TYPE_TEXT) {
+                if ($field['id'] !== 'space' && ($field['type'] === self::FIELD_TYPE_TEXT || $field['type'] === self::FIELD_TYPE_TEXT_ARRAY)) {
                     $searchItems = $this->computePermutations(preg_split('/\s+/', $params['query']));
 
                     $i = 0;
@@ -340,6 +341,7 @@ class Grid
 
                 switch ($options[$key]['type']) {
                     case self::FIELD_TYPE_TEXT:
+                    case self::FIELD_TYPE_TEXT_ARRAY:
                         switch ($filter['c']) {
                             case '0':
                                 $this->queryBuilder->andHaving("$fieldKey = :text_$suffix");
