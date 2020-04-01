@@ -75,7 +75,7 @@ class FacilityRoomTypeService extends BaseService implements IGridService
                     /** @var FacilityRoomType $roomType */
                     foreach ($roomTypes as $roomType) {
                         if (array_key_exists($roomType->getId(), $roomTypeValues)) {
-                            $roomType->setCountRooms($roomTypeValues[$roomType->getId()]);
+                            $roomType->setCountBeds($roomTypeValues[$roomType->getId()]);
                         }
                     }
                 }
