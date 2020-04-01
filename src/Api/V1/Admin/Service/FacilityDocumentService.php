@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\DocumentCategoryNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityDocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\FileExtensionNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\DocumentCategory;
 use App\Entity\File;
@@ -146,7 +147,12 @@ class FacilityDocumentService extends BaseService implements IGridService
                 $fileData = explode(';', $params['file'], 2);
 
                 $extensionData = explode('extension:', $fileData[0]);
-                $extension = $extensionData[1];
+                $extension = array_key_exists(1, $extensionData) ? $extensionData[1] : '';
+                
+                if (empty($extension)) {
+                    throw new FileExtensionNotFoundException();
+                }
+
                 $base64 = $fileData[1];
 
                 $parseFile = Parser::parse($base64);
@@ -158,7 +164,7 @@ class FacilityDocumentService extends BaseService implements IGridService
 
                 $this->em->persist($file);
 
-                $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                $s3Id = $file->getId() . '.' . $extension;
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
@@ -249,7 +255,12 @@ class FacilityDocumentService extends BaseService implements IGridService
                     $fileData = explode(';', $params['file'], 2);
 
                     $extensionData = explode('extension:', $fileData[0]);
-                    $extension = $extensionData[1];
+                    $extension = array_key_exists(1, $extensionData) ? $extensionData[1] : '';
+
+                    if (empty($extension)) {
+                        throw new FileExtensionNotFoundException();
+                    }
+
                     $base64 = $fileData[1];
 
                     $parseFile = Parser::parse($base64);
@@ -262,7 +273,7 @@ class FacilityDocumentService extends BaseService implements IGridService
 
                     $this->em->persist($file);
 
-                    $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                    $s3Id = $file->getId() . '.' . $extension;
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
