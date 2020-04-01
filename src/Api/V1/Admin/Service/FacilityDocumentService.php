@@ -143,9 +143,16 @@ class FacilityDocumentService extends BaseService implements IGridService
             $file = new File();
 
             if (!empty($params['file'])) {
-                $parseFile = Parser::parse($params['file']);
+                $fileData = explode(';', $params['file'], 2);
+
+                $extensionData = explode('extension:', $fileData[0]);
+                $extension = $extensionData[1];
+                $base64 = $fileData[1];
+
+                $parseFile = Parser::parse($base64);
                 $file->setMimeType($parseFile->getMimeType());
                 $file->setType(FileType::TYPE_FACILITY_DOCUMENT);
+                $file->setExtension($extension);
 
                 $this->validate($file, null, ['api_admin_file_add']);
 
@@ -158,7 +165,7 @@ class FacilityDocumentService extends BaseService implements IGridService
                 $facilityDocument->setFile($file);
                 $this->validate($facilityDocument, null, ['api_admin_facility_document_add']);
 
-                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+                $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
             } else {
                 $facilityDocument->setFile(null);
             }
@@ -239,10 +246,17 @@ class FacilityDocumentService extends BaseService implements IGridService
                         $file = new File();
                     }
 
-                    $parseFile = Parser::parse($params['file']);
+                    $fileData = explode(';', $params['file'], 2);
+
+                    $extensionData = explode('extension:', $fileData[0]);
+                    $extension = $extensionData[1];
+                    $base64 = $fileData[1];
+
+                    $parseFile = Parser::parse($base64);
 
                     $file->setMimeType($parseFile->getMimeType());
                     $file->setType(FileType::TYPE_FACILITY_DOCUMENT);
+                    $file->setExtension($extension);
 
                     $this->validate($file, null, ['api_admin_file_edit']);
 
@@ -255,7 +269,7 @@ class FacilityDocumentService extends BaseService implements IGridService
                     $entity->setFile($file);
                     $this->validate($entity, null, ['api_admin_facility_document_edit']);
 
-                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+                    $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
                 }
             } else {
                 $entity->setFile(null);

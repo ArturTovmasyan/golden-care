@@ -72,6 +72,23 @@ class File
     private $mimeType;
 
     /**
+     * @var string $extension
+     * @ORM\Column(name="extension", type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Extension cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_file_add",
+     *          "api_admin_file_edit"
+     * })
+     * @Groups({
+     *     "api_admin_file_list",
+     *     "api_admin_file_get"
+     * })
+     */
+    private $extension;
+
+    /**
      * @var string $s3Id
      * @ORM\Column(name="s3Id", type="string", length=128, nullable=true)
      * @Assert\Length(
@@ -158,6 +175,22 @@ class File
     public function setMimeType(?string $mimeType): void
     {
         $this->mimeType = $mimeType;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param null|string $extension
+     */
+    public function setExtension(?string $extension): void
+    {
+        $this->extension = $extension;
     }
 
     /**

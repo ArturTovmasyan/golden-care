@@ -198,6 +198,23 @@ class FacilityDocument
 
     /**
      * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("extension")
+     * @Serializer\Groups({
+     *     "api_admin_facility_document_list",
+     *     "api_admin_facility_document_get"
+     * })
+     */
+    public function getFacilityDocumentFileExtension(): ?string
+    {
+        if ($this->getFile() !== null) {
+            return $this->getFile()->getExtension();
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("date_created")
      * @Serializer\Groups({
      *     "api_admin_facility_document_list",
