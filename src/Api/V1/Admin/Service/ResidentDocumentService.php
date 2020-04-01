@@ -137,6 +137,7 @@ class ResidentDocumentService extends BaseService implements IGridService
                 $parseFile = Parser::parse($base64);
                 $file->setMimeType($parseFile->getMimeType());
                 $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
+                $file->setExtension($extension);
 
                 $this->validate($file, null, ['api_admin_file_add']);
 
@@ -233,6 +234,7 @@ class ResidentDocumentService extends BaseService implements IGridService
 
                     $file->setMimeType($parseFile->getMimeType());
                     $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
+                    $file->setExtension($extension);
 
                     $this->validate($file, null, ['api_admin_file_edit']);
 
