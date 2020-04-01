@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\FileExtensionNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentDocumentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
@@ -122,7 +123,18 @@ class ResidentDocumentService extends BaseService implements IGridService
             $file = new File();
 
             if (!empty($params['file'])) {
-                $parseFile = Parser::parse($params['file']);
+                $fileData = explode(';', $params['file'], 2);
+
+                $extensionData = explode('extension:', $fileData[0]);
+                $extension = array_key_exists(1, $extensionData) ? $extensionData[1] : '';
+
+                if (empty($extension)) {
+                    throw new FileExtensionNotFoundException();
+                }
+
+                $base64 = $fileData[1];
+
+                $parseFile = Parser::parse($base64);
                 $file->setMimeType($parseFile->getMimeType());
                 $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
 
@@ -130,14 +142,14 @@ class ResidentDocumentService extends BaseService implements IGridService
 
                 $this->em->persist($file);
 
-                $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                $s3Id = $file->getId() . '.' . $extension;
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
                 $residentDocument->setFile($file);
                 $this->validate($residentDocument, null, ['api_admin_resident_document_add']);
 
-                $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+                $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
             } else {
                 $residentDocument->setFile(null);
             }
@@ -206,7 +218,18 @@ class ResidentDocumentService extends BaseService implements IGridService
                         $file = new File();
                     }
 
-                    $parseFile = Parser::parse($params['file']);
+                    $fileData = explode(';', $params['file'], 2);
+
+                    $extensionData = explode('extension:', $fileData[0]);
+                    $extension = array_key_exists(1, $extensionData) ? $extensionData[1] : '';
+
+                    if (empty($extension)) {
+                        throw new FileExtensionNotFoundException();
+                    }
+
+                    $base64 = $fileData[1];
+
+                    $parseFile = Parser::parse($base64);
 
                     $file->setMimeType($parseFile->getMimeType());
                     $file->setType(FileType::TYPE_RESIDENT_DOCUMENT);
@@ -215,14 +238,14 @@ class ResidentDocumentService extends BaseService implements IGridService
 
                     $this->em->persist($file);
 
-                    $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                    $s3Id = $file->getId() . '.' . $extension;
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
                     $entity->setFile($file);
                     $this->validate($entity, null, ['api_admin_resident_document_edit']);
 
-                    $this->s3Service->uploadFile($params['file'], $s3Id, $file->getType(), $file->getMimeType());
+                    $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
                 }
             } else {
                 $entity->setFile(null);
