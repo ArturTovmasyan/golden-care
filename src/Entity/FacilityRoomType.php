@@ -205,22 +205,22 @@ class FacilityRoomType
      *     "api_admin_facility_room_type_list"
      * })
      */
-    private $countBeds;
+    private $count;
 
     /**
      * @return int|null
      */
-    public function getCountBeds(): ?int
+    public function getCount(): ?int
     {
-        return $this->countBeds;
+        return $this->count;
     }
 
     /**
-     * @param int|null $countBeds
+     * @param int|null $count
      */
-    public function setCountBeds(?int $countBeds): void
+    public function setCount(?int $count): void
     {
-        $this->countBeds = $countBeds;
+        $this->count = $count;
     }
 
     /**
