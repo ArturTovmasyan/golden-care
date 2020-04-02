@@ -194,6 +194,29 @@ class LeadController extends BaseController
     }
 
     /**
+     * @Route("/spam", name="api_lead_lead_spam", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-lead-lead", level="EDIT")
+     *
+     * @param Request $request
+     * @param LeadService $leadService
+     * @return JsonResponse
+     */
+    public function spam(Request $request, LeadService $leadService): JsonResponse
+    {
+        $leadService->spam(
+            [
+                'ids' => $request->get('ids'),
+                'spam' => $request->get('spam')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_lead_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-lead-lead", level="DELETE")

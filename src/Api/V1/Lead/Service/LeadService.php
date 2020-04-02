@@ -891,6 +891,45 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
+     * @param array $params
+     * @throws \Throwable
+     */
+    public function spam(array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            $ids = !empty($params['ids']) ? $params['ids'] : [];
+
+            $leads = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $ids);
+
+            if (empty($leads)) {
+                throw new LeadNotFoundException();
+            }
+
+            $spam = !empty($params['spam']) ? (bool)$params['spam'] : false;
+
+            /** @var Lead $lead */
+            foreach ($leads as $lead) {
+                $lead->setSpam($spam);
+
+                $this->em->persist($lead);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param Lead $lead
      * @param array $newReferral
      */

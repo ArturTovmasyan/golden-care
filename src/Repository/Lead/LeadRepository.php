@@ -424,7 +424,8 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             )
             ->leftJoin('l.facilities', 'fas')
             ->where('l.createdAt >= :startDate')->setParameter('startDate', $startDate)
-            ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate);
+            ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate)
+            ->andWhere('l.spam = 0');
 
         if ($space !== null) {
             $qb
@@ -473,6 +474,7 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                 'f = l.primaryFacility'
             )
             ->where('l.createdAt >= :startDate AND l.createdAt <= :endDate AND l.state = :state')
+            ->andWhere('l.spam = 0')
             ->setParameter('state', State::TYPE_OPEN)
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate);
@@ -529,6 +531,7 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                 'f = l.primaryFacility'
             )
             ->where('l.createdAt >= :startDate AND l.createdAt <= :endDate AND l.webLead = 1')
+            ->andWhere('l.spam = 0')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate);
 

@@ -431,6 +431,12 @@ class Lead
     private $webLead = false;
 
     /**
+     * @var bool
+     * @ORM\Column(name="spam", type="boolean")
+     */
+    private $spam = false;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="lead", cascade={"remove", "persist"})
      */
@@ -782,6 +788,22 @@ class Lead
     public function setWebLead(bool $webLead): void
     {
         $this->webLead = $webLead;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpam(): bool
+    {
+        return $this->spam;
+    }
+
+    /**
+     * @param bool $spam
+     */
+    public function setSpam(bool $spam): void
+    {
+        $this->spam = $spam;
     }
 
     /**
