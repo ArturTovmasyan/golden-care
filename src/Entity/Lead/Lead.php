@@ -78,6 +78,11 @@ use App\Annotation\Grid;
  *              "id"         = "primary_facility",
  *              "type"       = "string",
  *              "field"      = "CASE WHEN l.primaryFacility IS NOT NULL THEN CONCAT(f.name, ' (', f.shorthand, ')') ELSE '-' END"
+ *          },
+ *          {
+ *              "id"         = "spam",
+ *              "type"       = "boolean",
+ *              "field"      = "l.spam"
  *          }
  *     }
  * )
