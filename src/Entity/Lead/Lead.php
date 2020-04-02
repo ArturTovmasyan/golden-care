@@ -409,9 +409,9 @@ class Lead
 
     /**
      * @var string $notes
-     * @ORM\Column(name="notes", type="text", length=1024, nullable=true)
+     * @ORM\Column(name="notes", type="text", length=2048, nullable=true)
      * @Assert\Length(
-     *      max = 1024,
+     *      max = 2048,
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",

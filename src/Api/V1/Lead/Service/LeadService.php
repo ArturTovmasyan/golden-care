@@ -409,21 +409,29 @@ class LeadService extends BaseService implements IGridService
 
             $facility = null;
             if (!empty($params['From'])) {
-                if (filter_var($params['From'], FILTER_VALIDATE_EMAIL)) {
-                    $potentialName = $params['From'];
-                } else {
-                    $from = explode(' <', $params['From']);
-                    $potentialName = $from[0];
-                }
+                $from = explode(' <', $params['From']);
+                $potentialName = $from[0];
 
-                /** @var FacilityRepository $facilityRepo */
-                $facilityRepo = $this->em->getRepository(Facility::class);
+                //if potential name = 'CiminoCare' then facility = null
+                if ($potentialName !== 'CiminoCare') {
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
 
-                /** @var Facility $facility */
-                $facility = $facilityRepo->getByPotentialNames($currentSpace, $potentialName);
+                    $facilities = $facilityRepo->findBy(['space' => $currentSpace]);
 
-                if ($facility === null) {
-                    throw new FacilityNotFoundException();
+                    if (!empty($facilities)) {
+                        /** @var Facility $value */
+                        foreach ($facilities as $value) {
+                            if (in_array($potentialName, $value->getPotentialNames(), false)) {
+                                $facility = $value;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($facility === null) {
+                        throw new FacilityNotFoundException();
+                    }
                 }
 
                 $lead->setPrimaryFacility($facility);
