@@ -10,6 +10,8 @@ use Google_Service_Gmail;
 use Google_Service_Gmail_Message;
 use Google_Service_Gmail_MessagePart;
 use Google_Service_Gmail_ModifyMessageRequest;
+//use GuzzleHttp\Client;
+//use GuzzleHttp\RequestOptions;
 use PHPHtmlParser\Dom;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -90,7 +92,7 @@ class WebLeadGrabberCommand extends Command
 
                         try {
                             $this->leadService->addWebLeadFromCommand($data, $baseUrl);
-                            $this->markRead($user, $service, $message_info->getId());
+//                            $this->markRead($user, $service, $message_info->getId());
                         } catch(\Throwable $ct) {
                             $output->writeln($ct->getMessage());
                         }
@@ -118,7 +120,15 @@ class WebLeadGrabberCommand extends Command
     {
         $known_subjects = [
             'New submission from Book a Tour',
-            'New submission from Contact Form'
+            'New submission from Book a Tour Today!',
+            'New submission from Contact Form',
+            'New submission from Contact Us',
+        ];
+
+        $message_map = [
+            'Message',
+            'Comments and/or Special Requests',
+            'How can we help you?'
         ];
 
         $data = null;
@@ -135,10 +145,26 @@ class WebLeadGrabberCommand extends Command
 
                 for ($i = 0; $i < $tds->count(); $i += 3) {
                     $header = strip_tags($tds[$i]->find('strong')->innerHTML);
+
+                    if (\in_array($header, $message_map, false)) {
+                        $header = 'Message';
+                    }
+
                     $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
                     $data[$header] = trim(strip_tags($value));
                 }
             }
+
+            if (array_key_exists('First Name', $data) && array_key_exists('Last Name', $data)) {
+                $data['Name'] = sprintf('%s %s', $data['First Name'], $data['Last Name']);
+
+                unset($data['First Name']);
+                unset($data['Last Name']);
+            }
+
+//            if (array_key_exists('Message', $data)) {
+//                $data['spam_info'] =  $this->checkForSpam($data['Message']);
+//            }
         }
 
         return $data;
@@ -150,10 +176,11 @@ class WebLeadGrabberCommand extends Command
      */
     private function getClient()
     {
+        $path_prefix = '/srv/_vcs/backend/';
         $client = new Google_Client();
         $client->setApplicationName('Gmail API PHP Quickstart');
         $client->setScopes(Google_Service_Gmail::GMAIL_MODIFY);
-        $client->setAuthConfig('/srv/_vcs/backend/gmail_client_id.json');
+        $client->setAuthConfig($path_prefix . 'gmail_client_id.json');
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
 
@@ -161,7 +188,7 @@ class WebLeadGrabberCommand extends Command
         // The file gmail_token.json stores the user's access and refresh tokens, and is
         // created automatically when the authorization flow completes for the first
         // time.
-        $tokenPath = '/srv/_vcs/backend/gmail_token.json';
+        $tokenPath = $path_prefix . 'gmail_token.json';
         if (file_exists($tokenPath)) {
             $accessToken = json_decode(file_get_contents($tokenPath), true);
             $client->setAccessToken($accessToken);
@@ -272,4 +299,27 @@ class WebLeadGrabberCommand extends Command
             }
         }
     }
+
+//    private function checkForSpam($message) {
+//        try {
+//            $client = new Client();
+//
+//            $response = $client->post('https://plino.herokuapp.com/api/v1/classify/', [
+//                RequestOptions::JSON => ["email_text" => $message]
+//            ]);
+//
+//            if ($response->getStatusCode() === 200) {
+//                $body = json_decode($response->getBody()->getContents(), true);
+//
+//                if ($body !== null) {
+//                    return $body['email_class'];
+//                }
+//            }
+//        } catch (\Throwable $t) {
+//            dump($message);
+//            dd($t->getMessage());
+//        }
+//
+//        return null;
+//    }
 }
