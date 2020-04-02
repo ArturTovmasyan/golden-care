@@ -117,8 +117,10 @@ class FacilityService extends BaseService implements IGridService
                 throw new CityStateZipNotFoundException();
             }
 
+            $name = $params['name'];
+
             $facility = new Facility();
-            $facility->setName($params['name']);
+            $facility->setName($name);
             $facility->setDescription($params['description']);
             $facility->setShorthand($params['shorthand']);
             $facility->setPhone($params['phone']);
@@ -132,6 +134,9 @@ class FacilityService extends BaseService implements IGridService
             $facility->setRedFlag((int)$params['red_flag']);
             $facility->setYellowFlag((int)$params['yellow_flag']);
             $facility->setSpace($space);
+
+            $potentialNames = !empty($name) ? [$name] : [];
+            $facility->setPotentialNames($potentialNames);
 
             $this->validate($facility, null, ['api_admin_facility_add']);
 

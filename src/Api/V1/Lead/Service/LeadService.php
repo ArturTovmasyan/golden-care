@@ -404,25 +404,33 @@ class LeadService extends BaseService implements IGridService
                 throw new SubjectNotBeBlankException();
             }
 
+            $lead = new Lead();
+            $lead->setWebLead(true);
+
             $facility = null;
             if (!empty($params['From'])) {
-                $from = explode(' <', $params['From']);
-                $facilityName = strtolower($from[0]);
+                if (filter_var($params['From'], FILTER_VALIDATE_EMAIL)) {
+                    $potentialName = $params['From'];
+                } else {
+                    $from = explode(' <', $params['From']);
+                    $potentialName = $from[0];
+                }
 
                 /** @var FacilityRepository $facilityRepo */
                 $facilityRepo = $this->em->getRepository(Facility::class);
 
                 /** @var Facility $facility */
-                $facility = $facilityRepo->findOneBy(['name' => $facilityName, 'space' => $currentSpace]);
+                $facility = $facilityRepo->getByPotentialNames($currentSpace, $potentialName);
+
+                if ($facility === null) {
+                    throw new FacilityNotFoundException();
+                }
+
+                $lead->setPrimaryFacility($facility);
+            } else {
+                $lead->setPrimaryFacility(null);
             }
 
-            if ($facility === null) {
-                throw new FacilityNotFoundException();
-            }
-
-            $lead = new Lead();
-            $lead->setWebLead(true);
-            $lead->setPrimaryFacility($facility);
             $lead->setFirstName('Unknown');
             $lead->setLastName('Unknown');
             $lead->setCareType(null);
@@ -451,7 +459,7 @@ class LeadService extends BaseService implements IGridService
                         break;
                     }
 
-                    if ($userFacilityId['facilityIds'] !== null) {
+                    if ($facility !== null && $userFacilityId['facilityIds'] !== null) {
                         $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
 
                         if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {

@@ -452,6 +452,12 @@ class Facility
     private $bedsConfigured;
 
     /**
+     * @var array $potentialNames
+     * @ORM\Column(name="potential_names", type="json_array", nullable=true)
+     */
+    private $potentialNames = [];
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoom", mappedBy="facility", cascade={"remove", "persist"})
      * @Groups({
@@ -704,6 +710,22 @@ class Facility
     public function setBedsConfigured(?int $bedsConfigured): void
     {
         $this->bedsConfigured = $bedsConfigured;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPotentialNames(): array
+    {
+        return $this->potentialNames;
+    }
+
+    /**
+     * @param array $potentialNames
+     */
+    public function setPotentialNames(array $potentialNames): void
+    {
+        $this->potentialNames = $potentialNames;
     }
 
     /**
