@@ -412,25 +412,18 @@ class LeadService extends BaseService implements IGridService
                 $from = explode(' <', $params['From']);
                 $potentialName = $from[0];
 
-                //if potential name = 'CiminoCare' then facility = null
-                if ($potentialName !== 'CiminoCare') {
-                    /** @var FacilityRepository $facilityRepo */
-                    $facilityRepo = $this->em->getRepository(Facility::class);
+                /** @var FacilityRepository $facilityRepo */
+                $facilityRepo = $this->em->getRepository(Facility::class);
 
-                    $facilities = $facilityRepo->findBy(['space' => $currentSpace]);
+                $facilities = $facilityRepo->findBy(['space' => $currentSpace]);
 
-                    if (!empty($facilities)) {
-                        /** @var Facility $value */
-                        foreach ($facilities as $value) {
-                            if (in_array($potentialName, $value->getPotentialNames(), false)) {
-                                $facility = $value;
-                                break;
-                            }
+                if (!empty($facilities)) {
+                    /** @var Facility $value */
+                    foreach ($facilities as $value) {
+                        if (in_array($potentialName, $value->getPotentialNames(), false)) {
+                            $facility = $value;
+                            break;
                         }
-                    }
-
-                    if ($facility === null) {
-                        throw new FacilityNotFoundException();
                     }
                 }
 
@@ -535,7 +528,7 @@ class LeadService extends BaseService implements IGridService
                 throw new LeadRpPhoneOrEmailNotBeBlankException();
             }
 
-            $notes = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2047) : '';
+            $notes = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2048) : '';
 
             $lead->setNotes($notes);
 
@@ -648,6 +641,8 @@ class LeadService extends BaseService implements IGridService
         $activity->setOwnerType(ActivityOwnerType::TYPE_LEAD);
         $activity->setDate($initialContactDate);
         $activity->setTitle($title);
+
+        $notes = mb_strimwidth($notes, 0, 2048);
         $activity->setNotes($notes);
 
         if ($type->getDefaultStatus()) {
