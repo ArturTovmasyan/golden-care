@@ -535,9 +535,9 @@ class LeadService extends BaseService implements IGridService
                 throw new LeadRpPhoneOrEmailNotBeBlankException();
             }
 
-            $notes = $params['Message'] ?? '';
+            $notes = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2047) : '';
 
-            $lead->setNotes(mb_strimwidth($notes, 0, 2048));
+            $lead->setNotes($notes);
 
             $this->validate($lead, null, ['api_lead_lead_add']);
 
