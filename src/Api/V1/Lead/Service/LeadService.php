@@ -444,7 +444,7 @@ class LeadService extends BaseService implements IGridService
             $lead->setCareType(null);
             $lead->setPaymentType(null);
 
-            $roleName = 'Facility Admin';
+            $roleName = $facility !== null ? 'Facility Admin' : 'Admin';
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
@@ -457,29 +457,34 @@ class LeadService extends BaseService implements IGridService
 
             /** @var UserRepository $ownerRepo */
             $ownerRepo = $this->em->getRepository(User::class);
-            $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
 
             $ownerId = 0;
-            if (!empty($userFacilityIds)) {
-                foreach ($userFacilityIds as $userFacilityId) {
-                    if ($userFacilityId['facilityIds'] === null) {
-                        $ownerId = $userFacilityId['id'];
-                        break;
-                    }
+            if ($facility !== null) {
+                $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
 
-                    if ($facility !== null && $userFacilityId['facilityIds'] !== null) {
-                        $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
-
-                        if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                if (!empty($userFacilityIds)) {
+                    foreach ($userFacilityIds as $userFacilityId) {
+                        if ($userFacilityId['facilityIds'] === null) {
                             $ownerId = $userFacilityId['id'];
                             break;
                         }
+
+                        if ($userFacilityId['facilityIds'] !== null) {
+                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                            if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                $ownerId = $userFacilityId['id'];
+                                break;
+                            }
+                        }
                     }
                 }
-            }
 
-            /** @var User $owner */
-            $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
+                /** @var User $owner */
+                $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
+            } else {
+                $owner = $ownerRepo->getEnabledUserByRoles($currentSpace, null, [$role->getId()]);
+            }
 
             if ($owner === null) {
                 throw new UserNotFoundException();

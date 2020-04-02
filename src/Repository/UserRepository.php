@@ -416,4 +416,47 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $roleIds
+     * @return mixed
+     */
+    public function getEnabledUserByRoles(Space $space = null, array $entityGrants = null, $roleIds)
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->innerJoin('u.roles', 'r')
+            ->where('u.enabled=1')
+            ->andWhere('r.id IN (:roleIds)')
+            ->andWhere("JSON_EXTRACT(u.grants, '$.\"persistence-facility\"') IS NULL")
+            ->setParameter('roleIds', $roleIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = u.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('u.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('u.id', 'DESC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
