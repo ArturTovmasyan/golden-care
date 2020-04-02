@@ -444,7 +444,7 @@ class LeadService extends BaseService implements IGridService
             $lead->setCareType(null);
             $lead->setPaymentType(null);
 
-            $roleName = $facility !== null ? 'Facility Admin' : 'Admin';
+            $roleName = $facility !== null ? 'Facility Admin' : 'Administrator';
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
