@@ -537,7 +537,7 @@ class LeadService extends BaseService implements IGridService
 
             $notes = $params['Message'] ?? '';
 
-            $lead->setNotes($notes);
+            $lead->setNotes(mb_strimwidth($notes, 0, 2048));
 
             $this->validate($lead, null, ['api_lead_lead_add']);
 
