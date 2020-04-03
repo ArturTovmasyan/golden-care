@@ -962,13 +962,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 if ($isFilter) {
                     if ($resident !== null) {
                         $qb
-                            ->addOrderBy('r.lastName', $resident);
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
                     }
 
                     if ($room !== null) {
                         $qb
                             ->addOrderBy('fbr.number', $room)
-                            ->addOrderBy('fb.number');
+                            ->addOrderBy('fb.number', $room);
                     }
                 } else {
                     $qb
@@ -998,13 +998,13 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 if ($isFilter) {
                     if ($resident !== null) {
                         $qb
-                            ->addOrderBy('r.lastName', $resident);
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
                     }
 
                     if ($room !== null) {
                         $qb
                             ->addOrderBy('abr.number', $room)
-                            ->addOrderBy('ab.number');
+                            ->addOrderBy('ab.number', $room);
                     }
                 } else {
                     $qb
@@ -1032,7 +1032,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 if ($isFilter) {
                     if ($resident !== null) {
                         $qb
-                            ->addOrderBy('r.lastName', $resident);
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
                     }
                 } else {
                     $qb
@@ -1057,9 +1057,12 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $inactive
      * @param null $type
      * @param null $typeId
+     * @param null $resident
+     * @param null $room
+     * @param bool $isFilter
      * @return mixed
      */
-    public function getPerPageActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $page, $perPage, $inactive, $type = null, $typeId = null)
+    public function getPerPageActiveOrInactiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $page, $perPage, $inactive, $type = null, $typeId = null, $resident = null, $room = null, $isFilter = false)
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -1137,6 +1140,9 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         WHEN reg.id IS NOT NULL THEN reg.name
                         ELSE \'\' END) as group_name'
                 );
+
+            $qb
+                ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
         } else {
             $qb
                 ->addSelect(
@@ -1155,16 +1161,58 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     $qb
                         ->andWhere('f.id = :typeId')
                         ->setParameter('typeId', $typeId);
+
+                    if ($isFilter) {
+                        if ($resident !== null) {
+                            $qb
+                                ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
+                        }
+
+                        if ($room !== null) {
+                            $qb
+                                ->addOrderBy('fr.number', $room)
+                                ->addOrderBy('fb.number', $room);
+                        }
+                    } else {
+                        $qb
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+                    }
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $qb
                         ->andWhere('a.id = :typeId')
                         ->setParameter('typeId', $typeId);
+
+                    if ($isFilter) {
+                        if ($resident !== null) {
+                            $qb
+                                ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
+                        }
+
+                        if ($room !== null) {
+                            $qb
+                                ->addOrderBy('ar.number', $room)
+                                ->addOrderBy('ab.number', $room);
+                        }
+                    } else {
+                        $qb
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+                    }
                     break;
                 case GroupType::TYPE_REGION:
                     $qb
                         ->andWhere('reg.id = :typeId')
                         ->setParameter('typeId', $typeId);
+
+                    if ($isFilter) {
+                        if ($resident !== null) {
+                            $qb
+                                ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
+                        }
+                    } else {
+                        $qb
+                            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+                    }
                     break;
                 default:
                     throw new IncorrectStrategyTypeException();
@@ -1194,9 +1242,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 ->andWhere('r.id NOT IN (:notGrantResidentIds)')
                 ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
-
-        $qb
-            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
 
         return $qb
             ->getQuery()

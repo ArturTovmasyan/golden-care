@@ -411,11 +411,25 @@ class ResidentAdmissionController extends BaseController
     {
         $type = !empty($request->get('type')) ? (int)$request->get('type') : null;
         $typeId = !empty($request->get('type_id')) ? (int)$request->get('type_id') : null;
+        $resident = null;
+        if (!empty($request->get('resident'))) {
+            $resident = self::ORDER_ASC;
+            if (in_array(strtoupper((string)$request->get('resident')), [self::ORDER_ASC, self::ORDER_DESC], false)) {
+                $resident = strtoupper((string)$request->get('resident'));
+            }
+        }
+        $room = null;
+        if (!empty($request->get('room'))) {
+            $room = self::ORDER_ASC;
+            if (in_array(strtoupper((string)$request->get('room')), [self::ORDER_ASC, self::ORDER_DESC], false)) {
+                $room = strtoupper((string)$request->get('room'));
+            }
+        }
 
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $residentAdmissionService->getPerPageResidents($state, $page, $perPage, $type, $typeId),
+            $residentAdmissionService->getPerPageResidents($state, $page, $perPage, $type, $typeId, $resident, $room),
             ['api_admin_resident_get_pagination']
         );
     }

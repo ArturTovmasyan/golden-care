@@ -307,10 +307,17 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $perPage
      * @param $type
      * @param $typeId
-     * @return array
+     * @param $resident
+     * @param $room
+     * @return array|null
      */
-    public function getPerPageResidents($state, $page, $perPage, $type, $typeId): ?array
+    public function getPerPageResidents($state, $page, $perPage, $type, $typeId, $resident, $room): ?array
     {
+        $isFilter = true;
+        if ($type === null && $typeId === null && $resident === null && $room === null) {
+            $isFilter = false;
+        }
+
         $currentSpace = $this->grantService->getCurrentSpace();
 
         $result = [];
@@ -321,13 +328,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
             /** @var ResidentRepository $repo */
             $repo = $this->em->getRepository(Resident::class);
 
-            $residents = $repo->getPerPageNoAdmissionResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $page, $perPage);
+            $residents = $repo->getPerPageNoAdmissionResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $page, $perPage, $resident);
             $total = $repo->getCountNoAdmissionResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class));
         } elseif ($state === ResidentState::TYPE_ACTIVE) {
             /** @var ResidentAdmissionRepository $repo */
             $repo = $this->em->getRepository(ResidentAdmission::class);
 
-            $residents = $repo->getPerPageActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $page, $perPage, $inactive, $type, $typeId);
+            $residents = $repo->getPerPageActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $page, $perPage, $inactive, $type, $typeId, $resident, $room, $isFilter);
             $total = $repo->getCountActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $this->getNotGrantResidentIds(), null, $inactive, $type, $typeId);
         } elseif ($state === ResidentState::TYPE_INACTIVE) {
             $inactive = true;
@@ -335,7 +342,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             /** @var ResidentAdmissionRepository $repo */
             $repo = $this->em->getRepository(ResidentAdmission::class);
 
-            $residents = $repo->getPerPageActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $page, $perPage, $inactive, $type, $typeId);
+            $residents = $repo->getPerPageActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $page, $perPage, $inactive, $type, $typeId, $resident, $room, $isFilter);
             $total = $repo->getCountActiveOrInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $this->getNotGrantResidentIds(), null, $inactive, $type, $typeId);
         }
 

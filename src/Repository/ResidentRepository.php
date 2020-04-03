@@ -356,9 +356,10 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param null $resident
      * @return QueryBuilder
      */
-    public function getNoAdmissionResidentsQb(Space $space = null, array $entityGrants = null): QueryBuilder
+    public function getNoAdmissionResidentsQb(Space $space = null, array $entityGrants = null, $resident = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
 
@@ -391,8 +392,13 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        $order = 'ASC';
+        if ($resident !== null) {
+            $order = $resident;
+        }
+
         $qb
-            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+            ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $order);
 
         return $qb;
     }
@@ -404,7 +410,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      */
     public function getNoAdmissionResidents(Space $space = null, array $entityGrants = null)
     {
-        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants);
+        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants, null);
 
         return $qb
             ->getQuery()
@@ -416,11 +422,12 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param $page
      * @param $perPage
+     * @param null $resident
      * @return mixed
      */
-    public function getPerPageNoAdmissionResidents(Space $space = null, array $entityGrants = null, $page, $perPage)
+    public function getPerPageNoAdmissionResidents(Space $space = null, array $entityGrants = null, $page, $perPage, $resident = null)
     {
-        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants);
+        $qb = $this->getNoAdmissionResidentsQb($space, $entityGrants, $resident);
 
         return $qb
             ->getQuery()
