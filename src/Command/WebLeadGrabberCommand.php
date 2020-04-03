@@ -92,7 +92,7 @@ class WebLeadGrabberCommand extends Command
 
                         try {
                             $this->leadService->addWebLeadFromCommand($data, $baseUrl);
-//                            $this->markRead($user, $service, $message_info->getId());
+                            $this->markRead($user, $service, $message_info->getId());
                         } catch(\Throwable $ct) {
                             $output->writeln($ct->getMessage());
                         }
