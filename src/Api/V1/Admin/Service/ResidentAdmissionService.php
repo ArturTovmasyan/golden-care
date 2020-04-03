@@ -617,39 +617,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     $groupResidents = $repo->getActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds);
                 }
 
-                $images = [];
-                $imageTypes = [];
-                $imageS3Ids = [];
-                if (!empty($groupResidents)) {
-                    $residentIds = array_map(static function ($item) {
-                        return $item['id'];
-                    }, $groupResidents);
-
-                    /** @var ImageRepository $imageRepo */
-                    $imageRepo = $this->em->getRepository(Image::class);
-
-                    $images = $imageRepo->findByResidentIds($residentIds);
-                    $imageTypes = array_column($images, 'type', 'id');
-                    $imageS3Ids = array_column($images, 's3Id', 'id');
-                    $images = array_column($images, 'id', 'id');
-                }
-
                 foreach ($groupArray as $group) {
                     foreach ($groupResidents as $groupResident) {
                         if ($groupResident['type_id'] === $group['id']) {
                             $groupResident['type_name'] = $group['name'];
-
-                            if (array_key_exists($groupResident['id'], $images)) {
-                                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                                    'Bucket' => getenv('AWS_BUCKET'),
-                                    'Key' => $imageTypes[$groupResident['id']] . '/' . $imageS3Ids[$groupResident['id']],
-                                ]);
-                                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
-
-                                $groupResident['photo'] = (string)$request->getUri();
-                            } else {
-                                $groupResident['photo'] = null;
-                            }
 
                             $result[] = $groupResident;
                         }
