@@ -1141,8 +1141,15 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         ELSE \'\' END) as group_name'
                 );
 
-            $qb
-                ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+            if ($isFilter) {
+                if ($resident !== null) {
+                    $qb
+                        ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", $resident);
+                }
+            } else {
+                $qb
+                    ->addOrderBy("CONCAT( r.lastName, ' ', r.firstName)", 'ASC');
+            }
         } else {
             $qb
                 ->addSelect(
