@@ -44,6 +44,7 @@ class LeadController extends BaseController
                 'all' => $request->get('all'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId(),
+                'spam' => $request->get('spam')
             ]
         );
     }
@@ -79,6 +80,7 @@ class LeadController extends BaseController
             [
                 'all' => $request->get('all'),
                 'free' => $request->get('free'),
+                'spam' => $request->get('spam'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId(),
                 'contact_id' => $request->get('contact_id'),

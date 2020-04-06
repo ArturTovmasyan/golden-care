@@ -97,6 +97,11 @@ class LeadService extends BaseService implements IGridService
             $all = true;
         }
 
+        $spam = false;
+        if (!empty($params) && isset($params[0]['spam'])) {
+            $spam = true;
+        }
+
         $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
 
         $userId = null;
@@ -104,7 +109,7 @@ class LeadService extends BaseService implements IGridService
             $userId = $params[0]['user_id'];
         }
 
-        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $all, $userId, $facilityEntityGrants);
+        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $userId, $facilityEntityGrants, $all, $spam);
     }
 
     /**
@@ -134,7 +139,7 @@ class LeadService extends BaseService implements IGridService
                 return $item['leadId'];
             }, $hotLeadTemperatures);
 
-            return $repo->list($currentSpace, null, false, false, null, null, null, $ids);
+            return $repo->list($currentSpace, null, null, null, false, false, false, null, $ids);
         } else {
             $free = false;
             if ($isParams && isset($params[0]['free'])) {
@@ -144,6 +149,11 @@ class LeadService extends BaseService implements IGridService
             $all = false;
             if ($isParams && isset($params[0]['all'])) {
                 $all = true;
+            }
+
+            $spam = false;
+            if (!empty($params) && isset($params[0]['spam'])) {
+                $spam = true;
             }
 
             $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
@@ -159,7 +169,7 @@ class LeadService extends BaseService implements IGridService
                 $free = false;
             }
 
-            return $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $all, $free, $userId, $facilityEntityGrants, $contactId);
+            return $repo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $userId, $facilityEntityGrants, $all, $free, $spam, $contactId, null);
         }
     }
 

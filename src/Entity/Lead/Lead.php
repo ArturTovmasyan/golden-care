@@ -433,6 +433,10 @@ class Lead
     /**
      * @var bool
      * @ORM\Column(name="spam", type="boolean")
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
      */
     private $spam = false;
 

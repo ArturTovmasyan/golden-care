@@ -26,11 +26,12 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
-     * @param $all
      * @param null $userId
      * @param array|null $facilityEntityGrants
+     * @param $all
+     * @param $spam
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $all, $userId = null, array $facilityEntityGrants = null): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null, array $facilityEntityGrants = null, $all, $spam): void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -68,12 +69,6 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                 'f = l.primaryFacility'
             );
 
-        if (!$all) {
-            $queryBuilder
-                ->where('l.state = :state')
-                ->setParameter('state', State::TYPE_OPEN);
-        }
-
         if ($userId !== null || $facilityEntityGrants !== null) {
             $queryBuilder
                 ->andWhere('o.id = :userId')
@@ -85,6 +80,17 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                     ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
                     ->setParameter('facilityGrantIds', $facilityEntityGrants);
             }
+        }
+
+        if (!$all) {
+            $queryBuilder
+                ->andWhere('l.state = :state')
+                ->setParameter('state', State::TYPE_OPEN);
+        }
+
+        if ($spam) {
+            $queryBuilder
+                ->andWhere('l.spam = 1');
         }
 
         if ($space !== null) {
@@ -113,15 +119,16 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param $all
-     * @param $free
      * @param null $userId
      * @param array|null $facilityEntityGrants
+     * @param $all
+     * @param $free
+     * @param $spam
      * @param null $contactId
      * @param array|null $ids
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $all, $free, $userId = null, array $facilityEntityGrants = null, $contactId = null, array $ids = null)
+    public function list(Space $space = null, array $entityGrants = null, $userId = null, array $facilityEntityGrants = null, $all, $free, $spam, $contactId = null, array $ids = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -132,17 +139,6 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                 'o = l.owner'
             )
             ->leftJoin('l.referral', 'r');
-
-        if (!$all) {
-            $qb
-                ->where('l.state = :state')
-                ->setParameter('state', State::TYPE_OPEN);
-        }
-
-        if ($free) {
-            $qb
-                ->andWhere('r.id IS NULL');
-        }
 
         if ($userId !== null || $facilityEntityGrants !== null) {
             $qb
@@ -161,6 +157,22 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
                     ->orWhere('f.id IN (:facilityGrantIds) OR sf.id IN (:facilityGrantIds)')
                     ->setParameter('facilityGrantIds', $facilityEntityGrants);
             }
+        }
+
+        if (!$all) {
+            $qb
+                ->andWhere('l.state = :state')
+                ->setParameter('state', State::TYPE_OPEN);
+        }
+
+        if ($free) {
+            $qb
+                ->andWhere('r.id IS NULL');
+        }
+
+        if ($spam) {
+            $qb
+                ->andWhere('l.spam = 1');
         }
 
         if ($contactId !== null) {
