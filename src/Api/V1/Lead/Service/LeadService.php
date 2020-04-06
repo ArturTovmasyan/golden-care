@@ -546,6 +546,33 @@ class LeadService extends BaseService implements IGridService
 
             $this->em->persist($lead);
 
+            // Add lead referral
+            $referrerTypeName = 'Web Lead';
+            /** @var ReferrerTypeRepository $typeRepo */
+            $typeRepo = $this->em->getRepository(ReferrerType::class);
+
+            /** @var ReferrerType $type */
+            $type = $typeRepo->findOneBy(['title' => strtolower($referrerTypeName), 'space' => $currentSpace]);
+
+            if ($type === null) {
+                throw new ReferrerTypeNotFoundException();
+            }
+
+            if ($type !== null && ($type->isRepresentativeRequired() || $type->isOrganizationRequired())) {
+                throw new ReferrerTypeNotFoundException();
+            }
+
+            $referral = new Referral();
+            $referral->setLead($lead);
+            $referral->setType($type);
+            $referral->setOrganization(null);
+            $referral->setContact(null);
+            $referral->setNotes('');
+            $referral->setCreatedBy($lead->getOwner());
+            $referral->setUpdatedBy($lead->getOwner());
+            
+            $this->em->persist($referral);
+
             // Creating lead funnel stage
             $funnelStageName = 'Contact';
             /** @var FunnelStageRepository $funnelStageRepo */
