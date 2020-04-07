@@ -62,6 +62,7 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             ->leftJoin('l.referral', 'r')
             ->leftJoin('r.organization', 'ro')
             ->leftJoin('r.contact', 'rc')
+            ->leftJoin('r.type', 'rt')
             ->leftJoin(
                 Facility::class,
                 'f',

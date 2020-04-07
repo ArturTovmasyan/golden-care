@@ -71,7 +71,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "referral",
  *              "type"       = "string",
- *              "field"      = "COALESCE(CASE WHEN rc.id IS NOT NULL THEN CONCAT(COALESCE(rc.firstName, ''), ' ', COALESCE(rc.lastName, '')) ELSE ro.name END, '<No Referral>')",
+ *              "field"      = "COALESCE(CASE WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT(COALESCE(rc.firstName, ''), ' ', COALESCE(rc.lastName, '')) WHEN r.id IS NOT NULL AND rc.id IS NULL AND ro.id IS NOT NULL THEN ro.name ELSE rt.title END, '<No Referral>')",
  *              "link"       = "/lead/referral/:referral_id"
  *          },
  *          {
