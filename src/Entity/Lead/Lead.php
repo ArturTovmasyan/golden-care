@@ -441,6 +441,16 @@ class Lead
     private $spam = false;
 
     /**
+     * @var \DateTime
+     * @Assert\DateTime(groups={
+     *      "api_lead_lead_add",
+     *      "api_lead_lead_edit"
+     * })
+     * @ORM\Column(name="spam_updated", type="datetime", nullable=true)
+     */
+    private $spamUpdated;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Activity", mappedBy="lead", cascade={"remove", "persist"})
      */
@@ -808,6 +818,22 @@ class Lead
     public function setSpam(bool $spam): void
     {
         $this->spam = $spam;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getSpamUpdated(): ?\DateTime
+    {
+        return $this->spamUpdated;
+    }
+
+    /**
+     * @param \DateTime|null $spamUpdated
+     */
+    public function setSpamUpdated(?\DateTime $spamUpdated): void
+    {
+        $this->spamUpdated = $spamUpdated;
     }
 
     /**

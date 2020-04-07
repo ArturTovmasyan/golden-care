@@ -414,8 +414,11 @@ class LeadService extends BaseService implements IGridService
                 throw new SubjectNotBeBlankException();
             }
 
+            $now = new \DateTime('now');
+
             $lead = new Lead();
             $lead->setWebLead(true);
+            $lead->setSpamUpdated($now);
 
             $facility = null;
             if (!empty($params['From'])) {
@@ -498,7 +501,7 @@ class LeadService extends BaseService implements IGridService
             $lead->setUpdatedBy($owner);
 
             $lead->setState(State::TYPE_OPEN);
-            $lead->setInitialContactDate(new \DateTime('now'));
+            $lead->setInitialContactDate($now);
 
             $rpFirstName = '';
             $rpLastName = '';
@@ -952,6 +955,10 @@ class LeadService extends BaseService implements IGridService
 
             /** @var Lead $lead */
             foreach ($leads as $lead) {
+                if ($lead->isSpam() !== $spam) {
+                    $lead->setSpamUpdated(new \DateTime('now'));
+                }
+
                 $lead->setSpam($spam);
 
                 $this->em->persist($lead);
