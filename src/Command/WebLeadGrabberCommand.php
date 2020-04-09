@@ -10,8 +10,8 @@ use Google_Service_Gmail;
 use Google_Service_Gmail_Message;
 use Google_Service_Gmail_MessagePart;
 use Google_Service_Gmail_ModifyMessageRequest;
-//use GuzzleHttp\Client;
-//use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use PHPHtmlParser\Dom;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -92,7 +92,7 @@ class WebLeadGrabberCommand extends Command
 
                         try {
                             $this->leadService->addWebLeadFromCommand($data, $baseUrl);
-                            $this->markRead($user, $service, $message_info->getId());
+//                            $this->markRead($user, $service, $message_info->getId());
                         } catch(\Throwable $ct) {
                             $output->writeln($ct->getMessage());
                         }
@@ -162,9 +162,9 @@ class WebLeadGrabberCommand extends Command
                 unset($data['Last Name']);
             }
 
-//            if (array_key_exists('Message', $data)) {
-//                $data['spam_info'] =  $this->checkForSpam($data['Message']);
-//            }
+            if (array_key_exists('Message', $data)) {
+                $data['Spam'] = $this->checkForSpam($data['Message']);
+            }
         }
 
         return $data;
@@ -300,26 +300,25 @@ class WebLeadGrabberCommand extends Command
         }
     }
 
-//    private function checkForSpam($message) {
-//        try {
-//            $client = new Client();
-//
-//            $response = $client->post('https://plino.herokuapp.com/api/v1/classify/', [
-//                RequestOptions::JSON => ["email_text" => $message]
-//            ]);
-//
-//            if ($response->getStatusCode() === 200) {
-//                $body = json_decode($response->getBody()->getContents(), true);
-//
-//                if ($body !== null) {
-//                    return $body['email_class'];
-//                }
-//            }
-//        } catch (\Throwable $t) {
-//            dump($message);
-//            dd($t->getMessage());
-//        }
-//
-//        return null;
-//    }
+    private function checkForSpam($message): ?bool {
+        try {
+            $client = new Client();
+
+            $response = $client->post('https://127.0.0.1:5000/check/', [
+                RequestOptions::JSON => ["message" => $message]
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $body = json_decode($response->getBody()->getContents(), true);
+
+                if ($body !== null) {
+                    return $body['spam'] == 'spam' ? true : false;
+                }
+            }
+        } catch (\Throwable $t) {
+            dump($t->getTraceAsString());
+        }
+
+        return null;
+    }
 }
