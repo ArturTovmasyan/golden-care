@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -234,10 +235,11 @@ class BaseController extends AbstractController
 
     /**
      * @param $html
+     * @param $actualName
      * @param $params
-     * @return null|string
+     * @return StreamedResponse
      */
-    protected function respondExcel($html, $params): ?string
+    protected function respondExcel($html, $actualName, $params): StreamedResponse
     {
         $directory = 'excel/';
 
@@ -272,18 +274,22 @@ class BaseController extends AbstractController
             $spreadsheet->getActiveSheet()->getColumnDimension($columnID)
                 ->setAutoSize(true);
         }
-        $fileName = $hash . '.xlsx';
-        $fileUrl = $directory . $fileName;
-        $writer->save($fileUrl);
+        $fileName = $actualName . '.xlsx';
 
-        $spreadsheet->disconnectWorksheets();
-        unset($spreadsheet);
+        $response =  new StreamedResponse(
+            static function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
+        $response->headers->set('Cache-Control','max-age=0');
 
         if (file_exists($fileUrlCsv)) {
             unlink($fileUrlCsv);
         }
 
-        return $params['baseUrl'] . '/public/' . $directory . $fileName;
+        return $response;
     }
 
     /**
@@ -319,7 +325,7 @@ class BaseController extends AbstractController
         }
 
         if ($format === Report::FORMAT_XLS) {
-            return new Response($this->respondExcel($html, $params), Response::HTTP_OK, []);
+            return $this->respondExcel($html, $actualName, $params);
         }
 
         throw new \Exception('Support only pdf, csv and xls formats');
@@ -351,8 +357,7 @@ class BaseController extends AbstractController
             $request->get('format'),
             [
                 'data' => $report,
-                'hash' => $request->get('hash'),
-                'baseUrl' => $request->getSchemeAndHttpHost()
+                'hash' => $request->get('hash')
             ]
         );
     }
