@@ -12,6 +12,7 @@ use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Space;
 use App\Entity\UserInvite;
 use App\Model\Grant;
+use App\Model\Report;
 use App\Util\ArrayUtil;
 use App\Util\Mailer;
 use App\Util\MimeUtil;
@@ -25,6 +26,8 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -230,6 +233,60 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @param $html
+     * @param $params
+     * @return null|string
+     */
+    protected function respondExcel($html, $params): ?string
+    {
+        $directory = 'excel/';
+
+        if (!is_dir($directory) && !mkdir($directory) && !is_dir($directory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+        }
+
+        $hash = $params['hash'];
+
+        $fileNameCsv = $hash . '.csv';
+        $fileUrlCsv = $directory . $fileNameCsv;
+        $fp = fopen($fileUrlCsv, 'ab');
+        fputcsv($fp, (array)$html, $delimiter = ',', chr(0));
+        fclose($fp);
+
+        $fh = fopen($fileUrlCsv, 'rb');
+        $current = trim(stream_get_contents($fh));
+        fclose($fh);
+        file_put_contents($fileUrlCsv, $current);
+
+        $reader = new Csv();
+
+        /* Set CSV parsing options */
+        $reader->setDelimiter(',');
+        $reader->setEnclosure('');
+        $reader->setSheetIndex(0);
+
+        /* Load a CSV file and save as a XLS */
+        $spreadsheet = $reader->load($fileUrlCsv);
+        $writer = new Xlsx($spreadsheet);
+        foreach(range('A','Z') as $columnID) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($columnID)
+                ->setAutoSize(true);
+        }
+        $fileName = $hash . '.xlsx';
+        $fileUrl = $directory . $fileName;
+        $writer->save($fileUrl);
+
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        if (file_exists($fileUrlCsv)) {
+            unlink($fileUrlCsv);
+        }
+
+        return $params['baseUrl'] . '/public/' . $directory . $fileName;
+    }
+
+    /**
      * @param $template
      * @param $actualName
      * @param string $format
@@ -237,7 +294,7 @@ class BaseController extends AbstractController
      * @return PdfResponse|Response
      * @throws \Exception
      */
-    protected function respondFile($template, $actualName, $format = 'pdf', array $params = [])
+    protected function respondFile($template, $actualName, $format = Report::FORMAT_PDF, array $params = [])
     {
         $options = [];
 
@@ -247,11 +304,11 @@ class BaseController extends AbstractController
 
         $html = $this->renderView($template, $params);
 
-        if ($format === 'pdf') {
+        if ($format === Report::FORMAT_PDF) {
             return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName . '.pdf');
         }
 
-        if ($format === 'csv') {
+        if ($format === Report::FORMAT_CSV) {
             return new Response($html, Response::HTTP_OK, [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => 'attachment; filename="' . $actualName . '.csv"',
@@ -261,7 +318,11 @@ class BaseController extends AbstractController
             ]);
         }
 
-        throw new \Exception('Support only pdf and csv formats');
+        if ($format === Report::FORMAT_XLS) {
+            return new Response($this->respondExcel($html, $params), Response::HTTP_OK, []);
+        }
+
+        throw new \Exception('Support only pdf, csv and xls formats');
     }
 
     /**
@@ -276,17 +337,23 @@ class BaseController extends AbstractController
     {
         $report = $reportService->report($request, $group, $alias, $isHash);
 
+        $format = !empty($request->get('format')) && $request->get('format') !== Report::FORMAT_XLS ? $request->get('format') : Report::FORMAT_CSV;
+
         if ($request->get('template')) {
-            $file = '@api_report/' . $group . '/' . $request->get('template') . '.' . $request->get('format') . '.twig';
+            $file = '@api_report/' . $group . '/' . $request->get('template') . '.' . $format . '.twig';
         } else {
-            $file = '@api_report/' . $group . '/' . $alias . '.' . $request->get('format') . '.twig';
+            $file = '@api_report/' . $group . '/' . $alias . '.' . $format . '.twig';
         }
 
         return $this->respondFile(
             $file,
             $group . '-' . $alias,
             $request->get('format'),
-            ['data' => $report]
+            [
+                'data' => $report,
+                'hash' => $request->get('hash'),
+                'baseUrl' => $request->getSchemeAndHttpHost()
+            ]
         );
     }
 

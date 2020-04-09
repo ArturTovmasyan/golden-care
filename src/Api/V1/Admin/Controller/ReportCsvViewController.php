@@ -52,6 +52,8 @@ class ReportCsvViewController extends BaseController
             $request->query->set($key, $param);
         }
 
+        $request->query->set('hash', $hash);
+
         return $this->respondReport(
             $request,
             $group,

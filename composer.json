@@ -20,6 +20,7 @@
         "nelmio/cors-bundle": "^1.5",
         "oro/doctrine-extensions": "^1.2",
         "paquettg/php-html-parser": "2.2.*",
+        "phpoffice/phpspreadsheet": "1.11.0",
         "scienta/doctrine-json-functions": "^4.0",
         "sensio/framework-extra-bundle": "^5.2",
         "stof/doctrine-extensions-bundle": "^1.3",

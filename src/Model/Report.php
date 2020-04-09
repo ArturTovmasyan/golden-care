@@ -7,14 +7,16 @@ class Report
     /**
      * Compatible
      */
-    const FORMAT_PDF = 1;
-    const FORMAT_CSV = 2;
+    const FORMAT_PDF = 'pdf';
+    const FORMAT_CSV = 'csv';
+    const FORMAT_XLS = 'xls';
     /**
      * @var array
      */
     public static $formats = [
         self::FORMAT_PDF,
         self::FORMAT_CSV,
+        self::FORMAT_XLS,
     ];
 
     /**

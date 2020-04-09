@@ -8,7 +8,7 @@ resident:
         title: '60 Days Roster: 60 Days Roster Report'
         show_in_resident_list: true
         show_in_group_list: true
-        formats: ['csv']
+        formats: ['csv', 'xls']
         parameters:
           group:
             select_all: true
@@ -36,7 +36,7 @@ resident:
       title: 'Events: List of Residents Events'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -66,7 +66,7 @@ resident:
       title: 'Move-in/Move-Out'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         date_from: "m/Y"
         date_to: "m/Y"
@@ -98,7 +98,7 @@ resident:
       title: 'Responsible Person Emails: List of Residents Responsible Persons'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         group:
             select_all: true
@@ -318,7 +318,7 @@ room:
       title: 'Payor Report: Monthly Payor Report'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -328,7 +328,7 @@ room:
       title: 'Room: Simple Rent Roster'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -338,7 +338,7 @@ room:
       title: 'Room Rent: Monthly Rent Report'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -348,7 +348,7 @@ room:
       title: 'Room Rent, Obfuscated: Monthly Rent Report'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -358,7 +358,7 @@ room:
       title: 'Room Rent: Monthly Room Rent by Year'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -378,7 +378,7 @@ room:
       title: 'Room Rent Master: New!: Monthly Rent Master Report'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -388,7 +388,7 @@ room:
       title: 'Room Vacancy List: List of Vacant Rooms, by Facility. Calculated as of today'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -397,7 +397,7 @@ room:
       title: 'Room Occupancy Rates: Facility Occupancy Rate Summary (calculated as of today)'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -406,7 +406,7 @@ room:
       title: 'Room Occupancy Rates By Month'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         date_from: "m/Y"
         date_to: "m/Y"
@@ -423,7 +423,7 @@ physician:
       title: 'Physician Roster Simple: List of physicians, with contact information and resident count'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -432,7 +432,7 @@ physician:
       title: 'Physician Roster Full: List of physicians, with contact information and resident count'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf', 'csv']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -456,7 +456,7 @@ health:
       title: 'Resident RPs: List of residents who do not have RPs assigned'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -465,7 +465,7 @@ health:
       title: 'Missing Rent Records: List of Active Residents who do not have a valid Room Rent record'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -474,7 +474,7 @@ health:
       title: 'Invalid Rent Amount Records: List of Residents who do not have a valid Room Rent amount'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -483,7 +483,7 @@ health:
       title: 'Room Rents Current vs. Base'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         group:
           select_all: true
@@ -522,7 +522,7 @@ lead:
       title: 'Generate Activity List Report'
       show_in_resident_list: false
       show_in_group_list: false
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
@@ -531,7 +531,7 @@ lead:
       title: 'Generate Lead List Report'
       show_in_resident_list: false
       show_in_group_list: false
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
@@ -540,7 +540,7 @@ lead:
       title: 'Generate Referral List Report'
       show_in_resident_list: false
       show_in_group_list: false
-      formats: ['csv']
+      formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
