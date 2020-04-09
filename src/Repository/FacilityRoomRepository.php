@@ -85,16 +85,17 @@ class FacilityRoomRepository extends EntityRepository implements RelatedInfoInte
      */
     public function list(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null)
     {
-        $qb = $this->createQueryBuilder('fr');
+        $qb = $this
+            ->createQueryBuilder('fr')
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = fr.facility'
+            );
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'f = fr.facility'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
