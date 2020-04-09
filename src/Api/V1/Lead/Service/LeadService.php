@@ -420,6 +420,9 @@ class LeadService extends BaseService implements IGridService
             $lead->setWebLead(true);
             $lead->setSpamUpdated($now);
 
+            $spam = !empty($params['Spam']) ? (bool)$params['Spam'] : false;
+            $lead->setSpam($spam);
+
             $facility = null;
             if (!empty($params['From'])) {
                 $from = explode(' <', $params['From']);
