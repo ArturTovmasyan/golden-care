@@ -281,6 +281,7 @@ class WebLeadGrabberCommand extends Command
     /**
      * @param Google_Service_Gmail_MessagePart|Google_Service_Gmail_MessagePart[] $parts
      * @return bool|false|string
+     * @throws \Throwable
      */
     private function decodeMessageParts($parts)
     {
@@ -300,23 +301,24 @@ class WebLeadGrabberCommand extends Command
         }
     }
 
+    /**
+     * @param string $message
+     * @return bool|null
+     * @throws \Throwable
+     */
     private function checkForSpam($message): ?bool {
-        try {
-            $client = new Client();
+        $client = new Client();
 
-            $response = $client->post('https://127.0.0.1:5000/check/', [
-                RequestOptions::JSON => ["message" => $message]
-            ]);
+        $response = $client->post('http://127.0.0.1:5000/check', [
+            RequestOptions::JSON => ["message" => $message]
+        ]);
 
-            if ($response->getStatusCode() === 200) {
-                $body = json_decode($response->getBody()->getContents(), true);
+        if ($response->getStatusCode() === 200) {
+            $body = json_decode($response->getBody()->getContents(), true);
 
-                if ($body !== null) {
-                    return $body['spam'] == 'spam' ? true : false;
-                }
+            if ($body !== null) {
+                return $body['spam'] === 'spam' ? true : false;
             }
-        } catch (\Throwable $t) {
-            dump($t->getTraceAsString());
         }
 
         return null;
