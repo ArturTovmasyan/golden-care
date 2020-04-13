@@ -578,4 +578,102 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             ->getResult();
     }
     ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getNextLeadId(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'l.id as id'
+            )
+            ->where('l.id > :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    User::class,
+                    'o',
+                    Join::WITH,
+                    'o = l.owner'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('l.id', 'ASC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getPreviousLeadId(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'l.id as id'
+            )
+            ->where('l.id < :id')
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    User::class,
+                    'o',
+                    Join::WITH,
+                    'o = l.owner'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        $qb
+            ->addOrderBy('l.id', 'DESC');
+
+        return $qb
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

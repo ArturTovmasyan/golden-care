@@ -11,6 +11,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
@@ -427,6 +428,10 @@ class Lead
     /**
      * @var bool
      * @ORM\Column(name="web_lead", type="boolean")
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
      */
     private $webLead = false;
 
@@ -483,6 +488,42 @@ class Lead
      * })
      */
     private $initialContactDate;
+
+    /**
+     * @var int
+     */
+    private $previousLeadId;
+
+    /**
+     * @var int
+     */
+    private $nextLeadId;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("previous_lead_id")
+     * @Serializer\Groups({
+     *     "api_lead_lead_get"
+     * })
+     * @return int|null
+     */
+    public function getPreviousId(): ?int
+    {
+        return $this->previousLeadId;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("next_lead_id")
+     * @Serializer\Groups({
+     *     "api_lead_lead_get"
+     * })
+     * @return int|null
+     */
+    public function getNextId(): ?int
+    {
+        return $this->nextLeadId;
+    }
 
     /**
      * @return int
@@ -914,5 +955,37 @@ class Lead
     public function setInitialContactDate(?\DateTime $initialContactDate): void
     {
         $this->initialContactDate = $initialContactDate;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPreviousLeadId(): ?int
+    {
+        return $this->previousLeadId;
+    }
+
+    /**
+     * @param int|null $previousLeadId
+     */
+    public function setPreviousLeadId(?int $previousLeadId): void
+    {
+        $this->previousLeadId = $previousLeadId;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNextLeadId(): ?int
+    {
+        return $this->nextLeadId;
+    }
+
+    /**
+     * @param int|null $nextLeadId
+     */
+    public function setNextLeadId(?int $nextLeadId): void
+    {
+        $this->nextLeadId = $nextLeadId;
     }
 }

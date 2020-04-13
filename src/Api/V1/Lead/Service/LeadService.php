@@ -179,10 +179,34 @@ class LeadService extends BaseService implements IGridService
      */
     public function getById($id)
     {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
+        /** @var Lead $entity */
+        $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
 
-        return $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+        if ($entity !== null) {
+            $leadId = $entity->getId();
+
+            $previousLead = $repo->getPreviousLeadId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+            $nextLead = $repo->getNextLeadId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
+
+            $previousLeadId = null;
+            if ($previousLead !== null) {
+                $previousLeadId = $previousLead['id'];
+            }
+
+            $nextLeadId = null;
+            if ($nextLead !== null) {
+                $nextLeadId = $nextLead['id'];
+            }
+
+            $entity->setPreviousLeadId($previousLeadId);
+            $entity->setNextLeadId($nextLeadId);
+        }
+
+        return $entity;
     }
 
     /**
