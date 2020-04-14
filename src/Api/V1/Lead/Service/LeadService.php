@@ -175,9 +175,10 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @return Lead|null|object
+     * @param $gridData
+     * @return Lead
      */
-    public function getById($id)
+    public function getById($id, $gridData)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -187,19 +188,30 @@ class LeadService extends BaseService implements IGridService
         $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
 
         if ($entity !== null) {
-            $leadId = $entity->getId();
-
-            $previousLead = $repo->getPreviousLeadId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
-            $nextLead = $repo->getNextLeadId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $leadId);
-
             $previousLeadId = null;
-            if ($previousLead !== null) {
-                $previousLeadId = $previousLead['id'];
-            }
-
             $nextLeadId = null;
-            if ($nextLead !== null) {
-                $nextLeadId = $nextLead['id'];
+
+            if (\count($gridData) <= 1) {
+                $previousLeadId = null;
+                $nextLeadId = null;
+            } else {
+                $length = \count($gridData);
+
+                foreach ($gridData as $key => $datum) {
+                    if ($datum['id'] === $entity->getId()) {
+                        if ($key >= $length - 1) {
+                            $previousLeadId = $gridData[$key - 1]['id'];
+                            $nextLeadId = null;
+                        } else {
+                            $nextLeadId = $gridData[$key + 1]['id'];
+                            if ($key === 0) {
+                                $previousLeadId = null;
+                            } else {
+                                $previousLeadId = $gridData[$key - 1]['id'];
+                            }
+                        }
+                    }
+                }
             }
 
             $entity->setPreviousLeadId($previousLeadId);

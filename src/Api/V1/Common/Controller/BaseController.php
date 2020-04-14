@@ -487,4 +487,23 @@ class BaseController extends AbstractController
     {
         return [];
     }
+
+    /**
+     * @param Request $request
+     * @param string $entityName
+     * @param string $groupName
+     * @param IGridService $service
+     * @param array ...$params
+     * @return mixed
+     */
+    protected function respondQueryBuilderResult(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
+    {
+        $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
+        $service->gridSelect($queryBuilder, $params);
+        $this->getGrid($entityName)->renderByGroup($request->query->all(), $groupName, $this->gridIgnoreFields($request));
+
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
 }

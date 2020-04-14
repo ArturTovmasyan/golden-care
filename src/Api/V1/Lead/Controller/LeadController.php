@@ -101,10 +101,26 @@ class LeadController extends BaseController
      */
     public function getAction(Request $request, $id, LeadService $leadService): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $gridData = $this->respondQueryBuilderResult(
+            $request,
+            Lead::class,
+            'api_lead_lead_grid',
+            $leadService,
+            [
+                'all' => $request->get('all'),
+                'my' => $request->get('my'),
+                'user_id' => $user->getId(),
+                'spam' => $request->get('spam')
+            ]
+        );
+
         return $this->respondSuccess(
             Response::HTTP_OK,
             '',
-            $leadService->getById($id),
+            $leadService->getById($id, $gridData),
             ['api_lead_lead_get']
         );
     }
