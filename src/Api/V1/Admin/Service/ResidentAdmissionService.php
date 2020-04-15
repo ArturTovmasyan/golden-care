@@ -270,13 +270,9 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         if ($groupResident['type_id'] === $group['id']) {
 
                             if (array_key_exists($groupResident['id'], $images)) {
-                                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                                    'Bucket' => getenv('AWS_BUCKET'),
-                                    'Key' => $imageTypes[$groupResident['id']] . '/' . $imageS3Ids[$groupResident['id']],
-                                ]);
-                                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+                                $uri = $this->s3Service->getFile($imageS3Ids[$groupResident['id']], $imageTypes[$groupResident['id']]);
 
-                                $groupResident['photo'] = (string)$request->getUri();
+                                $groupResident['photo'] = $uri;
                             } else {
                                 $groupResident['photo'] = null;
                             }
@@ -360,20 +356,16 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $imageS3Ids = array_column($images, 's3Id', 'id');
             $images = array_column($images, 'id', 'id');
 
-            foreach ($residents as $resident) {
-                if (array_key_exists($resident['id'], $images)) {
-                    $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                        'Bucket' => getenv('AWS_BUCKET'),
-                        'Key' => $imageTypes[$resident['id']] . '/' . $imageS3Ids[$resident['id']],
-                    ]);
-                    $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            foreach ($residents as $item) {
+                if (array_key_exists($item['id'], $images)) {
+                    $uri = $this->s3Service->getFile($imageS3Ids[$item['id']], $imageTypes[$item['id']]);
 
-                    $resident['photo'] = (string)$request->getUri();
+                    $item['photo'] = $uri;
                 } else {
-                    $resident['photo'] = null;
+                    $item['photo'] = null;
                 }
 
-                $finalResidents[] = $resident;
+                $finalResidents[] = $item;
             }
 
             $result = [

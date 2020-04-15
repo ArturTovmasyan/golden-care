@@ -74,13 +74,9 @@ class FacilityDocumentService extends BaseService implements IGridService
         /** @var FacilityDocument $entity */
         foreach ($list as $entity) {
             if ($entity !== null && $entity->getFile() !== null) {
-                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                    'Bucket' => getenv('AWS_BUCKET'),
-                    'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
-                ]);
-                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+                $uri = $this->s3Service->getFile($entity->getFile()->getS3Id(), $entity->getFile()->getType());
 
-                $entity->setDownloadUrl((string)$request->getUri());
+                $entity->setDownloadUrl($uri);
             } else {
                 $entity->setDownloadUrl(null);
             }

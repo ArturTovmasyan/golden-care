@@ -44,13 +44,9 @@ class ProfileController extends BaseController
 
         $user->setDownloadUrl(null);
         if ($user !== null && $user->getImage() !== null) {
-            $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $user->getImage()->getType() . '/' . $user->getImage()->getS3Id(),
-            ]);
-            $result = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            $uri = $s3Service->getFile($user->getImage()->getS3Id(), $user->getImage()->getType());
 
-            $user->setDownloadUrl((string)$result->getUri());
+            $user->setDownloadUrl($uri);
         }
 
         return $this->respondSuccess(

@@ -84,25 +84,17 @@ class ResidentHealthInsuranceController extends BaseController
         $entity = $residentHealthInsurance->getById($id);
 
         if ($entity !== null && $entity->getFirstFile() !== null) {
-            $cmdFirst = $s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $entity->getFirstFile()->getType() . '/' . $entity->getFirstFile()->getS3Id(),
-            ]);
-            $s3RequestFirst = $s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
+            $firstUri = $s3Service->getFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType());
 
-            $entity->setFirstFileDownloadUrl((string)$s3RequestFirst->getUri());
+            $entity->setFirstFileDownloadUrl($firstUri);
         } else {
             $entity->setFirstFileDownloadUrl(null);
         }
 
         if ($entity !== null && $entity->getSecondFile() !== null) {
-            $cmdSecond = $s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $entity->getSecondFile()->getType() . '/' . $entity->getSecondFile()->getS3Id(),
-            ]);
-            $s3RequestSecond = $s3Service->getS3Client()->createPresignedRequest($cmdSecond, '+20 minutes');
+            $secondUri = $s3Service->getFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType());
 
-            $entity->setSecondFileDownloadUrl((string)$s3RequestSecond->getUri());
+            $entity->setSecondFileDownloadUrl($secondUri);
         } else {
             $entity->setSecondFileDownloadUrl(null);
         }

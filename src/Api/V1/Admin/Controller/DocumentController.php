@@ -44,7 +44,7 @@ class DocumentController extends BaseController
             $userRoles = $user->getRoleObjects();
 
             if ($userRoles !== null) {
-                $userRoleIds = array_map(function ($item) {
+                $userRoleIds = array_map(static function ($item) {
                     return $item->getId();
                 }, $userRoles->toArray());
             }
@@ -127,13 +127,9 @@ class DocumentController extends BaseController
         $entity = $documentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
-            $cmd = $s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $entity->getFile()->getType() . '/' . $entity->getFile()->getS3Id(),
-            ]);
-            $s3Request = $s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            $uri = $s3Service->getFile($entity->getFile()->getS3Id(), $entity->getFile()->getType());
 
-            $entity->setDownloadUrl((string)$s3Request->getUri());
+            $entity->setDownloadUrl($uri);
         } else {
             $entity->setDownloadUrl(null);
         }

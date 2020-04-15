@@ -551,13 +551,9 @@ class BaseService
 
         $result = [];
         foreach ($images as  $image) {
-            $cmdFirst = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $image['type'] . '/' . $image['s3Id'],
-            ]);
-            $s3RequestFirst = $this->s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
+            $uri = $this->s3Service->getFile($image['s3Id'], $image['type']);
 
-            $result[$image['id']] = (string)$s3RequestFirst->getUri();
+            $result[$image['id']] = $uri;
         }
 
         return $result;

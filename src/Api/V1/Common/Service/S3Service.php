@@ -83,4 +83,20 @@ class S3Service
 
         return $result;
     }
+
+    /**
+     * @param $s3Id
+     * @param $fileType
+     * @return string
+     */
+    public function getFile($s3Id, $fileType): string
+    {
+        $cmd = $this->getS3Client()->getCommand('GetObject', [
+            'Bucket' => getenv('AWS_BUCKET'),
+            'Key' => $fileType . '/' . $s3Id,
+        ]);
+        $s3Request = $this->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+
+        return (string)$s3Request->getUri();
+    }
 }

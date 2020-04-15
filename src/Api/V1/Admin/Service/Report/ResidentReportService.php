@@ -239,13 +239,7 @@ class ResidentReportService extends BaseService
                     $image = Dumper::dump($dataObject);
                 }
             } else {
-                $cmdFirst = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                    'Bucket' => getenv('AWS_BUCKET'),
-                    'Key' => $insurance->getFirstFile()->getType() . '/' . $insurance->getFirstFile()->getS3Id(),
-                ]);
-                $s3RequestFirst = $this->s3Service->getS3Client()->createPresignedRequest($cmdFirst, '+20 minutes');
-
-                $image = (string)$s3RequestFirst->getUri();
+                $image = $this->s3Service->getFile($insurance->getFirstFile()->getS3Id(), $insurance->getFirstFile()->getType());
             }
         }
 
@@ -293,13 +287,7 @@ class ResidentReportService extends BaseService
                     $image = Dumper::dump($dataObject);
                 }
             } else {
-                $cmdSecond = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                    'Bucket' => getenv('AWS_BUCKET'),
-                    'Key' => $insurance->getSecondFile()->getType() . '/' . $insurance->getSecondFile()->getS3Id(),
-                ]);
-                $s3RequestSecond = $this->s3Service->getS3Client()->createPresignedRequest($cmdSecond, '+20 minutes');
-
-                $image = (string)$s3RequestSecond->getUri();
+                $image = $this->s3Service->getFile($insurance->getSecondFile()->getS3Id(), $insurance->getSecondFile()->getType());
             }
         }
 

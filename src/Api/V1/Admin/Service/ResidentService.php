@@ -181,13 +181,9 @@ class ResidentService extends BaseService implements IGridService
         foreach ($list as $entity) {
             $entity->setDownloadUrl(null);
             if ($entity !== null && $entity->getImage() !== null) {
-                $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                    'Bucket' => getenv('AWS_BUCKET'),
-                    'Key' => $entity->getImage()->getType() . '/' . $entity->getImage()->getS3Id(),
-                ]);
-                $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+                $uri = $this->s3Service->getFile($entity->getImage()->getS3Id(), $entity->getImage()->getType());
 
-                $entity->setDownloadUrl((string)$request->getUri());
+                $entity->setDownloadUrl($uri);
             }
         }
 
@@ -211,13 +207,9 @@ class ResidentService extends BaseService implements IGridService
         $resident->setDownloadString(null);
         $resident->setDownloadUrl(null);
         if ($resident !== null && $resident->getImage() !== null) {
-            $cmd = $this->s3Service->getS3Client()->getCommand('GetObject', [
-                'Bucket' => getenv('AWS_BUCKET'),
-                'Key' => $resident->getImage()->getType() . '/' . $resident->getImage()->getS3Id(),
-            ]);
-            $request = $this->s3Service->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+            $uri = $this->s3Service->getFile($resident->getImage()->getS3Id(), $resident->getImage()->getType());
 
-            $resident->setDownloadString((string)$request->getUri());
+            $resident->setDownloadString($uri);
 
             /** @var Image $image */
             $image = $resident->getImage();
