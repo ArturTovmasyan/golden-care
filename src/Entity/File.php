@@ -106,6 +106,13 @@ class File
     private $s3Id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="s3_uri", type="text", nullable=true)
+     */
+    private $s3Uri;
+
+    /**
      * @var Document
      * @ORM\OneToOne(targetEntity="App\Entity\Document", mappedBy="file", cascade={"remove", "persist"})
      */
@@ -207,6 +214,22 @@ class File
     public function setS3Id(?string $s3Id): void
     {
         $this->s3Id = $s3Id;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getS3Uri(): ?string
+    {
+        return $this->s3Uri;
+    }
+
+    /**
+     * @param null|string $s3Uri
+     */
+    public function setS3Uri(?string $s3Uri): void
+    {
+        $this->s3Uri = $s3Uri;
     }
 
     /**

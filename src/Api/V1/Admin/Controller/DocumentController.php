@@ -127,9 +127,7 @@ class DocumentController extends BaseController
         $entity = $documentService->getById($id);
 
         if ($entity !== null && $entity->getFile() !== null) {
-            $uri = $s3Service->getFile($entity->getFile()->getS3Id(), $entity->getFile()->getType());
-
-            $entity->setDownloadUrl($uri);
+            $entity->setDownloadUrl($entity->getFile()->getS3Uri());
         } else {
             $entity->setDownloadUrl(null);
         }

@@ -551,9 +551,7 @@ class BaseService
 
         $result = [];
         foreach ($images as  $image) {
-            $uri = $this->s3Service->getFile($image['s3Id'], $image['type']);
-
-            $result[$image['id']] = $uri;
+            $result[$image['id']] = $image['s3Uri'];
         }
 
         return $result;

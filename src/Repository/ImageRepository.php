@@ -40,7 +40,8 @@ class ImageRepository extends EntityRepository
             ->select('
                 r.id as id, 
                 i.type as type,
-                i.s3Id_150_150 as s3Id
+                i.s3Id_150_150 as s3Id,
+                i.s3Uri_150_150 as s3Uri
             ')
             ->join(
                 Resident::class,

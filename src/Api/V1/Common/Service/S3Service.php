@@ -95,7 +95,7 @@ class S3Service
             'Bucket' => getenv('AWS_BUCKET'),
             'Key' => $fileType . '/' . $s3Id,
         ]);
-        $s3Request = $this->getS3Client()->createPresignedRequest($cmd, '+20 minutes');
+        $s3Request = $this->getS3Client()->createPresignedRequest($cmd, '+60 minutes');
 
         return (string)$s3Request->getUri();
     }

@@ -74,9 +74,7 @@ class FacilityDocumentService extends BaseService implements IGridService
         /** @var FacilityDocument $entity */
         foreach ($list as $entity) {
             if ($entity !== null && $entity->getFile() !== null) {
-                $uri = $this->s3Service->getFile($entity->getFile()->getS3Id(), $entity->getFile()->getType());
-
-                $entity->setDownloadUrl($uri);
+                $entity->setDownloadUrl($entity->getFile()->getS3Uri());
             } else {
                 $entity->setDownloadUrl(null);
             }
@@ -168,6 +166,12 @@ class FacilityDocumentService extends BaseService implements IGridService
                 $this->validate($facilityDocument, null, ['api_admin_facility_document_add']);
 
                 $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
+
+                //set S3 URI
+                $s3Uri = $this->s3Service->getFile($file->getS3Id(), $file->getType());
+                $file->setS3Uri($s3Uri);
+
+                $this->em->persist($file);
             } else {
                 $facilityDocument->setFile(null);
             }
@@ -277,6 +281,12 @@ class FacilityDocumentService extends BaseService implements IGridService
                     $this->validate($entity, null, ['api_admin_facility_document_edit']);
 
                     $this->s3Service->uploadFile($base64, $s3Id, $file->getType(), $file->getMimeType());
+
+                    //set S3 URI
+                    $s3Uri = $this->s3Service->getFile($file->getS3Id(), $file->getType());
+                    $file->setS3Uri($s3Uri);
+
+                    $this->em->persist($file);
                 }
             } else {
                 $entity->setFile(null);

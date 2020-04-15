@@ -166,6 +166,20 @@ class Image
     /**
      * @var string
      *
+     * @ORM\Column(name="s3_uri", type="text", nullable=true)
+     */
+    private $s3Uri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="s3_uri_150_150", type="text", nullable=true)
+     */
+    private $s3Uri_150_150;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="request_id", type="string", length=255, nullable=true)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_image_add_mobile"
@@ -318,6 +332,38 @@ class Image
     public function setS3Id300300(?string $s3Id_300_300): void
     {
         $this->s3Id_300_300 = $s3Id_300_300;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getS3Uri(): ?string
+    {
+        return $this->s3Uri;
+    }
+
+    /**
+     * @param null|string $s3Uri
+     */
+    public function setS3Uri(?string $s3Uri): void
+    {
+        $this->s3Uri = $s3Uri;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getS3Uri150150(): ?string
+    {
+        return $this->s3Uri_150_150;
+    }
+
+    /**
+     * @param null|string $s3Uri_150_150
+     */
+    public function setS3Uri150150(?string $s3Uri_150_150): void
+    {
+        $this->s3Uri_150_150 = $s3Uri_150_150;
     }
 
     /**

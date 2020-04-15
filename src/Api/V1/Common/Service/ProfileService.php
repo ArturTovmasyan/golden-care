@@ -133,6 +133,15 @@ class ProfileService extends BaseService
                 $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
 
                 $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+
+                //set S3 URI
+                $s3Uri_150_150 = $this->s3Service->getFile($image->getS3Id150150(), $image->getType());
+                $image->setS3Uri150150($s3Uri_150_150);
+
+                $s3Uri = $this->s3Service->getFile($image->getS3Id(), $image->getType());
+                $image->setS3Uri($s3Uri);
+
+                $this->em->persist($image);
             }
         } elseif ($photo === null && $image !== null) {
             $this->s3Service->removeFile($image->getS3Id(), $image->getType());

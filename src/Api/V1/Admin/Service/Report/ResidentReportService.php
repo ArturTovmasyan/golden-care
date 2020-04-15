@@ -239,7 +239,7 @@ class ResidentReportService extends BaseService
                     $image = Dumper::dump($dataObject);
                 }
             } else {
-                $image = $this->s3Service->getFile($insurance->getFirstFile()->getS3Id(), $insurance->getFirstFile()->getType());
+                $image = $insurance->getFirstFile()->getS3Uri();
             }
         }
 
@@ -287,7 +287,7 @@ class ResidentReportService extends BaseService
                     $image = Dumper::dump($dataObject);
                 }
             } else {
-                $image = $this->s3Service->getFile($insurance->getSecondFile()->getS3Id(), $insurance->getSecondFile()->getType());
+                $image = $insurance->getSecondFile()->getS3Uri();
             }
         }
 

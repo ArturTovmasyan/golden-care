@@ -155,7 +155,7 @@ class ResidentService extends BaseService implements IGridService
 
                 $activeIds = [];
                 if (!empty($residents)) {
-                    $activeIds = array_map(function (array $item) {
+                    $activeIds = array_map(static function (array $item) {
                         return $item['id'];
                     }, $residents);
                 }
@@ -166,7 +166,7 @@ class ResidentService extends BaseService implements IGridService
 
                 $stateIds = [];
                 if (!empty($residents)) {
-                    $stateIds = array_map(function (array $item) {
+                    $stateIds = array_map(static function (array $item) {
                         return $item['id'];
                     }, $residents);
                 }
@@ -181,9 +181,7 @@ class ResidentService extends BaseService implements IGridService
         foreach ($list as $entity) {
             $entity->setDownloadUrl(null);
             if ($entity !== null && $entity->getImage() !== null) {
-                $uri = $this->s3Service->getFile($entity->getImage()->getS3Id(), $entity->getImage()->getType());
-
-                $entity->setDownloadUrl($uri);
+                $entity->setDownloadUrl($entity->getImage()->getS3Uri());
             }
         }
 
@@ -207,9 +205,7 @@ class ResidentService extends BaseService implements IGridService
         $resident->setDownloadString(null);
         $resident->setDownloadUrl(null);
         if ($resident !== null && $resident->getImage() !== null) {
-            $uri = $this->s3Service->getFile($resident->getImage()->getS3Id(), $resident->getImage()->getType());
-
-            $resident->setDownloadString($uri);
+            $resident->setDownloadString($resident->getImage()->getS3Uri());
 
             /** @var Image $image */
             $image = $resident->getImage();
@@ -330,6 +326,15 @@ class ResidentService extends BaseService implements IGridService
                 $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
 
                 $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+
+                //set S3 URI
+                $s3Uri_150_150 = $this->s3Service->getFile($image->getS3Id150150(), $image->getType());
+                $image->setS3Uri150150($s3Uri_150_150);
+
+                $s3Uri = $this->s3Service->getFile($image->getS3Id(), $image->getType());
+                $image->setS3Uri($s3Uri);
+
+                $this->em->persist($image);
             }
 
             $this->em->persist($resident);
@@ -501,6 +506,15 @@ class ResidentService extends BaseService implements IGridService
                 $this->s3Service->uploadFile($photo, $s3Id, $image->getType(), $image->getMimeType());
 
                 $this->imageFilterService->createAllFilterVersion($image, $base64Image, $mimeType, $format);
+
+                //set S3 URI
+                $s3Uri_150_150 = $this->s3Service->getFile($image->getS3Id150150(), $image->getType());
+                $image->setS3Uri150150($s3Uri_150_150);
+
+                $s3Uri = $this->s3Service->getFile($image->getS3Id(), $image->getType());
+                $image->setS3Uri($s3Uri);
+
+                $this->em->persist($image);
             }
         } elseif ($photo === null && $image !== null) {
             $this->s3Service->removeFile($image->getS3Id(), $image->getType());
@@ -2581,6 +2595,15 @@ class ResidentService extends BaseService implements IGridService
                         $this->s3Service->uploadFile($base64, $s3Id, $image->getType(), $image->getMimeType());
 
                         $this->imageFilterService->createAllFilterVersion($image, $decodedData, $mimeType, $format);
+
+                        //set S3 URI
+                        $s3Uri_150_150 = $this->s3Service->getFile($image->getS3Id150150(), $image->getType());
+                        $image->setS3Uri150150($s3Uri_150_150);
+
+                        $s3Uri = $this->s3Service->getFile($image->getS3Id(), $image->getType());
+                        $image->setS3Uri($s3Uri);
+
+                        $this->em->persist($image);
 
                         $now = new \DateTime('now');
                         $resident->setUpdatedAt($now);

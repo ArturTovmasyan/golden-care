@@ -84,17 +84,13 @@ class ResidentHealthInsuranceController extends BaseController
         $entity = $residentHealthInsurance->getById($id);
 
         if ($entity !== null && $entity->getFirstFile() !== null) {
-            $firstUri = $s3Service->getFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType());
-
-            $entity->setFirstFileDownloadUrl($firstUri);
+            $entity->setFirstFileDownloadUrl($entity->getFirstFile()->getS3Uri());
         } else {
             $entity->setFirstFileDownloadUrl(null);
         }
 
         if ($entity !== null && $entity->getSecondFile() !== null) {
-            $secondUri = $s3Service->getFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType());
-
-            $entity->setSecondFileDownloadUrl($secondUri);
+            $entity->setSecondFileDownloadUrl($entity->getSecondFile()->getS3Uri());
         } else {
             $entity->setSecondFileDownloadUrl(null);
         }

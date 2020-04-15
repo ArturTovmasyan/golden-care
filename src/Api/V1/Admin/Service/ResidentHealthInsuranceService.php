@@ -67,17 +67,13 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
             /** @var ResidentHealthInsurance $entity */
             foreach ($list as $entity) {
                 if ($entity !== null && $entity->getFirstFile() !== null) {
-                    $firstUri = $this->s3Service->getFile($entity->getFirstFile()->getS3Id(), $entity->getFirstFile()->getType());
-
-                    $entity->setFirstFileDownloadUrl($firstUri);
+                    $entity->setFirstFileDownloadUrl($entity->getFirstFile()->getS3Uri());
                 } else {
                     $entity->setFirstFileDownloadUrl(null);
                 }
 
                 if ($entity !== null && $entity->getSecondFile() !== null) {
-                    $secondUri = $this->s3Service->getFile($entity->getSecondFile()->getS3Id(), $entity->getSecondFile()->getType());
-
-                    $entity->setSecondFileDownloadUrl($secondUri);
+                    $entity->setSecondFileDownloadUrl($entity->getSecondFile()->getS3Uri());
                 } else {
                     $entity->setSecondFileDownloadUrl(null);
                 }
@@ -176,6 +172,12 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
 
                 $this->s3Service->uploadFile($fileFirst, $s3Id, $firstFile->getType(), $firstFile->getMimeType());
 
+                //set S3 URI
+                $s3Uri = $this->s3Service->getFile($firstFile->getS3Id(), $firstFile->getType());
+                $firstFile->setS3Uri($s3Uri);
+
+                $this->em->persist($firstFile);
+
                 $residentHealthInsurance->setFirstFile($firstFile);
             } else {
                 $residentHealthInsurance->setFirstFile(null);
@@ -206,6 +208,12 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                 $this->em->persist($secondFile);
 
                 $this->s3Service->uploadFile($fileSecond, $s3Id, $secondFile->getType(), $secondFile->getMimeType());
+
+                //set S3 URI
+                $s3Uri = $this->s3Service->getFile($secondFile->getS3Id(), $secondFile->getType());
+                $secondFile->setS3Uri($s3Uri);
+
+                $this->em->persist($secondFile);
 
                 $residentHealthInsurance->setSecondFile($secondFile);
             } else {
@@ -317,6 +325,12 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
 
                     $this->s3Service->uploadFile($fileFirst, $s3Id, $firstFile->getType(), $firstFile->getMimeType());
 
+                    //set S3 URI
+                    $s3Uri = $this->s3Service->getFile($firstFile->getS3Id(), $firstFile->getType());
+                    $firstFile->setS3Uri($s3Uri);
+
+                    $this->em->persist($firstFile);
+
                     $entity->setFirstFile($firstFile);
                 }
             } else {
@@ -360,6 +374,12 @@ class ResidentHealthInsuranceService extends BaseService implements IGridService
                     $this->em->persist($secondFile);
 
                     $this->s3Service->uploadFile($fileSecond, $s3Id, $secondFile->getType(), $secondFile->getMimeType());
+
+                    //set S3 URI
+                    $s3Uri = $this->s3Service->getFile($secondFile->getS3Id(), $secondFile->getType());
+                    $secondFile->setS3Uri($s3Uri);
+
+                    $this->em->persist($secondFile);
 
                     $entity->setSecondFile($secondFile);
                 }

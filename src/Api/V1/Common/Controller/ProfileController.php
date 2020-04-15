@@ -44,9 +44,7 @@ class ProfileController extends BaseController
 
         $user->setDownloadUrl(null);
         if ($user !== null && $user->getImage() !== null) {
-            $uri = $s3Service->getFile($user->getImage()->getS3Id(), $user->getImage()->getType());
-
-            $user->setDownloadUrl($uri);
+            $user->setDownloadUrl($user->getImage()->getS3Uri());
         }
 
         return $this->respondSuccess(

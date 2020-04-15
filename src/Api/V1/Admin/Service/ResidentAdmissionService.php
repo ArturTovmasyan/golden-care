@@ -243,8 +243,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds, $resident, $room, $isFilter);
 
                 $images = [];
-                $imageTypes = [];
-                $imageS3Ids = [];
+                $imageS3Uris = [];
                 if (!empty($groupResidents)) {
                     $residentIds = array_map(static function ($item) {
                         return $item['id'];
@@ -254,8 +253,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     $imageRepo = $this->em->getRepository(Image::class);
 
                     $images = $imageRepo->findByResidentIds($residentIds);
-                    $imageTypes = array_column($images, 'type', 'id');
-                    $imageS3Ids = array_column($images, 's3Id', 'id');
+                    $imageS3Uris = array_column($images, 's3Uri', 'id');
                     $images = array_column($images, 'id', 'id');
                 }
 
@@ -270,9 +268,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         if ($groupResident['type_id'] === $group['id']) {
 
                             if (array_key_exists($groupResident['id'], $images)) {
-                                $uri = $this->s3Service->getFile($imageS3Ids[$groupResident['id']], $imageTypes[$groupResident['id']]);
-
-                                $groupResident['photo'] = $uri;
+                                $groupResident['photo'] = $imageS3Uris[$groupResident['id']];
                             } else {
                                 $groupResident['photo'] = null;
                             }
@@ -352,15 +348,12 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $imageRepo = $this->em->getRepository(Image::class);
 
             $images = $imageRepo->findByResidentIds($residentIds);
-            $imageTypes = array_column($images, 'type', 'id');
-            $imageS3Ids = array_column($images, 's3Id', 'id');
+            $imageS3Uris = array_column($images, 's3Uri', 'id');
             $images = array_column($images, 'id', 'id');
 
             foreach ($residents as $item) {
                 if (array_key_exists($item['id'], $images)) {
-                    $uri = $this->s3Service->getFile($imageS3Ids[$item['id']], $imageTypes[$item['id']]);
-
-                    $item['photo'] = $uri;
+                    $item['photo'] = $imageS3Uris[$item['id']];
                 } else {
                     $item['photo'] = null;
                 }
