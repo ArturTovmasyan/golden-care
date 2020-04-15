@@ -562,4 +562,42 @@ class BaseService
 
         return $result;
     }
+
+    /**
+     * @param $entity
+     * @param $gridData
+     */
+    public function setPreviousAndNextItemIdsFromGrid($entity, $gridData): void
+    {
+        if ($entity instanceof PreviousAndNextItemsService) {
+            $previousLeadId = null;
+            $nextLeadId = null;
+
+            if (\count($gridData) <= 1) {
+                $previousLeadId = null;
+                $nextLeadId = null;
+            } else {
+                $length = \count($gridData);
+
+                foreach ($gridData as $key => $datum) {
+                    if ($datum['id'] === $entity->getId()) {
+                        if ($key >= $length - 1) {
+                            $previousLeadId = $gridData[$key - 1]['id'];
+                            $nextLeadId = null;
+                        } else {
+                            $nextLeadId = $gridData[$key + 1]['id'];
+                            if ($key === 0) {
+                                $previousLeadId = null;
+                            } else {
+                                $previousLeadId = $gridData[$key - 1]['id'];
+                            }
+                        }
+                    }
+                }
+            }
+
+            $entity->setPreviousId($previousLeadId);
+            $entity->setNextId($nextLeadId);
+        }
+    }
 }

@@ -187,36 +187,7 @@ class LeadService extends BaseService implements IGridService
         /** @var Lead $entity */
         $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
 
-        if ($entity !== null) {
-            $previousLeadId = null;
-            $nextLeadId = null;
-
-            if (\count($gridData) <= 1) {
-                $previousLeadId = null;
-                $nextLeadId = null;
-            } else {
-                $length = \count($gridData);
-
-                foreach ($gridData as $key => $datum) {
-                    if ($datum['id'] === $entity->getId()) {
-                        if ($key >= $length - 1) {
-                            $previousLeadId = $gridData[$key - 1]['id'];
-                            $nextLeadId = null;
-                        } else {
-                            $nextLeadId = $gridData[$key + 1]['id'];
-                            if ($key === 0) {
-                                $previousLeadId = null;
-                            } else {
-                                $previousLeadId = $gridData[$key - 1]['id'];
-                            }
-                        }
-                    }
-                }
-            }
-
-            $entity->setPreviousLeadId($previousLeadId);
-            $entity->setNextLeadId($nextLeadId);
-        }
+        $this->setPreviousAndNextItemIdsFromGrid($entity, $gridData);
 
         return $entity;
     }

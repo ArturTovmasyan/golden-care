@@ -2,6 +2,7 @@
 
 namespace App\Entity\Lead;
 
+use App\Api\V1\Common\Service\PreviousAndNextItemsService;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\PaymentSource;
@@ -83,7 +84,7 @@ use App\Annotation\Grid;
  *     }
  * )
  */
-class Lead
+class Lead implements PreviousAndNextItemsService
 {
     use TimeAwareTrait;
     use UserAwareTrait;
@@ -492,12 +493,12 @@ class Lead
     /**
      * @var int
      */
-    private $previousLeadId;
+    private $previousId;
 
     /**
      * @var int
      */
-    private $nextLeadId;
+    private $nextId;
 
     /**
      * @Serializer\VirtualProperty()
@@ -507,9 +508,9 @@ class Lead
      * })
      * @return int|null
      */
-    public function getPreviousId(): ?int
+    public function getPreviousLeadId(): ?int
     {
-        return $this->previousLeadId;
+        return $this->previousId;
     }
 
     /**
@@ -520,9 +521,9 @@ class Lead
      * })
      * @return int|null
      */
-    public function getNextId(): ?int
+    public function getNextLeadId(): ?int
     {
-        return $this->nextLeadId;
+        return $this->nextId;
     }
 
     /**
@@ -960,32 +961,32 @@ class Lead
     /**
      * @return int|null
      */
-    public function getPreviousLeadId(): ?int
+    public function getPreviousId(): ?int
     {
-        return $this->previousLeadId;
+        return $this->previousId;
     }
 
     /**
-     * @param int|null $previousLeadId
+     * @param int|null $previousId
      */
-    public function setPreviousLeadId(?int $previousLeadId): void
+    public function setPreviousId(?int $previousId): void
     {
-        $this->previousLeadId = $previousLeadId;
+        $this->previousId = $previousId;
     }
 
     /**
      * @return int|null
      */
-    public function getNextLeadId(): ?int
+    public function getNextId(): ?int
     {
-        return $this->nextLeadId;
+        return $this->nextId;
     }
 
     /**
-     * @param int|null $nextLeadId
+     * @param int|null $nextId
      */
-    public function setNextLeadId(?int $nextLeadId): void
+    public function setNextId(?int $nextId): void
     {
-        $this->nextLeadId = $nextLeadId;
+        $this->nextId = $nextId;
     }
 }
