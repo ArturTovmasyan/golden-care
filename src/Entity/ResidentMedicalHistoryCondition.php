@@ -137,7 +137,7 @@ class ResidentMedicalHistoryCondition
      *     "api_admin_resident_medical_history_condition_add",
      *     "api_admin_resident_medical_history_condition_edit"
      * })
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="date", type="date")
      * @Groups({
      *     "api_admin_resident_medical_history_condition_grid",
      *     "api_admin_resident_medical_history_condition_list",
