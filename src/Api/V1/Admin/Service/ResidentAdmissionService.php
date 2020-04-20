@@ -803,6 +803,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $this->validate($entity, null, [$validationGroup]);
             $this->em->persist($entity);
 
+            //update resident for mobile
+            $resident->setUpdatedAt($entity->getUpdatedAt());
+            $this->em->persist($resident);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -950,6 +954,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $this->validate($entity, null, [$validationGroup]);
             $this->em->persist($entity);
 
+            //update resident for mobile
+            $resident->setUpdatedAt($entity->getUpdatedAt());
+            $this->em->persist($resident);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -1069,6 +1077,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     default:
                         throw new IncorrectStrategyTypeException();
                 }
+
+                //update resident for mobile
+                $resident->setUpdatedAt($entity->getUpdatedAt());
+                $this->em->persist($resident);
             }
 
             $this->em->flush();
@@ -1187,6 +1199,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
             $this->em->persist($secondEntity);
 
+            //update resident for mobile
+            $firstResident->setUpdatedAt($firstEntity->getUpdatedAt());
+            $this->em->persist($firstResident);
+
+            $secondResident->setUpdatedAt($secondEntity->getUpdatedAt());
+            $this->em->persist($secondResident);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -1209,13 +1228,13 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
-            $entity->setDiningRoom($lastAction->getDiningRoom() ?? null);
-            $entity->setFacilityBed($lastAction->getFacilityBed() ?? null);
-            $entity->setDnr($lastAction->isDnr() ?? null);
-            $entity->setPolst($lastAction->isPolst() ?? null);
-            $entity->setAmbulatory($lastAction->isAmbulatory() ?? null);
-            $entity->setCareGroup($lastAction->getCareGroup() ?? null);
-            $entity->setCareLevel($lastAction->getCareLevel() ?? null);
+            $entity->setDiningRoom($lastAction->getDiningRoom());
+            $entity->setFacilityBed($lastAction->getFacilityBed());
+            $entity->setDnr($lastAction->isDnr());
+            $entity->setPolst($lastAction->isPolst());
+            $entity->setAmbulatory($lastAction->isAmbulatory());
+            $entity->setCareGroup($lastAction->getCareGroup());
+            $entity->setCareLevel($lastAction->getCareLevel());
         }
 
         if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
@@ -1292,7 +1311,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
-            $entity->setApartmentBed($lastAction->getApartmentBed() ?? null);
+            $entity->setApartmentBed($lastAction->getApartmentBed());
         }
 
         if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
@@ -1325,14 +1344,14 @@ class ResidentAdmissionService extends BaseService implements IGridService
         $currentSpace = $this->grantService->getCurrentSpace();
 
         if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
-            $entity->setRegion($lastAction->getRegion() ?? null);
-            $entity->setCsz($lastAction->getCsz() ?? null);
-            $entity->setAddress($lastAction->getAddress() ?? null);
-            $entity->setDnr($lastAction->isDnr() ?? null);
-            $entity->setPolst($lastAction->isPolst() ?? null);
-            $entity->setAmbulatory($lastAction->isAmbulatory() ?? null);
-            $entity->setCareGroup($lastAction->getCareGroup() ?? null);
-            $entity->setCareLevel($lastAction->getCareLevel() ?? null);
+            $entity->setRegion($lastAction->getRegion());
+            $entity->setCsz($lastAction->getCsz());
+            $entity->setAddress($lastAction->getAddress());
+            $entity->setDnr($lastAction->isDnr());
+            $entity->setPolst($lastAction->isPolst());
+            $entity->setAmbulatory($lastAction->isAmbulatory());
+            $entity->setCareGroup($lastAction->getCareGroup());
+            $entity->setCareLevel($lastAction->getCareLevel());
         }
 
         if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
