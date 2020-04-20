@@ -804,7 +804,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $this->em->persist($entity);
 
             //update resident for mobile
-            $resident->setUpdatedAt($entity->getUpdatedAt());
+            $resident->setUpdatedAt(new \DateTime('now'));
             $this->em->persist($resident);
 
             $this->em->flush();
@@ -955,7 +955,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $this->em->persist($entity);
 
             //update resident for mobile
-            $resident->setUpdatedAt($entity->getUpdatedAt());
+            $resident->setUpdatedAt(new \DateTime('now'));
             $this->em->persist($resident);
 
             $this->em->flush();
@@ -1079,7 +1079,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 //update resident for mobile
-                $resident->setUpdatedAt($entity->getUpdatedAt());
+                $resident->setUpdatedAt(new \DateTime('now'));
                 $this->em->persist($resident);
             }
 
@@ -1200,10 +1200,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $this->em->persist($secondEntity);
 
             //update resident for mobile
-            $firstResident->setUpdatedAt($firstEntity->getUpdatedAt());
+            $firstResident->setUpdatedAt(new \DateTime('now'));
             $this->em->persist($firstResident);
 
-            $secondResident->setUpdatedAt($secondEntity->getUpdatedAt());
+            $secondResident->setUpdatedAt(new \DateTime('now'));
             $this->em->persist($secondResident);
 
             $this->em->flush();
