@@ -92,6 +92,9 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
         if ($spam) {
             $queryBuilder
                 ->andWhere('l.spam = 1');
+        } else {
+            $queryBuilder
+                ->andWhere('l.spam = 0');
         }
 
         if ($space !== null) {
@@ -174,6 +177,9 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
         if ($spam) {
             $qb
                 ->andWhere('l.spam = 1');
+        } else {
+            $qb
+                ->andWhere('l.spam = 0');
         }
 
         if ($contactId !== null) {
