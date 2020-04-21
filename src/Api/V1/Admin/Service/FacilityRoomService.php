@@ -16,6 +16,7 @@ use App\Entity\FacilityBed;
 use App\Entity\FacilityRoom;
 use App\Entity\Facility;
 use App\Entity\FacilityRoomType;
+use App\Entity\FacilityRoomTypes;
 use App\Entity\ResidentAdmission;
 use App\Model\GroupType;
 use App\Repository\FacilityBedRepository;
@@ -217,27 +218,37 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $typeId = $params['type_id'] ?? 0;
-
             /** @var FacilityRoomTypeRepository $typeRepo */
             $typeRepo = $this->em->getRepository(FacilityRoomType::class);
 
-            /** @var FacilityRoomType $type */
-            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+            $privateType = null;
+            if (!empty($params['private_type_id'])) {
+                /** @var FacilityRoomType $privateType */
+                $privateType = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['private_type_id']);
 
-            if ($type === null) {
-                throw new FacilityRoomTypeNotFoundException();
+                if ($privateType === null || ($privateType !== null && !$privateType->isPrivate())) {
+                    throw new FacilityRoomTypeNotFoundException();
+                }
             }
 
-            if ($facility !== null && $type->getFacility() !== null && $facility->getId() !== $type->getFacility()->getId()) {
-                throw new RoomTypeFacilityChangedException();
+            $sharedType = null;
+            if (!empty($params['shared_type_id'])) {
+                /** @var FacilityRoomType $sharedType */
+                $sharedType = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['shared_type_id']);
+
+                if ($sharedType === null || ($sharedType !== null && $sharedType->isPrivate())) {
+                    throw new FacilityRoomTypeNotFoundException();
+                }
+            }
+
+            if ($privateType === null && $sharedType === null) {
+                throw new FacilityRoomTypeNotFoundException();
             }
 
             $floor = !empty($params['floor']) ? $params['floor'] : null;
 
             $facilityRoom = new FacilityRoom();
             $facilityRoom->setFacility($facility);
-            $facilityRoom->setType($type);
             $facilityRoom->setNumber($params['number']);
             $facilityRoom->setFloor($floor);
             $facilityRoom->setNotes($params['notes']);
@@ -278,16 +289,30 @@ class FacilityRoomService extends BaseService implements IGridService
                     throw new ActiveResidentExistInBedException();
                 }
 
-                if ($i > 1 && $type->isPrivate()) {
+                if ($i > 1 && $sharedType === null) {
                     throw new InvalidPrivateRoomException();
                 }
 
-                if ($i <= 1 && !$type->isPrivate()) {
+                if ($i <= 1 && $privateType === null) {
                     throw new InvalidSharedRoomException();
+                }
+
+                if ($i > 1) {
+                    $facilityRoom->setType($sharedType);
+                } else {
+                    $facilityRoom->setType($privateType);
+                }
+
+                $type = $facilityRoom->getType();
+                if ($facility !== null && $type !== null && $type->getFacility() !== null && $facility->getId() !== $type->getFacility()->getId()) {
+                    throw new RoomTypeFacilityChangedException();
                 }
             }
 
             $this->em->persist($facilityRoom);
+
+            $this->addRoomTypes($facilityRoom, $privateType, $sharedType);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -336,26 +361,36 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityNotFoundException();
             }
 
-            $typeId = $params['type_id'] ?? 0;
-
             /** @var FacilityRoomTypeRepository $typeRepo */
             $typeRepo = $this->em->getRepository(FacilityRoomType::class);
 
-            /** @var FacilityRoomType $type */
-            $type = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+            $privateType = null;
+            if (!empty($params['private_type_id'])) {
+                /** @var FacilityRoomType $privateType */
+                $privateType = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['private_type_id']);
 
-            if ($type === null) {
-                throw new FacilityRoomTypeNotFoundException();
+                if ($privateType === null || ($privateType !== null && !$privateType->isPrivate())) {
+                    throw new FacilityRoomTypeNotFoundException();
+                }
             }
 
-            if ($facility !== null && $type->getFacility() !== null && $facility->getId() !== $type->getFacility()->getId()) {
-                throw new RoomTypeFacilityChangedException();
+            $sharedType = null;
+            if (!empty($params['shared_type_id'])) {
+                /** @var FacilityRoomType $sharedType */
+                $sharedType = $typeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoomType::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $params['shared_type_id']);
+
+                if ($sharedType === null || ($sharedType !== null && $sharedType->isPrivate())) {
+                    throw new FacilityRoomTypeNotFoundException();
+                }
+            }
+
+            if ($privateType === null && $sharedType === null) {
+                throw new FacilityRoomTypeNotFoundException();
             }
 
             $floor = !empty($params['floor']) ? $params['floor'] : null;
 
             $entity->setFacility($facility);
-            $entity->setType($type);
             $entity->setNumber($params['number']);
             $entity->setFloor($floor);
             $entity->setNotes($params['notes']);
@@ -434,22 +469,67 @@ class FacilityRoomService extends BaseService implements IGridService
                     throw new ActiveResidentExistInBedException();
                 }
 
-                if ($i > 1 && $type->isPrivate()) {
+                if ($i > 1 && $sharedType === null) {
                     throw new InvalidPrivateRoomException();
                 }
 
-                if ($i <= 1 && !$type->isPrivate()) {
+                if ($i <= 1 && $privateType === null) {
                     throw new InvalidSharedRoomException();
+                }
+
+                if ($i > 1) {
+                    $entity->setType($sharedType);
+                } else {
+                    $entity->setType($privateType);
+                }
+
+                $type = $entity->getType();
+                if ($facility !== null && $type !== null && $type->getFacility() !== null && $facility->getId() !== $type->getFacility()->getId()) {
+                    throw new RoomTypeFacilityChangedException();
                 }
             }
 
             $this->em->persist($entity);
+
+            $this->addRoomTypes($entity, $privateType, $sharedType);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param FacilityRoom $entity
+     * @param FacilityRoomType|null $privateType
+     * @param FacilityRoomType|null $sharedType
+     */
+    private function addRoomTypes(FacilityRoom $entity, FacilityRoomType $privateType = null, FacilityRoomType $sharedType = null)
+    {
+        if ($entity->getTypes() !== null) {
+            /** @var FacilityRoomTypes $existingType */
+            foreach ($entity->getTypes() as $existingType) {
+                $this->em->remove($existingType);
+            }
+        }
+
+        if ($privateType !== null) {
+            $privateRoomType = new FacilityRoomTypes();
+            $privateRoomType->setRoom($entity);
+            $privateRoomType->setType($privateType);
+
+            $this->em->persist($privateRoomType);
+        }
+
+        if ($sharedType !== null) {
+            $sharedRoomType = new FacilityRoomTypes();
+            $sharedRoomType->setRoom($entity);
+            $sharedRoomType->setType($sharedType);
+
+            $this->em->persist($sharedRoomType);
         }
     }
 

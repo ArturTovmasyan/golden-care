@@ -118,7 +118,8 @@ class FacilityRoomController extends BaseController
         $id = $facilityRoomService->add(
             [
                 'facility_id' => $request->get('facility_id'),
-                'type_id' => $request->get('type_id'),
+                'private_type_id' => $request->get('private_type_id'),
+                'shared_type_id' => $request->get('shared_type_id'),
                 'number' => $request->get('number'),
                 'floor' => $request->get('floor'),
                 'notes' => $request->get('notes') ?? '',
@@ -149,7 +150,8 @@ class FacilityRoomController extends BaseController
             $id,
             [
                 'facility_id' => $request->get('facility_id'),
-                'type_id' => $request->get('type_id'),
+                'private_type_id' => $request->get('private_type_id'),
+                'shared_type_id' => $request->get('shared_type_id'),
                 'number' => $request->get('number'),
                 'floor' => $request->get('floor'),
                 'notes' => $request->get('notes') ?? '',

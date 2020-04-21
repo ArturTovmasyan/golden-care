@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
 
@@ -130,10 +131,6 @@ class FacilityRoom
 
     /**
      * @var FacilityRoomType
-     * @Assert\NotNull(message = "Please select a Type", groups={
-     *     "api_admin_facility_room_add",
-     *     "api_admin_facility_room_edit"
-     * })
      * @ORM\ManyToOne(targetEntity="App\Entity\FacilityRoomType", inversedBy="rooms")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_type", referencedColumnName="id", onDelete="CASCADE")
@@ -244,6 +241,62 @@ class FacilityRoom
      * })
      */
     private $beds;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomTypes", mappedBy="room", cascade={"remove", "persist"})
+     */
+    private $types;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("private_type")
+     * @Serializer\Groups({
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     * @return FacilityRoomType|null
+     */
+    public function getPrivateType(): ?FacilityRoomType
+    {
+        $privateType = null;
+        if(\count($this->types) > 0) {
+            /** @var FacilityRoomTypes $roomType */
+            foreach ($this->types as $roomType) {
+                if ($roomType->getType() !== null && $roomType->getType()->isPrivate()) {
+                    $privateType = $roomType->getType();
+                    break;
+                }
+            }
+        }
+
+        return $privateType;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("shared_type")
+     * @Serializer\Groups({
+     *     "api_admin_facility_room_list",
+     *     "api_admin_facility_room_get"
+     * })
+     * @return FacilityRoomType|null
+     */
+    public function getSharedType(): ?FacilityRoomType
+    {
+        $sharedType = null;
+        if(\count($this->types) > 0) {
+            /** @var FacilityRoomTypes $roomType */
+            foreach ($this->types as $roomType) {
+                if ($roomType->getType() !== null && !$roomType->getType()->isPrivate()) {
+                    $sharedType = $roomType->getType();
+                    break;
+                }
+            }
+        }
+
+        return $sharedType;
+    }
 
     public function __construct()
     {
@@ -365,6 +418,22 @@ class FacilityRoom
     public function removeBed($bed): void
     {
         $this->beds->removeElement($bed);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTypes()
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param ArrayCollection $types
+     */
+    public function setTypes(ArrayCollection $types): void
+    {
+        $this->types = $types;
     }
 
     /**

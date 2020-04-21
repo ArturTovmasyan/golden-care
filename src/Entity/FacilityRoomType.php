@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
@@ -172,6 +171,12 @@ class FacilityRoomType
     private $rooms;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\FacilityRoomTypes", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $types;
+
+    /**
      * @Serializer\VirtualProperty()
      * @Serializer\SerializedName("levels")
      * @Serializer\Groups({
@@ -333,5 +338,21 @@ class FacilityRoomType
     public function setRooms(ArrayCollection $rooms): void
     {
         $this->rooms = $rooms;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypes()
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param mixed $types
+     */
+    public function setTypes($types): void
+    {
+        $this->types = $types;
     }
 }
