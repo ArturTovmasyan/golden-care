@@ -595,10 +595,12 @@ class FacilityRoomService extends BaseService implements IGridService
                 throw new FacilityRoomNotFoundException();
             }
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var FacilityRoomRepository $repo */
             $repo = $this->em->getRepository(FacilityRoom::class);
 
-            $facilityRooms = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
+            $facilityRooms = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $ids);
 
             if (empty($facilityRooms)) {
                 throw new FacilityRoomNotFoundException();
@@ -608,6 +610,24 @@ class FacilityRoomService extends BaseService implements IGridService
              * @var FacilityRoom $facilityRoom
              */
             foreach ($facilityRooms as $facilityRoom) {
+                if ($facilityRoom->getBeds() !== null) {
+                    $bedIds = [];
+
+                    /** @var FacilityBed $bed */
+                    foreach ($facilityRoom->getBeds() as $bed) {
+                        $bedIds[] = $bed->getId();
+                    }
+
+                    /** @var ResidentAdmissionRepository $admissionRepo */
+                    $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+                    $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
+
+                    if (!empty($residentAdmissions)) {
+                        throw new ActiveResidentExistInBedException();
+                    }
+                }
+
                 $this->em->remove($facilityRoom);
             }
 
