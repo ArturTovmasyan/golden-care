@@ -42,6 +42,13 @@ class ResponsiblePersonPhone
 
     /**
      * @ORM\Column(name="extension", type="integer", nullable=true)
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 99999,
+     *      groups={
+     *          "api_admin_responsible_person_add",
+     *          "api_admin_responsible_person_edit"
+     * })
      * @Groups({
      *      "api_admin_responsible_person_list",
      *      "api_admin_responsible_person_get",

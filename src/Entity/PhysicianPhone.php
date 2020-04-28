@@ -42,6 +42,13 @@ class PhysicianPhone
 
     /**
      * @ORM\Column(name="extension", type="integer", nullable=true)
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 99999,
+     *      groups={
+     *          "api_admin_physician_add",
+     *          "api_admin_physician_edit"
+     * })
      * @Groups({
      *      "api_admin_physician_list",
      *      "api_admin_physician_get",
