@@ -106,7 +106,6 @@ class ApartmentService extends BaseService implements IGridService
             $apartment->setPhone($params['phone']);
             $apartment->setFax($params['fax']);
             $apartment->setAddress($params['address']);
-            $apartment->setLicense($params['license']);
             $apartment->setCsz($csz);
             $apartment->setBedsLicensed((int)$params['beds_licensed']);
             $apartment->setBedsTarget((int)$params['beds_target']);
@@ -176,7 +175,6 @@ class ApartmentService extends BaseService implements IGridService
             $entity->setPhone($params['phone']);
             $entity->setFax($params['fax']);
             $entity->setAddress($params['address']);
-            $entity->setLicense($params['license']);
             $entity->setCsz($csz);
             $entity->setBedsLicensed((int)$params['beds_licensed']);
             $entity->setBedsTarget((int)$params['beds_target']);
