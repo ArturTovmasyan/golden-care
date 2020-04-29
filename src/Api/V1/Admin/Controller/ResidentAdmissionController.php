@@ -55,7 +55,7 @@ class ResidentAdmissionController extends BaseController
      */
     public function gridOptionAction(Request $request): JsonResponse
     {
-        return $this->getOptionsByGroupName($request, ResidentAdmission::class, 'api_admin_resident_admission_grid');
+        return $this->getOptionsByGroupName($request, ResidentAdmission::class, $request->get('apartment') ? 'api_admin_apartment_resident_admission_grid' : 'api_admin_facility_resident_admission_grid');
     }
 
     /**
