@@ -49,6 +49,8 @@ resident:
     face-sheet:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getFaceSheetReport
       title: 'FACE Sheet: FACE Sheet for selected resident / all residents'
+      show_in_al_list: true
+      show_in_il_list: false
       show_in_resident_list: true
       show_in_group_list: false
       formats: ['pdf']
