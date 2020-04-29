@@ -33,9 +33,11 @@
                 {% if resident.roomNumber is defined and resident.bedNumber is defined %}
                     <td style="width: 30px !important"><b style="text-align: left">Room</b></td>{% endif %}
                 <td style="width: 250px !important"><b>Resident</b></td>
-                {% if resident.ambulatory is defined %}
-                    <td style="width: 30px"><b>amb*</b></td>{% endif %}
-                <td style="width: 250px !important"><b>Physicians</b></td>
+                {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %}
+                    {% if resident.ambulatory is defined %}
+                        <td style="width: 30px"><b>amb*</b></td>{% endif %}
+                    <td style="width: 250px !important"><b>Physicians</b></td>
+                {% endif %}
                 <td style="width: 250px !important"><b>Emergency Contacts</b></td>
                 <td style="width: 250px !important"><b>Billing Persons</b></td>
             </tr>
@@ -54,32 +56,34 @@
                 </td>
             {% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">{{ resident.firstName ~ ' ' ~ resident.lastName }}</td>
-            {% if resident.ambulatory is defined %}
-                <td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
-            <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
-                {% if resident['physicians'] is defined %}
-                    {% for physician in resident['physicians'] %}
-                        <div style="margin-bottom: 10px;">
-                            {% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}
-                                <br/>{% endif %}
-                            {% if physician.speciality %}{{ physician.speciality }}<br/>{% endif %}
-                            {% if physician.address %}{{ physician.address }}<br/>{% endif %}
-                            {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}
-                                <br/>{% endif %}
-                            {% for physicianPhone in data.physicianPhones %}
-                                {% if physicianPhone.pId == physician.pId %}
-                                    {% if physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
-                                        <b>{{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}</b>
-                                    {% else %}
-                                        {{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}
+            {% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %}
+                {% if resident.ambulatory is defined %}
+                    <td style="width: 30px !important; height: 105px; text-align: left; font-size: 12px;">{% if resident.ambulatory == true %}Yes{% else %}No{% endif %}</td>{% endif %}
+                <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
+                    {% if resident['physicians'] is defined %}
+                        {% for physician in resident['physicians'] %}
+                            <div style="margin-bottom: 10px;">
+                                {% if physician.firstName and physician.lastName %}{% if physician.salutation %}{{ physician.salutation }}&nbsp;{% endif %}{{ physician.firstName ~ ' ' ~ physician.lastName }}{% if physician.primary == true %}&nbsp;(Primary){% endif %}
+                                    <br/>{% endif %}
+                                {% if physician.speciality %}{{ physician.speciality }}<br/>{% endif %}
+                                {% if physician.address %}{{ physician.address }}<br/>{% endif %}
+                                {% if physician.city %}{{ physician.city }},&nbsp;{{ physician.state }}&nbsp;{{ physician.zip }}
+                                    <br/>{% endif %}
+                                {% for physicianPhone in data.physicianPhones %}
+                                    {% if physicianPhone.pId == physician.pId %}
+                                        {% if physicianPhone.type == constant('App\\Model\\Phone::TYPE_EMERGENCY') %}
+                                            <b>{{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}</b>
+                                        {% else %}
+                                            {{ phoneType(physicianPhone.type) }}:&nbsp;{{ physicianPhone.number }}
+                                        {% endif %}
+                                        <br/>
                                     {% endif %}
-                                    <br/>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            </td>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            {% endif %}
             <td style="width: 250px !important; height: 105px; text-align: left; font-size: 12px;">
                 {% if resident['responsiblePersons'] is defined %}
                     {% for responsiblePerson in resident['responsiblePersons'] %}

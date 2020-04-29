@@ -23,6 +23,11 @@ class Profile extends Base
     private $strategy;
 
     /**
+     * @var int
+     */
+    private $strategyId;
+
+    /**
      * @var boolean
      */
     private $discontinued;
@@ -51,6 +56,22 @@ class Profile extends Base
     public function getStrategy()
     {
         return $this->strategy;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 
     /**

@@ -15,7 +15,7 @@ use App\Annotation\Grid;
  * @ORM\Entity(repositoryClass="App\Repository\ResidentAdmissionRepository")
  * @ORM\Table(name="tbl_resident_admission")
  * @Grid(
- *     api_admin_resident_admission_grid={
+ *     api_admin_facility_resident_admission_grid={
  *          {
  *              "id"         = "id",
  *              "type"       = "id",
@@ -27,6 +27,36 @@ use App\Annotation\Grid;
  *              "type"       = "enum",
  *              "field"      = "ra.admissionType",
  *              "values"     = "\App\Model\AdmissionType::getTypeDefaultNames"
+ *          },
+ *          {
+ *              "id"         = "date",
+ *              "type"       = "date",
+ *              "field"      = "ra.date"
+ *          },
+ *          {
+ *              "id"         = "notes",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(ra.notes, 1, 100)), CASE WHEN LENGTH(ra.notes) > 100 THEN '…' ELSE '' END)"
+ *          },
+ *          {
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
+ *          }
+ *     },
+ *     api_admin_apartment_resident_admission_grid={
+ *          {
+ *              "id"         = "id",
+ *              "type"       = "id",
+ *              "hidden"     = true,
+ *              "field"      = "ra.id"
+ *          },
+ *          {
+ *              "id"         = "admission_type",
+ *              "type"       = "enum",
+ *              "field"      = "ra.admissionType",
+ *              "values"     = "\App\Model\AdmissionType::getApartmentTypeDefaultNames"
  *          },
  *          {
  *              "id"         = "date",
@@ -81,7 +111,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      *
      * })
      * @Groups({
@@ -120,12 +152,19 @@ class ResidentAdmission
      *     groups={
      *          "api_admin_facility_add",
      *          "api_admin_facility_edit",
-     *          "api_admin_apartment_add",
-     *          "api_admin_apartment_edit",
      *          "api_admin_region_add",
      *          "api_admin_region_edit",
      *          "api_admin_discharge_add",
      *          "api_admin_discharge_edit"
+     *     }
+     * )
+     * @Assert\Choice(
+     *     callback={"App\Model\AdmissionType","getApartmentTypeValues"},
+     *     groups={
+     *          "api_admin_apartment_add",
+     *          "api_admin_apartment_edit",
+     *          "api_admin_apartment_discharge_add",
+     *          "api_admin_apartment_discharge_edit"
      *     }
      * )
      * @Groups({
@@ -148,7 +187,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_facility_add",
@@ -158,7 +199,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
@@ -181,7 +224,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_facility_add",
@@ -191,7 +236,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
@@ -214,7 +261,9 @@ class ResidentAdmission
      *     "api_admin_region_add",
      *     "api_admin_region_edit",
      *     "api_admin_discharge_add",
-     *     "api_admin_discharge_edit"
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
      * })
      * @ORM\Column(name="end", type="datetime", nullable=true)
      * @Groups({
@@ -467,7 +516,9 @@ class ResidentAdmission
      *          "api_admin_region_add",
      *          "api_admin_region_edit",
      *          "api_admin_discharge_add",
-     *          "api_admin_discharge_edit"
+     *          "api_admin_discharge_edit",
+     *          "api_admin_apartment_discharge_add",
+     *          "api_admin_apartment_discharge_edit"
      * })
      * @Groups({
      *     "api_admin_resident_admission_grid",

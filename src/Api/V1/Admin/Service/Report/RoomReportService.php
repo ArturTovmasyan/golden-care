@@ -89,7 +89,7 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRentsWithSources($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($interval);
 
-        $typeIds = array_map(function ($item) {
+        $typeIds = array_map(static function ($item) {
             return $item['typeId'];
         }, $data);
         $countTypeIds = array_count_values($typeIds);
@@ -181,7 +181,7 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
-        $typeIds = array_map(function ($item) {
+        $typeIds = array_map(static function ($item) {
             return $item['typeId'];
         }, $data);
         $countTypeIds = array_count_values($typeIds);
@@ -280,12 +280,12 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
-        $rentResidentIds = array_map(function ($item) {
+        $rentResidentIds = array_map(static function ($item) {
             return $item['id'];
         }, $data);
         $rentResidentIds = array_unique($rentResidentIds);
 
-        $rentTypeIds = array_map(function ($item) {
+        $rentTypeIds = array_map(static function ($item) {
             return $item['typeId'];
         }, $data);
 
@@ -383,7 +383,7 @@ class RoomReportService extends BaseService
 
         array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
 
-        $typeIds = array_map(function ($item) {
+        $typeIds = array_map(static function ($item) {
             return $item['typeId'];
         }, $changedData);
         $countTypeIds = array_count_values($typeIds);
@@ -496,12 +496,12 @@ class RoomReportService extends BaseService
 
             $data = $repo->getAdmissionRoomRentData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
 
-            $rentResidentIds = array_map(function ($item) {
+            $rentResidentIds = array_map(static function ($item) {
                 return $item['id'];
             }, $data);
             $rentResidentIds = array_unique($rentResidentIds);
 
-            $rentTypeIds = array_map(function ($item) {
+            $rentTypeIds = array_map(static function ($item) {
                 return $item['typeId'];
             }, $data);
 
@@ -599,7 +599,7 @@ class RoomReportService extends BaseService
 
             array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $changedData);
 
-            $typeIds = array_map(function ($item) {
+            $typeIds = array_map(static function ($item) {
                 return $item['typeId'];
             }, $changedData);
             $countTypeIds = array_count_values($typeIds);
@@ -1100,7 +1100,7 @@ class RoomReportService extends BaseService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function (FacilityRoom $item) {
+                $roomIds = array_map(static function (FacilityRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1111,7 +1111,7 @@ class RoomReportService extends BaseService
 
                 $ids = [];
                 if (\count($facilityBeds)) {
-                    $ids = array_map(function ($item) {
+                    $ids = array_map(static function ($item) {
                         return $item['id'];
                     }, $facilityBeds);
                     $bedIds = array_column($facilityBeds, 'typeId', 'id');
@@ -1160,7 +1160,7 @@ class RoomReportService extends BaseService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function (ApartmentRoom $item) {
+                $roomIds = array_map(static function (ApartmentRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
@@ -1171,7 +1171,7 @@ class RoomReportService extends BaseService
 
                 $ids = [];
                 if (\count($apartmentBeds)) {
-                    $ids = array_map(function ($item) {
+                    $ids = array_map(static function ($item) {
                         return $item['id'];
                     }, $apartmentBeds);
                     $bedIds = array_column($apartmentBeds, 'typeId', 'id');
@@ -1230,7 +1230,7 @@ class RoomReportService extends BaseService
         $type = $group;
         $typeId = $groupId;
 
-        if ($type !== GroupType::TYPE_FACILITY) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -1286,38 +1286,64 @@ class RoomReportService extends BaseService
 
         $allData = $repo->getRoomOccupancyRateByMonthData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $subInterval, $typeId, $this->getNotGrantResidentIds());
 
-        $allTypeIds = array_map(function ($item) {
+        $allTypeIds = array_map(static function ($item) {
             return $item['typeId'];
         }, $allData);
         $allTypeIds = array_unique($allTypeIds);
 
-        /** @var FacilityRoomRepository $facilityRoomRepo */
-        $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
-
         $rooms = [];
-        $facilityBeds = [];
+        $roomBeds = [];
         $typeNames = [];
+        if ($type === GroupType::TYPE_FACILITY) {
+            /** @var FacilityRoomRepository $facilityRoomRepo */
+            $facilityRoomRepo = $this->em->getRepository(FacilityRoom::class);
 
-        if ($typeId) {
-            $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
-        }
+            if ($typeId) {
+                $rooms = $facilityRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $typeId);
+            }
 
-        if ($all) {
-            $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
-        }
+            if ($all) {
+                $rooms = $facilityRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityRoom::class), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+            }
 
-        if (!empty($rooms)) {
-            $roomIds = array_map(function (FacilityRoom $item) {
-                return $item->getId();
-            }, $rooms);
+            if (!empty($rooms)) {
+                $roomIds = array_map(static function (FacilityRoom $item) {
+                    return $item->getId();
+                }, $rooms);
 
-            /** @var FacilityBedRepository $facilityBedRepo */
-            $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+                /** @var FacilityBedRepository $facilityBedRepo */
+                $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
 
-            $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+                $roomBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
 
-            $typeNames = array_column($facilityBeds, 'typeName', 'typeId');
-            $typeNames = array_unique($typeNames);
+                $typeNames = array_column($roomBeds, 'typeName', 'typeId');
+                $typeNames = array_unique($typeNames);
+            }
+        } elseif ($type === GroupType::TYPE_APARTMENT) {
+            /** @var ApartmentRoomRepository $apartmentRoomRepo */
+            $apartmentRoomRepo = $this->em->getRepository(ApartmentRoom::class);
+
+            if ($typeId) {
+                $rooms = $apartmentRoomRepo->getBy($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class), $typeId);
+            }
+
+            if ($all) {
+                $rooms = $apartmentRoomRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentRoom::class), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
+            }
+
+            if (!empty($rooms)) {
+                $roomIds = array_map(static function (ApartmentRoom $item) {
+                    return $item->getId();
+                }, $rooms);
+
+                /** @var ApartmentBedRepository $apartmentBedRepo */
+                $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+
+                $roomBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+
+                $typeNames = array_column($roomBeds, 'typeName', 'typeId');
+                $typeNames = array_unique($typeNames);
+            }
         }
 
         $beds = [];
@@ -1327,7 +1353,7 @@ class RoomReportService extends BaseService
             foreach ($allTypeIds as $allTypeId) {
                 $j = 0;
                 $k = 0;
-                foreach ($facilityBeds as $bed) {
+                foreach ($roomBeds as $bed) {
                     if ($bed['typeId'] === $allTypeId) {
                         ++$j;
                         $k = $j * ($subVal['subInterval']->getEnd()->diff($subVal['subInterval']->getStart())->days + 1);

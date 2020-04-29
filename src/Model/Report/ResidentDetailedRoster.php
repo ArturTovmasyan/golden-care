@@ -23,6 +23,11 @@ class ResidentDetailedRoster extends Base
     private $responsiblePersonPhones = [];
 
     /**
+     * @var int
+     */
+    private $strategyId;
+
+    /**
      * ResidentDetailedRoster constructor.
      */
     public function __construct()
@@ -129,6 +134,22 @@ class ResidentDetailedRoster extends Base
     public function getResponsiblePersonPhones(): ?array
     {
         return $this->responsiblePersonPhones;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 }
 

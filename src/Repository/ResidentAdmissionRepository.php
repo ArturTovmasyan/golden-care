@@ -2456,7 +2456,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
                         ar.private as private,
-                        ab.number as bedNumber
+                        ab.number as bedNumber,
                         ab.id as bedId'
                     )
                     ->innerJoin(
@@ -2742,7 +2742,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
                         ar.private as private,
-                        ab.number as bedNumber
+                        ab.number as bedNumber,
                         ab.id as bedId'
                     )
                     ->innerJoin(
@@ -3022,6 +3022,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->select(
                 'r.id as residentId',
                 'ra.id as id',
+                'ra.groupType as type',
                 'ra.admissionType as admissionType',
                 'ra.notes as notes',
                 'ra.start as admitted',
@@ -3082,7 +3083,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
                         ar.private as private,
-                        ab.number as bedNumber
+                        ab.number as bedNumber,
                         ab.id as bedId'
                     )
                     ->innerJoin(

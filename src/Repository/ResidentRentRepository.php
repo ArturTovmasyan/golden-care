@@ -681,7 +681,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         a.shorthand as typeShorthand,
                         ar.number as roomNumber,
                         ar.private as private,
-                        ab.number as bedNumber
+                        ab.number as bedNumber,
                         ab.id as bedId'
                     )
                     ->innerJoin(
@@ -924,7 +924,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         ar.number as roomNumber,
                         ar.private as private,
                         ar.floor as floor,
-                        ab.number as bedNumber
+                        ab.number as bedNumber,
                         ab.id as bedId,
                         csz.city as city,
                         csz.stateAbbr as stateAbbr,

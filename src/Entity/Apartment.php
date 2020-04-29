@@ -57,11 +57,6 @@ use JMS\Serializer\Annotation as Serializer;
  *              "field"      = "a.address"
  *          },
  *          {
- *              "id"         = "license",
- *              "type"       = "string",
- *              "field"      = "a.license"
- *          },
- *          {
  *              "id"         = "beds_licensed",
  *              "type"       = "string",
  *              "col_group"  = "beds",
@@ -247,23 +242,6 @@ class Apartment
     private $address;
 
     /**
-     * @var string $license
-     * @ORM\Column(name="license", type="string", length=20, nullable=true)
-     * @Assert\Length(
-     *      max = 20,
-     *      maxMessage = "License cannot be longer than {{ limit }} characters",
-     *      groups={
-     *           "api_admin_apartment_add",
-     *           "api_admin_apartment_edit"
-     * })
-     * @Groups({
-     *     "api_admin_apartment_list",
-     *     "api_admin_apartment_get"
-     * })
-     */
-    private $license;
-
-    /**
      * @var CityStateZip
      * @Assert\NotNull(message = "Please select a City, State & Zip", groups={
      *     "api_admin_apartment_add",
@@ -437,16 +415,6 @@ class Apartment
     public function setAddress(string $address): void
     {
         $this->address = $address;
-    }
-
-    public function getLicense(): ?string
-    {
-        return $this->license;
-    }
-
-    public function setLicense(?string $license): void
-    {
-        $this->license = $license;
     }
 
     public function getBedsLicensed(): ?int

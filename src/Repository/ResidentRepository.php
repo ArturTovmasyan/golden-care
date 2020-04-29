@@ -717,7 +717,6 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                         a.name as typeName,
                         a.shorthand as typeShorthand,
                         a.address as address,
-                        a.license as license,
                         ar.number as roomNumber,
                         ar.private as private,
                         ar.floor as floor,

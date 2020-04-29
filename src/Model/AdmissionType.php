@@ -4,13 +4,14 @@ namespace App\Model;
 
 class AdmissionType
 {
-    const LONG_ADMIT = 1;
-    const SHORT_ADMIT = 2;
-    const READMIT = 3;
-    const TEMPORARY_DISCHARGE = 4;
-    const PENDING_DISCHARGE = 5;
-    const DISCHARGE = 6;
+    public const LONG_ADMIT = 1;
+    public const SHORT_ADMIT = 2;
+    public const READMIT = 3;
+    public const TEMPORARY_DISCHARGE = 4;
+    public const PENDING_DISCHARGE = 5;
+    public const DISCHARGE = 6;
 
+    //Assisted Living (AL) - Facility
     /**
      * @var array
      */
@@ -50,7 +51,7 @@ class AdmissionType
     /**
      * @return array
      */
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return self::$types;
     }
@@ -58,7 +59,7 @@ class AdmissionType
     /**
      * @return array
      */
-    public static function getTypeDefaultNames()
+    public static function getTypeDefaultNames(): array
     {
         return self::$typeDefaultNames;
     }
@@ -66,9 +67,67 @@ class AdmissionType
     /**
      * @return array
      */
-    public static function getTypeValues()
+    public static function getTypeValues(): array
     {
         return self::$typeValues;
+    }
+
+    //Independent Living (IL) - Apartment
+    /**
+     * @var array
+     */
+    private static $apartmentTypes = [
+        self::LONG_ADMIT => 'Long-Term Rental',
+        self::SHORT_ADMIT => 'Short-Term Rental',
+        self::READMIT => 'Re-admit',
+        self::PENDING_DISCHARGE => 'Notice to Vacate',
+        self::DISCHARGE => 'Move Out',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $apartmentTypeDefaultNames = [
+        'Long-Term Rental' => '1',
+        'Short-Term Rental' => '2',
+        'Re-admit' => '3',
+        'Notice to Vacate' => '5',
+        'Move Out' => '6',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $apartmentTypeValues = [
+        self::LONG_ADMIT => 1,
+        self::SHORT_ADMIT => 2,
+        self::READMIT => 3,
+        self::PENDING_DISCHARGE => 5,
+        self::DISCHARGE => 6,
+    ];
+
+    /**
+     * @return array
+     */
+    public static function getApartmentTypes(): array
+    {
+        return self::$apartmentTypes;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getApartmentTypeDefaultNames(): array
+    {
+        return self::$apartmentTypeDefaultNames;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getApartmentTypeValues(): array
+    {
+        return self::$apartmentTypeValues;
     }
 }
 

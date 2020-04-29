@@ -17,6 +17,11 @@ class FaceSheet extends Base
     private $images = [];
 
     /**
+     * @var int
+     */
+    private $strategyId;
+
+    /**
      * FaceSheet constructor.
      */
     public function __construct()
@@ -205,6 +210,22 @@ class FaceSheet extends Base
     public function getResponsiblePersonPhones(): ?array
     {
         return $this->responsiblePersonPhones;
+    }
+
+    /**
+     * @param $strategyId
+     */
+    public function setStrategyId($strategyId): void
+    {
+        $this->strategyId = $strategyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStrategyId()
+    {
+        return $this->strategyId;
     }
 }
 

@@ -41,7 +41,7 @@ class ResidentAdmissionController extends BaseController
         return $this->respondGrid(
             $request,
             ResidentAdmission::class,
-            'api_admin_resident_admission_grid',
+            $request->get('apartment') ? 'api_admin_apartment_resident_admission_grid' : 'api_admin_facility_resident_admission_grid',
             $residentAdmissionService,
             ['resident_id' => $request->get('resident_id')]
         );

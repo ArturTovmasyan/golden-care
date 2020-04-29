@@ -797,7 +797,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             }
 
             if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
-                $validationGroup = 'api_admin_discharge_add';
+                $validationGroup = $entity->getGroupType() === GroupType::TYPE_APARTMENT ? 'api_admin_apartment_discharge_add' : 'api_admin_discharge_add';
             }
 
             $this->validate($entity, null, [$validationGroup]);
@@ -948,7 +948,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             }
 
             if ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE) {
-                $validationGroup = 'api_admin_discharge_edit';
+                $validationGroup = $entity->getGroupType() === GroupType::TYPE_APARTMENT ? 'api_admin_apartment_discharge_edit' : 'api_admin_discharge_edit';
             }
 
             $this->validate($entity, null, [$validationGroup]);

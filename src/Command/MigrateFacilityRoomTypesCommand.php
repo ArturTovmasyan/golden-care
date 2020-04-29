@@ -54,40 +54,40 @@ class MigrateFacilityRoomTypesCommand extends Command
             return 1;
         }
 
-        try {
-            $this->em->getConnection()->beginTransaction();
-
-            $rooms = $this->em->getRepository(FacilityRoom::class)->findAll();
-
-            if (!empty($rooms)) {
-                /** @var FacilityRoom $room */
-                foreach ($rooms as $room) {
-                    $entity = new FacilityRoomTypes();
-                    $entity->setRoom($room);
-                    $entity->setType($room->getType());
-                    $entity->setCreatedAt($room->getUpdatedAt());
-                    $entity->setUpdatedAt($room->getUpdatedAt());
-                    $entity->setCreatedBy($room->getUpdatedBy());
-                    $entity->setUpdatedBy($room->getUpdatedBy());
-
-                    $this->em->persist($entity);
-                }
-            }
-
-            $this->em->flush();
-
-            $this->em->getConnection()->commit();
-
-            $output->writeln('Successfully migrated');
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            if ($e instanceof ValidationException) {
-                $output->writeln($e->getErrors());
-            } else {
-                $output->writeln($e->getMessage());
-            }
-        }
+//        try {
+//            $this->em->getConnection()->beginTransaction();
+//
+//            $rooms = $this->em->getRepository(FacilityRoom::class)->findAll();
+//
+//            if (!empty($rooms)) {
+//                /** @var FacilityRoom $room */
+//                foreach ($rooms as $room) {
+//                    $entity = new FacilityRoomTypes();
+//                    $entity->setRoom($room);
+//                    $entity->setType($room->getType());
+//                    $entity->setCreatedAt($room->getUpdatedAt());
+//                    $entity->setUpdatedAt($room->getUpdatedAt());
+//                    $entity->setCreatedBy($room->getUpdatedBy());
+//                    $entity->setUpdatedBy($room->getUpdatedBy());
+//
+//                    $this->em->persist($entity);
+//                }
+//            }
+//
+//            $this->em->flush();
+//
+//            $this->em->getConnection()->commit();
+//
+//            $output->writeln('Successfully migrated');
+//        } catch (\Exception $e) {
+//            $this->em->getConnection()->rollBack();
+//
+//            if ($e instanceof ValidationException) {
+//                $output->writeln($e->getErrors());
+//            } else {
+//                $output->writeln($e->getMessage());
+//            }
+//        }
 
         $this->release();
 

@@ -1,5 +1,7 @@
 resident:
   title: 'Resident Reports'
+  show_in_al_list: true
+  show_in_il_list: true
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -25,6 +27,8 @@ resident:
     dietary-restrictions:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDietaryRestrictionsReport
       title: 'Dietary Restrictions: Dietary Restrictions Report'
+      show_in_al_list: true
+      show_in_il_list: false
       show_in_resident_list: true
       show_in_group_list: true
       formats: ['pdf']
@@ -114,6 +118,8 @@ resident:
           select_all: true
 form:
   title: 'Forms Reports'
+  show_in_al_list: true
+  show_in_il_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -310,6 +316,8 @@ form:
           select_all: true
 room:
   title: 'Room Reports'
+  show_in_al_list: true
+  show_in_il_list: true
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -415,6 +423,8 @@ room:
 
 physician:
   title: 'Physicians Reports'
+  show_in_al_list: true
+  show_in_il_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -448,6 +458,8 @@ physician:
 
 health:
   title: 'Data Health Reports'
+  show_in_al_list: true
+  show_in_il_list: true
   show_in_resident_list: false
   show_in_group_list: true
   reports:
@@ -481,6 +493,8 @@ health:
     rents-current-vs-base:
       service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getRentsCurrentVsBaseReport
       title: 'Room Rents Current vs. Base'
+      show_in_al_list: true
+      show_in_il_list: false
       show_in_resident_list: false
       show_in_group_list: true
       formats: ['csv', 'xls']
@@ -490,6 +504,8 @@ health:
 
 assessment:
   title: 'Assessment Reports'
+  show_in_al_list: true
+  show_in_il_list: false
   show_in_resident_list: false
   show_in_group_list: false
   reports:
@@ -514,6 +530,8 @@ assessment:
 
 lead:
   title: 'Lead Reports'
+  show_in_al_list: true
+  show_in_il_list: true
   show_in_resident_list: false
   show_in_group_list: false
   reports:
