@@ -984,7 +984,7 @@
             <td colspan="9" style="width: 20px !important; border: none"></td>
         </tr>
         <tr style="">
-            <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}Move In/Out{% else %}Admissions{% endif %}</b></td>
+            <td colspan="9" style=""><b style="font-size: 14px !important; margin-left: 20px;">{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}Renter&nbsp;Move&nbsp;In/Out{% else %}Admissions{% endif %}</b></td>
         </tr>
         {% if resident['admissions'] is defined %}
             {% set s = 0 %}
@@ -1037,7 +1037,7 @@
             {% endfor %}
         {% else %}
             <tr style="">
-                <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}Move In/Out{% else %}Admissions{% endif %}</td>
+                <td colspan="9" style="font-size: 13px !important; padding-left: 15px;">No&nbsp;{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}Renter&nbsp;Move&nbsp;In/Out{% else %}Admissions{% endif %}</td>
             </tr>
         {% endif %}
 
