@@ -65,7 +65,8 @@ class EventDefinitionController extends BaseController
             'api_admin_event_definition_list',
             $eventDefinitionService,
             [
-                'view' => $request->get('view')
+                'view' => $request->get('view'),
+                'type' => $request->get('type')
             ]
         );
     }

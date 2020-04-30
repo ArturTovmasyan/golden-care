@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
 use App\Entity\Space;
+use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -51,9 +53,10 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param null $view
+     * @param null $type
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null, $view = null)
+    public function list(Space $space = null, array $entityGrants = null, $view = null, $type = null)
     {
         $qb = $this
             ->createQueryBuilder('ed')
@@ -84,6 +87,25 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
             $qb
                 ->andWhere('ed.view=:view')
                 ->setParameter('view', $view);
+        }
+
+        if ($type !== null) {
+            switch ($type) {
+                case GroupType::TYPE_FACILITY:
+                    $qb
+                        ->andWhere('ed.ffc = 1');
+                    break;
+                case GroupType::TYPE_APARTMENT:
+                    $qb
+                        ->andWhere('ed.il = 1');
+                    break;
+                case GroupType::TYPE_REGION:
+                    $qb
+                        ->andWhere('ed.ihc = 1');
+                    break;
+                default:
+                    throw new IncorrectStrategyTypeException();
+            }
         }
 
         $qb

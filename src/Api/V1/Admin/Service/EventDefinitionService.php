@@ -45,7 +45,12 @@ class EventDefinitionService extends BaseService implements IGridService
             $view = (int)$params[0]['view'];
         }
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $view);
+        $type = null;
+        if (!empty($params) && !empty($params[0]['type'])) {
+            $type = (int)$params[0]['type'];
+        }
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(EventDefinition::class), $view, $type);
     }
 
     /**
