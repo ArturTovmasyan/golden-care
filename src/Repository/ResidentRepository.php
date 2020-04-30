@@ -372,7 +372,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 'rs.title AS salutation'
             )
             ->innerJoin('r.salutation', 'rs')
-            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)');
+            ->where('r.id NOT IN (SELECT arar.id FROM App:ResidentAdmission ra JOIN ra.resident arar)');
 
         if ($space !== null) {
             $qb
@@ -462,7 +462,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             )
             ->innerJoin('r.salutation', 'rs')
             ->innerJoin('r.space', 's')
-            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)')
+            ->where('r.id NOT IN (SELECT arar.id FROM App:ResidentAdmission ra JOIN ra.resident arar)')
             ->andWhere('r.updatedAt > :date')
             ->setParameter('date', $date);
 
@@ -501,7 +501,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
 
         $qb
             ->select('COUNT(r.id) AS total')
-            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)');
+            ->where('r.id NOT IN (SELECT arar.id FROM App:ResidentAdmission ra JOIN ra.resident arar)');
 
         if ($date !== null) {
             $qb
@@ -552,7 +552,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
                 'rs.title AS salutation'
             )
             ->innerJoin('r.salutation', 'rs')
-            ->where('r.id NOT IN (SELECT ar.id FROM App:ResidentAdmission ra JOIN ra.resident ar)')
+            ->where('r.id NOT IN (SELECT arar.id FROM App:ResidentAdmission ra JOIN ra.resident arar)')
             ->andWhere('r.id = :id')
             ->setParameter('id', $id);
 

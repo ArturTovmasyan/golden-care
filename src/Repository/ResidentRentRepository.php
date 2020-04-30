@@ -1399,9 +1399,9 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                         WHERE (mrr.end IS NULL OR mrr.end > = ra.start) AND (ra.end IS NULL OR mrr.start < = ra.end) AND (mrr.end IS NULL OR mrr.end > = :start) AND (mrr.start < = :end)
                         GROUP BY res.id)'
             )
-            ->andWhere('r.id IN (SELECT ar.id 
+            ->andWhere('r.id IN (SELECT arar.id 
                         FROM App:ResidentAdmission ara 
-                        JOIN ara.resident ar 
+                        JOIN ara.resident arar 
                         WHERE ara.admissionType<' . AdmissionType::DISCHARGE . ' AND ara.end IS NULL)'
             );
 
