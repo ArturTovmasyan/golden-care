@@ -177,7 +177,7 @@ class NotifyCommand extends Command
             foreach ($facilities as $facility) {
                 $groupId = $facility->getId();
                 $groupName = $facility->getName();
-                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_FACILITY, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_FACILITY, false, null, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
 
                 $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
                     'data' => $data
@@ -203,7 +203,7 @@ class NotifyCommand extends Command
             foreach ($apartments as $apartment) {
                 $groupId = $apartment->getId();
                 $groupName = $apartment->getName();
-                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_APARTMENT, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_APARTMENT, false, null, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
 
                 $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
                     'data' => $data
@@ -229,7 +229,7 @@ class NotifyCommand extends Command
             foreach ($regions as $region) {
                 $groupId = $region->getId();
                 $groupName = $region->getName();
-                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_REGION, false, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
+                $data = $this->residentReportService->getSixtyDaysReport(GroupType::TYPE_REGION, false, null, $groupId, false, null, $date->format('m/d/Y'), null, null, null, null);
 
                 $report = $this->container->get('templating')->render('@api_report/resident/sixty-days-roster.csv.twig', array(
                     'data' => $data
