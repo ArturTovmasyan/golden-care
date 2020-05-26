@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ActiveResidentExistInBedException;
+use App\Api\V1\Common\Service\Exception\ActiveResidentExistInRoomException;
 use App\Api\V1\Common\Service\Exception\CanNotRemoveBadException;
 use App\Api\V1\Common\Service\Exception\FacilityRoomNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
@@ -568,7 +569,7 @@ class FacilityRoomService extends BaseService implements IGridService
                 $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                 if (!empty($residentAdmissions)) {
-                    throw new ActiveResidentExistInBedException();
+                    throw new ActiveResidentExistInRoomException();
                 }
             }
 
@@ -624,7 +625,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                     if (!empty($residentAdmissions)) {
-                        throw new ActiveResidentExistInBedException();
+                        throw new ActiveResidentExistInRoomException();
                     }
                 }
 
