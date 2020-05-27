@@ -1297,7 +1297,7 @@ class LeadService extends BaseService implements IGridService
                 $spaceName = $changeLog->getSpace()->getName();
             }
 
-            $subject = 'Leads System User Activity for ' . $changeLog->getCreatedAt()->format('m/d/Y');
+            $subject = 'Leads System User Activity - ' . $changeLog->getCreatedAt()->format('m/d/Y');
 
             $body = $this->container->get('templating')->render('@api_notification/new-lead.email.html.twig', array(
                 'baseUrl' => $baseUrl,

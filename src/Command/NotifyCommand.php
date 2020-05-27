@@ -274,8 +274,7 @@ class NotifyCommand extends Command
 
             if ($activity->getAssignTo()) {
                 //for email
-                $assignToEmails[] = $activity->getAssignTo()->getEmail();
-                $allEmails = array_merge($emails, $assignToEmails);
+                $allEmails = array_merge($emails, [$activity->getAssignTo()->getEmail()]);
                 $allEmails = array_unique($allEmails);
 
                 //for sms
@@ -394,7 +393,7 @@ class NotifyCommand extends Command
 
             $date = new \DateTime('now');
             $date->modify('-24 hours');
-            $subject = 'Leads System User Activity for ' . $date->format('m/d/Y');
+            $subject = 'Daily Leads System User Activity Summary - ' . $date->format('m/d/Y');
 
             $body = $this->container->get('templating')->render('@api_notification/change-log.email.html.twig', array(
                 'logs' => $logs,
@@ -517,7 +516,7 @@ class NotifyCommand extends Command
         $increaseRepo = $this->em->getRepository(ResidentRentIncrease::class);
         $increases = $increaseRepo->getRentIncreasesForCronJobNotification($currentSpace);
 
-        $residentIds = array_map(function (ResidentRentIncrease $item) {
+        $residentIds = array_map(static function (ResidentRentIncrease $item) {
             return $item->getResident() ? $item->getResident()->getId() : 0;
         }, $increases);
 
