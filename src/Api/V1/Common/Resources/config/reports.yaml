@@ -2,6 +2,7 @@ resident:
   title: 'Resident Reports'
   show_in_al_list: true
   show_in_il_list: true
+  show_in_lead_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -122,6 +123,7 @@ form:
   title: 'Forms Reports'
   show_in_al_list: true
   show_in_il_list: false
+  show_in_lead_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -320,6 +322,7 @@ room:
   title: 'Room Reports'
   show_in_al_list: true
   show_in_il_list: true
+  show_in_lead_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -427,6 +430,7 @@ physician:
   title: 'Physicians Reports'
   show_in_al_list: true
   show_in_il_list: false
+  show_in_lead_list: false
   show_in_resident_list: true
   show_in_group_list: true
   reports:
@@ -462,6 +466,7 @@ health:
   title: 'Data Health Reports'
   show_in_al_list: true
   show_in_il_list: true
+  show_in_lead_list: false
   show_in_resident_list: false
   show_in_group_list: true
   reports:
@@ -508,6 +513,7 @@ assessment:
   title: 'Assessment Reports'
   show_in_al_list: true
   show_in_il_list: false
+  show_in_lead_list: false
   show_in_resident_list: false
   show_in_group_list: false
   reports:
@@ -532,16 +538,15 @@ assessment:
 
 lead:
   title: 'Lead Reports'
-  show_in_al_list: true
-  show_in_il_list: true
+  show_in_al_list: false
+  show_in_il_list: false
+  show_in_lead_list: true
   show_in_resident_list: false
-  show_in_group_list: false
+  show_in_group_list: true
   reports:
     activity:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
       title: 'Generate Activity List Report'
-      show_in_resident_list: false
-      show_in_group_list: false
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
@@ -549,17 +554,16 @@ lead:
     lead:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getLeadReport
       title: 'Generate Lead List Report'
-      show_in_resident_list: false
-      show_in_group_list: false
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+        group:
+          select_all: true
+          select_multi: true
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
       title: 'Generate Referral List Report'
-      show_in_resident_list: false
-      show_in_group_list: false
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
