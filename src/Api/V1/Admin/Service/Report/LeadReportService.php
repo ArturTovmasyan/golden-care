@@ -39,6 +39,11 @@ class LeadReportService extends BaseService
 
         $currentDate = new \DateTime('now');
 
+        $typeIds = null;
+        if (!empty($groupIds)) {
+            $typeIds = !empty($groupIds[0]) ? $groupIds : [];
+        }
+
         if (!empty($dateFrom)) {
             $startDate = new \DateTime($dateFrom);
         } else {
@@ -54,7 +59,7 @@ class LeadReportService extends BaseService
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
 
-        $leads = $repo->getLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate);
+        $leads = $repo->getLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, $typeIds);
 
         $finalLeads = [];
         if (!empty($leads)) {

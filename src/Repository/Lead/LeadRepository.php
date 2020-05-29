@@ -372,9 +372,10 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param $startDate
      * @param $endDate
+     * @param array|null $typeIds
      * @return mixed
      */
-    public function getLeadList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    public function getLeadList(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $typeIds = null)
     {
         $qb = $this
             ->createQueryBuilder('l')
@@ -445,6 +446,12 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             ->where('l.createdAt >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate)
             ->andWhere('l.spam = 0');
+
+        if ($typeIds) {
+            $qb
+                ->andWhere('f.id IN (:typeIds)')
+                ->setParameter('typeIds', $typeIds);
+        }
 
         if ($space !== null) {
             $qb
