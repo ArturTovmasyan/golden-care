@@ -333,6 +333,7 @@ class ReportService
             if ($config['show_in_group_list'] === true) {
                 foreach ($config['reports'] as $alias => $report) {
                     $grant = sprintf('report-%s-%s', $group, $alias);
+                    $report['show_in_group_list'] = $report['show_in_group_list'] ?? $config['show_in_group_list'];
                     if ($report['show_in_group_list'] === true && $this->grantService->hasCurrentUserGrant($grant) === true) {
                         $group_grants[] = $grant;
                     }
