@@ -77,7 +77,8 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
                 's',
                 Join::WITH,
                 's = u.space'
-            );
+            )
+            ->where('u.enabled = 1');
 
         if ($space !== null) {
             $qb
