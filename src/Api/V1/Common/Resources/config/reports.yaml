@@ -546,14 +546,14 @@ lead:
   reports:
     activity:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getActivityReport
-      title: 'Generate Activity List Report'
+      title: 'Activity List Report'
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
     lead:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getLeadReport
-      title: 'Generate Lead List Report'
+      title: 'Lead List Report'
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
@@ -563,7 +563,7 @@ lead:
           select_multi: true
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
-      title: 'Generate Referral List Report'
+      title: 'Referral List Report'
       formats: ['csv', 'xls']
       parameters:
         date_from: "m/d/Y"
