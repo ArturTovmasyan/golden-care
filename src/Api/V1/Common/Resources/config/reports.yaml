@@ -510,7 +510,7 @@ health:
           select_all: true
     missing-physician:
       service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getMissingPhysicianReport
-      title: 'Resident Physicians: List of active residents without Physicians'
+      title: 'Resident Physicians: List of Active Residents without Physicians'
       show_in_resident_list: false
       show_in_group_list: true
       formats: ['csv', 'xls']
