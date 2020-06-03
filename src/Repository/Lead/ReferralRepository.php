@@ -3,6 +3,7 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\Facility;
 use App\Entity\Lead\Contact;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Organization;
@@ -402,6 +403,7 @@ class ReferralRepository extends EntityRepository implements RelatedInfoInterfac
                 'rt.title as typeTitle',
                 'o.name as orgTitle',
                 "CONCAT(l.firstName, ' ', l.lastName) AS leadName",
+                'f.name as primaryFacility',
                 'c.emails as emails',
                 'r.notes as notes'
             )
@@ -410,6 +412,12 @@ class ReferralRepository extends EntityRepository implements RelatedInfoInterfac
                 'l',
                 Join::WITH,
                 'l = r.lead'
+            )
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
             )
             ->innerJoin(
                 ReferrerType::class,

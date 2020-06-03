@@ -1,7 +1,7 @@
 {% spaceless %}
-"ID",Type,FirstName,LastName,Organization,Phones,Emails,Lead,Notes
+Primary Facility,"ID",Type,FirstName,LastName,Organization,Phones,Emails,Lead,Notes
 {% for referral in data.referrals %}
-{{ referral.id }},{% if referral.typeTitle %}"{{ referral.typeTitle|raw }}"{% else %}N/A{% endif %},{% if referral.firstName %}"{{ referral.firstName|raw }}"{% else %}N/A{% endif %},{% if referral.lastName %}"{{ referral.lastName|raw }}"{% else %}N/A{% endif %},{% if referral.orgTitle %}"{{ referral.orgTitle|raw }}"{% else %}N/A{% endif %},{% if referral.phones %}"{{ referral.phones|raw }}"{% else %}N/A{% endif %},{% if referral.emails %}"{{ referral.emails|raw }}"{% else %}N/A{% endif %},{% if referral.leadName %}"{{ referral.leadName|raw }}"{% else %}N/A{% endif %},{% if referral.notes %}"{{ referral.notes|raw }}"{% else %}N/A{% endif %}
+{% if referral.primaryFacility %}"{{ referral.primaryFacility|raw }}"{% else %}N/A{% endif %},{{ referral.id }},{% if referral.typeTitle %}"{{ referral.typeTitle|raw }}"{% else %}N/A{% endif %},{% if referral.firstName %}"{{ referral.firstName|raw }}"{% else %}N/A{% endif %},{% if referral.lastName %}"{{ referral.lastName|raw }}"{% else %}N/A{% endif %},{% if referral.orgTitle %}"{{ referral.orgTitle|raw }}"{% else %}N/A{% endif %},{% if referral.phones %}"{{ referral.phones|raw }}"{% else %}N/A{% endif %},{% if referral.emails %}"{{ referral.emails|raw }}"{% else %}N/A{% endif %},{% if referral.leadName %}"{{ referral.leadName|raw }}"{% else %}N/A{% endif %},{% if referral.notes %}"{{ referral.notes|raw }}"{% else %}N/A{% endif %}
     
 {% endfor %}
 {% endspaceless %}
