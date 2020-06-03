@@ -8,14 +8,17 @@ use App\Entity\FacilityRoomBaseRate;
 use App\Entity\FacilityRoomBaseRateCareLevel;
 use App\Entity\FacilityRoomType;
 use App\Entity\Resident;
+use App\Entity\ResidentPhysician;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Model\GroupType;
 use App\Model\Report\InvalidRentAmount;
+use App\Model\Report\MissingPhysician;
 use App\Model\Report\MissingRentRecords;
 use App\Model\Report\RentsCurrentVsBase;
 use App\Model\Report\ResidentRps;
 use App\Repository\FacilityRoomTypeRepository;
+use App\Repository\ResidentPhysicianRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
@@ -406,6 +409,70 @@ class DataHealthReportService extends BaseService
         $report = new RentsCurrentVsBase();
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($finalResidents);
+        $report->setStrategyId($type);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @param $discontinued
+     * @return MissingPhysician
+     */
+    public function getMissingPhysicianReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MissingPhysician
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
+        $residentIds = array_map(static function ($item) {
+            return $item['id'];
+        }, $residents);
+
+        /** @var ResidentPhysicianRepository $physicianRepo */
+        $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+
+        $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+
+        $physicianResidentIds = [];
+        if (!empty($physicians)) {
+            $physicianResidentIds = array_map(static function ($item) {
+                return $item['residentId'];
+            }, $physicians);
+            $physicianResidentIds = array_unique($physicianResidentIds);
+        }
+
+        $residentsById = [];
+        foreach ($residents as $resident) {
+            if (!\in_array($resident['id'], $physicianResidentIds, false)) {
+                $residentsById[$resident['id']] = $resident;
+            }
+        }
+
+//        $a = $residentsById;
+
+        $report = new MissingPhysician();
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setResidents($residentsById);
         $report->setStrategyId($type);
 
         return $report;

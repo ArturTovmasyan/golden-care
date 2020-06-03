@@ -549,6 +549,8 @@ report:
           title: "Invalid Rent Amount Records: List of Residents who do not have a valid Room Rent amount"
         rents-current-vs-base:
           title: "Room Rents Current vs. Base"
+        missing-physician:
+          title: "Resident Physicians: List of active residents without Physicians"
     assessment:
       title: "Assessment Reports"
       children:
