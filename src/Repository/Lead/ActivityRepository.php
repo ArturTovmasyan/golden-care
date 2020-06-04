@@ -592,7 +592,10 @@ class ActivityRepository extends EntityRepository implements RelatedInfoInterfac
                 'a.id as id',
                 'a.title as title',
                 'ds.title as status',
-                'f.name as facility',
+                '(CASE
+                    WHEN f.id IS NOT NULL THEN f.name
+                    WHEN l.id IS NOT NULL AND f.id IS NULL THEN pf.name
+                ELSE f.name END) as facility',
                 "(CASE
                     WHEN l.id IS NOT NULL THEN CONCAT('Lead : ', l.firstName, ' ', l.lastName)
                     WHEN r.id IS NOT NULL AND rc.id IS NOT NULL THEN CONCAT('Referral : ', rc.firstName, ' ', rc.lastName)
@@ -638,6 +641,12 @@ class ActivityRepository extends EntityRepository implements RelatedInfoInterfac
                 'l',
                 Join::WITH,
                 'l = a.lead'
+            )
+            ->leftJoin(
+                Facility::class,
+                'pf',
+                Join::WITH,
+                'pf = l.primaryFacility'
             )
             ->leftJoin(
                 Referral::class,
