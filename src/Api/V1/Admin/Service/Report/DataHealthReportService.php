@@ -174,13 +174,15 @@ class DataHealthReportService extends BaseService
                 foreach ($modifiedRent as $rentKey => $rent) {
                     if (array_key_exists($rentKey + 1, $modifiedRent) && $modifiedRent[$rentKey + 1]['start'] >= $modifiedRent[$rentKey]['start'] && ($modifiedRent[$rentKey]['end'] === null ||
                             ($modifiedRent[$rentKey]['end'] !== null && $modifiedRent[$rentKey + 1]['start'] <= $modifiedRent[$rentKey]['start']))) {
-                        $isOverlap = true;
+                        //Allowed overlap is one day.
+                        $isOverlap = $modifiedRent[$rentKey + 1]['start']->format('Y-m-d') !== $modifiedRent[$rentKey]['start']->format('Y-m-d');
                         break;
                     }
 
                     if (array_key_exists($rentKey + 1, $modifiedRent) && $modifiedRent[$rentKey]['end'] !== null && $modifiedRent[$rentKey]['end'] >= $modifiedRent[$rentKey + 1]['start'] &&
                             ($modifiedRent[$rentKey+1]['end'] === null || ($modifiedRent[$rentKey+1]['end'] !== null && $modifiedRent[$rentKey]['end'] <= $modifiedRent[$rentKey+1]['end']))) {
-                        $isOverlap = true;
+                        //Allowed overlap is one day.
+                        $isOverlap = $modifiedRent[$rentKey]['end']->format('Y-m-d') !== $modifiedRent[$rentKey + 1]['start']->format('Y-m-d');
                         break;
                     }
                 }
@@ -467,9 +469,7 @@ class DataHealthReportService extends BaseService
                 $residentsById[$resident['id']] = $resident;
             }
         }
-
-//        $a = $residentsById;
-
+    
         $report = new MissingPhysician();
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setResidents($residentsById);
