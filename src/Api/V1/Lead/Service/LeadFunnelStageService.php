@@ -16,6 +16,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\StageChangeReason;
 use App\Model\Lead\ActivityOwnerType;
+use App\Model\Lead\State;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\FunnelStageRepository;
 use App\Repository\Lead\LeadFunnelStageRepository;
@@ -147,6 +148,22 @@ class LeadFunnelStageService extends BaseService implements IGridService
             // Creating change funnel stage activity
             $this->createLeadChangeFunnelStageActivity($currentSpace, $lead, $leadFunnelStage);
 
+            /** @var LeadFunnelStageRepository $repo */
+            $repo = $this->em->getRepository(LeadFunnelStage::class);
+            /** @var LeadFunnelStage $lastFunnelStage */
+            $lastFunnelStage = $repo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $lead->getId());
+
+            if ($lastFunnelStage === null || ($lastFunnelStage !== null && $leadFunnelStage->getDate() > $lastFunnelStage->getDate())) {
+                if ($stage->isOpen()) {
+                    $state = State::TYPE_OPEN;
+                } else {
+                    $state = State::TYPE_CLOSED;
+                }
+
+                $lead->setState($state);
+                $this->em->persist($lead);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -237,6 +254,21 @@ class LeadFunnelStageService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_lead_lead_funnel_stage_edit']);
 
             $this->em->persist($entity);
+
+            /** @var LeadFunnelStage $lastFunnelStage */
+            $lastFunnelStage = $repo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $lead->getId());
+
+            if ($lastFunnelStage->getId() === $entity->getId() || $entity->getDate() > $lastFunnelStage->getDate()) {
+                if ($stage->isOpen()) {
+                    $state = State::TYPE_OPEN;
+                } else {
+                    $state = State::TYPE_CLOSED;
+                }
+
+                $lead->setState($state);
+                $this->em->persist($lead);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -305,14 +337,43 @@ class LeadFunnelStageService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var LeadFunnelStageRepository $repo */
             $repo = $this->em->getRepository(LeadFunnelStage::class);
 
             /** @var LeadFunnelStage $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $id);
 
             if ($entity === null) {
                 throw new LeadFunnelStageNotFoundException();
+            }
+
+            $lead = $entity->getLead();
+            if ($lead !== null) {
+                $leadFunnelStages = $repo->getOrderedByDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $lead->getId());
+
+                if (!empty($leadFunnelStages)) {
+                    /** @var LeadFunnelStage $lastFunnelStage */
+                    $lastFunnelStage = $leadFunnelStages[0];
+                    if (array_key_exists(1, $leadFunnelStages) && $lastFunnelStage->getId() === $entity->getId()) {
+                        /** @var LeadFunnelStage $leadFunnelStage */
+                        $leadFunnelStage = $leadFunnelStages[1];
+
+                        $stage = $leadFunnelStage->getStage();
+
+                        if ($stage !== null) {
+                            if ($stage->isOpen()) {
+                                $state = State::TYPE_OPEN;
+                            } else {
+                                $state = State::TYPE_CLOSED;
+                            }
+
+                            $lead->setState($state);
+                            $this->em->persist($lead);
+                        }
+                    }
+                }
             }
 
             $this->em->remove($entity);
@@ -338,10 +399,12 @@ class LeadFunnelStageService extends BaseService implements IGridService
                 throw new LeadFunnelStageNotFoundException();
             }
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var LeadFunnelStageRepository $repo */
             $repo = $this->em->getRepository(LeadFunnelStage::class);
 
-            $leadFunnelStages = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $ids);
+            $leadFunnelStages = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $ids);
 
             if (empty($leadFunnelStages)) {
                 throw new LeadFunnelStageNotFoundException();
@@ -351,6 +414,33 @@ class LeadFunnelStageService extends BaseService implements IGridService
              * @var LeadFunnelStage $leadFunnelStage
              */
             foreach ($leadFunnelStages as $leadFunnelStage) {
+                $lead = $leadFunnelStage->getLead();
+                if ($lead !== null) {
+                    $funnelStages = $repo->getOrderedByDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(LeadFunnelStage::class), $lead->getId());
+
+                    if (!empty($funnelStages)) {
+                        /** @var LeadFunnelStage $lastFunnelStage */
+                        $lastFunnelStage = $funnelStages[0];
+                        if (array_key_exists(1, $funnelStages) && $lastFunnelStage->getId() === $leadFunnelStage->getId()) {
+                            /** @var LeadFunnelStage $funnelStage */
+                            $funnelStage = $funnelStages[1];
+
+                            $stage = $funnelStage->getStage();
+
+                            if ($stage !== null) {
+                                if ($stage->isOpen()) {
+                                    $state = State::TYPE_OPEN;
+                                } else {
+                                    $state = State::TYPE_CLOSED;
+                                }
+
+                                $lead->setState($state);
+                                $this->em->persist($lead);
+                            }
+                        }
+                    }
+                }
+
                 $this->em->remove($leadFunnelStage);
             }
 
