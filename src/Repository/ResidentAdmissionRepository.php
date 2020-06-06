@@ -2883,6 +2883,257 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         return $qb;
     }
 
+    /**
+     * @param $type
+     * @param ImtDateTimeInterval $reportInterval
+     * @param null $typeId
+     * @return QueryBuilder
+     */
+    public function getRoomListResidentAdmissionWithRentQb($type, ImtDateTimeInterval $reportInterval, $typeId = null): QueryBuilder
+    {
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getRoomListResidentAdmissionIntervalQb($reportInterval);
+
+        $qb
+            ->from(Resident::class, 'r')
+            ->andWhere('r.id = rar.id')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type)
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'ra.id as actionId',
+                '(SELECT DISTINCT minra.start FROM App:ResidentAdmission minra
+                WHERE minra.resident=r
+                AND minra.start = (SELECT MIN(raMin.start) FROM App:ResidentAdmission raMin WHERE raMin.resident=r)
+                ) as admitted'
+            );
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'f.id as typeId,
+                        f.name as typeName,
+                        f.shorthand as typeShorthand,
+                        f.address as address,
+                        fr.number as roomNumber,
+                        frt.private as private,
+                        fr.floor as floor,
+                        fb.number as bedNumber,
+                        fb.id as bedId,
+                        cl.title as careLevel,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
+                    )
+                    ->innerJoin(
+                        FacilityBed::class,
+                        'fb',
+                        Join::WITH,
+                        'ra.facilityBed = fb'
+                    )
+                    ->innerJoin(
+                        FacilityRoom::class,
+                        'fr',
+                        Join::WITH,
+                        'fb.room = fr'
+                    )
+                    ->innerJoin(
+                        Facility::class,
+                        'f',
+                        Join::WITH,
+                        'fr.facility = f'
+                    )
+                    ->innerJoin(
+                        FacilityRoomType::class,
+                        'frt',
+                        Join::WITH,
+                        'fr.type = frt'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'f.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('f.name')
+                    ->addOrderBy('fr.number')
+                    ->addOrderBy('fb.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('f.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'a.id as typeId,
+                        a.name as typeName,
+                        a.shorthand as typeShorthand,
+                        a.address as address,
+                        ar.number as roomNumber,
+                        ar.private as private,
+                        ar.floor as floor,
+                        ab.number as bedNumber,
+                        ab.id as bedId,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip'
+                    )
+                    ->innerJoin(
+                        ApartmentBed::class,
+                        'ab',
+                        Join::WITH,
+                        'ra.apartmentBed = ab'
+                    )
+                    ->innerJoin(
+                        ApartmentRoom::class,
+                        'ar',
+                        Join::WITH,
+                        'ab.room = ar'
+                    )
+                    ->innerJoin(
+                        Apartment::class,
+                        'a',
+                        Join::WITH,
+                        'ar.apartment = a'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'a.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('a.name')
+                    ->addOrderBy('ar.number')
+                    ->addOrderBy('ab.number');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('a.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'reg.id as typeId,
+                        reg.name as typeName,
+                        reg.shorthand as typeShorthand,
+                        ra.address as address,
+                        csz.city as city,
+                        csz.stateAbbr as stateAbbr,
+                        csz.zipMain as zip,
+                        cl.title as careLevel'
+                    )
+                    ->innerJoin(
+                        Region::class,
+                        'reg',
+                        Join::WITH,
+                        'ra.region = reg'
+                    )
+                    ->innerJoin(
+                        CareLevel::class,
+                        'cl',
+                        Join::WITH,
+                        'ra.careLevel = cl'
+                    )
+                    ->innerJoin(
+                        CityStateZip::class,
+                        'csz',
+                        Join::WITH,
+                        'ra.csz = csz'
+                    );
+
+                $qb
+                    ->orderBy('reg.name');
+
+                if ($typeId) {
+                    $qb
+                        ->andWhere('reg.id = :typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param ImtDateTimeInterval $reportInterval
+     * @param null $typeId
+     * @param array|null $notGrantResidentIds
+     * @return mixed
+     */
+    public function getAdmissionRoomListData(Space $space = null, array $entityGrants = null, $type, ImtDateTimeInterval $reportInterval, $typeId = null, array $notGrantResidentIds = null)
+    {
+        $qb = $this
+            ->getRoomListResidentAdmissionWithRentQb($type, $reportInterval, $typeId)
+            ->andWhere('ra.admissionType < :admissionType')
+            ->andWhere('ra.id IN (SELECT MAX(mra.id)
+                        FROM App:ResidentAdmission mra
+                        JOIN mra.resident mrar
+                        WHERE (mra.start < = :endDate AND mra.start > = :startDate) OR (mra.start < :startDate AND (mra.end IS NULL OR mra.end > :startDate))
+                        GROUP BY mrar.id)'
+            )
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->setParameter('startDate', $reportInterval->getStart())
+            ->setParameter('endDate', $reportInterval->getEnd());
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
     public function getBedIdAndTypeId(Space $space = null, array $entityGrants = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ra');

@@ -181,24 +181,41 @@ class RoomReportService extends BaseService
         $data = $repo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
         $rentPeriodFactory = RentPeriodFactory::getFactory(ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')));
 
-        $typeIds = array_map(static function ($item) {
-            return $item['typeId'];
+        $rentResidentIds = array_map(static function ($item) {
+            return $item['id'];
         }, $data);
-        $countTypeIds = array_count_values($typeIds);
-        $place = [];
-        $i = 0;
-        foreach ($countTypeIds as $key => $value) {
-            $i += $value;
-            $place[$key] = $i;
+
+        $rentBedIds = array_map(static function ($item) {
+            return $item['bedId'];
+        }, $data);
+
+        /** @var ResidentAdmissionRepository $residentAdmissionRepo */
+        $residentAdmissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+        $residents = $residentAdmissionRepo->getAdmissionRoomListData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
+        $noRentResidents = [];
+
+        if (!empty($residents)) {
+            foreach ($residents as $resident) {
+                if (!in_array($resident['id'], $rentResidentIds, false) && !in_array($resident['bedId'], $rentBedIds, false)) {
+                    $resident['noRent'] = true;
+                    $noRentResidents[] = $resident;
+                }
+            }
         }
 
-        $typeIds = array_unique($typeIds);
+        $rentTypeIds = array_map(static function ($item) {
+            return $item['typeId'];
+        }, $data);
+        $dataTypeIds = array_unique($rentTypeIds);
 
         $calcAmount = [];
         $total = [];
-        foreach ($typeIds as $currentTypeId) {
+        foreach ($dataTypeIds as $currentTypeId) {
             $sum = 0.00;
             foreach ($data as $rent) {
+                $rent['haveRent'] = true;
+
                 if ($currentTypeId === $rent['typeId']) {
                     $calculationResults = $rentPeriodFactory->calculateForInterval(
                         ImtDateTimeInterval::getWithMonthAndYear($reportDate->format('Y'), $reportDate->format('m')),
@@ -214,10 +231,41 @@ class RoomReportService extends BaseService
             $total[$currentTypeId] = $sum;
         }
 
+        $finalData = array_merge($data, $noRentResidents);
+
+        $typeNames = [];
+        $numbers = [];
+        foreach ($finalData as $k => $finalDatum) {
+            $number = '';
+            if (array_key_exists('roomNumber', $finalDatum) && array_key_exists('bedNumber', $finalDatum)) {
+                if ($finalDatum['private']) {
+                    $number = $finalDatum['roomNumber'] . ' ';
+                } else {
+                    $number = $finalDatum['roomNumber'] . ' ' . $finalDatum['bedNumber'];
+                }
+            }
+
+            $typeNames[$k][] = $finalDatum['typeName'] ?? '';
+            $numbers[$k][] = $number;
+        }
+
+        array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $finalData);
+
+        $typeIds = array_map(static function ($item) {
+            return $item['typeId'];
+        }, $finalData);
+        $countTypeIds = array_count_values($typeIds);
+        $place = [];
+        $i = 0;
+        foreach ($countTypeIds as $key => $value) {
+            $i += $value;
+            $place[$key] = $i;
+        }
+
         $vacants = $this->getRoomVacancyList($type, $groupAll, $groupIds, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         $report = new RoomList();
-        $report->setData($data);
+        $report->setData($finalData);
         $report->setCalcAmount($calcAmount);
         $report->setPlace($place);
         $report->setTotal($total);
