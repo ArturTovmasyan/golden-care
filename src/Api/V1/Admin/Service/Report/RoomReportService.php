@@ -231,22 +231,26 @@ class RoomReportService extends BaseService
             $total[$currentTypeId] = $sum;
         }
 
-        $finalData = array_merge($data, $noRentResidents);
+        $mergedData = array_merge($data, $noRentResidents);
 
+        $finalData = [];
         $typeNames = [];
         $numbers = [];
-        foreach ($finalData as $k => $finalDatum) {
+        foreach ($mergedData as $k => $mergedDatum) {
             $number = '';
-            if (array_key_exists('roomNumber', $finalDatum) && array_key_exists('bedNumber', $finalDatum)) {
-                if ($finalDatum['private']) {
-                    $number = $finalDatum['roomNumber'] . ' ';
+            if (array_key_exists('roomNumber', $mergedDatum) && array_key_exists('bedNumber', $mergedDatum)) {
+                if ($mergedDatum['private']) {
+                    $number = $mergedDatum['roomNumber'] . ' ';
                 } else {
-                    $number = $finalDatum['roomNumber'] . ' ' . $finalDatum['bedNumber'];
+                    $number = $mergedDatum['roomNumber'] . ' ' . $mergedDatum['bedNumber'];
                 }
             }
 
-            $typeNames[$k][] = $finalDatum['typeName'] ?? '';
+            $typeNames[$k][] = $mergedDatum['typeName'] ?? '';
             $numbers[$k][] = $number;
+
+            $mergedDatum['period'] = !array_key_exists('noRent', $mergedDatum) ? RentPeriod::MONTHLY : 0;
+            $finalData[] = $mergedDatum;
         }
 
         array_multisort($typeNames, SORT_ASC, $numbers, SORT_ASC, $finalData);
