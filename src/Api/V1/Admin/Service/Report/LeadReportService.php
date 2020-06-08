@@ -316,9 +316,7 @@ class LeadReportService extends BaseService
                 }
             }
         }
-
-        $a = $finalOutreaches;
-
+        
         $report = new OutreachList();
         $report->setOutreaches($finalOutreaches);
 
