@@ -577,3 +577,10 @@ lead:
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+    outreach:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getOutreachReport
+      title: 'Outreach List Report'
+      formats: ['csv', 'xls']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"

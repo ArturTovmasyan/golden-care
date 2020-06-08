@@ -6,15 +6,18 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
+use App\Entity\Lead\Outreach;
 use App\Entity\Lead\Referral;
 use App\Model\Lead\State;
 use App\Model\Phone;
 use App\Model\Report\Lead\ActivityList;
 use App\Model\Report\Lead\LeadList;
+use App\Model\Report\Lead\OutreachList;
 use App\Model\Report\Lead\ReferralList;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ContactPhoneRepository;
 use App\Repository\Lead\LeadRepository;
+use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
 
 class LeadReportService extends BaseService
@@ -91,7 +94,7 @@ class LeadReportService extends BaseService
 
                 $facilities = [];
                 if (!empty($lead[0]['facilities'])) {
-                    $facilities = array_map(function ($item) {
+                    $facilities = array_map(static function ($item) {
                         return $item['name'];
                     }, $lead[0]['facilities']);
 
@@ -234,6 +237,90 @@ class LeadReportService extends BaseService
 
         $report = new ActivityList();
         $report->setActivities($activities);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return OutreachList
+     */
+    public function getOutreachReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): OutreachList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        if (!empty($dateFrom)) {
+            $startDate = new \DateTime($dateFrom);
+        } else {
+            $startDate = $currentDate;
+        }
+
+        if (!empty($dateTo)) {
+            $endDate = new \DateTime($dateTo);
+        } else {
+            $endDate = date_modify($currentDate, '+1 day');
+        }
+
+        /** @var OutreachRepository $repo */
+        $repo = $this->em->getRepository(Outreach::class);
+
+        $outreaches = $repo->getOutreachList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Outreach::class), $startDate, $endDate);
+
+        $finalOutreaches = [];
+        if (!empty($outreaches)) {
+            foreach ($outreaches as $outreach) {
+                $finalOutreaches[$outreach[0]['id']] = [
+                    'id' => $outreach[0]['id'],
+                    'date' => $outreach[0]['date'],
+                    'notes' => $outreach[0]['notes'],
+                    'typeTitle' => $outreach['typeTitle'],
+                    'organization' => $outreach['organizationName'],
+                ];
+
+                $contacts = [];
+                if (!empty($outreach[0]['contacts'])) {
+                    $contacts = array_map(static function ($item) {
+                        return $item['firstName'] . ' ' . $item['lastName'];
+                    }, $outreach[0]['contacts']);
+
+                    $stringContacts = implode("\r\n", $contacts);
+
+                    $finalOutreaches[$outreach[0]['id']]['contacts'] = $stringContacts;
+                } else {
+                    $finalOutreaches[$outreach[0]['id']]['contacts'] = $contacts;
+                }
+
+                $participants = [];
+                if (!empty($outreach[0]['participants'])) {
+                    $participants = array_map(static function ($item) {
+                        return $item['firstName'] . ' ' . $item['lastName'];
+                    }, $outreach[0]['participants']);
+
+                    $stringParticipants = implode("\r\n", $participants);
+
+                    $finalOutreaches[$outreach[0]['id']]['participants'] = $stringParticipants;
+                } else {
+                    $finalOutreaches[$outreach[0]['id']]['participants'] = $participants;
+                }
+            }
+        }
+
+        $a = $finalOutreaches;
+
+        $report = new OutreachList();
+        $report->setOutreaches($finalOutreaches);
 
         return $report;
     }

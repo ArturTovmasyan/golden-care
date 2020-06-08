@@ -562,8 +562,10 @@ report:
       title: "Lead Reports"
       children:
         activity:
-          title: "Generate Activity List Report"
+          title: "Activity List Report"
         lead:
-          title: "Generate Lead List Report"
+          title: "Lead List Report"
         referral:
-          title: "Generate Referral List Report"
+          title: "Referral List Report"
+        outreach:
+          title: "Outreach List Report"

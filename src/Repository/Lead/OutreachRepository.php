@@ -7,6 +7,7 @@ use App\Entity\Lead\Organization;
 use App\Entity\Lead\OutreachType;
 use App\Entity\Lead\Outreach;
 use App\Entity\Space;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -252,6 +253,62 @@ class OutreachRepository extends EntityRepository implements RelatedInfoInterfac
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getOutreachList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('ou')
+            ->select(
+                'ou', 'c', 'p',
+                'ot.title as typeTitle',
+                'o.name as organizationName'
+            )
+            ->innerJoin(
+                OutreachType::class,
+                'ot',
+                Join::WITH,
+                'ot = ou.type'
+            )
+            ->innerJoin('ou.contacts', 'c')
+            ->innerJoin('ou.participants', 'p')
+            ->leftJoin(
+                Organization::class,
+                'o',
+                Join::WITH,
+                'o = ou.organization'
+            )
+            ->where('ou.createdAt >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('ou.createdAt < :endDate')->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ot.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ou.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////

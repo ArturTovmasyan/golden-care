@@ -1,0 +1,7 @@
+{% spaceless %}
+"ID",Date,Type,Organization,Contacts,Participants,Notes
+{% for outreach in data.outreaches %}
+{{ outreach.id }},{% if outreach.date %}{{ outreach.date|date("m/d/Y") }}{% else %}N/A{% endif %},{% if outreach.typeTitle %}"{{ outreach.typeTitle|raw }}"{% else %}N/A{% endif %},"{% if outreach.organization %}{{ outreach.organization|raw }}{% endif %}",{% if outreach.contacts %}"{{ outreach.contacts|raw }}"{% else %}N/A{% endif %},{% if outreach.participants %}"{{ outreach.participants|raw }}"{% else %}N/A{% endif %},{% if outreach.notes %}"{{ outreach.notes|raw }}"{% else %}N/A{% endif %}
+
+{% endfor %}
+{% endspaceless %}
