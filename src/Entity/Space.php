@@ -142,7 +142,11 @@ class Space
      *     "api_admin_assessment_type_list",
      *     "api_admin_assessment_type_get",
      *     "api_admin_rent_reason_list",
-     *     "api_admin_rent_reason_get"
+     *     "api_admin_rent_reason_get",
+     *     "api_lead_current_residence_list",
+     *     "api_lead_current_residence_get",
+     *     "api_lead_hobby_list",
+     *     "api_lead_hobby_get"
      * })
      */
     private $id;
@@ -237,7 +241,11 @@ class Space
      *     "api_admin_assessment_type_list",
      *     "api_admin_assessment_type_get",
      *     "api_admin_rent_reason_list",
-     *     "api_admin_rent_reason_get"
+     *     "api_admin_rent_reason_get",
+     *     "api_lead_current_residence_list",
+     *     "api_lead_current_residence_get",
+     *     "api_lead_hobby_list",
+     *     "api_lead_hobby_get"
      * })
      */
     private $name;
@@ -469,6 +477,18 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\RentReason", mappedBy="space", cascade={"remove", "persist"})
      */
     private $rentReasons;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\CurrentResidence", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadCurrentResidences;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Hobby", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadHobbies;
 
     /**
      * Space constructor.
@@ -1116,5 +1136,37 @@ class Space
     public function setRentReasons(ArrayCollection $rentReasons): void
     {
         $this->rentReasons = $rentReasons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadCurrentResidences(): ArrayCollection
+    {
+        return $this->leadCurrentResidences;
+    }
+
+    /**
+     * @param ArrayCollection $leadCurrentResidences
+     */
+    public function setLeadCurrentResidences(ArrayCollection $leadCurrentResidences): void
+    {
+        $this->leadCurrentResidences = $leadCurrentResidences;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadHobbies(): ArrayCollection
+    {
+        return $this->leadHobbies;
+    }
+
+    /**
+     * @param ArrayCollection $leadHobbies
+     */
+    public function setLeadHobbies(ArrayCollection $leadHobbies): void
+    {
+        $this->leadHobbies = $leadHobbies;
     }
 }

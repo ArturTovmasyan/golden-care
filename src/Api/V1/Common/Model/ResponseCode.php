@@ -173,6 +173,8 @@ class ResponseCode
     const CSV_REPORT_HASH_HAS_EXPIRED                            = 773;
     const FILE_EXTENSION_FOUND_EXCEPTION                         = 774;
     const ACTIVE_RESIDENT_EXIST_IN_ROOM_EXCEPTION                = 775;
+    const LEAD_CURRENT_RESIDENCE_NOT_FOUND_EXCEPTION             = 776;
+    const LEAD_HOBBY_NOT_FOUND_EXCEPTION                         = 777;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -346,6 +348,8 @@ class ResponseCode
         self::CSV_REPORT_HASH_HAS_EXPIRED                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'CSV Report Hash has expired.'],
         self::FILE_EXTENSION_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'File extension not found.'],
         self::ACTIVE_RESIDENT_EXIST_IN_ROOM_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Room is currently occupied. Please move its Resident(s) before deleting this room.'],
+        self::LEAD_CURRENT_RESIDENCE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Current Residence not found.'],
+        self::LEAD_HOBBY_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Hobby not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

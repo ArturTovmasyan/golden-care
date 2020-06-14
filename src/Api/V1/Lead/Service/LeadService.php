@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactOrganizationChangedException;
+use App\Api\V1\Common\Service\Exception\Lead\CurrentResidenceNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
@@ -30,7 +31,9 @@ use App\Entity\Lead\Activity;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Contact;
+use App\Entity\Lead\CurrentResidence;
 use App\Entity\Lead\FunnelStage;
+use App\Entity\Lead\Hobby;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\LeadTemperature;
@@ -50,7 +53,9 @@ use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
 use App\Repository\Lead\ContactRepository;
+use App\Repository\Lead\CurrentResidenceRepository;
 use App\Repository\Lead\FunnelStageRepository;
+use App\Repository\Lead\HobbyRepository;
 use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
@@ -263,6 +268,46 @@ class LeadService extends BaseService implements IGridService
             }
 
             $lead->setInitialContactDate($initialContactDate);
+
+            if (!empty($params['birthday'])) {
+                $birthday = new \DateTime($params['birthday']);
+            } else {
+                $birthday = null;
+            }
+
+            $lead->setBirthday($birthday);
+
+            $spouseName = !empty($params['spouse_name']) ? $params['spouse_name'] : null;
+
+            $lead->setSpouseName($spouseName);
+
+            if (!empty($params['current_residence_id'])) {
+                /** @var CurrentResidenceRepository $currentResidenceRepo */
+                $currentResidenceRepo = $this->em->getRepository(CurrentResidence::class);
+
+                /** @var CurrentResidence $currentResidence */
+                $currentResidence = $currentResidenceRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CurrentResidence::class), $params['current_residence_id']);
+
+                if ($currentResidence === null) {
+                    throw new CurrentResidenceNotFoundException();
+                }
+
+                $lead->setCurrentResidence($currentResidence);
+            } else {
+                $lead->setCurrentResidence(null);
+            }
+
+            if (!empty($params['hobbies'])) {
+                /** @var HobbyRepository $hobbyRepo */
+                $hobbyRepo = $this->em->getRepository(Hobby::class);
+
+                $hobbyIds = array_unique($params['hobbies']);
+                $hobbies = $hobbyRepo->findByIds($currentSpace, null, $hobbyIds);
+
+                if (!empty($hobbies)) {
+                    $lead->setHobbies($hobbies);
+                }
+            }
 
             $lead->setResponsiblePersonFirstName($params['responsible_person_first_name']);
             $lead->setResponsiblePersonLastName($params['responsible_person_last_name']);
@@ -512,6 +557,9 @@ class LeadService extends BaseService implements IGridService
 
             $lead->setState(State::TYPE_OPEN);
             $lead->setInitialContactDate($now);
+            $lead->setBirthday(null);
+            $lead->setSpouseName(null);
+            $lead->setCurrentResidence(null);
 
             $rpFirstName = '';
             $rpLastName = '';
@@ -823,6 +871,51 @@ class LeadService extends BaseService implements IGridService
             }
 
             $entity->setState($state);
+
+            if (!empty($params['birthday'])) {
+                $birthday = new \DateTime($params['birthday']);
+            } else {
+                $birthday = null;
+            }
+
+            $entity->setBirthday($birthday);
+
+            $spouseName = !empty($params['spouse_name']) ? $params['spouse_name'] : null;
+
+            $entity->setSpouseName($spouseName);
+
+            if (!empty($params['current_residence_id'])) {
+                /** @var CurrentResidenceRepository $currentResidenceRepo */
+                $currentResidenceRepo = $this->em->getRepository(CurrentResidence::class);
+
+                /** @var CurrentResidence $currentResidence */
+                $currentResidence = $currentResidenceRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CurrentResidence::class), $params['current_residence_id']);
+
+                if ($currentResidence === null) {
+                    throw new CurrentResidenceNotFoundException();
+                }
+
+                $entity->setCurrentResidence($currentResidence);
+            } else {
+                $entity->setCurrentResidence(null);
+            }
+
+            $hobbies = $entity->getHobbies();
+            foreach ($hobbies as $hobby) {
+                $entity->removeHobby($hobby);
+            }
+
+            if (!empty($params['hobbies'])) {
+                /** @var HobbyRepository $hobbyRepo */
+                $hobbyRepo = $this->em->getRepository(Hobby::class);
+
+                $hobbyIds = array_unique($params['hobbies']);
+                $hobbies = $hobbyRepo->findByIds($currentSpace, null, $hobbyIds);
+
+                if (!empty($hobbies)) {
+                    $entity->setHobbies($hobbies);
+                }
+            }
 
             $entity->setResponsiblePersonFirstName($params['responsible_person_first_name']);
             $entity->setResponsiblePersonLastName($params['responsible_person_last_name']);

@@ -230,6 +230,78 @@ class Lead implements PreviousAndNextItemsService
     private $state;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="birthday", type="date", nullable=true)
+     * @Assert\Date(groups={
+     *     "api_lead_lead_add",
+     *     "api_lead_lead_edit"
+     * })
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
+     */
+    private $birthday;
+
+    /**
+     * @var string
+     * @ORM\Column(name="spouse_name", type="string", length=120, nullable=true)
+     * @Assert\Length(
+     *      max = 120,
+     *      maxMessage = "Spouse's Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_lead_add",
+     *          "api_lead_lead_edit"
+     *      }
+     * )
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get",
+     *     "api_lead_referral_list",
+     *     "api_lead_referral_get",
+     *     "api_lead_activity_list",
+     *     "api_lead_activity_get",
+     *     "api_lead_lead_funnel_stage_list",
+     *     "api_lead_lead_funnel_stage_get",
+     *     "api_lead_lead_temperature_list",
+     *     "api_lead_lead_temperature_get"
+     * })
+     */
+    private $spouseName;
+
+    /**
+     * @var CurrentResidence
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\CurrentResidence", inversedBy="leads", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_current_residence", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
+     */
+    private $currentResidence;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Lead\Hobby", inversedBy="leads", cascade={"persist"})
+     * @ORM\JoinTable(
+     *      name="tbl_lead_hobbies",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="id_lead", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="id_hobby", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
+     */
+    private $hobbies;
+
+    /**
      * @var string
      * @ORM\Column(name="rp_first_name", type="string", length=60)
      * @Assert\NotBlank(groups={
@@ -636,6 +708,86 @@ class Lead implements PreviousAndNextItemsService
     public function setState(?int $state): void
     {
         $this->state = $state;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getBirthday(): ?\DateTime
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * @param \DateTime|null $birthday
+     */
+    public function setBirthday(?\DateTime $birthday): void
+    {
+        $this->birthday = $birthday;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSpouseName(): ?string
+    {
+        return $this->spouseName;
+    }
+
+    /**
+     * @param null|string $spouseName
+     */
+    public function setSpouseName(?string $spouseName): void
+    {
+        $this->spouseName = $spouseName;
+    }
+
+    /**
+     * @return CurrentResidence
+     */
+    public function getCurrentResidence(): CurrentResidence
+    {
+        return $this->currentResidence;
+    }
+
+    /**
+     * @param CurrentResidence $currentResidence
+     */
+    public function setCurrentResidence(CurrentResidence $currentResidence): void
+    {
+        $this->currentResidence = $currentResidence;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHobbies()
+    {
+        return $this->hobbies;
+    }
+
+    /**
+     * @param $hobbies
+     */
+    public function setHobbies($hobbies): void
+    {
+        $this->hobbies = $hobbies;
+    }
+
+    /**
+     * @param Hobby|null $hobby
+     */
+    public function addHobby(?Hobby $hobby): void
+    {
+        $this->hobbies->add($hobby);
+    }
+
+    /**
+     * @param Hobby|null $hobby
+     */
+    public function removeHobby(?Hobby $hobby): void
+    {
+        $this->hobbies->removeElement($hobby);
     }
 
     /**

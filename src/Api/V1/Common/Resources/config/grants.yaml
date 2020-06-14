@@ -97,6 +97,12 @@ persistence:
         outreach:
           title: 'Outreach'
           class: App\Entity\Lead\Outreach
+        current_residence:
+          title: 'Current Residence'
+          class: App\Entity\Lead\CurrentResidence
+        hobby:
+          title: 'Hobby'
+          class: App\Entity\Lead\Hobby
 
         assessment:
           title: 'Assessment'
