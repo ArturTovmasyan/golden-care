@@ -743,17 +743,17 @@ class Lead implements PreviousAndNextItemsService
     }
 
     /**
-     * @return CurrentResidence
+     * @return CurrentResidence|null
      */
-    public function getCurrentResidence(): CurrentResidence
+    public function getCurrentResidence(): ?CurrentResidence
     {
         return $this->currentResidence;
     }
 
     /**
-     * @param CurrentResidence $currentResidence
+     * @param CurrentResidence|null $currentResidence
      */
-    public function setCurrentResidence(CurrentResidence $currentResidence): void
+    public function setCurrentResidence(?CurrentResidence $currentResidence): void
     {
         $this->currentResidence = $currentResidence;
     }
