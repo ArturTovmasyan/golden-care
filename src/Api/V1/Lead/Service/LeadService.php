@@ -277,7 +277,7 @@ class LeadService extends BaseService implements IGridService
 
             $lead->setBirthday($birthday);
 
-            $spouseName = !empty($params['spouse_name']) ? $params['spouse_name'] : null;
+            $spouseName = !empty($params['spouse_name']) && !ctype_space($params['spouse_name'])? $params['spouse_name'] : null;
 
             $lead->setSpouseName($spouseName);
 
@@ -880,7 +880,7 @@ class LeadService extends BaseService implements IGridService
 
             $entity->setBirthday($birthday);
 
-            $spouseName = !empty($params['spouse_name']) ? $params['spouse_name'] : null;
+            $spouseName = !empty($params['spouse_name']) && !ctype_space($params['spouse_name'])? $params['spouse_name'] : null;
 
             $entity->setSpouseName($spouseName);
 
