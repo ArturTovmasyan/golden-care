@@ -575,3 +575,5 @@ report:
           title: "Referral List Report"
         outreach:
           title: "Outreach List Report"
+        outreach-activity:
+          title: "Outreach Activity List Report"

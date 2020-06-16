@@ -8,6 +8,7 @@ use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Outreach;
 use App\Entity\Lead\Referral;
+use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Model\Phone;
 use App\Model\Report\Lead\ActivityList;
@@ -233,7 +234,7 @@ class LeadReportService extends BaseService
         /** @var ActivityRepository $repo */
         $repo = $this->em->getRepository(Activity::class);
 
-        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate);
+        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, null);
 
         $report = new ActivityList();
         $report->setActivities($activities);
@@ -319,6 +320,49 @@ class LeadReportService extends BaseService
         
         $report = new OutreachList();
         $report->setOutreaches($finalOutreaches);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return ActivityList
+     */
+    public function getOutreachActivityReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        if (!empty($dateFrom)) {
+            $startDate = new \DateTime($dateFrom);
+        } else {
+            $startDate = $currentDate;
+        }
+
+        if (!empty($dateTo)) {
+            $endDate = new \DateTime($dateTo);
+        } else {
+            $endDate = date_modify($currentDate, '+1 day');
+        }
+
+        /** @var ActivityRepository $repo */
+        $repo = $this->em->getRepository(Activity::class);
+
+        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, ActivityOwnerType::TYPE_OUTREACH);
+
+        $report = new ActivityList();
+        $report->setActivities($activities);
 
         return $report;
     }
