@@ -547,7 +547,7 @@ assessment:
 
 lead:
   title: 'Lead Reports'
-  show_in_al_list: false
+  show_in_al_list: true
   show_in_il_list: false
   show_in_lead_list: true
   show_in_resident_list: false
