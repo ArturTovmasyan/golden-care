@@ -359,7 +359,7 @@ class LeadReportService extends BaseService
         /** @var ActivityRepository $repo */
         $repo = $this->em->getRepository(Activity::class);
 
-        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, [ActivityOwnerType::TYPE_OUTREACH, ActivityOwnerType::TYPE_CONTACT]);
+        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, [ActivityOwnerType::TYPE_OUTREACH, ActivityOwnerType::TYPE_CONTACT, ActivityOwnerType::TYPE_REFERRAL, ActivityOwnerType::TYPE_ORGANIZATION]);
 
         $report = new ActivityList();
         $report->setActivities($activities);
