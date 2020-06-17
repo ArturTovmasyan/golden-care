@@ -338,7 +338,7 @@ class LeadReportService extends BaseService
      * @param $assessmentFormId
      * @return ActivityList
      */
-    public function getOutreachActivityReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
+    public function getOutreachAndContactActivityReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ActivityList
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -359,7 +359,7 @@ class LeadReportService extends BaseService
         /** @var ActivityRepository $repo */
         $repo = $this->em->getRepository(Activity::class);
 
-        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, ActivityOwnerType::TYPE_OUTREACH);
+        $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, [ActivityOwnerType::TYPE_OUTREACH, ActivityOwnerType::TYPE_CONTACT]);
 
         $report = new ActivityList();
         $report->setActivities($activities);

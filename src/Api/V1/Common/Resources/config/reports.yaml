@@ -585,8 +585,8 @@ lead:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
     outreach-activity:
-      service: App\Api\V1\Admin\Service\Report\LeadReportService::getOutreachActivityReport
-      title: 'Outreach Events Activity List Report'
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getOutreachAndContactActivityReport
+      title: 'Outreach Events and Contact Activities List Report'
       formats: ['csv', 'xls']
       template: 'activity'
       parameters:

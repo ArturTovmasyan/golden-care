@@ -582,10 +582,10 @@ class ActivityRepository extends EntityRepository implements RelatedInfoInterfac
      * @param array|null $entityGrants
      * @param $startDate
      * @param $endDate
-     * @param $ownerType
+     * @param array|null $ownerTypes
      * @return mixed
      */
-    public function getActivityList(Space $space = null, array $entityGrants = null, $startDate, $endDate, $ownerType = null)
+    public function getActivityList(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $ownerTypes = null)
     {
         $qb = $this
             ->createQueryBuilder('a')
@@ -700,10 +700,10 @@ class ActivityRepository extends EntityRepository implements RelatedInfoInterfac
             ->where('a.date >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('a.date < :endDate')->setParameter('endDate', $endDate);
 
-        if ($ownerType === ActivityOwnerType::TYPE_OUTREACH) {
+        if ($ownerTypes !== null) {
             $qb
-                ->andWhere('a.ownerType = :ownerType')
-                ->setParameter('ownerType', $ownerType);
+                ->andWhere('a.ownerType IN (:ownerTypes)')
+                ->setParameter('ownerTypes', $ownerTypes);
         }
 
         if ($space !== null) {
