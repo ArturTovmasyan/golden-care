@@ -6,6 +6,7 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\Space;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -229,6 +230,43 @@ class FacilityRepository extends EntityRepository implements RelatedInfoInterfac
         return $qb->orderBy('f.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getAll(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('f')
+            ->select(
+                'f.id AS id',
+                'f.name AS name'
+            );
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = f.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
     /**

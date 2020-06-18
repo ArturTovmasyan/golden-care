@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Entity\Facility;
 use App\Entity\Lead\Activity;
 use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
@@ -15,6 +16,7 @@ use App\Model\Report\Lead\ActivityList;
 use App\Model\Report\Lead\LeadList;
 use App\Model\Report\Lead\OutreachList;
 use App\Model\Report\Lead\ReferralList;
+use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ContactPhoneRepository;
 use App\Repository\Lead\LeadRepository;
@@ -361,8 +363,37 @@ class LeadReportService extends BaseService
 
         $activities = $repo->getActivityList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Activity::class), $startDate, $endDate, [ActivityOwnerType::TYPE_OUTREACH, ActivityOwnerType::TYPE_CONTACT, ActivityOwnerType::TYPE_REFERRAL, ActivityOwnerType::TYPE_ORGANIZATION]);
 
+        /** @var FacilityRepository $facilityRepo */
+        $facilityRepo = $this->em->getRepository(Facility::class);
+
+        $facilities = $facilityRepo->getAll($currentSpace, null);
+        $facilities = array_column($facilities, 'name', 'id');
+
+        $finalActivities = [];
+        if (!empty($activities)) {
+            foreach ($activities as $activity) {
+                if ($activity['facility'] === null) {
+                    if ($activity['facilityIds'] !== null) {
+                        $facilityIds = explode(',', $activity['facilityIds']);
+                        $array_version = [];
+                        foreach ($facilityIds as $facilityId) {
+                            $array_version[] = $facilities[$facilityId];
+                        }
+
+                        $string_version = implode("\r\n", $array_version);
+                        $activity['facility'] = $string_version;
+                    } else {
+                        $string_version = implode("\r\n", $facilities);
+                        $activity['facility'] = $string_version;
+                    }
+                }
+
+                $finalActivities[] = $activity;
+            }
+        }
+        
         $report = new ActivityList();
-        $report->setActivities($activities);
+        $report->setActivities($finalActivities);
 
         return $report;
     }

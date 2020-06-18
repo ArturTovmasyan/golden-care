@@ -613,6 +613,17 @@ class ActivityRepository extends EntityRepository implements RelatedInfoInterfac
                 'a.reminderDate as reminderDate',
                 'a.notes as notes'
             )
+            ->addSelect(
+                "(SELECT GROUP_CONCAT(DISTINCT cbf.id SEPARATOR ',')
+                        FROM
+                          App\\Entity\\Facility cbf
+                        WHERE JSON_CONTAINS(
+                            JSON_EXTRACT(
+                              cb.grants,
+                              '$.\"persistence-facility\"'
+                            ),
+                            CAST(cbf.id AS JSON)
+                          ) = 1) AS facilityIds")
             ->innerJoin(
                 ActivityType::class,
                 'at',
