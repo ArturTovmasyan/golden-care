@@ -390,10 +390,11 @@ class LeadService extends BaseService implements IGridService
             $this->em->persist($lead);
 
             // Save Referral
+            $referral = null;
             if (!empty($params['referral'])) {
                 $newReferral = $params['referral'];
 
-                $this->saveReferral($lead, $newReferral);
+                $referral = $this->saveReferral($lead, $newReferral);
             }
 
             // Creating lead funnel stage
@@ -410,7 +411,7 @@ class LeadService extends BaseService implements IGridService
             $this->em->flush();
 
             // Creating change log
-            $changeLog = $this->leadAddChangeLog($lead);
+            $changeLog = $this->leadAddChangeLog($lead, $referral);
 
             $this->em->flush();
 
@@ -1003,10 +1004,11 @@ class LeadService extends BaseService implements IGridService
             $this->em->persist($entity);
 
             // Save Referral
+            $referral = null;
             if (!empty($params['referral'])) {
                 $newReferral = $params['referral'];
 
-                $this->saveReferral($entity, $newReferral);
+                $referral = $this->saveReferral($entity, $newReferral);
             }
 
             $uow = $this->em->getUnitOfWork();
@@ -1021,7 +1023,7 @@ class LeadService extends BaseService implements IGridService
                     $this->createLeadStateChangeActivity($entity, $lastStage);
                 }
 
-                $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity);
+                $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity, $referral);
             }
 
             $this->em->flush();
@@ -1079,8 +1081,9 @@ class LeadService extends BaseService implements IGridService
     /**
      * @param Lead $lead
      * @param array $newReferral
+     * @return Referral|null
      */
-    private function saveReferral(Lead $lead, array $newReferral)
+    private function saveReferral(Lead $lead, array $newReferral): ?Referral
     {
         $oldReferral = $lead->getReferral();
 
@@ -1161,6 +1164,8 @@ class LeadService extends BaseService implements IGridService
         }
 
         $this->em->persist($referral);
+
+        return $referral;
     }
 
     /**
@@ -1319,9 +1324,10 @@ class LeadService extends BaseService implements IGridService
 
     /**
      * @param Lead $lead
+     * @param Referral|null $referral
      * @return ChangeLog
      */
-    private function leadAddChangeLog(Lead $lead): ChangeLog
+    private function leadAddChangeLog(Lead $lead, Referral $referral = null): ChangeLog
     {
         $name = $lead->getFirstName() . ' ' . $lead->getLastName();
         $id = $lead->getId();
@@ -1330,13 +1336,31 @@ class LeadService extends BaseService implements IGridService
         $primaryFacility = $lead->getPrimaryFacility() ? $lead->getPrimaryFacility()->getName() : '';
         $date = new \DateTime('now');
 
+        $sourceType = '';
+        $source = '';
+        $contact = '';
+        if ($referral !== null && $referral->getType() !== null) {
+            $sourceType = $referral->getType()->getTitle();
+
+            if ($referral->getOrganization() !== null && $referral->getType()->isOrganizationRequired()) {
+                $source = $referral->getOrganization()->getName();
+            }
+
+            if ($referral->getContact() !== null && $referral->getType()->isRepresentativeRequired()) {
+                $contact = $referral->getContact()->getFirstName() . ' ' . $referral->getContact()->getLastName();
+            }
+        }
+
         $content = [
             'lead_name' => $name,
             'lead_id' => $id,
             'owner' => $ownerName,
             'primary_facility' => $primaryFacility,
             'user_name' => $userName,
-            'created_at' => $date->format('m/d/Y H:i')
+            'created_at' => $date->format('m/d/Y H:i'),
+            'source_type' => $sourceType,
+            'source' => $source,
+            'contact' => $contact
         ];
 
         $changeLog = new ChangeLog();
@@ -1415,8 +1439,9 @@ class LeadService extends BaseService implements IGridService
      * @param $oldState
      * @param $newState
      * @param Lead $lead
+     * @param Referral|null $referral
      */
-    private function leadStateEditChangeLog($oldState, $newState, Lead $lead)
+    private function leadStateEditChangeLog($oldState, $newState, Lead $lead, Referral $referral = null)
     {
         $name = $lead->getFirstName() . ' ' . $lead->getLastName();
         $id = $lead->getId();
@@ -1428,6 +1453,21 @@ class LeadService extends BaseService implements IGridService
         $newState = State::getTypes()[$newState];
         $date = new \DateTime('now');
 
+        $sourceType = '';
+        $source = '';
+        $contact = '';
+        if ($referral !== null && $referral->getType() !== null) {
+            $sourceType = $referral->getType()->getTitle();
+
+            if ($referral->getOrganization() !== null && $referral->getType()->isOrganizationRequired()) {
+                $source = $referral->getOrganization()->getName();
+            }
+
+            if ($referral->getContact() !== null && $referral->getType()->isRepresentativeRequired()) {
+                $contact = $referral->getContact()->getFirstName() . ' ' . $referral->getContact()->getLastName();
+            }
+        }
+
         $content = [
             'lead_name' => $name,
             'lead_id' => $id,
@@ -1436,7 +1476,10 @@ class LeadService extends BaseService implements IGridService
             'old_state' => $oldState,
             'new_state' => $newState,
             'user_name' => $userName,
-            'created_at' => $date->format('m/d/Y H:i')
+            'created_at' => $date->format('m/d/Y H:i'),
+            'source_type' => $sourceType,
+            'source' => $source,
+            'contact' => $contact
         ];
 
         $changeLog = new ChangeLog();

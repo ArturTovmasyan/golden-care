@@ -23,6 +23,12 @@
                                 <strong>Owner:</strong> {{ log['content']['owner'] }}</p>
                             <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary
                                     Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Source
+                                    Type:</strong> {{ log['content']['source_type'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                                <strong>Source:</strong> {{ log['content']['source'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                                <strong>Contact:</strong> {{ log['content']['contact'] }}</p>
                         {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_LEAD_UPDATED') %}
                             <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Lead State
                                     Changed.</strong></p>
@@ -37,6 +43,12 @@
                                 <strong>Owner:</strong> {{ log['content']['owner'] }}</p>
                             <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Primary
                                     Facility:</strong> {{ log['content']['primary_facility'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>Source
+                                    Type:</strong> {{ log['content']['source_type'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                                <strong>Source:</strong> {{ log['content']['source'] }}</p>
+                            <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                                <strong>Contact:</strong> {{ log['content']['contact'] }}</p>
                         {% elseif log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_TASK') %}
                             <p style="padding:0; margin: 0 0 0 25px;font-size: small;"><strong>New Activity
                                     Task</strong></p>
