@@ -47,9 +47,23 @@ class ResidentController extends BaseController
                 }
             }
 
+            if ($state === ResidentState::TYPE_ACTIVE) {
+                $ignoreFields[] = 'start';
+            }
+
+            if ($state === ResidentState::TYPE_INACTIVE) {
+                if (!array_key_exists('address', $ignoreFields)) {
+                    $ignoreFields[] = 'address';
+                }
+                if (!array_key_exists('csz_str', $ignoreFields)) {
+                    $ignoreFields[] = 'csz_str';
+                }
+            }
+
             if ($state === ResidentState::TYPE_NO_ADMISSION) {
                 $ignoreFields[] = 'group_name';
                 $ignoreFields[] = 'room';
+                $ignoreFields[] = 'start';
                 $ignoreFields[] = 'address';
                 $ignoreFields[] = 'csz_str';
             }

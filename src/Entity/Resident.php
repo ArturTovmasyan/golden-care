@@ -34,6 +34,11 @@ use App\Annotation\Grid;
  *              "link"       = "/resident/:id"
  *          },
  *          {
+ *              "id"         = "start",
+ *              "type"       = "date",
+ *              "field"      = "start"
+ *          },
+ *          {
  *              "id"         = "address",
  *              "type"       = "string",
  *              "field"      = "address"
@@ -77,6 +82,11 @@ use App\Annotation\Grid;
  *              "id"         = "room",
  *              "type"       = "string",
  *              "field"      = "room"
+ *          },
+ *          {
+ *              "id"         = "start",
+ *              "type"       = "date",
+ *              "field"      = "start"
  *          },
  *          {
  *              "id"         = "address",

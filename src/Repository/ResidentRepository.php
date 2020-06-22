@@ -54,6 +54,7 @@ class ResidentRepository extends EntityRepository implements RelatedInfoInterfac
             case ResidentState::TYPE_ACTIVE || ResidentState::TYPE_INACTIVE:
                 $queryBuilder
                     ->addSelect(
+                        'ra.start as start',
                         '(CASE
                                 WHEN fb.id IS NOT NULL AND frt.private = 1 THEN fr.number
                                 WHEN fb.id IS NOT NULL AND frt.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
