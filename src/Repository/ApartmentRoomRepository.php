@@ -71,16 +71,16 @@ class ApartmentRoomRepository extends EntityRepository implements RelatedInfoInt
      */
     public function list(Space $space = null, array $entityGrants = null, array $apartmentEntityGrants = null)
     {
-        $qb = $this->createQueryBuilder('ar');
+        $qb = $this->createQueryBuilder('ar')
+            ->innerJoin(
+                Apartment::class,
+                'a',
+                Join::WITH,
+                'a = ar.apartment'
+            );
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Apartment::class,
-                    'a',
-                    Join::WITH,
-                    'a = ar.apartment'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
