@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
@@ -597,6 +598,79 @@ class Lead implements PreviousAndNextItemsService
     {
         return $this->nextId;
     }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("funnel_stage")
+     * @Serializer\Groups({
+     *     "api_lead_lead_get"
+     * })
+     * @return string
+     */
+    public function getFunnelStage(): string
+    {
+        $funnelStage = 'Funnel Stage History';
+
+        $criteria = Criteria::create()
+            ->orderBy(array('date' => Criteria::DESC))
+            ->setMaxResults(1)
+        ;
+
+        /** @var LeadFunnelStage[] $data */
+        $data = $this->leadFunnelStages->matching($criteria);
+
+        if(\count($data) > 0) {
+            $funnelStage = $data[0]->getStage() ? 'Funnel Stage: ' . $data[0]->getStage()->getTitle() : 'Funnel Stage History';
+        }
+
+        return $funnelStage;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("temperature")
+     * @Serializer\Groups({
+     *     "api_lead_lead_get"
+     * })
+     * @return string
+     */
+    public function getTemperature(): string
+    {
+        $temperature = 'Temperature History';
+
+        $criteria = Criteria::create()
+            ->orderBy(array('date' => Criteria::DESC))
+            ->setMaxResults(1)
+        ;
+
+        /** @var LeadTemperature[] $data */
+        $data = $this->leadTemperatures->matching($criteria);
+
+        if(\count($data) > 0) {
+            $temperature = $data[0]->getTemperature() ? 'Temperature: ' . $data[0]->getTemperature()->getTitle() : 'Temperature History';
+        }
+
+        return $temperature;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("contact")
+     * @Serializer\Groups({
+     *     "api_lead_lead_get"
+     * })
+     * @return string
+     */
+    public function getContact(): string
+    {
+        $contact = 'Referral';
+        if ($this->getReferral() !== null && $this->getReferral()->getContact() !== null) {
+            $contact = 'Referral: ' . $this->getReferral()->getContact()->getFirstName() . ' ' . $this->getReferral()->getContact()->getLastName();
+        }
+
+        return $contact;
+    }
+
 
     /**
      * @return int
