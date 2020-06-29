@@ -490,7 +490,8 @@ class Lead implements PreviousAndNextItemsService
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_lead_add",
-     *          "api_lead_lead_edit"
+     *          "api_lead_lead_edit",
+     *          "api_lead_lead_interest_edit"
      * })
      * @Groups({
      *     "api_lead_lead_list",
@@ -609,7 +610,7 @@ class Lead implements PreviousAndNextItemsService
      */
     public function getFunnelStage(): string
     {
-        $funnelStage = 'Funnel Stage History';
+        $funnelStage = '';
 
         $criteria = Criteria::create()
             ->orderBy(array('date' => Criteria::DESC))
@@ -620,7 +621,7 @@ class Lead implements PreviousAndNextItemsService
         $data = $this->leadFunnelStages->matching($criteria);
 
         if(\count($data) > 0) {
-            $funnelStage = $data[0]->getStage() ? 'Funnel Stage: ' . $data[0]->getStage()->getTitle() : 'Funnel Stage History';
+            $funnelStage = $data[0]->getStage() ? $data[0]->getStage()->getTitle() : '';
         }
 
         return $funnelStage;
@@ -636,7 +637,7 @@ class Lead implements PreviousAndNextItemsService
      */
     public function getTemperature(): string
     {
-        $temperature = 'Temperature History';
+        $temperature = '';
 
         $criteria = Criteria::create()
             ->orderBy(array('date' => Criteria::DESC))
@@ -647,30 +648,11 @@ class Lead implements PreviousAndNextItemsService
         $data = $this->leadTemperatures->matching($criteria);
 
         if(\count($data) > 0) {
-            $temperature = $data[0]->getTemperature() ? 'Temperature: ' . $data[0]->getTemperature()->getTitle() : 'Temperature History';
+            $temperature = $data[0]->getTemperature() ? $data[0]->getTemperature()->getTitle() : '';
         }
 
         return $temperature;
     }
-
-    /**
-     * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("contact")
-     * @Serializer\Groups({
-     *     "api_lead_lead_get"
-     * })
-     * @return string
-     */
-    public function getContact(): string
-    {
-        $contact = 'Referral';
-        if ($this->getReferral() !== null && $this->getReferral()->getContact() !== null) {
-            $contact = 'Referral: ' . $this->getReferral()->getContact()->getFirstName() . ' ' . $this->getReferral()->getContact()->getLastName();
-        }
-
-        return $contact;
-    }
-
 
     /**
      * @return int

@@ -216,6 +216,31 @@ class LeadController extends BaseController
     }
 
     /**
+     * @Route("/{id}/interest", name="api_lead_lead_interest_edit", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-lead-lead", level="EDIT")
+     *
+     * @param Request $request
+     * @param $id
+     * @param LeadService $leadService
+     * @return JsonResponse
+     */
+    public function editInterest(Request $request, $id, LeadService $leadService): JsonResponse
+    {
+        $leadService->editInterest(
+            $id,
+            [
+                'hobbies' => $request->get('hobbies'),
+                'notes' => $request->get('notes')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
      * @Route("/spam", name="api_lead_lead_spam", methods={"PUT"})
      *
      * @Grant(grant="persistence-lead-lead", level="EDIT")

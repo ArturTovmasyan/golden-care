@@ -1036,6 +1036,63 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
+     * @param $id
+     * @param array $params
+     * @throws \Throwable
+     */
+    public function editInterest($id, array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $hobbies = $entity->getHobbies();
+            foreach ($hobbies as $hobby) {
+                $entity->removeHobby($hobby);
+            }
+
+            if (!empty($params['hobbies'])) {
+                /** @var HobbyRepository $hobbyRepo */
+                $hobbyRepo = $this->em->getRepository(Hobby::class);
+
+                $hobbyIds = array_unique($params['hobbies']);
+                $hobbies = $hobbyRepo->findByIds($currentSpace, null, $hobbyIds);
+
+                if (!empty($hobbies)) {
+                    $entity->setHobbies($hobbies);
+                }
+            }
+
+            $notes = $params['notes'] ?? '';
+
+            $entity->setNotes($notes);
+
+            $this->validate($entity, null, ['api_lead_lead_interest_edit']);
+
+            $this->em->persist($entity);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param array $params
      * @throws \Throwable
      */
