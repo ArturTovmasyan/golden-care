@@ -41,7 +41,9 @@ class LeadController extends BaseController
             'api_lead_lead_grid',
             $leadService,
             [
-                'all' => $request->get('all'),
+                'open' => $request->get('open'),
+                'closed' => $request->get('closed'),
+                'both' => $request->get('both'),
                 'my' => $request->get('my'),
                 'user_id' => $user->getId(),
                 'spam' => $request->get('spam')

@@ -97,9 +97,38 @@ class LeadService extends BaseService implements IGridService
         /** @var LeadRepository $repo */
         $repo = $this->em->getRepository(Lead::class);
 
-        $all = false;
-        if (!empty($params) && isset($params[0]['all'])) {
-            $all = true;
+        $open = false;
+        if (!empty($params) && isset($params[0]['open'])) {
+            $open = true;
+        }
+
+        $closed = false;
+        if (!empty($params) && isset($params[0]['closed'])) {
+            $closed = true;
+        }
+
+        $both = false;
+        if (!empty($params) && isset($params[0]['both'])) {
+            $both = true;
+        }
+
+        if ($both === true) {
+            $open = false;
+            $closed = false;
+        }
+
+        if ($closed === true) {
+            $open = false;
+            $both = false;
+        }
+
+        if ($open === true) {
+            $closed = false;
+            $both = false;
+        }
+
+        if ($open === false && $closed === false && $both === false) {
+            $open = true;
         }
 
         $spam = false;
@@ -114,7 +143,7 @@ class LeadService extends BaseService implements IGridService
             $userId = $params[0]['user_id'];
         }
 
-        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $userId, $facilityEntityGrants, $all, $spam);
+        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $queryBuilder, $userId, $facilityEntityGrants, $open, $closed, $spam);
     }
 
     /**

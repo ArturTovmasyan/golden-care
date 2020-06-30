@@ -28,10 +28,11 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
      * @param QueryBuilder $queryBuilder
      * @param null $userId
      * @param array|null $facilityEntityGrants
-     * @param $all
+     * @param $open
+     * @param $closed
      * @param $spam
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null, array $facilityEntityGrants = null, $all, $spam): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null, array $facilityEntityGrants = null, $open, $closed, $spam): void
     {
         $queryBuilder
             ->from(Lead::class, 'l')
@@ -83,10 +84,16 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             }
         }
 
-        if (!$all) {
+        if ($open) {
             $queryBuilder
                 ->andWhere('l.state = :state')
                 ->setParameter('state', State::TYPE_OPEN);
+        }
+
+        if ($closed) {
+            $queryBuilder
+                ->andWhere('l.state = :state')
+                ->setParameter('state', State::TYPE_CLOSED);
         }
 
         if ($spam) {
