@@ -3,6 +3,7 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
@@ -23,6 +24,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SubjectNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\CareLevel;
 use App\Entity\ChangeLog;
 use App\Entity\CityStateZip;
 use App\Entity\EmailLog;
@@ -48,6 +50,7 @@ use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
+use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityTypeRepository;
@@ -257,6 +260,22 @@ class LeadService extends BaseService implements IGridService
                 $lead->setCareType($careType);
             } else {
                 $lead->setCareType(null);
+            }
+
+            if (!empty($params['care_level_id'])) {
+                /** @var CareLevelRepository $careLevelRepo */
+                $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+                /** @var CareLevel $careLevel */
+                $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+                if ($careLevel === null) {
+                    throw new CareLevelNotFoundException();
+                }
+
+                $lead->setCareLevel($careLevel);
+            } else {
+                $lead->setCareLevel(null);
             }
 
             if (!empty($params['payment_type_id'])) {
@@ -533,6 +552,7 @@ class LeadService extends BaseService implements IGridService
             $lead->setFirstName('Unknown');
             $lead->setLastName('Unknown');
             $lead->setCareType(null);
+            $lead->setCareLevel(null);
             $lead->setPaymentType(null);
 
             $roleName = $facility !== null ? 'Facility Admin' : 'Administrator';
@@ -849,6 +869,22 @@ class LeadService extends BaseService implements IGridService
                 $entity->setCareType($careType);
             } else {
                 $entity->setCareType(null);
+            }
+
+            if (!empty($params['care_level_id'])) {
+                /** @var CareLevelRepository $careLevelRepo */
+                $careLevelRepo = $this->em->getRepository(CareLevel::class);
+
+                /** @var CareLevel $careLevel */
+                $careLevel = $careLevelRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class), $params['care_level_id']);
+
+                if ($careLevel === null) {
+                    throw new CareLevelNotFoundException();
+                }
+
+                $entity->setCareLevel($careLevel);
+            } else {
+                $entity->setCareLevel(null);
             }
 
             if (!empty($params['payment_type_id'])) {

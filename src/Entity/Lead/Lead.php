@@ -3,6 +3,7 @@
 namespace App\Entity\Lead;
 
 use App\Api\V1\Common\Service\PreviousAndNextItemsService;
+use App\Entity\CareLevel;
 use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\PaymentSource;
@@ -182,6 +183,19 @@ class Lead implements PreviousAndNextItemsService
      * })
      */
     private $careType;
+
+    /**
+     * @var CareLevel
+     * @ORM\ManyToOne(targetEntity="App\Entity\CareLevel", inversedBy="leads", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_care_level", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
+     */
+    private $careLevel;
 
     /**
      * @var PaymentSource
@@ -716,6 +730,22 @@ class Lead implements PreviousAndNextItemsService
     public function setCareType(?CareType $careType): void
     {
         $this->careType = $careType;
+    }
+
+    /**
+     * @return CareLevel|null
+     */
+    public function getCareLevel(): ?CareLevel
+    {
+        return $this->careLevel;
+    }
+
+    /**
+     * @param CareLevel|null $careLevel
+     */
+    public function setCareLevel(?CareLevel $careLevel): void
+    {
+        $this->careLevel = $careLevel;
     }
 
     /**

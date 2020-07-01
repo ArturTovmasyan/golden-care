@@ -82,7 +82,9 @@ class CareLevel
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_admin_payment_source_base_rate_list",
-     *     "api_admin_payment_source_base_rate_get"
+     *     "api_admin_payment_source_base_rate_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -118,7 +120,9 @@ class CareLevel
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get",
      *     "api_admin_payment_source_base_rate_list",
-     *     "api_admin_payment_source_base_rate_get"
+     *     "api_admin_payment_source_base_rate_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $title;
@@ -176,6 +180,12 @@ class CareLevel
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentSourceBaseRateCareLevel", mappedBy="careLevel", cascade={"remove", "persist"})
      */
     private $sourceBaseRates;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careLevel", cascade={"remove", "persist"})
+     */
+    private $leads;
 
     public function getId(): ?int
     {
@@ -270,5 +280,21 @@ class CareLevel
     public function setSourceBaseRates(ArrayCollection $sourceBaseRates): void
     {
         $this->sourceBaseRates = $sourceBaseRates;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeads(): ArrayCollection
+    {
+        return $this->leads;
+    }
+
+    /**
+     * @param ArrayCollection $leads
+     */
+    public function setLeads(ArrayCollection $leads): void
+    {
+        $this->leads = $leads;
     }
 }
