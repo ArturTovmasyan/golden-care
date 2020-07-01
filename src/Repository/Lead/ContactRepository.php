@@ -22,8 +22,9 @@ class ContactRepository extends EntityRepository implements RelatedInfoInterface
      * @param array|null $entityGrants
      * @param QueryBuilder $queryBuilder
      * @param null $userId
+     * @param null $organizationId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null): void
+    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $userId = null, $organizationId = null): void
     {
         $queryBuilder
             ->from(Contact::class, 'c')
@@ -44,6 +45,12 @@ class ContactRepository extends EntityRepository implements RelatedInfoInterface
             $queryBuilder
                 ->andWhere('u.id = :userId')
                 ->setParameter('userId', $userId);
+        }
+
+        if ($organizationId !== null) {
+            $queryBuilder
+                ->andWhere('o.id = :organizationId')
+                ->setParameter('organizationId', $organizationId);
         }
 
         if ($space !== null) {
