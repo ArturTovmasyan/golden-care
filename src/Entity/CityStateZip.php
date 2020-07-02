@@ -304,7 +304,7 @@ class CityStateZip
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="responsiblePersonCsz", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="responsiblePersonCsz", cascade={"persist"})
      */
     private $leads;
 

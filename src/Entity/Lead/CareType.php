@@ -113,7 +113,7 @@ class CareType
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careType", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careType", cascade={"persist"})
      */
     private $leads;
 

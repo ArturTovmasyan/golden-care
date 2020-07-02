@@ -212,7 +212,7 @@ class PaymentSource
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="paymentType", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="paymentType", cascade={"persist"})
      */
     private $leads;
 

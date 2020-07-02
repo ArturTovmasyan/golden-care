@@ -183,7 +183,7 @@ class CareLevel
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careLevel", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="careLevel", cascade={"persist"})
      */
     private $leads;
 

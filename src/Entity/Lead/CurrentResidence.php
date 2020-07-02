@@ -112,7 +112,7 @@ class CurrentResidence
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="currentResidence", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="currentResidence", cascade={"persist"})
      */
     private $leads;
 

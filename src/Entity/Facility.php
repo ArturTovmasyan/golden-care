@@ -482,7 +482,7 @@ class Facility
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="primaryFacility", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="primaryFacility", cascade={"persist"})
      */
     private $leads;
 
