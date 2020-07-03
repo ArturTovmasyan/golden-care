@@ -236,6 +236,37 @@ class BaseController extends AbstractController
     /**
      * @param $html
      * @param $actualName
+     * @return Response
+     */
+    protected function respondCsv($html, $actualName): Response
+    {
+        return new Response($html, Response::HTTP_OK, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $actualName . '.csv"',
+            'Content-Transfer-Encoding' => 'binary',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $group
+     * @param string $alias
+     * @param string $format
+     * @param array $params
+     * @return Response
+     */
+    protected function respondCsvReport(Request $request, string $group, string $alias, $format = Report::FORMAT_CSV, array $params = []): Response
+    {
+        $file = '@api_report/' . $group . '/' . $alias . '.' . $format . '.twig';
+
+        return $this->respondCsv($this->renderView($file, $params), $group . '-' . $alias);
+    }
+
+    /**
+     * @param $html
+     * @param $actualName
      * @param $params
      * @return StreamedResponse
      */
@@ -315,13 +346,7 @@ class BaseController extends AbstractController
         }
 
         if ($format === Report::FORMAT_CSV) {
-            return new Response($html, Response::HTTP_OK, [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="' . $actualName . '.csv"',
-                'Content-Transfer-Encoding' => 'binary',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
-            ]);
+            $this->respondCsv($html, $actualName);
         }
 
         if ($format === Report::FORMAT_XLS) {

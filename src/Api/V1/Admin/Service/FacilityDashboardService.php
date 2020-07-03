@@ -41,6 +41,17 @@ class FacilityDashboardService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $list = $this->getFacilityDashboardList($params);
+
+        return $list['data'];
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function getFacilityDashboardList($params)
+    {
         $currentSpace = $this->grantService->getCurrentSpace();
 
         /** @var FacilityDashboardRepository $repo */
@@ -255,7 +266,7 @@ class FacilityDashboardService extends BaseService implements IGridService
             ];
         }
 
-        return $data;
+        return ['data' => $data, 'subIntervals' => $subIntervals];
     }
 
     /**
@@ -486,5 +497,20 @@ class FacilityDashboardService extends BaseService implements IGridService
         }
 
         return $this->getRelatedData(FacilityDashboard::class, $entities);
+    }
+
+    /**
+     * @param $dateFrom
+     * @param $dateTo
+     * @return mixed
+     */
+    public function reportCsv($dateFrom, $dateTo)
+    {
+        $params[0] = [
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+        ];
+
+        return $this->getFacilityDashboardList($params);
     }
 }

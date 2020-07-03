@@ -205,4 +205,18 @@ class FacilityDashboardController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/csv", name="api_admin_facility_dashboard_csv", methods={"GET"})
+     *
+     * @param Request $request
+     * @param FacilityDashboardService $facilityDashboardService
+     * @return PdfResponse|JsonResponse|Response
+     */
+    public function reportCsvAction(Request $request, FacilityDashboardService $facilityDashboardService)
+    {
+        $data =  $facilityDashboardService->reportCsv($request->get('date_from'), $request->get('date_to'));
+
+        return $this->respondCsvReport($request, 'dashboard', 'dashboard', 'csv', $data);
+    }
 }
