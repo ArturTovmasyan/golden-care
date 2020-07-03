@@ -413,6 +413,8 @@ activity:
   children:
     is_administrator:
         title: "Should be enabled only for SC Admin and Administrator roles"
+    apartment:
+      title: "View Apartment in Category panel"
     reference:
       title: "View Reference in Category panel"
     lead_admin:
