@@ -1224,7 +1224,7 @@ class ResidentReportService extends BaseService
             $dischargedAdmissions = [];
             $minAdmitDates = [];
             foreach ($filteredAdmissions as $key => $admission) {
-                if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
+                if ($admission['admissionType'] === AdmissionType::DISCHARGE && array_key_exists($key - 1, $filteredAdmissions)) {
                     if ($admission['id'] === $filteredAdmissions[$key - 1]['id']) {
                         $minAdmitDates[$admission['actionId']] = $filteredAdmissions[$key - 1]['admitted'];
                         $admission['original'] = $minAdmitDates[$admission['actionId']];

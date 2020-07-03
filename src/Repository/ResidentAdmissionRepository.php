@@ -2833,8 +2833,11 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         if ($dischargedAdmissionEnds !== null) {
             $qb
-                ->andWhere('ra.admissionType =' . AdmissionType::LONG_ADMIT . ' OR ra.admissionType=' . AdmissionType::SHORT_ADMIT . ' OR ra.admissionType=' . AdmissionType::DISCHARGE . ' OR ra.start IN (:dischargedAdmissionEnds)')
+                ->andWhere('ra.admissionType =' . AdmissionType::LONG_ADMIT . ' OR ra.admissionType=' . AdmissionType::SHORT_ADMIT . ' OR ra.admissionType=' . AdmissionType::DISCHARGE . ' OR (ra.start IN (:dischargedAdmissionEnds) AND ra.admissionType !=' . AdmissionType::PENDING_DISCHARGE . ')')
                 ->setParameter('dischargedAdmissionEnds', $dischargedAdmissionEnds);
+        } else {
+            $qb
+                ->andWhere('ra.admissionType !=' . AdmissionType::PENDING_DISCHARGE);
         }
 
         if ($space !== null) {
