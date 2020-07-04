@@ -346,7 +346,7 @@ class BaseController extends AbstractController
         }
 
         if ($format === Report::FORMAT_CSV) {
-            $this->respondCsv($html, $actualName);
+            return $this->respondCsv($html, $actualName);
         }
 
         if ($format === Report::FORMAT_XLS) {
