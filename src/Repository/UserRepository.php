@@ -141,7 +141,7 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     public function findUserByUsername($username)
     {
         return $this->createQueryBuilder('u')
-            ->where('(u.username = :username OR u.email = :email) AND u.enabled = true AND u.completed = true')
+            ->where('(u.username = :username OR u.email = :email) AND u.enabled = 1 AND u.completed = 1')
             ->setParameter('username', $username)
             ->setParameter('email', $username)
             ->getQuery()

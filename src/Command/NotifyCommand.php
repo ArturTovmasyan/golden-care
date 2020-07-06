@@ -112,7 +112,9 @@ class NotifyCommand extends Command
                 if (!empty($notification->getUsers())) {
                     /** @var User $user */
                     foreach ($notification->getUsers() as $user) {
-                        $userEmails[] = $user->getEmail();
+                        if ($user->isenabled()) {
+                            $userEmails[] = $user->getEmail();
+                        }
                     }
                 }
                 $emails = array_merge($notificationEmails, $userEmails);
@@ -274,7 +276,11 @@ class NotifyCommand extends Command
 
             if ($activity->getAssignTo()) {
                 //for email
-                $allEmails = array_merge($emails, [$activity->getAssignTo()->getEmail()]);
+                if ($activity->getAssignTo()->isEnabled()) {
+                    $allEmails = array_merge($emails, [$activity->getAssignTo()->getEmail()]);
+                } else {
+                    $allEmails = $emails;
+                }
                 $allEmails = array_unique($allEmails);
 
                 //for sms
@@ -333,7 +339,7 @@ class NotifyCommand extends Command
         /** @var ChangeLog $changeLog */
         foreach ($changeLogs as $changeLog) {
 
-            if ($changeLog->getOwner() !== null) {
+            if ($changeLog->getOwner() !== null && $changeLog->getOwner()->isEnabled()) {
                 $ownerEmails[] = $changeLog->getOwner()->getEmail();
             }
 
@@ -426,7 +432,9 @@ class NotifyCommand extends Command
                 $activityUserEmails = [];
                 /** @var User $activityUser */
                 foreach ($activity->getUsers() as $activityUser) {
-                    $activityUserEmails[] = $activityUser->getEmail();
+                    if ($activityUser->isEnabled()) {
+                        $activityUserEmails[] = $activityUser->getEmail();
+                    }
                 }
 
                 //for email
@@ -475,7 +483,7 @@ class NotifyCommand extends Command
                 $activityUserEmails = [];
                 /** @var CorporateEventUser $activityUser */
                 foreach ($activity->getCorporateEventUsers() as $activityUser) {
-                    if (!$activityUser->isDone() && $activityUser->getUser() !== null) {
+                    if (!$activityUser->isDone() && $activityUser->getUser() !== null && $activityUser->getUser()->isEnabled()) {
                         $activityUserEmails[] = $activityUser->getUser()->getEmail();
                     }
                 }
