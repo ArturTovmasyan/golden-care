@@ -6,6 +6,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ActivityStatusNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\CareTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ContactNotFoundException;
@@ -30,6 +31,7 @@ use App\Entity\CityStateZip;
 use App\Entity\EmailLog;
 use App\Entity\Facility;
 use App\Entity\Lead\Activity;
+use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\CareType;
 use App\Entity\Lead\Contact;
@@ -53,6 +55,7 @@ use App\Model\Lead\State;
 use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\Lead\ActivityStatusRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\CareTypeRepository;
 use App\Repository\Lead\ContactRepository;
@@ -1089,6 +1092,27 @@ class LeadService extends BaseService implements IGridService
                 }
 
                 $this->leadStateEditChangeLog($leadChangeSet['state']['0'], $leadChangeSet['state']['1'], $entity, $referral);
+            }
+
+            //set all lead activities statuses to Done when lead state are Closed
+            if ($state === State::TYPE_CLOSED && $entity->getActivities() !== null) {
+                /** @var ActivityStatusRepository $activityStatusRepo */
+                $activityStatusRepo = $this->em->getRepository(ActivityStatus::class);
+
+                $activityStatus = $activityStatusRepo->getDone($currentSpace);
+
+                if ($activityStatus === null) {
+                    throw new ActivityStatusNotFoundException();
+                }
+
+                /** @var Activity $activity */
+                foreach ($entity->getActivities() as $activity) {
+                    if ($activity->getStatus() === null || ($activity->getStatus() !== null && !$activity->getStatus()->isDone())) {
+                        $activity->setStatus($activityStatus);
+                    }
+
+                    $this->em->persist($activity);
+                }
             }
 
             $this->em->flush();

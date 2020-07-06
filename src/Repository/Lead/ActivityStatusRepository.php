@@ -210,4 +210,34 @@ class ActivityStatusRepository extends EntityRepository implements RelatedInfoIn
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @return mixed
+     */
+    public function getDone(Space $space = null)
+    {
+        $title = 'done';
+
+        $qb = $this
+            ->createQueryBuilder('ast')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = ast.space'
+            )
+            ->andWhere('ast.done = 1')
+            ->andWhere("ast.title LIKE '%{$title}%'");
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

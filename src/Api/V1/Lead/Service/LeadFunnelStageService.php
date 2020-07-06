@@ -3,6 +3,7 @@
 namespace App\Api\V1\Lead\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\Lead\ActivityStatusNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ActivityTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
@@ -10,6 +11,7 @@ use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\StageChangeReasonNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Lead\Activity;
+use App\Entity\Lead\ActivityStatus;
 use App\Entity\Lead\ActivityType;
 use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Lead;
@@ -17,6 +19,7 @@ use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\StageChangeReason;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
+use App\Repository\Lead\ActivityStatusRepository;
 use App\Repository\Lead\ActivityTypeRepository;
 use App\Repository\Lead\FunnelStageRepository;
 use App\Repository\Lead\LeadFunnelStageRepository;
@@ -158,6 +161,27 @@ class LeadFunnelStageService extends BaseService implements IGridService
                     $state = State::TYPE_OPEN;
                 } else {
                     $state = State::TYPE_CLOSED;
+
+                    //set all lead activities statuses to Done when lead state are Closed
+                    if ($lead->getActivities() !== null) {
+                        /** @var ActivityStatusRepository $activityStatusRepo */
+                        $activityStatusRepo = $this->em->getRepository(ActivityStatus::class);
+
+                        $activityStatus = $activityStatusRepo->getDone($currentSpace);
+
+                        if ($activityStatus === null) {
+                            throw new ActivityStatusNotFoundException();
+                        }
+
+                        /** @var Activity $activity */
+                        foreach ($lead->getActivities() as $activity) {
+                            if ($activity->getStatus() === null || ($activity->getStatus() !== null && !$activity->getStatus()->isDone())) {
+                                $activity->setStatus($activityStatus);
+                            }
+
+                            $this->em->persist($activity);
+                        }
+                    }
                 }
 
                 $lead->setState($state);
@@ -263,6 +287,27 @@ class LeadFunnelStageService extends BaseService implements IGridService
                     $state = State::TYPE_OPEN;
                 } else {
                     $state = State::TYPE_CLOSED;
+
+                    //set all lead activities statuses to Done when lead state are Closed
+                    if ($lead->getActivities() !== null) {
+                        /** @var ActivityStatusRepository $activityStatusRepo */
+                        $activityStatusRepo = $this->em->getRepository(ActivityStatus::class);
+
+                        $activityStatus = $activityStatusRepo->getDone($currentSpace);
+
+                        if ($activityStatus === null) {
+                            throw new ActivityStatusNotFoundException();
+                        }
+
+                        /** @var Activity $activity */
+                        foreach ($lead->getActivities() as $activity) {
+                            if ($activity->getStatus() === null || ($activity->getStatus() !== null && !$activity->getStatus()->isDone())) {
+                                $activity->setStatus($activityStatus);
+                            }
+
+                            $this->em->persist($activity);
+                        }
+                    }
                 }
 
                 $lead->setState($state);
