@@ -568,6 +568,17 @@ class User implements UserInterface
     }
 
     /**
+     * @var bool
+     * @ORM\Column(name="lead_section_expand", type="boolean")
+     * @Groups({
+     *     "api_admin_user_get",
+     *     "api_profile_view",
+     *     "api_profile_me"
+     * })
+     */
+    private $leadSectionExpand = false;
+
+    /**
      * @var string
      * @ORM\Column(name="topic", type="string", length=200, nullable=true)
      */
@@ -1058,6 +1069,22 @@ class User implements UserInterface
     public function setImage(?Image $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLeadSectionExpand(): bool
+    {
+        return $this->leadSectionExpand;
+    }
+
+    /**
+     * @param bool $leadSectionExpand
+     */
+    public function setLeadSectionExpand(bool $leadSectionExpand): void
+    {
+        $this->leadSectionExpand = $leadSectionExpand;
     }
 
     /**

@@ -1225,6 +1225,33 @@ class LeadService extends BaseService implements IGridService
     }
 
     /**
+     * @param User $user
+     * @param $expand
+     * @throws \Exception
+     */
+    public function saveLeadSectionExpandState(User $user, $expand): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            if ($user === null) {
+                throw new UserNotFoundException();
+            }
+
+            $user->setLeadSectionExpand((bool)$expand);
+
+            $this->em->persist($user);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param Lead $lead
      * @param array $newReferral
      * @return Referral|null

@@ -268,6 +268,45 @@ class LeadController extends BaseController
     }
 
     /**
+     * @Route("/expand", name="api_lead_lead_expand_save", methods={"PUT"})
+     *
+     * @param Request $request
+     * @param LeadService $leadService
+     * @return JsonResponse
+     */
+    public function saveLeadSectionExpandState(Request $request, LeadService $leadService): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $leadService->saveLeadSectionExpandState($user, $request->get('expand'));
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/expand", name="api_lead_lead_expand_get", methods={"GET"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLeadSectionExpandState(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $leadSectionExpand = $user !== null ? $user->isLeadSectionExpand() : false;
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            ['lead_section_expand' => $leadSectionExpand]
+        );
+    }
+
+    /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_lead_lead_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-lead-lead", level="DELETE")
