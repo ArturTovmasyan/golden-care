@@ -62,8 +62,10 @@ class FacilityReportService extends BaseService
                         $data[$resident['typeName']][$careLevel->getTitle()] = 0;
                     }
                 }
+            }
 
-                ksort($data[$resident['typeName']]);
+            foreach ($data as $datum) {
+                ksort($datum);
             }
         }
 
