@@ -43,6 +43,10 @@ class FacilityReportService extends BaseService
         $repo = $this->em->getRepository(ResidentAdmission::class);
 
         $residents = $repo->getActiveResidentsForFacilityReport($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $typeId);
+        $typeNames = array_map(static function ($item) {
+            return $item['typeName'];
+        }, $residents);
+        $typeNames = array_unique($typeNames);
 
         /** @var CareLevelRepository $careLevelRepo */
         $careLevelRepo = $this->em->getRepository(CareLevel::class);
@@ -50,6 +54,7 @@ class FacilityReportService extends BaseService
         $careLevels = $careLevelRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(CareLevel::class));
 
         $data = [];
+        $finalData = [];
         if (!empty($residents) && !empty($careLevels)) {
             foreach ($residents as $resident) {
                 /** @var CareLevel $careLevel */
@@ -57,27 +62,20 @@ class FacilityReportService extends BaseService
                     if ($careLevel->getId() === $resident['careLevelId']) {
                         $data[$resident['typeName']][$careLevel->getTitle()] = array_key_exists($resident['typeName'], $data) && array_key_exists($careLevel->getTitle(), $data[$resident['typeName']]) ? $data[$resident['typeName']][$careLevel->getTitle()] + 1 : 1;
                     }
-
-                    if (array_key_exists($resident['typeName'], $data) && !array_key_exists($careLevel->getTitle(), $data[$resident['typeName']])) {
-                        $data[$resident['typeName']][$careLevel->getTitle()] = 0;
-                    }
                 }
             }
 
-            /** @var CareLevel $careLevel */
-            foreach ($careLevels as $careLevel) {
-                foreach ($data as $datum) {
-                    if (!array_key_exists($careLevel->getTitle(), $datum)) {
-                        $datum[$careLevel->getTitle()] = 0;
-                    }
-
-                    ksort($datum);
+            foreach ($typeNames as $typeName) {
+                /** @var CareLevel $careLevel */
+                foreach ($careLevels as $careLevel) {
+                    $careLevelTitle = $careLevel->getTitle();
+                    $finalData[$typeName][$careLevelTitle] = array_key_exists($typeName, $data) && array_key_exists($careLevelTitle, $data[$typeName]) ? $data[$typeName][$careLevelTitle] : 0;
                 }
             }
         }
 
         $report = new FacilityCareLevels();
-        $report->setData($data);
+        $report->setData($finalData);
 
         return $report;
     }
