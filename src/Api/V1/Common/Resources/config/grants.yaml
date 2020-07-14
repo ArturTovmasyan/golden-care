@@ -559,6 +559,11 @@ report:
           title: "Room Rents Current vs. Base"
         missing-physician:
           title: "Resident Physicians: List of Active Residents without Physicians"
+    facility:
+      title: "Facility Reports"
+      children:
+        facility-care-levels:
+          title: "Facility Care Levels: List Count of Residents per Care Level per Facility"
     assessment:
       title: "Assessment Reports"
       children:

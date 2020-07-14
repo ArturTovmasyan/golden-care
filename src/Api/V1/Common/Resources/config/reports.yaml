@@ -518,6 +518,24 @@ health:
         group:
           select_all: true
 
+facility:
+  title: 'Facility Reports'
+  show_in_al_list: true
+  show_in_il_list: false
+  show_in_lead_list: false
+  show_in_resident_list: false
+  show_in_group_list: true
+  reports:
+    facility-care-levels:
+      service: App\Api\V1\Admin\Service\Report\FacilityReportService::getFacilityCareLevelsReport
+      title: 'Facility Care Levels: List Count of Residents per Care Level per Facility'
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['pdf']
+      parameters:
+        group:
+          select_all: true
+
 assessment:
   title: 'Assessment Reports'
   show_in_al_list: true

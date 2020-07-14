@@ -3765,4 +3765,64 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getResult();
     }
     ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getActiveResidentsForFacilityReport(Space $space = null, array $entityGrants = null, $typeId = null)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'f.id AS typeId',
+                'f.name AS typeName',
+                'cl.id AS careLevelId',
+                'cl.title AS careLevelTitle'
+            )
+            ->join('ra.resident', 'r')
+            ->join('ra.facilityBed', 'fb')
+            ->join('fb.room', 'fr')
+            ->join('fr.facility', 'f')
+            ->join('ra.careLevel', 'cl')
+            ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', GroupType::TYPE_FACILITY)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($typeId !== null) {
+            $qb
+                ->andWhere('f.id = :typeId')
+                ->setParameter('typeId', $typeId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->orderBy('f.name')
+            ->addOrderBy('cl.title')
+            ->getQuery()
+            ->getResult();
+    }
 }

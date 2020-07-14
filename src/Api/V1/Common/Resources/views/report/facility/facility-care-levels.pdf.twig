@@ -1,0 +1,53 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}
+{% endblock %}
+{% block pageContent %}
+
+    {% set i = false %}
+    <table class="report-table main-table bordered" style="margin-bottom: 10px;">
+        <tr class="divider"></tr>
+        <thead>
+        <tr>
+            <th colspan="9">
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left">
+                        <div style="height: 5px;"></div>
+                        <b style="font-size: 18px !important">Facility&nbsp;Care&nbsp;Levels</b>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </th>
+        </tr>
+        {% for datumKey, datum in data.data %}
+        {% set i = true %}
+
+        {% if loop.first %}
+            <tr>
+                <td><b>Facility</b></td>
+                {% for key, level in datum %}
+                    <td><b>{{ key }}</b></td>
+                {% endfor %}
+            </tr>
+        {% endif %}
+        </thead>
+        <tbody>
+
+        <tr>
+            <td style="height: 40px; text-align: left;">{{ datumKey }}</td>
+            {% for level in datum %}
+                <td style="height: 40px; text-align: left;">
+                    {{ level }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    {% if not i %}
+        <b style="font-size: 18px !important">No data found.</b>
+    {% endif %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}
