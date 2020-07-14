@@ -64,15 +64,15 @@ class FacilityReportService extends BaseService
                 }
             }
 
-            foreach ($data as $datum) {
-                /** @var CareLevel $careLevel */
-                foreach ($careLevels as $careLevel) {
+            /** @var CareLevel $careLevel */
+            foreach ($careLevels as $careLevel) {
+                foreach ($data as $datum) {
                     if (!array_key_exists($careLevel->getTitle(), $datum)) {
                         $datum[$careLevel->getTitle()] = 0;
                     }
-                }
 
-                ksort($datum);
+                    ksort($datum);
+                }
             }
         }
 
