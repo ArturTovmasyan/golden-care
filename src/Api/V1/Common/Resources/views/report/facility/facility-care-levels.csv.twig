@@ -1,0 +1,10 @@
+{% spaceless %}
+Facility Care Levels,{% for datum in data.data %}{% if loop.first %}{% for level in datum %},{% endfor %}{% endif %}{% endfor %}
+
+{% for datum in data.data %}{% if loop.first %}Facility,{% for key, level in datum %}{{ key }},{% endfor %}{% endif %}{% endfor %}
+
+{% for datumKey, datum in data.data %}
+"{{ datumKey|raw }}",{% for level in datum %}{{ level }},{% endfor %}
+
+{% endfor %}
+{% endspaceless %}

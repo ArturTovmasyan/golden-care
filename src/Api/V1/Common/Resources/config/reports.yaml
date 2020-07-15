@@ -531,7 +531,7 @@ facility:
       title: 'Facility Care Levels: List Count of Residents per Care Level per Facility'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['pdf']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true

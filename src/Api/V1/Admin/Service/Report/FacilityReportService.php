@@ -46,6 +46,7 @@ class FacilityReportService extends BaseService
         $typeNames = array_map(static function ($item) {
             return $item['typeName'];
         }, $residents);
+
         $typeNames = array_unique($typeNames);
 
         /** @var CareLevelRepository $careLevelRepo */
@@ -68,9 +69,13 @@ class FacilityReportService extends BaseService
             foreach ($typeNames as $typeName) {
                 /** @var CareLevel $careLevel */
                 foreach ($careLevels as $careLevel) {
+                    $finalData[$typeName]['Current Resident Count'] = 0;
+
                     $careLevelTitle = $careLevel->getTitle();
                     $finalData[$typeName][$careLevelTitle] = array_key_exists($typeName, $data) && array_key_exists($careLevelTitle, $data[$typeName]) ? $data[$typeName][$careLevelTitle] : 0;
                 }
+
+                $finalData[$typeName]['Current Resident Count'] = array_sum($finalData[$typeName]);
             }
         }
 
