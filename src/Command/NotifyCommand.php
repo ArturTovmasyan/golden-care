@@ -4,6 +4,7 @@ namespace App\Command;
 
 use Ahc\Cron\Expression;
 use App\Api\V1\Admin\Service\Report\ResidentReportService;
+use App\Api\V1\Admin\Service\Report\UserReportService;
 use App\Api\V1\Common\Service\AmazonSnsService;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\Exception\IncorrectChangeLogException;
@@ -62,6 +63,9 @@ class NotifyCommand extends Command
     /** @var ResidentReportService */
     private $residentReportService;
 
+    /** @var UserReportService */
+    private $userReportService;
+
     /** @var AmazonSnsService */
     private $amazonSnsService;
 
@@ -71,6 +75,7 @@ class NotifyCommand extends Command
         Mailer $mailer,
         ContainerInterface $container,
         ResidentReportService $residentReportService,
+        UserReportService $userReportService,
         AmazonSnsService $amazonSnsService
     )
     {
@@ -79,6 +84,7 @@ class NotifyCommand extends Command
         $this->mailer = $mailer;
         $this->container = $container;
         $this->residentReportService = $residentReportService;
+        $this->userReportService = $userReportService;
         $this->amazonSnsService = $amazonSnsService;
 
         parent::__construct();
@@ -149,6 +155,11 @@ class NotifyCommand extends Command
                     case NotificationTypeCategoryType::TYPE_RESIDENT_RENT_INCREASE:
                         if ($notification->getType()->isEmail()) {
                             $this->sendTodayResidentRentIncreaseNotifications($emails, $notification->getType()->isEmail());
+                        }
+                        break;
+                    case NotificationTypeCategoryType::TYPE_DATABASE_USER_LOGIN_ACTIVITY:
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendDatabaseUserLoginActivityNotifications($emails, $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
                         }
                         break;
                 }
@@ -590,6 +601,35 @@ class NotifyCommand extends Command
                 }
             }
         }
+    }
+
+    /**
+     * @param array $emails
+     * @param $subjectText
+     * @param $message
+     */
+    public function sendDatabaseUserLoginActivityNotifications(array $emails, $subjectText, $message): void
+    {
+        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
+
+        $date = new \DateTime('now');
+
+        $data = $this->userReportService->getUserLoginActivityReport(GroupType::TYPE_FACILITY, false, null, null, false, null, null, null, null, null, null, null);
+
+        $report = $this->container->get('templating')->render('@api_report/user/login-activity.csv.twig', array(
+            'data' => $data
+        ));
+
+        $path = '/tmp/DatabaseUserLoginActivityCsv-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
+        file_put_contents($path, $report);
+
+        $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+
+        $spaceName = '';
+
+        $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+
+        $this->saveEmailLog($status, $subject, $spaceName, $emails);
     }
 
     /**

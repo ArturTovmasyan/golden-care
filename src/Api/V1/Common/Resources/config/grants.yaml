@@ -584,3 +584,8 @@ report:
           title: "Outreach Events List Report"
         outreach-activity:
           title: "Outreach Events and Contact Activities List Report"
+    user:
+      title: "User Reports"
+      children:
+        login-activity:
+          title: "Database User Login Activity: List of Date/Time of User Login Activities"

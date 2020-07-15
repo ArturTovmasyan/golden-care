@@ -610,3 +610,21 @@ lead:
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+
+user:
+  title: 'User Reports'
+  show_in_al_list: false
+  show_in_il_list: false
+  show_in_lead_list: false
+  show_in_resident_list: false
+  show_in_group_list: true
+  reports:
+    login-activity:
+      service: App\Api\V1\Admin\Service\Report\UserReportService::getUserLoginActivityReport
+      title: 'Database User Login Activity: List of Date/Time of User Login Activities'
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true

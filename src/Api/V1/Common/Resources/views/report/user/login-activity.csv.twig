@@ -1,0 +1,14 @@
+{% spaceless %}
+Database User Login Activity
+
+{% set renderedGroup = null %}{% set newGroup = false %}
+{% for datum in data.data %}{% if renderedGroup == datum.id %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.id %}{% set newGroup = true %}{% endif %}
+{% if newGroup %}
+"{{ datum.firstName|raw }} {{ datum.lastName|raw }}"
+{% endif %}
+{{ datum.createdAt|date("m/d/Y H:i:s") }}
+{% if not newGroup %}
+
+{% endif %}
+{% endfor %}
+{% endspaceless %}

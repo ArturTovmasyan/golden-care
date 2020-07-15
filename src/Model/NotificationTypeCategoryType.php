@@ -10,6 +10,7 @@ class NotificationTypeCategoryType
     const TYPE_FACILITY_ACTIVITY = 4;
     const TYPE_CORPORATE_ACTIVITY = 5;
     const TYPE_RESIDENT_RENT_INCREASE = 6;
+    const TYPE_DATABASE_USER_LOGIN_ACTIVITY = 7;
 
     /**
      * @var array
@@ -21,6 +22,7 @@ class NotificationTypeCategoryType
         self::TYPE_FACILITY_ACTIVITY => 'Facility Activity',
         self::TYPE_CORPORATE_ACTIVITY => 'Corporate Activity',
         self::TYPE_RESIDENT_RENT_INCREASE => 'Resident Rent Increase',
+        self::TYPE_DATABASE_USER_LOGIN_ACTIVITY => 'Database User Login Activity',
     ];
 
     /**
@@ -33,6 +35,7 @@ class NotificationTypeCategoryType
         'Facility Activity' => '4',
         'Corporate Activity' => '5',
         'Resident Rent Increase' => '6',
+        'Database User Login Activity' => '7',
     ];
 
     /**
@@ -45,6 +48,7 @@ class NotificationTypeCategoryType
         self::TYPE_FACILITY_ACTIVITY => 4,
         self::TYPE_CORPORATE_ACTIVITY => 5,
         self::TYPE_RESIDENT_RENT_INCREASE => 6,
+        self::TYPE_DATABASE_USER_LOGIN_ACTIVITY => 7,
     ];
 
     /**
