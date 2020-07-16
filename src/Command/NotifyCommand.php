@@ -118,7 +118,7 @@ class NotifyCommand extends Command
                 if (!empty($notification->getUsers())) {
                     /** @var User $user */
                     foreach ($notification->getUsers() as $user) {
-                        if ($user->isenabled()) {
+                        if ($user->isEnabled()) {
                             $userEmails[] = $user->getEmail();
                         }
                     }
