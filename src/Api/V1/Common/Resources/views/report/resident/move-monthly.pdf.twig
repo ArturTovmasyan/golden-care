@@ -30,6 +30,8 @@
                 <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
                     <b>Long&nbsp;Term</b></td>
                 <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
+                    <b>Re-admit</b></td>
+                <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
                     <b>Room/Bed&nbsp;#</b></td>
                 <td style="background-color: darkgray; text-align: center; vertical-align: middle; border: solid 1px black;">
                     <b>Notes</b></td>
@@ -62,6 +64,13 @@
                         {% if datum.sumLongTerm is defined %}<b>{{ datum.sumLongTerm }}</b>{% endif %}
                     </td>
                     <td style="border: solid 1px black; {% if datum.sumLongTerm is defined %}background-color: darkgray; text-align: center;{% endif %}">
+                        {% if datum.admissionType is defined and datum.admissionType == constant('App\\Model\\AdmissionType::READMIT') %}
+                            {% if datum.admitted is defined %}{{ datum.admitted|date("m/d/Y") }}
+                            {% endif %}
+                        {% endif %}
+                        {% if datum.sumReadmit is defined %}<b>{{ datum.sumReadmit }}</b>{% endif %}
+                    </td>
+                    <td style="border: solid 1px black; {% if datum.sumLongTerm is defined %}background-color: darkgray; text-align: center;{% endif %}">
                         {% if datum.roomNumber is defined and datum.bedNumber is defined %}
                             {% if datum.private %}
                                 {{ datum.roomNumber }}&nbsp;
@@ -81,6 +90,7 @@
                 <td style="border: solid 1px black;"><b></b></td>
                 <td style="border: solid 1px black; text-align: center;"><b>{% if data.grandTotal[date]['sumShortTerm'] is defined %}{{ data.grandTotal[date]['sumShortTerm'] }}{% else %}0{% endif %}</b></td>
                 <td style="border: solid 1px black; text-align: center;"><b>{% if data.grandTotal[date]['sumLongTerm'] is defined %}{{ data.grandTotal[date]['sumLongTerm'] }}{% else %}0{% endif %}</b></td>
+                <td style="border: solid 1px black; text-align: center;"><b>{% if data.grandTotal[date]['sumReadmit'] is defined %}{{ data.grandTotal[date]['sumReadmit'] }}{% else %}0{% endif %}</b></td>
                 <td style="border: solid 1px black;"><b></b></td>
                 <td style="border: solid 1px black;"><b></b></td>
             </tr>

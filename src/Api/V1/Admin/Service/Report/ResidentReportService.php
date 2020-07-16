@@ -1241,6 +1241,7 @@ class ResidentReportService extends BaseService
             $admissionTypes = [
                 AdmissionType::LONG_ADMIT,
                 AdmissionType::SHORT_ADMIT,
+                AdmissionType::READMIT,
                 AdmissionType::DISCHARGE,
             ];
 
@@ -1275,14 +1276,18 @@ class ResidentReportService extends BaseService
             foreach ($types as $typeId => $typeShorthand) {
                 $sumLongTerm = 0;
                 $sumShortTerm = 0;
+                $sumReadmit = 0;
                 $sumMoveOut = 0;
                 $totalLongTerm = 0;
                 $totalShortTerm = 0;
+                $totalReadmit = 0;
                 $totalMoveOut = 0;
                 foreach ($finalAdmissions as $admission) {
                     $i = 0;
                     $j = 0;
                     $k = 0;
+                    $l = 0;
+                    $w = 0;
                     $x = 0;
                     $y = 0;
                     $z = 0;
@@ -1297,6 +1302,12 @@ class ResidentReportService extends BaseService
                             $j++;
 
                             $sumShortTerm += $j;
+                        }
+
+                        if ($admission['admissionType'] === AdmissionType::READMIT) {
+                            $l++;
+
+                            $sumReadmit += $l;
                         }
 
                         if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
@@ -1318,6 +1329,12 @@ class ResidentReportService extends BaseService
                         $totalShortTerm += $y;
                     }
 
+                    if ($admission['admissionType'] === AdmissionType::READMIT) {
+                        $w++;
+
+                        $totalReadmit += $w;
+                    }
+
                     if ($admission['admissionType'] === AdmissionType::DISCHARGE) {
                         $z++;
 
@@ -1329,12 +1346,14 @@ class ResidentReportService extends BaseService
                     'typeShorthand' => $typeShorthand . ' Total',
                     'sumLongTerm' => $sumLongTerm,
                     'sumShortTerm' => $sumShortTerm,
+                    'sumReadmit' => $sumReadmit,
                     'sumMoveOut' => $sumMoveOut,
                 ];
 
                 $grandTotal = [
                     'sumLongTerm' => $totalLongTerm,
                     'sumShortTerm' => $totalShortTerm,
+                    'sumReadmit' => $totalReadmit,
                     'sumMoveOut' => $totalMoveOut,
                 ];
             }
