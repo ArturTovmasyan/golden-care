@@ -624,7 +624,7 @@ user:
       title: 'Database User Login Activity: List of Date/Time of User Login Activities'
       show_in_resident_list: false
       show_in_group_list: true
-      formats: ['csv', 'xls']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
