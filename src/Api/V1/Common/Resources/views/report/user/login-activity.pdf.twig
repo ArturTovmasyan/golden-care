@@ -1,0 +1,50 @@
+{% extends '@api_report/base.twig' %}
+{% block pageTitle %}{% endblock %}
+{% block pageContent %}
+
+    {% set renderedGroup = null %}
+    {% set newGroup = false %}
+    {% for datum in data.data %}
+        {% if renderedGroup == datum.id %}
+            {% set newGroup = false %}
+        {% else %}
+            {% set renderedGroup = datum.id %}
+            {% set newGroup = true %}
+        {% endif %}
+        {% if newGroup %}
+            <span class="divider"></span>
+            <table class="report-table main-table bordered">
+            <tr class="divider"></tr>
+            <thead>
+            {% if loop.first %}
+                <tr>
+                    <th colspan="5">
+                        <div style="margin-bottom: 5px;">
+                            <div style="float: left">
+                                <div style="height: 5px;"></div>
+                                <b style="font-size: 18px !important">Database&nbsp;User&nbsp;Login&nbsp;Activity</b>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </th>
+                </tr>
+            {% endif %}
+            <tr style="font-size: 13px; border: none; margin-bottom: 0">
+                <td><b>{{ datum.firstName ~ ' ' ~ datum.lastName }}</b></td>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+
+        <tr>
+            <td style="text-align: left; font-size: 13px;">{{ datum.createdAt|date("m/d/Y H:i:s") }}</td>
+        </tr>
+    {% endfor %}
+    {% if not newGroup %}
+        </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
+{% block pageFooter %}
+{% endblock %}

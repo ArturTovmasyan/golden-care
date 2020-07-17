@@ -36,6 +36,7 @@ use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Util\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Snappy\Pdf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
@@ -69,6 +70,9 @@ class NotifyCommand extends Command
     /** @var AmazonSnsService */
     private $amazonSnsService;
 
+    /** @var Pdf */
+    protected $pdf;
+
     public function __construct(
         EntityManagerInterface $em,
         GrantService $grantService,
@@ -76,7 +80,8 @@ class NotifyCommand extends Command
         ContainerInterface $container,
         ResidentReportService $residentReportService,
         UserReportService $userReportService,
-        AmazonSnsService $amazonSnsService
+        AmazonSnsService $amazonSnsService,
+        Pdf $pdf
     )
     {
         $this->em = $em;
@@ -86,6 +91,7 @@ class NotifyCommand extends Command
         $this->residentReportService = $residentReportService;
         $this->userReportService = $userReportService;
         $this->amazonSnsService = $amazonSnsService;
+        $this->pdf = $pdf;
 
         parent::__construct();
     }
@@ -612,18 +618,23 @@ class NotifyCommand extends Command
     {
         $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
 
-        $date = new \DateTime('now');
+        $now = new \DateTime('now');
+        $previousDate = clone $now;
+        $date = date_modify($previousDate, '-7 day');
 
         $data = $this->userReportService->getUserLoginActivityReport(GroupType::TYPE_FACILITY, false, null, null, false, null, null, null, null, null, null, null);
 
-        $report = $this->container->get('templating')->render('@api_report/user/login-activity.csv.twig', array(
+        $html = $this->container->get('templating')->render('@api_report/user/login-activity.pdf.twig', [
             'data' => $data
-        ));
+        ]);
 
-        $path = '/tmp/DatabaseUserLoginActivityCsv-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
-        file_put_contents($path, $report);
+        $pdf = $this->pdf->getOutputFromHtml($html);
+        $path = '/tmp/DatabaseUserLoginActivityPdf-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.pdf';
+        file_put_contents($path, $pdf);
 
-        $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+        $dateStart = $date->format('F') . ' ' . $date->format('d') . ', ' . $date->format('Y');
+        $dateEnd = $now->format('F') . ' ' . $now->format('d') . ', ' . $now->format('Y');
+        $subject = $subjectText . ' for the week of ' . $dateStart . ' to ' . $dateEnd;
 
         $spaceName = '';
 
