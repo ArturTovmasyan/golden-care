@@ -710,11 +710,19 @@ class ActivityService extends BaseService implements IGridService
     public function taskActivityAddChangeLog(Activity $activity)
     {
         $owner = '';
+        $facility = '';
+        if ($activity->getFacility() !== null) {
+            $facility = $activity->getFacility()->getName();
+        }
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
                 $owner = $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
                 $id = $activity->getLead()->getId();
+
+                if ($activity->getFacility() === null && $activity->getLead() !== null && $activity->getLead()->getPrimaryFacility() !== null) {
+                    $facility = $activity->getLead()->getPrimaryFacility()->getName();
+                }
 
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
@@ -762,7 +770,8 @@ class ActivityService extends BaseService implements IGridService
             'due_date' => $dueDate,
             'name' => $activity->getTitle(),
             'user_name' => $userName,
-            'created_at' => $date->format('m/d/Y H:i')
+            'created_at' => $date->format('m/d/Y H:i'),
+            'primary_facility' => $facility
         ];
 
         $changeLog = new ChangeLog();
@@ -791,11 +800,19 @@ class ActivityService extends BaseService implements IGridService
     private function taskActivityStatusEditChangeLog($oldStatusId, $newStatusId, Activity $activity)
     {
         $owner = '';
+        $facility = '';
+        if ($activity->getFacility() !== null) {
+            $facility = $activity->getFacility()->getName();
+        }
 
         switch ($activity->getOwnerType()) {
             case ActivityOwnerType::TYPE_LEAD:
                 $owner = $activity->getLead() ? $activity->getLead()->getFirstName() . ' ' . $activity->getLead()->getLastName() : '';
                 $id = $activity->getLead()->getId();
+
+                if ($activity->getFacility() === null && $activity->getLead() !== null && $activity->getLead()->getPrimaryFacility() !== null) {
+                    $facility = $activity->getLead()->getPrimaryFacility()->getName();
+                }
 
                 break;
             case ActivityOwnerType::TYPE_REFERRAL:
@@ -865,13 +882,14 @@ class ActivityService extends BaseService implements IGridService
             'user_name' => $userName,
             'old_status' => $oldStatus->getTitle(),
             'new_status' => $newStatus->getTitle(),
-            'created_at' => $date->format('m/d/Y H:i')
+            'created_at' => $date->format('m/d/Y H:i'),
+            'primary_facility' => $facility
         ];
 
         $changeLog = new ChangeLog();
         $changeLog->setType(ChangeLogType::TYPE_TASK_UPDATED);
         $changeLog->setContent($content);
-        $changeLog->setOwner($activity->getAssignTo() ?? null);
+        $changeLog->setOwner($activity->getAssignTo());
 
         $space = $activity->getStatus() ? $activity->getStatus()->getSpace() : null;
         $changeLog->setSpace($space);

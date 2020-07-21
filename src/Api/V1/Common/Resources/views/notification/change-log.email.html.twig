@@ -9,7 +9,7 @@
             {% for log in logs %}
                 <tr>
                     <td>
-                        <p style="margin-top: 15px;font-size: large;">{{ log['action'] }} | {{ log['title']|raw }}</p>
+                        <p style="margin-top: 15px;font-size: large;">{{ log['action'] }} | {{ log['title']|raw }}{% if log['content']['primary_facility'] is defined and log['content']['primary_facility'] is not empty %}, {{ log['content']['primary_facility']|raw }}{% endif %}</p>
                         {% if log.type == constant('App\\Model\\ChangeLogType::TYPE_NEW_LEAD') %}
                             <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                                 <strong>Date:</strong> {{ log['date'] }}</p>
