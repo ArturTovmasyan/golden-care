@@ -1223,7 +1223,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param $addMode
      * @return ResidentAdmission
      */
-    private function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
+    public function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 

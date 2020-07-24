@@ -65,7 +65,10 @@ class UserController extends BaseController
             $request,
             User::class,
             'api_admin_user_list',
-            $userService
+            $userService,
+            [
+                'facility_id' => $request->get('facility_id')
+            ]
         );
     }
 

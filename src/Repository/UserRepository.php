@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\Role;
 use App\Entity\Space;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -66,9 +67,10 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param null $facilityId
      * @return mixed
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $facilityId = null)
     {
         $qb = $this
             ->createQueryBuilder('u')
@@ -79,6 +81,22 @@ class UserRepository extends EntityRepository implements RelatedInfoInterface
                 's = u.space'
             )
             ->where('u.enabled = 1');
+
+        if ($facilityId !== null) {
+            $roleName ='Facility Admin';
+            /** @var RoleRepository $roleRepo */
+            $roleRepo = $this->_em->getRepository(Role::class);
+
+            /** @var Role $role */
+            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+            if ($role !== null) {
+                $qb
+                    ->innerJoin('u.roles', 'r')
+                    ->andWhere('r.id = :roleId')
+                    ->setParameter('roleId', $role->getId());
+            }
+        }
 
         if ($space !== null) {
             $qb

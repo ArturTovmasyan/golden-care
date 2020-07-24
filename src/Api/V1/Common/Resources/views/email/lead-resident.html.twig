@@ -1,0 +1,6 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}{{ subject }}{% endblock %}
+{% block content %}
+    <p>A new lead resident - <a href="{{ baseUrl }}/resident/{{ id }}/(resident-details:admissions)">{{ fullName }}</a> has been added to
+        the {{ spaceName }} database.</p>
+{% endblock %}

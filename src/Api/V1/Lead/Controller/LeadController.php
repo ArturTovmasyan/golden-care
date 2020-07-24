@@ -3,6 +3,7 @@
 namespace App\Api\V1\Lead\Controller;
 
 use App\Annotation\Grant;
+use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\Lead;
@@ -237,6 +238,68 @@ class LeadController extends BaseController
                 'hobbies' => $request->get('hobbies'),
                 'notes' => $request->get('notes')
             ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/{id}/resident", name="api_lead_lead_resident_add", methods={"POST"})
+     *
+     * @Grant(grant="persistence-lead-lead", level="ADD")
+     *
+     * @param Request $request
+     * @param $id
+     * @param LeadService $leadService
+     * @return JsonResponse
+     */
+    public function AddResident(Request $request, $id, LeadService $leadService): JsonResponse
+    {
+        $leadService->addResident(
+            $id,
+            [
+                'salutation_id' => $request->get('salutation_id'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender')
+            ]
+        );
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/{id}/admission", name="api_lead_lead_resident_admission_add", methods={"POST"})
+     *
+     * @Grant(grant="persistence-lead-lead", level="ADD")
+     *
+     * @param Request $request
+     * @param $id
+     * @param LeadService $leadService
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @return JsonResponse
+     */
+    public function AddResidentAdmission(Request $request, $id, LeadService $leadService, ResidentAdmissionService $residentAdmissionService): JsonResponse
+    {
+        $leadService->addResidentAdmission(
+            $id,
+            $residentAdmissionService,
+            [
+                'salutation_id' => $request->get('salutation_id'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender'),
+                'admission_type' => $request->get('admission_type'),
+                'date' => $request->get('date'),
+                'facility_bed_id' => $request->get('facility_bed_id'),
+                'dining_room_id' => $request->get('dining_room_id'),
+                'care_group' => $request->get('care_group'),
+                'care_level_id' => $request->get('care_level_id'),
+                'user_id' => $request->get('user_id')
+            ],
+            $request->getSchemeAndHttpHost()
         );
 
         return $this->respondSuccess(

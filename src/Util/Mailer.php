@@ -404,4 +404,30 @@ class Mailer
 
         return $status;
     }
+
+    /**
+     * @param $emails
+     * @param $subject
+     * @param $body
+     * @param $spaceName
+     * @return mixed
+     */
+    public function sendLeadResidentNotification($emails, $subject, $body, $spaceName)
+    {
+        $mailer = $this->container->get('mailer');
+        $message = (new \Swift_Message($subject))
+            ->setFrom(self::FROM)
+            ->setBcc($emails)
+            ->setBody($body, self::BODY);
+
+        $status = $mailer->send($message);
+
+        $this->logger->critical($subject, array(
+            'status' => $status,
+            'space' => $spaceName,
+            'emails' => $emails
+        ));
+
+        return $status;
+    }
 }

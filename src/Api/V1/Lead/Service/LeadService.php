@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Lead\Service;
 
+use App\Api\V1\Admin\Service\ResidentAdmissionService;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CareLevelNotFoundException;
 use App\Api\V1\Common\Service\Exception\CityStateZipNotFoundException;
@@ -21,6 +22,7 @@ use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
+use App\Api\V1\Common\Service\Exception\SalutationNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SubjectNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\UserNotFoundException;
@@ -46,10 +48,14 @@ use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\Temperature;
 use App\Entity\PaymentSource;
+use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
 use App\Entity\Role;
+use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Entity\User;
 use App\Model\ChangeLogType;
+use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Repository\CareLevelRepository;
@@ -70,6 +76,7 @@ use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\TemperatureRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\RoleRepository;
+use App\Repository\SalutationRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -1173,6 +1180,207 @@ class LeadService extends BaseService implements IGridService
             $this->em->persist($entity);
 
             $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Throwable
+     */
+    public function addResident($id, array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $salutationId = $params['salutation_id'] ?? 0;
+
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
+
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
+            }
+
+            $gender = $params['gender'] ? (int)$params['gender'] : 0;
+            $birthday = new \DateTime($params['birthday']);
+
+            $space = $entity->getOwner() ? $entity->getOwner()->getSpace() : null;
+
+            $resident = new Resident();
+            $resident->setFirstName($entity->getFirstName());
+            $resident->setLastName($entity->getLastName());
+            $resident->setMiddleName('');
+            $resident->setSpace($space);
+            $resident->setSalutation($salutation);
+            $resident->setGender($gender);
+            $resident->setSsn(null);
+            $resident->setBirthday($birthday);
+            $resident->setPhones([]);
+
+            $this->validate($resident, null, ['api_admin_resident_add']);
+
+            $this->em->persist($resident);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param ResidentAdmissionService $residentAdmissionService
+     * @param array $params
+     * @param string $baseUrl
+     * @throws \Exception
+     */
+    public function addResidentAdmission($id, ResidentAdmissionService $residentAdmissionService, array $params, string $baseUrl): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $userId = $params['user_id'] ?? 0;
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+
+            /** @var User $user */
+            $user = $userRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(User::class), $userId);
+
+            if ($user === null) {
+                throw new UserNotFoundException();
+            }
+
+            $salutationId = $params['salutation_id'] ?? 0;
+
+            /** @var SalutationRepository $salutationRepo */
+            $salutationRepo = $this->em->getRepository(Salutation::class);
+
+            $salutation = $salutationRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Salutation::class), $salutationId);
+
+            if ($salutation === null) {
+                throw new SalutationNotFoundException();
+            }
+
+            $gender = $params['gender'] ? (int)$params['gender'] : 0;
+            $birthday = new \DateTime($params['birthday']);
+
+            $space = $entity->getOwner() ? $entity->getOwner()->getSpace() : null;
+
+            $resident = new Resident();
+            $resident->setFirstName($entity->getFirstName());
+            $resident->setLastName($entity->getLastName());
+            $resident->setMiddleName('');
+            $resident->setSpace($space);
+            $resident->setSalutation($salutation);
+            $resident->setGender($gender);
+            $resident->setSsn(null);
+            $resident->setBirthday($birthday);
+            $resident->setPhones([]);
+
+            $this->validate($resident, null, ['api_admin_resident_add']);
+
+            $this->em->persist($resident);
+
+            $admissionType = isset($params['admission_type']) ? (int)$params['admission_type'] : 0;
+
+            $admission = new ResidentAdmission();
+            $admission->setResident($resident);
+            $admission->setGroupType(GroupType::TYPE_FACILITY);
+            $admission->setAdmissionType($admissionType);
+            $admission->setNotes('');
+
+            $date = $params['date'];
+            if (!empty($date)) {
+                $date = new \DateTime($params['date']);
+
+                $now = new \DateTime('now');
+                $date->setTime($now->format('H'), $now->format('i'), $now->format('s'));
+
+                $admission->setDate($date);
+                $admission->setStart($date);
+            } else {
+                $admission->setDate(null);
+                $admission->setStart(null);
+            }
+
+            $residentAdmissionService->saveAsFacility($admission, $params, $admissionType, null, true);
+
+            $this->validate($admission, null, ['api_admin_facility_add']);
+            $this->em->persist($admission);
+
+            //update resident for mobile
+            $resident->setUpdatedAt(new \DateTime('now'));
+            $this->em->persist($resident);
+
+            $this->em->flush();
+
+            if ($user !== null) {
+                $spaceName = '';
+                if ($user->getSpace() !== null) {
+                    $spaceName = $user->getSpace()->getName();
+                }
+
+                $subject = 'New Lead Resident - ' . $resident->getFirstName() . ' ' . $resident->getLastName();
+
+                $body = $this->container->get('templating')->render('@api_email/lead-resident.html.twig', array(
+                    'subject' => $subject,
+                    'spaceName' => $spaceName,
+                    'fullName' => $resident->getFirstName() . ' ' . $resident->getLastName(),
+                    'id' => $resident->getId(),
+                    'baseUrl' => $baseUrl
+                ));
+
+                $emails = [$user->getEmail()];
+                $status = $this->mailer->sendLeadResidentNotification($emails, $subject, $body, $spaceName);
+
+                $emailLog = new EmailLog();
+                $emailLog->setSuccess($status);
+                $emailLog->setSubject($subject);
+                $emailLog->setSpace($spaceName);
+                $emailLog->setEmails($emails);
+
+                $this->em->persist($emailLog);
+                $this->em->flush();
+            }
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();

@@ -46,10 +46,31 @@ class UserService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $facilityId = null;
+        if (!empty($params) || !empty($params[0]['facility_id'])) {
+            $facilityId = $params[0]['facility_id'];
+        }
+
         /** @var UserRepository $repo */
         $repo = $this->em->getRepository(User::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class));
+        if ($facilityId !== null) {
+            $facilityAdmins = [];
+            $users = $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $facilityId);
+
+            if (!empty($users)) {
+                /** @var User $user */
+                foreach ($users as $user) {
+                    if (empty($user->getGrants()) || (!empty($user->getGrants()) && !array_key_exists('persistence-facility', $user->getGrants())) || (!empty($user->getGrants()) && array_key_exists('persistence-facility', $user->getGrants()) && in_array($facilityId, $user->getGrants()['persistence-facility'], false))) {
+                        $facilityAdmins[] = $user;
+                    }
+                }
+            }
+
+            return $facilityAdmins;
+        }
+
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(User::class), $facilityId);
     }
 
     /**
