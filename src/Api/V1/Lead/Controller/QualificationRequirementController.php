@@ -99,6 +99,7 @@ class QualificationRequirementController extends BaseController
         $id = $qualificationRequirementService->add(
             [
                 'title' => $request->get('title'),
+                'use' => $request->get('use'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -126,6 +127,7 @@ class QualificationRequirementController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
+                'use' => $request->get('use'),
                 'space_id' => $request->get('space_id')
             ]
         );

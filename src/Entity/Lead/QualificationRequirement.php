@@ -40,6 +40,12 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
+ *              "id"         = "use",
+ *              "type"       = "boolean",
+ *              "field"      = "qr.use",
+ *              "width"      = "3rem"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -89,6 +95,16 @@ class QualificationRequirement
     private $title;
 
     /**
+     * @var bool
+     * @ORM\Column(name="use", type="boolean")
+     * @Groups({
+     *     "api_lead_qualification_requirement_list",
+     *     "api_lead_qualification_requirement_get"
+     * })
+     */
+    protected $use;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_lead_qualification_requirement_add",
@@ -124,6 +140,22 @@ class QualificationRequirement
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUse(): bool
+    {
+        return $this->use;
+    }
+
+    /**
+     * @param bool $use
+     */
+    public function setUse(bool $use): void
+    {
+        $this->use = $use;
     }
 
     /**

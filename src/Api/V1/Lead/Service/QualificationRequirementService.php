@@ -73,6 +73,7 @@ class QualificationRequirementService extends BaseService implements IGridServic
 
             $qualificationRequirement = new QualificationRequirement();
             $qualificationRequirement->setTitle($params['title']);
+            $qualificationRequirement->setUse($params['use']);
             $qualificationRequirement->setSpace($space);
 
             $this->validate($qualificationRequirement, null, ['api_lead_qualification_requirement_add']);
@@ -120,6 +121,7 @@ class QualificationRequirementService extends BaseService implements IGridServic
             }
 
             $entity->setTitle($params['title']);
+            $entity->setUse($params['use']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_lead_qualification_requirement_edit']);
