@@ -103,6 +103,9 @@ persistence:
         hobby:
           title: 'Hobby'
           class: App\Entity\Lead\Hobby
+        qualification_requirement:
+          title: 'Qualification Requirement'
+          class: App\Entity\Lead\QualificationRequirement
 
         assessment:
           title: 'Assessment'

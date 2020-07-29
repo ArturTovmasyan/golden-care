@@ -146,7 +146,9 @@ class Space
      *     "api_lead_current_residence_list",
      *     "api_lead_current_residence_get",
      *     "api_lead_hobby_list",
-     *     "api_lead_hobby_get"
+     *     "api_lead_hobby_get",
+     *     "api_lead_qualification_requirement_list",
+     *     "api_lead_qualification_requirement_get"
      * })
      */
     private $id;
@@ -245,7 +247,9 @@ class Space
      *     "api_lead_current_residence_list",
      *     "api_lead_current_residence_get",
      *     "api_lead_hobby_list",
-     *     "api_lead_hobby_get"
+     *     "api_lead_hobby_get",
+     *     "api_lead_qualification_requirement_list",
+     *     "api_lead_qualification_requirement_get"
      * })
      */
     private $name;
@@ -489,6 +493,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Hobby", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadHobbies;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\QualificationRequirement", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadQualificationRequirements;
 
     /**
      * Space constructor.
@@ -1168,5 +1178,21 @@ class Space
     public function setLeadHobbies(ArrayCollection $leadHobbies): void
     {
         $this->leadHobbies = $leadHobbies;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadQualificationRequirements(): ArrayCollection
+    {
+        return $this->leadQualificationRequirements;
+    }
+
+    /**
+     * @param ArrayCollection $leadQualificationRequirements
+     */
+    public function setLeadQualificationRequirements(ArrayCollection $leadQualificationRequirements): void
+    {
+        $this->leadQualificationRequirements = $leadQualificationRequirements;
     }
 }
