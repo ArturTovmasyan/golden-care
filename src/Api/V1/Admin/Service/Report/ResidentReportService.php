@@ -1075,6 +1075,181 @@ class ResidentReportService extends BaseService
      * @param $dateTo
      * @param $assessmentId
      * @param $assessmentFormId
+     * @return SixtyDays
+     */
+    public function getCovid19Report($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): SixtyDays
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $startDate = new \DateTime('now');
+        $startDateFormatted = $startDate->format('m/d/Y 00:00:00');
+        $dateTimeStart = new \DateTime($startDateFormatted);
+
+        $endDate = clone $startDate;
+        $endDateFormatted = $endDate->format('m/d/Y 23:59:59');
+        $dateTimeEnd = new \DateTime($endDateFormatted);
+        $interval = ImtDateTimeInterval::getWithDateTimes($dateTimeStart, $dateTimeEnd);
+
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+        $admissions = $admissionRepo->getResidents60DaysRosterData($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $interval, $typeId, $this->getNotGrantResidentIds());
+
+        $residentIds = [];
+
+        if (!empty($admissions)) {
+            $residentIds = array_map(static function ($item) {
+                return $item['id'];
+            }, $admissions);
+            $residentIds = array_unique($residentIds);
+        }
+
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
+            }, $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
+        }
+
+        $data = [];
+        if (!empty($admissions)) {
+            foreach ($admissions as $admission) {
+                if ($type !== GroupType::TYPE_APARTMENT) {
+                    $admissionArray = [
+                        'id' => $admission['id'],
+                        'actionId' => $admission['actionId'],
+                        'typeId' => $admission['typeId'],
+                        'typeName' => $admission['typeName'],
+                        'firstName' => $admission['firstName'],
+                        'lastName' => $admission['lastName'],
+                        'birthday' => $admission['birthday'],
+                        'gender' => $admission['gender'],
+                        'admitted' => $admission['admitted'],
+                        'discharged' => $admission['discharged'],
+                        'careGroup' => $admission['careGroup'],
+                        'careLevel' => $admission['careLevel'],
+                        'rpId' => 'N/A',
+                        'rpFullName' => 'N/A',
+                        'rpTitle' => 'N/A',
+                        'rpPhoneTitle' => 'N/A',
+                        'rpPhoneNumber' => 'N/A',
+                    ];
+                } else {
+                    $admissionArray = [
+                        'id' => $admission['id'],
+                        'actionId' => $admission['actionId'],
+                        'typeId' => $admission['typeId'],
+                        'typeName' => $admission['typeName'],
+                        'firstName' => $admission['firstName'],
+                        'lastName' => $admission['lastName'],
+                        'birthday' => $admission['birthday'],
+                        'gender' => $admission['gender'],
+                        'admitted' => $admission['admitted'],
+                        'discharged' => $admission['discharged'],
+                        'rpId' => 'N/A',
+                        'rpFullName' => 'N/A',
+                        'rpTitle' => 'N/A',
+                        'rpPhoneTitle' => 'N/A',
+                        'rpPhoneNumber' => 'N/A',
+                    ];
+                }
+
+                $rpAllArray = [];
+                if (!empty($responsiblePersons)) {
+                    /** @var ResidentResponsiblePerson $rp */
+                    foreach ($responsiblePersons as $rp) {
+                        $isEmergency = false;
+
+                        if (!empty($rp->getRoles())) {
+                            /** @var ResponsiblePersonRole $role */
+                            foreach ($rp->getRoles() as $role) {
+                                if ($role->isEmergency() === true) {
+                                    $isEmergency = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        $rpResidentId = $rp->getResident() ? $rp->getResident()->getId() : 0;
+                        $rpId = $rp->getResponsiblePerson() ? $rp->getResponsiblePerson()->getId() : 0;
+
+                        if ($isEmergency === true && $rpResidentId === $admission['id']) {
+
+                            $rpArray = [
+                                'rpId' => $rpId,
+                                'rpFullName' => $rp->getResponsiblePerson() ? $rp->getResponsiblePerson()->getFirstName() . ' ' . $rp->getResponsiblePerson()->getLastName() : '',
+                                'rpTitle' => $rp->getRelationship() ? $rp->getRelationship()->getTitle() : '',
+                                'rpPhoneTitle' => 'N/A',
+                                'rpPhoneNumber' => 'N/A',
+                            ];
+
+                            $rpPhone = [];
+                            if (!empty($responsiblePersonPhones)) {
+                                foreach ($responsiblePersonPhones as $phone) {
+                                    if ($phone['rpId'] === $rpId) {
+                                        $rpPhone = [
+                                            'rpPhoneTitle' => $phone['type'],
+                                            'rpPhoneNumber' => $phone['number'],
+                                        ];
+
+                                        if ((int)$phone['type'] === (int)\constant('App\\Model\\Phone::TYPE_EMERGENCY')) {
+                                            $rpPhone = [
+                                                'rpPhoneTitle' => $phone['type'],
+                                                'rpPhoneNumber' => $phone['number'],
+                                            ];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            $rpAllArray = array_merge($rpArray, $rpPhone);
+                        }
+                    }
+                }
+                $data[] = array_merge($admissionArray, $rpAllArray);
+            }
+        }
+
+        $report = new SixtyDays();
+        $report->setTitle('COVID-19 Roster Report');
+        $report->setData($data);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDate($endDateFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
      * @return ReportResidentEvent
      */
     public function getEventReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ReportResidentEvent

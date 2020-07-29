@@ -7,15 +7,24 @@ resident:
   show_in_group_list: true
   reports:
     sixty-days-roster:
-        service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
-        title: '60 Days Roster: 60 Days Roster Report'
-        show_in_resident_list: true
-        show_in_group_list: true
-        formats: ['csv', 'xls']
-        parameters:
-          group:
-            select_all: true
-          date: "m/d/Y"
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getSixtyDaysReport
+      title: '60 Days Roster: 60 Days Roster Report'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true
+        date: "m/d/Y"
+    covid-19-roster:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getCovid19Report
+      title: 'COVID-19 Roster: COVID-19 Roster Report'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true
     detailed-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
       title: 'Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information'

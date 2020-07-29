@@ -451,6 +451,8 @@ report:
       children:
         sixty-days-roster:
           title: "60 Days Roster: 60 Days Roster Report"
+        covid-19-roster:
+          title: "COVID-19 Roster: COVID-19 Roster Report"
         detailed-roster:
           title: "Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information"
         dietary-restrictions:

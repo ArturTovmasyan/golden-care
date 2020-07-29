@@ -2385,6 +2385,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.id as id',
                 'r.firstName as firstName',
                 'r.lastName as lastName',
+                'r.birthday as birthday',
+                'r.gender as gender',
                 'ra.id as actionId',
                 'ra.admissionType as admissionType',
                 'ra.notes as notes',
