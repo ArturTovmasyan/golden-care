@@ -1,6 +1,6 @@
 {% spaceless %}
 COVID-19 Roster Report,,,,,,,,,,,,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},,{% endif %},
-{{ data.strategy }} ID,{{ data.strategy }} Name,Resident ID,Resident First Name,Resident Last Name,Birthday,Gender,Admitted Date,Discharge Date,Responsible Person ID,Responsible Person Full Name,Relationship,Phone Type,Phone Number{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},Care Group,Level of Care{% endif %}
+{{ data.strategy }} ID,{{ data.strategy }} Name,Resident ID,Resident First Name,Resident Last Name,Resident Birthdate,Resident Gender,Admitted Date,Discharge Date,Responsible Person ID,Responsible Person Full Name,Relationship,Phone Type,Phone Number{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},Care Group,Level of Care{% endif %}
   ,,,,,,,,,,,,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},,{% endif %},
 ,,,,,,,,,,,,{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_APARTMENT') %},,{% endif %},
 {% for datum in data.data %}
