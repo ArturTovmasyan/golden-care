@@ -21,6 +21,7 @@ use App\Api\V1\Common\Service\Exception\ResidentAdmissionOnlyReadmitException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmissionTwoTimeARowException;
 use App\Api\V1\Common\Service\Exception\ResidentAdmitOnlyOneTimeException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentReadmitOnlyAfterDischargeException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Apartment;
 use App\Entity\ApartmentBed;
@@ -728,6 +729,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                 if ($lastAction !== null && $admitAction !== null && \in_array($admissionType, $admitTypesArray, false)) {
                     throw new ResidentAdmitOnlyOneTimeException();
+                }
+
+                if ($admissionType !== AdmissionType::READMIT && $lastAction !== null && $lastAction->getAdmissionType() === AdmissionType::DISCHARGE) {
+                    throw new ResidentReadmitOnlyAfterDischargeException();
                 }
 
                 $type = $params['group_type'] ? (int)$params['group_type'] : 0;
