@@ -1024,7 +1024,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         $entity = new ResidentAdmission();
                         $entity->setResident($admission->getResident());
                         $entity->setGroupType($admission->getGroupType());
-                        $entity->setAdmissionType(AdmissionType::READMIT);
+                        $entity->setAdmissionType(AdmissionType::ROOM_CHANGE);
                         $entity->setStart($now);
                         $entity->setDate($now);
                         $entity->setFacilityBed($bed);
@@ -1058,7 +1058,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         $entity = new ResidentAdmission();
                         $entity->setResident($admission->getResident());
                         $entity->setGroupType($admission->getGroupType());
-                        $entity->setAdmissionType(AdmissionType::READMIT);
+                        $entity->setAdmissionType(AdmissionType::ROOM_CHANGE);
                         $entity->setStart($now);
                         $entity->setDate($now);
                         $entity->setApartmentBed($bed);
@@ -1174,7 +1174,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $firstEntity->setFacilityBed($secondAdmission->getFacilityBed());
             $firstEntity->setResident($firstAdmission->getResident());
             $firstEntity->setGroupType($firstAdmission->getGroupType());
-            $firstEntity->setAdmissionType(AdmissionType::READMIT);
+            $firstEntity->setAdmissionType(AdmissionType::ROOM_CHANGE);
             $firstEntity->setDiningRoom($firstAdmission->getDiningRoom());
             $firstEntity->setDnr($firstAdmission->isDnr());
             $firstEntity->setPolst($firstAdmission->isPolst());
@@ -1188,7 +1188,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $secondEntity->setFacilityBed($firstAdmission->getFacilityBed());
             $secondEntity->setResident($secondAdmission->getResident());
             $secondEntity->setGroupType($secondAdmission->getGroupType());
-            $secondEntity->setAdmissionType(AdmissionType::READMIT);
+            $secondEntity->setAdmissionType(AdmissionType::ROOM_CHANGE);
             $secondEntity->setDiningRoom($secondAdmission->getDiningRoom());
             $secondEntity->setDnr($secondAdmission->isDnr());
             $secondEntity->setPolst($secondAdmission->isPolst());

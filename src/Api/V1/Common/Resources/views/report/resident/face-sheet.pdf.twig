@@ -724,7 +724,7 @@
                                         <div style="float: left; width: 65%">
                                             {% if resident['state'] is defined %}
                                                 <div>
-                                                    Status&nbsp;-&nbsp;{% if resident['state'] %}{{     admissionType(resident['type'], resident['state']) }}{% else %}N/A{% endif %}</div>
+                                                    Status&nbsp;-&nbsp;{% if resident['state'] %}{{ admissionType(resident['type'], resident['state']) }}{% else %}N/A{% endif %}</div>
                                             {% endif %}
                                         </div>
                                         <div style="float: left; width: 35%">
