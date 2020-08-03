@@ -32,12 +32,25 @@ class UserLogRepository extends EntityRepository
                 u.lastName as lastName,
                 ul.createdAt as createdAt
             ')
+            ->addSelect("GROUP_CONCAT(r.name SEPARATOR ', ') AS roles")
+            ->addSelect(
+                "(SELECT GROUP_CONCAT(DISTINCT f.shorthand SEPARATOR ', ')
+                        FROM
+                          App\\Entity\\Facility f
+                        WHERE JSON_CONTAINS(
+                            JSON_EXTRACT(
+                              u.grants,
+                              '$.\"persistence-facility\"'
+                            ),
+                            CAST(f.id AS JSON)
+                          ) = 1) AS facilityNames")
             ->innerJoin(
                 User::class,
                 'u',
                 Join::WITH,
                 'u = ul.user'
             )
+            ->innerJoin('u.roles', 'r')
             ->andWhere('ul.type = :type AND ul.createdAt >= :date AND ul.createdAt < :now')
             ->setParameter('type', UserLog::LOG_TYPE_AUTHENTICATION)
             ->setParameter('date', $date)

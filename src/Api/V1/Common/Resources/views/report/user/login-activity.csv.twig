@@ -1,10 +1,10 @@
 {% spaceless %}
-Database User Login Activity
+Database User Login Activity: {{ data.dateStart|date("m/d/Y") }} through {{ data.dateEnd }}
 
 {% set renderedGroup = null %}{% set newGroup = false %}
 {% for datum in data.data %}{% if renderedGroup == datum.id %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.id %}{% set newGroup = true %}{% endif %}
 {% if newGroup %}
-"{{ datum.firstName|raw }} {{ datum.lastName|raw }}"
+"{{ datum.firstName|raw }} {{ datum.lastName|raw }} - {{ datum.roles }} ({% if datum.facilityNames is null %}All{% else %}{{ datum.facilityNames }}{% endif %})"
 {% endif %}
 {{ datum.createdAt|date("m/d/Y H:i:s") }}
 {% if not newGroup %}

@@ -10,6 +10,16 @@ class UserLogActivity extends Base
     private $data = [];
 
     /**
+     * @var string
+     */
+    private $dateStart;
+
+    /**
+     * @var string
+     */
+    private $dateEnd;
+
+    /**
      * @param $data
      */
     public function setData($data): void
@@ -23,6 +33,37 @@ class UserLogActivity extends Base
     public function getData(): ?array
     {
         return $this->data;
+    }
+    /**
+     * @return string
+     */
+    public function getDateStart(): string
+    {
+        return $this->dateStart;
+    }
+
+    /**
+     * @param string $dateStart
+     */
+    public function setDateStart(string $dateStart): void
+    {
+        $this->dateStart = $dateStart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateEnd(): string
+    {
+        return $this->dateEnd;
+    }
+
+    /**
+     * @param string $dateEnd
+     */
+    public function setDateEnd(string $dateEnd): void
+    {
+        $this->dateEnd = $dateEnd;
     }
 }
 

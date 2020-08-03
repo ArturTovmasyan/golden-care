@@ -41,8 +41,14 @@ class UserReportService extends BaseService
 
         $logs = $repo->getUserLoginActivity($currentSpace);
 
+        $dateEnd = new \DateTime('now');
+        $previousDate = clone $dateEnd;
+        $dateStart = date_modify($previousDate, '-7 day');
+
         $report = new UserLogActivity();
         $report->setData($logs);
+        $report->setDateStart($dateStart->format('m/d/Y'));
+        $report->setDateEnd($dateEnd->format('m/d/Y'));
 
         return $report;
     }
