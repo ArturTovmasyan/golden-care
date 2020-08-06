@@ -573,7 +573,8 @@ class Lead implements PreviousAndNextItemsService
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadQualificationRequirement", mappedBy="lead", cascade={"persist"})
      * @Assert\Valid(groups={
      *      "api_lead_lead_add",
-     *      "api_lead_lead_edit"
+     *      "api_lead_lead_edit",
+     *      "api_lead_lead_qualification_edit"
      * })
      * @Groups({
      *     "api_lead_lead_list",
@@ -590,7 +591,8 @@ class Lead implements PreviousAndNextItemsService
      *     callback={"App\Model\Lead\Qualified","getTypeValues"},
      *     groups={
      *          "api_lead_lead_add",
-     *          "api_lead_lead_edit"
+     *          "api_lead_lead_edit",
+     *          "api_lead_lead_qualification_edit"
      *     }
      * )
      * @Groups({

@@ -1314,6 +1314,55 @@ class LeadService extends BaseService implements IGridService
      * @param array $params
      * @throws \Throwable
      */
+    public function editQualification($id, array $params): void
+    {
+        try {
+
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
+
+            /** @var LeadRepository $repo */
+            $repo = $this->em->getRepository(Lead::class);
+
+            /** @var Lead $entity */
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $id);
+
+            if ($entity === null) {
+                throw new LeadNotFoundException();
+            }
+
+            $leadQualificationRequirements = $this->saveQualificationRequirements($currentSpace, $entity, $params['qualifications'] ?? []);
+
+            $entity->setLeadQualificationRequirements($leadQualificationRequirements);
+
+            // Set Qualified State
+            $qualified = $this->saveQualified($leadQualificationRequirements);
+            $entity->setQualified($qualified);
+
+            $this->validate($entity, null, ['api_lead_lead_qualification_edit']);
+
+            $this->em->persist($entity);
+
+            //when qualified = NO then add new Funnel Stage to change Lead state to Closed, with Reason “Not Qualified”
+            if ((bool)$params['close_lead'] === true && $qualified === Qualified::TYPE_NO && $entity->getState() === State::TYPE_OPEN) {
+                $this->createNoQualifiedLeadFunnelStageToCloseLead($entity);
+            }
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @throws \Throwable
+     */
     public function editInterest($id, array $params): void
     {
         try {

@@ -40,7 +40,8 @@ class LeadQualificationRequirement
      *      message = "Please select a Lead",
      *      groups={
      *          "api_lead_lead_add",
-     *          "api_lead_lead_edit"
+     *          "api_lead_lead_edit",
+     *          "api_lead_lead_qualification_edit"
      *      }
      * )
      */
@@ -56,7 +57,8 @@ class LeadQualificationRequirement
      *      message = "Please select a Qualification Requirement",
      *      groups={
      *          "api_lead_lead_add",
-     *          "api_lead_lead_edit"
+     *          "api_lead_lead_edit",
+     *          "api_lead_lead_qualification_edit"
      *      }
      * )
      * @Groups({
@@ -75,7 +77,8 @@ class LeadQualificationRequirement
      *     callback={"App\Model\Lead\Qualified","getTypeValues"},
      *     groups={
      *          "api_lead_lead_add",
-     *          "api_lead_lead_edit"
+     *          "api_lead_lead_edit",
+     *          "api_lead_lead_qualification_edit"
      *     }
      * )
      * @Groups({
