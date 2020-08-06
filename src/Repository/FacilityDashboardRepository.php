@@ -95,6 +95,8 @@ class FacilityDashboardRepository extends EntityRepository implements RelatedInf
                 'fd.toursPerMonth as toursPerMonth',
                 'fd.totalInquiries as totalInquiries',
                 'fd.qualifiedInquiries as qualifiedInquiries',
+                'fd.notSureInquiries as notSureInquiries',
+                'fd.notQualifiedInquiries as notQualifiedInquiries',
                 'fd.outreachPerMonth as outreachPerMonth',
                 'fd.averageRoomRent as averageRoomRent'
             )

@@ -202,7 +202,9 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $projectedNearTermOccupancy = 0;//?
                 $toursPerMonth = 0;
                 $totalInquiries = 0;
-                $qualifiedInquiries = 0;//?
+                $qualifiedInquiries = 0;
+                $notSureInquiries = 0;
+                $notQualifiedInquiries = 0;
                 $outreachPerMonth = 0;
                 $averageRoomRent = 0;
                 foreach ($dashboards as $dashboard) {
@@ -230,6 +232,9 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $noticeToVacate = $dashboard['noticeToVacate'];
                         $toursPerMonth = $dashboard['toursPerMonth'];
                         $totalInquiries = $dashboard['totalInquiries'];
+                        $qualifiedInquiries = $dashboard['qualifiedInquiries'];
+                        $notSureInquiries = $dashboard['notSureInquiries'];
+                        $notQualifiedInquiries = $dashboard['notQualifiedInquiries'];
                         $outreachPerMonth = $dashboard['outreachPerMonth'];
                         $averageRoomRent = $dashboard['averageRoomRent'];
                     }
@@ -254,6 +259,8 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'tours_per_month' => $toursPerMonth,
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
+                    'not_sure_inquiries' => $notSureInquiries,
+                    'not_qualified_inquiries' => $notQualifiedInquiries,
                     'outreach_per_month' => $outreachPerMonth,
                     'average_room_rent' => $averageRoomRent,
                 ];

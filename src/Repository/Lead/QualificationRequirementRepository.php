@@ -62,7 +62,7 @@ class QualificationRequirementRepository extends EntityRepository implements Rel
                 Join::WITH,
                 's = qr.space'
             )
-            ->andWhere('qr.use = :use')
+            ->andWhere('qr.canUse = :use')
             ->setParameter('use', true);
 
         if ($space !== null) {

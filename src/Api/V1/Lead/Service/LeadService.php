@@ -18,7 +18,9 @@ use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadRpPhoneOrEmailNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\QualificationRequirementNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\StageChangeReasonNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\TemperatureNotFoundException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\RoleNotFoundException;
@@ -42,10 +44,13 @@ use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Hobby;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
+use App\Entity\Lead\LeadQualificationRequirement;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Organization;
+use App\Entity\Lead\QualificationRequirement;
 use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferrerType;
+use App\Entity\Lead\StageChangeReason;
 use App\Entity\Lead\Temperature;
 use App\Entity\PaymentSource;
 use App\Entity\Resident;
@@ -57,6 +62,7 @@ use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\GroupType;
 use App\Model\Lead\ActivityOwnerType;
+use App\Model\Lead\Qualified;
 use App\Model\Lead\State;
 use App\Repository\CareLevelRepository;
 use App\Repository\CityStateZipRepository;
@@ -72,8 +78,11 @@ use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OrganizationRepository;
+use App\Repository\Lead\QualificationRequirementRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
+use App\Repository\Lead\StageChangeReasonRepository;
 use App\Repository\Lead\TemperatureRepository;
+use App\Repository\Lead\LeadQualificationRequirementRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\RoleRepository;
 use App\Repository\SalutationRepository;
@@ -443,6 +452,13 @@ class LeadService extends BaseService implements IGridService
 
             $lead->setNotes($notes);
 
+            $leadQualificationRequirements = $this->saveQualificationRequirements($currentSpace, $lead, $params['qualifications'] ?? []);
+
+            $lead->setLeadQualificationRequirements($leadQualificationRequirements);
+
+            // Set Qualified State
+            $lead->setQualified($this->saveQualified($leadQualificationRequirements));
+
             $this->validate($lead, null, ['api_lead_lead_add']);
 
             $this->em->persist($lead);
@@ -564,6 +580,8 @@ class LeadService extends BaseService implements IGridService
             $lead->setCareType(null);
             $lead->setCareLevel(null);
             $lead->setPaymentType(null);
+            // Set Qualified State
+            $lead->setQualified(Qualified::TYPE_NOT_SURE);
 
             $roleName = $facility !== null ? 'Facility Admin' : 'Administrator';
             /** @var RoleRepository $roleRepo */
@@ -1074,6 +1092,14 @@ class LeadService extends BaseService implements IGridService
 
             $entity->setNotes($notes);
 
+            $leadQualificationRequirements = $this->saveQualificationRequirements($currentSpace, $entity, $params['qualifications'] ?? []);
+
+            $entity->setLeadQualificationRequirements($leadQualificationRequirements);
+
+            // Set Qualified State
+            $qualified = $this->saveQualified($leadQualificationRequirements);
+            $entity->setQualified($qualified);
+
             $this->validate($entity, null, ['api_lead_lead_edit']);
 
             $this->em->persist($entity);
@@ -1122,6 +1148,11 @@ class LeadService extends BaseService implements IGridService
                 }
             }
 
+            //when qualified = NO then add new Funnel Stage to change Lead state to Closed, with Reason “Not Qualified”
+            if ($state === State::TYPE_OPEN && (bool)$params['close_lead'] === true && $qualified === Qualified::TYPE_NO) {
+                $this->createNoQualifiedLeadFunnelStageToCloseLead($entity);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -1129,6 +1160,153 @@ class LeadService extends BaseService implements IGridService
 
             throw $e;
         }
+    }
+
+    /**
+     * @param $currentSpace
+     * @param Lead $lead
+     * @param array $qualifications
+     * @return array|null
+     */
+    private function saveQualificationRequirements($currentSpace, Lead $lead, array $qualifications = []): ?array
+    {
+        if ($lead->getId() !== null) {
+            /** @var LeadQualificationRequirementRepository $leadQualificationRequirementRepo */
+            $leadQualificationRequirementRepo = $this->em->getRepository(LeadQualificationRequirement::class);
+
+            $oldQualificationRequirements = $leadQualificationRequirementRepo->getBy($lead->getId());
+
+            foreach ($oldQualificationRequirements as $oldQualificationRequirement) {
+                $this->em->remove($oldQualificationRequirement);
+            }
+        }
+
+        $leadQualificationRequirements = [];
+
+        foreach ($qualifications as $qualification) {
+            $qualificationRequirementId = $qualification['qualification_requirement_id'] ?? 0;
+
+            /** @var QualificationRequirementRepository $qualificationRequirementRepo */
+            $qualificationRequirementRepo = $this->em->getRepository(QualificationRequirement::class);
+
+            /** @var QualificationRequirement $qualificationRequirement */
+            $qualificationRequirement = $qualificationRequirementRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(QualificationRequirement::class), $qualificationRequirementId);
+
+            if ($qualificationRequirement === null) {
+                throw new QualificationRequirementNotFoundException();
+            }
+
+            $qualified = isset($qualification['qualified']) ? (int)$qualification['qualified'] : 0;
+
+            $leadQualificationRequirement = new LeadQualificationRequirement();
+            $leadQualificationRequirement->setLead($lead);
+            $leadQualificationRequirement->setQualificationRequirement($qualificationRequirement);
+            $leadQualificationRequirement->setQualified($qualified);
+
+            $this->em->persist($leadQualificationRequirement);
+
+            $leadQualificationRequirements[] = $leadQualificationRequirement;
+        }
+
+        return $leadQualificationRequirements;
+    }
+
+    /**
+     * @param $leadQualificationRequirements
+     * @return int
+     */
+    private function saveQualified($leadQualificationRequirements): int
+    {
+        $qualified = Qualified::TYPE_NOT_SURE;
+
+        $notQualifieds = [];
+        $notSures = [];
+        $qualifieds = [];
+        if (!empty($leadQualificationRequirements)) {
+            /** @var LeadQualificationRequirement $leadQualificationRequirement */
+            foreach ($leadQualificationRequirements as $leadQualificationRequirement) {
+                switch ($leadQualificationRequirement->getQualified()) {
+                    case Qualified::TYPE_YES:
+                        $qualifieds[] = $leadQualificationRequirement->getQualified();
+                        break;
+                    case Qualified::TYPE_NOT_SURE:
+                        $notSures[] = $leadQualificationRequirement->getQualified();
+                        break;
+                    case Qualified::TYPE_NO:
+                        $notQualifieds[] = $leadQualificationRequirement->getQualified();
+                        break;
+                    default:
+                        $notSures[] = Qualified::TYPE_NOT_SURE;
+                }
+            }
+
+            if (!empty($notQualifieds)) {
+                $qualified = Qualified::TYPE_NO;
+            }
+
+            if (empty($notQualifieds) && !empty($notSures)) {
+                $qualified = Qualified::TYPE_NOT_SURE;
+            }
+
+            if (empty($notQualifieds) && empty($notSures) && !empty($qualifieds)) {
+                $qualified = Qualified::TYPE_YES;
+            }
+        }
+
+        return $qualified;
+    }
+
+    /**
+     * @param Lead $lead
+     */
+    private function createNoQualifiedLeadFunnelStageToCloseLead(Lead $lead)
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $funnelStageName = 'Closed';
+        /** @var FunnelStageRepository $funnelStageRepo */
+        $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
+        /** @var FunnelStage $funnelStage */
+        $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName), 'open' => false, 'space' => $currentSpace]);
+
+        if ($funnelStage === null) {
+            throw new FunnelStageNotFoundException();
+        }
+
+        $reasonName = 'Not Qualified';
+        /** @var StageChangeReasonRepository $reasonRepo */
+        $reasonRepo = $this->em->getRepository(StageChangeReason::class);
+        /** @var StageChangeReason $reason */
+        $reason = $reasonRepo->findOneBy(['title' => strtolower($reasonName), 'space' => $currentSpace]);
+
+        if ($reason === null) {
+            throw new StageChangeReasonNotFoundException();
+        }
+
+        $leadFunnelStage = new LeadFunnelStage();
+        $leadFunnelStage->setLead($lead);
+        $leadFunnelStage->setStage($funnelStage);
+        $leadFunnelStage->setReason($reason);
+        $leadFunnelStage->setDate(new \DateTime('now'));
+        $leadFunnelStage->setNotes($funnelStage->getTitle());
+
+        if ($this->grantService->getCurrentSpace() === null) {
+            $leadFunnelStage->setCreatedBy($lead->getOwner());
+            $leadFunnelStage->setUpdatedBy($lead->getOwner());
+        }
+
+        $this->validate($leadFunnelStage, null, ['api_lead_lead_funnel_stage_add']);
+
+        $this->em->persist($leadFunnelStage);
+
+        if ($funnelStage->isOpen()) {
+            $state = State::TYPE_OPEN;
+        } else {
+            $state = State::TYPE_CLOSED;
+        }
+
+        $lead->setState($state);
+        $this->em->persist($lead);
     }
 
     /**
@@ -1558,7 +1736,7 @@ class LeadService extends BaseService implements IGridService
         /** @var FunnelStageRepository $funnelStageRepo */
         $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
         /** @var FunnelStage $funnelStage */
-        $funnelStage = $funnelStageRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), $funnelStageId);
+        $funnelStage = $funnelStageRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FunnelStage::class), $funnelStageId);
 
         if ($funnelStage === null) {
             throw new FunnelStageNotFoundException();
@@ -1599,7 +1777,7 @@ class LeadService extends BaseService implements IGridService
         /** @var TemperatureRepository $temperatureRepo */
         $temperatureRepo = $this->em->getRepository(Temperature::class);
         /** @var Temperature $temperature */
-        $temperature = $temperatureRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ActivityType::class), $temperatureId);
+        $temperature = $temperatureRepo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Temperature::class), $temperatureId);
 
         if ($temperature === null) {
             throw new TemperatureNotFoundException();

@@ -6,9 +6,12 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\Lead\QualificationRequirementNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Lead\LeadQualificationRequirement;
 use App\Entity\Lead\QualificationRequirement;
 use App\Entity\Space;
+use App\Model\Lead\Qualified;
 use App\Repository\Lead\QualificationRequirementRepository;
+use App\Repository\Lead\LeadQualificationRequirementRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -73,7 +76,7 @@ class QualificationRequirementService extends BaseService implements IGridServic
 
             $qualificationRequirement = new QualificationRequirement();
             $qualificationRequirement->setTitle($params['title']);
-            $qualificationRequirement->setUse($params['use']);
+            $qualificationRequirement->setCanUse($params['use']);
             $qualificationRequirement->setSpace($space);
 
             $this->validate($qualificationRequirement, null, ['api_lead_qualification_requirement_add']);
@@ -121,7 +124,7 @@ class QualificationRequirementService extends BaseService implements IGridServic
             }
 
             $entity->setTitle($params['title']);
-            $entity->setUse($params['use']);
+            $entity->setCanUse($params['use']);
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_lead_qualification_requirement_edit']);
@@ -155,7 +158,62 @@ class QualificationRequirementService extends BaseService implements IGridServic
                 throw new QualificationRequirementNotFoundException();
             }
 
-            $this->em->remove($entity);
+            /** @var LeadQualificationRequirementRepository $qualificationRepo */
+            $qualificationRepo = $this->em->getRepository(LeadQualificationRequirement::class);
+
+            $qualifications = $qualificationRepo->getByQualificationRequirement([$id]);
+
+            if (!empty($qualifications)) {
+                $leadIds = [];
+                /** @var LeadQualificationRequirement $qualification */
+                foreach ($qualifications as $qualification) {
+                    if ($qualification->getLead() !== null) {
+                        $leadIds[] = $qualification->getLead()->getId();
+                    }
+
+                    $this->em->remove($qualification);
+                }
+
+                $this->em->flush();
+
+                $leadQualifications = $qualificationRepo->getByLeadIds($leadIds);
+
+                $leadQualifieds = [];
+                /** @var LeadQualificationRequirement $leadQualification */
+                foreach ($leadQualifications as $leadQualification) {
+                    if ($leadQualification->getLead() !== null) {
+                        $leadQualifieds[$leadQualification->getLead()->getId()][] = $leadQualification->getQualified();
+                    }
+                }
+
+                $qualifieds = [];
+                foreach ($leadQualifieds as $key => $leadQualified) {
+                    if (in_array(Qualified::TYPE_NO, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_NO;
+                    }
+
+                    if (!in_array(Qualified::TYPE_NO, $leadQualified, false) && in_array(Qualified::TYPE_NOT_SURE, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_NOT_SURE;
+                    }
+
+                    if (!in_array(Qualified::TYPE_NO, $leadQualified, false) && !in_array(Qualified::TYPE_NOT_SURE, $leadQualified, false) && in_array(Qualified::TYPE_YES, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_YES;
+                    }
+                }
+
+                /** @var LeadQualificationRequirement $leadQualification */
+                foreach ($leadQualifications as $leadQualification) {
+                    if ($leadQualification->getLead() !== null) {
+                        $leadQualification->getLead()->setQualified($qualifieds[$leadQualification->getLead()->getId()]);
+
+                        $this->em->persist($leadQualification->getLead());
+                    }
+                }
+            }
+
+            $entity->setCanUse(false);
+            $this->em->persist($entity);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
@@ -191,7 +249,62 @@ class QualificationRequirementService extends BaseService implements IGridServic
              * @var QualificationRequirement $qualificationRequirement
              */
             foreach ($qualificationRequirements as $qualificationRequirement) {
-                $this->em->remove($qualificationRequirement);
+                $qualificationRequirement->setCanUse(false);
+
+                $this->em->persist($qualificationRequirement);
+            }
+
+            /** @var LeadQualificationRequirementRepository $qualificationRepo */
+            $qualificationRepo = $this->em->getRepository(LeadQualificationRequirement::class);
+
+            $qualifications = $qualificationRepo->getByQualificationRequirement($ids);
+
+            if (!empty($qualifications)) {
+                $leadIds = [];
+                /** @var LeadQualificationRequirement $qualification */
+                foreach ($qualifications as $qualification) {
+                    if ($qualification->getLead() !== null) {
+                        $leadIds[] = $qualification->getLead()->getId();
+                    }
+
+                    $this->em->remove($qualification);
+                }
+
+                $this->em->flush();
+
+                $leadQualifications = $qualificationRepo->getByLeadIds($leadIds);
+
+                $leadQualifieds = [];
+                /** @var LeadQualificationRequirement $leadQualification */
+                foreach ($leadQualifications as $leadQualification) {
+                    if ($leadQualification->getLead() !== null) {
+                        $leadQualifieds[$leadQualification->getLead()->getId()][] = $leadQualification->getQualified();
+                    }
+                }
+
+                $qualifieds = [];
+                foreach ($leadQualifieds as $key => $leadQualified) {
+                    if (in_array(Qualified::TYPE_NO, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_NO;
+                    }
+
+                    if (!in_array(Qualified::TYPE_NO, $leadQualified, false) && in_array(Qualified::TYPE_NOT_SURE, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_NOT_SURE;
+                    }
+
+                    if (!in_array(Qualified::TYPE_NO, $leadQualified, false) && !in_array(Qualified::TYPE_NOT_SURE, $leadQualified, false) && in_array(Qualified::TYPE_YES, $leadQualified, false)) {
+                        $qualifieds[$key] = Qualified::TYPE_YES;
+                    }
+                }
+
+                /** @var LeadQualificationRequirement $leadQualification */
+                foreach ($leadQualifications as $leadQualification) {
+                    if ($leadQualification->getLead() !== null) {
+                        $leadQualification->getLead()->setQualified($qualifieds[$leadQualification->getLead()->getId()]);
+
+                        $this->em->persist($leadQualification->getLead());
+                    }
+                }
             }
 
             $this->em->flush();

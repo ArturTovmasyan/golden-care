@@ -39,6 +39,10 @@ Total Inquiries per month,{% for datum in data %}{{ datum['data'][key]['total_in
 
 Qualified Inquiries per month,{% for datum in data %}{{ datum['data'][key]['qualified_inquiries'] }}{% if not loop.last %},{% endif %}{% endfor %}
 
+Not Sure Inquiries per month,{% for datum in data %}{{ datum['data'][key]['not_sure_inquiries'] }}{% if not loop.last %},{% endif %}{% endfor %}
+
+Not Qualified Inquiries per month,{% for datum in data %}{{ datum['data'][key]['not_qualified_inquiries'] }}{% if not loop.last %},{% endif %}{% endfor %}
+
 Outreach per month,{% for datum in data %}{{ datum['data'][key]['outreach_per_month'] }}{% if not loop.last %},{% endif %}{% endfor %}
 
 Average Room Rent,{% for datum in data %}"$ {{ datum['data'][key]['average_room_rent']|number_format(2, '.', ',') }}"{% if not loop.last %},{% endif %}{% endfor %}

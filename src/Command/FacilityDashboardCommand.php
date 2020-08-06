@@ -19,6 +19,7 @@ use App\Entity\ResidentRent;
 use App\Entity\User;
 use App\Model\AdmissionType;
 use App\Model\GroupType;
+use App\Model\Lead\Qualified;
 use App\Model\RentPeriod;
 use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityRepository;
@@ -158,6 +159,10 @@ class FacilityDashboardCommand extends Command
             $leadTourActivities = $activityRepo->getLeadTourActivitiesForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
 
             $leads = $leadRepo->getLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
+
+            $qualifiedLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_YES);
+            $notSureLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NOT_SURE);
+            $notQualifiedLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NO);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);
@@ -383,6 +388,45 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setTotalInquiries($totalInquiries);
+
+                $qualifiedInquiries = 0;
+                if (!empty($qualifiedLeads)) {
+                    foreach ($qualifiedLeads as $qualifiedLead) {
+                        $s = 0;
+                        if ($qualifiedLead['typeId'] === $facility->getId()) {
+                            $s++;
+
+                            $qualifiedInquiries += $s;
+                        }
+                    }
+                }
+                $entity->setQualifiedInquiries($qualifiedInquiries);
+
+                $notSureInquiries = 0;
+                if (!empty($notSureLeads)) {
+                    foreach ($notSureLeads as $notSureLead) {
+                        $t = 0;
+                        if ($notSureLead['typeId'] === $facility->getId()) {
+                            $t++;
+
+                            $notSureInquiries += $t;
+                        }
+                    }
+                }
+                $entity->setNotSureInquiries($notSureInquiries);
+
+                $notQualifiedInquiries = 0;
+                if (!empty($notQualifiedLeads)) {
+                    foreach ($notQualifiedLeads as $notQualifiedLead) {
+                        $u = 0;
+                        if ($notQualifiedLead['typeId'] === $facility->getId()) {
+                            $u++;
+
+                            $notQualifiedInquiries += $u;
+                        }
+                    }
+                }
+                $entity->setNotQualifiedInquiries($notQualifiedInquiries);
 
                 $outreachPerMonth = 0;
                 if (!empty($finalOutreaches)) {

@@ -597,5 +597,63 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param $qualified
+     * @return mixed
+     */
+    public function getQualifiedLeadsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate, $qualified)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'l.id as leadId',
+                'f.id as typeId'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->where('l.createdAt >= :startDate AND l.createdAt <= :endDate AND l.qualified = :qualified')
+            ->andWhere('l.spam = 0')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('qualified', $qualified);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    User::class,
+                    'o',
+                    Join::WITH,
+                    'o = l.owner'
+                )
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('l.id')
+            ->getQuery()
+            ->getResult();
+    }
     ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }

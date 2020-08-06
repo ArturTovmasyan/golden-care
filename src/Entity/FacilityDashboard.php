@@ -420,6 +420,34 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="not_sure_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $notSureInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="not_qualified_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $notQualifiedInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="outreach_per_month", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -776,6 +804,38 @@ class FacilityDashboard
     public function setQualifiedInquiries(?int $qualifiedInquiries): void
     {
         $this->qualifiedInquiries = $qualifiedInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNotSureInquiries(): ?int
+    {
+        return $this->notSureInquiries;
+    }
+
+    /**
+     * @param int|null $notSureInquiries
+     */
+    public function setNotSureInquiries(?int $notSureInquiries): void
+    {
+        $this->notSureInquiries = $notSureInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNotQualifiedInquiries(): ?int
+    {
+        return $this->notQualifiedInquiries;
+    }
+
+    /**
+     * @param int|null $notQualifiedInquiries
+     */
+    public function setNotQualifiedInquiries(?int $notQualifiedInquiries): void
+    {
+        $this->notQualifiedInquiries = $notQualifiedInquiries;
     }
 
     /**

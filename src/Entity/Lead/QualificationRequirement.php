@@ -5,10 +5,12 @@ namespace App\Entity\Lead;
 use App\Entity\Space;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -42,7 +44,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "use",
  *              "type"       = "boolean",
- *              "field"      = "qr.use",
+ *              "field"      = "qr.canUse",
  *              "width"      = "3rem"
  *          },
  *          {
@@ -65,7 +67,9 @@ class QualificationRequirement
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_lead_qualification_requirement_list",
-     *     "api_lead_qualification_requirement_get"
+     *     "api_lead_qualification_requirement_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $id;
@@ -89,20 +93,18 @@ class QualificationRequirement
      * @ORM\Column(name="title", type="string", length=120)
      * @Groups({
      *     "api_lead_qualification_requirement_list",
-     *     "api_lead_qualification_requirement_get"
+     *     "api_lead_qualification_requirement_get",
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
      * })
      */
     private $title;
 
     /**
      * @var bool
-     * @ORM\Column(name="use", type="boolean")
-     * @Groups({
-     *     "api_lead_qualification_requirement_list",
-     *     "api_lead_qualification_requirement_get"
-     * })
+     * @ORM\Column(name="can_use", type="boolean")
      */
-    protected $use;
+    protected $canUse;
 
     /**
      * @var Space
@@ -120,6 +122,25 @@ class QualificationRequirement
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadQualificationRequirement", mappedBy="qualificationRequirement", cascade={"remove", "persist"})
+     */
+    private $leadQualificationRequirements;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("use")
+     * @Serializer\Groups({
+     *     "api_lead_qualification_requirement_list",
+     *     "api_lead_qualification_requirement_get"
+     * })
+     */
+    public function getUse(): bool
+    {
+        return $this->isCanUse();
+    }
 
     public function getId(): ?int
     {
@@ -145,17 +166,17 @@ class QualificationRequirement
     /**
      * @return bool
      */
-    public function isUse(): bool
+    public function isCanUse(): bool
     {
-        return $this->use;
+        return $this->canUse;
     }
 
     /**
-     * @param bool $use
+     * @param bool $canUse
      */
-    public function setUse(bool $use): void
+    public function setCanUse(bool $canUse): void
     {
-        $this->use = $use;
+        $this->canUse = $canUse;
     }
 
     /**
@@ -172,5 +193,21 @@ class QualificationRequirement
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadQualificationRequirements(): ArrayCollection
+    {
+        return $this->leadQualificationRequirements;
+    }
+
+    /**
+     * @param ArrayCollection $leadQualificationRequirements
+     */
+    public function setLeadQualificationRequirements(ArrayCollection $leadQualificationRequirements): void
+    {
+        $this->leadQualificationRequirements = $leadQualificationRequirements;
     }
 }

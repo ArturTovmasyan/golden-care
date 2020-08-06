@@ -8,6 +8,7 @@ use App\Entity\CityStateZip;
 use App\Entity\Facility;
 use App\Entity\PaymentSource;
 use App\Entity\User;
+use App\Model\Lead\Qualified;
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -567,6 +568,37 @@ class Lead implements PreviousAndNextItemsService
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Assessment", mappedBy="lead")
      */
     private $assessments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\LeadQualificationRequirement", mappedBy="lead", cascade={"persist"})
+     * @Assert\Valid(groups={
+     *      "api_lead_lead_add",
+     *      "api_lead_lead_edit"
+     * })
+     * @Groups({
+     *     "api_lead_lead_list",
+     *     "api_lead_lead_get"
+     * })
+     * @Serializer\SerializedName("qualifications")
+     */
+    private $leadQualificationRequirements;
+
+    /**
+     * @var int
+     * @ORM\Column(name="qualified", type="smallint")
+     * @Assert\Choice(
+     *     callback={"App\Model\Lead\Qualified","getTypeValues"},
+     *     groups={
+     *          "api_lead_lead_add",
+     *          "api_lead_lead_edit"
+     *     }
+     * )
+     * @Groups({
+     *      "api_lead_lead_list",
+     *      "api_lead_lead_get"
+     * })
+     */
+    private $qualified;
 
     /**
      * @var \DateTime
@@ -1179,6 +1211,38 @@ class Lead implements PreviousAndNextItemsService
     public function setAssessments($assessments): void
     {
         $this->assessments = $assessments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeadQualificationRequirements()
+    {
+        return $this->leadQualificationRequirements;
+    }
+
+    /**
+     * @param mixed $leadQualificationRequirements
+     */
+    public function setLeadQualificationRequirements($leadQualificationRequirements): void
+    {
+        $this->leadQualificationRequirements = $leadQualificationRequirements;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getQualified(): ?int
+    {
+        return $this->qualified;
+    }
+
+    /**
+     * @param int|null $qualified
+     */
+    public function setQualified(?int $qualified): void
+    {
+        $this->qualified = $qualified;
     }
 
     /**
