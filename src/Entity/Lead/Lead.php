@@ -59,12 +59,6 @@ use App\Annotation\Grid;
  *              "field"      = "CONCAT(COALESCE(o.firstName, ''), ' ', COALESCE(o.lastName, ''))"
  *          },
  *          {
- *              "id"         = "state",
- *              "type"       = "enum",
- *              "field"      = "l.state",
- *              "values"     = "\App\Model\Lead\State::getTypeDefaultNames"
- *          },
- *          {
  *              "id"         = "funnel_stage",
  *              "type"       = "string",
  *              "field"      = "(SELECT DISTINCT fs.title FROM App:Lead\LeadFunnelStage lfs JOIN lfs.stage fs JOIN lfs.lead fsl WHERE fsl.id=l.id AND lfs.date = (SELECT MAX(lfsMax.date) FROM App:Lead\LeadFunnelStage lfsMax JOIN lfsMax.lead fslMax WHERE fslMax.id=l.id) GROUP BY fsl.id)"
