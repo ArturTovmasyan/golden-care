@@ -43,6 +43,11 @@ use App\Annotation\Grid;
  *              "field"      = "l.createdAt"
  *          },
  *          {
+ *              "id"         = "responsible_person",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(COALESCE(l.responsiblePersonFirstName, ''), ' ', COALESCE(l.responsiblePersonLastName, ''))",
+ *          },
+ *          {
  *              "id"         = "full_name",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(l.firstName, ''), ' ', COALESCE(l.lastName, ''))",
