@@ -619,6 +619,13 @@ lead:
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+    contact:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getContactReport
+      title: 'Contact Emails List Report'
+      formats: ['csv', 'xls']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
 
 user:
   title: 'User Reports'

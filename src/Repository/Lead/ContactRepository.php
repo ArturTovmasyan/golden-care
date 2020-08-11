@@ -326,8 +326,7 @@ class ContactRepository extends EntityRepository implements RelatedInfoInterface
                 'c.firstName as firstName',
                 'c.lastName as lastName',
                 'o.name as orgTitle',
-                'c.emails as emails',
-                'c.notes as notes'
+                'c.emails as emails'
             )
             ->leftJoin(
                 Organization::class,

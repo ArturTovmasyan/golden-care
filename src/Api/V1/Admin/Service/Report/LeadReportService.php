@@ -5,6 +5,7 @@ namespace App\Api\V1\Admin\Service\Report;
 use App\Api\V1\Common\Service\BaseService;
 use App\Entity\Facility;
 use App\Entity\Lead\Activity;
+use App\Entity\Lead\Contact;
 use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Outreach;
@@ -13,12 +14,14 @@ use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Model\Phone;
 use App\Model\Report\Lead\ActivityList;
+use App\Model\Report\Lead\ContactList;
 use App\Model\Report\Lead\LeadList;
 use App\Model\Report\Lead\OutreachList;
 use App\Model\Report\Lead\ReferralList;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ContactPhoneRepository;
+use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
@@ -394,6 +397,86 @@ class LeadReportService extends BaseService
         
         $report = new ActivityList();
         $report->setActivities($finalActivities);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return ContactList
+     */
+    public function getContactReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ContactList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        if (!empty($dateFrom)) {
+            $startDate = new \DateTime($dateFrom);
+        } else {
+            $startDate = $currentDate;
+        }
+
+        if (!empty($dateTo)) {
+            $endDate = new \DateTime($dateTo);
+        } else {
+            $endDate = date_modify($currentDate, '+1 day');
+        }
+
+        /** @var ContactRepository $repo */
+        $repo = $this->em->getRepository(Contact::class);
+
+        $contacts = $repo->getContactList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Contact::class), $startDate, $endDate);
+
+        $finalContacts = [];
+        if (!empty($contacts)) {
+            $contactIds = array_map(static function ($item) {
+                return $item['id'];
+            }, $contacts);
+
+            /** @var ContactPhoneRepository $contactPhoneRepo */
+            $contactPhoneRepo = $this->em->getRepository(ContactPhone::class);
+
+            $contactPhones = $contactPhoneRepo->getByContactIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ContactPhone::class), $contactIds);
+
+            foreach ($contacts as $contact) {
+                if (!empty($contactPhones)) {
+                    $finalPhones = [];
+                    foreach ($contactPhones as $phone) {
+                        if ($phone['cId'] === $contact['id']) {
+                            $finalPhones[] = $phone['primary'] ? '(P)' . Phone::$typeNames[$phone['type']] . ' : ' . $phone['number'] : Phone::$typeNames[$phone['type']] . ' : ' . $phone['number'];
+                        }
+                    }
+
+                    $stringPhones = implode("\r\n", $finalPhones);
+                    $contact['phones'] = !empty($stringPhones) ? $stringPhones : 'N/A';
+                }
+
+                $emails = $contact['emails'];
+
+                if (!empty($emails) && !empty($emails[0])) {
+                    $stringEmails = implode("\r\n", $emails);
+                    $contact['emails'] = $stringEmails;
+                } else {
+                    $contact['emails'] = 'N/A';
+                }
+
+                $finalContacts[] = $contact;
+            }
+        }
+
+        $report = new ContactList();
+        $report->setContacts($finalContacts);
 
         return $report;
     }
