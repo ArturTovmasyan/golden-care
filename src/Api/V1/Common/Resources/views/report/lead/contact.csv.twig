@@ -1,0 +1,7 @@
+{% spaceless %}
+"ID",Agency,FullName,Emails,Phones
+{% for contact in data.contacts %}
+{{ contact.id }},{% if contact.orgTitle %}"{{ contact.orgTitle|raw }}"{% else %}N/A{% endif %},{{ contact.firstName|raw }} {{ contact.lastName|raw }},{% if contact.emails %}"{{ contact.emails|raw }}"{% else %}N/A{% endif %},{% if contact.phones %}"{{ contact.phones|raw }}"{% else %}N/A{% endif %}
+    
+{% endfor %}
+{% endspaceless %}
