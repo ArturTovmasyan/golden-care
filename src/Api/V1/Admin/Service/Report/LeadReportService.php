@@ -54,15 +54,22 @@ class LeadReportService extends BaseService
         }
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var LeadRepository $repo */
@@ -140,15 +147,22 @@ class LeadReportService extends BaseService
         $currentDate = new \DateTime('now');
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var ReferralRepository $repo */
@@ -225,15 +239,22 @@ class LeadReportService extends BaseService
         $currentDate = new \DateTime('now');
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var ActivityRepository $repo */
@@ -268,15 +289,22 @@ class LeadReportService extends BaseService
         $currentDate = new \DateTime('now');
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var OutreachRepository $repo */
@@ -350,15 +378,22 @@ class LeadReportService extends BaseService
         $currentDate = new \DateTime('now');
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var ActivityRepository $repo */
@@ -422,15 +457,22 @@ class LeadReportService extends BaseService
         $currentDate = new \DateTime('now');
 
         if (!empty($dateFrom)) {
-            $startDate = new \DateTime($dateFrom);
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         } else {
-            $startDate = $currentDate;
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
-            $endDate = new \DateTime($dateTo);
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         } else {
-            $endDate = date_modify($currentDate, '+1 day');
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
         }
 
         /** @var ContactRepository $repo */
