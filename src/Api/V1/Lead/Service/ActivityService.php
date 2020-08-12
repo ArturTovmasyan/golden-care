@@ -402,6 +402,26 @@ class ActivityService extends BaseService implements IGridService
             }
 
             $this->em->flush();
+
+            if ($ownerType === ActivityOwnerType::TYPE_OUTREACH && $activity->getOutreach() !== null && $activity->getOutreach()->getContacts()) {
+                /** @var Contact $outreachContact */
+                foreach ($activity->getOutreach()->getContacts() as $outreachContact) {
+                    $cloneActivity = clone $activity;
+
+                    $cloneActivity->setOwnerType(ActivityOwnerType::TYPE_CONTACT);
+                    $cloneActivity->setOutreach(null);
+                    $cloneActivity->setContact($outreachContact);
+
+                    $this->em->persist($cloneActivity);
+
+                    if ($cloneActivity->getType() !== null && $cloneActivity->getType()->isAssignTo()) {
+                        $this->taskActivityAddChangeLog($cloneActivity);
+                    }
+                }
+
+                $this->em->flush();
+            }
+
             $this->em->getConnection()->commit();
 
             $insert_id = $activity->getId();
