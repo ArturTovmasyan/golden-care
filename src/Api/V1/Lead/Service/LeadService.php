@@ -482,6 +482,11 @@ class LeadService extends BaseService implements IGridService
             // Creating initial contact activity
             $this->createLeadInitialContactActivity($lead, false);
 
+            // Creating Referral Contact activity
+            if ($referral !== null && $referral->getContact() !== null) {
+                $this->createLeadReferralContactActivity($lead, $referral->getContact());
+            }
+
             $this->em->flush();
 
             // Creating change log
@@ -1887,6 +1892,50 @@ class LeadService extends BaseService implements IGridService
         }
 
         $this->validate($activity, null, ['api_lead_lead_activity_add']);
+
+        $this->em->persist($activity);
+    }
+
+    /**
+     * @param Lead $lead
+     * @param Contact $contact
+     */
+    private function createLeadReferralContactActivity(Lead $lead, Contact $contact)
+    {
+        $activityTypeName = 'Referral';
+        /** @var ActivityTypeRepository $typeRepo */
+        $typeRepo = $this->em->getRepository(ActivityType::class);
+
+        /** @var ActivityType $type */
+        $type = $typeRepo->getByTitle($this->grantService->getCurrentSpace(), $activityTypeName);
+
+        if ($type === null) {
+            throw new ActivityTypeNotFoundException();
+        }
+
+        $activity = new Activity();
+        $activity->setContact($contact);
+        $activity->setType($type);
+        $activity->setOwnerType(ActivityOwnerType::TYPE_CONTACT);
+        $activity->setDate(new \DateTime('now'));
+        $activity->setStatus($type->getDefaultStatus());
+        $activity->setTitle($type->getTitle());
+        $activity->setNotes($type->getTitle());
+        $activity->setAssignTo(null);
+        $activity->setDueDate(null);
+        $activity->setReminderDate(null);
+        $activity->setFacility(null);
+        $activity->setLead(null);
+        $activity->setReferral(null);
+        $activity->setOrganization(null);
+        $activity->setOutreach(null);
+
+        if ($this->grantService->getCurrentSpace() === null) {
+            $activity->setCreatedBy($lead->getOwner());
+            $activity->setUpdatedBy($lead->getOwner());
+        }
+
+        $this->validate($activity, null, ['api_lead_contact_activity_add']);
 
         $this->em->persist($activity);
     }

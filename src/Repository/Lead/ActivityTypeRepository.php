@@ -249,4 +249,38 @@ class ActivityTypeRepository extends EntityRepository implements RelatedInfoInte
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param $title
+     * @return mixed
+     */
+    public function getByTitle(Space $space = null, $title)
+    {
+        $qb = $this
+            ->createQueryBuilder('at')
+            ->innerJoin(
+                ActivityStatus::class,
+                'ds',
+                Join::WITH,
+                'ds = at.defaultStatus'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = ds.space'
+            )
+            ->andWhere("at.title LIKE '%{$title}%'");
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
