@@ -198,6 +198,18 @@ class ApartmentBed
     private $enabled;
 
     /**
+     * @var \DateTime)
+     * @ORM\Column(name="bill_through_date", type="datetime", nullable=true)
+     * @Groups({
+     *     "api_admin_apartment_bed_list",
+     *     "api_admin_apartment_bed_get",
+     *     "api_admin_apartment_room_list",
+     *     "api_admin_apartment_room_get"
+     * })
+     */
+    private $billThroughDate;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentAdmission", mappedBy="apartmentBed", cascade={"remove", "persist"})
      */
@@ -281,6 +293,22 @@ class ApartmentBed
     public function setEnabled(?bool $enabled): void
     {
         $this->enabled = $enabled;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getBillThroughDate(): ?\DateTime
+    {
+        return $this->billThroughDate;
+    }
+
+    /**
+     * @param \DateTime|null $billThroughDate
+     */
+    public function setBillThroughDate(?\DateTime $billThroughDate): void
+    {
+        $this->billThroughDate = $billThroughDate;
     }
 
     /**

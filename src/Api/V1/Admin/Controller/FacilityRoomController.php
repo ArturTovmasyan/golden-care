@@ -81,7 +81,9 @@ class FacilityRoomController extends BaseController
             $facilityRoomService,
             [
                 'facility_id' => $request->get('facility_id'),
-                'vacant' => $request->get('vacant')
+                'vacant' => $request->get('vacant'),
+                'date' => $request->get('date'),
+                'resident_id' => $request->get('resident_id')
             ]
         );
     }

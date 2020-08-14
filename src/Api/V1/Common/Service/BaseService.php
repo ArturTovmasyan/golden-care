@@ -207,7 +207,7 @@ class BaseService
                             }
 
                             if (\count($getter)) {
-                                $ids = array_map(function ($item) {
+                                $ids = array_map(static function ($item) {
                                     return $item->getId();
                                 }, $getter->toArray());
                             }
@@ -379,24 +379,24 @@ class BaseService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function (FacilityRoom $item) {
+                $roomIds = array_map(static function (FacilityRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
                 /** @var FacilityBedRepository $facilityBedRepo */
                 $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
 
-                $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+                $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds, $date);
 
                 if (\count($facilityBeds)) {
-                    $bedIds = array_map(function ($item) {
+                    $bedIds = array_map(static function ($item) {
                         return $item['id'];
                     }, $facilityBeds);
 
                     $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                     if (!empty($admissions)) {
-                        $occupancyBedIds = array_map(function ($item) {
+                        $occupancyBedIds = array_map(static function ($item) {
                             return $item['bedId'];
                         }, $admissions);
                     }
@@ -423,24 +423,24 @@ class BaseService
             $occupancyBedIds = [];
             if (!empty($rooms)) {
 
-                $roomIds = array_map(function (ApartmentRoom $item) {
+                $roomIds = array_map(static function (ApartmentRoom $item) {
                     return $item->getId();
                 }, $rooms);
 
                 /** @var ApartmentBedRepository $apartmentBedRepo */
                 $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
 
-                $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+                $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds, $date);
 
                 if (\count($apartmentBeds)) {
-                    $bedIds = array_map(function ($item) {
+                    $bedIds = array_map(static function ($item) {
                         return $item['id'];
                     }, $apartmentBeds);
 
                     $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
 
                     if (!empty($admissions)) {
-                        $occupancyBedIds = array_map(function ($item) {
+                        $occupancyBedIds = array_map(static function ($item) {
                             return $item['bedId'];
                         }, $admissions);
                     }

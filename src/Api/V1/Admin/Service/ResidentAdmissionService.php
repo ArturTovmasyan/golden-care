@@ -11,6 +11,7 @@ use App\Api\V1\Common\Service\Exception\DiningRoomNotValidException;
 use App\Api\V1\Common\Service\Exception\DuplicateResidentException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
+use App\Api\V1\Common\Service\Exception\InvalidBillThroughDateException;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\LastResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
@@ -749,6 +750,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $lastRent = $rentRepo->getLastRent($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentId);
 
             $date = $params['date'];
+            $billThroughDate = !empty($params['bill_through_date']) ? new \DateTime($params['bill_through_date']) : null;
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
 
@@ -766,9 +768,19 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 $entity->setStart($date);
+
+                if ($admissionType === AdmissionType::DISCHARGE) {
+                    if ($billThroughDate !== null && $billThroughDate->format('Y-m-d') < $date->format('Y-m-d')) {
+                        throw new InvalidBillThroughDateException();
+                    }
+
+                    $billThroughDate->setTime(0, 0, 0);
+                    $entity->setBillThroughDate($billThroughDate);
+                }
             } else {
                 $entity->setDate(null);
                 $entity->setStart(null);
+                $entity->setBillThroughDate(null);
             }
 
             if ($lastAction !== null) {
@@ -783,15 +795,28 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 $this->em->persist($lastRent);
             }
 
+            if ($admissionType === AdmissionType::READMIT) {
+                // set billThroughDate to null in all previous discharge admissions
+                $dischargesWithBillThroughDate = $admissionRepo->getDischargeByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentId);
+                if (!empty($dischargesWithBillThroughDate)) {
+                    /** @var ResidentAdmission $dischargeAdmission */
+                    foreach ($dischargesWithBillThroughDate as $dischargeAdmission) {
+                        $dischargeAdmission->setBillThroughDate(null);
+
+                        $this->em->persist($dischargeAdmission);
+                    }
+                }
+            }
+
             $addMode = true;
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_add';
-                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode, $billThroughDate);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_add';
-                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode, $billThroughDate);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_add';
@@ -872,6 +897,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setNotes($params['notes']);
 
             $date = $params['date'];
+            $billThroughDate = !empty($params['bill_through_date']) ? new \DateTime($params['bill_through_date']) : null;
             if (!empty($date)) {
                 $date = new \DateTime($params['date']);
 
@@ -929,20 +955,43 @@ class ResidentAdmissionService extends BaseService implements IGridService
 
                     $this->em->persist($previousAdmission);
                 }
+
+                if ($admissionType === AdmissionType::DISCHARGE) {
+                    if ($billThroughDate !== null && $billThroughDate->format('Y-m-d') < $date->format('Y-m-d')) {
+                        throw new InvalidBillThroughDateException();
+                    }
+
+                    $billThroughDate->setTime(0, 0, 0);
+                    $entity->setBillThroughDate($billThroughDate);
+                }
             } else {
                 $entity->setDate(null);
                 $entity->setStart(null);
+                $entity->setBillThroughDate(null);
+            }
+
+            if ($admissionType === AdmissionType::READMIT) {
+                // set billThroughDate to null in all previous discharge admissions
+                $dischargesWithBillThroughDate = $admissionRepo->getDischargeByResident($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentId);
+                if (!empty($dischargesWithBillThroughDate)) {
+                    /** @var ResidentAdmission $dischargeAdmission */
+                    foreach ($dischargesWithBillThroughDate as $dischargeAdmission) {
+                        $dischargeAdmission->setBillThroughDate(null);
+
+                        $this->em->persist($dischargeAdmission);
+                    }
+                }
             }
 
             $addMode = false;
             switch ($entity->getGroupType()) {
                 case GroupType::TYPE_FACILITY:
                     $validationGroup = 'api_admin_facility_edit';
-                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode);
+                    $entity = $this->saveAsFacility($entity, $params, $admissionType, $lastAction, $addMode, $billThroughDate);
                     break;
                 case GroupType::TYPE_APARTMENT:
                     $validationGroup = 'api_admin_apartment_edit';
-                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode);
+                    $entity = $this->saveAsApartment($entity, $params, $admissionType, $lastAction, $addMode, $billThroughDate);
                     break;
                 case GroupType::TYPE_REGION:
                     $validationGroup = 'api_admin_region_edit';
@@ -1017,14 +1066,14 @@ class ResidentAdmissionService extends BaseService implements IGridService
                         /** @var FacilityBedRepository $facilityBedRepo */
                         $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
 
+                        $now = new \DateTime('now');
+
                         /** @var FacilityBed $bed */
                         $bed = $facilityBedRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $moveId);
 
-                        if ($bed === null) {
+                        if ($bed === null || ($bed !== null && $bed->getBillThroughDate() !== null && $bed->getBillThroughDate()->format('Y-m-d') > $now->format('Y-m-d'))) {
                             throw new FacilityBedNotFoundException();
                         }
-
-                        $now = new \DateTime('now');
 
                         $entity = new ResidentAdmission();
                         $entity->setResident($admission->getResident());
@@ -1226,9 +1275,10 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param int $admissionType
      * @param ResidentAdmission|null $lastAction
      * @param $addMode
+     * @param null $billThroughDate
      * @return ResidentAdmission
      */
-    public function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
+    public function saveAsFacility(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode, $billThroughDate = null)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -1240,6 +1290,18 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setAmbulatory($lastAction->isAmbulatory());
             $entity->setCareGroup($lastAction->getCareGroup());
             $entity->setCareLevel($lastAction->getCareLevel());
+        }
+
+        if ($addMode && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE) && $lastAction !== null && $lastAction->getFacilityBed() !== null) {
+            $lastAction->getFacilityBed()->setBillThroughDate(null);
+
+            $this->em->persist($lastAction);
+        }
+
+        if ($billThroughDate !== null && $admissionType === AdmissionType::DISCHARGE && $lastAction !== null && $lastAction->getFacilityBed() !== null) {
+            $lastAction->getFacilityBed()->setBillThroughDate($billThroughDate);
+
+            $this->em->persist($lastAction);
         }
 
         if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
@@ -1298,6 +1360,11 @@ class ResidentAdmissionService extends BaseService implements IGridService
             $entity->setAmbulatory($params['ambulatory'] ?? false);
             $entity->setCareGroup($careGroup);
             $entity->setCareLevel($careLevel);
+
+            if ($addMode && $facilityBed->getBillThroughDate() !== null) {
+                $facilityBed->setBillThroughDate(null);
+                $this->em->persist($facilityBed);
+            }
         }
 
         return $entity;
@@ -1309,14 +1376,27 @@ class ResidentAdmissionService extends BaseService implements IGridService
      * @param int $admissionType
      * @param ResidentAdmission|null $lastAction
      * @param $addMode
+     * @param null $billThroughDate
      * @return ResidentAdmission
      */
-    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode)
+    private function saveAsApartment(ResidentAdmission $entity, array $params, int $admissionType, ResidentAdmission $lastAction = null, $addMode, $billThroughDate = null)
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
         if ($addMode && $lastAction !== null && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE || $admissionType === AdmissionType::DISCHARGE)) {
             $entity->setApartmentBed($lastAction->getApartmentBed());
+        }
+
+        if ($addMode && ($admissionType === AdmissionType::TEMPORARY_DISCHARGE || $admissionType === AdmissionType::PENDING_DISCHARGE) && $lastAction !== null && $lastAction->getApartmentBed() !== null) {
+            $lastAction->getApartmentBed()->setBillThroughDate(null);
+
+            $this->em->persist($lastAction);
+        }
+
+        if ($billThroughDate !== null && $admissionType === AdmissionType::DISCHARGE && $lastAction !== null && $lastAction->getApartmentBed() !== null) {
+            $lastAction->getApartmentBed()->setBillThroughDate($billThroughDate);
+
+            $this->em->persist($lastAction);
         }
 
         if ($admissionType !== AdmissionType::TEMPORARY_DISCHARGE && $admissionType !== AdmissionType::PENDING_DISCHARGE && $admissionType !== AdmissionType::DISCHARGE) {
@@ -1331,6 +1411,11 @@ class ResidentAdmissionService extends BaseService implements IGridService
             }
 
             $entity->setApartmentBed($apartmentBed);
+
+            if ($addMode && $apartmentBed->getBillThroughDate() !== null) {
+                $apartmentBed->setBillThroughDate(null);
+                $this->em->persist($apartmentBed);
+            }
         }
 
         return $entity;

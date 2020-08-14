@@ -177,6 +177,7 @@ class ResponseCode
     const LEAD_HOBBY_NOT_FOUND_EXCEPTION                         = 777;
     const LEAD_QUALIFICATION_REQUIREMENT_NOT_FOUND_EXCEPTION     = 778;
     const RESIDENT_READMIT_ONLY_AFTER_DISCHARGE_EXCEPTION        = 779;
+    const INVALID_BILL_THROUGH_DATE_EXCEPTION                    = 780;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -354,6 +355,7 @@ class ResponseCode
         self::LEAD_HOBBY_NOT_FOUND_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Hobby not found.'],
         self::LEAD_QUALIFICATION_REQUIREMENT_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Qualification Requirement not found.'],
         self::RESIDENT_READMIT_ONLY_AFTER_DISCHARGE_EXCEPTION        => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'You are allowed only to re-admit a Resident after a discharge state.'],
+        self::INVALID_BILL_THROUGH_DATE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Effective Date is always prior or equal to the Bill Through Date.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

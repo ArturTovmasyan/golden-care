@@ -66,7 +66,9 @@ class ApartmentRoomController extends BaseController
             $apartmentRoomService,
             [
                 'apartment_id' => $request->get('apartment_id'),
-                'vacant' => $request->get('vacant')
+                'vacant' => $request->get('vacant'),
+                'date' => $request->get('date'),
+                'resident_id' => $request->get('resident_id')
             ]
         );
     }

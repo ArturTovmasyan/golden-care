@@ -288,9 +288,10 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $ids
+     * @param null $date
      * @return mixed
      */
-    public function getBedIdAndTypeIdByRooms(Space $space = null, array $entityGrants = null, $ids)
+    public function getBedIdAndTypeIdByRooms(Space $space = null, array $entityGrants = null, $ids, $date = null)
     {
         $qb = $this->createQueryBuilder('ab');
 
@@ -310,6 +311,12 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
             ->where('r.id IN (:ids)')
             ->andWhere('ab.enabled=1')
             ->setParameter('ids', $ids);
+
+        if ($date !== null) {
+            $qb
+                ->andWhere('ab.billThroughDate IS NULL OR (ab.billThroughDate IS NOT NULL AND ab.billThroughDate < :date)')
+                ->setParameter('date', $date);
+        }
 
         if ($space !== null) {
             $qb

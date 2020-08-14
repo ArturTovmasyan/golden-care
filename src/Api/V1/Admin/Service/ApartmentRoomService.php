@@ -12,6 +12,7 @@ use App\Entity\ApartmentBed;
 use App\Entity\ApartmentRoom;
 use App\Entity\Apartment;
 use App\Entity\ResidentAdmission;
+use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Repository\ApartmentBedRepository;
 use App\Repository\ApartmentRepository;
@@ -60,7 +61,7 @@ class ApartmentRoomService extends BaseService implements IGridService
 
         if (!empty($rooms)) {
 
-            $roomIds = array_map(function (ApartmentRoom $item) {
+            $roomIds = array_map(static function (ApartmentRoom $item) {
                 return $item->getId();
             }, $rooms);
 
@@ -73,17 +74,35 @@ class ApartmentRoomService extends BaseService implements IGridService
             $apartmentBeds = $bedRepo->getBedIdsByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
             $bedIds = [];
             if (\count($apartmentBeds)) {
-                $bedIds = array_map(function ($item) {
+                $bedIds = array_map(static function ($item) {
                     return $item['id'];
                 }, $apartmentBeds);
             }
 
             if ($vacant) {
+                $currentDateFormatted = null;
+                if (!empty($params) && !empty($params[0]['date'])) {
+                    $currentDate = new \DateTime($params[0]['date']);
+                    $currentDateFormatted = $currentDate->format('Y-m-d');
+                }
+
+                $residentBedId = null;
+                if (!empty($params) && !empty($params[0]['resident_id'])) {
+                    $residentId = (int)$params[0]['resident_id'];
+
+                    /** @var ResidentAdmission $lastAction */
+                    $lastAction = $admissionRepo->getLastAction($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentId);
+
+                    if ($lastAction !== null && $lastAction->getApartmentBed() !== null && $lastAction->getAdmissionType() === AdmissionType::DISCHARGE) {
+                        $residentBedId = $lastAction->getApartmentBed()->getId();
+                    }
+                }
+
                 $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
 
                 $occupancyBedIds = [];
                 if (!empty($residentAdmissions)) {
-                    $occupancyBedIds = array_map(function ($item) {
+                    $occupancyBedIds = array_map(static function ($item) {
                         return $item['bedId'];
                     }, $residentAdmissions);
                 }
@@ -95,7 +114,12 @@ class ApartmentRoomService extends BaseService implements IGridService
                     if (\count($beds)) {
                         /** @var ApartmentBed $bed */
                         foreach ($beds as $bed) {
-                            if (!$bed->isEnabled() || \in_array($bed->getId(), $occupancyBedIds, false)) {
+                            $isNotResidentBed = true;
+                            if ($residentBedId !== null && $bed->getId() === $residentBedId) {
+                                $isNotResidentBed = false;
+                            }
+
+                            if (!$bed->isEnabled() || \in_array($bed->getId(), $occupancyBedIds, false) || ($isNotResidentBed && $bed->getBillThroughDate() !== null && $currentDateFormatted !== null && $currentDateFormatted <= $bed->getBillThroughDate()->format('Y-m-d'))) {
                                 $room->removeBed($bed);
                             }
                         }
@@ -148,7 +172,7 @@ class ApartmentRoomService extends BaseService implements IGridService
             $beds = $room->getBeds();
 
             if ($beds !== null) {
-                $ids = array_map(function (ApartmentBed $item) {
+                $ids = array_map(static function (ApartmentBed $item) {
                     return $item->getId();
                 }, $beds->toArray());
 

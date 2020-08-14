@@ -1573,7 +1573,7 @@ class LeadService extends BaseService implements IGridService
                 $admission->setStart(null);
             }
 
-            $residentAdmissionService->saveAsFacility($admission, $params, $admissionType, null, true);
+            $residentAdmissionService->saveAsFacility($admission, $params, $admissionType, null, true, null);
 
             $this->validate($admission, null, ['api_admin_facility_add']);
             $this->em->persist($admission);

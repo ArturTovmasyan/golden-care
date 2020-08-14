@@ -266,7 +266,8 @@ class RoomReportService extends BaseService
             $place[$key] = $i;
         }
 
-        $vacants = $this->getRoomVacancyList($type, $groupAll, $groupIds, $typeId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
+        $reportDate->setTime(0, 0, 0);
+        $vacants = $this->getRoomVacancyList($type, $groupAll, $groupIds, $typeId, $residentAll, $residentId, $reportDate, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         $report = new RoomList();
         $report->setData($finalData);
@@ -1091,8 +1092,11 @@ class RoomReportService extends BaseService
      */
     public function getRoomVacancyListReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomVacancyList
     {
+        $currentDate = new \DateTime('now');
+        $currentDate->setTime(0, 0, 0);
+
         $report = new RoomVacancyList();
-        $report->setData($this->getRoomVacancyList($group, $groupAll, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId));
+        $report->setData($this->getRoomVacancyList($group, $groupAll, $groupIds, $groupId, $residentAll, $residentId, $currentDate, $dateFrom, $dateTo, $assessmentId, $assessmentFormId));
         $report->setStrategy(GroupType::getTypes()[$group]);
 
         return $report;
@@ -1127,6 +1131,9 @@ class RoomReportService extends BaseService
             throw new InvalidParameterException('group');
         }
 
+        $currentDate = new \DateTime('now');
+        $currentDate->setTime(0, 0, 0);
+
         $rooms = [];
         $types = [];
         $data = [];
@@ -1159,7 +1166,7 @@ class RoomReportService extends BaseService
                 /** @var FacilityBedRepository $facilityBedRepo */
                 $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
 
-                $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+                $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds, $currentDate);
 
                 $ids = [];
                 if (\count($facilityBeds)) {
@@ -1219,7 +1226,7 @@ class RoomReportService extends BaseService
                 /** @var ApartmentBedRepository $apartmentBedRepo */
                 $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
 
-                $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+                $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds, $currentDate);
 
                 $ids = [];
                 if (\count($apartmentBeds)) {
@@ -1366,7 +1373,7 @@ class RoomReportService extends BaseService
                 /** @var FacilityBedRepository $facilityBedRepo */
                 $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
 
-                $roomBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
+                $roomBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds, null);
 
                 $typeNames = array_column($roomBeds, 'typeName', 'typeId');
                 $typeNames = array_unique($typeNames);
@@ -1391,7 +1398,7 @@ class RoomReportService extends BaseService
                 /** @var ApartmentBedRepository $apartmentBedRepo */
                 $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
 
-                $roomBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
+                $roomBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds, null);
 
                 $typeNames = array_column($roomBeds, 'typeName', 'typeId');
                 $typeNames = array_unique($typeNames);

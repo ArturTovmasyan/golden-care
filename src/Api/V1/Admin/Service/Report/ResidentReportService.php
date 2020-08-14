@@ -813,7 +813,9 @@ class ResidentReportService extends BaseService
         $typeIds = [];
         $numberOfFloors = [];
 
-        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupIds, $groupId, $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
+        $currentDate = new \DateTime('now');
+        $currentDate->setTime(0, 0, 0);
+        $vacants = $this->getRoomVacancyList($group, $groupAll, $groupIds, $groupId, $residentAll, $residentId, $currentDate, $dateFrom, $dateTo, $assessmentId, $assessmentFormId);
 
         if (!empty($residents)) {
             $typeIds = array_map(static function ($item) {

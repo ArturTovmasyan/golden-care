@@ -111,6 +111,7 @@ class ResidentAdmissionController extends BaseController
                 'group_type' => $request->get('group_type'),
                 'admission_type' => $request->get('admission_type'),
                 'date' => $request->get('date'),
+                'bill_through_date' => $request->get('bill_through_date'),
                 'facility_bed_id' => $request->get('facility_bed_id'),
                 'apartment_bed_id' => $request->get('apartment_bed_id'),
                 'region_id' => $request->get('region_id'),
@@ -151,6 +152,7 @@ class ResidentAdmissionController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'date' => $request->get('date'),
+                'bill_through_date' => $request->get('bill_through_date'),
                 'facility_bed_id' => $request->get('facility_bed_id'),
                 'apartment_bed_id' => $request->get('apartment_bed_id'),
                 'region_id' => $request->get('region_id'),

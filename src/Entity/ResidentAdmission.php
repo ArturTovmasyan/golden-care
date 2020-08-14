@@ -277,6 +277,31 @@ class ResidentAdmission
     private $end;
 
     /**
+     * @var \DateTime
+     * @Assert\DateTime(groups={
+     *     "api_admin_facility_add",
+     *     "api_admin_facility_edit",
+     *     "api_admin_apartment_add",
+     *     "api_admin_apartment_edit",
+     *     "api_admin_region_add",
+     *     "api_admin_region_edit",
+     *     "api_admin_discharge_add",
+     *     "api_admin_discharge_edit",
+     *     "api_admin_apartment_discharge_add",
+     *     "api_admin_apartment_discharge_edit"
+     * })
+     * @ORM\Column(name="bill_through_date", type="datetime", nullable=true)
+     * @Groups({
+     *     "api_admin_resident_admission_grid",
+     *     "api_admin_resident_admission_list",
+     *     "api_admin_resident_admission_get",
+     *     "api_admin_resident_admission_get_active",
+     *     "api_admin_resident_get_last_admission"
+     * })
+     */
+    private $billThroughDate;
+
+    /**
      * @var FacilityBed
      * @ORM\ManyToOne(targetEntity="App\Entity\FacilityBed", inversedBy="residentAdmissions")
      * @ORM\JoinColumns({
@@ -634,6 +659,22 @@ class ResidentAdmission
     public function setEnd($end): void
     {
         $this->end = $end;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getBillThroughDate(): ?\DateTime
+    {
+        return $this->billThroughDate;
+    }
+
+    /**
+     * @param \DateTime|null $billThroughDate
+     */
+    public function setBillThroughDate(?\DateTime $billThroughDate): void
+    {
+        $this->billThroughDate = $billThroughDate;
     }
 
     /**

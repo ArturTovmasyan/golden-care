@@ -317,9 +317,10 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
      * @param Space|null $space
      * @param array|null $entityGrants
      * @param $ids
+     * @param null $date
      * @return mixed
      */
-    public function getBedIdAndTypeIdByRooms(Space $space = null, array $entityGrants = null, $ids)
+    public function getBedIdAndTypeIdByRooms(Space $space = null, array $entityGrants = null, $ids, $date = null)
     {
         $qb = $this->createQueryBuilder('fb');
 
@@ -340,6 +341,12 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
             ->where('r.id IN (:ids)')
             ->andWhere('fb.enabled=1')
             ->setParameter('ids', $ids);
+
+        if ($date !== null) {
+            $qb
+                ->andWhere('fb.billThroughDate IS NULL OR (fb.billThroughDate IS NOT NULL AND fb.billThroughDate < :date)')
+                ->setParameter('date', $date);
+        }
 
         if ($space !== null) {
             $qb

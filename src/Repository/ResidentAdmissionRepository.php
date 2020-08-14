@@ -1887,6 +1887,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         $qb = $this->createQueryBuilder('ra');
 
         $qb
+            ->select('r.id AS id')
             ->join('ra.resident', 'r')
             ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
@@ -1896,7 +1897,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
         switch ($type) {
             case GroupType::TYPE_FACILITY:
                 $qb
-                    ->select('fb.id AS bedId')
+                    ->addSelect('fb.id AS bedId')
                     ->join('ra.facilityBed', 'fb')
                     ->andWhere('fb.id IN (:ids)')
                     ->setParameter('ids', $ids);
@@ -1927,7 +1928,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 break;
             case GroupType::TYPE_APARTMENT:
                 $qb
-                    ->select('ab.id AS bedId')
+                    ->addSelect('ab.id AS bedId')
                     ->join('ra.apartmentBed', 'ab')
                     ->andWhere('ab.id IN (:ids)')
                     ->setParameter('ids', $ids);
@@ -1958,7 +1959,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 break;
             case GroupType::TYPE_REGION:
                 $qb
-                    ->select('reg.id AS regionId')
+                    ->addSelect('reg.id AS regionId')
                     ->join('ra.region', 'reg')
                     ->andWhere('reg.id IN (:ids)')
                     ->setParameter('ids', $ids);
@@ -3824,6 +3825,50 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->groupBy('r.id')
             ->orderBy('f.name')
             ->addOrderBy('cl.title')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @return mixed
+     */
+    public function getDischargeByResident(Space $space = null, array $entityGrants = null, $id)
+    {
+        $qb = $this
+            ->createQueryBuilder('ra')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = ra.resident'
+            )
+            ->where('r.id = :id')
+            ->andWhere('ra.admissionType = :admissionType AND ra.billThroughDate IS NOT NULL')
+            ->setParameter('id', $id)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }
