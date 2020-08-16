@@ -1186,7 +1186,7 @@ class ResidentReportService extends BaseService
                     $btDate = new \DateTime($dates->format('Y-m-d'));
                     $btDate->setTime(0,0,0);
                     $finalApartmentAdmission->getApartmentBed()->setBillThroughDate($btDate);
-                    $this->em->persist($finalApartmentAdmission->getFacilityBed());
+                    $this->em->persist($finalApartmentAdmission->getApartmentBed());
                 }
 
             }
