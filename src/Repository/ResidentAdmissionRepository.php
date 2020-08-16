@@ -3872,4 +3872,104 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->getQuery()
             ->getResult();
     }
+
+    //////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @return mixed
+     */
+    public function getDischarges(Space $space = null, array $entityGrants = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('ra')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = ra.resident'
+            )
+            ->andWhere('ra.admissionType = :admissionType AND ra.end IS NULL')
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $groupType
+     * @param $bedIds
+     * @return mixed
+     */
+    public function getNotDischarges(Space $space = null, array $entityGrants = null, $groupType, $bedIds)
+    {
+        $qb = $this
+            ->createQueryBuilder('ra')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = ra.resident'
+            )
+            ->andWhere('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->setParameter('admissionType', AdmissionType::DISCHARGE);
+
+        if ($groupType === GroupType::TYPE_FACILITY) {
+            $qb
+                ->join('ra.facilityBed', 'fb')
+                ->andWhere('fb.id IN (:bedIds)')
+                ->setParameter('bedIds', $bedIds);
+        }
+
+        if ($groupType === GroupType::TYPE_APARTMENT) {
+            $qb
+                ->join('ra.apartmentBed', 'ab')
+                ->andWhere('ab.id IN (:bedIds)')
+                ->setParameter('bedIds', $bedIds);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+//////////////
 }
