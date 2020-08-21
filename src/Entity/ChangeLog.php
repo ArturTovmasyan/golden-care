@@ -84,7 +84,7 @@ class ChangeLog
      * @var array $content
      * @ORM\Column(name="content", type="json_array", nullable=true)
      * @Assert\Count(
-     *      max = 10,
+     *      max = 20,
      *      maxMessage = "You cannot enter more than {{ limit }} contents",
      *      groups={
      *          "api_admin_change_log_add",
