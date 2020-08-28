@@ -150,7 +150,9 @@ class Space
      *     "api_lead_qualification_requirement_list",
      *     "api_lead_qualification_requirement_get",
      *     "api_admin_payment_type_list",
-     *     "api_admin_payment_type_get"
+     *     "api_admin_payment_type_get",
+     *     "api_admin_expense_list",
+     *     "api_admin_expense_get"
      * })
      */
     private $id;
@@ -253,7 +255,10 @@ class Space
      *     "api_lead_qualification_requirement_list",
      *     "api_lead_qualification_requirement_get",
      *     "api_admin_payment_type_list",
-     *     "api_admin_payment_type_get"
+     *     "api_admin_payment_type_get",
+     *     "api_admin_expense_list",
+     *     "api_admin_expense_get"
+     *
      * })
      */
     private $name;
@@ -509,6 +514,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentType", mappedBy="space", cascade={"remove", "persist"})
      */
     private $paymentTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Expense", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $expenses;
 
     /**
      * Space constructor.
@@ -1220,5 +1231,21 @@ class Space
     public function setPaymentTypes(ArrayCollection $paymentTypes): void
     {
         $this->paymentTypes = $paymentTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getExpenses(): ArrayCollection
+    {
+        return $this->expenses;
+    }
+
+    /**
+     * @param ArrayCollection $expenses
+     */
+    public function setExpenses(ArrayCollection $expenses): void
+    {
+        $this->expenses = $expenses;
     }
 }

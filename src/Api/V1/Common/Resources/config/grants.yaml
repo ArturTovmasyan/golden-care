@@ -151,6 +151,10 @@ persistence:
           title: 'PaymentType'
           class: App\Entity\PaymentType
           route: api_admin_payment_type_list
+        expense:
+          title: 'Expense'
+          class: App\Entity\Expense
+          route: api_admin_expense_list
 
         notification_type:
           title: 'NotificationType'
