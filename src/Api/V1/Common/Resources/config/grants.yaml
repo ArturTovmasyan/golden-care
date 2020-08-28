@@ -155,6 +155,10 @@ persistence:
           title: 'Expense'
           class: App\Entity\Expense
           route: api_admin_expense_list
+        credit:
+          title: 'Credit'
+          class: App\Entity\Credit
+          route: api_admin_credit_list
 
         notification_type:
           title: 'NotificationType'

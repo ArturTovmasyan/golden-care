@@ -152,7 +152,9 @@ class Space
      *     "api_admin_payment_type_list",
      *     "api_admin_payment_type_get",
      *     "api_admin_expense_list",
-     *     "api_admin_expense_get"
+     *     "api_admin_expense_get",
+     *     "api_admin_credit_list",
+     *     "api_admin_credit_get"
      * })
      */
     private $id;
@@ -257,7 +259,9 @@ class Space
      *     "api_admin_payment_type_list",
      *     "api_admin_payment_type_get",
      *     "api_admin_expense_list",
-     *     "api_admin_expense_get"
+     *     "api_admin_expense_get",
+     *     "api_admin_credit_list",
+     *     "api_admin_credit_get"
      *
      * })
      */
@@ -520,6 +524,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Expense", mappedBy="space", cascade={"remove", "persist"})
      */
     private $expenses;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Credit", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $credits;
 
     /**
      * Space constructor.

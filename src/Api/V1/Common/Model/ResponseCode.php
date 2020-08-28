@@ -180,6 +180,7 @@ class ResponseCode
     const INVALID_BILL_THROUGH_DATE_EXCEPTION                    = 780;
     const PAYMENT_TYPE_NOT_FOUND_EXCEPTION                       = 781;
     const EXPENSE_NOT_FOUND_EXCEPTION                            = 782;
+    const CREDIT_NOT_FOUND_EXCEPTION                             = 783;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -360,6 +361,7 @@ class ResponseCode
         self::INVALID_BILL_THROUGH_DATE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Effective Date is always prior or equal to the Bill Through Date.'],
         self::PAYMENT_TYPE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Payment Type not found.'],
         self::EXPENSE_NOT_FOUND_EXCEPTION                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Expense not found.'],
+        self::CREDIT_NOT_FOUND_EXCEPTION                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Credit not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
