@@ -146,6 +146,12 @@ persistence:
           title: 'PaymentSourceBaseRate'
           class: App\Entity\PaymentSourceBaseRate
           route: api_admin_payment_source_base_rate_list
+
+        payment_type:
+          title: 'PaymentType'
+          class: App\Entity\PaymentType
+          route: api_admin_payment_type_list
+
         notification_type:
           title: 'NotificationType'
           class: App\Entity\NotificationType

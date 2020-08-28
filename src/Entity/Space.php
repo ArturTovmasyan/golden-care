@@ -148,7 +148,9 @@ class Space
      *     "api_lead_hobby_list",
      *     "api_lead_hobby_get",
      *     "api_lead_qualification_requirement_list",
-     *     "api_lead_qualification_requirement_get"
+     *     "api_lead_qualification_requirement_get",
+     *     "api_admin_payment_type_list",
+     *     "api_admin_payment_type_get"
      * })
      */
     private $id;
@@ -249,7 +251,9 @@ class Space
      *     "api_lead_hobby_list",
      *     "api_lead_hobby_get",
      *     "api_lead_qualification_requirement_list",
-     *     "api_lead_qualification_requirement_get"
+     *     "api_lead_qualification_requirement_get",
+     *     "api_admin_payment_type_list",
+     *     "api_admin_payment_type_get"
      * })
      */
     private $name;
@@ -499,6 +503,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\QualificationRequirement", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadQualificationRequirements;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $paymentTypes;
 
     /**
      * Space constructor.
@@ -1194,5 +1204,21 @@ class Space
     public function setLeadQualificationRequirements(ArrayCollection $leadQualificationRequirements): void
     {
         $this->leadQualificationRequirements = $leadQualificationRequirements;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPaymentTypes(): ArrayCollection
+    {
+        return $this->paymentTypes;
+    }
+
+    /**
+     * @param ArrayCollection $paymentTypes
+     */
+    public function setPaymentTypes(ArrayCollection $paymentTypes): void
+    {
+        $this->paymentTypes = $paymentTypes;
     }
 }
