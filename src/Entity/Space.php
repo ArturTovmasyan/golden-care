@@ -154,7 +154,9 @@ class Space
      *     "api_admin_expense_list",
      *     "api_admin_expense_get",
      *     "api_admin_credit_list",
-     *     "api_admin_credit_get"
+     *     "api_admin_credit_get",
+     *     "api_admin_discount_list",
+     *     "api_admin_discount_get"
      * })
      */
     private $id;
@@ -261,7 +263,9 @@ class Space
      *     "api_admin_expense_list",
      *     "api_admin_expense_get",
      *     "api_admin_credit_list",
-     *     "api_admin_credit_get"
+     *     "api_admin_credit_get",
+     *     "api_admin_discount_list",
+     *     "api_admin_discount_get"
      *
      * })
      */
@@ -530,6 +534,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Credit", mappedBy="space", cascade={"remove", "persist"})
      */
     private $credits;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Discount", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $discounts;
 
     /**
      * Space constructor.
@@ -1257,5 +1267,37 @@ class Space
     public function setExpenses(ArrayCollection $expenses): void
     {
         $this->expenses = $expenses;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCredits(): ArrayCollection
+    {
+        return $this->credits;
+    }
+
+    /**
+     * @param ArrayCollection $credits
+     */
+    public function setCredits(ArrayCollection $credits): void
+    {
+        $this->credits = $credits;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDiscounts(): ArrayCollection
+    {
+        return $this->discounts;
+    }
+
+    /**
+     * @param ArrayCollection $discounts
+     */
+    public function setDiscounts(ArrayCollection $discounts): void
+    {
+        $this->discounts = $discounts;
     }
 }
