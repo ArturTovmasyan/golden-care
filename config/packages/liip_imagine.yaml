@@ -15,13 +15,16 @@ liip_imagine:
             filters:
                 upscale: { min: [35, 35] }
                 thumbnail: { size: [35, 35], mode: outbound }
+                auto_rotate: ~
         thumb_150x150:
             quality: 100
             filters:
                 upscale: { min: [150, 150] }
                 thumbnail: { size: [150, 150], mode: outbound }
+                auto_rotate: ~
         thumb_300x300:
             quality: 100
             filters:
                 upscale: { min: [300, 300] }
                 thumbnail: { size: [300, 300], mode: outbound }
+                auto_rotate: ~
