@@ -43,10 +43,50 @@ class ResidentMedicationService extends BaseService implements IGridService
             ->where('rm.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
-        if ((int)$params[0]['discontinued'] !== 1) {
+        $active = false;
+        if (!empty($params) && isset($params[0]['active'])) {
+            $active = true;
+        }
+
+        $discontinued = false;
+        if (!empty($params) && isset($params[0]['discontinued'])) {
+            $discontinued = true;
+        }
+
+        $both = false;
+        if (!empty($params) && isset($params[0]['both'])) {
+            $both = true;
+        }
+
+        if ($both === true) {
+            $active = false;
+            $discontinued = false;
+        }
+
+        if ($discontinued === true) {
+            $active = false;
+            $both = false;
+        }
+
+        if ($active === true) {
+            $discontinued = false;
+            $both = false;
+        }
+
+        if ($active === false && $discontinued === false && $both === false) {
+            $active = true;
+        }
+
+        if ($active) {
             $queryBuilder
                 ->andWhere('rm.discontinued = :discontinued')
                 ->setParameter('discontinued', 0);
+        }
+
+        if ($discontinued) {
+            $queryBuilder
+                ->andWhere('rm.discontinued = :discontinued')
+                ->setParameter('discontinued', 1);
         }
 
         /** @var ResidentMedicationRepository $repo */

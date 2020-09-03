@@ -38,7 +38,9 @@ class ResidentMedicationController extends BaseController
             $residentMedicationService,
             [
                 'resident_id' => $request->get('resident_id'),
-                'discontinued' => $request->get('discontinued')
+                'active' => $request->get('active'),
+                'discontinued' => $request->get('discontinued'),
+                'both' => $request->get('both')
             ]
         );
     }
