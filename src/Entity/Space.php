@@ -151,8 +151,8 @@ class Space
      *     "api_lead_qualification_requirement_get",
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
-     *     "api_admin_expense_list",
-     *     "api_admin_expense_get",
+     *     "api_admin_expense_item_list",
+     *     "api_admin_expense_item_get",
      *     "api_admin_credit_list",
      *     "api_admin_credit_get",
      *     "api_admin_discount_list",
@@ -260,8 +260,8 @@ class Space
      *     "api_lead_qualification_requirement_get",
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
-     *     "api_admin_expense_list",
-     *     "api_admin_expense_get",
+     *     "api_admin_expense_item_list",
+     *     "api_admin_expense_item_get",
      *     "api_admin_credit_list",
      *     "api_admin_credit_get",
      *     "api_admin_discount_list",
@@ -525,9 +525,9 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Expense", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ExpenseItem", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $expenses;
+    private $expenseItems;
 
     /**
      * @var ArrayCollection
@@ -1256,17 +1256,17 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getExpenses(): ArrayCollection
+    public function getExpenseItems(): ArrayCollection
     {
-        return $this->expenses;
+        return $this->expenseItems;
     }
 
     /**
-     * @param ArrayCollection $expenses
+     * @param ArrayCollection $expenseItems
      */
-    public function setExpenses(ArrayCollection $expenses): void
+    public function setExpenseItems(ArrayCollection $expenseItems): void
     {
-        $this->expenses = $expenses;
+        $this->expenseItems = $expenseItems;
     }
 
     /**
