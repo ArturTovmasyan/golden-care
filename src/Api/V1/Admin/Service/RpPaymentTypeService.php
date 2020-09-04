@@ -75,7 +75,7 @@ class RpPaymentTypeService extends BaseService implements IGridService
             $rpPaymentType->setTitle($params['title']);
             $rpPaymentType->setSpace($space);
 
-            $this->validate($rpPaymentType, null, ['api_admin_rp_paymentType_add']);
+            $this->validate($rpPaymentType, null, ['api_admin_rp_payment_type_add']);
 
             $this->em->persist($rpPaymentType);
             $this->em->flush();
@@ -122,7 +122,7 @@ class RpPaymentTypeService extends BaseService implements IGridService
             $entity->setTitle($params['title']);
             $entity->setSpace($space);
 
-            $this->validate($entity, null, ['api_admin_rp_paymentType_edit']);
+            $this->validate($entity, null, ['api_admin_rp_payment_type_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();
