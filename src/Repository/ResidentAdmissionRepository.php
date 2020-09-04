@@ -1998,6 +1998,120 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param $ids
      * @return mixed
      */
+    public function getAdmissionBeds(Space $space = null, array $entityGrants = null, $type, $ids)
+    {
+        $qb = $this->createQueryBuilder('ra');
+
+        $qb
+            ->select('r.id AS id')
+            ->join('ra.resident', 'r')
+            ->andWhere('ra.groupType=:type')
+            ->setParameter('type', $type);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect('fb.id AS bedId')
+                    ->join('ra.facilityBed', 'fb')
+                    ->andWhere('fb.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            FacilityRoom::class,
+                            'fr',
+                            Join::WITH,
+                            'fr = fb.room'
+                        )
+                        ->innerJoin(
+                            Facility::class,
+                            'f',
+                            Join::WITH,
+                            'f = fr.facility'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = f.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect('ab.id AS bedId')
+                    ->join('ra.apartmentBed', 'ab')
+                    ->andWhere('ab.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            ApartmentRoom::class,
+                            'ar',
+                            Join::WITH,
+                            'ar = ab.room'
+                        )
+                        ->innerJoin(
+                            Apartment::class,
+                            'a',
+                            Join::WITH,
+                            'a = ar.apartment'
+                        )
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = a.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect('reg.id AS regionId')
+                    ->join('ra.region', 'reg')
+                    ->andWhere('reg.id IN (:ids)')
+                    ->setParameter('ids', $ids);
+
+                if ($space !== null) {
+                    $qb
+                        ->innerJoin(
+                            Space::class,
+                            's',
+                            Join::WITH,
+                            's = reg.space'
+                        )
+                        ->andWhere('s = :space')
+                        ->setParameter('space', $space);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $type
+     * @param $ids
+     * @return mixed
+     */
     public function getResidentsByBeds(Space $space = null, array $entityGrants = null, $type, $ids)
     {
         $qb = $this->createQueryBuilder('ra');

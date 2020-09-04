@@ -590,7 +590,7 @@ class FacilityRoomService extends BaseService implements IGridService
                 /** @var ResidentAdmissionRepository $admissionRepo */
                 $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-                $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
+                $residentAdmissions = $admissionRepo->getAdmissionBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                 if (!empty($residentAdmissions)) {
                     throw new ActiveResidentExistInRoomException();
@@ -646,7 +646,7 @@ class FacilityRoomService extends BaseService implements IGridService
                     /** @var ResidentAdmissionRepository $admissionRepo */
                     $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-                    $residentAdmissions = $admissionRepo->getBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
+                    $residentAdmissions = $admissionRepo->getAdmissionBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                     if (!empty($residentAdmissions)) {
                         throw new ActiveResidentExistInRoomException();
