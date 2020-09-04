@@ -152,11 +152,7 @@ class Space
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get",
-     *     "api_admin_credit_list",
-     *     "api_admin_credit_get",
-     *     "api_admin_discount_list",
-     *     "api_admin_discount_get"
+     *     "api_admin_expense_item_get"
      * })
      */
     private $id;
@@ -261,12 +257,7 @@ class Space
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get",
-     *     "api_admin_credit_list",
-     *     "api_admin_credit_get",
-     *     "api_admin_discount_list",
-     *     "api_admin_discount_get"
-     *
+     *     "api_admin_expense_item_get"
      * })
      */
     private $name;
@@ -528,18 +519,6 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\ExpenseItem", mappedBy="space", cascade={"remove", "persist"})
      */
     private $expenseItems;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Credit", mappedBy="space", cascade={"remove", "persist"})
-     */
-    private $credits;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Discount", mappedBy="space", cascade={"remove", "persist"})
-     */
-    private $discounts;
 
     /**
      * Space constructor.
@@ -1267,37 +1246,5 @@ class Space
     public function setExpenseItems(ArrayCollection $expenseItems): void
     {
         $this->expenseItems = $expenseItems;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getCredits(): ArrayCollection
-    {
-        return $this->credits;
-    }
-
-    /**
-     * @param ArrayCollection $credits
-     */
-    public function setCredits(ArrayCollection $credits): void
-    {
-        $this->credits = $credits;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getDiscounts(): ArrayCollection
-    {
-        return $this->discounts;
-    }
-
-    /**
-     * @param ArrayCollection $discounts
-     */
-    public function setDiscounts(ArrayCollection $discounts): void
-    {
-        $this->discounts = $discounts;
     }
 }
