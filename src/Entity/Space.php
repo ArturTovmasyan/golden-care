@@ -149,8 +149,8 @@ class Space
      *     "api_lead_hobby_get",
      *     "api_lead_qualification_requirement_list",
      *     "api_lead_qualification_requirement_get",
-     *     "api_admin_payment_type_list",
-     *     "api_admin_payment_type_get",
+     *     "api_admin_rp_payment_type_list",
+     *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_list",
      *     "api_admin_expense_get",
      *     "api_admin_credit_list",
@@ -258,8 +258,8 @@ class Space
      *     "api_lead_hobby_get",
      *     "api_lead_qualification_requirement_list",
      *     "api_lead_qualification_requirement_get",
-     *     "api_admin_payment_type_list",
-     *     "api_admin_payment_type_get",
+     *     "api_admin_rp_payment_type_list",
+     *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_list",
      *     "api_admin_expense_get",
      *     "api_admin_credit_list",
@@ -519,9 +519,9 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentType", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\RpPaymentType", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $paymentTypes;
+    private $rpPaymentTypes;
 
     /**
      * @var ArrayCollection
@@ -1240,17 +1240,17 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getPaymentTypes(): ArrayCollection
+    public function getRpPaymentTypes(): ArrayCollection
     {
-        return $this->paymentTypes;
+        return $this->rpPaymentTypes;
     }
 
     /**
-     * @param ArrayCollection $paymentTypes
+     * @param ArrayCollection $rpPaymentTypes
      */
-    public function setPaymentTypes(ArrayCollection $paymentTypes): void
+    public function setRpPaymentTypes(ArrayCollection $rpPaymentTypes): void
     {
-        $this->paymentTypes = $paymentTypes;
+        $this->rpPaymentTypes = $rpPaymentTypes;
     }
 
     /**

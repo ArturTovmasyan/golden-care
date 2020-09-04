@@ -147,10 +147,10 @@ persistence:
           class: App\Entity\PaymentSourceBaseRate
           route: api_admin_payment_source_base_rate_list
 
-        payment_type:
-          title: 'PaymentType'
-          class: App\Entity\PaymentType
-          route: api_admin_payment_type_list
+        rp_payment_type:
+          title: 'RPPaymentType'
+          class: App\Entity\RpPaymentType
+          route: api_admin_rp_payment_type_list
         expense:
           title: 'Expense'
           class: App\Entity\Expense
