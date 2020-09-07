@@ -600,4 +600,106 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
             ->getResult();
     }
     ///////////// End For Calendar /////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////// For Dashboard /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $startDate
+     * @param null $endDate
+     * @return mixed
+     */
+    public function getHospiceEventsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $title = 'Hospice';
+
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                'r.id AS id'
+            )
+            ->join('re.resident', 'r')
+            ->join('re.definition', 'd')
+            ->where('re.createdAt >= :startDate AND re.createdAt <= :endDate')
+            ->andWhere('d.title = :title')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('title', $title);
+
+        if ($space !== null) {
+            $qb
+
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $startDate
+     * @param null $endDate
+     * @return mixed
+     */
+    public function getOutOfHospiceEventsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $title = 'Out of Hospice';
+
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                'r.id AS id'
+            )
+            ->join('re.resident', 'r')
+            ->join('re.definition', 'd')
+            ->where('re.createdAt >= :startDate AND re.createdAt <= :endDate')
+            ->andWhere('d.title = :title')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('title', $title);
+
+        if ($space !== null) {
+            $qb
+
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////// End For Dashboard /////////////////////////////////////////////////////////////////////////////////////
 }

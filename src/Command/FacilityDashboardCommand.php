@@ -15,6 +15,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
 use App\Entity\User;
 use App\Model\AdmissionType;
@@ -28,6 +29,7 @@ use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\UserRepository;
 use App\Util\Common\ImtDateTimeInterval;
@@ -237,6 +239,25 @@ class FacilityDashboardCommand extends Command
                 }
             }
 
+            $finalHospiceEventIds = [];
+            if (!empty($activeAdmissions)) {
+                /** @var ResidentEventRepository $residentEventRepo */
+                $residentEventRepo = $this->em->getRepository(ResidentEvent::class);
+
+                $hospiceEvents = $residentEventRepo->getHospiceEventsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
+                $outOfHospiceEvents = $residentEventRepo->getOutOfHospiceEventsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
+
+                $hospiceEventIds = array_map(static function ($item) {
+                    return $item['id'];
+                }, $hospiceEvents);
+
+                $outOfHospiceIds = array_map(static function ($item) {
+                    return $item['id'];
+                }, $outOfHospiceEvents);
+
+                $finalHospiceEventIds = array_diff($hospiceEventIds, $outOfHospiceIds);
+            }
+
             $roomTypeIds = [];
             $roomTypeValues = [];
             /** @var Facility $facility */
@@ -251,17 +272,25 @@ class FacilityDashboardCommand extends Command
                 $entity->setRedFlag($facility->getRedFlag());
 
                 $occupancy = 0;
+                $hospice = 0;
                 $roomTypeValues[$facility->getId()] = [];
                 $roomTypeIds[$facility->getId()] = [];
                 if (!empty($activeAdmissions)) {
                     foreach ($activeAdmissions as $activeAdmission) {
                         $i = 0;
+                        $a = 0;
                         if ($activeAdmission['typeId'] === $facility->getId()) {
                             $i++;
 
                             $occupancy += $i;
 
                             $roomTypeIds[$facility->getId()][] = $activeAdmission['roomTypeId'];
+
+                            if (in_array($activeAdmission['id'], $finalHospiceEventIds, false)) {
+                                $a++;
+
+                                $hospice += $a;
+                            }
                         }
                     }
 
@@ -283,6 +312,7 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setOccupancy($occupancy);
+                $entity->setHospice($hospice);
                 $entity->setRoomTypeValues($roomTypeValues[$facility->getId()]);
 
                 $moveInsRespite = 0;

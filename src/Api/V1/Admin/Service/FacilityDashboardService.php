@@ -199,6 +199,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $webLeads = 0;
                 $hotLeads = 0;
                 $noticeToVacate = 0;
+                $hospice = 0;
                 $projectedNearTermOccupancy = 0;//?
                 $toursPerMonth = 0;
                 $totalInquiries = 0;
@@ -230,6 +231,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $webLeads = $dashboard['webLeads'];
                         $hotLeads = $dashboard['hotLeads'];
                         $noticeToVacate = $dashboard['noticeToVacate'];
+                        $hospice = $dashboard['hospice'];
                         $toursPerMonth = $dashboard['toursPerMonth'];
                         $totalInquiries = $dashboard['totalInquiries'];
                         $qualifiedInquiries = $dashboard['qualifiedInquiries'];
@@ -255,6 +257,7 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'web_leads' => $webLeads,
                     'hot_leads' => $hotLeads,
                     'notice_to_vacate' => $noticeToVacate,
+                    'hospice' => $hospice,
                     'projected_near_term_occupancy' => $projectedNearTermOccupancy,
                     'tours_per_month' => $toursPerMonth,
                     'total_inquiries' => $totalInquiries,

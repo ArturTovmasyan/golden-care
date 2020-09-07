@@ -364,6 +364,20 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="hospice", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $hospice = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="projected_near_term_occupancy", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -740,6 +754,22 @@ class FacilityDashboard
     public function setNoticeToVacate(?int $noticeToVacate): void
     {
         $this->noticeToVacate = $noticeToVacate;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHospice(): ?int
+    {
+        return $this->hospice;
+    }
+
+    /**
+     * @param int|null $hospice
+     */
+    public function setHospice(?int $hospice): void
+    {
+        $this->hospice = $hospice;
     }
 
     /**
