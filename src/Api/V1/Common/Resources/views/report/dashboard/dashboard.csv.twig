@@ -30,6 +30,8 @@ Hot Leads,{% for datum in data %}{{ datum['data'][key]['hot_leads'] }}{% if not 
 
 Notice to Vacate,{% for datum in data %}{{ datum['data'][key]['notice_to_vacate'] }}{% if not loop.last %},{% endif %}{% endfor %}
 
+Hospice,{% for datum in data %}{{ datum['data'][key]['hospice'] }}{% if not loop.last %},{% endif %}{% endfor %}
+
 Projected Near Term Occupancy,{% for datum in data %}{{ datum['data'][key]['projected_near_term_occupancy'] }}{% if not loop.last %},{% endif %}{% endfor %}
 
 
