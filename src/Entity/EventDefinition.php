@@ -102,6 +102,11 @@ use App\Annotation\Grid;
  *              "field"      = "ed.responsiblePersonMultiOptional"
  *          },
  *          {
+ *              "id"         = "hospice_provider",
+ *              "type"       = "boolean",
+ *              "field"      = "ed.hospiceProvider"
+ *          },
+ *          {
  *              "id"         = "additional_date",
  *              "type"       = "boolean",
  *              "field"      = "ed.additionalDate"
@@ -350,6 +355,16 @@ class EventDefinition
      * })
      */
     protected $responsiblePersonMultiOptional;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="show_hospice_provider", type="boolean", options={"default" = 0})
+     * @Groups({
+     *     "api_admin_event_definition_list",
+     *     "api_admin_event_definition_get"
+     * })
+     */
+    protected $hospiceProvider;
 
     /**
      * @var bool
@@ -677,6 +692,22 @@ class EventDefinition
     public function setResponsiblePersonMultiOptional(bool $responsiblePersonMultiOptional): void
     {
         $this->responsiblePersonMultiOptional = $responsiblePersonMultiOptional;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHospiceProvider(): bool
+    {
+        return $this->hospiceProvider;
+    }
+
+    /**
+     * @param bool $hospiceProvider
+     */
+    public function setHospiceProvider(bool $hospiceProvider): void
+    {
+        $this->hospiceProvider = $hospiceProvider;
     }
 
     /**

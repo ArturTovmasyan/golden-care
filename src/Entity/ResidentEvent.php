@@ -164,6 +164,20 @@ class ResidentEvent
     protected $responsiblePersons;
 
     /**
+     * @var HospiceProvider
+     * @ORM\ManyToOne(targetEntity="App\Entity\HospiceProvider", inversedBy="residentEvents")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_hospice_provider", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_admin_resident_event_grid",
+     *     "api_admin_resident_event_list",
+     *     "api_admin_resident_event_get"
+     * })
+     */
+    private $hospiceProvider;
+
+    /**
      * @var \DateTime
      * @Assert\DateTime(groups={
      *     "api_admin_resident_event_add",
@@ -305,6 +319,22 @@ class ResidentEvent
     {
         $this->responsiblePersons->removeElement($responsiblePerson);
         $responsiblePerson->removeResidentEvent($this);
+    }
+
+    /**
+     * @return HospiceProvider|null
+     */
+    public function getHospiceProvider(): ?HospiceProvider
+    {
+        return $this->hospiceProvider;
+    }
+
+    /**
+     * @param HospiceProvider|null $hospiceProvider
+     */
+    public function setHospiceProvider(?HospiceProvider $hospiceProvider): void
+    {
+        $this->hospiceProvider = $hospiceProvider;
     }
 
     /**

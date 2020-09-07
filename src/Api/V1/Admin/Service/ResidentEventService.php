@@ -5,6 +5,7 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AdditionalDateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
+use App\Api\V1\Common\Service\Exception\HospiceProviderNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentEventNotFoundException;
@@ -12,11 +13,13 @@ use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotBeBlankException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\EventDefinition;
+use App\Entity\HospiceProvider;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentEvent;
 use App\Entity\ResponsiblePerson;
 use App\Repository\EventDefinitionRepository;
+use App\Repository\HospiceProviderRepository;
 use App\Repository\PhysicianRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRepository;
@@ -160,6 +163,24 @@ class ResidentEventService extends BaseService implements IGridService
                 }
             }
 
+            $hospiceProvider = null;
+
+            if ($definition && $definition->isHospiceProvider()) {
+                $hospiceProviderId = $params['hospice_provider_id'];
+
+                if ($hospiceProviderId && is_numeric($hospiceProviderId)) {
+                    /** @var HospiceProviderRepository $hospiceProviderRepo */
+                    $hospiceProviderRepo = $this->em->getRepository(HospiceProvider::class);
+
+                    /** @var HospiceProvider $hospiceProvider */
+                    $hospiceProvider = $hospiceProviderRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(HospiceProvider::class), $hospiceProviderId);
+
+                    if ($hospiceProvider === null) {
+                        throw new HospiceProviderNotFoundException();
+                    }
+                }
+            }
+
             $additionalDate = null;
 
             if ($definition && $definition->isAdditionalDate()) {
@@ -175,6 +196,7 @@ class ResidentEventService extends BaseService implements IGridService
             $residentEvent->setResident($resident);
             $residentEvent->setDefinition($definition);
             $residentEvent->setPhysician($physician);
+            $residentEvent->setHospiceProvider($hospiceProvider);
 
             if (!empty($rps)) {
                 $residentEvent->setResponsiblePersons($rps);
@@ -301,6 +323,24 @@ class ResidentEventService extends BaseService implements IGridService
                 }
             }
 
+            $hospiceProvider = null;
+
+            if ($definition && $definition->isHospiceProvider()) {
+                $hospiceProviderId = $params['hospice_provider_id'];
+
+                if ($hospiceProviderId && is_numeric($hospiceProviderId)) {
+                    /** @var HospiceProviderRepository $hospiceProviderRepo */
+                    $hospiceProviderRepo = $this->em->getRepository(HospiceProvider::class);
+
+                    /** @var HospiceProvider $hospiceProvider */
+                    $hospiceProvider = $hospiceProviderRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(HospiceProvider::class), $hospiceProviderId);
+
+                    if ($hospiceProvider === null) {
+                        throw new HospiceProviderNotFoundException();
+                    }
+                }
+            }
+
             $additionalDate = null;
 
             if ($definition && $definition->isAdditionalDate()) {
@@ -315,6 +355,7 @@ class ResidentEventService extends BaseService implements IGridService
             $entity->setResident($resident);
             $entity->setDefinition($definition);
             $entity->setPhysician($physician);
+            $entity->setHospiceProvider($hospiceProvider);
 
             if (!empty($rps)) {
                 $entity->setResponsiblePersons($rps);

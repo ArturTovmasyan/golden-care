@@ -156,6 +156,7 @@ persistence:
           class: App\Entity\ExpenseItem
           route: api_admin_expense_item_list
 
+
         notification_type:
           title: 'NotificationType'
           class: App\Entity\NotificationType
@@ -232,6 +233,11 @@ persistence:
           title: 'InsuranceCompany'
           class: App\Entity\InsuranceCompany
           route: api_admin_insurance_company_list
+
+        hospice_provider:
+          title: 'HospiceProvider'
+          class: App\Entity\HospiceProvider
+          route: api_admin_hospice_provider_list
 
         document_category:
           title: 'Document Category'

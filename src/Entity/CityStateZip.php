@@ -90,7 +90,9 @@ class CityStateZip
      *     "api_lead_organization_get",
      *     "api_lead_lead_list",
      *     "api_lead_lead_get",
-     *     "api_admin_resident_get_last_admission"
+     *     "api_admin_resident_get_last_admission",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $id;
@@ -150,7 +152,9 @@ class CityStateZip
      *     "api_lead_organization_list",
      *     "api_lead_organization_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $stateAbbr;
@@ -186,7 +190,9 @@ class CityStateZip
      *     "api_lead_organization_list",
      *     "api_lead_organization_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $zipMain;
@@ -244,7 +250,9 @@ class CityStateZip
      *     "api_lead_organization_list",
      *     "api_lead_organization_get",
      *     "api_lead_lead_list",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $city;
@@ -307,6 +315,12 @@ class CityStateZip
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="responsiblePersonCsz", cascade={"persist"})
      */
     private $leads;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\HospiceProvider", mappedBy="csz", cascade={"remove", "persist"})
+     */
+    private $hospiceProviders;
 
     /**
      * @return int
@@ -503,5 +517,21 @@ class CityStateZip
     public function setLeads(ArrayCollection $leads): void
     {
         $this->leads = $leads;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHospiceProviders(): ArrayCollection
+    {
+        return $this->hospiceProviders;
+    }
+
+    /**
+     * @param ArrayCollection $hospiceProviders
+     */
+    public function setHospiceProviders(ArrayCollection $hospiceProviders): void
+    {
+        $this->hospiceProviders = $hospiceProviders;
     }
 }

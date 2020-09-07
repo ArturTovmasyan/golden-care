@@ -152,7 +152,9 @@ class Space
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get"
+     *     "api_admin_expense_item_get",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $id;
@@ -257,7 +259,9 @@ class Space
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get"
+     *     "api_admin_expense_item_get",
+     *     "api_admin_hospice_provider_list",
+     *     "api_admin_hospice_provider_get"
      * })
      */
     private $name;
@@ -519,6 +523,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\ExpenseItem", mappedBy="space", cascade={"remove", "persist"})
      */
     private $expenseItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\HospiceProvider", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $hospiceProviders;
 
     /**
      * Space constructor.
@@ -1246,5 +1256,21 @@ class Space
     public function setExpenseItems(ArrayCollection $expenseItems): void
     {
         $this->expenseItems = $expenseItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHospiceProviders(): ArrayCollection
+    {
+        return $this->hospiceProviders;
+    }
+
+    /**
+     * @param ArrayCollection $hospiceProviders
+     */
+    public function setHospiceProviders(ArrayCollection $hospiceProviders): void
+    {
+        $this->hospiceProviders = $hospiceProviders;
     }
 }

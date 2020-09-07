@@ -104,6 +104,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
                     $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
                     $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
+                    $entity->setHospiceProvider($params['hospice_provider']);
                     $entity->setAdditionalDate($params['additional_date']);
 
                     $entity->setResidents(false);
@@ -123,6 +124,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional(false);
                     $entity->setResponsiblePersonMulti(false);
                     $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setHospiceProvider(false);
                     $entity->setAdditionalDate(false);
 
                     $entity->setResidents($params['residents']);
@@ -143,6 +145,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional(false);
                     $entity->setResponsiblePersonMulti(false);
                     $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setHospiceProvider(false);
                     $entity->setAdditionalDate(false);
                     $entity->setResidents(false);
 
@@ -227,6 +230,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional($params['responsible_person_optional']);
                     $entity->setResponsiblePersonMulti($params['responsible_person_multi']);
                     $entity->setResponsiblePersonMultiOptional($params['responsible_person_multi_optional']);
+                    $entity->setHospiceProvider($params['hospice_provider']);
                     $entity->setAdditionalDate($params['additional_date']);
 
                     $entity->setResidents(false);
@@ -246,6 +250,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional(false);
                     $entity->setResponsiblePersonMulti(false);
                     $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setHospiceProvider(false);
                     $entity->setAdditionalDate(false);
 
                     $entity->setResidents($params['residents']);
@@ -266,6 +271,7 @@ class EventDefinitionService extends BaseService implements IGridService
                     $entity->setResponsiblePersonOptional(false);
                     $entity->setResponsiblePersonMulti(false);
                     $entity->setResponsiblePersonMultiOptional(false);
+                    $entity->setHospiceProvider(false);
                     $entity->setAdditionalDate(false);
                     $entity->setResidents(false);
 

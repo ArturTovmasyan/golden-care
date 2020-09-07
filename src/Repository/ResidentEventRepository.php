@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
+use App\Entity\HospiceProvider;
 use App\Entity\Physician;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -32,6 +33,7 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
             ->addSelect("
                 JSON_ARRAY(
                     JSON_OBJECT('Date Added', re.additionalDate),
+                    JSON_OBJECT('Hospice Provider', hp.name),
                     JSON_OBJECT('Physician', CONCAT(COALESCE(ps.title,''), ' ', COALESCE(p.firstName, ''), ' ', COALESCE(p.middleName, ''), ' ', COALESCE(p.lastName, ''))),
                     
                     JSON_OBJECT('Responsible Person(s)', JSON_ARRAYAGG(
@@ -65,6 +67,12 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
                 'p',
                 Join::WITH,
                 'p = re.physician'
+            )
+            ->leftJoin(
+                HospiceProvider::class,
+                'hp',
+                Join::WITH,
+                'hp = re.hospiceProvider'
             )
             ->leftJoin(
                 Salutation::class,

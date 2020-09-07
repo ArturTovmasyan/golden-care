@@ -180,6 +180,7 @@ class ResponseCode
     const INVALID_BILL_THROUGH_DATE_EXCEPTION                    = 780;
     const RP_PAYMENT_TYPE_NOT_FOUND_EXCEPTION                    = 781;
     const EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       = 782;
+    const HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   = 783;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -360,6 +361,7 @@ class ResponseCode
         self::INVALID_BILL_THROUGH_DATE_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Effective Date is always prior or equal to the Bill Through Date.'],
         self::RP_PAYMENT_TYPE_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'RP Payment Type not found.'],
         self::EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Expense Item not found.'],
+        self::HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Hospice Provider not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
