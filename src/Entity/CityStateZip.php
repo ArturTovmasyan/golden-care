@@ -318,7 +318,7 @@ class CityStateZip
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\HospiceProvider", mappedBy="csz", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\HospiceProvider", mappedBy="csz", cascade={"persist"})
      */
     private $hospiceProviders;
 
