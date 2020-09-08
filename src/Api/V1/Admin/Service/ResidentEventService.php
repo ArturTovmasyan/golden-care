@@ -5,6 +5,7 @@ namespace App\Api\V1\Admin\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\AdditionalDateNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\EventDefinitionNotFoundException;
+use App\Api\V1\Common\Service\Exception\HospiceProviderNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\HospiceProviderNotFoundException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\PhysicianNotFoundException;
@@ -179,6 +180,10 @@ class ResidentEventService extends BaseService implements IGridService
                         throw new HospiceProviderNotFoundException();
                     }
                 }
+
+                if (empty($hospiceProviderId)) {
+                    throw new HospiceProviderNotBeBlankException();
+                }
             }
 
             $additionalDate = null;
@@ -338,6 +343,10 @@ class ResidentEventService extends BaseService implements IGridService
                     if ($hospiceProvider === null) {
                         throw new HospiceProviderNotFoundException();
                     }
+                }
+
+                if (empty($hospiceProviderId)) {
+                    throw new HospiceProviderNotBeBlankException();
                 }
             }
 
