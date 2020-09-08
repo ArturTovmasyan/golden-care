@@ -52,14 +52,14 @@ use App\Annotation\Grid;
  *              "field"      = "CONCAT(csz.city, ' ', csz.stateAbbr, ', ', csz.zipMain)"
  *          },
  *          {
- *              "id"         = "email",
- *              "type"       = "string",
- *              "field"      = "hp.email"
- *          },
- *          {
  *              "id"         = "phone",
  *              "type"       = "string",
  *              "field"      = "hp.phone"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "field"      = "hp.email"
  *          },
  *          {
  *              "id"         = "space",
