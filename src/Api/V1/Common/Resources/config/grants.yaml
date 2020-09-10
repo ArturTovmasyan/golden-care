@@ -155,7 +155,10 @@ persistence:
           title: 'ExpenseItem'
           class: App\Entity\ExpenseItem
           route: api_admin_expense_item_list
-
+        credit_discount_item:
+          title: 'Credits/Discounts Item'
+          class: App\Entity\CreditDiscountItem
+          route: api_admin_credit_discount_item_list
 
         notification_type:
           title: 'NotificationType'

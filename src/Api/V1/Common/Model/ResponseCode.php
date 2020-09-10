@@ -182,6 +182,8 @@ class ResponseCode
     const EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       = 782;
     const HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   = 783;
     const HOSPICE_PROVIDER_NOT_BE_BLANK_EXCEPTION                = 784;
+    const CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION              = 785;
+    const CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   = 786;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -364,6 +366,8 @@ class ResponseCode
         self::EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Expense Item not found.'],
         self::HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Hospice Provider not found.'],
         self::HOSPICE_PROVIDER_NOT_BE_BLANK_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a Hospice Provider.'],
+        self::CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Credit/Discount Item not found.'],
+        self::CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Can be Changed is required when default amount provided.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

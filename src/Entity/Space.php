@@ -154,7 +154,9 @@ class Space
      *     "api_admin_expense_item_list",
      *     "api_admin_expense_item_get",
      *     "api_admin_hospice_provider_list",
-     *     "api_admin_hospice_provider_get"
+     *     "api_admin_hospice_provider_get",
+     *     "api_admin_credit_discount_item_list",
+     *     "api_admin_credit_discount_item_get"
      * })
      */
     private $id;
@@ -261,7 +263,9 @@ class Space
      *     "api_admin_expense_item_list",
      *     "api_admin_expense_item_get",
      *     "api_admin_hospice_provider_list",
-     *     "api_admin_hospice_provider_get"
+     *     "api_admin_hospice_provider_get",
+     *     "api_admin_credit_discount_item_list",
+     *     "api_admin_credit_discount_item_get"
      * })
      */
     private $name;
@@ -529,6 +533,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\HospiceProvider", mappedBy="space", cascade={"remove", "persist"})
      */
     private $hospiceProviders;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\CreditDiscountItem", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $creditDiscountItems;
 
     /**
      * Space constructor.
@@ -1272,5 +1282,21 @@ class Space
     public function setHospiceProviders(ArrayCollection $hospiceProviders): void
     {
         $this->hospiceProviders = $hospiceProviders;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCreditDiscountItems(): ArrayCollection
+    {
+        return $this->creditDiscountItems;
+    }
+
+    /**
+     * @param ArrayCollection $creditDiscountItems
+     */
+    public function setCreditDiscountItems(ArrayCollection $creditDiscountItems): void
+    {
+        $this->creditDiscountItems = $creditDiscountItems;
     }
 }
