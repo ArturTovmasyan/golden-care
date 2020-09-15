@@ -138,7 +138,9 @@ class Facility
      *     "api_admin_corporate_event_list",
      *     "api_admin_corporate_event_get",
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $id;
@@ -185,7 +187,9 @@ class Facility
      *     "api_admin_corporate_event_list",
      *     "api_admin_corporate_event_get",
      *     "api_admin_facility_room_type_list",
-     *     "api_admin_facility_room_type_get"
+     *     "api_admin_facility_room_type_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $name;
@@ -527,6 +531,12 @@ class Facility
      * @ORM\ManyToMany(targetEntity="App\Entity\CorporateEvent", mappedBy="facilities", cascade={"persist"})
      */
     protected $corporateEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\WebEmail", mappedBy="facility", cascade={"persist"})
+     */
+    private $webEmails;
 
     /**
      * @return int
@@ -994,6 +1004,22 @@ class Facility
     {
         $this->corporateEvents->removeElement($corporateEvent);
         $corporateEvent->removeFacility($this);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getWebEmails(): ArrayCollection
+    {
+        return $this->webEmails;
+    }
+
+    /**
+     * @param ArrayCollection $webEmails
+     */
+    public function setWebEmails(ArrayCollection $webEmails): void
+    {
+        $this->webEmails = $webEmails;
     }
 
     /**

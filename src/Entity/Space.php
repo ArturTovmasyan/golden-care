@@ -156,7 +156,11 @@ class Space
      *     "api_admin_hospice_provider_list",
      *     "api_admin_hospice_provider_get",
      *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get"
+     *     "api_admin_credit_discount_item_get",
+     *     "api_lead_email_review_type_list",
+     *     "api_lead_email_review_type_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $id;
@@ -265,7 +269,11 @@ class Space
      *     "api_admin_hospice_provider_list",
      *     "api_admin_hospice_provider_get",
      *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get"
+     *     "api_admin_credit_discount_item_get",
+     *     "api_lead_email_review_type_list",
+     *     "api_lead_email_review_type_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $name;
@@ -539,6 +547,18 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\CreditDiscountItem", mappedBy="space", cascade={"remove", "persist"})
      */
     private $creditDiscountItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\EmailReviewType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadEmailReviewTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\WebEmail", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $leadWebEmails;
 
     /**
      * Space constructor.
@@ -1298,5 +1318,37 @@ class Space
     public function setCreditDiscountItems(ArrayCollection $creditDiscountItems): void
     {
         $this->creditDiscountItems = $creditDiscountItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadEmailReviewTypes(): ArrayCollection
+    {
+        return $this->leadEmailReviewTypes;
+    }
+
+    /**
+     * @param ArrayCollection $leadEmailReviewTypes
+     */
+    public function setLeadEmailReviewTypes(ArrayCollection $leadEmailReviewTypes): void
+    {
+        $this->leadEmailReviewTypes = $leadEmailReviewTypes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLeadWebEmails(): ArrayCollection
+    {
+        return $this->leadWebEmails;
+    }
+
+    /**
+     * @param ArrayCollection $leadWebEmails
+     */
+    public function setLeadWebEmails(ArrayCollection $leadWebEmails): void
+    {
+        $this->leadWebEmails = $leadWebEmails;
     }
 }

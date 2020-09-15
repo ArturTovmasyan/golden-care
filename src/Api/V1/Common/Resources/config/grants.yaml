@@ -106,6 +106,12 @@ persistence:
         qualification_requirement:
           title: 'Qualification Requirement'
           class: App\Entity\Lead\QualificationRequirement
+        email_review_type:
+          title: 'Email Review Type'
+          class: App\Entity\Lead\EmailReviewType
+        web_email:
+          title: 'Web Email'
+          class: App\Entity\Lead\WebEmail
 
         assessment:
           title: 'Assessment'
