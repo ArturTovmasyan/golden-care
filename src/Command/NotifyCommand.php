@@ -663,8 +663,7 @@ class NotifyCommand extends Command
     {
         $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
 
-//        $currentDate = new \DateTime('now');
-        $currentDate = new \DateTime('15-09-2020');
+        $currentDate = new \DateTime('now');
         $date = date_modify($currentDate, '-1 day');
 
         $startFormatted = $date->format('m/d/Y 00:00:00');
