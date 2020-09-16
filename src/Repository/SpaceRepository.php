@@ -75,4 +75,19 @@ class SpaceRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLast()
+    {
+        $qb = $this
+            ->createQueryBuilder('s');
+
+        return $qb
+            ->orderBy('s.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

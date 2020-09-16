@@ -85,7 +85,7 @@ class WebEmailGrabberCommand extends Command
                         $baseUrl = $protocol . $input->getArgument('domain');
 
                         try {
-                            $this->webEmailService->add($data, $body);
+                            $this->webEmailService->add($data);
                             $this->markRead($user, $service, $message_info->getId());
                         } catch(\Throwable $ct) {
                             $output->writeln($ct->getMessage());
@@ -117,6 +117,7 @@ class WebEmailGrabberCommand extends Command
             'New submission from Book a Tour Today!',
             'New submission from Contact Form',
             'New submission from Contact Us',
+            'New submission from Contact Us (Footer)',
         ];
 
         $message_map = [

@@ -16,6 +16,7 @@ use App\Entity\Space;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\EmailReviewTypeRepository;
 use App\Repository\Lead\WebEmailRepository;
+use App\Repository\SpaceRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -69,80 +70,78 @@ class WebEmailService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @param $body
-     * @return int|null
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function add(array $params, $body): ?int
+    public function add(array $params)
     {
-        $insert_id = null;
-        try {
-            $this->em->getConnection()->beginTransaction();
+        if (!empty($params['Spam']) && $params['Spam'] === false) {
+            try {
+                $this->em->getConnection()->beginTransaction();
 
-            /** @var Space $space */
-            $space = $this->getSpace($params['space_id']);
+                /** @var SpaceRepository $spaceRepo */
+                $spaceRepo = $this->em->getRepository(Space::class);
 
-            if ($space === null) {
-                throw new SpaceNotFoundException();
-            }
+                /** @var Space $space */
+                $space = $spaceRepo->getLast();
 
-            $subject = null;
-            if (!empty($params['Subject']) && stripos($params['Subject'], 'new submission') !== false) {
-                $subject = $params['Subject'];
-            }
-
-            if ($subject === null) {
-                throw new SubjectNotBeBlankException();
-            }
-
-            $now = new \DateTime('now');
-
-            $webEmail = new WebEmail();
-            $webEmail->setSpace($space);
-            $webEmail->setEmailReviewType(null);
-            $webEmail->setDate($now);
-            $webEmail->setSubject($subject);
-            $webEmail->setBody($body);
-
-            $facility = null;
-            if (!empty($params['From'])) {
-                $from = explode(' <', $params['From']);
-                $potentialName = $from[0];
-
-                /** @var FacilityRepository $facilityRepo */
-                $facilityRepo = $this->em->getRepository(Facility::class);
-
-                $facilities = $facilityRepo->findBy(['space' => $space]);
-
-                if (!empty($facilities)) {
-                    /** @var Facility $value */
-                    foreach ($facilities as $value) {
-                        if (in_array($potentialName, $value->getPotentialNames(), false)) {
-                            $facility = $value;
-                            break;
-                        }
-                    }
+                if ($space === null) {
+                    throw new SpaceNotFoundException();
                 }
 
-                $webEmail->setFacility($facility);
-            } else {
-                $webEmail->setFacility(null);
+                $subject = null;
+                if (!empty($params['Subject']) && stripos($params['Subject'], 'new submission') !== false) {
+                    $subject = $params['Subject'];
+                }
+
+                if ($subject === null) {
+                    throw new SubjectNotBeBlankException();
+                }
+
+                $now = new \DateTime('now');
+
+                $webEmail = new WebEmail();
+                $webEmail->setSpace($space);
+                $webEmail->setEmailReviewType(null);
+                $webEmail->setDate($now);
+                $webEmail->setSubject($subject);
+                $webEmail->setBody($params['Message']);
+
+                $facility = null;
+                if (!empty($params['From'])) {
+                    $from = explode(' <', $params['From']);
+                    $potentialName = $from[0];
+
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
+
+                    $facilities = $facilityRepo->findBy(['space' => $space]);
+
+                    if (!empty($facilities)) {
+                        /** @var Facility $value */
+                        foreach ($facilities as $value) {
+                            if (in_array($potentialName, $value->getPotentialNames(), false)) {
+                                $facility = $value;
+                                break;
+                            }
+                        }
+                    }
+
+                    $webEmail->setFacility($facility);
+                } else {
+                    $webEmail->setFacility(null);
+                }
+
+                $this->validate($webEmail, null, ['api_lead_web_email_add']);
+
+                $this->em->persist($webEmail);
+                $this->em->flush();
+                $this->em->getConnection()->commit();
+            } catch (\Exception $e) {
+                $this->em->getConnection()->rollBack();
+
+                throw $e;
             }
-
-            $this->validate($webEmail, null, ['api_lead_web_email_add']);
-
-            $this->em->persist($webEmail);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-
-            $insert_id = $webEmail->getId();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw $e;
         }
-
-        return $insert_id;
     }
 
     /**
