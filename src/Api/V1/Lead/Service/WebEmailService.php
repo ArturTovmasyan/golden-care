@@ -74,7 +74,7 @@ class WebEmailService extends BaseService implements IGridService
      */
     public function add(array $params)
     {
-        if (!empty($params['Spam']) && $params['Spam'] === false) {
+        if (!empty($params['Spam']) && (bool)$params['Spam'] === false) {
             try {
                 $this->em->getConnection()->beginTransaction();
 
@@ -105,6 +105,7 @@ class WebEmailService extends BaseService implements IGridService
                 $webEmail->setDate($now);
                 $webEmail->setSubject($subject);
                 $webEmail->setBody($params['Message']);
+                $webEmail->setUpdatedBy($webEmail->getCreatedBy());
 
                 $facility = null;
                 if (!empty($params['From'])) {
