@@ -74,7 +74,12 @@ class WebEmailService extends BaseService implements IGridService
      */
     public function add(array $params)
     {
-        if (!empty($params['Spam']) && (bool)$params['Spam'] === false) {
+        $spam = true;
+        if (empty($params['Spam'])) {
+            $spam = (bool)$params['Spam'];
+        }
+
+        if (!$spam) {
             try {
                 $this->em->getConnection()->beginTransaction();
 
