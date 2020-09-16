@@ -234,4 +234,71 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @return mixed
+     */
+    public function getNotSpamWebEmailList(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $title = 'spam';
+
+        $qb = $this
+            ->createQueryBuilder('we')
+            ->select(
+                'we.id as id',
+                'we.date as date',
+                'we.subject as subject',
+                'f.name as facility',
+                'ert.title as review',
+                'u.firstName as firstName',
+                'u.lastName as lastName'
+            )
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = we.facility'
+            )
+            ->leftJoin(
+                EmailReviewType::class,
+                'ert',
+                Join::WITH,
+                'ert = we.emailReviewType'
+            )
+            ->leftJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = we.updatedBy'
+            )
+            ->where('we.date >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('we.date < :endDate')->setParameter('endDate', $endDate)
+            ->andWhere('ert.id IS NULL OR (ert.id IS NOT NULL AND ert.title != :title)')->setParameter('title', $title);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = we.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('we.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

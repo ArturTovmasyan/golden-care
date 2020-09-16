@@ -626,6 +626,13 @@ lead:
       parameters:
         date_from: "m/d/Y"
         date_to: "m/d/Y"
+    web-email:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getWebEmailReport
+      title: 'Web Emails List Report'
+      formats: ['csv', 'xls']
+      parameters:
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
 
 user:
   title: 'User Reports'

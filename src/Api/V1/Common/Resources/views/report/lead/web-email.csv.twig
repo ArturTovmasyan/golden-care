@@ -1,0 +1,7 @@
+{% spaceless %}
+Date,Facility,Subject,Reviewed type,Reviewed By
+{% for webEmail in data.webemails %}
+{{ webEmail.date|date("m/d/Y") }},{% if webEmail.facility %}"{{ webEmail.facility|raw }}"{% else %}N/A{% endif %},{% if webEmail.subject %}"{{ webEmail.subject|raw }}"{% else %}N/A{% endif %},{% if webEmail.review %}"{{ webEmail.review|raw }}"{% else %}Not Reviewed{% endif %},{% if webEmail.firstName %}"{{ webEmail.firstName|raw }} {{ webEmail.lastName|raw }}"{% else %}N/A{% endif %}
+    
+{% endfor %}
+{% endspaceless %}

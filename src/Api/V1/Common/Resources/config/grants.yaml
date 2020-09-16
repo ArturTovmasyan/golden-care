@@ -616,6 +616,8 @@ report:
           title: "Outreach Events and Contact Activities List Report"
         contact:
           title: "Contact Emails List Report"
+        web-email:
+          title: "Web Emails List Report"
     user:
       title: "User Reports"
       children:

@@ -10,6 +10,7 @@ use App\Entity\Lead\ContactPhone;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\Outreach;
 use App\Entity\Lead\Referral;
+use App\Entity\Lead\WebEmail;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
 use App\Model\Phone;
@@ -18,6 +19,7 @@ use App\Model\Report\Lead\ContactList;
 use App\Model\Report\Lead\LeadList;
 use App\Model\Report\Lead\OutreachList;
 use App\Model\Report\Lead\ReferralList;
+use App\Model\Report\Lead\WebEmailList;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\ContactPhoneRepository;
@@ -25,6 +27,7 @@ use App\Repository\Lead\ContactRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
+use App\Repository\Lead\WebEmailRepository;
 
 class LeadReportService extends BaseService
 {
@@ -519,6 +522,56 @@ class LeadReportService extends BaseService
 
         $report = new ContactList();
         $report->setContacts($finalContacts);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return WebEmailList
+     */
+    public function getWebEmailReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): WebEmailList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        if (!empty($dateFrom)) {
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        } else {
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        }
+
+        if (!empty($dateTo)) {
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        } else {
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        }
+
+        /** @var WebEmailRepository $repo */
+        $repo = $this->em->getRepository(WebEmail::class);
+
+        $webEmails = $repo->getNotSpamWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
+
+        $report = new WebEmailList();
+        $report->setWebEmails($webEmails);
 
         return $report;
     }
