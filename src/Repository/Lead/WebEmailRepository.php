@@ -301,4 +301,67 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $date
+     * @return mixed
+     */
+    public function getNotReviewedWebEmailList(Space $space = null, array $entityGrants = null, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('we')
+            ->select(
+                'we.id as id',
+                'we.date as date',
+                'we.subject as subject',
+                'f.name as facility',
+                'ert.title as review',
+                'u.firstName as firstName',
+                'u.lastName as lastName'
+            )
+            ->leftJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = we.facility'
+            )
+            ->leftJoin(
+                EmailReviewType::class,
+                'ert',
+                Join::WITH,
+                'ert = we.emailReviewType'
+            )
+            ->leftJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = we.updatedBy'
+            )
+            ->andWhere('we.date < :date')->setParameter('date', $date)
+            ->andWhere('ert.id IS NULL');
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = we.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('we.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

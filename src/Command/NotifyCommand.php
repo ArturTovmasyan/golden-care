@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use Ahc\Cron\Expression;
+use App\Api\V1\Admin\Service\Report\LeadReportService;
 use App\Api\V1\Admin\Service\Report\ResidentReportService;
 use App\Api\V1\Admin\Service\Report\UserReportService;
 use App\Api\V1\Common\Service\AmazonSnsService;
@@ -67,6 +68,9 @@ class NotifyCommand extends Command
     /** @var UserReportService */
     private $userReportService;
 
+    /** @var LeadReportService */
+    private $leadReportService;
+
     /** @var AmazonSnsService */
     private $amazonSnsService;
 
@@ -80,6 +84,7 @@ class NotifyCommand extends Command
         ContainerInterface $container,
         ResidentReportService $residentReportService,
         UserReportService $userReportService,
+        LeadReportService $leadReportService,
         AmazonSnsService $amazonSnsService,
         Pdf $pdf
     )
@@ -90,6 +95,7 @@ class NotifyCommand extends Command
         $this->container = $container;
         $this->residentReportService = $residentReportService;
         $this->userReportService = $userReportService;
+        $this->leadReportService = $leadReportService;
         $this->amazonSnsService = $amazonSnsService;
         $this->pdf = $pdf;
 
@@ -166,6 +172,11 @@ class NotifyCommand extends Command
                     case NotificationTypeCategoryType::TYPE_DATABASE_USER_LOGIN_ACTIVITY:
                         if ($notification->getType()->isEmail()) {
                             $this->sendDatabaseUserLoginActivityNotifications($emails, $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
+                        }
+                        break;
+                    case NotificationTypeCategoryType::TYPE_LEAD_WEB_EMAIL:
+                        if ($notification->getType()->isEmail()) {
+                            $this->sendLeadWebEmailNotifications($emails, $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
                         }
                         break;
                 }
@@ -635,6 +646,43 @@ class NotifyCommand extends Command
         $dateStart = $date->format('F') . ' ' . $date->format('d') . ', ' . $date->format('Y');
         $dateEnd = $now->format('F') . ' ' . $now->format('d') . ', ' . $now->format('Y');
         $subject = $subjectText . ' for the week of ' . $dateStart . ' to ' . $dateEnd;
+
+        $spaceName = '';
+
+        $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+
+        $this->saveEmailLog($status, $subject, $spaceName, $emails);
+    }
+
+    /**
+     * @param array $emails
+     * @param $subjectText
+     * @param $message
+     */
+    public function sendLeadWebEmailNotifications(array $emails, $subjectText, $message): void
+    {
+        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
+
+//        $currentDate = new \DateTime('now');
+        $currentDate = new \DateTime('15-09-2020');
+        $date = date_modify($currentDate, '-1 day');
+
+        $startFormatted = $date->format('m/d/Y 00:00:00');
+        $startDate = new \DateTime($startFormatted);
+
+        $endFormatted = $date->format('m/d/Y 23:59:59');
+        $endDate = new \DateTime($endFormatted);
+
+        $data = $this->leadReportService->getWebEmailReport(GroupType::TYPE_FACILITY, false, null, null, false, null, null, $startDate->format('m/d/Y'), $endDate->format('m/d/Y'), null, 1);
+
+        $report = $this->container->get('templating')->render('@api_report/lead/web-email.csv.twig', [
+            'data' => $data
+        ]);
+
+        $path = '/tmp/LeadWebEmailCsv-' . '-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
+        file_put_contents($path, $report);
+
+        $subject = $subjectText . ', ' . $date->format('m/d/Y');
 
         $spaceName = '';
 
