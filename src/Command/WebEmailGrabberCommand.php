@@ -14,6 +14,7 @@ use GuzzleHttp\RequestOptions;
 use PHPHtmlParser\Dom;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -41,7 +42,9 @@ class WebEmailGrabberCommand extends Command
         $this
             ->setName('app:webemailgrabber')
             ->setDescription('Web email.')
-            ->setHelp('This command allows you to save web email...');
+            ->setHelp('This command allows you to save web email...')
+            ->addArgument('domain', InputArgument::REQUIRED, 'The domain of the customer.');
+
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): ?int
@@ -77,6 +80,9 @@ class WebEmailGrabberCommand extends Command
                     if ($data !== null) {
                         $output->writeln(sprintf("ID - %s, Subject - %s\n", $message_info->getId(), $subject));
                         dump($data);
+
+                        $protocol = getenv('APP_ENV') === 'prod' ? 'https://' : 'http://';
+                        $baseUrl = $protocol . $input->getArgument('domain');
 
                         try {
                             $this->webEmailService->add($data, $body);
