@@ -20,6 +20,8 @@
                             <strong>Reviewed Type:</strong> {% if web['review'] %}{{ web['review']|raw }}{% endif %}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                             <strong>Reviewed By:</strong> {% if web['firstName'] %}{{ web['firstName']|raw }} {{ web['lastName']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Body:</strong> {% if web['body'] %}{{ web['body']|raw }}{% endif %}</p>
                     </td>
                 </tr>
             {% endfor %}
@@ -41,6 +43,8 @@
                             <strong>Reviewed Type:</strong> {% if notReview['review'] %}{{ notReview['review']|raw }}{% endif %}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                             <strong>Reviewed By:</strong> {% if notReview['firstName'] %}{{ notReview['firstName']|raw }} {{ notReview['lastName']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Body:</strong> {% if notReview['body'] %}{{ notReview['body']|raw }}{% endif %}</p>
                     </td>
                 </tr>
             {% endfor %}

@@ -678,7 +678,8 @@ class NotifyCommand extends Command
         $repo = $this->em->getRepository(WebEmail::class);
 
         $webEmails = $repo->getNotSpamWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
-        $notReviewWebEmails = $repo->getNotReviewedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate);
+//        $notReviewWebEmails = $repo->getNotReviewedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate);
+        $notReviewWebEmails = [];
 
         $webEmailEmails = [];
         $notReviewWebEmailsEmails = [];
@@ -696,6 +697,7 @@ class NotifyCommand extends Command
                 'id' => $webEmail['id'],
                 'date' => $webEmail['date']->format('m/d/Y'),
                 'subject' => $webEmail['subject'],
+                'body' => $webEmail['body'],
                 'facility' => $webEmail['facility'],
                 'review' => $webEmail['review'],
                 'firstName' => $webEmail['firstName'],
@@ -714,6 +716,7 @@ class NotifyCommand extends Command
                 'id' => $notReviewWebEmail['id'],
                 'date' => $notReviewWebEmail['date']->format('m/d/Y'),
                 'subject' => $notReviewWebEmail['subject'],
+                'body' => $notReviewWebEmail['body'],
                 'facility' => $notReviewWebEmail['facility'],
                 'review' => $notReviewWebEmail['review'],
                 'firstName' => $notReviewWebEmail['firstName'],
