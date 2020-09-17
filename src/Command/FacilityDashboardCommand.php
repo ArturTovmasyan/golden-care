@@ -239,10 +239,14 @@ class FacilityDashboardCommand extends Command
                 }
             }
 
+            $resEvents = [];
             $finalHospiceEventIds = [];
             if (!empty($activeAdmissions)) {
                 /** @var ResidentEventRepository $residentEventRepo */
                 $residentEventRepo = $this->em->getRepository(ResidentEvent::class);
+
+                $resEvents = $residentEventRepo->getResidentEventsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
+                $resEvents = array_column($resEvents, 'id', 'eventId');
 
                 $hospiceEvents = $residentEventRepo->getHospiceEventsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
                 $outOfHospiceEvents = $residentEventRepo->getOutOfHospiceEventsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate);
@@ -272,6 +276,7 @@ class FacilityDashboardCommand extends Command
                 $entity->setRedFlag($facility->getRedFlag());
 
                 $occupancy = 0;
+                $residentEvents = 0;
                 $hospice = 0;
                 $roomTypeValues[$facility->getId()] = [];
                 $roomTypeIds[$facility->getId()] = [];
@@ -290,6 +295,17 @@ class FacilityDashboardCommand extends Command
                                 $a++;
 
                                 $hospice += $a;
+                            }
+
+                            if (!empty($resEvents)) {
+                                foreach ($resEvents as $resEvent) {
+                                    $b = 0;
+                                    if ($resEvent === $activeAdmission['id']) {
+                                        $b++;
+
+                                        $residentEvents += $b;
+                                    }
+                                }
                             }
                         }
                     }
@@ -312,6 +328,7 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setOccupancy($occupancy);
+                $entity->setResidentEvents($residentEvents);
                 $entity->setHospice($hospice);
                 $entity->setRoomTypeValues($roomTypeValues[$facility->getId()]);
 

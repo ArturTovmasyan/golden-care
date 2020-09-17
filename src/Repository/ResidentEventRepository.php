@@ -609,6 +609,53 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
      * @param null $endDate
      * @return mixed
      */
+    public function getResidentEventsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                're.id AS eventId'
+            )
+            ->join('re.resident', 'r')
+            ->join('re.definition', 'd')
+            ->where('re.createdAt >= :startDate AND re.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($space !== null) {
+            $qb
+
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('re.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $startDate
+     * @param null $endDate
+     * @return mixed
+     */
     public function getHospiceEventsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate)
     {
         $title = 'Hospice';

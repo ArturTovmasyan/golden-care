@@ -7,6 +7,7 @@
         <table style="border-collapse:collapse;border-spacing:0" width="100%">
             <tbody>
             {% for web in webs %}
+                <p style="margin-top: 15px;font-size: large;"></p>
                 <tr>
                     <td>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
@@ -26,7 +27,10 @@
             {% for notReview in notReviews %}
                 <tr>
                     <td>
+                        {%  if loop.first  %}
                         <p style="margin-top: 15px;font-size: large;">Emails more than 24 hours old that have not been reviewed</p>
+                        {% endif %}
+                        <p style="margin-top: 15px;font-size: large;"></p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                             <strong>Date:</strong> {{ notReview['date'] }}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">

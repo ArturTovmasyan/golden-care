@@ -35,6 +35,11 @@ use App\Annotation\Grid;
  *              "field"      = "f.name"
  *          },
  *          {
+ *              "id"         = "subject",
+ *              "type"       = "string",
+ *              "field"      = "we.subject"
+ *          },
+ *          {
  *              "id"         = "review_type",
  *              "type"       = "string",
  *              "field"      = "CASE WHEN ert.id IS NOT NULL THEN ert.title ELSE 'Not Reviewed' END",
@@ -44,11 +49,6 @@ use App\Annotation\Grid;
  *              "id"         = "updated_by",
  *              "type"       = "string",
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
- *          },
- *          {
- *              "id"         = "subject",
- *              "type"       = "string",
- *              "field"      = "we.subject"
  *          },
  *          {
  *              "id"         = "space",
