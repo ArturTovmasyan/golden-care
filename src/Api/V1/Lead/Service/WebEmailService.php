@@ -103,6 +103,7 @@ class WebEmailService extends BaseService implements IGridService
                 }
 
                 $now = new \DateTime('now');
+                $now->setTime(0, 0, 0);
 
                 $webEmail = new WebEmail();
                 $webEmail->setSpace($space);
@@ -184,7 +185,10 @@ class WebEmailService extends BaseService implements IGridService
 
             $date = $params['date'];
             if (!empty($date)) {
-                $entity->setDate(new \DateTime($params['date']));
+                $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+
+                $entity->setDate($date);
             } else {
                 $entity->setDate(null);
             }

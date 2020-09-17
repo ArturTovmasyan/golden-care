@@ -65,7 +65,8 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $queryBuilder
-            ->addOrderBy('we.date', 'DESC');
+            ->addOrderBy('we.date', 'DESC')
+            ->addOrderBy('ert.title', 'ASC');
 
         $queryBuilder
             ->groupBy('we.id');
@@ -100,7 +101,8 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
         }
 
         $qb
-            ->addOrderBy('we.date', 'DESC');
+            ->addOrderBy('we.date', 'DESC')
+            ->addOrderBy('ert.title', 'ASC');
 
         return $qb
             ->getQuery()
