@@ -1,15 +1,7 @@
 {% spaceless %}
-Date,Facility,Subject,Reviewed type,Reviewed By
+Date,Facility,Subject,Reviewed Type,Reviewed By
 {% for webEmail in data.webemails %}
 {{ webEmail.date|date("m/d/Y") }},{% if webEmail.facility %}"{{ webEmail.facility|raw }}"{% else %}N/A{% endif %},{% if webEmail.subject %}"{{ webEmail.subject|raw }}"{% else %}N/A{% endif %},{% if webEmail.review %}"{{ webEmail.review|raw }}"{% else %}Not Reviewed{% endif %},{% if webEmail.firstName %}"{{ webEmail.firstName|raw }} {{ webEmail.lastName|raw }}"{% else %}N/A{% endif %}
     
 {% endfor %}
-
-{% if data.data|length > 0 %}
-Date,Facility,Subject,Reviewed type,Reviewed By
-{% for datum in data.data %}
-{{ datum.date|date("m/d/Y") }},{% if datum.facility %}"{{ datum.facility|raw }}"{% else %}N/A{% endif %},{% if datum.subject %}"{{ datum.subject|raw }}"{% else %}N/A{% endif %},{% if datum.review %}"{{ datum.review|raw }}"{% else %}Not Reviewed{% endif %},{% if datum.firstName %}"{{ datum.firstName|raw }} {{ datum.lastName|raw }}"{% else %}N/A{% endif %}
-
-{% endfor %}
-{% endif %}
 {% endspaceless %}

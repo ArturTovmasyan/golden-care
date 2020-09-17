@@ -254,8 +254,18 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
                 'we.subject as subject',
                 'f.name as facility',
                 'ert.title as review',
+                'u.id as uId',
+                'u.enabled as enabled',
+                'u.email as email',
                 'u.firstName as firstName',
-                'u.lastName as lastName'
+                'u.lastName as lastName',
+                's.name as space'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = we.space'
             )
             ->leftJoin(
                 Facility::class,
@@ -281,12 +291,6 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = we.space'
-                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
@@ -318,8 +322,18 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
                 'we.subject as subject',
                 'f.name as facility',
                 'ert.title as review',
+                'u.id as uId',
+                'u.enabled as enabled',
+                'u.email as email',
                 'u.firstName as firstName',
-                'u.lastName as lastName'
+                'u.lastName as lastName',
+                's.name as space'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = we.space'
             )
             ->leftJoin(
                 Facility::class,
@@ -344,12 +358,6 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = we.space'
-                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }

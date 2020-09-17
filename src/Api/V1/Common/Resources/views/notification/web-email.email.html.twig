@@ -1,0 +1,56 @@
+{% extends "@api_email/base.html.twig" %}
+{% block title %}
+    {{ subject }}
+{% endblock %}
+{% block content %}
+    {% if webs|length > 0 or notReviews|length > 0 %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            {% for web in webs %}
+                <tr>
+                    <td>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Date:</strong> {{ web['date'] }}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Facility:</strong> {% if web['facility'] %}{{ web['facility']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Subject:</strong> {% if web['subject'] %}{{ web['subject']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Reviewed Type:</strong> {% if web['review'] %}{{ web['review']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Reviewed By:</strong> {% if web['firstName'] %}{{ web['firstName']|raw }} {{ web['lastName']|raw }}{% endif %}</p>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            {% for notReview in notReviews %}
+                <tr>
+                    <td>
+                        <p style="margin-top: 15px;font-size: large;">Emails more than 24 hours old that have not been reviewed</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Date:</strong> {{ notReview['date'] }}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Facility:</strong> {% if notReview['facility'] %}{{ notReview['facility']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Subject:</strong> {% if notReview['subject'] %}{{ notReview['subject']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Reviewed Type:</strong> {% if notReview['review'] %}{{ notReview['review']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Reviewed By:</strong> {% if notReview['firstName'] %}{{ notReview['firstName']|raw }} {{ notReview['lastName']|raw }}{% endif %}</p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <table style="border-collapse:collapse;border-spacing:0" width="100%">
+            <tbody>
+            <tr>
+                <td>
+                    <p style="text-align: center;">No web email recorded!</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

@@ -570,14 +570,8 @@ class LeadReportService extends BaseService
 
         $webEmails = $repo->getNotSpamWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
 
-        $data = [];
-        if ($assessmentFormId !== null) {
-            $data = $repo->getNotReviewedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate);
-        }
-
         $report = new WebEmailList();
         $report->setWebEmails($webEmails);
-        $report->setData($data);
 
         return $report;
     }

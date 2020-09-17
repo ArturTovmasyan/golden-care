@@ -17,6 +17,7 @@ use App\Entity\EmailLog;
 use App\Entity\Facility;
 use App\Entity\FacilityEvent;
 use App\Entity\Lead\Activity;
+use App\Entity\Lead\WebEmail;
 use App\Entity\Notification;
 use App\Entity\Region;
 use App\Entity\ResidentRent;
@@ -31,6 +32,7 @@ use App\Repository\ChangeLogRepository;
 use App\Repository\CorporateEventRepository;
 use App\Repository\FacilityEventRepository;
 use App\Repository\Lead\ActivityRepository;
+use App\Repository\Lead\WebEmailRepository;
 use App\Repository\NotificationRepository;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRentRepository;
@@ -661,7 +663,7 @@ class NotifyCommand extends Command
      */
     public function sendLeadWebEmailNotifications(array $emails, $subjectText, $message): void
     {
-        $message = str_replace(['\r\n', '  '], ['<br>', '&nbsp;&nbsp;'], $message);
+        $currentSpace = $this->grantService->getCurrentSpace();
 
         $currentDate = new \DateTime('now');
         $date = date_modify($currentDate, '-1 day');
@@ -672,22 +674,69 @@ class NotifyCommand extends Command
         $endFormatted = $date->format('m/d/Y 23:59:59');
         $endDate = new \DateTime($endFormatted);
 
-        $data = $this->leadReportService->getWebEmailReport(GroupType::TYPE_FACILITY, false, null, null, false, null, null, $startDate->format('m/d/Y'), $endDate->format('m/d/Y'), null, 1);
+        /** @var WebEmailRepository $repo */
+        $repo = $this->em->getRepository(WebEmail::class);
 
-        $report = $this->container->get('templating')->render('@api_report/lead/web-email.csv.twig', [
-            'data' => $data
-        ]);
+        $webEmails = $repo->getNotSpamWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
+        $notReviewWebEmails = $repo->getNotReviewedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate);
 
-        $path = '/tmp/LeadWebEmailCsv-' . '-' . $date->format('m-d-Y') . '-' . uniqid('', false) . '.csv';
-        file_put_contents($path, $report);
-
-        $subject = $subjectText . ', ' . $date->format('m/d/Y');
-
+        $webEmailEmails = [];
+        $notReviewWebEmailsEmails = [];
+        $webs = [];
+        $notReviews = [];
         $spaceName = '';
+        foreach ($webEmails as $webEmail) {
+            $spaceName = $webEmail['space'];
 
-        $status = $this->mailer->sendReportNotification($emails, $subject, $message, $path, $spaceName);
+            if ($webEmail['uId'] !== null && $webEmail['enabled'] !== null && (bool)$webEmail['enabled'] === true) {
+                $webEmailEmails[] = $webEmail['email'];
+            }
 
-        $this->saveEmailLog($status, $subject, $spaceName, $emails);
+            $webs[] = [
+                'id' => $webEmail['id'],
+                'date' => $webEmail['date']->format('m/d/Y'),
+                'subject' => $webEmail['subject'],
+                'facility' => $webEmail['facility'],
+                'review' => $webEmail['review'],
+                'firstName' => $webEmail['firstName'],
+                'lastName' => $webEmail['lastName'],
+            ];
+        }
+
+        foreach ($notReviewWebEmails as $notReviewWebEmail) {
+            $spaceName = $notReviewWebEmail['space'];
+
+            if ($notReviewWebEmail['uId'] !== null && $notReviewWebEmail['enabled'] !== null && (bool)$notReviewWebEmail['enabled'] === true) {
+                $notReviewWebEmailsEmails[] = $notReviewWebEmail['email'];
+            }
+
+            $notReviews[] = [
+                'id' => $notReviewWebEmail['id'],
+                'date' => $notReviewWebEmail['date']->format('m/d/Y'),
+                'subject' => $notReviewWebEmail['subject'],
+                'facility' => $notReviewWebEmail['facility'],
+                'review' => $notReviewWebEmail['review'],
+                'firstName' => $notReviewWebEmail['firstName'],
+                'lastName' => $notReviewWebEmail['lastName'],
+            ];
+        }
+
+        $emails = array_merge($emails, $webEmailEmails, $notReviewWebEmailsEmails);
+        $emails = array_unique($emails);
+
+        if (!empty($emails) && (!empty($webs) || !empty($notReviews))) {
+            $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+
+            $body = $this->container->get('templating')->render('@api_notification/web-email.email.html.twig', array(
+                'webs' => $webs,
+                'notReviews' => $notReviews,
+                'subject' => $subject
+            ));
+
+            $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+
+            $this->saveEmailLog($status, $subject, $spaceName, $emails);
+        }
     }
 
     /**
