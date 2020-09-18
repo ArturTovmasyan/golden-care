@@ -9,7 +9,7 @@ ROSTER SIMPLE,,
 
 {% for resident in data.residents %}
 {% if renderedGroup == resident.typeId %}
-{% if resident.floor == 1 %}{% endif %}{% if resident.floor == 2 %},{% endif %}{% if resident.floor == 3 %},,{% endif %}{% if resident.private %}{{ resident.roomNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}{% else %}{{ resident.roomNumber ~ '' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}{% endif %}
+{% if resident.floor == 1 %}{% endif %}{% if resident.floor == 2 %},{% endif %}{% if resident.floor == 3 %},,{% endif %}{% if resident.private %}"{{ resident.roomNumber|raw ~ ' ' ~ resident.firstName|raw ~ ' ' ~ resident.lastName|raw }}"{% else %}"{{ resident.roomNumber|raw ~ '' ~ resident.bedNumber|raw ~ ' ' ~ resident.firstName|raw ~ ' ' ~ resident.lastName|raw }}"{% endif %}
 
 {% endif %}
 {% endfor %}
@@ -17,7 +17,7 @@ ROSTER SIMPLE,,
 {% set m = 0 %}{% for vacant in data.vacants %}{% if renderedGroup == vacant.typeId %}{% set m = m + 1 %}{% if m == 1 %}Vacant Rooms{% endif %}{% endif %}{% endfor %},
 {% for vacant in data.vacants %}
 {% if renderedGroup == vacant.typeId %}
-{% if vacant.floor == 1 %}{% endif %}{% if vacant.floor == 2 %},{% endif %}{% if vacant.floor == 3 %},,{% endif %}{% if vacant.private %}{{ vacant.roomNumber }}{% else %}{{ vacant.roomNumber ~ '' ~ vacant.bedNumber }}{% endif %}
+{% if vacant.floor == 1 %}{% endif %}{% if vacant.floor == 2 %},{% endif %}{% if vacant.floor == 3 %},,{% endif %}{% if vacant.private %}"{{ vacant.roomNumber|raw }}"{% else %}"{{ vacant.roomNumber|raw ~ '' ~ vacant.bedNumber|raw }}"{% endif %}
 
 {% endif %}
 {% endfor %}
