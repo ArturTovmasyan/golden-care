@@ -345,6 +345,62 @@ class ApartmentBedRepository extends EntityRepository implements RelatedInfoInte
     }
 
     /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getEnabledBeds(Space $space = null, array $entityGrants = null, $typeId = null)
+    {
+        $qb = $this->createQueryBuilder('ab');
+
+        $qb
+            ->select(
+                'ab.id AS id,
+                type.id AS typeId,
+                type.name AS typeName,
+                r.number AS roomNumber,
+                r.private AS private,
+                ab.number AS bedNumber,
+                ab.billThroughDate AS billThroughDate
+            ')
+            ->join('ab.room', 'r')
+            ->join('r.apartment', 'type')
+            ->andWhere('ab.enabled=1');
+
+        if ($typeId !== null) {
+            $qb
+                ->andWhere('type.id = :typeId')
+                ->setParameter('typeId', $typeId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = type.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ab.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('type.name')
+            ->addOrderBy('r.number')
+            ->addOrderBy('ab.number')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param $apartmentId
      * @return mixed
      */

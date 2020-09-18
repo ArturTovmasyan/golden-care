@@ -683,6 +683,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'fbrfrt.id AS roomTypeId',
                         'fbrfrt.title AS roomType',
                         'fb.number AS bed_number',
+                        'fb.id AS bedId',
                         'fbrf.id AS type_id',
                         'fbrf.name AS typeName',
                         'cl.title as careLevel',
@@ -708,6 +709,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'abr.number AS room_number',
                         'abr.private AS private',
                         'ab.number AS bed_number',
+                        'ab.id AS bedId',
                         'abra.id AS type_id',
                         'abra.name AS typeName'
                     )
@@ -1702,6 +1704,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'fbr.number AS room_number',
                         'fbrfrt.private AS private',
                         'fb.number AS bed_number',
+                        'fb.id AS bedId',
                         'fbrf.id AS type_id'
                     )
                     ->join('ra.facilityBed', 'fb')
@@ -1723,6 +1726,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                         'abr.number AS room_number',
                         'abr.private AS private',
                         'ab.number AS bed_number',
+                        'ab.id AS bedId',
                         'abra.id AS type_id'
                     )
                     ->join('ra.apartmentBed', 'ab')

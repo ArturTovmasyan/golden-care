@@ -377,6 +377,63 @@ class FacilityBedRepository extends EntityRepository implements RelatedInfoInter
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param null $typeId
+     * @return mixed
+     */
+    public function getEnabledBeds(Space $space = null, array $entityGrants = null, $typeId = null)
+    {
+        $qb = $this->createQueryBuilder('fb');
+
+        $qb
+            ->select(
+                'fb.id AS id,
+                type.id AS typeId,
+                type.name AS typeName,
+                r.number AS roomNumber,
+                frt.private AS private,
+                fb.number AS bedNumber,
+                fb.billThroughDate AS billThroughDate
+            ')
+            ->join('fb.room', 'r')
+            ->join('r.facility', 'type')
+            ->join('r.type', 'frt')
+            ->andWhere('fb.enabled=1');
+
+        if ($typeId !== null) {
+            $qb
+             ->andWhere('type.id = :typeId')
+             ->setParameter('typeId', $typeId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = type.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('fb.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('type.name')
+            ->addOrderBy('r.number')
+            ->addOrderBy('fb.number')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

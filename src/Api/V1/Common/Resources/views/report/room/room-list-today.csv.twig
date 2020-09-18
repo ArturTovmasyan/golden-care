@@ -1,0 +1,8 @@
+{% spaceless %}
+{{ data.strategy }} Room List Report: {{ data.date }},,
+{{ data.strategy }},Room/Bed,Resident
+{% set groupName = null %}{% set renderedGroup = null %}{% set newGroup = false %}
+{% for datum in data.data %}{% if groupName != datum.typeName %}{% set groupName = datum.typeName %}{% endif %}{% if renderedGroup == datum.typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = datum.typeId %}{% set newGroup = true %}{% endif %}
+"{{ datum.typeName|raw }}","{{ datum.room|raw }}","{{ datum.resident }}"
+{% endfor %}
+{% endspaceless %}

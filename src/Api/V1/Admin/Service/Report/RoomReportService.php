@@ -25,6 +25,7 @@ use App\Model\Month;
 use App\Model\RentPeriod;
 use App\Model\Report\Payor;
 use App\Model\Report\RoomList;
+use App\Model\Report\RoomListToday;
 use App\Model\Report\RoomOccupancyRate;
 use App\Model\Report\RoomOccupancyRateByMonth;
 use App\Model\Report\RoomRent;
@@ -279,6 +280,94 @@ class RoomReportService extends BaseService
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
         $report->setSum(array_sum($total));
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return RoomListToday
+     */
+    public function getRoomListTodayReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): RoomListToday
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $reportDate = new \DateTime('now');
+        $reportDateFormatted = $reportDate->format('m/d/Y');
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                /** @var FacilityBedRepository $facilityBedRepo */
+                $facilityBedRepo = $this->em->getRepository(FacilityBed::class);
+
+                $beds = $facilityBedRepo->getEnabledBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $typeId);
+
+                break;
+            case GroupType::TYPE_APARTMENT:
+                /** @var ApartmentBedRepository $apartmentBedRepo */
+                $apartmentBedRepo = $this->em->getRepository(ApartmentBed::class);
+
+                $beds = $apartmentBedRepo->getEnabledBeds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $typeId);
+
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        /** @var ResidentAdmissionRepository $residentAdmissionRepo */
+        $residentAdmissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+        $typeIds = $typeId !== null ? [$typeId] : null;
+
+        $activeResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeIds);
+        $inActiveResidents = $residentAdmissionRepo->getInactiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeIds);
+
+        $data = [];
+        foreach ($beds as $bed) {
+            $bedId = $bed['id'];
+
+            $data[$bedId] = [
+                'typeId' => $bed['typeId'],
+                'typeName' => $bed['typeName'],
+                'room' => $bed['private'] ? $bed['roomNumber'] : $bed['roomNumber'] . ' ' . $bed['bedNumber'],
+                'resident' => 'Vacant',
+            ];
+
+            foreach ($inActiveResidents as $inActiveResident) {
+                if ($inActiveResident['bedId'] === $bedId && $bed['billThroughDate'] !== null && $bed['billThroughDate']->format('Y-m-d') > $reportDate->format('Y-m-d')) {
+                    $data[$bedId]['resident'] = $inActiveResident['first_name'] . ' ' . $inActiveResident['last_name'];
+                }
+            }
+
+            foreach ($activeResidents as $activeResident) {
+                if ($activeResident['bedId'] === $bedId) {
+                    $data[$bedId]['resident'] = $activeResident['first_name'] . ' ' . $activeResident['last_name'];
+                }
+            }
+        }
+
+        $report = new RoomListToday();
+        $report->setData($data);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDate($reportDateFormatted);
 
         return $report;
     }

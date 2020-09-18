@@ -355,6 +355,15 @@ room:
         group:
           select_all: true
         date: "m/d/Y"
+    room-list-today:
+      service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomListTodayReport
+      title: 'Room List: List of enabled Rooms/Beds'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true
     room-rent:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getRoomRentReport
       title: 'Room Rent: Monthly Rent Report'

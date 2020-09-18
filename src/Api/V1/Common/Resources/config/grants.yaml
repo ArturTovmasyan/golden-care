@@ -551,6 +551,8 @@ report:
           title: "Payor Report: Monthly Payor Report."
         room-list:
           title: "Room: List of Rooms, with occupants and room rent rates."
+        room-list-today:
+          title: "Room List: List of enabled Rooms/Beds"
         room-rent:
           title: "Room Rent: Monthly Rent Report."
         room-rent-obfuscated:
