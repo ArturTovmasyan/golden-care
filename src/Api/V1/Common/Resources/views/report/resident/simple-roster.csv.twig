@@ -1,0 +1,32 @@
+{% spaceless %}
+ROSTER SIMPLE,,
+{% set renderedGroup = null %}{% set newGroup = false %}
+{% for typeId in data.typeIds %}{% if renderedGroup == typeId %}{% set newGroup = false %}{% else %}{% set renderedGroup = typeId %}{% set newGroup = true %}{% endif %}
+{% set k = 0 %}{% set count = 0 %}{% for resident in data.residents %}{% if renderedGroup == resident.typeId %}{% set k = k + 1 %}{% set count = count + 1 %}{% if k == 1 %}"{{ resident.typeName|raw }}"{% endif %}{% endif %}{% endfor %},Resident Count {{ count }},
+{% if data.strategyId != constant('App\\Model\\GroupType::TYPE_REGION') %}
+{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %}{% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 1 %}1st Floor{% endif %},{% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 2 %}2st Floor{% endif %},{% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 3 %}3st Floor{% endif %},{% endif %}
+{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_APARTMENT') %}{% set i = 0 %}{% for resident in data.residents %}{% if resident.floor == 1 and renderedGroup == resident.typeId %}{% set i = i + 1 %}{% if i == 1 %}1st Floor{% endif %}{% endif %}{% endfor %},{% set j = 0 %}{% for resident in data.residents %}{% if resident.floor == 2 and renderedGroup == resident.typeId %}{% set j = j + 1 %}{% if j == 1 %}2st Floor{% endif %}{% endif %}{% endfor %},{% set l = 0 %}{% for resident in data.residents %}{% if resident.floor == 3 and renderedGroup == resident.typeId %}{% set l = l + 1 %}{% if l == 1 %}3st Floor{% endif %}{% endif %}{% endfor %},{% endif %}
+
+{% for resident in data.residents %}
+{% if renderedGroup == resident.typeId %}
+{% if resident.floor == 1 %}{% endif %}{% if resident.floor == 2 %},{% endif %}{% if resident.floor == 3 %},,{% endif %}{% if resident.private %}{{ resident.roomNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}{% else %}{{ resident.roomNumber ~ '' ~ resident.bedNumber ~ ' ' ~ resident.firstName ~ ' ' ~ resident.lastName }}{% endif %}
+
+{% endif %}
+{% endfor %}
+
+{% set m = 0 %}{% for vacant in data.vacants %}{% if renderedGroup == vacant.typeId %}{% set m = m + 1 %}{% if m == 1 %}Vacant Rooms{% endif %}{% endif %}{% endfor %},
+{% for vacant in data.vacants %}
+{% if renderedGroup == vacant.typeId %}
+{% if vacant.floor == 1 %}{% endif %}{% if vacant.floor == 2 %},{% endif %}{% if vacant.floor == 3 %},,{% endif %}{% if vacant.private %}{{ vacant.roomNumber }}{% else %}{{ vacant.roomNumber ~ '' ~ vacant.bedNumber }}{% endif %}
+
+{% endif %}
+{% endfor %}
+{% else %}
+Resident,,
+{% for resident in data.residents %}
+{{ resident.firstName ~ ' ' ~ resident.lastName }},,
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endspaceless %}

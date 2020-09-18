@@ -124,7 +124,7 @@ resident:
       title: 'Simple Roster: Simple list of Residents, sorted by Room Number'
       show_in_resident_list: true
       show_in_group_list: true
-      formats: ['pdf']
+      formats: ['pdf', 'csv', 'xls']
       parameters:
         group:
           select_all: true
