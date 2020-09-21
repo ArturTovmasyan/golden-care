@@ -542,7 +542,9 @@ class Apartment
         if ($this->rooms !== null) {
             /** @var ApartmentRoom $room */
             foreach ($this->rooms as $room) {
-                $occupation += $room->getBeds()->count();
+                $occupation += $room->getBeds()->filter(static function(ApartmentBed $bed) {
+                    return $bed->isEnabled() === true;
+                })->count();
             }
         }
 

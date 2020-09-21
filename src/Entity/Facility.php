@@ -1036,7 +1036,9 @@ class Facility
         if ($this->rooms !== null) {
             /** @var FacilityRoom $room */
             foreach ($this->rooms as $room) {
-                $occupation += $room->getBeds()->count();
+                $occupation += $room->getBeds()->filter(static function(FacilityBed $bed) {
+                    return $bed->isEnabled() === true;
+                })->count();
             }
         }
 
