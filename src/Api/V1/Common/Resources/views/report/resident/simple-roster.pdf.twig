@@ -63,7 +63,7 @@
                     <td>
                         <b style="width: 200px; text-align: left; font-size: 14px !important;">
                             {% if data.numberOfFloors[typeId] is defined and data.numberOfFloors[typeId] >= 2 %}
-                                2st Floor
+                                2nd Floor
                             {% endif %}
                         </b>
                     </td>
@@ -93,7 +93,7 @@
                             {% if resident.floor == 2 and renderedGroup == resident.typeId %}
                                 {% set j = j + 1 %}
                                 {% if j == 1 %}
-                                    <b style="width: 200px; text-align: left; font-size: 14px !important;">2st Floor</b>
+                                    <b style="width: 200px; text-align: left; font-size: 14px !important;">2nd Floor</b>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
