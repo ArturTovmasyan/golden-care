@@ -891,6 +891,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $notGrantResidentIds
      * @param $type
      * @param array|null $ids
      * @param null $resident
@@ -898,7 +899,7 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
      * @param bool $isFilter
      * @return mixed
      */
-    public function getMainActiveResidents(Space $space = null, array $entityGrants = null, $type, array $ids = null, $resident = null, $room = null, $isFilter = false)
+    public function getMainActiveResidents(Space $space = null, array $entityGrants = null, array $notGrantResidentIds = null, $type, array $ids = null, $resident = null, $room = null, $isFilter = false)
     {
         $qb = $this->createQueryBuilder('ra');
 
@@ -916,24 +917,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
             ->andWhere('ra.groupType=:type')
             ->setParameter('type', $type)
             ->setParameter('admissionType', AdmissionType::DISCHARGE);
-
-        if ($space !== null) {
-            $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = r.space'
-                )
-                ->andWhere('s = :space')
-                ->setParameter('space', $space);
-        }
-
-        if ($entityGrants !== null) {
-            $qb
-                ->andWhere('ra.id IN (:grantIds)')
-                ->setParameter('grantIds', $entityGrants);
-        }
 
         switch ($type) {
             case GroupType::TYPE_FACILITY:
@@ -1043,6 +1026,30 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 break;
             default:
                 throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ra.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($notGrantResidentIds !== null) {
+            $qb
+                ->andWhere('r.id NOT IN (:notGrantResidentIds)')
+                ->setParameter('notGrantResidentIds', $notGrantResidentIds);
         }
 
         return $qb

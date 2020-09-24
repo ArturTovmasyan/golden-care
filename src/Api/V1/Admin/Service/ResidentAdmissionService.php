@@ -242,7 +242,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                     return ['id' => $item->getId(), 'name' => $item->getName()];
                 }, $groupList);
 
-                $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $strategy['groupType'], $groupIds, $resident, $room, $isFilter);
+                $groupResidents = $repo->getMainActiveResidents($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $this->getNotGrantResidentIds(), $strategy['groupType'], $groupIds, $resident, $room, $isFilter);
 
                 $images = [];
                 $imageS3Uris = [];

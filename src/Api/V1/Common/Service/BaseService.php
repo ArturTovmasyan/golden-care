@@ -271,11 +271,19 @@ class BaseService
 
         $facilityNotGrantResidents = [];
         $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
-        if ($facilityEntityGrants !== null) {
+        if ($facilityEntityGrants === null || ($facilityEntityGrants !== null && count($facilityEntityGrants) > 0)) {
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
-            $facilities = $facilityRepo->getNotEntityGrants($currentSpace, $facilityEntityGrants);
+            $facilities = [];
+            if ($facilityEntityGrants !== null && count($facilityEntityGrants) > 0) {
+                $facilities = $facilityRepo->getNotEntityGrants($currentSpace, $facilityEntityGrants);
+            }
+
+            if ($facilityEntityGrants === null) {
+                $facilities = $facilityRepo->orderedFindAll($currentSpace, null);
+            }
+
             if (!empty($facilities)) {
                 $tmpResidents = [];
                 /** @var Facility $facility */
@@ -290,11 +298,19 @@ class BaseService
 
         $apartmentNotGrantResidents = [];
         $apartmentEntityGrants = $this->grantService->getCurrentUserEntityGrants(Apartment::class);
-        if ($apartmentEntityGrants !== null) {
+        if ($apartmentEntityGrants === null || ($apartmentEntityGrants !== null && count($apartmentEntityGrants) > 0)) {
             /** @var ApartmentRepository $apartmentRepo */
             $apartmentRepo = $this->em->getRepository(Apartment::class);
 
-            $apartments = $apartmentRepo->getNotEntityGrants($currentSpace, $apartmentEntityGrants);
+            $apartments = [];
+            if ($apartmentEntityGrants !== null && count($apartmentEntityGrants) > 0) {
+                $apartments = $apartmentRepo->getNotEntityGrants($currentSpace, $apartmentEntityGrants);
+            }
+
+            if ($apartmentEntityGrants === null) {
+                $apartments = $apartmentRepo->orderedFindAll($currentSpace, null);
+            }
+
             if (!empty($apartments)) {
                 $tmpResidents = [];
                 /** @var Apartment $apartment */
@@ -309,11 +325,19 @@ class BaseService
 
         $regionNotGrantResidents = [];
         $regionEntityGrants = $this->grantService->getCurrentUserEntityGrants(Region::class);
-        if ($regionEntityGrants !== null) {
+        if ($regionEntityGrants === null || ($regionEntityGrants !== null && count($regionEntityGrants) > 0)) {
             /** @var RegionRepository $regionRepo */
             $regionRepo = $this->em->getRepository(Region::class);
 
-            $regions = $regionRepo->getNotEntityGrants($currentSpace, $regionEntityGrants);
+            $regions = [];
+            if ($regionEntityGrants !== null && count($regionEntityGrants) > 0) {
+                $regions = $regionRepo->getNotEntityGrants($currentSpace, $regionEntityGrants);
+            }
+
+            if ($regionEntityGrants === null) {
+                $regions = $regionRepo->orderedFindAll($currentSpace, null);
+            }
+
             if (!empty($regions)) {
                 $tmpResidents = [];
                 /** @var Region $region */
