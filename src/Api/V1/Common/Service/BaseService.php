@@ -271,16 +271,17 @@ class BaseService
 
         $facilityNotGrantResidents = [];
         $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
-        if ($facilityEntityGrants === null || ($facilityEntityGrants !== null && count($facilityEntityGrants) > 0)) {
+        $hasFacilityEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Facility::class, 1);
+        if (!$hasFacilityEntityGrant || ($hasFacilityEntityGrant && $facilityEntityGrants !== null)) {
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
 
             $facilities = [];
-            if ($facilityEntityGrants !== null && count($facilityEntityGrants) > 0) {
+            if ($hasFacilityEntityGrant && $facilityEntityGrants !== null) {
                 $facilities = $facilityRepo->getNotEntityGrants($currentSpace, $facilityEntityGrants);
             }
 
-            if ($facilityEntityGrants === null) {
+            if (!$hasFacilityEntityGrant) {
                 $facilities = $facilityRepo->orderedFindAll($currentSpace, null);
             }
 
@@ -298,16 +299,17 @@ class BaseService
 
         $apartmentNotGrantResidents = [];
         $apartmentEntityGrants = $this->grantService->getCurrentUserEntityGrants(Apartment::class);
-        if ($apartmentEntityGrants === null || ($apartmentEntityGrants !== null && count($apartmentEntityGrants) > 0)) {
+        $hasApartmentEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Apartment::class, 1);
+        if (!$hasApartmentEntityGrant || ($hasApartmentEntityGrant && $apartmentEntityGrants !== null)) {
             /** @var ApartmentRepository $apartmentRepo */
             $apartmentRepo = $this->em->getRepository(Apartment::class);
 
             $apartments = [];
-            if ($apartmentEntityGrants !== null && count($apartmentEntityGrants) > 0) {
+            if ($hasApartmentEntityGrant && $apartmentEntityGrants !== null) {
                 $apartments = $apartmentRepo->getNotEntityGrants($currentSpace, $apartmentEntityGrants);
             }
 
-            if ($apartmentEntityGrants === null) {
+            if (!$hasApartmentEntityGrant) {
                 $apartments = $apartmentRepo->orderedFindAll($currentSpace, null);
             }
 
@@ -325,16 +327,17 @@ class BaseService
 
         $regionNotGrantResidents = [];
         $regionEntityGrants = $this->grantService->getCurrentUserEntityGrants(Region::class);
-        if ($regionEntityGrants === null || ($regionEntityGrants !== null && count($regionEntityGrants) > 0)) {
+        $hasRegionEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Region::class, 1);
+        if (!$hasRegionEntityGrant || ($hasRegionEntityGrant && $regionEntityGrants !== null)) {
             /** @var RegionRepository $regionRepo */
             $regionRepo = $this->em->getRepository(Region::class);
 
             $regions = [];
-            if ($regionEntityGrants !== null && count($regionEntityGrants) > 0) {
+            if ($hasRegionEntityGrant && $regionEntityGrants !== null) {
                 $regions = $regionRepo->getNotEntityGrants($currentSpace, $regionEntityGrants);
             }
 
-            if ($regionEntityGrants === null) {
+            if (!$hasRegionEntityGrant) {
                 $regions = $regionRepo->orderedFindAll($currentSpace, null);
             }
 
