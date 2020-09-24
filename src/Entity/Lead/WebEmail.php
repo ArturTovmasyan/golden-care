@@ -27,7 +27,8 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "date",
  *              "type"       = "date",
- *              "field"      = "we.date"
+ *              "field"      = "we.date",
+ *              "link"       = "/lead/web-email/:id"
  *          },
  *          {
  *              "id"         = "facility",
@@ -42,8 +43,7 @@ use App\Annotation\Grid;
  *          {
  *              "id"         = "review_type",
  *              "type"       = "string",
- *              "field"      = "CASE WHEN ert.id IS NOT NULL THEN ert.title ELSE 'Not Reviewed' END",
- *              "link"       = "/lead/web-email/:id"
+ *              "field"      = "CASE WHEN ert.id IS NOT NULL THEN ert.title ELSE 'Not Reviewed' END"
  *          },
  *          {
  *              "id"         = "updated_by",
