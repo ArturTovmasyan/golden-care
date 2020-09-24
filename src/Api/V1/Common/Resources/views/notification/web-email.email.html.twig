@@ -21,7 +21,13 @@
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                             <strong>Reviewed By:</strong> {% if web['firstName'] %}{{ web['firstName']|raw }} {{ web['lastName']|raw }}{% endif %}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
-                            <strong>Body:</strong> {% if web['body'] %}{{ web['body']|raw }}{% endif %}</p>
+                            <strong>Name:</strong> {% if web['name'] %}{{ web['name']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Email:</strong> {% if web['email'] %}{{ web['email']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Phone:</strong> {% if web['phone'] %}{{ web['phone']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Message:</strong> {% if web['message'] %}{{ web['message']|raw }}{% endif %}</p>
                     </td>
                 </tr>
             {% endfor %}
@@ -44,7 +50,13 @@
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
                             <strong>Reviewed By:</strong> {% if notReview['firstName'] %}{{ notReview['firstName']|raw }} {{ notReview['lastName']|raw }}{% endif %}</p>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
-                            <strong>Body:</strong> {% if notReview['body'] %}{{ notReview['body']|raw }}{% endif %}</p>
+                            <strong>Name:</strong> {% if notReview['name'] %}{{ notReview['name']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Email:</strong> {% if notReview['email'] %}{{ notReview['email']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Phone:</strong> {% if notReview['phone'] %}{{ notReview['phone']|raw }}{% endif %}</p>
+                        <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
+                            <strong>Message:</strong> {% if notReview['message'] %}{{ notReview['message']|raw }}{% endif %}</p>
                     </td>
                 </tr>
             {% endfor %}

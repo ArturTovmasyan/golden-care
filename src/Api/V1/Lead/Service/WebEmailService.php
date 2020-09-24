@@ -110,7 +110,6 @@ class WebEmailService extends BaseService implements IGridService
                 $webEmail->setEmailReviewType(null);
                 $webEmail->setDate($now);
                 $webEmail->setSubject($subject);
-                $webEmail->setBody($params['Message']);
                 $webEmail->setUpdatedBy($webEmail->getCreatedBy());
 
                 $facility = null;
@@ -138,6 +137,33 @@ class WebEmailService extends BaseService implements IGridService
                     $webEmail->setFacility(null);
                 }
 
+                if (!empty($params['Name'])) {
+                    $webEmail->setName($params['Name']);
+                } else {
+                    $webEmail->setName(null);
+                }
+
+                if (!empty($params['Email'])) {
+                    $webEmail->setEmail($params['Email']);
+                } else {
+                    $webEmail->setEmail(null);
+                }
+
+                if (!empty($params['Phone'])) {
+                    if (!empty($params['Message']) && stripos($params['Message'], $params['Phone']) !== false) {
+                        $phone = null;
+                    } else {
+                        $phone = $this->formatPhoneUs($params['Phone']);
+                    }
+
+                    $webEmail->setPhone($phone);
+                } else {
+                    $webEmail->setPhone(null);
+                }
+
+                $message = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2048) : '';
+                $webEmail->setMessage($message);
+
                 $this->validate($webEmail, null, ['api_lead_web_email_add']);
 
                 $this->em->persist($webEmail);
@@ -148,6 +174,27 @@ class WebEmailService extends BaseService implements IGridService
 
                 throw $e;
             }
+        }
+    }
+
+    private function formatPhoneUs($phone) {
+        //strip out everything but numbers
+        $phone = preg_replace('/\D/', '', $phone);
+        $length = strlen($phone);
+
+        switch($length) {
+            case 7:
+                return preg_replace('/(\d{3})(\d{4})/', '(000) $1-$2', $phone);
+                break;
+            case 10:
+                return preg_replace('/(\d{3})(\d{3})(\d{4})/', '($1) $2-$3', $phone);
+                break;
+            case 11:
+                return preg_replace('/(\d{1})(\d{3})(\d{3})(\d{4})/', '($2) $3-$4', $phone);
+                break;
+            default:
+                return null;
+                break;
         }
     }
 
@@ -226,7 +273,10 @@ class WebEmailService extends BaseService implements IGridService
             }
 
             $entity->setSubject($params['subject']);
-            $entity->setBody($params['body']);
+            $entity->setName($params['name']);
+            $entity->setEmail($params['email']);
+            $entity->setPhone($params['phone']);
+            $entity->setMessage($params['message']);
 
             $this->validate($entity, null, ['api_lead_web_email_edit']);
 

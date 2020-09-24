@@ -51,6 +51,21 @@ use App\Annotation\Grid;
  *              "field"      = "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))"
  *          },
  *          {
+ *              "id"         = "name",
+ *              "type"       = "string",
+ *              "field"      = "we.name"
+ *          },
+ *          {
+ *              "id"         = "email",
+ *              "type"       = "string",
+ *              "field"      = "we.email"
+ *          },
+ *          {
+ *              "id"         = "phone",
+ *              "type"       = "string",
+ *              "field"      = "we.phone"
+ *          },
+ *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -139,11 +154,71 @@ class WebEmail implements PreviousAndNextItemsService
     private $subject;
 
     /**
-     * @var string $body
-     * @ORM\Column(name="body", type="text", length=2048, nullable=true)
+     * @var string
+     * @ORM\Column(name="name", type="string", length=120, nullable=true)
+     * @Assert\Length(
+     *      max = 120,
+     *      maxMessage = "Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_web_email_add",
+     *          "api_lead_web_email_edit"
+     *      }
+     * )
+     * @Groups({
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
+     * })
+     */
+    private $name;
+
+
+    /**
+     * @var string
+     * @Assert\Email(
+     *     groups={
+     *          "api_lead_web_email_add",
+     *          "api_lead_web_email_edit"
+     *     }
+     * )
+     * @Assert\Length(
+     *      max = 255,
+     *      maxMessage = "Email cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_web_email_add",
+     *          "api_lead_web_email_edit"
+     *      }
+     * )
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @Groups({
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
+     * })
+     */
+    private $email;
+
+    /**
+     * @var string
+     * @Assert\Regex(
+     *     pattern="/^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$/",
+     *     message="Invalid phone number format. Valid format is (XXX) XXX-XXXX.",
+     *     groups={
+     *          "api_lead_web_email_add",
+     *          "api_lead_web_email_edit"
+     * })
+     * @ORM\Column(name="phone", type="string", length=20, nullable=true)
+     * @Groups({
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
+     * })
+     */
+    private $phone;
+
+    /**
+     * @var string $message
+     * @ORM\Column(name="message", type="text", length=2048, nullable=true)
      * @Assert\Length(
      *      max = 2048,
-     *      maxMessage = "Email Body cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Email Message cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_lead_web_email_add",
      *          "api_lead_web_email_edit"
@@ -153,7 +228,7 @@ class WebEmail implements PreviousAndNextItemsService
      *     "api_lead_web_email_get"
      * })
      */
-    private $body;
+    private $message;
 
     /**
      * @var Space
@@ -283,17 +358,65 @@ class WebEmail implements PreviousAndNextItemsService
     /**
      * @return null|string
      */
-    public function getBody(): ?string
+    public function getName(): ?string
     {
-        return $this->body;
+        return $this->name;
     }
 
     /**
-     * @param null|string $body
+     * @param null|string $name
      */
-    public function setBody(?string $body): void
+    public function setName(?string $name): void
     {
-        $this->body = $body;
+        $this->name = $name;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param null|string $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param null|string $phone
+     */
+    public function setPhone(?string $phone): void
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param null|string $message
+     */
+    public function setMessage(?string $message): void
+    {
+        $this->message = $message;
     }
 
     /**

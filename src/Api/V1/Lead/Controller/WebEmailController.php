@@ -112,7 +112,10 @@ class WebEmailController extends BaseController
                 'facility_id' => $request->get('facility_id'),
                 'email_review_type_id' => $request->get('email_review_type_id'),
                 'subject' => $request->get('subject'),
-                'body' => $request->get('body'),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'phone' => $request->get('phone'),
+                'message' => $request->get('message'),
                 'space_id' => $request->get('space_id')
             ]
         );
