@@ -272,6 +272,9 @@ class BaseService
         $facilityNotGrantResidents = [];
         $facilityEntityGrants = $this->grantService->getCurrentUserEntityGrants(Facility::class);
         $hasFacilityEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Facility::class, 1);
+        if ($hasFacilityEntityGrant === null) {
+            $hasFacilityEntityGrant = false;
+        }
         if (!$hasFacilityEntityGrant || ($hasFacilityEntityGrant && $facilityEntityGrants !== null)) {
             /** @var FacilityRepository $facilityRepo */
             $facilityRepo = $this->em->getRepository(Facility::class);
@@ -300,6 +303,9 @@ class BaseService
         $apartmentNotGrantResidents = [];
         $apartmentEntityGrants = $this->grantService->getCurrentUserEntityGrants(Apartment::class);
         $hasApartmentEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Apartment::class, 1);
+        if ($hasApartmentEntityGrant === null) {
+            $hasApartmentEntityGrant = false;
+        }
         if (!$hasApartmentEntityGrant || ($hasApartmentEntityGrant && $apartmentEntityGrants !== null)) {
             /** @var ApartmentRepository $apartmentRepo */
             $apartmentRepo = $this->em->getRepository(Apartment::class);
@@ -328,6 +334,9 @@ class BaseService
         $regionNotGrantResidents = [];
         $regionEntityGrants = $this->grantService->getCurrentUserEntityGrants(Region::class);
         $hasRegionEntityGrant = $this->grantService->hasCurrentUserEntityGrant(Region::class, 1);
+        if ($hasRegionEntityGrant === null) {
+            $hasRegionEntityGrant = false;
+        }
         if (!$hasRegionEntityGrant || ($hasRegionEntityGrant && $regionEntityGrants !== null)) {
             /** @var RegionRepository $regionRepo */
             $regionRepo = $this->em->getRepository(Region::class);
