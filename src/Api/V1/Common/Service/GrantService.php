@@ -101,9 +101,9 @@ class GrantService
     /**
      * @param string $entity_name
      * @param int $level
-     * @return bool
+     * @return bool|null
      */
-    public function hasCurrentUserEntityGrant(string $entity_name, int $level): bool
+    public function hasCurrentUserEntityGrant(string $entity_name, int $level): ?bool
     {
         $user = $this->current_user;
         if ($user === null) {
@@ -112,7 +112,7 @@ class GrantService
 
         $role_grants = $this->getEffectiveGrants($user->getRoleObjects());
 
-        $required_grants = array_filter($this->config_flat, function ($value) use ($entity_name) {
+        $required_grants = array_filter($this->config_flat, static function ($value) use ($entity_name) {
             return array_key_exists('class', $value) && $value['class'] === $entity_name;
         });
 
@@ -144,7 +144,7 @@ class GrantService
         $user_grants = $user->getGrants();
         $role_grants = $this->getEffectiveGrants($user->getRoleObjects());
 
-        $required_grants = array_filter($this->config_flat, function ($value) use ($entity_name) {
+        $required_grants = array_filter($this->config_flat, static function ($value) use ($entity_name) {
             return array_key_exists('class', $value) && $value['class'] === $entity_name;
         });
 
@@ -269,7 +269,7 @@ class GrantService
             $grants = $role->getGrants() ?? [];
         }
 
-        $identity_grants = array_filter($grants, function ($value) {
+        $identity_grants = array_filter($grants, static function ($value) {
             return array_key_exists('enabled', $value) && $value['enabled'] === true
                 && array_key_exists('identity', $value) && $value['identity'] === 1;
         });
