@@ -885,6 +885,7 @@ class NotifyCommand extends Command
             $this->em->getConnection()->beginTransaction();
 
             $entity->setEmailed(true);
+            $entity->setUpdatedBy($entity->getCreatedBy());
 
             $this->em->persist($entity);
             $this->em->flush();
