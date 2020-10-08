@@ -12,6 +12,7 @@ class NotificationTypeCategoryType
     const TYPE_RESIDENT_RENT_INCREASE = 6;
     const TYPE_DATABASE_USER_LOGIN_ACTIVITY = 7;
     const TYPE_LEAD_WEB_EMAIL = 8;
+    const TYPE_WEB_FROM_ALERT = 9;
 
     /**
      * @var array
@@ -25,6 +26,7 @@ class NotificationTypeCategoryType
         self::TYPE_RESIDENT_RENT_INCREASE => 'Resident Rent Increase',
         self::TYPE_DATABASE_USER_LOGIN_ACTIVITY => 'Database User Login Activity',
         self::TYPE_LEAD_WEB_EMAIL => 'Lead Web Email',
+        self::TYPE_WEB_FROM_ALERT => 'Web Form Alert',
     ];
 
     /**
@@ -39,6 +41,7 @@ class NotificationTypeCategoryType
         'Resident Rent Increase' => '6',
         'Database User Login Activity' => '7',
         'Lead Web Email' => '8',
+        'Web Form Alert' => '9',
     ];
 
     /**
@@ -53,6 +56,7 @@ class NotificationTypeCategoryType
         self::TYPE_RESIDENT_RENT_INCREASE => 6,
         self::TYPE_DATABASE_USER_LOGIN_ACTIVITY => 7,
         self::TYPE_LEAD_WEB_EMAIL => 8,
+        self::TYPE_WEB_FROM_ALERT => 9,
     ];
 
     /**

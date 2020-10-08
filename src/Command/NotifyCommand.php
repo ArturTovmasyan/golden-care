@@ -23,6 +23,7 @@ use App\Entity\Region;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentRentIncrease;
 use App\Entity\ResidentResponsiblePerson;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Model\ChangeLogType;
 use App\Model\GroupType;
@@ -37,6 +38,8 @@ use App\Repository\NotificationRepository;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
+use App\Repository\RoleRepository;
+use App\Repository\UserRepository;
 use App\Util\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
@@ -129,11 +132,13 @@ class NotifyCommand extends Command
 
                 $notificationEmails = $notification->getEmails();
                 $userEmails = [];
+                $notificationUserIds = [];
                 if (!empty($notification->getUsers())) {
                     /** @var User $user */
                     foreach ($notification->getUsers() as $user) {
                         if ($user->isEnabled()) {
                             $userEmails[] = $user->getEmail();
+                            $notificationUserIds[] = $user->getId();
                         }
                     }
                 }
@@ -179,6 +184,11 @@ class NotifyCommand extends Command
                     case NotificationTypeCategoryType::TYPE_LEAD_WEB_EMAIL:
                         if ($notification->getType()->isEmail()) {
                             $this->sendLeadWebEmailNotifications($emails, $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
+                        }
+                        break;
+                    case NotificationTypeCategoryType::TYPE_WEB_FROM_ALERT:
+                        if ($notification->getType()->isEmail() || $notification->getType()->isSms()) {
+                            $this->sendLeadWebEmailFormAlertNotifications($emails, $notificationUserIds, $notification->getType()->isEmail(), $notification->getType()->isSms(), $notification->getType()->getEmailSubject(), $notification->getType()->getEmailMessage());
                         }
                         break;
                 }
@@ -745,6 +755,145 @@ class NotifyCommand extends Command
             $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
 
             $this->saveEmailLog($status, $subject, $spaceName, $emails);
+        }
+    }
+
+    /**
+     * @param array $emails
+     * @param array $notificationUserIds
+     * @param $isEmail
+     * @param $isSms
+     * @param $subjectText
+     * @param $message
+     */
+    public function sendLeadWebEmailFormAlertNotifications(array $emails, array $notificationUserIds, $isEmail, $isSms, $subjectText, $message): void
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $date = new \DateTime('now');
+
+        $startFormatted = $date->format('m/d/Y 00:00:00');
+        $startDate = new \DateTime($startFormatted);
+
+        $endFormatted = $date->format('m/d/Y 23:59:59');
+        $endDate = new \DateTime($endFormatted);
+
+        /** @var WebEmailRepository $repo */
+        $repo = $this->em->getRepository(WebEmail::class);
+
+        $webEmails = $repo->getNotEmailedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
+
+        /** @var WebEmail $webEmail */
+        foreach ($webEmails as $webEmail) {
+            $spaceName = $webEmail->getSpace() !== null ? $webEmail->getSpace()->getName() : '';
+
+            $roleName = $webEmail->getFacility() !== null ? 'Facility Admin' : 'Administrator';
+
+            /** @var RoleRepository $roleRepo */
+            $roleRepo = $this->em->getRepository(Role::class);
+
+            /** @var Role $role */
+            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+            /** @var UserRepository $userRepo */
+            $userRepo = $this->em->getRepository(User::class);
+
+            $webs = [];
+            $webEmailEmails = [];
+            $webEmailUserIds = [];
+            if ($role !== null) {
+                $userFacilityIds = $userRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                if (!empty($userFacilityIds)) {
+                    $facilityIds = $webEmail->getFacility() !== null ? [$webEmail->getFacility()->getId()] : [];
+
+                    foreach ($userFacilityIds as $userFacilityId) {
+                        $webEmailUserIds[] = $userFacilityId['id'];
+
+                        if ($userFacilityId['facilityIds'] === null) {
+                            $webEmailEmails[] = $userFacilityId['email'];
+                        } else {
+                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                            if (!empty(array_intersect($explodedUserFacilityIds, $facilityIds))) {
+                                $webEmailEmails[] = $userFacilityId['email'];
+                            }
+                        }
+                    }
+                }
+            }
+
+            $webs[] = [
+                'id' => $webEmail->getId(),
+                'date' => $webEmail->getDate() !== null ? $webEmail->getDate()->format('m/d/Y') : '',
+                'subject' => $webEmail->getSubject(),
+                'name' => $webEmail->getName(),
+                'email' => $webEmail->getEmail(),
+                'phone' => $webEmail->getPhone(),
+                'message' => $webEmail->getMessage(),
+                'facility' => $webEmail->getFacility() !== null ? $webEmail->getFacility()->getName() : '',
+                'review' => $webEmail->getEmailReviewType() !== null ? $webEmail->getEmailReviewType()->getTitle() : '',
+                'firstName' => $webEmail->getUpdatedBy() !== null ? $webEmail->getUpdatedBy()->getFirstName() : '',
+                'lastName' => $webEmail->getUpdatedBy() !== null ? $webEmail->getUpdatedBy()->getLastName() : '',
+            ];
+
+            $finalUserIds = array_merge($notificationUserIds, $webEmailUserIds);
+            $finalUserIds = array_unique($finalUserIds);
+
+            //for sms
+            if ($isSms && !empty($finalUserIds)) {
+                $smsUsers = $userRepo->findByIds($currentSpace, null, $finalUserIds);
+
+                $facilityName = $webEmail->getFacility() !== null ? $webEmail->getFacility()->getName() : '';
+                $message = 'You have a new ' . $facilityName . ' web inquiry email.';
+
+                /** @var User $smsUser */
+                foreach ($smsUsers as $smsUser) {
+                    // Aws allows only 140 chars length text message.
+                    $this->amazonSnsService->sendMessageToUser($smsUser, $message);
+                }
+            }
+
+            $finalEmails = array_merge($emails, $webEmailEmails);
+            $finalEmails = array_unique($finalEmails);
+
+            if ($isEmail && !empty($finalEmails) && !empty($webs)) {
+                $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+
+                $body = $this->container->get('templating')->render('@api_notification/web-email.email.html.twig', array(
+                    'webs' => $webs,
+                    'notReviews' => [],
+                    'subject' => $subject
+                ));
+
+                $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+
+                $this->saveEmailLog($status, $subject, $spaceName, $emails);
+            }
+
+            $this->saveLeadWebEmailAsEmailed($webEmail);
+        }
+    }
+
+    /**
+     * @param WebEmail $entity
+     * @throws \Exception
+     */
+    private function saveLeadWebEmailAsEmailed(WebEmail $entity): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $entity->setEmailed(true);
+
+            $this->em->persist($entity);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
         }
     }
 

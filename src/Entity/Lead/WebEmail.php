@@ -231,6 +231,16 @@ class WebEmail implements PreviousAndNextItemsService
     private $message;
 
     /**
+     * @var bool
+     * @ORM\Column(name="emailed", type="boolean")
+     * @Groups({
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
+     * })
+     */
+    private $emailed;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_lead_web_email_add",
@@ -417,6 +427,22 @@ class WebEmail implements PreviousAndNextItemsService
     public function setMessage(?string $message): void
     {
         $this->message = $message;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailed(): bool
+    {
+        return $this->emailed;
+    }
+
+    /**
+     * @param bool $emailed
+     */
+    public function setEmailed(bool $emailed): void
+    {
+        $this->emailed = $emailed;
     }
 
     /**

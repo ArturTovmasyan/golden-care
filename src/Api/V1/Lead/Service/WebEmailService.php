@@ -111,6 +111,7 @@ class WebEmailService extends BaseService implements IGridService
                 $webEmail->setDate($now);
                 $webEmail->setSubject($subject);
                 $webEmail->setUpdatedBy($webEmail->getCreatedBy());
+                $webEmail->setEmailed(false);
 
                 $facility = null;
                 if (!empty($params['From'])) {
