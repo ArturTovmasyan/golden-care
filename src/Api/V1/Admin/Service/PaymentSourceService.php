@@ -84,6 +84,11 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setPeriod($period);
             $paymentSource->setCareLevelAdjustment($careLevelAdjustment);
             $paymentSource->setSpace($space);
+            $paymentSource->setResidentName((bool)$params['resident_name']);
+            $paymentSource->setDateOfBirth((bool)$params['date_of_birth']);
+            $paymentSource->setFieldName($params['field_name']);
+            $paymentSource->setFieldText($params['field_text']);
+            $paymentSource->setReduceForAwayDays((bool)$params['reduce_for_away_days']);
 
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
 
@@ -147,6 +152,11 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setPeriod($period);
             $entity->setCareLevelAdjustment($careLevelAdjustment);
             $entity->setSpace($space);
+            $entity->setResidentName((bool)$params['resident_name']);
+            $entity->setDateOfBirth((bool)$params['date_of_birth']);
+            $entity->setFieldName($params['field_name']);
+            $entity->setFieldText($params['field_text']);
+            $entity->setReduceForAwayDays((bool)$params['reduce_for_away_days']);
 
             $this->validate($entity, null, ['api_admin_payment_source_edit']);
 

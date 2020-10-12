@@ -211,6 +211,70 @@ class PaymentSource
     private $space;
 
     /**
+     * @var bool
+     * @ORM\Column(name="resident_name", type="boolean")
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $residentName;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="date_of_birth", type="boolean")
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $dateOfBirth;
+
+    /**
+     * @var string
+     * @Assert\Length(
+     *      max = 32,
+     *      maxMessage = "Field Name cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_payment_source_add",
+     *          "api_admin_payment_source_edit"
+     * })
+     * @ORM\Column(name="field_name", type="string", length=32, nullable=true)
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $fieldName;
+
+    /**
+     * @var string
+     * @Assert\Length(
+     *      max = 32,
+     *      maxMessage = "Field Text cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_payment_source_add",
+     *          "api_admin_payment_source_edit"
+     * })
+     * @ORM\Column(name="field_text", type="string", length=32, nullable=true)
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $fieldText;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="reduce_for_away_days", type="boolean")
+     * @Groups({
+     *     "api_admin_payment_source_list",
+     *     "api_admin_payment_source_get"
+     * })
+     */
+    private $reduceForAwayDays;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Lead", mappedBy="paymentType", cascade={"persist"})
      */
@@ -371,6 +435,86 @@ class PaymentSource
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResidentName(): bool
+    {
+        return $this->residentName;
+    }
+
+    /**
+     * @param bool $residentName
+     */
+    public function setResidentName(bool $residentName): void
+    {
+        $this->residentName = $residentName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDateOfBirth(): bool
+    {
+        return $this->dateOfBirth;
+    }
+
+    /**
+     * @param bool $dateOfBirth
+     */
+    public function setDateOfBirth(bool $dateOfBirth): void
+    {
+        $this->dateOfBirth = $dateOfBirth;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldName(): ?string
+    {
+        return $this->fieldName;
+    }
+
+    /**
+     * @param string|null $fieldName
+     */
+    public function setFieldName(?string $fieldName): void
+    {
+        $this->fieldName = $fieldName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldText(): ?string
+    {
+        return $this->fieldText;
+    }
+
+    /**
+     * @param string|null $fieldText
+     */
+    public function setFieldText(?string $fieldText): void
+    {
+        $this->fieldText = $fieldText;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReduceForAwayDays(): bool
+    {
+        return $this->reduceForAwayDays;
+    }
+
+    /**
+     * @param bool $reduceForAwayDays
+     */
+    public function setReduceForAwayDays(bool $reduceForAwayDays): void
+    {
+        $this->reduceForAwayDays = $reduceForAwayDays;
     }
 
     /**
