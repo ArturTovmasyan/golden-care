@@ -50,7 +50,9 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_expense_item_list",
      *     "api_admin_resident_expense_item_get",
      *     "api_admin_resident_credit_discount_item_list",
-     *     "api_admin_resident_credit_discount_item_get"
+     *     "api_admin_resident_credit_discount_item_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get"
      *
      * })
      */
@@ -84,6 +86,12 @@ class ResidentLedger implements PreviousAndNextItemsService
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditDiscountItem", mappedBy="ledger", cascade={"remove", "persist"})
      */
     private $residentCreditDiscountItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="ledger", cascade={"remove", "persist"})
+     */
+    private $residentPaymentReceivedItems;
 
     /**
      * @var int
@@ -196,6 +204,22 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResidentCreditDiscountItems(ArrayCollection $residentCreditDiscountItems): void
     {
         $this->residentCreditDiscountItems = $residentCreditDiscountItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentPaymentReceivedItems
+     */
+    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    {
+        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
     }
 
     /**

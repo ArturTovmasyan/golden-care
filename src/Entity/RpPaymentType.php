@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -58,7 +59,9 @@ class RpPaymentType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_rp_payment_type_list",
-     *     "api_admin_rp_payment_type_get"
+     *     "api_admin_rp_payment_type_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get"
      * })
      */
     private $id;
@@ -79,7 +82,9 @@ class RpPaymentType
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_rp_payment_type_list",
-     *     "api_admin_rp_payment_type_get"
+     *     "api_admin_rp_payment_type_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get"
      * })
      */
     private $title;
@@ -100,6 +105,12 @@ class RpPaymentType
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="paymentType", cascade={"remove", "persist"})
+     */
+    private $residentPaymentReceivedItems;
 
     public function getId(): ?int
     {
@@ -136,5 +147,21 @@ class RpPaymentType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentPaymentReceivedItems
+     */
+    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    {
+        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
     }
 }

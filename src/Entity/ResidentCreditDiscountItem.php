@@ -83,7 +83,7 @@ class ResidentCreditDiscountItem
 
     /**
      * @var CreditDiscountItem
-     * @Assert\NotNull(message = "Please select an CreditDiscount Item", groups={
+     * @Assert\NotNull(message = "Please select a Credit/Discount Item", groups={
      *     "api_admin_resident_credit_discount_item_add",
      *     "api_admin_resident_credit_discount_item_edit"
      * })
