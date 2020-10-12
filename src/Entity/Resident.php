@@ -163,7 +163,9 @@ class Resident
      *      "api_admin_resident_rent_increase_list",
      *      "api_admin_resident_rent_increase_get",
      *      "api_admin_facility_event_list",
-     *      "api_admin_facility_event_get"
+     *      "api_admin_facility_event_get",
+     *      "api_admin_resident_ledger_list",
+     *      "api_admin_resident_ledger_get",
      * })
      */
     private $id;
@@ -506,6 +508,12 @@ class Resident
      * @ORM\ManyToMany(targetEntity="App\Entity\FacilityEvent", mappedBy="residents", cascade={"persist"})
      */
     protected $facilityEvents;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentLedger", mappedBy="resident", cascade={"remove", "persist"})
+     */
+    private $residentLedgers;
 
     /**
      * @return int
@@ -992,5 +1000,21 @@ class Resident
     public function setDownloadString(?string $downloadString): void
     {
         $this->downloadString = $downloadString;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentLedgers(): ArrayCollection
+    {
+        return $this->residentLedgers;
+    }
+
+    /**
+     * @param ArrayCollection $residentLedgers
+     */
+    public function setResidentLedgers(ArrayCollection $residentLedgers): void
+    {
+        $this->residentLedgers = $residentLedgers;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -58,7 +59,9 @@ class ExpenseItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get"
+     *     "api_admin_expense_item_get",
+     *     "api_admin_resident_expense_item_list",
+     *     "api_admin_resident_expense_item_get"
      * })
      */
     private $id;
@@ -79,7 +82,9 @@ class ExpenseItem
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_expense_item_list",
-     *     "api_admin_expense_item_get"
+     *     "api_admin_expense_item_get",
+     *     "api_admin_resident_expense_item_list",
+     *     "api_admin_resident_expense_item_get"
      * })
      */
     private $title;
@@ -100,6 +105,12 @@ class ExpenseItem
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentExpenseItem", mappedBy="expenseItem", cascade={"remove", "persist"})
+     */
+    private $residentExpenseItems;
 
     public function getId(): ?int
     {
@@ -136,5 +147,21 @@ class ExpenseItem
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentExpenseItems(): ArrayCollection
+    {
+        return $this->residentExpenseItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentExpenseItems
+     */
+    public function setResidentExpenseItems(ArrayCollection $residentExpenseItems): void
+    {
+        $this->residentExpenseItems = $residentExpenseItems;
     }
 }

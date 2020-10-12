@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -73,7 +74,9 @@ class CreditDiscountItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get"
+     *     "api_admin_credit_discount_item_get",
+     *     "api_admin_resident_credit_discount_item_list",
+     *     "api_admin_resident_credit_discount_item_get"
      * })
      */
     private $id;
@@ -94,7 +97,9 @@ class CreditDiscountItem
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get"
+     *     "api_admin_credit_discount_item_get",
+     *     "api_admin_resident_credit_discount_item_list",
+     *     "api_admin_resident_credit_discount_item_get"
      * })
      */
     private $title;
@@ -169,6 +174,12 @@ class CreditDiscountItem
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditDiscountItem", mappedBy="creditDiscountItem", cascade={"remove", "persist"})
+     */
+    private $residentCreditDiscountItems;
 
     public function getId(): ?int
     {
@@ -253,5 +264,21 @@ class CreditDiscountItem
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentCreditDiscountItems(): ArrayCollection
+    {
+        return $this->residentCreditDiscountItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentCreditDiscountItems
+     */
+    public function setResidentCreditDiscountItems(ArrayCollection $residentCreditDiscountItems): void
+    {
+        $this->residentCreditDiscountItems = $residentCreditDiscountItems;
     }
 }

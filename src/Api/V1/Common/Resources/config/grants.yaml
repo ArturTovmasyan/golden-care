@@ -417,6 +417,18 @@ persistence:
           title: 'ResidentDocument'
           class: App\Entity\ResidentDocument
           route: api_admin_resident_document_list
+        resident_ledger:
+          title: 'ResidentLedger'
+          class: App\Entity\ResidentLedger
+          route: api_admin_resident_ledger_list
+        resident_expense_item:
+          title: 'ResidentExpenseItem'
+          class: App\Entity\ResidentExpenseItem
+          route: api_admin_resident_expense_item_list
+        resident_credit_discount_item:
+          title: 'Resident Credits/Discounts Item'
+          class: App\Entity\ResidentCreditDiscountItem
+          route: api_admin_resident_credit_discount_item_list
 
         admission:
           title: 'ResidentAdmission'

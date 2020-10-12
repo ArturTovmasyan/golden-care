@@ -186,6 +186,9 @@ class ResponseCode
     const CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   = 786;
     const LEAD_EMAIL_REVIEW_TYPE_NOT_FOUND_EXCEPTION             = 787;
     const LEAD_WEB_EMAIL_NOT_FOUND_EXCEPTION                     = 788;
+    const RESIDENT_LEDGER_NOT_FOUND_EXCEPTION                    = 789;
+    const RESIDENT_EXPENSE_ITEM_NOT_FOUND_EXCEPTION              = 790;
+    const RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     = 791;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -372,6 +375,9 @@ class ResponseCode
         self::CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Can be Changed is required when default amount provided.'],
         self::LEAD_EMAIL_REVIEW_TYPE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Email Review Type not found.'],
         self::LEAD_WEB_EMAIL_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Web Email not found.'],
+        self::RESIDENT_LEDGER_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Ledger not found.'],
+        self::RESIDENT_EXPENSE_ITEM_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Expense Item not found.'],
+        self::RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Credit/Discount Item not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
