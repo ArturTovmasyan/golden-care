@@ -12,6 +12,7 @@ use App\Entity\Facility;
 use App\Entity\FacilityBed;
 use App\Entity\FacilityEvent;
 use App\Entity\ResidentAdmission;
+use App\Entity\ResidentAwayDays;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentRentIncrease;
@@ -22,6 +23,7 @@ use App\Repository\FacilityBedRepository;
 use App\Repository\FacilityEventRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentAwayDaysRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRentIncreaseRepository;
 use App\Repository\ResidentRentRepository;
@@ -364,12 +366,17 @@ class FacilityService extends BaseService implements IGridService
         $residentEventRepo = $this->em->getRepository(ResidentEvent::class);
         $residentEvents = $residentEventRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds, $dateFrom, $dateTo, $definitionId);
 
+        /** @var ResidentAwayDaysRepository $awayDaysRepo */
+        $awayDaysRepo = $this->em->getRepository(ResidentAwayDays::class);
+        $awayDays = $awayDaysRepo->getResidentsCalendarData($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $residentIds, $dateFrom, $dateTo);
+
         return [
             'facility_events' => $facilityEvents,
             'admissions' => $admissions,
             'rents' => $rents,
             'rent_increases' => $rentIncreases,
             'resident_events' => $residentEvents,
+            'away_days' => $awayDays,
         ];
     }
 

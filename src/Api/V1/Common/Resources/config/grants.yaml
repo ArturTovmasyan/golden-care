@@ -429,6 +429,10 @@ persistence:
           title: 'Resident Credits/Discounts Item'
           class: App\Entity\ResidentCreditDiscountItem
           route: api_admin_resident_credit_discount_item_list
+        resident_away_days:
+          title: 'ResidentAwayDays'
+          class: App\Entity\ResidentAwayDays
+          route: api_admin_resident_away_days_list
         resident_payment_received_item:
           title: 'ResidentPaymentReceivedItem'
           class: App\Entity\ResidentPaymentReceivedItem
