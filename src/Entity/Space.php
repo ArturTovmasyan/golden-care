@@ -160,7 +160,9 @@ class Space
      *     "api_lead_email_review_type_list",
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
-     *     "api_lead_web_email_get"
+     *     "api_lead_web_email_get",
+     *     "api_admin_key_finance_type_list",
+     *     "api_admin_key_finance_type_get"
      * })
      */
     private $id;
@@ -273,7 +275,9 @@ class Space
      *     "api_lead_email_review_type_list",
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
-     *     "api_lead_web_email_get"
+     *     "api_lead_web_email_get",
+     *     "api_admin_key_finance_type_list",
+     *     "api_admin_key_finance_type_get"
      * })
      */
     private $name;
@@ -559,6 +563,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\WebEmail", mappedBy="space", cascade={"remove", "persist"})
      */
     private $leadWebEmails;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\KeyFinanceType", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $keyFinanceTypes;
 
     /**
      * Space constructor.
@@ -1350,5 +1360,21 @@ class Space
     public function setLeadWebEmails(ArrayCollection $leadWebEmails): void
     {
         $this->leadWebEmails = $leadWebEmails;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getKeyFinanceTypes(): ArrayCollection
+    {
+        return $this->keyFinanceTypes;
+    }
+
+    /**
+     * @param ArrayCollection $keyFinanceTypes
+     */
+    public function setKeyFinanceTypes(ArrayCollection $keyFinanceTypes): void
+    {
+        $this->keyFinanceTypes = $keyFinanceTypes;
     }
 }

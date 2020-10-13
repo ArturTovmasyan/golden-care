@@ -165,6 +165,10 @@ persistence:
           title: 'Credits/Discounts Item'
           class: App\Entity\CreditDiscountItem
           route: api_admin_credit_discount_item_list
+        key_finance_type:
+          title: 'KeyFinanceType'
+          class: App\Entity\KeyFinanceType
+          route: api_admin_key_finance_type_list
 
         notification_type:
           title: 'NotificationType'

@@ -191,6 +191,7 @@ class ResponseCode
     const RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     = 791;
     const RESIDENT_PAYMENT_RECEIVED_ITEM_NOT_FOUND_EXCEPTION     = 792;
     const RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 = 793;
+    const KEY_FINANCE_TYPE_NOT_FOUND_EXCEPTION                   = 794;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -382,6 +383,7 @@ class ResponseCode
         self::RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Credit/Discount Item not found.'],
         self::RESIDENT_PAYMENT_RECEIVED_ITEM_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Payment Received Item not found.'],
         self::RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Away Days not found.'],
+        self::KEY_FINANCE_TYPE_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Key Finance Type not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
